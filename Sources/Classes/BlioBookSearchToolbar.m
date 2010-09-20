@@ -84,6 +84,7 @@
         aNavBar = [[BlioBookSearchCustomNavigationBar alloc] init];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             aNavBar.backgroundColor = [UIColor clearColor];
+            aNavBar.tintColor = [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000];
         }
         self.inlineNavBar = aNavBar;
         [self addSubview:aNavBar];
@@ -95,10 +96,8 @@
                                   nil];
         
         BlioAccessibilitySegmentedControl *aInlineSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
+                                                      
         aInlineSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            aInlineSegmentedControl.tintColor = [UIColor colorWithRed:0.000 green:0.046 blue:0.121 alpha:1.000];
-        }
         aInlineSegmentedControl.momentary = YES;
         [aInlineSegmentedControl addTarget:self action:@selector(inlineSegmentChanged:) forControlEvents:UIControlEventValueChanged];
         
