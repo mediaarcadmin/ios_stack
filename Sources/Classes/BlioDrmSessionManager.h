@@ -26,11 +26,11 @@
 @property (nonatomic, assign) BOOL drmInitialized;
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
-- (void)initialize;
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name;
 - (BOOL)leaveDomain:(NSString*)token;
 - (void)reportReading;
 - (BOOL)getLicense:(NSString*)token;
+- (BOOL)bindToLicense;
 - (BOOL)decryptData:(NSData *)data;
 
 @end
