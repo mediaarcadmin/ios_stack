@@ -54,7 +54,7 @@
 	
 //	CGFloat yPlacement = kTopMargin + 2*kCellHeight;
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
-	CGFloat activityIndicatorDiameter = 16.0f;
+	CGFloat activityIndicatorDiameter = 24.0f;
 	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicator];
