@@ -63,7 +63,8 @@ static NSCharacterSet *sCharsToTrim = nil;
         NSRange startOfSecondWordCharacterRange = [lowercaseName rangeOfCharacterFromSet:sCharsToTrimTo
                                                                                  options:0
                                                                                    range:NSMakeRange(prefixLength, lowercaseNameLength - prefixLength)];
-        if(startOfSecondWordCharacterRange.length > 0) {
+        if(startOfSecondWordCharacterRange.location > prefixLength &&
+           startOfSecondWordCharacterRange.length > 0) {
             NSRange endOfSecondWordCharacterRange = [lowercaseName rangeOfCharacterFromSet:sCharsToTrim
                                                                                    options:0
                                                                                      range:NSMakeRange(startOfSecondWordCharacterRange.location, lowercaseNameLength - startOfSecondWordCharacterRange.location)];
