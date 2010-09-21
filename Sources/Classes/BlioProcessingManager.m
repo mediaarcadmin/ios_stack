@@ -231,13 +231,6 @@
 		}		
 	}
 
-
-	NSManagedObjectID *bookID = [aBook objectID];
-	NSString *cacheDir = [aBook bookCacheDirectory];
-	NSString *tempDir = [aBook bookTempDirectory];
-	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
-	NSString *sourceSpecificID = [aBook sourceSpecificID];
-	
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		NSLog(@"WARNING: enqueue method called on already complete book!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
@@ -248,6 +241,23 @@
 		NSLog(@"Aborting enqueue by prematurely returning...");
 		return;			
 	}
+	
+	[moc refreshObject:aBook mergeChanges:YES];
+	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateIncomplete && [[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed) {
+		// if book is paused, reflect unpausing in state
+		[aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];			
+		NSError * error;
+		if (![moc save:&error]) {
+			NSLog(@"[BlioProcessingManager enqueueBook:placeholderOnly:] (changing state to incomplete) Save failed with error: %@, %@", error, [error userInfo]);
+		}			
+	}					
+
+	NSManagedObjectID *bookID = [aBook objectID];
+	NSString *cacheDir = [aBook bookCacheDirectory];
+	NSString *tempDir = [aBook bookTempDirectory];
+	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
+	NSString *sourceSpecificID = [aBook sourceSpecificID];
+	
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 		// status is incomplete; operations involved with this book may or may not be in the queue, so we'll cancel the CompleteOperation for this book if it exists and co-opt the other operations if they haven't been cancelled yet
 		BlioProcessingOperation * oldCompleteOperation = [self processingCompleteOperationForSourceID: sourceID sourceSpecificID:sourceSpecificID];
@@ -257,7 +267,7 @@
 	NSError * error;
 	if (![[NSFileManager defaultManager] createDirectoryAtPath:cacheDir withIntermediateDirectories:YES attributes:nil error:&error])
 		NSLog(@"Failed to create book cache directory in processing manager with error: %@, %@", error, [error userInfo]);
-	
+		
 	NSMutableArray *bookOps = [NSMutableArray array];
 	
 	NSURL * url = nil;
@@ -615,15 +625,6 @@
 	for (NSOperation *op in bookOps) {
 		[completeOp addDependency:op];
 	}
-	[moc refreshObject:aBook mergeChanges:YES];
-	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateIncomplete && [[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed) {
-		// if book is paused, reflect unpausing in state
-		[aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];			
-		NSError * error;
-		if (![moc save:&error]) {
-			NSLog(@"[BlioProcessingManager enqueueBook:placeholderOnly:] (changing state to incomplete) Save failed with error: %@, %@", error, [error userInfo]);
-		}			
-	}			
 	
 	[self.preAvailabilityQueue addOperation:completeOp];
 	[completeOp calculateProgress];
@@ -891,7 +892,7 @@
 		NSLog(@"WARNING: stop processing for book attempted while Processing Manager MOC == nil!");
 		return;
 	}
-	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
+//	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
 	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
 	NSLog(@"Stopping %i operations...",[relatedOperations count]);

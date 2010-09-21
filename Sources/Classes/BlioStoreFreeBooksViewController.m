@@ -80,6 +80,23 @@
 	//        [self.navigationItem setTitleView:self.searchBar];
 	
 	self.tableView.tableHeaderView = self.searchBar;
+	
+	// faux background color for the top end of the tableView
+	CGRect mainScreenFrame = [[UIScreen mainScreen] applicationFrame];
+	UIView * topTableBackground = [[UIView alloc] initWithFrame:CGRectMake(0, -mainScreenFrame.size.height, mainScreenFrame.size.width, mainScreenFrame.size.height)];
+	topTableBackground.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+		topTableBackground.backgroundColor = [UIColor colorWithRed:176.0f/255.0f green:188.0f/255.0f blue:204.0f/255.0f alpha:1];
+	}
+	else {
+		topTableBackground.backgroundColor = [UIColor colorWithRed:226.0f/255.0f green:231.0f/255.0f blue:237.0f/255.0f alpha:1];
+	}
+	UIView * topTableBackgroundRidge = [[UIView alloc] initWithFrame:CGRectMake(0, -1, mainScreenFrame.size.width, 1)];
+	topTableBackgroundRidge.backgroundColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.5f];
+	topTableBackgroundRidge.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	[self.searchBar addSubview:topTableBackground];
+	[self.searchBar addSubview:topTableBackgroundRidge];
+	
 	self.aSearchDisplayController = [[[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self] autorelease];
 	aSearchDisplayController.delegate = self;
 	aSearchDisplayController.searchResultsDataSource = self.storeSearchTableViewDataSource;

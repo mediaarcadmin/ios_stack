@@ -147,13 +147,7 @@
 
 - (NSArray *)sectionUuids
 {
-    NSMutableArray *ret = [NSMutableArray array];
-    
-    for(THPair *section in _book.navPoints) {
-        [ret addObject:section.second];
-    }
-    
-    return ret;    
+    return [_book.navPoints valueForKey:@"second"];    
 }
 
 - (NSUInteger)previousSectionPageNumberForPageNumber:(NSUInteger)pageNumber
