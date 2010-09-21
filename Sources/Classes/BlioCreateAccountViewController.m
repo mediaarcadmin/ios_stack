@@ -53,11 +53,11 @@
 	
 	
 //	CGFloat yPlacement = kTopMargin + 2*kCellHeight;
-	
-	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/2, 16.0f, 16.0f)] autorelease];
+	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
+	CGFloat activityIndicatorDiameter = 16.0f;
+	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-	[self.view addSubview:activityIndicator];
-	
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicator];
 }
 
 /*
@@ -122,7 +122,7 @@
 	self.confirmPasswordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	confirmPasswordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	confirmPasswordField.keyboardType = UIKeyboardTypeAlphabet;
-	confirmPasswordField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	confirmPasswordField.keyboardAppearance = UIKeyboardAppearanceDefault;
 	confirmPasswordField.returnKeyType = UIReturnKeyDone;
 	confirmPasswordField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	confirmPasswordField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -140,7 +140,7 @@
 	self.firstNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	firstNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	firstNameField.keyboardType = UIKeyboardTypeAlphabet;
-	firstNameField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	firstNameField.keyboardAppearance = UIKeyboardAppearanceDefault;
 	firstNameField.returnKeyType = UIReturnKeyNext;
 	firstNameField.autocapitalizationType = UITextAutocapitalizationTypeWords;
 	firstNameField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -155,7 +155,7 @@
 	self.lastNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	lastNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	lastNameField.keyboardType = UIKeyboardTypeAlphabet;
-	lastNameField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	lastNameField.keyboardAppearance = UIKeyboardAppearanceDefault;
 	lastNameField.returnKeyType = UIReturnKeyNext;
 	lastNameField.autocapitalizationType = UITextAutocapitalizationTypeWords;
 	lastNameField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -361,7 +361,7 @@
 		[inputData setObject:[NSString stringWithString:self.lastNameField.text] forKey:DigitalLockerInputDataLastNameKey];
 		[inputData setObject:[NSString stringWithString:self.emailField.text] forKey:DigitalLockerInputDataEmailKey];
 		[inputData setObject:[NSString stringWithString:self.passwordField.text] forKey:DigitalLockerInputDataPasswordKey];
-		[inputData setObject:@"N"forKey:DigitalLockerInputDataEmailOptionKey];
+		[inputData setObject:@"N" forKey:DigitalLockerInputDataEmailOptionKey];
 		request.InputData = inputData;
 		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
 		[connection start];

@@ -14,14 +14,12 @@
 @interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate> {
 	UITextField* emailField;
 	UITextField* passwordField;
-	UILabel* statusField;
 	UIActivityIndicatorView* activityIndicator;
 	BlioBookSourceID sourceID;
 }
 
 @property (nonatomic,retain) UITextField* emailField;
 @property (nonatomic,retain) UITextField* passwordField;
-@property (nonatomic,retain) UILabel* statusField;
 @property (nonatomic,retain) UIActivityIndicatorView* activityIndicator;
 @property (nonatomic,assign) BlioBookSourceID sourceID;
 

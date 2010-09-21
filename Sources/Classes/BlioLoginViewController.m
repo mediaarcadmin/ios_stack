@@ -15,7 +15,7 @@
 
 @implementation BlioLoginViewController
 
-@synthesize sourceID, emailField, passwordField, activityIndicator, statusField;
+@synthesize sourceID, emailField, passwordField, activityIndicator;
 
 - (id)initWithSourceID:(BlioBookSourceID)bookSourceID
 {
@@ -64,16 +64,12 @@
 											 autorelease];
 	
 	
-	CGFloat yPlacement = kTopMargin + 2*kCellHeight;
 	 
-	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(kLeftMargin, yPlacement, 16.0f, 16.0f)] autorelease];
+	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
+	CGFloat activityIndicatorDiameter = 16.0f;
+	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-	[self.view addSubview:activityIndicator];
-
-	CGRect frame = CGRectMake(kLeftMargin+activityIndicator.bounds.size.width+4, yPlacement+kLabelHeight, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
-	self.statusField = [BlioLoginViewController labelWithFrame:frame title:@""];
-	[self.view addSubview:statusField];
-	
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicator];
 }
 
 - (void) dismissLoginView: (id) sender {
@@ -86,9 +82,9 @@
 	self.emailField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	emailField.keyboardType = UIKeyboardTypeAlphabet;
-	emailField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	emailField.keyboardAppearance = UIKeyboardAppearanceDefault;
 	emailField.returnKeyType = UIReturnKeyNext;
-	emailField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+	emailField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	emailField.autocorrectionType = UITextAutocorrectionTypeNo;
 	emailField.placeholder = NSLocalizedString(@"E-mail Address",@"\"E-mail Address\" placeholder");
 	emailField.delegate = self;
@@ -110,7 +106,7 @@
 	self.passwordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	passwordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	passwordField.keyboardType = UIKeyboardTypeAlphabet;
-	passwordField.keyboardAppearance = UIKeyboardAppearanceAlert;
+	passwordField.keyboardAppearance = UIKeyboardAppearanceDefault;
 	passwordField.returnKeyType = UIReturnKeyDone;
 	passwordField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	passwordField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -140,7 +136,7 @@
 - (void)dealloc {
 	self.emailField = nil;
 	self.passwordField = nil;
-	self.statusField = nil;
+	if (self.activityIndicator) [self.activityIndicator removeFromSuperview];
 	self.activityIndicator = nil;
 	[super dealloc];
 }
@@ -152,8 +148,6 @@
 	if (textField == emailField) 
 		[passwordField becomeFirstResponder];
 	else { 
-		statusField.textColor = [UIColor colorWithRed:76.0/255.0 green:86.0/255.0 blue:108.0/255.0 alpha:1.0];
-		statusField.text = NSLocalizedString(@"Signing in...",@"\"Signing in...\" indicator"); 
 		[activityIndicator startAnimating];
 		
 		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -177,7 +171,6 @@
 	else
 		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
 	[activityIndicator stopAnimating];
-	statusField.text = @"";
 	passwordField.text = @"";
 	if (loginErrorText != nil) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 

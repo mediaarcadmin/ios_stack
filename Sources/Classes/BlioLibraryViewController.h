@@ -104,6 +104,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	BlioLibrarySortType librarySortType;
     BlioLibraryBookView *selectedLibraryBookView;
     BlioBookViewController *openBookViewController;
+	UIButton * libraryVaultButton;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
 #endif
@@ -122,6 +123,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 @property (nonatomic, assign) BlioLibrarySortType librarySortType;
+@property (nonatomic, retain) UIButton * libraryVaultButton;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @property (nonatomic, retain) UIPopoverController * settingsPopoverController;
@@ -132,6 +134,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 -(void)calculateMaxLayoutPageEquivalentCount;
 -(void)fetchResults;
 - (CGRect)visibleRect;
+- (void)showStore:(id)sender;
 
 @end
 
