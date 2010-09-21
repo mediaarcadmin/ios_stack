@@ -11,6 +11,7 @@
 #import "BlioTextFlowXAMLTree.h"
 #import "BlioProcessing.h"
 #import "BlioBookManager.h"
+#import "NSArray+BlioAdditions.h"
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/EucChapterNameFormatting.h>
 
@@ -580,23 +581,18 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return flowReferences;
 }
 
+static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lhs) 
+{
+    return (int)(*rhs).startPage - (int)(*lhs).startPage;
+}
+
 - (NSArray *)tableOfContents
 {
     if(!tableOfContents) {
         [self parseSectionsXML];
+        self.tableOfContents = [tableOfContents blioStableSortedArrayUsingFunction:(int (*)(id *arg1, id *arg2))tocEntryCompare];
     }
-    
-    // TODO: Should be showing these in a hierarchy, and respecting order.
-    // But the UI can't handle that. For now, use only level 0 in page order.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"startPage" ascending:YES];
-    NSArray *descriptorArray = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
-    NSArray *ret =  [[tableOfContents 
-                      filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"level == 0"]] 
-                     sortedArrayUsingDescriptors:descriptorArray];
-    [sortDescriptor release];
-    [descriptorArray release];
-
-    return ret;
+    return tableOfContents;
 }
 
 - (BlioBook *)book {

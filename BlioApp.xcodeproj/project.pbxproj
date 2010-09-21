@@ -125,6 +125,7 @@
 		7DB190EB120315A80001017D /* NSData+MBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB190EA120315A80001017D /* NSData+MBBase64.m */; };
 		7DB1913F12031BAA0001017D /* NSString+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */; };
 		7DB5F71111EC65BF00D33185 /* logo-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */; };
+		7DB7029F1248D38E00BC3272 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
 		7DBD0EDD12018E78009CD9DA /* TextFlowXAML.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DBD0EDC12018E78009CD9DA /* TextFlowXAML.css */; };
@@ -1274,6 +1275,8 @@
 		7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+BlioAdditions.m"; sourceTree = "<group>"; };
 		7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+BlioAdditions.h"; sourceTree = "<group>"; };
 		7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white@2x.png"; sourceTree = "<group>"; };
+		7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+BlioAdditions.h"; sourceTree = "<group>"; };
+		7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+BlioAdditions.m"; sourceTree = "<group>"; };
 		7DB9F57C10F345450010DF0B /* BlioBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookView.h; sourceTree = "<group>"; };
 		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
 		7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scrubber-icon.png"; sourceTree = "<group>"; };
@@ -1954,6 +1957,8 @@
 				7DF429D111E4EC5B00B8227E /* BlioNSObjectAdditions.m */,
 				7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */,
 				7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */,
+				7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */,
+				7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -2601,10 +2606,10 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData */,
+				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
+				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2887,10 +2892,10 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData */ = {
+		C986765B112411060070A03E /* GData.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = GData;
+			path = GData.framework;
 			remoteRef = C986765A112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -2908,10 +2913,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataTouchUnitTests.octest;
+			path = GDataIPhoneUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3745,6 +3750,7 @@
 				A30E1021123EA5B400D31157 /* BlioDrmSessionManager.m in Sources */,
 				DCEB07741242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 				A3C66F2E1242A63700C61BDA /* BlioCreateAccountViewController.m in Sources */,
+				7DB7029F1248D38E00BC3272 /* NSArray+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4020,7 +4026,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4066,7 +4071,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4112,7 +4116,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4222,7 +4225,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4269,7 +4271,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4316,7 +4317,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4347,6 +4347,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

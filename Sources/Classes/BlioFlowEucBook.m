@@ -19,7 +19,6 @@
 #import <libEucalyptus/THRegex.h>
 
 #import <CoreData/CoreData.h>
-#import <sys/stat.h>
 
 @interface BlioFlowEucBook ()
 
@@ -36,20 +35,20 @@
 @synthesize fakeCover;
 @synthesize textFlow;
 @synthesize paragraphSource;
+@synthesize idToIndexPoint;
 
 - (id)initWithBookID:(NSManagedObjectID *)blioBookID
 {
-    if((self = [super init])) {
+    BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+    BlioBook *blioBook = [bookManager bookWithID:blioBookID];
+    if(blioBook && (self = [super init])) {
         self.bookID = blioBookID;
-        BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
-        BlioBook *blioBook = [bookManager bookWithID:blioBookID];
         self.textFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
         self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:blioBookID];
         self.fakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:BlioManifestCoverKey];
         
         self.title = blioBook.title;
         self.author = blioBook.author;
-        self.path = blioBook.bookCacheDirectory;
         self.etextNumber = nil;
     }
     
@@ -64,21 +63,28 @@
     [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:self.bookID];
     self.bookID = nil;
     
+    [navPoints release];
+    
     [super dealloc];
 }
 
 - (NSArray *)navPoints
 {
-    NSMutableArray *navPoints = [NSMutableArray array];
-   
-    NSArray *sections = self.textFlow.tableOfContents; 
-    if(self.fakeCover) {
-        [navPoints addPairWithFirst:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
-                             second:[NSString stringWithFormat:@"textflow:0"]];
-    }
-    for(BlioTextFlowTOCEntry *section in sections) {
-        [navPoints addPairWithFirst:section.name
-                             second:[NSString stringWithFormat:@"textflowLayoutPageIndex:%ld", section.startPage]];
+    if(!navPoints) {
+        NSMutableArray *buildNavPoints = [[NSMutableArray alloc] init];
+       
+        NSArray *tocEntries = self.textFlow.tableOfContents; 
+        if(self.fakeCover) {
+            [buildNavPoints addPairWithFirst:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
+                                 second:[NSString stringWithFormat:@"textflow:0"]];
+        }
+        long index = 0;
+        for(BlioTextFlowTOCEntry *section in tocEntries) {
+            [buildNavPoints addPairWithFirst:section.name
+                                 second:[NSString stringWithFormat:@"textflowTOCIndex:%ld", index]];
+            ++index;
+        }
+        navPoints = buildNavPoints;
     }
     
     return navPoints;
@@ -156,27 +162,6 @@
     return [NSURL URLWithString:[NSString stringWithFormat:@"textflow:%ld", (long)point.source]];
 }
 
-- (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier
-{
-    EucBookPageIndexPoint *indexPoint = nil;
-    
-    NSString *indexString = [[identifier matchPOSIXRegex:@"^textflow:([[:digit:]]+)$"] match:1];
-    if(indexString) {
-        indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
-        indexPoint.source = [indexString integerValue];
-    } else {
-        NSString *layoutPageIndexString = [[identifier matchPOSIXRegex:@"^textflowLayoutPageIndex:([[:digit:]]+)$"] match:1];
-        if(layoutPageIndexString) {
-            BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
-            point.layoutPage = [layoutPageIndexString integerValue] + 1;
-
-            return [self bookPageIndexPointFromBookmarkPoint:point];
-        }
-    }
-    
-    return indexPoint;
-}
-
 - (float *)indexSourceScaleFactors
 {
     if(!_indexSourceScaleFactors) {
@@ -214,11 +199,34 @@
     return _indexSourceScaleFactors;
 }
 
-- (void)persistCacheableData
+- (NSDictionary *)idToIndexPoint
 {
-    // Superclass persists the ePub anchors here, but we don't have any 
-    // (ePub uses them in indexPointForId:, but we can compute that directly)
-    // so we do nothing.
+    if(!idToIndexPoint) {
+        NSArray *myNavPoints = self.navPoints;
+        NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] initWithCapacity:myNavPoints.count];
+        for(THPair *navPoint in myNavPoints) {
+            EucBookPageIndexPoint *indexPoint = nil;
+            NSString *identifier = navPoint.second;
+            NSString *tocIndexString = [[identifier matchPOSIXRegex:@"^textflowTOCIndex:([[:digit:]]+)$"] match:1];
+            if(tocIndexString) {
+                BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
+                BlioTextFlowTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
+                point.layoutPage = entry.startPage + 1;
+                indexPoint = [self bookPageIndexPointFromBookmarkPoint:point];
+            } else {
+                NSString *indexString = [[identifier matchPOSIXRegex:@"^textflow:([[:digit:]]+)$"] match:1];
+                if(indexString) {
+                    indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
+                    indexPoint.source = [indexString integerValue];
+                }
+            }
+            if(indexPoint) {
+                [buildIdToIndexPoint setObject:indexPoint forKey:identifier];
+            }
+        }
+        idToIndexPoint = buildIdToIndexPoint;
+    }
+    return idToIndexPoint;
 }
     
 

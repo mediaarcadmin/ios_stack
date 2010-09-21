@@ -67,7 +67,6 @@
 
 @interface EucBUpeBook ()
 @property (nonatomic, retain) NSDictionary *manifestOverrides;
-@property (nonatomic, retain) NSDictionary *idToIndexPoint;
 
 - (EucCSSIntermediateDocument *)_intermediateDocumentForURL:(NSURL *)url;
 - (void)_restorePersistedCachableDataIfPossible;
@@ -597,9 +596,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             if(manifestKey) {
                 NSString *key = [NSString stringWithFormat:@"gs.ingsmadeoutofotherthin.th.Euclayptus.bUpe.%@.manifestOverrides", self.etextNumber];
                 self.manifestOverrides = [[NSUserDefaults standardUserDefaults] objectForKey:key];
-            }
-            
-            [self _restorePersistedCachableDataIfPossible];
+            }            
         } else {
             THWarn(@"Couldn't find content for ePub at %@", path);
             [self release];
@@ -1066,6 +1063,14 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 {
     NSURL *url = [self documentURLForIndexPoint:indexPoint];
     return [url isEqual:_guideCoverItemURL];
+}
+
+- (void)setCacheDirectoryPath:(NSString *)path
+{
+    if(path != super.cacheDirectoryPath) {
+        super.cacheDirectoryPath = path;
+        [self _restorePersistedCachableDataIfPossible];
+    }
 }
 
 - (NSString *)_persistedDataPath
