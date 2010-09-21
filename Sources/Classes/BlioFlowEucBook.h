@@ -20,6 +20,8 @@
     BOOL fakeCover;
     BlioTextFlow *textFlow;
     id <BlioParagraphSource> paragraphSource;
+    NSArray *navPoints;
+    NSDictionary *idToIndexPoint;
 }
 
 - (id)initWithBookID:(NSManagedObjectID *)blioBookID;
