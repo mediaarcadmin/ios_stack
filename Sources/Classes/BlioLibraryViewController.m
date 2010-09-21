@@ -607,6 +607,18 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    // Workaround to properly set the UIBarButtonItem's tint color in iOS 4
+    // From http://stackoverflow.com/questions/3151549/uitoolbar-tint-on-ios4
+    for (UIBarButtonItem * item in self.toolbarItems)
+    {
+        item.style = UIBarButtonItemStylePlain;
+        item.style = UIBarButtonItemStyleBordered;
+    }
+    
+    [super viewWillAppear:animated];
+}
+
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
