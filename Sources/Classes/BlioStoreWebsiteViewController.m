@@ -8,6 +8,7 @@
 
 #import "BlioStoreWebsiteViewController.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioStoreWebsiteViewController
 
@@ -116,6 +117,14 @@
 }
 
 - (void)launchWebsite:(id)sender {	
+	// TODO: take out this beta alert below!
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+								 message:NSLocalizedStringWithDefaultValue(@"BETA_MOBILE_STORE_NOT_AVAILABLE",nil,[NSBundle mainBundle],@"The Blio Book Store is not available for this beta release.",@"Alert Text informing the end-user that the Blio Book Store is not available for this beta release.")
+								delegate:nil 
+					   cancelButtonTitle:@"OK"
+					   otherButtonTitles:nil];
+	return;
+	
 	UIButton* ctl = (UIButton*)sender;
 	if ( ctl == launchButton ) {
 		NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];

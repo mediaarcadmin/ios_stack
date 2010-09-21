@@ -270,6 +270,11 @@
     [self.cacheQueue cancelAllOperations];
     [self.cacheQueue waitUntilAllOperationsAreFinished];
     self.cacheQueue = nil;
+    
+    [self.tiledLayer setRenderingDelegate:nil];
+    [self.thumbLayer setRenderingDelegate:nil];
+    [self.shadowLayer setRenderingDelegate:nil];
+    [self.highlightsLayer setRenderingDelegate:nil];
 
     isCancelled = YES;
     [self.tiledLayer setIsCancelled:YES];
