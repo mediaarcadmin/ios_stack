@@ -125,6 +125,8 @@
 		7D19047911494CEA00375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903EA11494CEA00375803 /* utils.h */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
+		7D27117B124928110087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D27117A124928110087C4E3 /* Accelerate.framework */; };
+		7D27117C1249281D0087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D27117A124928110087C4E3 /* Accelerate.framework */; };
 		7D27DC851223E161009E7B64 /* THAccessibilityElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D27DC641223DE5C009E7B64 /* THAccessibilityElement.m */; };
 		7D27DC861223E166009E7B64 /* THAccessibilityElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D27DC631223DE5C009E7B64 /* THAccessibilityElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D2CC986114D92EB007FDEAF /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2341981149614F00C318E7 /* libEucalyptusCSS.a */; };
@@ -181,7 +183,7 @@
 		7D3F4D2111EF38B80065A5F7 /* EucConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1311EF38B80065A5F7 /* EucConfiguration.m */; };
 		7D3F4D2211EF38B80065A5F7 /* EucSharedHyphenator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1411EF38B80065A5F7 /* EucSharedHyphenator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2311EF38B80065A5F7 /* EucSharedHyphenator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1511EF38B80065A5F7 /* EucSharedHyphenator.mm */; };
-		7D3F4D2411EF38B80065A5F7 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1611EF38B80065A5F7 /* th_just_with_floats.c */; };
+		7D3F4D2411EF38B80065A5F7 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1611EF38B80065A5F7 /* th_just_with_floats.c */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
 		7D3F4D2511EF38B80065A5F7 /* th_just_with_floats.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1711EF38B80065A5F7 /* th_just_with_floats.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2611EF38B80065A5F7 /* THCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1811EF38B80065A5F7 /* THCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2711EF38B80065A5F7 /* THCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1911EF38B80065A5F7 /* THCache.m */; };
@@ -941,6 +943,7 @@
 		7D2341981149614F00C318E7 /* libEucalyptusCSS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusCSS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
+		7D27117A124928110087C4E3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		7D27DC631223DE5C009E7B64 /* THAccessibilityElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THAccessibilityElement.h; sourceTree = "<group>"; };
 		7D27DC641223DE5C009E7B64 /* THAccessibilityElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THAccessibilityElement.m; sourceTree = "<group>"; };
 		7D2CCB08114DA3A2007FDEAF /* Aliases */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Aliases; sourceTree = "<group>"; };
@@ -1238,6 +1241,7 @@
 				7D2CCBE0114DB2A9007FDEAF /* libcss.a in Frameworks */,
 				7D2CCBE1114DB2AC007FDEAF /* libEucalyptusBUpe.a in Frameworks */,
 				7D2CCBE6114DB2CA007FDEAF /* libEucalyptusCSS.a in Frameworks */,
+				7D27117B124928110087C4E3 /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1288,6 +1292,7 @@
 				7D2CC98A114D92FB007FDEAF /* libwapcaplet.a in Frameworks */,
 				7D2CC98F114D9322007FDEAF /* libcss.a in Frameworks */,
 				7D2CC9B4114D93E9007FDEAF /* libiconv.dylib in Frameworks */,
+				7D27117C1249281D0087C4E3 /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1328,6 +1333,7 @@
 				7D9A96F810D7E48200C2E00A /* TestResources */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
+				7D27117A124928110087C4E3 /* Accelerate.framework */,
 			);
 			name = libEucalyptus;
 			sourceTree = "<group>";
