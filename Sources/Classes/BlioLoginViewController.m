@@ -66,12 +66,24 @@
 	
 	 
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
-	CGFloat activityIndicatorDiameter = 16.0f;
+	CGFloat activityIndicatorDiameter = 24.0f;
 	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicator];
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertWelcome"];
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Welcome To Blio",@"\"Welcome To Blio\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"INTRO_WELCOME_ALERT",nil,[NSBundle mainBundle],@"Lets get started! If you have an account with Blio, please enter your registered email address and password above. Otherwise, please create an account by selecting the option below.",@"Alert Text encouraging the end-user to either login or create a new account.")
+									delegate:nil
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];		
+	}
+
+}
 - (void) dismissLoginView: (id) sender {
 	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
 	[self dismissModalViewControllerAnimated:YES];
