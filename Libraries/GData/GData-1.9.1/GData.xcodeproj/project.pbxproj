@@ -4538,6 +4538,7 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "GData" */;
 			compatibilityVersion = "Xcode 3.0";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -6133,7 +6134,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*][arch=x86_64]" = 10.5;
 				OTHER_CFLAGS = "-DDEBUG=1";
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Werror",
@@ -6162,7 +6163,7 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*][arch=x86_64]" = 10.5;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Werror",
@@ -6399,7 +6400,7 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[sdk=macosx*][arch=x86_64]" = 10.5;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Werror",
