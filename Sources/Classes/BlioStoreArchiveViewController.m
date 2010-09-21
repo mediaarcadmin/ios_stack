@@ -13,6 +13,7 @@
 #import "BlioStoreManager.h"
 #import "BlioDrmSessionManager.h"
 #import "BlioAppSettingsConstants.h"
+#import "Reachability.h"
 
 @interface BlioStoreArchiveViewController()
 @property (nonatomic, retain) BlioBook* currBook;
@@ -43,20 +44,13 @@
 	noResultsLabel.font = [UIFont systemFontOfSize:14.0];
 	noResultsLabel.textColor = [UIColor colorWithRed:108.0/255.0 green:108.0/255.0 blue:108.0/255.0 alpha:1.0];
 	noResultsLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	noResultsLabel.hidden = YES;
 	[self.view addSubview:noResultsLabel];
-
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
-- (void)viewDidLoad {
-    [super viewDidLoad];
-	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-		[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-		[self fetchResults];
-	}
-	else {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-	}		
-}
+//- (void)viewDidLoad {
+//    [super viewDidLoad];
+//}
 -(void)loginDismissed:(NSNotification*)note {
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
@@ -68,7 +62,8 @@
 //										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Vault. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Vault. In the meantime, previously synced books will display.")]
 //										delegate:self
 //							   cancelButtonTitle:@"OK"
-//							   otherButtonTitles:nil];			
+//							   otherButtonTitles:nil];
+			userDismissedLogin = YES;
 		}
 		[self fetchResults];
 	}
@@ -106,7 +101,6 @@
     [aFetchedResultsController release];
 	
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
 	[self.tableView reloadData];	
 }
@@ -118,8 +112,33 @@
 */
 
 - (void)viewDidAppear:(BOOL)animated {
+	NSLog(@"viewDidAppear");
     [super viewDidAppear:animated];
+	if (userDismissedLogin) {
+		userDismissedLogin = NO;
+		return;
+	}
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] != NotReachable) {
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			NSLog(@"logged in");
+			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		}
+		else {
+			NSLog(@"not logged in");
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+		}		
+	}
+	else {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_FOR_VAULT",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to update your Vault.",@"Alert message when the user views the Vault screen without an Internet connection.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];		
+	}
+	[self fetchResults];
 }
+
 /*
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
@@ -165,6 +184,15 @@
 }
 
 -(void) enqueueBook:(BlioBook*)book {
+	NSLog(@"reachability: %i",[[Reachability reachabilityForInternetConnection] currentReachabilityStatus]);
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_RESTORE_VAULT_BOOK",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to download this book.",@"Alert message when the user tries to download a Vault book without an Internet connection.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
+		return;
+	}
 	if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] != BlioDeviceRegisteredStatusRegistered ) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"This device is not registered...",@"\"This device is not registered...\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for viewing paid content. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
@@ -255,8 +283,12 @@
 	if (bookCount == 0) {
 		noResultsLabel.frame = self.view.bounds;
 		noResultsLabel.hidden = NO;
+		tableView.scrollEnabled = NO;
 	}
-	else noResultsLabel.hidden = YES;
+	else {
+		noResultsLabel.hidden = YES;
+		tableView.scrollEnabled = YES;
+	}
 	return bookCount;
 }
 
