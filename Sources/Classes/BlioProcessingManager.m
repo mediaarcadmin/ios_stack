@@ -892,7 +892,7 @@
 		NSLog(@"WARNING: stop processing for book attempted while Processing Manager MOC == nil!");
 		return;
 	}
-	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
+//	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
 	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
 	NSLog(@"Stopping %i operations...",[relatedOperations count]);

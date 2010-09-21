@@ -37,7 +37,7 @@
 		if (!blioOp.operationSuccess) {
 			NSLog(@"BlioProcessingCompleteOperation: failed dependency found! Operation: %@ Sending Failed Notification...",blioOp);
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
-			if (currentProcessingState != kBlioBookProcessingStateNotSupported) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
+			if (currentProcessingState != kBlioBookProcessingStateNotSupported && currentProcessingState != kBlioBookProcessingStatePaused) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
 			[self cancel];
 			return;
 		}

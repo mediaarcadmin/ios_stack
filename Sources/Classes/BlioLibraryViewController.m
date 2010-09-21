@@ -131,12 +131,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
 	
 	UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, mainScreenBounds.size.width, 60)];
-	self.tableView.tableHeaderView = headerView;
-	[headerView release];
+//	self.tableView.tableHeaderView = headerView;
 	UIView * tableBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -mainScreenBounds.size.height, mainScreenBounds.size.width, mainScreenBounds.size.height)];
 	tableBackgroundView.backgroundColor = [UIColor colorWithRed:226.0f/255.0f green:231.0f/255.0f blue:237.0f/255.0f alpha:1];
 	tableBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	[self.tableView.tableHeaderView addSubview:tableBackgroundView];
+	[headerView addSubview:tableBackgroundView];
 	[tableBackgroundView release];
 	self.libraryVaultButton = [UIButton buttonWithType: UIButtonTypeCustom];
 	self.libraryVaultButton.frame = CGRectMake(0, -1, mainScreenBounds.size.width, 61);
@@ -148,8 +147,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self.libraryVaultButton setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.75f] forState:UIControlStateNormal];
 	[self.libraryVaultButton setBackgroundImage:[UIImage imageNamed:@"table-headerbar-background.png"] forState:UIControlStateNormal];
 	[self.libraryVaultButton addTarget:self action:@selector(showStore:) forControlEvents:UIControlEventTouchUpInside];
-	[self.tableView.tableHeaderView addSubview:self.libraryVaultButton];
+	[headerView addSubview:self.libraryVaultButton];
 	self.tableView.backgroundColor = [UIColor whiteColor];
+	[headerView release];
+	
 	MRGridView *aGridView = [[MRGridView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.gridView = aGridView;
     
@@ -987,6 +988,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([indexPath row] == bookCount) {
+			[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			[self showStore:[tableView cellForRowAtIndexPath:indexPath]];
+			return;
+		}
+	}
+
+		
+		
+		
     BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
@@ -1024,13 +1041,33 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         bookCount = [sectionInfo numberOfObjects];
         self.logoView.numberOfBooksInLibrary = bookCount;
     }
-	return bookCount;
+	return bookCount + 1;
 }
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	
+
+	static NSString *GenericTableCellIdentifier = @"GenericTableCellIdentifier";
+
 	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
+	
+	NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([indexPath row] == bookCount) {
+			UITableViewCell * genericCell = nil;
+			genericCell = [tableView dequeueReusableCellWithIdentifier:GenericTableCellIdentifier];
+			if (genericCell == nil) {
+				genericCell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:GenericTableCellIdentifier] autorelease];
+				genericCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+				genericCell.selectionStyle = UITableViewCellSelectionStyleGray;
+				genericCell.textLabel.text = NSLocalizedString(@"View Your Archive",@"Label for button in library that shows the Archive.");
+			}
+			return genericCell;
+		}
+	}
 	
 	BlioLibraryListCell *cell;
 	
@@ -1275,7 +1312,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)showStore:(id)sender {    
     BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];
-	if (sender == self.libraryVaultButton) {
+	if (sender == self.libraryVaultButton || [sender isKindOfClass:[UITableViewCell class]]) {
 		for (id vc in aStoreController.viewControllers) {
 			if ([vc isKindOfClass:[UINavigationController class]]) {
 				UINavigationController * nc = (UINavigationController*)vc;

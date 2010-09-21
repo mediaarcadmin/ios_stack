@@ -134,6 +134,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 -(void)calculateMaxLayoutPageEquivalentCount;
 -(void)fetchResults;
 - (CGRect)visibleRect;
+- (void)showStore:(id)sender;
 
 @end
 
