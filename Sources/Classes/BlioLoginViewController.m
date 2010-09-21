@@ -15,7 +15,7 @@
 
 @implementation BlioLoginViewController
 
-@synthesize sourceID, emailField, passwordField, activityIndicator;
+@synthesize sourceID, emailField, passwordField, activityIndicatorView;
 
 - (id)initWithSourceID:(BlioBookSourceID)bookSourceID
 {
@@ -66,10 +66,9 @@
 	
 	 
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
-	CGFloat activityIndicatorDiameter = 24.0f;
-	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
-	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicator];
+	CGFloat activityIndicatorDiameter = 50.0f;
+	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -148,8 +147,8 @@
 - (void)dealloc {
 	self.emailField = nil;
 	self.passwordField = nil;
-	if (self.activityIndicator) [self.activityIndicator removeFromSuperview];
-	self.activityIndicator = nil;
+	if (self.activityIndicatorView) [self.activityIndicatorView removeFromSuperview];
+	self.activityIndicatorView = nil;
 	[super dealloc];
 }
 	
@@ -157,19 +156,37 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
+	
 	if (textField == emailField) 
 		[passwordField becomeFirstResponder];
 	else { 
-		[activityIndicator startAnimating];
+		if (!emailField.text || [emailField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your email address before logging in.",@"Alert Text informing the end-user that the email address must be entered to login.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];
+			[emailField becomeFirstResponder];
+			return NO;
+		}
+		if (!passwordField.text || [passwordField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your password before logging in.",@"Alert Text informing the end-user that the password must be entered to login.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];			
+			[passwordField becomeFirstResponder];
+			return NO;
+		}
+		[activityIndicatorView startAnimating];
 		
 		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
 		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
 		[loginCredentials setObject:[NSString stringWithString:passwordField.text] forKey:@"password"];
 		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
-
+		[textField resignFirstResponder];
 		[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
 	}
-	[textField resignFirstResponder];
 	return NO;
 }
 
@@ -182,7 +199,7 @@
 		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
 	else
 		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
-	[activityIndicator stopAnimating];
+	[activityIndicatorView stopAnimating];
 	passwordField.text = @"";
 	if (loginErrorText != nil) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
@@ -292,7 +309,7 @@
 
 - (void)connectionDidFinishLoading:(DigitalLockerConnection *)aConnection {
 	NSLog(@"BlioLoginViewController connectionDidFinishLoading...");
-	[activityIndicator stopAnimating];
+	[activityIndicatorView stopAnimating];
 	if (aConnection.digitalLockerResponse.ReturnCode == 0) {
 		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
 		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];

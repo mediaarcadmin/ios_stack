@@ -27,7 +27,8 @@ static const NSInteger kBlioBookProcessingStateIncomplete = 2;
 static const NSInteger kBlioBookProcessingStateFailed = 3;
 static const NSInteger kBlioBookProcessingStateNotSupported = 4;
 static const NSInteger kBlioBookProcessingStatePaused = 5;
-static const NSInteger kBlioBookProcessingStateComplete = 6;
+static const NSInteger kBlioBookProcessingStateSuspended = 6;
+static const NSInteger kBlioBookProcessingStateComplete = 7;
 
 static NSString * const BlioManifestEntryLocationFileSystem = @"fileSystem";
 static NSString * const BlioManifestEntryLocationXPS = @"xps";

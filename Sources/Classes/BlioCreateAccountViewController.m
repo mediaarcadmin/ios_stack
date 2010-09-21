@@ -52,12 +52,10 @@
 											 autorelease];
 	
 	
-//	CGFloat yPlacement = kTopMargin + 2*kCellHeight;
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
-	CGFloat activityIndicatorDiameter = 24.0f;
-	self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
-	[activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicator];
+	CGFloat activityIndicatorDiameter = 50.0f;
+	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 }
 
 /*
@@ -349,7 +347,8 @@
 			[passwordField becomeFirstResponder];
 			return NO;
 		}		
-		[activityIndicator startAnimating];
+		[activityIndicatorView startAnimating];
+		[textField resignFirstResponder];
 
 		// attempt account creation
 
@@ -366,7 +365,6 @@
 		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
 		[connection start];
 		[request release];
-		[textField resignFirstResponder];
 	}
 	return NO;
 }
@@ -376,7 +374,7 @@
 
 - (void)connectionDidFinishLoading:(DigitalLockerConnection *)aConnection {
 	NSLog(@"BlioCreateAccountViewController connectionDidFinishLoading...");
-	[activityIndicator stopAnimating];
+	[activityIndicatorView stopAnimating];
 	if (aConnection.digitalLockerResponse.ReturnCode == 0) {
 		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
 		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];

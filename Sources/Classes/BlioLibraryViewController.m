@@ -192,8 +192,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
                               [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
+                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
                               nil];
     BlioAccessibilitySegmentedControl *segmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
     
@@ -205,10 +205,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [segmentedControl addTarget:self action:@selector(changeLibraryLayout:) forControlEvents:UIControlEventValueChanged];
     
     [segmentedControl setIsAccessibilityElement:NO];
-    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
-    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
 	
-	[[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
+	[[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
+    [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
+    [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
     
     self.libraryLayout = kBlioLibraryLayoutUndefined;
     [segmentedControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"]];
@@ -647,6 +647,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 						   otherButtonTitles:nil];		
 	}
 	
+	// resume suspended operations related to paid books.
+//	[self.processingDelegate resumeSuspendedProcessingForSourceID:BlioBookSourceOnlineStore];
 	
 	
 }
@@ -949,6 +951,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	//	NSLog(@"selected cell %i",index);
 	BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:index];
 	if ([[cell.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+//		if ([[cell.book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+//			// cancel all other operations related to paid books.
+//			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
+//		}
+		
 		[self bookSelected:cell.bookView];
 	}
 }
@@ -1018,6 +1025,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		
     BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+//		if ([[selectedBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+//			// cancel all other operations related to paid books.
+//			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
+//		}
 		BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
 		if (nil != aBookViewController) {
 			[aBookViewController setManagedObjectContext:self.managedObjectContext];
@@ -1934,6 +1945,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			self.pauseButton.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
+			self.resumeButton.hidden = YES;
+			self.stateLabel.hidden = NO;
+			stateLabel.font = [UIFont boldSystemFontOfSize:10.0];
+			self.stateLabel.text = NSLocalizedString(@"Suspended","\"Suspended\" status indicator in BlioLibraryGridViewCell");
+			self.progressView.hidden = YES;
+			self.pauseButton.hidden = YES;
+			self.progressSlider.hidden = YES;
+			//			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
+		}		
 	}
 	else {
 		self.resumeButton.hidden = YES;
@@ -2181,6 +2202,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			self.progressView.hidden = YES;
 			self.progressSlider.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
+		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
+			self.accessoryView = nil;
+			self.authorLabel.text = NSLocalizedString(@"Suspended","\"Suspended\" status indicator in BlioLibraryListCell");
+			self.progressView.hidden = YES;
+			self.progressSlider.hidden = YES;
+//			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
 	}
 	else {
