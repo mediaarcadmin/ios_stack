@@ -900,8 +900,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)drawHighlightsLayer:(CALayer *)aLayer inContext:(CGContextRef)ctx forPage:(NSInteger)aPageNumber excluding:(BlioBookmarkRange *)excludedBookmark {
+    if (isCancelled) {
+        return;
+    }
     CGAffineTransform viewTransform = [self blockTransformForPage:aPageNumber];
     
+    if (isCancelled) {
+        return;
+    }
     for (BlioLayoutViewColoredRect *coloredRect in [self highlightRectsForPage:aPageNumber excluding:excludedBookmark]) {
         UIColor *highlightColor = [coloredRect color];
         CGContextSetFillColorWithColor(ctx, [highlightColor colorWithAlphaComponent:0.3f].CGColor);

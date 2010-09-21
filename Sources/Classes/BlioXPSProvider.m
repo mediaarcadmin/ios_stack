@@ -49,7 +49,9 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 	if ( !drmSessionManager ) {
 		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
         NSLog(@"------- BOUND TO BOOK %@ --------------", [self.book title]);
-        [drmSessionManager bindToLicense];
+        if ([drmSessionManager bindToLicense]) {
+            decryptionAvailable = YES;
+        }
     }
 	return drmSessionManager;
 }
@@ -126,6 +128,8 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         }
         
         xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
+        
+        decryptionAvailable = NO;
         
         if ([self bookIsEncrypted]) {
             XPS_URI_PLUGIN_INFO	upi = {
@@ -482,7 +486,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
              
     if (encrypted) {
 		//if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
-        if (![self.drmSessionManager decryptData:componentData] ) {
+        if ((self.drmSessionManager == nil) || !decryptionAvailable || ![self.drmSessionManager decryptData:componentData]) {
 			NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
             return nil;
         }

@@ -28,9 +28,11 @@ NSString* productionUrl = @"http://prl.kreader.net/PlayReadyDomains/service/Lice
 
 @interface BlioDrmSessionManager()
 
-DRM_APP_CONTEXT* drmAppContext;
-DRM_DECRYPT_CONTEXT  drmDecryptContext;
-DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
+struct BlioDrmSessionManagerDrmIVars {
+    DRM_APP_CONTEXT* drmAppContext;
+    DRM_DECRYPT_CONTEXT  drmDecryptContext;
+    DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
+};
 
 @property (nonatomic, retain) NSManagedObjectID *headerBookID;
 @property (nonatomic, retain) NSManagedObjectID *boundBookID;
@@ -47,10 +49,12 @@ DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
 
 
 -(void) dealloc {
-	Drm_Uninitialize(drmAppContext); 
-	Oem_MemFree(drmAppContext);
+	Drm_Uninitialize(drmIVars->drmAppContext); 
+	Oem_MemFree(drmIVars->drmAppContext);
     self.headerBookID = nil;
     self.boundBookID = nil;
+    
+    free(drmIVars);
 	[super dealloc];
 }
 
@@ -58,7 +62,8 @@ DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
 {
     if((self = [super init])) {
 		self.headerBookID = aBookID;
-		[self initialize];
+        drmIVars = calloc(1, sizeof(struct BlioDrmSessionManagerDrmIVars));
+        [self initialize];
     }
     return self;
 }
@@ -72,16 +77,16 @@ DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
 	dstrDataStoreFile.cchString = [DrmGlobals getDrmGlobals].dataStore.cchString;
 	
 	// Initialize the session.
-	drmAppContext = Oem_MemAlloc( SIZEOF( DRM_APP_CONTEXT ) );
+	drmIVars->drmAppContext = Oem_MemAlloc( SIZEOF( DRM_APP_CONTEXT ) );
 	DRM_RESULT dr = DRM_SUCCESS;	
 @synchronized (self) {
-	ChkDR( Drm_Initialize( drmAppContext,
+	ChkDR( Drm_Initialize( drmIVars->drmAppContext,
 							NULL,
 							&dstrDataStoreFile ) );
 	
-	ChkDR( Drm_Revocation_SetBuffer( drmAppContext, 
-									drmRevocationBuffer, 
-									SIZEOF(drmRevocationBuffer)));
+	ChkDR( Drm_Revocation_SetBuffer( drmIVars->drmAppContext, 
+									drmIVars->drmRevocationBuffer, 
+									SIZEOF(drmIVars->drmRevocationBuffer)));
 	
 	if ( self.headerBookID != nil )
 		// Device registration does not require a book. 
@@ -107,7 +112,7 @@ ErrorExit:
     
     DRM_RESULT dr = DRM_SUCCESS;   
 @synchronized (self) {		
-	ChkDR( Drm_Reader_Commit( drmAppContext,
+	ChkDR( Drm_Reader_Commit( drmIVars->drmAppContext,
 								NULL, 
 								NULL ) ); 
 	}
@@ -210,7 +215,7 @@ ErrorExit:
 	DRM_UTL_StringToGuid(&accountId,&oDomainID.m_oAccountID);
 	DRM_UTL_StringToGuid(&serviceId,&oDomainID.m_oServiceID);
 	
-	dr = Drm_LeaveDomain_GenerateChallenge( drmAppContext,
+	dr = Drm_LeaveDomain_GenerateChallenge( drmIVars->drmAppContext,
 										   DRM_REGISTER_NULL_DATA,
 										   &oDomainID,
 										   customData,
@@ -223,7 +228,7 @@ ErrorExit:
 		ChkMem( pbChallenge = Oem_MemAlloc( cbChallenge ) );
 		// This returns 8004C509, DRM_E_DOMAIN_NOT_FOUND, if you're not joined to a domain
 		// or if the domain ID is bad.
-        ChkDR( Drm_LeaveDomain_GenerateChallenge( drmAppContext,
+        ChkDR( Drm_LeaveDomain_GenerateChallenge( drmIVars->drmAppContext,
 												 DRM_REGISTER_NULL_DATA,
 												 &oDomainID,
 												 customData,
@@ -246,7 +251,7 @@ ErrorExit:
 	
 	//NSLog(@"DRM leave domain response: %s",(unsigned char*)pbResponse);
 	@synchronized (self) {
-		ChkDR( Drm_LeaveDomain_ProcessResponse( drmAppContext,
+		ChkDR( Drm_LeaveDomain_ProcessResponse( drmIVars->drmAppContext,
 											   pbResponse,
 											   cbResponse,
 											   &dr2 ) );
@@ -300,7 +305,7 @@ ErrorExit:
 									   UTF8String];
 	
 	DRM_DWORD customDataSz = (DRM_DWORD)(69 + [name length] + [token length]);
-    dr = Drm_JoinDomain_GenerateChallenge( drmAppContext,
+    dr = Drm_JoinDomain_GenerateChallenge( drmIVars->drmAppContext,
 										  DRM_REGISTER_NULL_DATA,
 										  &oDomainID,
 										  NULL,
@@ -313,7 +318,7 @@ ErrorExit:
     if( dr == DRM_E_BUFFERTOOSMALL )
     {
 		ChkMem( pbChallenge = Oem_MemAlloc( cbChallenge ) );
-        ChkDR( Drm_JoinDomain_GenerateChallenge( drmAppContext,
+        ChkDR( Drm_JoinDomain_GenerateChallenge( drmIVars->drmAppContext,
 												DRM_REGISTER_NULL_DATA,
 												&oDomainID,
 												NULL,
@@ -339,7 +344,7 @@ ErrorExit:
 		
 	//NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
 	@synchronized (self) {
-		ChkDR( Drm_JoinDomain_ProcessResponse( drmAppContext,
+		ChkDR( Drm_JoinDomain_ProcessResponse( drmIVars->drmAppContext,
 											  pbResponse,
 											  cbResponse,
 											  &dr2,
@@ -377,11 +382,11 @@ ErrorExit:
     DRM_BYTE *pbResponse = NULL;
     DRM_DWORD cbResponse = 0;
 	
-	dr = Drm_LicenseAcq_GenerateAck( drmAppContext, licenseResponse, pbChallenge, &cbChallenge );
+	dr = Drm_LicenseAcq_GenerateAck( drmIVars->drmAppContext, licenseResponse, pbChallenge, &cbChallenge );
 	if ( dr == DRM_E_BUFFERTOOSMALL )
 	{
 		pbChallenge = Oem_MemAlloc( cbChallenge );
-		ChkDR( Drm_LicenseAcq_GenerateAck( drmAppContext, licenseResponse, pbChallenge, &cbChallenge ));
+		ChkDR( Drm_LicenseAcq_GenerateAck( drmIVars->drmAppContext, licenseResponse, pbChallenge, &cbChallenge ));
 	}
 	else
 	{
@@ -397,7 +402,7 @@ ErrorExit:
 #endif
 	//NSLog(@"DRM license acknowledgment response: %s",(unsigned char*)pbResponse);
 @synchronized (self) {
-	ChkDR( Drm_LicenseAcq_ProcessAckResponse(drmAppContext, pbResponse, cbResponse, NULL) );
+	ChkDR( Drm_LicenseAcq_ProcessAckResponse(drmIVars->drmAppContext, pbResponse, cbResponse, NULL) );
 }
 
 ErrorExit:
@@ -434,7 +439,7 @@ ErrorExit:
 	DRM_DWORD customDataSz = (DRM_DWORD)(70 + [token length]);
 	
 //@synchronized (self) {
-	dr = Drm_LicenseAcq_GenerateChallenge( drmAppContext,
+	dr = Drm_LicenseAcq_GenerateChallenge( drmIVars->drmAppContext,
 										  NULL,
 										  0,
 										  NULL,
@@ -454,7 +459,7 @@ ErrorExit:
 		cbChallenge += 3696; // ? Additional space needed for account ID
 		
         pbChallenge = Oem_MemAlloc( cbChallenge );
-        ChkDR( Drm_LicenseAcq_GenerateChallenge( drmAppContext,
+        ChkDR( Drm_LicenseAcq_GenerateChallenge( drmIVars->drmAppContext,
 												NULL,
 												0,
 												&oDomainIdReturned,
@@ -481,7 +486,7 @@ ErrorExit:
 #endif
 	NSLog(@"DRM license response: %s",(unsigned char*)pbResponse);
 @synchronized (self) {
-    ChkDR( Drm_LicenseAcq_ProcessResponse( drmAppContext,
+    ChkDR( Drm_LicenseAcq_ProcessResponse( drmIVars->drmAppContext,
 										  NULL,
 										  NULL,
 										  pbResponse,
@@ -508,8 +513,8 @@ ErrorExit:
 	
 	unsigned char* headerBuff = (unsigned char*)[headerData bytes]; 
 	
-	//ChkDR( Drm_Reinitialize(drmAppContext) );
-    ChkDR( Drm_Content_SetProperty( drmAppContext,
+	//ChkDR( Drm_Reinitialize(drmIVars->drmAppContext) );
+    ChkDR( Drm_Content_SetProperty( drmIVars->drmAppContext,
 								   DRM_CSP_AUTODETECT_HEADER,
 								   headerBuff,   
 								   [headerData length] ) );
@@ -578,15 +583,13 @@ ErrorExit:
 		rgpdstrRights[0] = &readRight; 
 		int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
 		for (int i=0;i<bufferSz;++i)
-			drmDecryptContext.rgbBuffer[i] = 0;
-		@synchronized (self) {
-		ChkDR( Drm_Reader_Bind( drmAppContext,
+			(drmIVars->drmDecryptContext).rgbBuffer[i] = 0;
+		ChkDR( Drm_Reader_Bind( drmIVars->drmAppContext,
 							   rgpdstrRights,
 							   NO_OF(rgpdstrRights),
 							   NULL, 
 							   NULL,
-							   &drmDecryptContext ) );
-		}
+							   &drmIVars->drmDecryptContext ) );
 		self.boundBookID = self.headerBookID;
 	}
 	
@@ -620,13 +623,13 @@ ErrorExit:
 		rgpdstrRights[0] = &readRight; 
 		int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
 		for (int i=0;i<bufferSz;++i)
-			drmDecryptContext.rgbBuffer[i] = 0;
-		ChkDR( Drm_Reader_Bind( drmAppContext,
+			drmIVars->drmDecryptContext.rgbBuffer[i] = 0;
+		ChkDR( Drm_Reader_Bind( drmIVars->drmAppContext,
 							   rgpdstrRights,
 							   NO_OF(rgpdstrRights),
 							   NULL, 
 							   NULL,
-							   &drmDecryptContext ) );
+							   &drmIVars->drmDecryptContext ) );
             
 		self.boundBookID = self.headerBookID;
 	}
@@ -634,11 +637,10 @@ ErrorExit:
 	
 	DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
 	unsigned char* dataBuff = (unsigned char*)[data bytes]; 
-	ChkDR(Drm_Reader_Decrypt (&drmDecryptContext,
+	ChkDR(Drm_Reader_Decrypt (&drmIVars->drmDecryptContext,
 								&oCtrContext,
 								dataBuff, 
 								[data length]));
-        
 	// At this point, the buffer is PlayReady-decrypted.
         
 ErrorExit:

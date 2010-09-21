@@ -33,6 +33,7 @@
     
     BlioTimeOrderedCache *componentCache;
     NSNumber *bookIsEncrypted;
+    BOOL decryptionAvailable;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
