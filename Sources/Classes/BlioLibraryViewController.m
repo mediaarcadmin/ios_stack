@@ -130,7 +130,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
 	
-	UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, mainScreenBounds.size.width, 66)];
+	UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, mainScreenBounds.size.width, 60)];
 	self.tableView.tableHeaderView = headerView;
 	[headerView release];
 	UIView * tableBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -mainScreenBounds.size.height, mainScreenBounds.size.width, mainScreenBounds.size.height)];
@@ -139,7 +139,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self.tableView.tableHeaderView addSubview:tableBackgroundView];
 	[tableBackgroundView release];
 	self.libraryVaultButton = [UIButton buttonWithType: UIButtonTypeCustom];
-	self.libraryVaultButton.frame = CGRectMake(0, -1, mainScreenBounds.size.width, 67);
+	self.libraryVaultButton.frame = CGRectMake(0, -1, mainScreenBounds.size.width, 61);
 	self.libraryVaultButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	self.libraryVaultButton.titleLabel.font = [UIFont boldSystemFontOfSize: 16];
 	self.libraryVaultButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
