@@ -13,6 +13,7 @@
 #import "NSString+BlioAdditions.h"
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
+#import "Reachability.h"
 
 @implementation BlioProcessingCompleteOperation
 
@@ -345,6 +346,14 @@
 	if (self.url == nil) {
         [self willChangeValueForKey:@"isFinished"];
 		NSLog(@"URL is nil, will prematurely abort start");
+        finished = YES;
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }
+
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+        [self willChangeValueForKey:@"isFinished"];
+		NSLog(@"Internet connection is dead, will prematurely abort start");
         finished = YES;
         [self didChangeValueForKey:@"isFinished"];
         return;

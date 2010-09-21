@@ -48,14 +48,16 @@
 	[self.view addSubview:noResultsLabel];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
-//- (void)viewDidLoad {
-//    [super viewDidLoad];
-//}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+	[self fetchResults];
+}
 -(void)loginDismissed:(NSNotification*)note {
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+			[self fetchResults];
 		}
 		else {
 //			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
@@ -65,7 +67,6 @@
 //							   otherButtonTitles:nil];
 			userDismissedLogin = YES;
 		}
-		[self fetchResults];
 	}
 }
 - (void)fetchResults {
@@ -136,7 +137,6 @@
 						   cancelButtonTitle:@"OK"
 						   otherButtonTitles:nil];		
 	}
-	[self fetchResults];
 }
 
 /*

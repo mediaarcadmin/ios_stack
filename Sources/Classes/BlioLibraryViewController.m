@@ -130,7 +130,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
 	
-	UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, mainScreenBounds.size.width, 44)];
+	UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, mainScreenBounds.size.width, 66)];
 	self.tableView.tableHeaderView = headerView;
 	[headerView release];
 	UIView * tableBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -mainScreenBounds.size.height, mainScreenBounds.size.width, mainScreenBounds.size.height)];
@@ -139,12 +139,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self.tableView.tableHeaderView addSubview:tableBackgroundView];
 	[tableBackgroundView release];
 	self.libraryVaultButton = [UIButton buttonWithType: UIButtonTypeCustom];
-	self.libraryVaultButton.frame = CGRectMake(0, -1, mainScreenBounds.size.width, 45);
+	self.libraryVaultButton.frame = CGRectMake(0, -1, mainScreenBounds.size.width, 67);
 	self.libraryVaultButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	self.libraryVaultButton.titleLabel.font = [UIFont boldSystemFontOfSize: 14];
+	self.libraryVaultButton.titleLabel.font = [UIFont boldSystemFontOfSize: 16];
 	self.libraryVaultButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
 	[self.libraryVaultButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-	[self.libraryVaultButton setTitle:NSLocalizedString(@"View Book Vault",@"Label for button in library that shows Book Vault.") forState:UIControlStateNormal];
+	[self.libraryVaultButton setTitle:NSLocalizedString(@"View Your Archive",@"Label for button in library that shows Book Vault.") forState:UIControlStateNormal];
 	[self.libraryVaultButton setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.75f] forState:UIControlStateNormal];
 	[self.libraryVaultButton setBackgroundImage:[UIImage imageNamed:@"table-headerbar-background.png"] forState:UIControlStateNormal];
 	[self.libraryVaultButton addTarget:self action:@selector(showStore:) forControlEvents:UIControlEventTouchUpInside];
