@@ -472,14 +472,14 @@ ErrorExit:
         ChkDR( dr );
     }
 //}
-	//NSLog(@"DRM license challenge: %s",(unsigned char*)pbChallenge);
+	NSLog(@"DRM license challenge: %s",(unsigned char*)pbChallenge);
 #ifdef TEST_MODE
 	[self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #else
 	rgchURL[cchUrl] = '\0';
 	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #endif
-	//NSLog(@"DRM license response: %s",(unsigned char*)pbResponse);
+	NSLog(@"DRM license response: %s",(unsigned char*)pbResponse);
 @synchronized (self) {
     ChkDR( Drm_LicenseAcq_ProcessResponse( drmAppContext,
 										  NULL,
@@ -579,12 +579,14 @@ ErrorExit:
 		int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
 		for (int i=0;i<bufferSz;++i)
 			drmDecryptContext.rgbBuffer[i] = 0;
+		@synchronized (self) {
 		ChkDR( Drm_Reader_Bind( drmAppContext,
 							   rgpdstrRights,
 							   NO_OF(rgpdstrRights),
 							   NULL, 
 							   NULL,
 							   &drmDecryptContext ) );
+		}
 		self.boundBookID = self.headerBookID;
 	}
 	
