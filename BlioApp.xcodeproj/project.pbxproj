@@ -4026,7 +4026,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4072,7 +4071,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4118,7 +4116,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4228,7 +4225,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4275,7 +4271,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4322,7 +4317,6 @@
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -4353,6 +4347,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

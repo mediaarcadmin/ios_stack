@@ -115,6 +115,7 @@
 - (void)viewDidAppear:(BOOL)animated {
 	NSLog(@"viewDidAppear");
     [super viewDidAppear:animated];
+		
 	if (userDismissedLogin) {
 		userDismissedLogin = NO;
 		return;
@@ -123,6 +124,15 @@
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			NSLog(@"logged in");
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
+				[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertArchive"];
+				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Retrieving Your Books",@"\"Retrieving Your Books\" alert message title") 
+											 message:NSLocalizedStringWithDefaultValue(@"INTRO_ARCHIVE_ALERT",nil,[NSBundle mainBundle],@"The Archive is where you'll find your recently purchased books; although these books have been purchased, they still need to be downloaded to your device. Tap on the \"load\" button to the right of a book's title to start downloading, then tap on the \"Done\" button to see your book's progress in the Library!",@"Alert Text encouraging the end-user to go to start downloading paid books in the archive.")
+											delegate:nil
+								   cancelButtonTitle:@"OK"
+								   otherButtonTitles:nil];		
+			}
+			
 		}
 		else {
 			NSLog(@"not logged in");

@@ -21,6 +21,7 @@
 #import "BlioXpsClient.h"
 #import "BlioStoreArchiveViewController.h"
 #import "BlioAlertManager.h"
+#import "BlioAppSettingsConstants.h"
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
@@ -643,6 +644,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     }
     
     [super viewWillAppear:animated];
+-(void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
+    [self.navigationController.toolbar setTintColor:tintColor];
+	
+	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertLibrary"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertLibrary"];
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Introducing Your Library",@"\"Introducing Your Library\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"INTRO_LIBRARY_ALERT",nil,[NSBundle mainBundle],@"The library is where you'll find all your downloaded books. Since you're just getting started, tap on the \"View Your Archive\" option to retrieve a few complimentary books!",@"Alert Text encouraging the end-user to go to the Archive and download complimentary books.")
+									delegate:nil
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];		
+	}
+	
+	
+	
 }
 
 - (void)didReceiveMemoryWarning {
