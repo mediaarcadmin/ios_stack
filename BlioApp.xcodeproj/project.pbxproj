@@ -144,7 +144,7 @@
 		7DF2A38C1152C5F100FC2045 /* BlioTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */; };
 		7DF2A49011536CA100FC2045 /* BlioFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */; };
 		7DF2A58B115381EF00FC2045 /* TextFlowFlow.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DF2A589115381EF00FC2045 /* TextFlowFlow.css */; };
-		7DF429D311E4EC5B00B8227E /* BlioNSObjectAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* BlioNSObjectAdditions.m */; };
+		7DF429D311E4EC5B00B8227E /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
 		7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		A30E0EFB123EA5B400D31157 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
@@ -424,7 +424,7 @@
 		A30E1010123EA5B400D31157 /* BlioSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC48C98F11D54A0100C5D186 /* BlioSplitView.m */; };
 		A30E1011123EA5B400D31157 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
 		A30E1012123EA5B400D31157 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
-		A30E1013123EA5B400D31157 /* BlioNSObjectAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* BlioNSObjectAdditions.m */; };
+		A30E1013123EA5B400D31157 /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
 		A30E1014123EA5B400D31157 /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
 		A30E1015123EA5B400D31157 /* BlioPaidBooksSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */; };
 		A30E1016123EA5B400D31157 /* BlioTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */; };
@@ -735,7 +735,7 @@
 		A36D35C9120B136700E1A035 /* BlioSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC48C98F11D54A0100C5D186 /* BlioSplitView.m */; };
 		A36D35CA120B136700E1A035 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
 		A36D35CB120B136700E1A035 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
-		A36D35CC120B136700E1A035 /* BlioNSObjectAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* BlioNSObjectAdditions.m */; };
+		A36D35CC120B136700E1A035 /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
 		A36D35CD120B136700E1A035 /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
 		A36D35CE120B136700E1A035 /* BlioPaidBooksSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */; };
 		A36D35CF120B136700E1A035 /* BlioTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */; };
@@ -1305,8 +1305,8 @@
 		7DF2A48D11536CA100FC2045 /* BlioFlowEucBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowEucBook.h; sourceTree = "<group>"; };
 		7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioFlowEucBook.m; sourceTree = "<group>"; };
 		7DF2A589115381EF00FC2045 /* TextFlowFlow.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = TextFlowFlow.css; sourceTree = "<group>"; };
-		7DF429D011E4EC5400B8227E /* BlioNSObjectAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioNSObjectAdditions.h; sourceTree = "<group>"; };
-		7DF429D111E4EC5B00B8227E /* BlioNSObjectAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioNSObjectAdditions.m; sourceTree = "<group>"; };
+		7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+BlioAdditions.h"; sourceTree = "<group>"; };
+		7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+BlioAdditions.m"; sourceTree = "<group>"; };
 		7DF58BA210DA9A86004E3DBB /* ePubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ePubs; sourceTree = "<group>"; };
 		7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EucConfiguration.plist; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -1960,8 +1960,8 @@
 				DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */,
 				C9336E7A1180854800D29256 /* BlioAccessibilitySegmentedControl.h */,
 				C9336E7B1180854800D29256 /* BlioAccessibilitySegmentedControl.m */,
-				7DF429D011E4EC5400B8227E /* BlioNSObjectAdditions.h */,
-				7DF429D111E4EC5B00B8227E /* BlioNSObjectAdditions.m */,
+				7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */,
+				7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */,
 				7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */,
 				7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */,
 				7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */,
@@ -3628,7 +3628,7 @@
 				DC48C99111D54A0100C5D186 /* BlioSplitView.m in Sources */,
 				7DCD8E5511E32EFF00BA3255 /* BlioBookManager.m in Sources */,
 				7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */,
-				7DF429D311E4EC5B00B8227E /* BlioNSObjectAdditions.m in Sources */,
+				7DF429D311E4EC5B00B8227E /* NSObject+BlioAdditions.m in Sources */,
 				C9DA72B911E60C9400F584A1 /* BlioXPSProvider.m in Sources */,
 				A38CDD7111E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m in Sources */,
 				7DBD0EEB120191F8009CD9DA /* BlioTextFlowXAMLTree.m in Sources */,
@@ -3741,7 +3741,7 @@
 				A30E1010123EA5B400D31157 /* BlioSplitView.m in Sources */,
 				A30E1011123EA5B400D31157 /* BlioBookManager.m in Sources */,
 				A30E1012123EA5B400D31157 /* BlioEPubBook.m in Sources */,
-				A30E1013123EA5B400D31157 /* BlioNSObjectAdditions.m in Sources */,
+				A30E1013123EA5B400D31157 /* NSObject+BlioAdditions.m in Sources */,
 				A30E1014123EA5B400D31157 /* BlioXPSProvider.m in Sources */,
 				A30E1015123EA5B400D31157 /* BlioPaidBooksSettingsController.m in Sources */,
 				A30E1016123EA5B400D31157 /* BlioTextFlowXAMLTree.m in Sources */,
@@ -3855,7 +3855,7 @@
 				A36D35C9120B136700E1A035 /* BlioSplitView.m in Sources */,
 				A36D35CA120B136700E1A035 /* BlioBookManager.m in Sources */,
 				A36D35CB120B136700E1A035 /* BlioEPubBook.m in Sources */,
-				A36D35CC120B136700E1A035 /* BlioNSObjectAdditions.m in Sources */,
+				A36D35CC120B136700E1A035 /* NSObject+BlioAdditions.m in Sources */,
 				A36D35CD120B136700E1A035 /* BlioXPSProvider.m in Sources */,
 				A36D35CE120B136700E1A035 /* BlioPaidBooksSettingsController.m in Sources */,
 				A36D35CF120B136700E1A035 /* BlioTextFlowXAMLTree.m in Sources */,
