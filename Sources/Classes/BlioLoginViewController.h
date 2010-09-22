@@ -10,17 +10,18 @@
 #import "BlioProcessing.h"
 #import "BlioStoreManager.h"
 #import "DigitalLockerGateway.h"
+#import "BlioRoundedRectActivityView.h"
 
 @interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate> {
 	UITextField* emailField;
 	UITextField* passwordField;
-	UIActivityIndicatorView* activityIndicator;
+	BlioRoundedRectActivityView * activityIndicatorView;
 	BlioBookSourceID sourceID;
 }
 
 @property (nonatomic,retain) UITextField* emailField;
 @property (nonatomic,retain) UITextField* passwordField;
-@property (nonatomic,retain) UIActivityIndicatorView* activityIndicator;
+@property (nonatomic,retain) BlioRoundedRectActivityView* activityIndicatorView;
 @property (nonatomic,assign) BlioBookSourceID sourceID;
 
 

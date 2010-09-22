@@ -886,6 +886,87 @@
 	}			
 	[self stopProcessingForBook:aBook];
 }
+-(void) resumeSuspendedProcessingForSourceID:(BlioBookSourceID)bookSource {
+	NSLog(@"BlioProcessingManager resumeSuspendedProcessingForSourceID:%i entered",bookSource);
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+	
+	// resume previous processing operations
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@) && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateSuspended],[NSNumber numberWithInt:bookSource]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+    if (errorExecute) {
+        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found %i non-paused incomplete book results, will resume...",[results count]); 
+			for (BlioBook * book in results) {
+				[self enqueueBook:book];
+			}
+			
+		}
+		else {
+			NSLog(@"No incomplete paid book results to resume."); 
+		}
+	}
+    [fetchRequest release];
+	
+	// end resume previous processing operations
+	
+}
+-(void) suspendProcessingForSourceID:(BlioBookSourceID)bookSource {
+	NSLog(@"BlioProcessingManager suspendProcessingForSourceID:%i entered",bookSource);
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+	
+	// resume previous processing operations
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@) && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:bookSource]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+    if (errorExecute) {
+        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found %i non-paused incomplete book results, will resume...",[results count]); 
+			for (BlioBook * book in results) {
+				[self suspendProcessingForBook:book];
+			}
+			
+		}
+		else {
+			NSLog(@"No incomplete paid book results to resume."); 
+		}
+	}
+    [fetchRequest release];
+	
+	// end resume previous processing operations
+	
+}
+
+- (void)suspendProcessingForBook:(BlioBook*)aBook {
+	NSLog(@"BlioProcessingManager suspendProcessingForBook entered");
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+    if (moc == nil) {
+		NSLog(@"WARNING: pause processing attempted while Processing Manager MOC == nil!");
+		return;
+	}
+    [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateSuspended] forKey:@"processingState"];
+	NSError * error;
+	if (![moc save:&error]) {
+		NSLog(@"[BlioProcessingManager pauseProcessingForBook:] (set state to paused) Save failed in processing manager with error: %@, %@", error, [error userInfo]);
+	}			
+	[self stopProcessingForBook:aBook];
+}
 - (void)stopProcessingForBook:(BlioBook*)aBook {
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (moc == nil) {
