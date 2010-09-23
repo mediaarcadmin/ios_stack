@@ -1,14 +1,14 @@
 //
-//  BlioNSObjectAdditions.m
+//  NSObject+BlioAdditions.m
 //  BlioApp
 //
 //  Created by James Montgomerie on 02/07/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "BlioNSObjectAdditions.h"
+#import "NSObject+BlioAdditions.h"
 
-@implementation NSObject (BlioNSObjectAdditions)
+@implementation NSObject (BlioAdditions)
 
 - (id)blioPerformSelectorOnMainThreadReturningResult:(SEL)aSelector
 {

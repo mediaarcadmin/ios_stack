@@ -8,9 +8,13 @@
  */
 
 #include "th_just_with_floats.h"
+#include "stdio.h"
 #include "stdlib.h"
 #include "stdbool.h"
 #include "limits.h"
+#include "assert.h"
+
+#include <Accelerate/Accelerate.h>
 
 // This algorithm calculates paragraph breaks while trying to ensure that no
 // single line it too far from the ideal length.  This is similar to how TeX's 
@@ -36,26 +40,45 @@
 struct Estimates {
     CGFloat shortest_path_estimate;
     int predecessor;
-    bool examined;
+    int examined;
 };
 
-static int extract_min(struct Estimates *estimates, int count)
+static int extract_min(struct Estimates *estimates, int count, CGFloat *shortest_path_vector)
 {
-    CGFloat smallest_estimate_found = CGFLOAT_MAX;
-    int smallest_index = -1;
-    for(int i = 0; i < count; ++i) { 
-        if(!estimates[i].examined && 
-           estimates[i].shortest_path_estimate < smallest_estimate_found) {
-            smallest_estimate_found = estimates[i].shortest_path_estimate;
-            smallest_index = i;
+    CGFloat smallest_estimate_found;
+    vDSP_Length smallest_index;
+    
+    if(sizeof(CGFloat) == 4) {
+        vDSP_minvi((float *)shortest_path_vector,
+                   1,
+                   (float *)&smallest_estimate_found,
+                   &smallest_index,
+                   count);        
+    } else if(sizeof(CGFloat) == 8) {
+        vDSP_minviD((double *)shortest_path_vector,
+                    1,
+                    (double *)&smallest_estimate_found,
+                    &smallest_index,
+                    count);
+    } else {
+        smallest_estimate_found = CGFLOAT_MAX;
+        smallest_index = 0;
+        
+        for(int i = 0; i < count; ++i) { 
+            if(shortest_path_vector[i] < smallest_estimate_found) {
+                smallest_estimate_found = estimates[i].shortest_path_estimate;
+                smallest_index = i;
+            }      
         }
     }
-
-    if(smallest_index != -1) {
-        estimates[smallest_index].examined = true;
-    }
     
-    return smallest_index;
+    if(smallest_estimate_found != CGFLOAT_MAX) {
+        estimates[smallest_index].examined = true;
+        shortest_path_vector[smallest_index] = CGFLOAT_MAX;
+        return (int)smallest_index;
+    } else {
+        return -1;
+    }
 }
 
 static CGFloat calculate_weight(int from_break_index, int to_break_index, const THBreak *breaks, int count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty) 
@@ -66,13 +89,11 @@ static CGFloat calculate_weight(int from_break_index, int to_break_index, const 
     CGFloat line_end = breaks[to_break_index].x0;
     
     CGFloat line_width = line_end - line_start;
-    
-    CGFloat width_difference = ideal_width - line_width;
-    if(width_difference >= 0) {
+    if(ideal_width >= line_width) {
         if((breaks[to_break_index].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) != 0) {
             weight = 0.0f;
         } else {
-            weight = width_difference + breaks[to_break_index].penalty;
+            weight = ideal_width - line_width + breaks[to_break_index].penalty;
             if(from_break_index != -1 &&
                (breaks[from_break_index].flags & TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN) != 0 &&
                (breaks[to_break_index].flags & TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN) != 0) {
@@ -85,7 +106,7 @@ static CGFloat calculate_weight(int from_break_index, int to_break_index, const 
     return weight;
 }
 
-static void relax_reachable_from(int break_u, const THBreak *breaks, struct Estimates *estimates, int count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty) 
+static void relax_reachable_from(int break_u, const THBreak *breaks, struct Estimates *estimates, int count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty, CGFloat *shortest_path_vector) 
 {
     CGFloat break_u_estimate = (break_u == -1 ? 0 : estimates[break_u].shortest_path_estimate);
     bool found_a_break = false;
@@ -96,6 +117,9 @@ static void relax_reachable_from(int break_u, const THBreak *breaks, struct Esti
             if(estimates[break_v].shortest_path_estimate > total_weight_to_v) {
                 estimates[break_v].shortest_path_estimate = total_weight_to_v;
                 estimates[break_v].predecessor = break_u;
+                if(!estimates[break_v].examined) {
+                    shortest_path_vector[break_v] = total_weight_to_v;
+                }
             }
             found_a_break = true;
             if(weight_from_u_to_v == 0) {
@@ -115,23 +139,43 @@ static void relax_reachable_from(int break_u, const THBreak *breaks, struct Esti
         // a too-long line, but there's nothing we can do).
         estimates[break_u + 1].shortest_path_estimate = break_u_estimate;
         estimates[break_u + 1].predecessor = break_u;
+        if(!estimates[break_u + 1].examined) {
+            shortest_path_vector[break_u + 1] = break_u_estimate;
+        }
+        
     }
 }
 
 int th_just_with_floats(const THBreak *breaks, int break_count, CGFloat offset, CGFloat ideal_width, CGFloat two_hyphen_penalty, int *result) 
 {
-    struct Estimates *estimates = malloc(sizeof(struct Estimates) * (break_count));
+    struct Estimates *estimates = malloc(sizeof(struct Estimates) * break_count);
     for(int i = 0; i < break_count; ++i) {
         estimates[i].shortest_path_estimate = CGFLOAT_MAX;
         //estimates[i].predecessor = 0; // Doesn't matter if this is garbage, it will get filled in later.
         estimates[i].examined = false;
     }
     
+    // This vector cotains the shortest path etiated for the /unvisited/
+    // nodes.  A node's estimate in here is re-set to CGFLOAT_MAX when it is 
+    // visited.  It's used so that we can use vector functions in extract_min
+    // to find the minimum estimate for an unvisited node.
+    CGFloat *shortest_path_vector = malloc(sizeof(CGFloat) * break_count);
+    const CGFloat to_fill = CGFLOAT_MAX;
+    if(sizeof(CGFloat) == 4) {
+        vDSP_vfill((float *)&to_fill, (float *)shortest_path_vector, 1, break_count);
+    } else if(sizeof(CGFloat) == 8) {
+        vDSP_vfillD((double *)&to_fill, (double *)shortest_path_vector, 1, break_count);
+    } else {
+        for(int i = 0; i < break_count; ++i) {
+            shortest_path_vector[i] = to_fill;
+        }
+    }
+    
     // The meat of Dijkstra's algorithm:
     int examining_break = -1;
     do {
-        relax_reachable_from(examining_break, breaks, estimates, break_count, offset, ideal_width, two_hyphen_penalty);
-        examining_break = extract_min(estimates, break_count);
+        relax_reachable_from(examining_break, breaks, estimates, break_count, offset, ideal_width, two_hyphen_penalty, shortest_path_vector);
+        examining_break = extract_min(estimates, break_count, shortest_path_vector);
     } while(examining_break != -1);
     
     // Now we've calculated the minimum-weight path to the end of the paragraph,
@@ -154,6 +198,7 @@ int th_just_with_floats(const THBreak *breaks, int break_count, CGFloat offset, 
     */
     
     free(estimates);
+    free(shortest_path_vector);
         
     return used_break_count;
 }
