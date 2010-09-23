@@ -397,7 +397,8 @@ ErrorExit:
 #ifdef TEST_MODE
 	[self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcknowledgeLicense];
 #else
-	rgchURL[cchUrl] = '\0';
+	DRM_CHAR rgchURL[MAX_URL_SIZE];
+    rgchURL[0] = '\0';
 	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcknowledgeLicense];
 #endif
 	//NSLog(@"DRM license acknowledgment response: %s",(unsigned char*)pbResponse);
