@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "BlioStoreHelper.h"
 #import "BlioContentCafe.h"
+#import "BlioBookVault.h"
 
-
-@interface BlioOnlineStoreHelper : BlioStoreHelper {
+@interface BlioOnlineStoreHelper : BlioStoreHelper<BookVaultSoapResponseDelegate> {
 	NSMutableArray* _isbns; // array of ISBN numbers
 }
 - (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
