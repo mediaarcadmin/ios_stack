@@ -30,6 +30,7 @@ typedef enum EucCSSLayoutDocumentRunComponentKind {
     EucCSSLayoutDocumentRunComponentKindWord,
     EucCSSLayoutDocumentRunComponentKindHyphenationRule,
     EucCSSLayoutDocumentRunComponentKindImage,
+    EucCSSLayoutDocumentRunComponentKindFloat,
 } EucCSSLayoutDocumentRunComponentKind;
 
 typedef struct EucCSSLayoutDocumentRunComponentInfo {

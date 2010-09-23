@@ -13,6 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+#import "EucCSSLayouter.h"
 #import "EucCSSLayouter_Package.h"
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutDocumentRun_Package.h"
@@ -46,6 +47,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 - (void)_addComponent:(EucCSSLayoutDocumentRunComponentInfo *)info;
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode;
+- (void)_accumulateFloatNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (CGFloat)_textIndentInWidth:(CGFloat)width;
 @end 
 
@@ -64,7 +66,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 
 pthread_mutex_t sCachedRunsMutex = PTHREAD_MUTEX_INITIALIZER;
 static NSInteger sCachedRunsCount = 0;
-static const NSInteger sCachedRunsCapacity = 48;
+static const NSInteger sCachedRunsCapacity = 1024;
 EucCSSLayoutDocumentRun **sCachedRuns = NULL;
 
 + (void)initialize
@@ -96,16 +98,34 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                 memmove(sCachedRuns + i, sCachedRuns + i + 1, toMove * sizeof(EucCSSLayoutDocumentRun *));
             } 
             sCachedRunsCount--;
+            
+            //THLog(@"Reusing at index: %ld", (long)i);
+            
+            break;
         }
     }
     
     if(!ret) {
+        /*THLog(@"Creating run for document %p, node %ld, under %ld, id %ld, scaleFactor %f",
+              inlineNode.document,
+              (uint32_t)inlineNode.key,
+              (uint32_t)underNode.key,
+              (uint32_t)id,
+              scaleFactor);*/
+        
         ret = [[[self class] alloc] initWithNode:inlineNode
                                   underLimitNode:underNode 
                                            forId:id 
                                      scaleFactor:scaleFactor];
         [ret autorelease];
-    }
+    } /*else {
+        THLog(@"Reusing run for document %p, node %ld, under %ld, id %ld, scaleFactor %f",
+              inlineNode.document,
+              (uint32_t)inlineNode.key,
+              (uint32_t)underNode.key,
+              (uint32_t)id,
+              scaleFactor);        
+    }*/
     
     if(ret) {
         if(sCachedRunsCount == sCachedRunsCapacity) {
@@ -147,44 +167,62 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         
         EucCSSLayoutDocumentRunComponentInfo currentComponentInfo = { EucCSSLayoutDocumentRunComponentKindNone };
         
-        while (!reachedLimit && 
-               inlineNode && 
-               (inlineNode.isTextNode || (inlineNodeStyle &&
-                                          //css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE &&
-                                          (css_computed_display(inlineNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK))) {
+        BOOL wasFloat = NO;
+        while(YES) {
+            EucCSSIntermediateDocumentNode *nextNode = nil;
+            
             if(inlineNode.isTextNode) {
                 [self _accumulateTextNode:inlineNode];
+                nextNode = [inlineNode nextDisplayableUnder:underNode];
             } else if(inlineNode.isImageNode) {
                 [self _accumulateImageNode:inlineNode];
+                nextNode = [inlineNode nextDisplayableUnder:underNode];
+            } else if(inlineNodeStyle) {
+                if(css_computed_float(inlineNodeStyle) != CSS_FLOAT_NONE) {
+                    [self _accumulateFloatNode:inlineNode];
+                    nextNode = [inlineNode.parent displayableNodeAfter:inlineNode under:underNode];
+                    wasFloat = YES;
+                } else if(css_computed_display(inlineNodeStyle, false) != CSS_DISPLAY_BLOCK) {
+                    // Open this node.
+                    [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
+                    currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
+                    [self _addComponent:&currentComponentInfo];
+                    nextNode = [inlineNode nextDisplayableUnder:underNode];
+                } else {
+                    break;
+                }
             } else {
-                // Open this node.
-                [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
-                currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
-                [self _addComponent:&currentComponentInfo];
+                break;   
             }
             
-            EucCSSIntermediateDocumentNode *nextNode = nil;
-
-            nextNode = [inlineNode nextDisplayableUnder:underNode];
             if(nextNode) {
                 EucCSSIntermediateDocumentNode *nextNodeParent = nextNode.parent;
                 while(inlineNode != nextNodeParent && 
                       inlineNode != underNode) {
-                    if(!inlineNode.isTextNode && !inlineNode.isImageNode) {
-                        // If the node /doesn't/ have children, it's already closed,
-                        // above.
+                    if(!inlineNode.isTextNode && 
+                       !inlineNode.isImageNode && 
+                       (!inlineNodeStyle || css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE)) {
+                        [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
                         currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
                         [self _addComponent:&currentComponentInfo];
-                        [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
                     }                    
                     inlineNode = inlineNode.parent;
+                    inlineNodeStyle = inlineNode.computedStyle;
                 }
 
                 inlineNode = nextNode;
                 inlineNodeStyle = inlineNode.computedStyle;
             } else {
-                inlineNode = [inlineNode nextDisplayable];
+                if(wasFloat) {
+                    inlineNode = [inlineNode.parent displayableNodeAfter:inlineNode under:nil];
+                } else {
+                    inlineNode = [inlineNode nextDisplayable];
+                }
                 reachedLimit = YES;
+                break;
+            }
+            if(wasFloat) {
+                wasFloat = NO;
             }
         }    
         
@@ -412,77 +450,81 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     for(NSNumber *indexNumber in _sizeDependentComponentIndexes) {
         size_t offset = [indexNumber integerValue];
         
-        CGImageRef image = (CGImageRef)(_componentInfos[offset].component);
-        EucCSSIntermediateDocumentNode *subnode = _componentInfos[offset].documentNode;
-        
-        CGFloat specifiedWidth = CGFLOAT_MAX;
-        CGFloat specifiedHeight = CGFLOAT_MAX;
-        
-        CGFloat maxWidth = CGFLOAT_MAX;
-        CGFloat maxHeight = CGFLOAT_MAX;
-        
-        CGFloat minWidth = 1;
-        CGFloat minHeight = 1;
-        
-        css_fixed length = 0;
-        css_unit unit = (css_unit)0;
-        css_computed_style *nodeStyle = subnode.computedStyle;
-        if(nodeStyle) {
-            uint8_t widthKind = css_computed_width(nodeStyle, &length, &unit);
-            if(widthKind == CSS_WIDTH_SET) {
-                specifiedWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
+        if(_componentInfos[offset].kind == EucCSSLayoutDocumentRunComponentKindFloat) {
+            
+        } else {
+            CGImageRef image = (CGImageRef)(_componentInfos[offset].component);
+            EucCSSIntermediateDocumentNode *subnode = _componentInfos[offset].documentNode;
+            
+            CGFloat specifiedWidth = CGFLOAT_MAX;
+            CGFloat specifiedHeight = CGFLOAT_MAX;
+            
+            CGFloat maxWidth = CGFLOAT_MAX;
+            CGFloat maxHeight = CGFLOAT_MAX;
+            
+            CGFloat minWidth = 1;
+            CGFloat minHeight = 1;
+            
+            css_fixed length = 0;
+            css_unit unit = (css_unit)0;
+            css_computed_style *nodeStyle = subnode.computedStyle;
+            if(nodeStyle) {
+                uint8_t widthKind = css_computed_width(nodeStyle, &length, &unit);
+                if(widthKind == CSS_WIDTH_SET) {
+                    specifiedWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
+                }
+                
+                uint8_t maxWidthKind = css_computed_max_width(nodeStyle, &length, &unit);
+                if (maxWidthKind == CSS_MAX_WIDTH_SET) {
+                    maxWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
+                } 
+                
+                uint8_t heightKind = css_computed_height(nodeStyle, &length, &unit);
+                if (heightKind == CSS_HEIGHT_SET) {
+                    if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
+                        // Assume no intrinsic height;
+                    } else {
+                        specifiedHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
+                    }
+                } 
+            
+                uint8_t maxHeightKind = css_computed_max_height(nodeStyle, &length, &unit);
+                if (maxHeightKind == CSS_MAX_HEIGHT_SET) {
+                    if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
+                        // Assume no max height;
+                    } else {
+                        maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
+                    }
+                } 
+            }
+            /*
+            if(specifiedWidth == CGFLOAT_MAX) {
+                [subnode 
+            }
+            */
+            
+            if(maxWidth == CGFLOAT_MAX) {
+                maxWidth = frame.size.width;
             }
             
-            uint8_t maxWidthKind = css_computed_max_width(nodeStyle, &length, &unit);
-            if (maxWidthKind == CSS_MAX_WIDTH_SET) {
-                maxWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
-            } 
+            CGSize calculatedSize = [self _computedSizeForImage:image
+                                                 specifiedWidth:specifiedWidth
+                                                specifiedHeight:specifiedHeight
+                                                       maxWidth:maxWidth
+                                                       minWidth:minWidth
+                                                      maxHeight:maxHeight
+                                                      minHeight:minHeight];
             
-            uint8_t heightKind = css_computed_height(nodeStyle, &length, &unit);
-            if (heightKind == CSS_HEIGHT_SET) {
-                if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
-                    // Assume no intrinsic height;
-                } else {
-                    specifiedHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
-                }
-            } 
-        
-            uint8_t maxHeightKind = css_computed_max_height(nodeStyle, &length, &unit);
-            if (maxHeightKind == CSS_MAX_HEIGHT_SET) {
-                if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
-                    // Assume no max height;
-                } else {
-                    maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
-                }
-            } 
+            _componentInfos[offset].width = calculatedSize.width;
+            _componentInfos[offset].ascender = calculatedSize.height;
+            _componentInfos[offset].pointSize = calculatedSize.height;
+            
+            if(css_computed_line_height(nodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
+                _componentInfos[offset].lineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, _scaleFactor);
+            } else {
+                _componentInfos[offset].lineHeight = calculatedSize.height;
+            }  
         }
-        /*
-        if(specifiedWidth == CGFLOAT_MAX) {
-            [subnode 
-        }
-        */
-        
-        if(maxWidth == CGFLOAT_MAX) {
-            maxWidth = frame.size.width;
-        }
-        
-        CGSize calculatedSize = [self _computedSizeForImage:image
-                                             specifiedWidth:specifiedWidth
-                                            specifiedHeight:specifiedHeight
-                                                   maxWidth:maxWidth
-                                                   minWidth:minWidth
-                                                  maxHeight:maxHeight
-                                                  minHeight:minHeight];
-        
-        _componentInfos[offset].width = calculatedSize.width;
-        _componentInfos[offset].ascender = calculatedSize.height;
-        _componentInfos[offset].pointSize = calculatedSize.height;
-        
-        if(css_computed_line_height(nodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
-            _componentInfos[offset].lineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, _scaleFactor);
-        } else {
-            _componentInfos[offset].lineHeight = calculatedSize.height;
-        }            
     }
 }
 
@@ -741,6 +783,19 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             }
         }
     }
+}
+
+- (void)_accumulateFloatNode:(EucCSSIntermediateDocumentNode *)subnode
+{
+    EucCSSLayoutDocumentRunComponentInfo info = { EucCSSLayoutDocumentRunComponentKindNone };
+    info.documentNode = subnode;
+    info.kind = EucCSSLayoutDocumentRunComponentKindFloat;
+    [self _addComponent:&info];    
+    
+    if(!_sizeDependentComponentIndexes) {
+        _sizeDependentComponentIndexes = [[NSMutableArray alloc] init];
+    }
+    [_sizeDependentComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];    
 }
 
 - (void)_ensurePotentialBreaksCalculated
