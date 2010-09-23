@@ -535,6 +535,9 @@
         return;
     }
     
+#if TARGET_IPHONE_SIMULATOR
+    @synchronized(self) {
+#endif
     if (!self.cached) {
         self.cached = YES;
         [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:self cacheReadySelector:@selector(cacheReady:)];
@@ -544,7 +547,9 @@
         }
         [self.renderingDelegate drawTiledLayer:self inContext:ctx forPage:self.pageNumber cacheReadyTarget:nil cacheReadySelector:nil];
     }
-    
+#if TARGET_IPHONE_SIMULATOR
+    }
+#endif
     if (pageNumber == 1) {
         //NSLog(@"Finished rendering page 1 tile layer");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"blioCoverPageDidFinishRender" object:nil];
