@@ -3137,6 +3137,7 @@ parameters:(BookVault_RegisterSale *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRegisterSale;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3230,6 +3231,7 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeVaultContentsWithToken;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3323,6 +3325,7 @@ parameters:(BookVault_VaultContents *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeVaultContents;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3416,6 +3419,7 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRequestDownloadWithToken;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3509,6 +3513,7 @@ parameters:(BookVault_RequestDownload *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRequestDownload;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3602,6 +3607,7 @@ parameters:(BookVault_Login *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeLogin;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3740,6 +3746,7 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 }
 @end
 @implementation BookVaultSoapResponse
+@synthesize responseType;
 @synthesize headers;
 @synthesize bodyParts;
 @synthesize error;
@@ -3754,6 +3761,7 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	return self;
 }
 -(void)dealloc {
+	self.responseType = nil;
     self.headers = nil;
     self.bodyParts = nil;
     self.error = nil;	

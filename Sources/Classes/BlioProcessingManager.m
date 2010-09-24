@@ -113,6 +113,11 @@
 
 			NSLog(@"Processing Manager: Found Book in context already"); 
 			
+			if (placeholderOnly) {
+				NSLog(@"Therefore no need to fulfill a placeholderOnly enqueue new book command. Aborting...");
+				return;
+			}
+			
 			aBook = [results objectAtIndex:0];
 			
 			
@@ -200,7 +205,7 @@
 	NSLog(@"BlioProcessingManager enqueueBook: %@ placeholderOnly: %i",aBook, placeholderOnly);
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
-    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (moc == nil) {
 		NSLog(@"WARNING: enqueueing book attempted while Processing Manager MOC == nil!");
 		return;
@@ -219,31 +224,32 @@
 			// get XPS URL
 //			NSError * error;
 
-			NSURL * xpsURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:[[aBook valueForKey:@"sourceSpecificID"] intValue] sourceSpecificID:[aBook valueForKey:@"sourceSpecificID"]];
-			if (xpsURL != nil) {
-				NSLog(@"[xpsURL absoluteString]: %@",[xpsURL absoluteString]);
+//			NSURL * xpsURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:[[aBook valueForKey:@"sourceSpecificID"] intValue] sourceSpecificID:[aBook valueForKey:@"sourceSpecificID"]];
+//			if (xpsURL != nil) {
+//				NSLog(@"[xpsURL absoluteString]: %@",[xpsURL absoluteString]);
 //				[aBook setValue:[xpsURL absoluteString] forKey:BlioManifestXPSKey];
 //				if (![moc save:&error]) {
 //					NSLog(@"Save failed for xps filename in processing manager with error: %@, %@", error, [error userInfo]);
 //				}				
-			}
+//			}
 
 		}		
 	}
-
+	NSLog(@"processingState before: %i",[[aBook valueForKey:@"processingState"] intValue]);
+	[moc refreshObject:aBook mergeChanges:YES];
+	NSLog(@"processingState after: %i",[[aBook valueForKey:@"processingState"] intValue]);
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		NSLog(@"WARNING: enqueue method called on already complete book!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
 		return;
 	}
-	if (![[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed && placeholderOnly) {
+	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed && placeholderOnly) {
 		NSLog(@"WARNING: enqueue method with placeholderOnly called on a book that is in a state other than NotProcessed!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
 		return;			
 	}
 	
-	[moc refreshObject:aBook mergeChanges:YES];
-	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateIncomplete && [[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed) {
+	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateIncomplete && [[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed && !placeholderOnly) {
 		// if book is paused, reflect unpausing in state
 		[aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];			
 		NSError * error;

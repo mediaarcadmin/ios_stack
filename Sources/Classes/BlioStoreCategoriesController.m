@@ -159,8 +159,11 @@
 	NSUInteger row = [indexPath row];
 	
 	if (row == ([feed.categories count]+[feed.entities count])) { // More Results option chosen
-		if (([feed.categories count]+[feed.entities count]) < feed.totalResults) {
+		NSLog(@"totalResults: %i",feed.totalResults);
+		NSLog(@"nextURL: %@",[feed.nextURL absoluteString]);
+		if ((([feed.categories count]+[feed.entities count]) < feed.totalResults && feed.sourceID != BlioBookSourceGoogleBooks) || (feed.nextURL && feed.sourceID == BlioBookSourceGoogleBooks)) {
 			// reveal activity indicator
+			feed.previousFeedCount = [feed.categories count]+[feed.entities count];
 			UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag];
 			cellActivityIndicatorView.hidden = NO;
 			[cellActivityIndicatorView startAnimating];
@@ -279,6 +282,18 @@
 #pragma mark <BlioStoreFeedBooksParserDelegate> Implementation
 
 - (void)parserDidEndParsingData:(BlioStoreBooksSourceParser *)parser {
+    BlioStoreFeed * aFeed = nil;
+	for (BlioStoreFeed *feed in self.feeds) {
+        if ([feed.parser isEqual:parser]) {
+            aFeed = feed;
+			break;
+		}
+    }
+	
+	if (aFeed && (([aFeed.categories count] + [aFeed.entities count]) < (aFeed.previousFeedCount + 10)) && aFeed.nextURL) {
+		[aFeed.parser startWithURL:aFeed.nextURL];			
+	}
+	else {
     // hide UIActivityIndicator
 	[activityIndicatorView stopAnimating];
 	activityIndicatorView.hidden = YES;
@@ -286,6 +301,7 @@
 	[self.tableView reloadData];
     UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+	}
 }
 
 - (void)parser:(BlioStoreBooksSourceParser *)parser didParseTotalResults:(NSNumber *)volumeTotalResults {
@@ -301,7 +317,7 @@
     
     for (BlioStoreFeed *feed in self.feeds) {
         if ([feed.parser isEqual:parser]) {
-            feed.nextURL = nextLink;
+			feed.nextURL = nextLink;
 		}
     }
     // table reloading will be handled when the categories and/or entities are parsed
@@ -399,7 +415,7 @@
 	}
 	BlioStoreFeed *feed = [contentFeeds objectAtIndex:section];
 	NSUInteger getMoreResultsCell = 0;
-	if (([feed.categories count] + [feed.entities count]) < feed.totalResults) getMoreResultsCell = 1; // our data is less than the totalResults, so we need a "Get More Results" option.
+	if ((([feed.categories count] + [feed.entities count]) < feed.totalResults && feed.sourceID != BlioBookSourceGoogleBooks) || (feed.nextURL && feed.sourceID == BlioBookSourceGoogleBooks)) getMoreResultsCell = 1; // our data is less than the totalResults, so we need a "Get More Results" option.
 	return [feed.categories count] + [feed.entities count] + getMoreResultsCell;
 }
 
@@ -445,7 +461,7 @@
 		
 		
 		[(UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag] stopAnimating];
-		if (([feed.categories count]+[feed.entities count]) < feed.totalResults) {
+		if ((([feed.categories count]+[feed.entities count]) < feed.totalResults && feed.sourceID != BlioBookSourceGoogleBooks) || (feed.nextURL && feed.sourceID == BlioBookSourceGoogleBooks)) {
 			cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 			cell.textLabel.text = [NSString stringWithFormat:NSLocalizedString(@"See More %@...",@"See More %@(Type of Result)..."), [self getMoreCellLabelForSection:section]];
 			[cell setAccessibilityHint:NSLocalizedString(@"Loads more results.", @"Accessibility hint for Store Categories View Load More cell")];
@@ -456,7 +472,8 @@
 			[cell setAccessibilityHint:NSLocalizedString(@"No more results.", @"Accessibility hint for Store Categories View No More cell")];
 		}
 	
-		cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%i shown out of %i total",@"%i shown out of %i total"), ([feed.categories count]+[feed.entities count]),feed.totalResults];
+		if (feed.sourceID != BlioBookSourceGoogleBooks) cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%i shown out of %i total",@"%i shown out of %i total"), ([feed.categories count]+[feed.entities count]),feed.totalResults];
+		else cell.detailTextLabel.text = @"";
 		cell.imageView.image = nil;
 
 		[cell setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@, %@", @"Accessibility label for Store Categories View Load More cell"), cell.textLabel.text, cell.detailTextLabel.text]];

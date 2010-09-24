@@ -18,8 +18,24 @@
 #define DELL_STORE 12327
 
 @interface BlioOnlineStoreHelper (PRIVATE)
-- (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
-- (BOOL)fetchBookISBNArrayFromServer;
+- (void) bookVaultSoapOperation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response;
+- (void) contentCafeSoapOperation:(ContentCafeSoapOperation *)operation completedWithResponse:(ContentCafeSoapResponse *)response;
+- (void)getContentMetaDataFromISBN:(NSString*)isbn;
+@end
+
+@implementation BlioOnlineStoreHelperBookVaultDelegate
+@synthesize delegate;
+- (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
+	[delegate bookVaultSoapOperation:operation completedWithResponse:response];
+}
+@end
+
+
+@implementation BlioOnlineStoreHelperContentCafeDelegate
+@synthesize delegate;
+- (void) operation:(ContentCafeSoapOperation *)operation completedWithResponse:(ContentCafeSoapResponse *)response {
+	[delegate contentCafeSoapOperation:operation completedWithResponse:response];
+}
 @end
 
 @implementation BlioOnlineStoreHelper
@@ -28,10 +44,18 @@
 	if((self = [super init])) {
 		self.sourceID = BlioBookSourceOnlineStore;
 		self.storeTitle = @"Blio Online Store";
+		bookVaultDelegate = [[BlioOnlineStoreHelperBookVaultDelegate alloc] init];
+		bookVaultDelegate.delegate = self;
+		contentCafeDelegate = [[BlioOnlineStoreHelperContentCafeDelegate alloc] init];
+		contentCafeDelegate.delegate = self;
 	}
 	return self;
 }
-
+-(void) dealloc {
+	[bookVaultDelegate release];
+	[contentCafeDelegate release];
+	[super dealloc];
+}
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
@@ -40,46 +64,166 @@
 	loginRequest.username = user;	
 	loginRequest.password = password; 
 	loginRequest.siteId =  [NSNumber numberWithInt:HP_STORE];
-	[vaultBinding LoginAsyncUsingParameters:loginRequest delegate:self];
+	[vaultBinding LoginAsyncUsingParameters:loginRequest delegate:bookVaultDelegate];
 	[vaultBinding release];
 }
-- (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
-	NSArray *responseBodyParts = response.bodyParts;
-	for(id bodyPart in responseBodyParts) {
-		NSLog(@"bodyPart: %@",bodyPart);
+- (void) bookVaultSoapOperation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
+	if (!response.responseType) {
+		NSLog(@"ERROR: response has no response type!");
+		return;
 	}
+	if ([response.responseType isEqualToString:BlioBookVaultResponseTypeLogin]) {
+		
+		NSArray *responseBodyParts = response.bodyParts;
+		for(id bodyPart in responseBodyParts) {
+			NSLog(@"bodyPart: %@",bodyPart);
+		}
+		for(id bodyPart in responseBodyParts) {
+			NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
+			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
+				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
+				NSLog(@"SOAP error for login: %s",err);
+				[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
+				return;
+			}
+			else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
+				self.isLoggedIn = YES;
+				self.token = [bodyPart LoginResult].Token;
+				self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
+				NSLog(@"timeout: %@",self.timeout);
+				
+				
+				[delegate storeHelper:self receivedLoginResult:BlioLoginResultSuccess];
+				return;
+			}
+			else if ( [[bodyPart LoginResult].ReturnCode intValue] == 203 ) {
+				NSLog(@"Invalid password");
+				
+				[delegate storeHelper:self receivedLoginResult:BlioLoginResultInvalidPassword];
+				return;
+			}
+			else {
+				NSLog(@"Login error: %@",[bodyPart LoginResult].Message);
+				[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
+				return;
+			}
+		}
+		// TODO: make the string key value dynamic
+	}
+	else if ([response.responseType isEqualToString:BlioBookVaultResponseTypeVaultContentsWithToken]) {
+		NSArray *responseBodyParts = response.bodyParts;
+		for(id bodyPart in responseBodyParts) {
+			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
+				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
+				NSLog(@"SOAP error for VaultContents: %@",err);
+				// TODO: Message
+				return;
+			}
+			else if ( [[bodyPart VaultContentsWithTokenResult].ReturnCode intValue] == 300 ) { 
+				if (_isbns) [_isbns release]; // release old set of ISBNs
+				_isbns = [[bodyPart VaultContentsWithTokenResult].Contents.string retain];
+			}
+			else {
+				NSLog(@"VaultContents error: %@",[bodyPart VaultContentsWithTokenResult].Message);
+				// TODO: Message
+				return;
+			}
+		}
+		// add new book entries to PersistentStore as appropriate
+		NSLog(@"ISBN count: %i",[_isbns count]);
+		newISBNs = 0;
+		responseCount = 0;
+		successfulResponseCount = 0;
+		
+		for (NSString * isbn in _isbns) {
+			
+			// check to see if BlioBook record is already in the persistent store
+			
+			if ([[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:isbn] == nil) {
+				newISBNs++;
+				[self getContentMetaDataFromISBN:isbn];
+			}
+			else {
+				NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",isbn);
+			}
+		}		
+	}
+}
+- (void) contentCafeSoapOperation:(ContentCafeSoapOperation *)operation completedWithResponse:(ContentCafeSoapResponse *)response {
+	responseCount++;
+	NSArray *responseBodyParts = response.bodyParts;
+	if (responseBodyParts == nil) {
+		NSLog(@"ERROR: responseBodyParts is nil. response: %@",response);
+	}
+	ContentCafe_RequestItems* requestItems;
 	for(id bodyPart in responseBodyParts) {
-		NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error for login: %s",err);
-			[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
-			return;
+			NSLog(@"SOAP error for ContentCafe_XmlClassResponse: %s",err);
+			// TODO: Message
 		}
-		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
-			self.isLoggedIn = YES;
-			self.token = [bodyPart LoginResult].Token;
-			self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
-			NSLog(@"timeout: %@",self.timeout);
-
-
-			[delegate storeHelper:self receivedLoginResult:BlioLoginResultSuccess];
-			return;
-		}
-		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 203 ) {
-			NSLog(@"Invalid password");
-			
-			[delegate storeHelper:self receivedLoginResult:BlioLoginResultInvalidPassword];
-			return;
+		else if ( (requestItems = [[bodyPart ContentCafe] RequestItems]) ) { 
+			ContentCafe_RequestItem* requestItem = (ContentCafe_RequestItem*)[[requestItems RequestItem] objectAtIndex:0];
+			ContentCafe_ProductItem* productItem =(ContentCafe_ProductItem*)[[[requestItem ProductItems] ProductItem] objectAtIndex:0];
+			if (productItem) {
+				successfulResponseCount++;
+				NSString* title = [[productItem Title] Value];
+				NSString* author = [productItem Author];
+				NSString* coverURL = [NSString stringWithFormat:@"http://images.btol.com/cc2images/Image.aspx?SystemID=knfb&IdentifierID=I&IdentifierValue=%@&Source=BT&Category=FC&Sequence=1&Size=L&NotFound=S",[productItem ISBN]];
+				NSLog(@"Title: %@", title);
+				NSLog(@"Author: %@", author);
+				NSLog(@"Cover: %@", coverURL);
+				NSLog(@"URL: %@",[[self URLForBookWithID:[productItem ISBN]] absoluteString]);
+				NSArray * authors = [NSArray array];
+				if (author) {
+					authors = [author componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@";"]];
+				}
+				// TODO: need to discern patterns in how paid books store multiple authors in one string, then parse accordingly into an array.
+					[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
+																					   authors:authors   
+																					 coverPath:coverURL
+																					  ePubPath:nil 
+																					   pdfPath:nil 
+																					   xpsPath:nil
+																				  textFlowPath:nil 
+																				 audiobookPath:nil 
+																					  sourceID:BlioBookSourceOnlineStore 
+																			  sourceSpecificID:[productItem ISBN]
+																			   placeholderOnly:YES
+					 ];
+			}
+			else {
+				NSLog(@"ERROR: productItem is nil!");
+			}			
 		}
 		else {
-			NSLog(@"Login error: %@",[bodyPart LoginResult].Message);
-			[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
-			return;
+			NSLog(@"ContentCafe_XmlClassResponse error.");
+			// TODO: Message
+		}
+		
+	}
+	
+	if (responseCount == [_isbns count]) { 
+		NSString * ISBNMetadataResponseAlertText = nil;
+		if (successfulResponseCount == 0 && newISBNs > 0) {
+			// we didn't get any successful responses, though we have a need for ISBN metadata.
+			ISBNMetadataResponseAlertText = NSLocalizedStringWithDefaultValue(@"ISBN_METADATA_ALL_ATTEMPTS_FAILED",nil,[NSBundle mainBundle],@"The app was not able to retrieve your latest purchases at this time due to a server error. Please try logging in again later.",@"Alert message when all attempts to access the ISBN meta-data web service fail.");
+		}
+		else if (successfulResponseCount < newISBNs) {
+			// we got some successful responses, though not all for the new ISBNs.
+			ISBNMetadataResponseAlertText = NSLocalizedStringWithDefaultValue(@"ISBN_METADATA_SOME_ATTEMPTS_FAILED",nil,[NSBundle mainBundle],@"The app was able to retrieve some but not all of your latest purchases at this time due to a server error. Please try logging in again later.",@"Alert message when some but not all attempts to access the ISBN meta-data web service fail.");
+		}
+		if (ISBNMetadataResponseAlertText != nil) {
+			// show alert box
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+										 message:ISBNMetadataResponseAlertText
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles: nil];
 		}
 	}
-	// TODO: make the string key value dynamic
 }
+
 -(BOOL)hasValidToken {
 	if (self.token == nil) return NO;
 	if ([self.timeout compare:[NSDate date]] == NSOrderedDescending) return YES;
@@ -104,81 +248,13 @@
 		NSLog(@"ERROR: no processingManager set for BlioOnlineStoreHelper! Aborting archiveBooks...");
 		return;
 	}
-	if (![self fetchBookISBNArrayFromServer]) {
-		NSLog(@"ERROR: could not fetch ISBNs from the server!");
-		return;
-	}
-	// add new book entries to PersistentStore as appropriate
-	NSInteger successfulResponseCount = 0;
-	NSInteger newISBNs = 0;
-	NSLog(@"ISBN count: %i",[_isbns count]);
-	for (NSString * isbn in _isbns) {
-		
-		// check to see if BlioBook record is already in the persistent store
-		
-		if ([[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:isbn] == nil) {
-			newISBNs++;
-			ContentCafe_ProductItem* productItem = [self getContentMetaDataFromISBN:isbn];
-			if (productItem) {
-				successfulResponseCount++;
-				NSString* title = [[productItem Title] Value];
-				NSString* author = [productItem Author];
-				NSString* coverURL = [NSString stringWithFormat:@"http://images.btol.com/cc2images/Image.aspx?SystemID=knfb&IdentifierID=I&IdentifierValue=%@&Source=BT&Category=FC&Sequence=1&Size=L&NotFound=S",isbn];
-				NSLog(@"Title: %@", title);
-				NSLog(@"Author: %@", author);
-				NSLog(@"Cover: %@", coverURL);
-				NSLog(@"URL: %@",[[self URLForBookWithID:isbn] absoluteString]);
-				NSArray * authors = [NSArray array];
-				if (author) {
-					authors = [author componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@";"]];
-				}
-				// TODO: need to discern patterns in how paid books store multiple authors in one string, then parse accordingly into an array.
-				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
-													 authors:authors   
-													coverPath:coverURL
-													 ePubPath:nil 
-													  pdfPath:nil 
-                                                      xpsPath:nil
-												 textFlowPath:nil 
-												audiobookPath:nil 
-													sourceID:BlioBookSourceOnlineStore 
-											sourceSpecificID:isbn
-											 placeholderOnly:YES
-				 ];
-			}
-			else {
 
-			}			
-		}
-		else {
-			NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",isbn);
-		}
-	}
-	NSString * ISBNMetadataResponseAlertText = nil;
-	if (successfulResponseCount == 0 && newISBNs > 0) {
-		// we didn't get any successful responses, though we have a need for ISBN metadata.
-		ISBNMetadataResponseAlertText = NSLocalizedStringWithDefaultValue(@"ISBN_METADATA_ALL_ATTEMPTS_FAILED",nil,[NSBundle mainBundle],@"The app was not able to retrieve your latest purchases at this time due to a server error. Please try logging in again later.",@"Alert message when all attempts to access the ISBN meta-data web service fail.");
-	}
-	else if (successfulResponseCount < newISBNs) {
-		// we got some successful responses, though not all for the new ISBNs.
-		ISBNMetadataResponseAlertText = NSLocalizedStringWithDefaultValue(@"ISBN_METADATA_SOME_ATTEMPTS_FAILED",nil,[NSBundle mainBundle],@"The app was able to retrieve some but not all of your latest purchases at this time due to a server error. Please try logging in again later.",@"Alert message when some but not all attempts to access the ISBN meta-data web service fail.");
-	}
-	if (ISBNMetadataResponseAlertText != nil) {
-		// show alert box
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-									 message:ISBNMetadataResponseAlertText
-									delegate:self 
-						   cancelButtonTitle:@"OK"
-						   otherButtonTitles: nil];
-		//		UIAlertView *errorAlert = [[UIAlertView alloc] 
-		//								   initWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-		//								   message:ISBNMetadataResponseAlertText
-		//								   delegate:self 
-		//								   cancelButtonTitle:@"OK"
-		//								   otherButtonTitles: nil];
-		//		[errorAlert show];
-		//		[errorAlert release];		
-	}
+	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
+	//vaultBinding.logXMLInOut = YES;
+	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
+	vaultContentsRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
+	[vaultBinding VaultContentsWithTokenAsyncUsingParameters:vaultContentsRequest delegate:bookVaultDelegate];
+	[vaultBinding release];
 }
 -(NSURL*)URLForBookWithID:(NSString*)isbn {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
@@ -210,7 +286,7 @@
 	}
 	return nil;
 }
-- (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn {
+- (void)getContentMetaDataFromISBN:(NSString*)isbn {
 	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
 	cafeBinding.logXMLInOut = YES;
 //	ContentCafe_Single* singleRequest = [[ContentCafe_Single new] autorelease];
@@ -232,62 +308,9 @@
 //	xmlRequestItem.Key.Original = isbn;
 	[xmlRequestItem.Content addObject:@"ProductDetail"];
 	[xmlRequest.ContentCafe.RequestItems.RequestItem addObject:xmlRequestItem];
-	ContentCafeSoapResponse* response = [cafeBinding XmlClassUsingParameters:xmlRequest];
-	
+	[cafeBinding XmlClassAsyncUsingParameters:xmlRequest delegate:contentCafeDelegate];
 	[cafeBinding release];
-	NSArray *responseBodyParts = response.bodyParts;
-	if (responseBodyParts == nil) {
-		NSLog(@"ERROR: responseBodyParts is nil. response: %@",response);
-		return nil;
-	}
-	ContentCafe_RequestItems* requestItems;
-	for(id bodyPart in responseBodyParts) {
-		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
-			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error for ContentCafe_XmlClassResponse: %s",err);
-			// TODO: Message
-			return nil;
-		}
-		else if ( (requestItems = [[bodyPart ContentCafe] RequestItems]) ) { 
-			ContentCafe_RequestItem* requestItem = (ContentCafe_RequestItem*)[[requestItems RequestItem] objectAtIndex:0];
-			ContentCafe_ProductItem* productItem =(ContentCafe_ProductItem*)[[[requestItem ProductItems] ProductItem] objectAtIndex:0];
-			return productItem;
-		}
-		else {
-			NSLog(@"ContentCafe_XmlClassResponse error.");
-			// TODO: Message
-		}
-		
-	}
-	return nil;
 }
-- (BOOL)fetchBookISBNArrayFromServer {
-	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	//vaultBinding.logXMLInOut = YES;
-	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
-	vaultContentsRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
-	BookVaultSoapResponse* response = [vaultBinding VaultContentsWithTokenUsingParameters:vaultContentsRequest];
-	[vaultBinding release];
-	NSArray *responseBodyParts = response.bodyParts;
-	for(id bodyPart in responseBodyParts) {
-		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
-			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error for VaultContents: %@",err);
-			// TODO: Message
-			return NO;
-		}
-		else if ( [[bodyPart VaultContentsWithTokenResult].ReturnCode intValue] == 300 ) { 
-			if (_isbns) [_isbns release]; // release old set of ISBNs
-			_isbns = [[bodyPart VaultContentsWithTokenResult].Contents.string retain];
-			return YES;
-		}
-		else {
-			NSLog(@"VaultContents error: %@",[bodyPart VaultContentsWithTokenResult].Message);
-			// TODO: Message
-			return NO;
-		}
-	}
-	return NO;
-}
+
 
 @end

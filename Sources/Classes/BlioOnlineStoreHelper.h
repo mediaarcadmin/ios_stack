@@ -11,9 +11,29 @@
 #import "BlioContentCafe.h"
 #import "BlioBookVault.h"
 
-@interface BlioOnlineStoreHelper : BlioStoreHelper<BookVaultSoapResponseDelegate> {
-	NSMutableArray* _isbns; // array of ISBN numbers
+@class BlioOnlineStoreHelper;
+
+@interface BlioOnlineStoreHelperBookVaultDelegate : NSObject <BookVaultSoapResponseDelegate> {
+	BlioOnlineStoreHelper * delegate;
 }
-- (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
-- (BOOL)fetchBookISBNArrayFromServer;
+@property (assign) BlioOnlineStoreHelper * delegate;
+
+@end
+
+@interface BlioOnlineStoreHelperContentCafeDelegate : NSObject <ContentCafeSoapResponseDelegate> {
+	BlioOnlineStoreHelper * delegate;
+}
+@property (assign) BlioOnlineStoreHelper * delegate;
+
+@end
+
+@interface BlioOnlineStoreHelper : BlioStoreHelper {
+	NSMutableArray* _isbns; // array of ISBN numbers
+	NSInteger newISBNs;
+	NSInteger responseCount;
+	NSInteger successfulResponseCount;
+	BlioOnlineStoreHelperBookVaultDelegate * bookVaultDelegate;
+	BlioOnlineStoreHelperContentCafeDelegate * contentCafeDelegate;
+}
+
 @end

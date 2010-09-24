@@ -11,7 +11,7 @@
 
 @implementation BlioStoreFeed
 
-@synthesize parserClass, parser, title, categories, entities, feedURL, nextURL, totalResults, id,sourceID;
+@synthesize parserClass, parser, title, categories, entities, feedURL, nextURL, totalResults, id,sourceID,previousFeedCount;
 
 - (id)init {
     if ((self = [super init])) {
@@ -35,7 +35,7 @@
     self.entities = nil;
     self.feedURL = nil;
     self.nextURL = nil;
-    [super dealloc];
+   [super dealloc];
 }
 
 @end
