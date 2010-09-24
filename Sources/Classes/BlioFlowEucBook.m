@@ -61,6 +61,9 @@
     [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.bookID];
     self.textFlow = nil;
     [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:self.bookID];
+    
+    BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    [aBook flushCaches];
     self.bookID = nil;
     
     [navPoints release];
