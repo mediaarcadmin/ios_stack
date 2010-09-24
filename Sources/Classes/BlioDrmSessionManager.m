@@ -102,12 +102,12 @@ ErrorExit:
 	self.drmInitialized = YES;
 }
 
-- (void)reportReading {
+- (BOOL)reportReading {
     NSLog(@"Report reading for book with ID %@", self.headerBookID);
     
     if ( !self.drmInitialized ) {
         NSLog(@"DRM error: cannot report reading because DRM is not initialized.");
-        return;
+        return NO;
     }
     
     DRM_RESULT dr = DRM_SUCCESS;   
@@ -120,7 +120,9 @@ ErrorExit:
 	if (dr != DRM_SUCCESS) {
 		unsigned int drInt = (unsigned int)dr;
 		NSLog(@"DRM commit error: %08X",drInt);
+        return NO;
 	}
+    return YES;
 }
 
 - (DRM_RESULT)getServerResponse:(NSString*)url challengeBuf:(DRM_BYTE*)pbChallenge 
@@ -397,7 +399,8 @@ ErrorExit:
 #ifdef TEST_MODE
 	[self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcknowledgeLicense];
 #else
-	rgchURL[cchUrl] = '\0';
+	DRM_CHAR rgchURL[MAX_URL_SIZE];
+    rgchURL[0] = '\0';
 	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcknowledgeLicense];
 #endif
 	//NSLog(@"DRM license acknowledgment response: %s",(unsigned char*)pbResponse);

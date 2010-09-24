@@ -140,6 +140,10 @@
     }
 }
 
+- (void)reportReadingIfRequired {
+    [[self xpsProvider] reportReadingIfRequired];
+}
+
 - (NSString *)bookCacheDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;

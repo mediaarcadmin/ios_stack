@@ -172,6 +172,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             BlioBookmarkPoint *implicitPoint = [newBook implicitBookmarkPoint];
             [self.bookView goToBookmarkPoint:implicitPoint animated:NO];
         }
+        
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        }
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     } 
     
     return self;
@@ -950,6 +955,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         //        if(_contentsSheet) {
         //            [self performSelector:@selector(dismissContents)];
         //        }
+        [self.book reportReadingIfRequired];
+        
         if(_bookView) {
             // Need to do this now before the view is removed and doesn't have a window.
             if ([_bookView wantsTouchesSniffed]) {
@@ -1049,10 +1056,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)didReceiveMemoryWarning 
 {
+    [self.book reportReadingIfRequired];
     [self.book flushCaches];
 	[super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
 }
 
+- (void)applicationDidEnterBackground:(NSNotification *)notification {
+    [self.book reportReadingIfRequired];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification {
+    [self.book reportReadingIfRequired];
+}
 
 - (void)dealloc 
 {

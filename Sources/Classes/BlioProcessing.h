@@ -62,6 +62,8 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void)setBookValue:(id)value forKey:(NSString *)key;
 - (id)getBookValueForKey:(NSString *)key;
 
+- (void)reportBookReadingIfRequired;
+
 @end
 
 @protocol BlioProcessingDelegate

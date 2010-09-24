@@ -158,7 +158,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     self.accessibilityElements = nil;
     self.accessibilityCache = nil;
-    self.textFlow = nil;
     self.scrollView = nil;
     self.currentPageLayer = nil;
     self.pageCropsCache = nil;
@@ -194,6 +193,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     self.delegate = nil;
+    
+    BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    [aBook flushCaches];
     
     self.bookID = nil;
     [layoutCacheLock release];
@@ -930,6 +932,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     if (isCancelled) return nil;
     NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    // Flush caches now as this is hapenning on the highlights rendering thread and won't be cleaned up elsewhere
+    // Ideally this should not be relying on a cached xpsProvider on this thread
+    BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    [aBook flushCaches];
     
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         

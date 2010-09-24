@@ -136,6 +136,7 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow etc.)
 - (void)flushCaches;
+- (void)reportReadingIfRequired;
 
 - (NSArray *)sortedBookmarks;
 - (NSArray *)sortedNotes;
