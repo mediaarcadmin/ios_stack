@@ -44,6 +44,8 @@
 }
 
 - (void)finish {
+    [self reportBookReadingIfRequired];
+
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
     
@@ -51,7 +53,7 @@
     finished = YES;
     
     [self didChangeValueForKey:@"isExecuting"];
-    [self didChangeValueForKey:@"isFinished"];
+    [self didChangeValueForKey:@"isFinished"];    
 }
 
 
@@ -166,6 +168,7 @@
     }
     
     [eucBook release];
+    
     [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
     
     [pool drain];

@@ -950,6 +950,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         //        if(_contentsSheet) {
         //            [self performSelector:@selector(dismissContents)];
         //        }
+        [self.book reportReadingIfRequired];
+        
         if(_bookView) {
             // Need to do this now before the view is removed and doesn't have a window.
             if ([_bookView wantsTouchesSniffed]) {

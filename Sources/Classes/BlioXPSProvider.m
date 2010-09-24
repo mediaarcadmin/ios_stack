@@ -48,9 +48,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
 		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
-        NSLog(@"------- BOUND TO BOOK %@ --------------", [self.book title]);
         if ([drmSessionManager bindToLicense]) {
             decryptionAvailable = YES;
+            if (reportingStatus != kBlioXPSProviderReportingStatusComplete) {
+                reportingStatus = kBlioXPSProviderReportingStatusRequired;
+            }
         }
     }
 	return drmSessionManager;
@@ -84,14 +86,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     [inflateLock release];
     
     self.componentCache = nil;
-	
-	if (drmSessionManager) {
-        // Only reports reading if decryption actually took place
-        [drmSessionManager reportReading];
-        NSLog(@"------- REPORTED READING FOR BOOK %@ --------------", [self.book title]);
+    
+    if (drmSessionManager) {
 		[drmSessionManager release];
     }
-    
+	
     [super dealloc];
 }
 
@@ -167,6 +166,14 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 		drmSessionManager = nil;
     }
     return self;
+}
+
+- (void)reportReadingIfRequired {
+    if (reportingStatus == kBlioXPSProviderReportingStatusRequired) {
+        if ([drmSessionManager reportReading]) {
+            reportingStatus = kBlioXPSProviderReportingStatusComplete;
+        }
+    }
 }
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path {
@@ -485,8 +492,21 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     NSData *componentData = [self rawDataForComponentAtPath:componentPath];
              
     if (encrypted) {
-		//if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
-        if ((self.drmSessionManager == nil) || !decryptionAvailable || ![self.drmSessionManager decryptData:componentData]) {
+        BOOL decrypted = NO;
+        if (!decryptionAvailable) {
+            // Check if this is first run
+            if (self.drmSessionManager && decryptionAvailable) {
+                if ([self.drmSessionManager decryptData:componentData]) {
+                    decrypted = YES;
+                }
+            }
+        } else {
+            if ([self.drmSessionManager decryptData:componentData]) {
+                decrypted = YES;
+            }
+        }
+        
+        if (!decrypted) {
 			NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
             return nil;
         }
