@@ -27,7 +27,7 @@
 {
     UILabel *label = [[[UILabel alloc] initWithFrame:frame] autorelease];
     
-	label.textAlignment = UITextAlignmentLeft;
+	label.textAlignment = UITextAlignmentCenter;
     label.text = title;
 	label.adjustsFontSizeToFitWidth = YES;
 	label.numberOfLines = 0;
@@ -103,6 +103,7 @@
 		explanationFrame.size.height = explanationSize.height;
 		explanationLabel.frame = explanationFrame;
 		explanationLabel.text = explanationText;
+		explanationLabel.textAlignment = UITextAlignmentCenter;
 		
 		// blioreader.com button.
 		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];

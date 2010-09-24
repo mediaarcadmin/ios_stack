@@ -2194,7 +2194,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 				progressView.progress = 0;
 			}
 			self.accessoryView = pauseButton;
-			self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+			
+			if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+			else self.authorLabel.text = NSLocalizedString(@"Processing...","\"Processing...\" status indicator in BlioLibraryListCell");
+
+		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed) {
+			self.accessoryView = nil;
+			self.authorLabel.text = NSLocalizedString(@"Retrieving Information...","\"Retrieving Information...\" status indicator in BlioLibraryListCell");
+			self.progressView.hidden = YES;
+			self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
 			self.accessoryView = resumeButton;
@@ -2308,13 +2317,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
-	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
-		//	NSLog(@"BlioLibraryListViewCell onProcessingCompleteNotification entered");
-		//	progressView.hidden = YES;
-		//	[self resetAuthorText];
-		//	self.accessoryView = nil;
-		// bookView.alpha = 1;
-//		[(BlioLibraryViewController*)delegate calculateMaxLayoutPageEquivalentCount];
+	//	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
+	//	NSLog(@"BlioLibraryListViewCell onProcessingCompleteNotification entered");
+	//	progressView.hidden = YES;
+	//	[self resetAuthorText];
+	//	self.accessoryView = nil;
+	// bookView.alpha = 1;
+	//		[(BlioLibraryViewController*)delegate calculateMaxLayoutPageEquivalentCount];
+	//	}
+	if ([[note object] isKindOfClass:[BlioProcessingDownloadOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
+		if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+		else self.authorLabel.text = NSLocalizedString(@"Processing...","\"Processing...\" status indicator in BlioLibraryListCell");
 	}
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {

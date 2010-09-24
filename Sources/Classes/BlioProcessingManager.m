@@ -235,9 +235,9 @@
 
 		}		
 	}
-	NSLog(@"processingState before: %i",[[aBook valueForKey:@"processingState"] intValue]);
+//	NSLog(@"processingState before: %i",[[aBook valueForKey:@"processingState"] intValue]);
 	[moc refreshObject:aBook mergeChanges:YES];
-	NSLog(@"processingState after: %i",[[aBook valueForKey:@"processingState"] intValue]);
+//	NSLog(@"processingState after: %i",[[aBook valueForKey:@"processingState"] intValue]);
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		NSLog(@"WARNING: enqueue method called on already complete book!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
@@ -1108,6 +1108,17 @@
 	for (BlioProcessingOperation * op in operations) {
 		if ([op isKindOfClass:targetClass] && op.sourceID == sourceID && [op.sourceSpecificID isEqualToString:sourceSpecificID]) {
 			return op;
+		}
+	}
+	return nil;
+	
+}
+- (BlioProcessingDownloadOperation*) incompleteDownloadOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+	// helper function to search for such an operation that meets the conditions in the parameters
+	NSArray * operations = [preAvailabilityQueue operations];
+	for (BlioProcessingOperation * op in operations) {
+		if ([op isKindOfClass:[BlioProcessingDownloadOperation class]] && op.sourceID == sourceID && [op.sourceSpecificID isEqualToString:sourceSpecificID] && op.percentageComplete != 100) {
+			return (BlioProcessingDownloadOperation*)op;
 		}
 	}
 	return nil;

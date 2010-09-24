@@ -125,8 +125,8 @@
     if([eucBook paginationIsComplete] || eucBook == nil) {
         // This book is already fully paginated!
 		NSLog(@"This book is already fully paginated!");
-		self.percentageComplete = 100;
         self.operationSuccess = YES;
+		self.percentageComplete = 100;
         [self finish];
     } else {
         BOOL isDirectory = YES;
@@ -137,8 +137,8 @@
             [[NSFileManager defaultManager] copyItemAtPath:cannedPaginationPath
                                                     toPath:paginationPath 
                                                      error:NULL];
-			self.percentageComplete = 100;
             self.operationSuccess = YES;
+			self.percentageComplete = 100;
             [self finish];
         } else {
             // Create the directory to store the pagination data if necessary.
@@ -197,8 +197,8 @@
 	}				
 #endif
 	
-    self.percentageComplete = 100;
     self.operationSuccess = YES;
+    self.percentageComplete = 100;
     
     CFAbsoluteTime elapsedTime = CFAbsoluteTimeGetCurrent() - self.startTime;
     NSLog(@"Pagination of book %@ took %ld seconds", self.bookTitle, (long)round(elapsedTime));

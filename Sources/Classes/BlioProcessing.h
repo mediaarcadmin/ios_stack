@@ -11,6 +11,7 @@
 
 @class BlioBook;
 @class BlioProcessingCompleteOperation;
+@class BlioProcessingDownloadOperation;
 
 typedef enum {
 	BlioBookSourceNotSpecified = 0,
@@ -97,5 +98,5 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void)stopDownloadingOperations;
 - (NSArray *)downloadOperations;
 - (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
-
+- (BlioProcessingDownloadOperation*) incompleteDownloadOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 @end
