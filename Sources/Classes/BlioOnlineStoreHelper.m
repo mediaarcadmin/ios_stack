@@ -35,14 +35,19 @@
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
+	self.username = user;
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
 	loginRequest.username = user;	
 	loginRequest.password = password; 
 	loginRequest.siteId =  [NSNumber numberWithInt:HP_STORE];
-	BookVaultSoapResponse * response = [vaultBinding LoginUsingParameters:loginRequest];
+	[vaultBinding LoginAsyncUsingParameters:loginRequest delegate:self];
 	[vaultBinding release];
-			
+}
+- (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
 	NSArray *responseBodyParts = response.bodyParts;
+	for(id bodyPart in responseBodyParts) {
+		NSLog(@"bodyPart: %@",bodyPart);
+	}
 	for(id bodyPart in responseBodyParts) {
 		NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
@@ -53,7 +58,6 @@
 		}
 		else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
 			self.isLoggedIn = YES;
-			self.username = user;
 			self.token = [bodyPart LoginResult].Token;
 			self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
 			NSLog(@"timeout: %@",self.timeout);
