@@ -10,12 +10,12 @@
 
 @implementation EucPageTurningMeshSource
 
-- (GLuint)triangleStripCountForMeshWithPointDimensions:(THGLuintSize)meshDimensions
+- (GLuint)triangleStripCountForMeshWithPointDimensions:(THIVec2)meshDimensions
 {
-    return ((meshDimensions .height - 1) * (meshDimensions.width * 2 + 3));
+    return ((meshDimensions.y - 1) * (meshDimensions.x * 2 + 3));
 }
 
-- (NSData *)triangleStripForMeshWithPointDimensions:(THGLuintSize)meshDimensions
+- (NSData *)triangleStripForMeshWithPointDimensions:(THIVec2)meshDimensions
 {
     GLuint count = [self triangleStripCountForMeshWithPointDimensions:meshDimensions];
     NSMutableData *data = [[NSMutableData alloc] initWithLength:count * sizeof(GLuint)];
@@ -23,20 +23,20 @@
     GLuint *triangleStripIndices = data.mutableBytes;
     
     GLuint triangleStripIndex = 0;
-    GLuint width = meshDimensions.width;
+    GLuint width = meshDimensions.x;
     GLuint lastColumn = width - 1;
-    for(GLuint row = 0; row < meshDimensions.height - 1; ++row) {
+    for(GLuint row = 0; row < meshDimensions.y - 1; ++row) {
         if((row % 2) == 0) {
             GLuint i = 0;
             triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row, width);
-            for(; i < meshDimensions.width; ++i) {
+            for(; i < meshDimensions.x; ++i) {
                 triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row+1, width);
                 triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row, width);
             }
             triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(lastColumn, row+1, width);
             triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(lastColumn, row+1, width);
         } else {
-            GLuint i = meshDimensions.width - 1;
+            GLuint i = meshDimensions.x - 1;
             triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row, width);
             for(; i >= 0; --i) {
                 triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row+1, width);
@@ -50,25 +50,25 @@
     return data;
 }
 
-- (NSData *)textureCoordinatesForMeshWithPointDimensions:(THGLuintSize)meshDimensions 
-                                             textureSize:(THGLuintSize)textureSize
-                                          validImageRect:(THGLuintSize)subTextureSize
+- (NSData *)textureCoordinatesForMeshWithPointDimensions:(THIVec2)meshDimensions 
+                                             textureSize:(THIVec2)textureSize
+                                          validImageRect:(THIVec2)subTextureSize
 {
-    GLuint count = meshDimensions.width * meshDimensions.height;
-    NSMutableData *data = [[NSMutableData alloc] initWithLength:count * sizeof(THGLfloatPoint2D)];
+    GLuint count = meshDimensions.x * meshDimensions.y;
+    NSMutableData *data = [[NSMutableData alloc] initWithLength:count * sizeof(THVec2)];
         
-    GLfloat po2WidthScale = (GLfloat)subTextureSize.width / (GLfloat)textureSize.width;
-    GLfloat po2HeightScale = (GLfloat)subTextureSize.height / (GLfloat)textureSize.height;
+    GLfloat po2WidthScale = (GLfloat)subTextureSize.x / (GLfloat)textureSize.x;
+    GLfloat po2HeightScale = (GLfloat)subTextureSize.y / (GLfloat)textureSize.y;
     
-    GLfloat xStep = 2.0f / (2 * meshDimensions.width - 3);
-    GLfloat yStep = 1.0f / (meshDimensions.height - 1);
+    GLfloat xStep = 2.0f / (2 * meshDimensions.x - 3);
+    GLfloat yStep = 1.0f / (meshDimensions.y - 1);
     
     GLfloat yCoord = 0.0f;
-    THGLfloatPoint2D *point = data.mutableBytes;
-    for(int row = 0; row < meshDimensions.height; ++row) {
+    THVec2 *point = data.mutableBytes;
+    for(int row = 0; row < meshDimensions.y; ++row) {
         GLfloat xCoord = 0.0f;
-        for(int column = 0; column < meshDimensions.width; ++column) {
-            //THGLfloatPoint2D *point = textureCoordinates + THGLIndexForColumnAndRow(column, row, meshSize.width);
+        for(int column = 0; column < meshDimensions.x; ++column) {
+            //THGLfloatPoint2D *point = textureCoordinates + THGLIndexForColumnAndRow(column, row, meshSize.x);
             point->x = MIN(xCoord, 1.0f) * po2WidthScale;
             point->y = MIN(yCoord, 1.0f) * po2HeightScale;                    
             if(xCoord == 0.0f && (row % 2) == 1) {
@@ -84,26 +84,26 @@
     return data;
 }
 
-- (NSMutableData *)flatMeshWithPointDimensions:(THGLuintSize)meshDimensions
-                                          size:(THGLfloatSize)dimensions
-                                      atOrigin:(THGLfloatPoint2D)origin
+- (NSMutableData *)flatMeshWithPointDimensions:(THIVec2)meshDimensions
+                                          size:(THVec2)dimensions
+                                      atOrigin:(THVec2)origin
 {
-    GLuint count = meshDimensions.width * meshDimensions.height;
-    NSMutableData *data = [[NSMutableData alloc] initWithLength:count * sizeof(THGLfloatPoint3D)];
+    GLuint count = meshDimensions.x * meshDimensions.y;
+    NSMutableData *data = [[NSMutableData alloc] initWithLength:count * sizeof(THVec3)];
     
-    GLfloat xStep = ((GLfloat)dimensions.width * 2) / (2 * meshDimensions.width - 3);
-    GLfloat yStep = ((GLfloat)dimensions.height / (meshDimensions.height - 1));
+    GLfloat xStep = ((GLfloat)dimensions.x * 2) / (2 * meshDimensions.x - 3);
+    GLfloat yStep = ((GLfloat)dimensions.y / (meshDimensions.y - 1));
     GLfloat baseXCoord = origin.x;
     GLfloat yCoord = origin.y;
 
-    GLfloat maxX = dimensions.width + baseXCoord;
-    GLfloat maxY = dimensions.height + yCoord;
+    GLfloat maxX = dimensions.x + baseXCoord;
+    GLfloat maxY = dimensions.y + yCoord;
     
-    THGLfloatPoint3D *point = data.mutableBytes;
+    THVec3 *point = data.mutableBytes;
     
-    for(int row = 0; row < meshDimensions.height; ++row) {
+    for(int row = 0; row < meshDimensions.y; ++row) {
         GLfloat xCoord = baseXCoord;
-        for(int column = 0; column < meshDimensions.width; ++column) {
+        for(int column = 0; column < meshDimensions.x; ++column) {
             point->x = MIN(xCoord, maxX);
             point->y = MIN(yCoord, maxY);
             // z is already 0.

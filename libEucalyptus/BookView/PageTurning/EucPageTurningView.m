@@ -21,78 +21,49 @@
 
 #define FOV_ANGLE ((GLfloat)10.0f)
 
-// to perform cross product between 2 vectors in myGluLookAt 
-static void CrossProd(float x1, float y1, float z1, float x2, float y2, float z2, float res[3]) 
-{ 
-    res[0] = y1*z2 - y2*z1; 
-    res[1] = x2*z1 - x1*z2; 
-    res[2] = x1*y2 - x2*y1; 
-} 
+static CATransform3D THCATransform3DLookAt(CATransform3D modelViewMatrix,
+                                           THVec3 eye,
+                                           THVec3 lookAt, 
+                                           THVec3 up) 
+{
+    THVec3 viewingVetor = THVec3Normalize(THVec3Subtract(lookAt, eye));
 
-// From http://www.khronos.org/message_boards/viewtopic.php?t=541
-static void FadiGluLookAt(float eyeX, float eyeY, float eyeZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ) 
-{ 
-    // i am not using here proper implementation for vectors. 
-    // if you want, you can replace the arrays with your own 
-    // vector types 
-    float f[3]; 
+    THVec3 side  = THVec3Normalize(THVec3CrossProduct(viewingVetor, up));
+    THVec3 newUp = THVec3Normalize(THVec3CrossProduct(side, viewingVetor));
     
-    // calculating the viewing vector 
-    f[0] = lookAtX - eyeX; 
-    f[1] = lookAtY - eyeY; 
-    f[2] = lookAtZ - eyeZ; 
+    CATransform3D result = { side.x,  newUp.x, -viewingVetor.x, 0.0f,
+                             side.y,  newUp.y, -viewingVetor.y, 0.0f,
+                             side.z,  newUp.z, -viewingVetor.z, 0.0f,
+                             0.0f,    0.0f,    0.0f,            1.0f };
+
+    result = CATransform3DConcat(modelViewMatrix, result);
+    result = CATransform3DTranslate(result, -eye.x, -eye.y, -eye.z);
     
-    GLfloat fMag;//, upMag; 
-    fMag = sqrtf(f[0]*f[0] + f[1]*f[1] + f[2]*f[2]); 
-    //upMag = sqrt(upX*upX + upY*upY + upZ*upZ); 
-    
-    // normalizing the viewing vector 
-    if( fMag != 0) 
-    { 
-        f[0] = f[0]/fMag; 
-        f[1] = f[1]/fMag; 
-        f[2] = f[2]/fMag; 
-    } 
-    
-    // normalising the up vector. no need for this here if you have your 
-    // up vector already normalised, which is mostly the case. 
-    //if( upMag != 0 ) 
-    //{ 
-    //    upX = upX/upMag; 
-    //    upY = upY/upMag; 
-    //    upZ = upZ/upMag; 
-    //} 
-    
-    float s[3], u[3]; 
-    
-    CrossProd(f[0], f[1], f[2], upX, upY, upZ, s); 
-    CrossProd(s[0], s[1], s[2], f[0], f[1], f[2], u); 
-    
-    float M[]= 
-    { 
-        s[0], u[0], -f[0], 0, 
-        s[1], u[1], -f[1], 0, 
-        s[2], u[2], -f[2], 0, 
-        0, 0, 0, 1 
-    }; 
-    
-    glMultMatrixf(M); 
-    glTranslatef (-eyeX, -eyeY, -eyeZ); 
+    return result;
 }
 
-// From http://www.typhoonlabs.com/tutorials/gles/Tutorial2.pdf
-static void GLUPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar) 
+static CATransform3D THCATransform3DPerspective(CATransform3D perspectiveMatrix, GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far) 
 { 
-    GLfloat xmin, xmax, ymin, ymax;      
-        
-    ymax = zNear * ((GLfloat)tanf(fovy * (float)M_PI / 360.0f));   
-    ymin = -ymax; 
+    GLfloat left, right, bottom, top;      
     
-    xmin = ymin * aspect;
-    xmax = ymax * aspect;  
-    glFrustumf(xmin, xmax, ymin, ymax, zNear, zFar); 
+    top = near * tanf(fovy * (float)M_PI / 360.0f);   
+    bottom = -top; 
+    
+    left = bottom * aspect;
+    right = top * aspect;  
+        
+    GLfloat twoNear = 2.0f * near;
+    GLfloat deltaX = right - left;
+    GLfloat deltaY = top - bottom;
+    GLfloat deltaz = far - near;
+    
+    CATransform3D m = { twoNear / deltaX, 0.0f, 0.0f, 0.0f,
+                        0.0f, twoNear / deltaY, 0.0f, 0.0f,
+                        (right + left) / deltaX, (top + bottom) / deltaY, -(far + near) / deltaz, -1.0f,
+                        0.0f, 0.0f, (-twoNear * far) / deltaz, 0.0f };
+    
+    return CATransform3DConcat(perspectiveMatrix, m); 
 } 
-
 
 @interface EucPageTurningView ()
 
@@ -261,18 +232,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
     
-    glActiveTexture(GL_TEXTURE1);
-    glEnable(GL_TEXTURE_2D);
+    GLenum glError;
+    if((glError = glGetError()) != GL_NO_ERROR) {
+        NSLog(@"gl error 0x%x", glError);
+    }    
     
-    glActiveTexture(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
     NSString *path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
     NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
     glGenTextures(1, &_bookEdgeTexture);
@@ -284,17 +248,53 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+    NSData *vertexShaderSource = [THEmbeddedResourceManager embeddedResourceWithName:@"euc_page_turning.vsh"];
+    GLuint vertexShader = THGLLoadShader(GL_VERTEX_SHADER, vertexShaderSource.bytes, vertexShaderSource.length);
     
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    NSData *fragmentShaderSource = [THEmbeddedResourceManager embeddedResourceWithName:@"euc_page_turning.fsh"];
+    GLuint fragmentShader = THGLLoadShader(GL_FRAGMENT_SHADER, fragmentShaderSource.bytes, fragmentShaderSource.length);
+
+    _program = glCreateProgram();
+        
+    glAttachShader(_program, vertexShader);
+    glAttachShader(_program, fragmentShader);
+    glLinkProgram(_program);
+    
+    GLint linked;
+    glGetProgramiv(_program, GL_LINK_STATUS, &linked);
+    if(!linked) {
+        GLint infoLength;
+        glGetProgramiv(_program, GL_INFO_LOG_LENGTH, &infoLength);
+        
+        if(infoLength) {
+            char *infoLog = malloc(infoLength);
+            glGetProgramInfoLog(_program, infoLength, NULL, infoLog);
+            THLog(@"Error linking shaders into program: \"%s\"", infoLog);
+            free(infoLog);
+        } else {
+            THLog(@"Unknown error linking shaders into program");
+        }
+        glDeleteProgram(_program);
+        _program = 0;
+    }
+    
+    glUseProgram(_program);
+    
+    //glDeleteShader(vertexShader);
+    //glDeleteShader(fragmentShader);
+    
+    if((glError = glGetError()) != GL_NO_ERROR) {
+        NSLog(@"gl error 0x%x", glError);
+    }    
     
     _textureUploadContext = [[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
     
     _animatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"animatedBookTurnVertices" ofType:@"vertexData"]];
-    _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THGLfloatPoint3D) * 2);
+    _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THVec3) * 2);
     
     _reverseAnimatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"reverseAnimatedBookTurnVertices" ofType:@"vertexData"]];
-    _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THGLfloatPoint3D) * 2);
+    _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THVec3) * 2);
 
     self.multipleTouchEnabled = YES;
     //self.exclusiveTouch = YES;
@@ -336,6 +336,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
         free(_pageContentsInformation[i].textureCoordinates);
     }    
+    
+    if(_program) {
+        glDeleteProgram(_program);
+    }
     
     [_animatedTurnData release];
     [_reverseAnimatedTurnData release];
@@ -412,7 +416,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
     memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-    
     
     [self _setupConstraints];
     
@@ -523,14 +526,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
         glBindTexture(GL_TEXTURE_2D, *textureRef); 
         
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));
+    
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
         
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);        
         
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));
-    
         if(textureData) {
             free(textureData);
         }
@@ -884,54 +887,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
 }
 
-static inline THGLfloatPoint3D addVector(THGLfloatPoint3D a, THGLfloatPoint3D b)
+static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
-    THGLfloatPoint3D ret = { a.x + b.x, a.y + b.y, a.z + b.z };
-    return ret;
-}
+    THVec3 leftVector = THVec3Subtract(right, middle);
+    THVec3 rightVector = THVec3Subtract(right, left);
 
-static inline THGLfloatPoint3D subtractVector(THGLfloatPoint3D a, THGLfloatPoint3D b)
-{
-    THGLfloatPoint3D ret = { a.x - b.x, a.y - b.y, a.z - b.z };
-    return ret;
-}
-
-static inline THGLfloatPoint3D multiplyVector(THGLfloatPoint3D a, GLfloat b)
-{
-    THGLfloatPoint3D ret = { a.x * b, a.y * b, a.z * b };
-    return ret;
-}
-
-static inline THGLfloatPoint3D crossProduct(THGLfloatPoint3D a, THGLfloatPoint3D b)
-{
-    THGLfloatPoint3D ret = { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
-    return ret;
-}
-
-static inline GLfloat dotProduct(THGLfloatPoint3D a) 
-{
-    return a.x * a.x + a.y * a.y + a.z * a.z;
-}
-
-static inline GLfloat magnitude(THGLfloatPoint3D a) 
-{
-    return fabsf(sqrtf(dotProduct(a)));
-}
-
-static inline THGLfloatPoint3D normalise(THGLfloatPoint3D a)
-{
-    GLfloat aMagnitude = magnitude(a); 
-    THGLfloatPoint3D ret = { a.x / aMagnitude, a.y / aMagnitude, a.z / aMagnitude};
-    return ret;
-}
-
-
-static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D middle, THGLfloatPoint3D right)
-{
-    THGLfloatPoint3D leftVector = subtractVector(right, middle);
-    THGLfloatPoint3D rightVector = subtractVector(right, left);
-
-    return normalise(crossProduct(leftVector, rightVector));
+    return THVec3Normalize(THVec3CrossProduct(leftVector, rightVector));
 }
 
 - (void)_addConstraintFrom:(GLubyte)indexA to:(GLubyte)indexB
@@ -944,10 +905,10 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
         }
     }
     if(shouldAdd) {
-        THGLfloatPoint3D *flatPageVertices = (THGLfloatPoint3D *)_pageVertices;
+        THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
         _constraints[_constraintCount].particleAIndex = indexA;
         _constraints[_constraintCount].particleBIndex = indexB;
-        _constraints[_constraintCount].lengthSquared = powf(magnitude(subtractVector(flatPageVertices[indexA], flatPageVertices[indexB])), 2);
+        _constraints[_constraintCount].lengthSquared = powf(THVec3Magnitude(THVec3Subtract(flatPageVertices[indexA], flatPageVertices[indexB])), 2);
         
         ++_constraintCount;
     }
@@ -1005,7 +966,7 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
     // run through the vertex normals normalising them.
     memset(_pageVertexNormals, 0, sizeof(_pageVertexNormals));
     
-    THGLfloatPoint3D *flatPageVertexNormals = (THGLfloatPoint3D *)_pageVertexNormals;
+    THVec3 *flatPageVertexNormals = (THVec3 *)_pageVertexNormals;
     for(int i = 0; i < TRIANGLE_STRIP_COUNT - 2; ++i) {
         GLubyte leftVertexIndex;
         GLubyte middleVertexIndex;
@@ -1022,21 +983,21 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
         if(leftVertexIndex != rightVertexIndex &&
            leftVertexIndex != middleVertexIndex &&
            middleVertexIndex != rightVertexIndex) {
-            THGLfloatPoint3D leftVertex = ((THGLfloatPoint3D *)_pageVertices)[leftVertexIndex];
-            THGLfloatPoint3D middleVertex = ((THGLfloatPoint3D *)_pageVertices)[middleVertexIndex];
-            THGLfloatPoint3D rightVertex = ((THGLfloatPoint3D *)_pageVertices)[rightVertexIndex];
+            THVec3 leftVertex = ((THVec3 *)_pageVertices)[leftVertexIndex];
+            THVec3 middleVertex = ((THVec3 *)_pageVertices)[middleVertexIndex];
+            THVec3 rightVertex = ((THVec3 *)_pageVertices)[rightVertexIndex];
             
-            THGLfloatPoint3D normal = triangleNormal(leftVertex, middleVertex, rightVertex);
+            THVec3 normal = triangleNormal(leftVertex, middleVertex, rightVertex);
             flatPageVertexNormals[leftVertexIndex] = 
-                            addVector(flatPageVertexNormals[leftVertexIndex], normal);
+                            THVec3Add(flatPageVertexNormals[leftVertexIndex], normal);
             flatPageVertexNormals[middleVertexIndex] = 
-                            addVector(flatPageVertexNormals[middleVertexIndex], normal);
+                            THVec3Add(flatPageVertexNormals[middleVertexIndex], normal);
             flatPageVertexNormals[rightVertexIndex] = 
-                            addVector(flatPageVertexNormals[rightVertexIndex], normal);
+                            THVec3Add(flatPageVertexNormals[rightVertexIndex], normal);
         }
     }
     for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
-        flatPageVertexNormals[i] = normalise(flatPageVertexNormals[i]);
+        flatPageVertexNormals[i] = THVec3Normalize(flatPageVertexNormals[i]);
     }
 }
 
@@ -1059,6 +1020,7 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
 {        
     [super drawView];
     
+    GLenum glError;
     BOOL animating = self.isAnimating;
     
     BOOL shouldStopAnimating = !animating;
@@ -1068,202 +1030,171 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
         shouldStopAnimating = [self _satisfyConstraints];
         [self _calculateVertexNormals];
     } 
-
+    
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
-
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, _viewFramebuffer);
     glViewport(0, 0, _backingWidth, _backingHeight);
     
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glRotatef(180, 0, 0, 1);
-    FadiGluLookAt(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, - (_viewportLogicalSize.height * 0.5f) / tanf(FOV_ANGLE * ((float)M_PI / 360.0f)), 
-                  _viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, 0, 
-                  0, 1, 0);
     
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    GLUPerspective(FOV_ANGLE, (GLfloat)_viewportLogicalSize.width / (GLfloat)_viewportLogicalSize.height, 0.5, 1000.0);
+    // Set up model and perspective matrices.
+    CATransform3D modelViewMatrix = CATransform3DMakeRotation((CGFloat)M_PI, 0, 0, 1);
+    modelViewMatrix = THCATransform3DLookAt(modelViewMatrix, 
+                                            THVec3Make(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, -(_viewportLogicalSize.height * 0.5f) / tanf(FOV_ANGLE * ((float)M_PI / 360.0f))), 
+                                            THVec3Make(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, 0.0f), 
+                                            THVec3Make(0.0f, 1.0f, 0.0f));
+
+    glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
     
-    glMatrixMode(GL_MODELVIEW);
+    CATransform3D normalMatrix = THCATransform3DTranspose(CATransform3DInvert(modelViewMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(_program, "uNormalMatrix"), sizeof(normalMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&normalMatrix);
+
+    CATransform3D projectionMatrix = CATransform3DIdentity;
+    projectionMatrix = THCATransform3DPerspective(projectionMatrix, FOV_ANGLE, (GLfloat)_viewportLogicalSize.width / (GLfloat)_viewportLogicalSize.height, 0.5f, 1000.0f);
+    glUniformMatrix4fv(glGetUniformLocation(_program, "uProjectionMatrix"), sizeof(projectionMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&projectionMatrix);
+
+    if((glError = glGetError()) != GL_NO_ERROR) {
+        NSLog(@"gl error 0x%x", glError);
+    }
     
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glShadeModel(GL_SMOOTH);
+
+    // Set up light.
+    THVec3 lightPosition = THVec3Make(_viewportLogicalSize.width * _lightPosition.x, 
+                                      _viewportLogicalSize.height * _lightPosition.y, 
+                                      -MIN(_viewportLogicalSize.width, _viewportLogicalSize.height) * (_lightPosition.z - (_dimQuotient * (_lightPosition.z - 0.3f))));
+    lightPosition = THCATransform3DVec3Multiply(modelViewMatrix, lightPosition);
+    glUniform3fv(glGetUniformLocation(_program, "uLight.position"), 1, (GLfloat *)&lightPosition);
     
-    glLightModelx(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+    glUniform4fv(glGetUniformLocation(_program, "uLight.ambientColor"), 1, (GLfloat *)&_ambientLightColor);
+    glUniform4fv(glGetUniformLocation(_program, "uLight.diffuseColor"), 1, (GLfloat *)&_diffuseLightColor);
+
+    glUniform3f(glGetUniformLocation(_program, "uLight.attenuationFactors"), 
+                _constantAttenuationFactor + (_dimQuotient * (0.9f - 0.55f)), 
+                _linearAttenutaionFactor, 
+                _quadraticAttenuationFactor);
     
-    glMaterialfv(GL_FRONT, GL_SPECULAR, _specularColor);
-    glMaterialfv(GL_FRONT, GL_SHININESS, &_shininess);
+    if((glError = glGetError()) != GL_NO_ERROR) {
+        NSLog(@"gl error 0x%x", glError);
+    }
     
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    
+    // Set up the material.
+    glUniform4fv(glGetUniformLocation(_program, "uMaterial.specularColor"), 1, (GLfloat *)&_specularColor);
+    glUniform1f(glGetUniformLocation(_program, "uMaterial.shininess"), _shininess);
+          
+    if((glError = glGetError()) != GL_NO_ERROR) {
+        NSLog(@"gl error 0x%x", glError);
+    }
+    
+    // Tell the renderer id we're doing white-on-black.
+    GLint invert = _pageTextureIsDark ? 1 : 0;
+    glUniform1i(glGetUniformLocation(_program, "uInvertContentsLuminance"), invert);
+    glUniform1i(glGetUniformLocation(_program, "uPaperIsDark"), invert);
+    
+    // Clear the buffer, ready to draw.
     glEnable(GL_DEPTH_TEST);
-    
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Assign GL_TEXTUREs to our samplers (we'll bind the textures before use).    
+    glUniform1i(glGetUniformLocation(_program, "sPaperTexture"), 0);
+    glUniform1i(glGetUniformLocation(_program, "sContentsTexture"), 1);
+
+    // Set up the attributes we're passing arrays to.  We'll set the arrays eow.
+    glEnableVertexAttribArray(glGetAttribLocation(_program, "aPageTextureCoordinate"));
+    glEnableVertexAttribArray(glGetAttribLocation(_program, "aContentsTextureCoordinate"));
+    glEnableVertexAttribArray(glGetAttribLocation(_program, "aPosition"));
+    glEnableVertexAttribArray(glGetAttribLocation(_program, "aNormal"));
     
+    // Set up to draw the flat page.
+    glVertexAttribPointer(glGetAttribLocation(_program, "aPageTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _blankPageTextureCoordinates.textureCoordinates);
+    glVertexAttribPointer(glGetAttribLocation(_program, "aContentsTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageContentsInformation[_flatPageIndex].textureCoordinates->textureCoordinates);
+    glVertexAttribPointer(glGetAttribLocation(_program, "aPosition"), 3, GL_FLOAT, GL_FALSE, 0, _stablePageVertices);
+    glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, _stablePageVertexNormals);
     
-    GLfloat lightPosition[] = { _viewportLogicalSize.width * _lightPosition.x, 
-                                _viewportLogicalSize.height * _lightPosition.y, 
-                                -MIN(_viewportLogicalSize.width, _viewportLogicalSize.height) * (_lightPosition.z - (_dimQuotient * (_lightPosition.z - 0.3f))), 
-                                1.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, _ambientLightColor);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, _diffuseLightColor);
-    
-    GLfloat constantAttenuation = _constantAttenuationFactor + (_dimQuotient * (0.9f - 0.55f));
-    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, constantAttenuation);
-    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, _linearAttenutaionFactor);
-    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION,_quadraticAttenuationFactor );
-    
-    
-    glClientActiveTexture(GL_TEXTURE0);
-    glActiveTexture(GL_TEXTURE0);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_DECAL); 
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    
-    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_DECAL); 
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-    
-    glClientActiveTexture(GL_TEXTURE1);
-    glActiveTexture(GL_TEXTURE1);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-    
-    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-    
-    glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_DECAL); 
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
-    glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-    
-    
-    glClientActiveTexture(GL_TEXTURE0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
-    glTexCoordPointer(2, GL_FLOAT, 0, _blankPageTextureCoordinates.textureCoordinates);
-    glVertexPointer(3, GL_FLOAT, 0, _stablePageVertices);
-    glNormalPointer(GL_FLOAT, 0, _stablePageVertexNormals);    
     
     glActiveTexture(GL_TEXTURE1);
-    glClientActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex].texture);
-    glTexCoordPointer(2, GL_FLOAT, 0, &_pageContentsInformation[_flatPageIndex].textureCoordinates->textureCoordinates);
-    glVertexPointer(3, GL_FLOAT, 0, _stablePageVertices);
-    glNormalPointer(GL_FLOAT, 0, _stablePageVertexNormals);
-                
-    glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, _triangleStripIndices);
-    
-    if(!shouldStopAnimating) {
-        glClear(GL_DEPTH_BUFFER_BIT);
-            
-        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);
-        glTexCoordPointer(2, GL_FLOAT, 0, &_pageContentsInformation[_flatPageIndex-1].textureCoordinates->textureCoordinates);
 
-        const THGLfloatPoint3D *pageVertices, *pageVertexNormals;        
+    glUniform1f(glGetUniformLocation(_program, "uBackContentsBleed"), 0.2);
+    
+/*
+    for(int i = 0; i < TRIANGLE_STRIP_COUNT; ++i) {
+        THVec3 vertex = ((THVec3 *)_stablePageVertexNormals)[_triangleStripIndices[i]];
+        THVec3 projectedVertex = THVec3Normalize(THCATransform3DVec3Multiply(normalMatrix, vertex));
+      //  projectedVertex = THCATransform3DVec3Multiply(projectionMatrix, projectedVertex);
+        NSLog(@"[%f, %f, %f] -> [%f, %f, %f]", 
+              vertex.x, vertex.y, vertex.z,
+              projectedVertex.x, projectedVertex.y, projectedVertex.z);              
+    }
+*/
+  
+    // Draw the flat page.
+    glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, _triangleStripIndices);
+
+    if(!shouldStopAnimating) {
+        // If we're animating, we have a curved page to draw on top.
+        
+        // Clear the depth buffer so that this page wins if it has coordinates 
+        // that conincide with the flat page.
+        glClear(GL_DEPTH_BUFFER_BIT);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);        
+        glVertexAttribPointer(glGetAttribLocation(_program, "aContentsTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageContentsInformation[_flatPageIndex].textureCoordinates->textureCoordinates);
+        
+        const THVec3 *pageVertices, *pageVertexNormals;        
         if(!_isTurningAutomatically) {
-            pageVertices = (THGLfloatPoint3D *)_pageVertices;
-            pageVertexNormals = (THGLfloatPoint3D *)_pageVertexNormals;
+            pageVertices = (THVec3 *)_pageVertices;
+            pageVertexNormals = (THVec3 *)_pageVertexNormals;
             
             //fwrite(pageVertices, sizeof(GLfloatTriplet), X_VERTEX_COUNT * Y_VERTEX_COUNT, tempFile);
             //fwrite(pageVertexNormals, sizeof(GLfloatTriplet), X_VERTEX_COUNT * Y_VERTEX_COUNT, tempFile);
             //fflush(tempFile);
         } else {
             if(!_automaticTurnIsForwards && _automaticTurnFrame == _reverseAnimatedTurnFrameCount) {
-                pageVertices = (const THGLfloatPoint3D *)_stablePageVertices;
-                pageVertexNormals = (const THGLfloatPoint3D *)_stablePageVertexNormals;
+                pageVertices = (const THVec3 *)_stablePageVertices;
+                pageVertexNormals = (const THVec3 *)_stablePageVertexNormals;
             } else {
-                pageVertices = (const THGLfloatPoint3D *)[_automaticTurnIsForwards ? _animatedTurnData : _reverseAnimatedTurnData bytes] + (X_VERTEX_COUNT * Y_VERTEX_COUNT * 2) * _automaticTurnFrame;
+                pageVertices = (const THVec3 *)[_automaticTurnIsForwards ? _animatedTurnData : _reverseAnimatedTurnData bytes] + (X_VERTEX_COUNT * Y_VERTEX_COUNT * 2) * _automaticTurnFrame;
                 pageVertexNormals = pageVertices + (X_VERTEX_COUNT * Y_VERTEX_COUNT);
             }
         }
-            
-        glVertexPointer(3, GL_FLOAT, 0, pageVertices);
-        glNormalPointer(GL_FLOAT, 0, pageVertexNormals);
-
-        // The front faces of the page.
-        if(!_isTurningAutomatically || pageVertexNormals == (const THGLfloatPoint3D *)_stablePageVertexNormals) {
+        
+        glVertexAttribPointer(glGetAttribLocation(_program, "aPosition"), 3, GL_FLOAT, GL_FALSE, 0, pageVertices);
+        if(!_isTurningAutomatically && pageVertexNormals != (const THVec3 *)_stablePageVertexNormals) {
+            glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, pageVertexNormals);
+        } else {
             // The normals in the automatic turn files are acidentally facing
             // backwards.  I should really re-record them.
-            // Instead, for the moment, we draw the face below, after we've
-            // inverted the normals.
-            glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 2, GL_UNSIGNED_BYTE, _triangleStripIndices);
+            // Instead, for the moment, we invert the here.     
+            THVec3 invertedPageVertexNormals[X_VERTEX_COUNT * Y_VERTEX_COUNT];
+            for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
+                invertedPageVertexNormals[i].x = -(pageVertexNormals)[i].x;
+                invertedPageVertexNormals[i].y = -(pageVertexNormals)[i].y;
+                invertedPageVertexNormals[i].z = -(pageVertexNormals)[i].z;
+            }
+            glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, invertedPageVertexNormals);
         }
         
-        // Flip the normals and draw the back faces.
-        THGLfloatPoint3D invertedPageVertexNormals[X_VERTEX_COUNT * Y_VERTEX_COUNT];
-        for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
-            invertedPageVertexNormals[i].x = -(pageVertexNormals)[i].x;
-            invertedPageVertexNormals[i].y = -(pageVertexNormals)[i].y;
-            invertedPageVertexNormals[i].z = -(pageVertexNormals)[i].z;
-        }
-        
-        glNormalPointer(GL_FLOAT, 0, invertedPageVertexNormals);
-
-        if(_isTurningAutomatically && pageVertexNormals != (const THGLfloatPoint3D *)_stablePageVertexNormals) {
-            // Compensating for the normals in the automatic turn files being 
-            // backwards (see above).
-            glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 2, GL_UNSIGNED_BYTE, _triangleStripIndices);
-            
-            // Because the normals are backwards, we use the non-inverted
-            // (really, the inverted) ones to draw the back face.
-            glNormalPointer(GL_FLOAT, 0, pageVertexNormals);
-        }        
-        
-        glClientActiveTexture(GL_TEXTURE1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        // By starting 1 into the triangle strip in glDrawElements, we draw the
-        // strip with the opposite winding order, making the back the front (the
-        // first triangle is degenerate anyway, so skippable).       
-        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 3, GL_UNSIGNED_BYTE, _triangleStripIndices + 1);
-        
-        glClientActiveTexture(GL_TEXTURE0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glClientActiveTexture(GL_TEXTURE1);
-        glActiveTexture(GL_TEXTURE1);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);
-        
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE);
-        glColor4f(0.2f, 0.2f, 0.2f, 0.0f);
-        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 3, GL_UNSIGNED_BYTE, _triangleStripIndices + 1);
-        glDisable(GL_BLEND);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_DEPTH_TEST);
+        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 2, GL_UNSIGNED_BYTE, _triangleStripIndices);
         
         if(_isTurningAutomatically) {
             if(_automaticTurnPercentage > 0.0f) {
-                glActiveTexture(GL_TEXTURE0);
-                glClientActiveTexture(GL_TEXTURE0);
-
-                THGLfloatPoint3D pageEdge[Y_VERTEX_COUNT][2];
-                THGLfloatPoint3D pageEdgeNormals[Y_VERTEX_COUNT * 2] = { {0, 0, 0} };
+                // Construct and draw the page edge.
+                
+                THVec3 pageEdge[Y_VERTEX_COUNT][2];
+                THVec3 pageEdgeNormals[Y_VERTEX_COUNT * 2] = { {0, 0, 0} };
                 int column = X_VERTEX_COUNT - 1;
                 for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-                    pageEdge[row][0] = addVector(pageVertices[row * X_VERTEX_COUNT + column] , 
-                                                 multiplyVector(pageVertexNormals[row * X_VERTEX_COUNT + column], _automaticTurnPercentage));
+                    pageEdge[row][0] = THVec3Add(pageVertices[row * X_VERTEX_COUNT + column] , 
+                                                 THVec3Multiply(pageVertexNormals[row * X_VERTEX_COUNT + column], _automaticTurnPercentage));
                     pageEdge[row][1] = pageVertices[row * X_VERTEX_COUNT + column];
                 } 
-                THGLfloatPoint3D *flatPageEdge = (THGLfloatPoint3D *)pageEdge;
+                THVec3 *flatPageEdge = (THVec3 *)pageEdge;
                 for(int i = 1; i < Y_VERTEX_COUNT * 2 - 1; ++i) {
                     int leftVertexIndex;
                     int rightVertexIndex;
@@ -1277,32 +1208,37 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
                         middleVertexIndex = i;
                         rightVertexIndex = i - 1;            
                     }
-                    THGLfloatPoint3D leftVertex = flatPageEdge[leftVertexIndex];
-                    THGLfloatPoint3D middleVertex = flatPageEdge[middleVertexIndex];
-                    THGLfloatPoint3D rightVertex = flatPageEdge[rightVertexIndex];
+                    THVec3 leftVertex = flatPageEdge[leftVertexIndex];
+                    THVec3 middleVertex = flatPageEdge[middleVertexIndex];
+                    THVec3 rightVertex = flatPageEdge[rightVertexIndex];
                     
-                    THGLfloatPoint3D normal = triangleNormal(leftVertex, middleVertex, rightVertex);
+                    THVec3 normal = triangleNormal(leftVertex, middleVertex, rightVertex);
                     pageEdgeNormals[leftVertexIndex] = 
-                        addVector(pageEdgeNormals[leftVertexIndex], normal);
+                        THVec3Add(pageEdgeNormals[leftVertexIndex], normal);
                     pageEdgeNormals[middleVertexIndex] = 
-                        addVector(pageEdgeNormals[middleVertexIndex], normal);
+                        THVec3Add(pageEdgeNormals[middleVertexIndex], normal);
                     pageEdgeNormals[rightVertexIndex] = 
-                        addVector(pageEdgeNormals[rightVertexIndex], normal);            
+                        THVec3Add(pageEdgeNormals[rightVertexIndex], normal);            
                 } 
                 for(int i = 0; i < Y_VERTEX_COUNT * 2; ++i) {
-                    pageEdgeNormals[i] = normalise(pageEdgeNormals[i]);
+                    pageEdgeNormals[i] = THVec3Normalize(pageEdgeNormals[i]);
                 }
                 
                 glClear(GL_DEPTH_BUFFER_BIT);
-            
-                glVertexPointer(3, GL_FLOAT, 0, pageEdge);
-
-                glNormalPointer(GL_FLOAT, 0, pageEdgeNormals);
                 
+                glVertexAttribPointer(glGetAttribLocation(_program, "aPosition"), 3, GL_FLOAT, GL_FALSE, 0, pageEdge);
+                glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, pageEdgeNormals);
+                
+                glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
-                glTexCoordPointer(2, GL_FLOAT, 0, _pageEdgeTextureCoordinates);
+
+                glUniform1i(glGetUniformLocation(_program, "uDisableContentsTexture"), 1);
                 
+                glVertexAttribPointer(glGetAttribLocation(_program, "aPageTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageEdgeTextureCoordinates);
+
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, Y_VERTEX_COUNT * 2);
+                
+                glUniform1i(glGetUniformLocation(_program, "uDisableContentsTexture"), 0);
             }
             
             if(++_automaticTurnFrame >= (_automaticTurnIsForwards ? _animatedTurnFrameCount : (_reverseAnimatedTurnFrameCount + 1))) {
@@ -1312,50 +1248,22 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
                 
                 [self _cyclePageContentsInformationForTurnForwards:_flatPageIndex == 2];
                 _flatPageIndex = 1;
-
+                
                 _recacheFlags[0] = YES;
                 _recacheFlags[2] = YES;                    
                 _viewsNeedRecache = YES;
                 
                 [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-            }
-        } 
-        
-        /*
-        GLfloatTriplet normals[Y_VERTEX_COUNT][X_VERTEX_COUNT][2];
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                normals[row][column][0] = _pageVertices[row][column];
-                normals[row][column][1] = addVector(_pageVertices[row][column], _pageVertexNormals[row][column]);
-            }
-        } 
-        
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glColor4f(1, 0, 0, 1);
-        glVertexPointer(3, GL_FLOAT, 0, normals);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glDrawArrays(GL_LINES, 0, Y_VERTEX_COUNT * X_VERTEX_COUNT * 2);
-        */        
-    }
-
-    glClientActiveTexture(GL_TEXTURE1);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    
-    glClientActiveTexture(GL_TEXTURE0);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    
-    glActiveTexture(GL_TEXTURE0);
+            }     
+        }
+    }        
     
     if(_atRenderScreenshotBuffer) {
         glReadPixels(0, 0, _backingWidth, _backingHeight, GL_RGBA, GL_UNSIGNED_BYTE, _atRenderScreenshotBuffer);
     }
     
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, _viewRenderbuffer);
-    [eaglContext presentRenderbuffer:GL_RENDERBUFFER_OES];
+    glBindRenderbuffer(GL_RENDERBUFFER, _viewRenderbuffer);
+    [eaglContext presentRenderbuffer:GL_RENDERBUFFER];
 
     if(_viewsNeedRecache) {
         [self _postAnimationViewAndTextureRecache];
@@ -1378,7 +1286,7 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
     CGSize size = self.bounds.size;
     CGPoint viewTouchPoint =  [touch locationInView:self];
 
-    THGLfloatPoint2D modelTouchPoint = { (viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
+    THVec2 modelTouchPoint = { (viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
                                     (viewTouchPoint.y / size.height) * _viewportLogicalSize.height };
     
     _touchRow = ((modelTouchPoint.y / _viewportLogicalSize.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
@@ -1857,15 +1765,15 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
         [self setTouchPointForX:newX];
     }
     
-    THGLfloatPoint3D *flatPageVertices = (THGLfloatPoint3D *)_pageVertices;
-    THGLfloatPoint3D *flatOldPageVertices = (THGLfloatPoint3D *)_oldPageVertices;
+    THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
+    THVec3 *flatOldPageVertices = (THVec3 *)_oldPageVertices;
     //GLfloatTriplet *flatForceAccumulators = (GLfloatTriplet *)_forceAccumulators;
     GLfloat gravity = (_touch || _touchVelocity) ? 0.002 : 0.01;
     
     for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
-        THGLfloatPoint3D x = flatPageVertices[i];
-        THGLfloatPoint3D temp = x;
-        THGLfloatPoint3D oldx = flatOldPageVertices[i];
+        THVec3 x = flatPageVertices[i];
+        THVec3 temp = x;
+        THVec3 oldx = flatOldPageVertices[i];
         //GLfloatTriplet a = flatForceAccumulators[i];
         
         // This gives better time-correct movement, but makes the model unstable.
@@ -1876,7 +1784,7 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
         // The above, commented out line is correct, but for optimization, 
         // we just manually add gravity instead of using the forces from 
         // -_accumulateForces since it's the only force.
-        flatPageVertices[i] = addVector(x, multiplyVector(subtractVector(x, oldx), (_touch || _touchVelocity) ? 0.6f : 0.99f)); 
+        flatPageVertices[i] = THVec3Add(x, THVec3Multiply(THVec3Subtract(x, oldx), (_touch || _touchVelocity) ? 0.6f : 0.99f)); 
         flatPageVertices[i].z += gravity;
         
         flatOldPageVertices[i] = temp;
@@ -1896,7 +1804,7 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
         pageHasRigidEdge = NO;
     }
     
-    THGLfloatPoint3D *flatPageVertices = (THGLfloatPoint3D *)_pageVertices;
+    THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
     int j;
     for(j=0; j < NUM_ITERATIONS; ++j) {              
         if(_touch || _touchVelocity) {        
@@ -1907,9 +1815,9 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
         
         for(int i = 0; i < CONSTRAINT_COUNT; ++i) {
             VerletContstraint constraint = _constraints[i];
-            THGLfloatPoint3D a = flatPageVertices[constraint.particleAIndex];
-            THGLfloatPoint3D b = flatPageVertices[constraint.particleBIndex];
-            THGLfloatPoint3D delta = subtractVector(b, a);
+            THVec3 a = flatPageVertices[constraint.particleAIndex];
+            THVec3 b = flatPageVertices[constraint.particleBIndex];
+            THVec3 delta = THVec3Subtract(b, a);
             /*
             GLfloat distance = magnitude(delta);
             GLfloat diff = (distance - constraint.length)/distance;
@@ -1920,9 +1828,9 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
             }*/
             // Sqrt-approximated version of above code:
             CGFloat contraintLengthSquared = constraint.lengthSquared;
-            delta = multiplyVector(delta, contraintLengthSquared/(dotProduct(delta)+contraintLengthSquared)-0.5);
-            flatPageVertices[constraint.particleAIndex] = subtractVector(a, delta); 
-            flatPageVertices[constraint.particleBIndex] = addVector(b, delta); 
+            delta = THVec3Multiply(delta, contraintLengthSquared/(THVec3DotProduct(delta)+contraintLengthSquared)-0.5);
+            flatPageVertices[constraint.particleAIndex] = THVec3Subtract(a, delta); 
+            flatPageVertices[constraint.particleBIndex] = THVec3Add(b, delta); 
             flatPageVertices[constraint.particleAIndex].z = MIN(0, flatPageVertices[constraint.particleAIndex].z);
             flatPageVertices[constraint.particleBIndex].z = MIN(0, flatPageVertices[constraint.particleBIndex].z);            
         }
@@ -1937,7 +1845,7 @@ static THGLfloatPoint3D triangleNormal(THGLfloatPoint3D left, THGLfloatPoint3D m
             GLfloat yCoord = _stablePageVertices[row][0].y;
             GLfloat zCoord = _stablePageVertices[row][0].z;
             for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                THGLfloatPoint3D vertex = _pageVertices[row][column];
+                THVec3 vertex = _pageVertices[row][column];
                 
                 GLfloat diff = yCoord - vertex.y;
                 _pageVertices[row][column].y = (vertex.y += diff * 0.5f);

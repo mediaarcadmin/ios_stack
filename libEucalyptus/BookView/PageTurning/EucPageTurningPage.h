@@ -21,7 +21,7 @@ typedef enum EucPageFlatnessState {
 @interface EucPageTurningPage : NSObject {
     EucPageTurningMeshSource *_meshSource;
     
-    THGLfloatSize _size;
+    THVec2 _size;
     id _frontSource;
     id _backSource;
     EucPageFlatnessState _flatnessState;
@@ -34,12 +34,12 @@ typedef enum EucPageFlatnessState {
 
 
 - (id)initWithMeshSource:(EucPageTurningMeshSource *)meshSource
-                    size:(THGLfloatSize)size 
+                    size:(THVec2)size 
              frontSource:(id)frontSource
               backSource:(id)backSource
            flatnessState:(EucPageFlatnessState)flatnessState;
 
-@property (nonatomic, assign, readonly) THGLfloatSize size;
+@property (nonatomic, assign, readonly) THVec2 size;
 @property (nonatomic, retain, readonly) EucPageTurningMeshSource *meshSource;
 
 @property (nonatomic, retain, readonly) id frontSource;

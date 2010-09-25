@@ -12,7 +12,7 @@
 
 @interface EucPageTurningPage () 
 
-@property (nonatomic, assign, readonly) THGLuintSize meshPointDimensions;
+@property (nonatomic, assign, readonly) THIVec2 meshPointDimensions;
 
 @property (nonatomic, retain) NSData *meshVertices;
 
@@ -30,7 +30,7 @@
 @synthesize flatnessState = _flatnessState;
 
 - (id)initWithMeshSource:(EucPageTurningMeshSource *)meshSource
-                    size:(THGLfloatSize)size 
+                    size:(THVec2)size 
              frontSource:(id)frontSource
               backSource:(id)backSource
            flatnessState:(EucPageFlatnessState)flatnessState;
@@ -56,9 +56,9 @@
 }
 
 
-- (THGLuintSize)meshPointDimensions
+- (THIVec2)meshPointDimensions
 {
-    return THGLuintSizeMake(11, 16);
+    return THIVec2Make(11, 16);
 }
 
 
@@ -74,11 +74,11 @@
         self.meshVertices = nil;
         self.meshVertices = [self.meshSource flatMeshWithPointDimensions:self.meshPointDimensions
                                                                     size:self.size
-                                                                atOrigin:THGLfloatPoint2DMake(0, 0)];
+                                                                atOrigin:THVec2Make(0, 0)];
         if(flatnessState == EucPageFlatnessStateFlatLeft) {
             NSMutableData *meshVertices = (NSMutableData *)self.meshVertices;
-            THGLfloatPoint2D *vertices = meshVertices.mutableBytes;
-            off_t vertexCount = meshVertices.length / sizeof(THGLfloatPoint2D);
+            THVec2 *vertices = meshVertices.mutableBytes;
+            off_t vertexCount = meshVertices.length / sizeof(THVec2);
             for(off_t i = 0; i < vertexCount; ++i) {
                 vertices[i].x = -vertices[i].x;
             }

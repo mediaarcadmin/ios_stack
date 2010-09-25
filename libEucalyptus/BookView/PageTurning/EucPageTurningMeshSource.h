@@ -11,13 +11,13 @@
 
 @interface EucPageTurningMeshSource : NSObject {}
 
-- (GLuint)triangleStripCountForMeshWithPointDimensions:(THGLuintSize)meshDimensions;
-- (NSData *)triangleStripForMeshWithPointDimensions:(THGLuintSize)meshDimensions;
-- (NSData *)textureCoordinatesForMeshWithPointDimensions:(THGLuintSize)meshDimensions 
-                                             textureSize:(THGLuintSize)textureSize
-                                          validImageRect:(THGLuintSize)subTextureSize;
-- (NSMutableData *)flatMeshWithPointDimensions:(THGLuintSize)meshDimensions
-                                          size:(THGLfloatSize)dimensions
-                                      atOrigin:(THGLfloatPoint2D)origin;
+- (GLuint)triangleStripCountForMeshWithPointDimensions:(THIVec2)meshDimensions;
+- (NSData *)triangleStripForMeshWithPointDimensions:(THIVec2)meshDimensions;
+- (NSData *)textureCoordinatesForMeshWithPointDimensions:(THIVec2)meshDimensions 
+                                             textureSize:(THIVec2)textureSize
+                                          validImageRect:(THIVec2)subTextureSize;
+- (NSMutableData *)flatMeshWithPointDimensions:(THIVec2)meshDimensions
+                                          size:(THVec2)dimensions
+                                      atOrigin:(THVec2)origin;
     
 @end
