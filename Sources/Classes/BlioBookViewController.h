@@ -139,6 +139,7 @@ typedef enum {
     UIBarButtonItem* contentsButton;
     UIBarButtonItem* viewSettingsButton;
     UIBarButtonItem* searchButton;
+    BOOL shouldDisplaySearchAfterRotation;
 }
 
 // Designated initializers.

@@ -11,6 +11,7 @@
 #import "BlioUIImageAdditions.h"
 
 #define kBlioViewSettingsGreenButton [UIColor colorWithRed:0.053 green:0.613 blue:0.000 alpha:1.000]//[UIColor colorWithRed:0.302 green:0.613 blue:0.289 alpha:1.000]
+#define kBlioViewSettingsPopverBlueButton [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000]
 
 static const CGFloat kBlioViewSettingsRowSpacing = 14;
 static const CGFloat kBlioViewSettingsYInset = 22;
@@ -113,7 +114,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         BlioAccessibilitySegmentedControl *aLayoutSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
         aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aLayoutSegmentedControl.tintColor = [UIColor darkGrayColor];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            aLayoutSegmentedControl.tintColor = [UIColor darkGrayColor];
+        } else {
+            aLayoutSegmentedControl.tintColor = kBlioViewSettingsPopverBlueButton;
+        }
         
         [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Flowed layout", @"Accessibility label for View Settings Flowed Layout button")];
         [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityHint:NSLocalizedString(@"Switches to the flowed text view.", @"Accessibility hint for View Settings Flowed Layout button")];
@@ -157,7 +162,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         BlioAccessibilitySegmentedControl *aFontSizeSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:fontSizeTitles];    
         aFontSizeSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aFontSizeSegmentedControl.tintColor = [UIColor darkGrayColor];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            aFontSizeSegmentedControl.tintColor = [UIColor darkGrayColor];
+        } else {
+            aFontSizeSegmentedControl.tintColor = kBlioViewSettingsPopverBlueButton;
+        }
         
         [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 2) forSegmentAtIndex:0];
         [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
@@ -195,7 +204,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         BlioAccessibilitySegmentedControl *aPageColorSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:pageColorTitles];
         aPageColorSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aPageColorSegmentedControl.tintColor = [UIColor darkGrayColor];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            aPageColorSegmentedControl.tintColor = [UIColor darkGrayColor];
+        } else {
+            aPageColorSegmentedControl.tintColor = kBlioViewSettingsPopverBlueButton;
+        }
         
         [[aPageColorSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"White page color", @"Accessibility label for View Settings White Page Color button")];
         [[aPageColorSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Black page color", @"Accessibility label for View Settings Black Page Color button")];
@@ -213,7 +226,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             
             BlioAccessibilitySegmentedControl *aLockButtonSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] init];
             aLockButtonSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-            aLockButtonSegmentedControl.tintColor = [UIColor darkGrayColor];
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+                aLockButtonSegmentedControl.tintColor = [UIColor darkGrayColor];
+            } else {
+                aLockButtonSegmentedControl.tintColor = kBlioViewSettingsPopverBlueButton;
+            }
             aLockButtonSegmentedControl.momentary = YES;
             [self addSubview:aLockButtonSegmentedControl];
             self.lockButtonSegment = aLockButtonSegmentedControl;
@@ -304,7 +321,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [[sender imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
     } else {
         [sender setImage:self.lockRotationImage forSegmentAtIndex:0];
-        [sender setTintColor:[UIColor darkGrayColor]];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [sender setTintColor:[UIColor darkGrayColor]];
+        } else {
+            [sender setTintColor:kBlioViewSettingsPopverBlueButton];
+        }
         [[sender imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Lock Rotation", @"Accessibility label for View Settings Lock Rotation button")];
         [[sender imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
     }

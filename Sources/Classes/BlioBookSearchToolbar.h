@@ -15,6 +15,7 @@
 - (void)setDelegate:(id)delegate;
 - (void)setPlaceholder:(NSString *)placeholder;
 - (void)setShowsCancelButton:(BOOL)showCancel;
+- (NSString *)text;
 
 @end
 

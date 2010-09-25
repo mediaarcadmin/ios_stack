@@ -8,12 +8,30 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioModalPopoverController.h"
-#import "BlioBookSearchToolbar.h"
+#import "BlioBookView.h"
+#import "BlioBookSearchStatus.h"
+#import "BlioBookSearchController.h"
 
-@interface BlioBookSearchPopoverController : BlioModalPopoverController {
-    UITableViewController *searchResultsController;
+@class BlioBookSearchToolbar, BlioBookSearchResultsTableViewController;
+
+@interface BlioBookSearchPopoverController : BlioModalPopoverController <BlioBookSearchDelegate> {
+    BlioBookSearchResultsTableViewController *resultsController;
     UINavigationController *navigationController;
-    BlioBookSearchToolbar *searchBar;
+    BlioBookSearchToolbar *toolbar;
+    
+    BlioBookSearchController *bookSearchController;
+    id <BlioBookView> bookView;
+    
+    BlioBookSearchStatus searchStatus;
+    NSInteger currentSearchResult;
+    NSTimeInterval resultsInterval;
+    
+    UIBarButtonItem *barButtonItem;
 }
+
+@property (nonatomic, retain) BlioBookSearchController *bookSearchController;
+@property (nonatomic, assign) id <BlioBookView> bookView;
+
+- (BOOL)isSearchActive;
 
 @end

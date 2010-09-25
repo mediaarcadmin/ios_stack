@@ -14,6 +14,8 @@
 @interface BlioBookSearchCustomSearchField : UITextField
 @end
 
+@interface BlioBookSearchCustomNavigationBar : UINavigationBar
+@end
 
 @interface BlioBookSearchCustomSearchBar : UIView <BlioBookSearchBar, UITextFieldDelegate> { // UISearchBar with transparent surround
     BlioBookSearchCustomSearchField *searchField;
@@ -79,7 +81,11 @@
             [aNavItem release];
         }
         
-        aNavBar = [[UINavigationBar alloc] init];
+        aNavBar = [[BlioBookSearchCustomNavigationBar alloc] init];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            aNavBar.backgroundColor = [UIColor clearColor];
+            aNavBar.tintColor = [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000];
+        }
         self.inlineNavBar = aNavBar;
         [self addSubview:aNavBar];
         [aNavBar release];
@@ -90,6 +96,7 @@
                                   nil];
         
         BlioAccessibilitySegmentedControl *aInlineSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
+                                                      
         aInlineSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aInlineSegmentedControl.momentary = YES;
         [aInlineSegmentedControl addTarget:self action:@selector(inlineSegmentChanged:) forControlEvents:UIControlEventValueChanged];
@@ -177,16 +184,22 @@
 }
 
 - (void)setTintColor:(UIColor *)tintColor {
-    [self.searchBar setTintColor:tintColor];
-    [self.doneNavBar setTintColor:tintColor];
-    [self.inlineNavBar setTintColor:tintColor];
-    [self.inlineSegmentedControl setTintColor:tintColor];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self.searchBar setTintColor:tintColor];
+        [self.doneNavBar setTintColor:tintColor];
+        [self.inlineNavBar setTintColor:tintColor];
+        [self.inlineSegmentedControl setTintColor:tintColor];
+    } else {
+        self.inlineSegmentedControl.tintColor = [UIColor colorWithRed:0.000 green:0.046 blue:0.121 alpha:1.000];
+    }
 }
 
 - (void)setBarStyle:(UIBarStyle)barStyle {
-    [self.searchBar setBarStyle:barStyle];
-    [self.doneNavBar setBarStyle:barStyle];
-    [self.inlineNavBar setBarStyle:barStyle];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self.searchBar setBarStyle:barStyle];
+        [self.doneNavBar setBarStyle:barStyle];
+        [self.inlineNavBar setBarStyle:barStyle];
+    }
 }
 
 - (void)setDelegate:(id<BlioBookSearchToolbarDelegate>)newDelegate {
@@ -251,6 +264,7 @@
         aSearchField.font = [UIFont systemFontOfSize:14];
         aSearchField.delegate = self;
         aSearchField.returnKeyType = UIReturnKeySearch;
+        aSearchField.autocorrectionType = UITextAutocorrectionTypeNo; // Matches a searchBar
         [self addSubview:aSearchField];
         self.searchField = aSearchField;
         [aSearchField release];
@@ -275,6 +289,10 @@
 
 - (void)setTintColor:(UIColor *)tintColor {
     // Do nothing
+}
+
+- (NSString *)text {
+    return self.searchField.text;
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -381,5 +399,18 @@ static const CGFloat kBlioBookSearchCustomSearchBarHeight = 31;
 }
 
 @end
+
+@implementation BlioBookSearchCustomNavigationBar
+
+- (void)drawRect:(CGRect)rect {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        CGContextClearRect(UIGraphicsGetCurrentContext(), rect);
+    } else {
+        [super drawRect:rect];
+    }
+}
+
+@end
+
 
 
