@@ -7,10 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7D021762124025E7008CE201 /* euc_page_turning.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 7D021760124025E7008CE201 /* euc_page_turning.fsh */; };
-		7D021763124025E7008CE201 /* euc_page_turning.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 7D021761124025E7008CE201 /* euc_page_turning.vsh */; };
 		7D0217A912402B17008CE201 /* THEmbeddedResourceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0217A712402B17008CE201 /* THEmbeddedResourceManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D0217AA12402B17008CE201 /* THEmbeddedResourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0217A812402B17008CE201 /* THEmbeddedResourceManager.m */; };
 		7D034F9B10C2CD820085778B /* TransitionTestRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9310C2CD820085778B /* TransitionTestRootViewController.m */; };
 		7D034F9C10C2CD820085778B /* TransitionTestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9510C2CD820085778B /* TransitionTestAppDelegate.m */; };
 		7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9710C2CD820085778B /* TransitionTestMain.m */; };
@@ -129,6 +126,8 @@
 		7D19047911494CEA00375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903EA11494CEA00375803 /* utils.h */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
+		7D27117B124928110087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D27117A124928110087C4E3 /* Accelerate.framework */; };
+		7D27117C1249281D0087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D27117A124928110087C4E3 /* Accelerate.framework */; };
 		7D27DC851223E161009E7B64 /* THAccessibilityElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D27DC641223DE5C009E7B64 /* THAccessibilityElement.m */; };
 		7D27DC861223E166009E7B64 /* THAccessibilityElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D27DC631223DE5C009E7B64 /* THAccessibilityElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D2CC986114D92EB007FDEAF /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2341981149614F00C318E7 /* libEucalyptusCSS.a */; };
@@ -147,12 +146,9 @@
 		7D2FED2D114D9219001F5D28 /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9AA9C9114A8F6A0055C381 /* libEucalyptusBUpe.a */; };
 		7D35ADAF1121739B00A7AC62 /* EucMenuView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883FCA111C7735009669A8 /* EucMenuView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3637711238F534002BDD2B /* EucPageTurningView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D36376F1238F534002BDD2B /* EucPageTurningView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D3637721238F534002BDD2B /* EucPageTurningView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3637701238F534002BDD2B /* EucPageTurningView.m */; };
 		7D36377A1238F80C002BDD2B /* EucPageTurningPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3637781238F80C002BDD2B /* EucPageTurningPage.h */; };
-		7D36377B1238F80C002BDD2B /* EucPageTurningPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3637791238F80C002BDD2B /* EucPageTurningPage.m */; };
 		7D3637921238F889002BDD2B /* THOpenGLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3637911238F889002BDD2B /* THOpenGLUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3637C812391151002BDD2B /* EucPageTurningMeshSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3637C612391151002BDD2B /* EucPageTurningMeshSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D3637C912391151002BDD2B /* EucPageTurningMeshSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3637C712391151002BDD2B /* EucPageTurningMeshSource.m */; };
 		7D3AED52114963560059C5B6 /* EucCSSInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341471149602300C318E7 /* EucCSSInternal.h */; };
 		7D3AED53114963560059C5B6 /* EucCSSInternal.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341461149602300C318E7 /* EucCSSInternal.c */; };
 		7D3AED54114963560059C5B6 /* LWCNSStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */; };
@@ -192,7 +188,7 @@
 		7D3F4D2111EF38B80065A5F7 /* EucConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1311EF38B80065A5F7 /* EucConfiguration.m */; };
 		7D3F4D2211EF38B80065A5F7 /* EucSharedHyphenator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1411EF38B80065A5F7 /* EucSharedHyphenator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2311EF38B80065A5F7 /* EucSharedHyphenator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1511EF38B80065A5F7 /* EucSharedHyphenator.mm */; };
-		7D3F4D2411EF38B80065A5F7 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1611EF38B80065A5F7 /* th_just_with_floats.c */; };
+		7D3F4D2411EF38B80065A5F7 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1611EF38B80065A5F7 /* th_just_with_floats.c */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
 		7D3F4D2511EF38B80065A5F7 /* th_just_with_floats.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1711EF38B80065A5F7 /* th_just_with_floats.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2611EF38B80065A5F7 /* THCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1811EF38B80065A5F7 /* THCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2711EF38B80065A5F7 /* THCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1911EF38B80065A5F7 /* THCache.m */; };
@@ -330,7 +326,6 @@
 		7D4E9C1C114D88850044C513 /* EucBUpePageLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4E9BB4114D71D90044C513 /* EucBUpePageLayoutController.m */; };
 		7D4E9CB9114D8CCE0044C513 /* EucBUpeLocalBookReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D4E9CB7114D8CCE0044C513 /* EucBUpeLocalBookReference.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D4E9CBA114D8CCE0044C513 /* EucBUpeLocalBookReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4E9CB8114D8CCE0044C513 /* EucBUpeLocalBookReference.m */; };
-		7D4F3109124CD872001C2D8A /* THOpenGLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4F3108124CD872001C2D8A /* THOpenGLUtils.m */; };
 		7D516E02102872AC005F3C46 /* EucBookViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516E00102872AC005F3C46 /* EucBookViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516E03102872AC005F3C46 /* EucBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E01102872AC005F3C46 /* EucBookViewController.m */; };
 		7D516E0D102872DB005F3C46 /* EucPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516E05102872DB005F3C46 /* EucPageView.m */; };
@@ -425,6 +420,9 @@
 		7D6AAD6A1028E7BD006289E6 /* EucLocalBookReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAD6D1028E7EC006289E6 /* THNSFileManagerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */; };
 		7D6AAD6E1028E7EC006289E6 /* THNSFileManagerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D6D9FBF124E9A7B005FD8CE /* EucPageTurningView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3637701238F534002BDD2B /* EucPageTurningView.m */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
+		7D6D9FC4124E9AD2005FD8CE /* THEmbeddedResourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0217A812402B17008CE201 /* THEmbeddedResourceManager.m */; };
+		7D6D9FC7124E9AE6005FD8CE /* THOpenGLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4F3108124CD872001C2D8A /* THOpenGLUtils.m */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
 		7D79D072117F75C90081F554 /* EucCSSLayoutRunExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D79D070117F75C90081F554 /* EucCSSLayoutRunExtractor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D79D073117F75C90081F554 /* EucCSSLayoutRunExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79D071117F75C90081F554 /* EucCSSLayoutRunExtractor.m */; };
 		7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883FCB111C7735009669A8 /* EucMenuView.m */; };
@@ -474,6 +472,10 @@
 		7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
 		7DB9F8F010F394930010DF0B /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */; };
+		7DC0FD2912311FB100FBE9B3 /* EucSelectorKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05483E122EF101002B72C9 /* EucSelectorKnob.m */; };
+		7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D05483D122EF101002B72C9 /* EucSelectorKnob.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DC0FE381234E85A00FBE9B3 /* EucSelectorAccessibilityMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */; };
+		7DC0FE391234E85F00FBE9B3 /* EucSelectorAccessibilityMask.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DC0FDBA1234059600FBE9B3 /* EucSelectorAccessibilityMask.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DCA57B2114981FC007EDB15 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA57B1114981FC007EDB15 /* libiconv.dylib */; };
 		7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
@@ -657,6 +659,8 @@
 		7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestMainWindow.xib; sourceTree = "<group>"; };
 		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
 		7D035B6811ECD03B00F39592 /* Pride and Prejudice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Pride and Prejudice"; sourceTree = "<group>"; };
+		7D05483D122EF101002B72C9 /* EucSelectorKnob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorKnob.h; sourceTree = "<group>"; };
+		7D05483E122EF101002B72C9 /* EucSelectorKnob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorKnob.m; sourceTree = "<group>"; };
 		7D0D818211075E2A00C672AC /* EucSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelector.h; sourceTree = "<group>"; };
 		7D0D818311075E2A00C672AC /* EucSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelector.m; sourceTree = "<group>"; };
 		7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSStringSmartQuotes.h; sourceTree = "<group>"; };
@@ -974,6 +978,7 @@
 		7D2341981149614F00C318E7 /* libEucalyptusCSS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusCSS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
+		7D27117A124928110087C4E3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		7D27DC631223DE5C009E7B64 /* THAccessibilityElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THAccessibilityElement.h; sourceTree = "<group>"; };
 		7D27DC641223DE5C009E7B64 /* THAccessibilityElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THAccessibilityElement.m; sourceTree = "<group>"; };
 		7D2CCB08114DA3A2007FDEAF /* Aliases */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Aliases; sourceTree = "<group>"; };
@@ -1214,6 +1219,8 @@
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
 		7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Down and out in the Magic Kingdom"; sourceTree = "<group>"; };
+		7DC0FDBA1234059600FBE9B3 /* EucSelectorAccessibilityMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorAccessibilityMask.h; sourceTree = "<group>"; };
+		7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorAccessibilityMask.m; sourceTree = "<group>"; };
 		7DCA57B1114981FC007EDB15 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		7DCA5804114985C7007EDB15 /* pg103.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pg103.epub; sourceTree = "<group>"; };
 		7DCF826E114E5D0800603379 /* EucCSSLayouter_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayouter_Package.h; sourceTree = "<group>"; };
@@ -1275,6 +1282,7 @@
 				7D2CCBE0114DB2A9007FDEAF /* libcss.a in Frameworks */,
 				7D2CCBE1114DB2AC007FDEAF /* libEucalyptusBUpe.a in Frameworks */,
 				7D2CCBE6114DB2CA007FDEAF /* libEucalyptusCSS.a in Frameworks */,
+				7D27117B124928110087C4E3 /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1325,6 +1333,7 @@
 				7D2CC98A114D92FB007FDEAF /* libwapcaplet.a in Frameworks */,
 				7D2CC98F114D9322007FDEAF /* libcss.a in Frameworks */,
 				7D2CC9B4114D93E9007FDEAF /* libiconv.dylib in Frameworks */,
+				7D27117C1249281D0087C4E3 /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1365,6 +1374,7 @@
 				7D9A96F810D7E48200C2E00A /* TestResources */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
+				7D27117A124928110087C4E3 /* Accelerate.framework */,
 			);
 			name = libEucalyptus;
 			sourceTree = "<group>";
@@ -1444,6 +1454,10 @@
 				7D883FCB111C7735009669A8 /* EucMenuView.m */,
 				7D883F63111C586F009669A8 /* EucMenuController.h */,
 				7D883F64111C586F009669A8 /* EucMenuController.m */,
+				7D05483D122EF101002B72C9 /* EucSelectorKnob.h */,
+				7D05483E122EF101002B72C9 /* EucSelectorKnob.m */,
+				7DC0FDBA1234059600FBE9B3 /* EucSelectorAccessibilityMask.h */,
+				7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */,
 			);
 			path = Selector;
 			sourceTree = "<group>";
@@ -2925,6 +2939,8 @@
 				7D3637921238F889002BDD2B /* THOpenGLUtils.h in Headers */,
 				7D3637C812391151002BDD2B /* EucPageTurningMeshSource.h in Headers */,
 				7D0217A912402B17008CE201 /* THEmbeddedResourceManager.h in Headers */,
+				7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */,
+				7DC0FE391234E85F00FBE9B3 /* EucSelectorAccessibilityMask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3567,13 +3583,11 @@
 				7DF8BC3411B526E3003B7A97 /* THBaseEAGLView.m in Sources */,
 				7DF1AF9B11D9168F00506BD5 /* THUIDeviceAdditions.m in Sources */,
 				7D27DC851223E161009E7B64 /* THAccessibilityElement.m in Sources */,
-				7D3637721238F534002BDD2B /* EucPageTurningView.m in Sources */,
-				7D36377B1238F80C002BDD2B /* EucPageTurningPage.m in Sources */,
-				7D3637C912391151002BDD2B /* EucPageTurningMeshSource.m in Sources */,
-				7D021762124025E7008CE201 /* euc_page_turning.fsh in Sources */,
-				7D021763124025E7008CE201 /* euc_page_turning.vsh in Sources */,
-				7D0217AA12402B17008CE201 /* THEmbeddedResourceManager.m in Sources */,
-				7D4F3109124CD872001C2D8A /* THOpenGLUtils.m in Sources */,
+				7DC0FD2912311FB100FBE9B3 /* EucSelectorKnob.m in Sources */,
+				7DC0FE381234E85A00FBE9B3 /* EucSelectorAccessibilityMask.m in Sources */,
+				7D6D9FBF124E9A7B005FD8CE /* EucPageTurningView.m in Sources */,
+				7D6D9FC4124E9AD2005FD8CE /* THEmbeddedResourceManager.m in Sources */,
+				7D6D9FC7124E9AE6005FD8CE /* THOpenGLUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3730,7 +3744,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";
@@ -4469,7 +4483,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";
@@ -4540,7 +4554,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";
@@ -4611,7 +4625,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";

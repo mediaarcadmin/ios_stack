@@ -11,6 +11,7 @@
 
 @class BlioBook;
 @class BlioProcessingCompleteOperation;
+@class BlioProcessingDownloadOperation;
 
 typedef enum {
 	BlioBookSourceNotSpecified = 0,
@@ -62,6 +63,8 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void)setBookValue:(id)value forKey:(NSString *)key;
 - (id)getBookValueForKey:(NSString *)key;
 
+- (void)reportBookReadingIfRequired;
+
 @end
 
 @protocol BlioProcessingDelegate
@@ -86,11 +89,14 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource;
 - (BlioProcessingCompleteOperation *)processingCompleteOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (NSArray *)processingOperationsForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+-(void) resumeSuspendedProcessingForSourceID:(BlioBookSourceID)bookSource;
+	-(void) suspendProcessingForSourceID:(BlioBookSourceID)bookSource;
 - (void)pauseProcessingForBook:(BlioBook*)aBook;
+- (void)suspendProcessingForBook:(BlioBook*)aBook;
 - (void)stopProcessingForBook:(BlioBook*)aBook;
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave;
 - (void)stopDownloadingOperations;
 - (NSArray *)downloadOperations;
 - (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
-
+- (BlioProcessingDownloadOperation*) incompleteDownloadOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 @end

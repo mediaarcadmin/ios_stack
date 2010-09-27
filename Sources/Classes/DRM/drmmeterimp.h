@@ -11,6 +11,7 @@
 
 #include "drmxmlbuilder.h"
 
+/*
 // AC: taken from drmrevocationstore.h?
 // Doesn't work to include it because revocation store not supported, so the 
 // definition is omitted.
@@ -26,6 +27,7 @@ typedef struct _tag_RevocationStoreContext
 typedef struct __tagDRM_REVOCATIONSTORE_CONTEXT{
     DRM_BYTE rgbOpaqueBuffer[ __CB_DECL( SIZEOF( _RevocationStoreContext ) ) ];
 } DRM_REVOCATIONSTORE_CONTEXT;
+*/
 
 ENTER_PK_NAMESPACE;
 

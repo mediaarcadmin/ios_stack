@@ -33,15 +33,19 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 
 - (NSArray *)colorMenuItems {    
     EucMenuItem *yellowItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorYellow:)] autorelease];
+    yellowItem.accessibilityLabel = NSLocalizedString(@"Yellow", "Accessibility label for yellow item in highlight color menu");
     yellowItem.color = [UIColor yellowColor];
     
     EucMenuItem *redItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorRed:)] autorelease];
+    redItem.accessibilityLabel = NSLocalizedString(@"Red", "Accessibility label for yellow item in highlight color menu");
     redItem.color = [UIColor redColor];
     
     EucMenuItem *blueItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorBlue:)] autorelease];
+    blueItem.accessibilityLabel = NSLocalizedString(@"Blue", "Accessibility label for yellow item in highlight color menu");
     blueItem.color = [UIColor blueColor];
     
     EucMenuItem *greenItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorGreen:)] autorelease];
+    greenItem.accessibilityLabel = NSLocalizedString(@"Green", "Accessibility label for yellow item in highlight color menu");
     greenItem.color = [UIColor greenColor];
     
     NSArray *ret = [NSArray arrayWithObjects:yellowItem, redItem, blueItem, greenItem, nil];
@@ -109,12 +113,13 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 }
 
 - (NSArray *)menuItemsForEucSelector:(EucSelector *)selector {
-    if ([selector selectedRangeIsHighlight])
+    if ([selector selectedRangeIsHighlight]) {
         // Disallowing copy because of DRM.
 		return [self highlightMenuItemsIncludingTextCpyItem:NO];
-    else
+    } else {
         // Disallowing copy because of DRM.
 		return [self rootMenuItemsIncludingTextCpyItem:NO];
+    }
 }
 
 

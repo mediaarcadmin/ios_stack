@@ -35,6 +35,7 @@
 @dynamic sourceSpecificID;
 @dynamic layoutPageEquivalentCount;
 @dynamic libraryPosition;
+@dynamic hasAudiobook;
 @dynamic hasAudiobookRights;
 @dynamic reflowRight;
 @dynamic audiobookFilename;
@@ -139,6 +140,10 @@
     }
 }
 
+- (void)reportReadingIfRequired {
+    [[self xpsProvider] reportReadingIfRequired];
+}
+
 - (NSString *)bookCacheDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
@@ -161,35 +166,35 @@
 }
 
 - (NSString *)ePubPath {
-    return [self manifestPathForKey:@"epubFilename"];
+    return [self manifestPathForKey:BlioManifestEPubKey];
 }
 
 - (NSString *)pdfPath {        
-    return [self manifestPathForKey:@"pdfFilename"];
+    return [self manifestPathForKey:BlioManifestPDFKey];
 }
 
 - (NSString *)xpsPath {
-    return [self manifestPathForKey:@"xpsFilename"];
+    return [self manifestPathForKey:BlioManifestXPSKey];
 }
 
 - (BOOL)hasEPub {
-    return [self hasManifestValueForKey:@"epubFilename"];
+    return [self hasManifestValueForKey:BlioManifestEPubKey];
 }
 
 - (BOOL)hasPdf {
-    return [self hasManifestValueForKey:@"pdfFilename"];
+    return [self hasManifestValueForKey:BlioManifestPDFKey];
 }
 
 - (BOOL)hasXps {
-    return [self hasManifestValueForKey:@"xpsFilename"];
+    return [self hasManifestValueForKey:BlioManifestXPSKey];
 }
 
 - (BOOL)hasTextFlow {
-    return [self hasManifestValueForKey:@"textFlowFilename"];
+    return [self hasManifestValueForKey:BlioManifestTextFlowKey];
 }
 
 - (BOOL)isEncrypted {
-    return [self hasManifestValueForKey:@"drmHeaderFilename"];
+    return [self hasManifestValueForKey:BlioManifestDrmHeaderKey];
 }
 
 - (UIImage *)missingCoverImageOfSize:(CGSize)size {
@@ -251,7 +256,7 @@
 }
 
 - (UIImage *)coverImage {
-    NSData *imageData = [self manifestDataForKey:@"coverFilename"];
+    NSData *imageData = [self manifestDataForKey:BlioManifestCoverKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
         return aCoverImage;
@@ -558,7 +563,7 @@ static void sortedHighlightRangePredicateInit() {
     
     if (location && path) {
         if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
-            NSString *textFlowLocation = [self manifestLocationForKey:@"textFlowFilename"];
+            NSString *textFlowLocation = [self manifestLocationForKey:BlioManifestTextFlowKey];
             if ([textFlowLocation isEqualToString:BlioManifestEntryLocationXPS]) {
                 filePath = [BlioXPSEncryptedTextFlowDir stringByAppendingPathComponent:path];
                 exists = [self componentExistsInXPSAtPath:filePath];
@@ -624,7 +629,7 @@ static void sortedHighlightRangePredicateInit() {
 
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path {
     NSData *data = nil;
-    NSString *textFlowLocation = [self manifestLocationForKey:@"textFlowFilename"];
+    NSString *textFlowLocation = [self manifestLocationForKey:BlioManifestTextFlowKey];
     
     if ([textFlowLocation isEqualToString:BlioManifestEntryLocationXPS]) {
         data = [[self xpsProvider] dataForComponentAtPath:[BlioXPSEncryptedTextFlowDir stringByAppendingPathComponent:path]];
@@ -654,8 +659,8 @@ static void sortedHighlightRangePredicateInit() {
     
     NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
     if (manifestEntry) {
-        NSString *location = [manifestEntry objectForKey:@"location"];
-        NSString *path = [manifestEntry objectForKey:@"path"];
+        NSString *location = [manifestEntry objectForKey:BlioManifestEntryLocationKey];
+        NSString *path = [manifestEntry objectForKey:BlioManifestEntryPathKey];
         if (location && path) {
             // TODO: what if the textflow is in the XPS - this won't work? manifestPathForKey perhaps should have stayed private
             if ([location isEqualToString:BlioManifestEntryLocationTextflow]) {
@@ -680,7 +685,7 @@ static void sortedHighlightRangePredicateInit() {
 - (NSString *)manifestRelativePathForKey:(NSString *)key {
 	NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
     if (manifestEntry) {
-        NSString *path = [manifestEntry objectForKey:@"path"];
+        NSString *path = [manifestEntry objectForKey:BlioManifestEntryPathKey];
         if (path) return path;
     }
     return nil;
@@ -691,7 +696,7 @@ static void sortedHighlightRangePredicateInit() {
     
     NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
     if (manifestEntry) {
-        fileLocation = [manifestEntry objectForKey:@"location"];
+        fileLocation = [manifestEntry objectForKey:BlioManifestEntryLocationKey];
     }
     return fileLocation;
 }
@@ -701,7 +706,7 @@ static void sortedHighlightRangePredicateInit() {
     
     NSDictionary *manifestEntry = [self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]];
     if (manifestEntry) {
-        fileStatus = [[manifestEntry objectForKey:@"preAvailabilityComplete"] boolValue];
+        fileStatus = [[manifestEntry objectForKey:BlioManifestPreAvailabilityCompleteKey] boolValue];
     }
     return fileStatus;
 }
@@ -710,8 +715,8 @@ static void sortedHighlightRangePredicateInit() {
     NSData *data = nil;
     NSDictionary *manifestEntry = [[self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] retain];
     if(manifestEntry) {
-        NSString *location = [manifestEntry objectForKey:@"location"];
-        NSString *path = [manifestEntry objectForKey:@"path"];
+        NSString *location = [manifestEntry objectForKey:BlioManifestEntryLocationKey];
+        NSString *path = [manifestEntry objectForKey:BlioManifestEntryPathKey];
         if (location && path) {
             if ([location isEqualToString:BlioManifestEntryLocationFileSystem]) {
                 data = [self dataFromFileSystemAtPath:path];
@@ -729,9 +734,9 @@ static void sortedHighlightRangePredicateInit() {
     NSData *data = nil;
     NSDictionary *manifestEntry = [[self valueForKeyPath:[NSString stringWithFormat:@"manifest.%@", key]] retain];
     if(manifestEntry) {
-        NSString *location = [manifestEntry objectForKey:@"location"];
-		if ([[manifestEntry objectForKey:@"path"] isKindOfClass:[NSArray class]]) {
-			NSArray *pathArray = [manifestEntry objectForKey:@"path"];
+        NSString *location = [manifestEntry objectForKey:BlioManifestEntryLocationKey];
+		if ([[manifestEntry objectForKey:BlioManifestEntryPathKey] isKindOfClass:[NSArray class]]) {
+			NSArray *pathArray = [manifestEntry objectForKey:BlioManifestEntryPathKey];
 			NSString * path = nil;
 			if (index < [pathArray count]) path = [pathArray objectAtIndex:index];
 			if (location && path) {

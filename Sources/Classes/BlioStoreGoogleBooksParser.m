@@ -42,6 +42,7 @@
 		// if nextLink is not nil, then send it back to the delegate in NSURL form
 		// TODO: make custom modifications to nextLink to start fetch at custom index and possibly obtain more results...
 		if ([object nextLink] != nil) [self.delegate parser:self didParseNextLink:[[object nextLink] URL]];
+		else [self.delegate parser:self didParseNextLink:nil];
 		if ([object identifier] != nil) [self.delegate parser:self didParseIdentifier:[object identifier]];
 	
 		for (GDataEntryBase *entry in [object entries]) {
@@ -56,11 +57,13 @@
     }
 	else {
 		NSLog(@"ERROR: BlioStoreGoogleBooksParser (feed): %@, %@",error,[error userInfo]);
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
-									 message:[[error userInfo] objectForKey:NSLocalizedDescriptionKey]
-									delegate:self 
-						   cancelButtonTitle:@"OK"
-						   otherButtonTitles:nil];		
+		if ([error code] != 403) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+										 message:[[error userInfo] objectForKey:NSLocalizedFailureReasonErrorKey]
+										delegate:self 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];		
+		}
 		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
 	}
 
@@ -81,8 +84,16 @@
         
         [self parseEntry:object withBaseURL:baseURL];
     }
-	else NSLog(@"ERROR: BlioStoreGoogleBooksParser (entry): %@, %@",error,[error userInfo]);
-
+	else {
+		NSLog(@"ERROR: BlioStoreGoogleBooksParser (entry): %@, %@",error,[error userInfo]);
+		if ([error code] != 403) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+										 message:[[error userInfo] objectForKey:NSLocalizedFailureReasonErrorKey]
+										delegate:self 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];		
+		}		
+	}
 	if ([entryServiceTickets count] == 0) {
 		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
 		// TODO: initiate another connection if valid results are not enough.

@@ -21,6 +21,13 @@
 @class BookVault_LoginResponse;
 @class BookVault_LoginResult;
 
+static NSString * const BlioBookVaultResponseTypeRegisterSale = @"RegisterSaleResponse";
+static NSString * const BlioBookVaultResponseTypeVaultContentsWithToken = @"VaultContentsWithTokenResponse";
+static NSString * const BlioBookVaultResponseTypeVaultContents = @"VaultContentsResponse";
+static NSString * const BlioBookVaultResponseTypeRequestDownloadWithToken = @"RequestDownloadWithTokenResponse";
+static NSString * const BlioBookVaultResponseTypeRequestDownload = @"RequestDownloadResponse";
+static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
+
 @interface BookVault_RegisterSale : NSObject {
 	
 /* elements */
@@ -487,10 +494,12 @@
 - (NSString *)serializedFormUsingHeaderElements:(NSDictionary *)headerElements bodyElements:(NSDictionary *)bodyElements;
 @end
 @interface BookVaultSoapResponse : NSObject {
+	NSString * responseType;
 	NSArray *headers;
 	NSArray *bodyParts;
 	NSError *error;
 }
+@property (retain) NSString * responseType;
 @property (retain) NSArray *headers;
 @property (retain) NSArray *bodyParts;
 @property (retain) NSError *error;

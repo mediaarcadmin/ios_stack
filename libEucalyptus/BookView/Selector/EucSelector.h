@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "THEventCapturingWindow.h"
+#import "EucSelectorKnob.h"
 
-@class EucSelectorRange, THPair, EucMenuController, THImageFactory;
+@class EucSelectorRange, THPair, EucMenuController, EucSelectorAccessibilityMask, THImageFactory;
 @protocol EucSelectorDataSource, EucSelectorDelegate;
 
 typedef enum EucSelectorTrackingStage {
@@ -19,7 +20,7 @@ typedef enum EucSelectorTrackingStage {
     EucSelectorTrackingStageChangingSelection,
 } EucSelectorTrackingStage;
 
-@interface EucSelector : NSObject <THEventCaptureObserver> {
+@interface EucSelector : NSObject <THEventCaptureObserver, EucSelectorKnobDelegate> {
     BOOL _shouldSniffTouches;
     BOOL _selectionDisabled;
     
@@ -51,9 +52,9 @@ typedef enum EucSelectorTrackingStage {
     
     NSMutableArray *_highlightLayers;
     THPair *_highlightEndLayers;
-    THPair *_highlightKnobLayers;    
+    THPair *_highlightKnobs;    
     
-    CALayer *_draggingKnob;
+    UIView *_draggingKnob;
     CGFloat _draggingKnobVerticalOffset;
     
     EucMenuController *_menuController;
@@ -67,6 +68,9 @@ typedef enum EucSelectorTrackingStage {
     NSArray *_cachedHighlightRanges;
     
     CGFloat _screenScaleFactor;
+    
+    EucSelectorAccessibilityMask *_accessibilityMask;
+    BOOL _accessibilityAnnouncedSelecting;
 }
 
 @property (nonatomic, assign) BOOL selectionDisabled;
@@ -136,6 +140,9 @@ typedef enum EucSelectorTrackingStage {
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange;
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)selectedRange movedToRange:(EucSelectorRange *)selectedRange;
 
+- (void)eucSelectorWillBeginModalAccessibility:(EucSelector *)selector ;
+- (void)eucSelectorDidEndModalAccessibility:(EucSelector *)selector ;
+
 @end
 
 
@@ -146,6 +153,7 @@ typedef enum EucSelectorTrackingStage {
 - (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)id;
 - (NSArray *)eucSelector:(EucSelector *)selector identifiersForElementsOfBlockWithIdentifier:(id)id;
 - (NSArray *)eucSelector:(EucSelector *)selector rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
+- (NSString *)eucSelector:(EucSelector *)selector accessibilityLabelForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 
 @optional
 // Should return an array of EucSelectorRanges.

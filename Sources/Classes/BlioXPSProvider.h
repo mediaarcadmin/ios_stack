@@ -13,6 +13,12 @@
 #import "BlioDrmSessionManager.h"
 #import "XpsSdk.h"
 
+typedef enum {
+    kBlioXPSProviderReportingStatusNotRequired = 0,
+    kBlioXPSProviderReportingStatusRequired,
+    kBlioXPSProviderReportingStatusComplete
+} BlioXPSProviderReportingStatus;
+
 @interface BlioXPSProvider : NSObject <BlioLayoutDataSource, NSXMLParserDelegate> {
     NSManagedObjectID *bookID;
 	BlioDrmSessionManager* drmSessionManager;
@@ -33,6 +39,8 @@
     
     BlioTimeOrderedCache *componentCache;
     NSNumber *bookIsEncrypted;
+    BOOL decryptionAvailable;
+    BlioXPSProviderReportingStatus reportingStatus;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -40,6 +48,6 @@
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (NSData *)dataForComponentAtPath:(NSString *)path;
 - (BOOL)componentExistsAtPath:(NSString *)path;
-- (void)reportReading;
+- (void)reportReadingIfRequired;
 
 @end

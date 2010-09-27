@@ -61,7 +61,7 @@
 
 //    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:audioBookPath] 
 //                                                                   error:&err];
-    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:[book manifestDataForKey:@"audiobookDataFiles" pathIndex:index]
+    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:[book manifestDataForKey:BlioManifestAudiobookDataFilesKey pathIndex:index]
                                                                    error:&err];
 	self.avPlayer = player;
     [player release];
@@ -89,7 +89,7 @@
 //
 	BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
 	NSMutableArray* fileTimes = [[NSMutableArray alloc] init];
-	NSData * timingData = [book manifestDataForKey:@"audiobookTimingFiles" pathIndex:index];
+	NSData * timingData = [book manifestDataForKey:BlioManifestAudiobookTimingFilesKey pathIndex:index];
 	NSString * timingDataString = [[NSString alloc] initWithData:timingData encoding:NSASCIIStringEncoding];
 //	NSLog(@"timingDataString: %@",timingDataString);
 	NSArray * timingLines = [timingDataString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];

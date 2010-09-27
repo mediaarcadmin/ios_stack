@@ -24,6 +24,7 @@
 	NSURL * nextURL;
 	NSString * id;
 	NSUInteger totalResults;
+	NSInteger previousFeedCount;
 }
 
 @property (nonatomic) Class parserClass;
@@ -36,5 +37,6 @@
 @property (nonatomic, retain) NSString *id;
 @property (nonatomic, assign) NSUInteger totalResults;
 @property (nonatomic, assign) BlioBookSourceID sourceID;
+@property (nonatomic, assign) NSInteger previousFeedCount;
 
 @end

@@ -9,6 +9,7 @@
 #import "BlioBookManager.h"
 #import "BlioBook.h"
 #import "BlioTextFlow.h"
+#import "BlioBUpeBook.h"
 #import "BlioEPubBook.h"
 #import "BlioFlowEucBook.h"
 #import "BlioParagraphSource.h"
@@ -359,6 +360,9 @@ static pthread_key_t sManagedObjectContextKey;
         }
     }
     
+    //NSLog(@"[%d] checkOutXPSProviderForBookWithID %@", [self.cachedXPSProviderCheckoutCounts countForObject:aBookID], aBookID);
+
+    
     [self.persistentStoreCoordinator unlock];
     
     return ret;
@@ -383,6 +387,8 @@ static pthread_key_t sManagedObjectContextKey;
                 }
             }
         }
+        //NSLog(@"[%d] checkInXPSProviderForBookWithID %@", [self.cachedXPSProviderCheckoutCounts countForObject:aBookID], aBookID);
+
     }
 }
 

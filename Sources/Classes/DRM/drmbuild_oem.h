@@ -102,7 +102,7 @@ extern "C" {
 #------------------------------------------------------------------------------
 */
 #ifndef DRM_SUPPORT_DEVICE_REVOCATION
-#define DRM_SUPPORT_DEVICE_REVOCATION           0
+#define DRM_SUPPORT_DEVICE_REVOCATION           1
 #endif
 /*
 #------------------------------------------------------------------------------

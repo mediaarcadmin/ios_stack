@@ -12,6 +12,7 @@
 #import "BlioBookSearchResultsTableViewController.h"
 #import "BlioBookSearchResult.h"
 #import "UIDevice+BlioAdditions.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 #define RESULTSPREFIXSTRINGMAXLENGTH 15
 

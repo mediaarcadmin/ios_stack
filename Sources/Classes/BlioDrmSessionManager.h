@@ -17,24 +17,23 @@
 
 //static const NSInteger BlioDrmManagerInitialLicenseCooldownTime = 10;
 
+struct BlioDrmSessionManagerDrmIVars; 
+
 @interface BlioDrmSessionManager : NSObject {
 	BOOL drmInitialized;
     NSManagedObjectID *headerBookID;
     NSManagedObjectID *boundBookID;
-	NSInteger licenseCooldownTime;
-	NSTimer * licenseCooldownTimer;
+    struct BlioDrmSessionManagerDrmIVars *drmIVars;
 }
 
 @property (nonatomic, assign) BOOL drmInitialized;
-@property (nonatomic, assign) NSInteger licenseCooldownTime;
-@property (nonatomic, assign) NSTimer * licenseCooldownTimer;
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
-- (void)initialize;
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name;
 - (BOOL)leaveDomain:(NSString*)token;
-- (void)reportReading;
+- (BOOL)reportReading;
 - (BOOL)getLicense:(NSString*)token;
+- (BOOL)bindToLicense;
 - (BOOL)decryptData:(NSData *)data;
 
 @end

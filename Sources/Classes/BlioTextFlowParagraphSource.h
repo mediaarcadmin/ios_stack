@@ -15,10 +15,8 @@
 @interface BlioTextFlowParagraphSource : NSObject <BlioParagraphSource> {
     BlioTextFlow *textFlow;
     
-    NSUInteger currentFlowTreeSection;
+    NSUInteger currentFlowTreeIndex;
     BlioTextFlowFlowTree *currentFlowTree;
-    
-    float *sectionScaleFactors;
 }
 
 - (id)initWithBookID:(NSManagedObjectID *)bookID;

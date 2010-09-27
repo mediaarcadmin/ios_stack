@@ -8,6 +8,7 @@
 
 #import "BlioStoreWebsiteViewController.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioStoreWebsiteViewController
 
@@ -26,7 +27,7 @@
 {
     UILabel *label = [[[UILabel alloc] initWithFrame:frame] autorelease];
     
-	label.textAlignment = UITextAlignmentLeft;
+	label.textAlignment = UITextAlignmentCenter;
     label.text = title;
 	label.adjustsFontSizeToFitWidth = YES;
 	label.numberOfLines = 0;
@@ -102,6 +103,7 @@
 		explanationFrame.size.height = explanationSize.height;
 		explanationLabel.frame = explanationFrame;
 		explanationLabel.text = explanationText;
+		explanationLabel.textAlignment = UITextAlignmentCenter;
 		
 		// blioreader.com button.
 		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -116,6 +118,14 @@
 }
 
 - (void)launchWebsite:(id)sender {	
+	// TODO: take out this beta alert below!
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+								 message:NSLocalizedStringWithDefaultValue(@"BETA_MOBILE_STORE_NOT_AVAILABLE",nil,[NSBundle mainBundle],@"The Blio Book Store is not available for this beta release.",@"Alert Text informing the end-user that the Blio Book Store is not available for this beta release.")
+								delegate:nil 
+					   cancelButtonTitle:@"OK"
+					   otherButtonTitles:nil];
+	return;
+	
 	UIButton* ctl = (UIButton*)sender;
 	if ( ctl == launchButton ) {
 		NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];

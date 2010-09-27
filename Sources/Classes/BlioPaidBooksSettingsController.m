@@ -10,6 +10,7 @@
 #import "BlioAppSettingsConstants.h"
 #import "BlioStoreManager.h"
 #import "BlioDrmManager.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioPaidBooksSettingsController
 
@@ -146,7 +147,6 @@
 			UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(200.0f, 9.0f, 80.0f, 28.0f)];
 			[switchView setTag:997];
 			[cell addSubview:switchView];
-			// TODO: initially undefined, review this
 			if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] == BlioDeviceRegisteredStatusRegistered ) {
 				[switchView setOn:YES animated:NO];
 				self.registrationOn = YES;
@@ -182,27 +182,21 @@
 	sender.enabled = NO;
 	[activityIndicator startAnimating];  // thread issue...
 	if ( [(UISwitch*)sender isOn] ) {
-		//if ( ![[BlioDrmManager getDrmManager] joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
 		if ( ![self.drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
-				UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Registration failure",@"\"Registration failure\" alert message title") 
-																 message:NSLocalizedString(@"Unable to register device.\n  Try again later.",@"\"Domain join failure.\" alert message title") 
-																delegate:self 
-													   cancelButtonTitle:nil
-													   otherButtonTitles:@"OK", nil];
-			[alertView show];
-			[alertView release];
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
+										delegate:self 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:@"OK", nil];
 		}
 	}
 	else {
-		//if ( ![[BlioDrmManager getDrmManager] leaveDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]] ) {
 		if ( ![self.drmSessionManager leaveDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]] ) {
-				UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Registration failure",@"\"Registration failure\" alert message title") 
-																 message:NSLocalizedString(@"Unable to unregister device.\n  Try again later.",@"\"Domain leave failure.\" alert message title") 
-																delegate:self 
-													   cancelButtonTitle:nil
-													   otherButtonTitles:@"OK", nil];
-			[alertView show];
-			[alertView release];
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"UNREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to unregister device. Please try again later.",@"Alert message shown when device unregistration fails.")
+										delegate:self 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:@"OK", nil];
 		}
 	}
 	[activityIndicator stopAnimating];

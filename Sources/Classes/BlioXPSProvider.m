@@ -55,8 +55,15 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize drmSessionManager;
 
 - (BlioDrmSessionManager*)drmSessionManager {
-	if ( !drmSessionManager ) 
+	if ( !drmSessionManager ) {
 		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
+        if ([drmSessionManager bindToLicense]) {
+            decryptionAvailable = YES;
+            if (reportingStatus != kBlioXPSProviderReportingStatusComplete) {
+                reportingStatus = kBlioXPSProviderReportingStatusRequired;
+            }
+        }
+    }
 	return drmSessionManager;
 }
 
@@ -88,10 +95,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     [inflateLock release];
     
     self.componentCache = nil;
-	
-	if ( drmSessionManager )
-		[drmSessionManager release];
     
+    if (drmSessionManager) {
+		[drmSessionManager release];
+    }
+	
     [super dealloc];
 }
 
@@ -129,7 +137,9 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
         
         xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
-        if ([self.book isEncrypted]) {
+        decryptionAvailable = NO;
+        
+        if ([self bookIsEncrypted]) {
             XPS_URI_PLUGIN_INFO	upi = {
                 XPS_URI_SOURCE_PLUGIN,
                 sizeof(XPS_URI_PLUGIN_INFO),
@@ -167,10 +177,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     return self;
 }
 
-- (void)reportReading {
-    if (self.bookIsEncrypted) {
-		//[[BlioDrmManager getDrmManager] reportReadingForBookWithID:self.bookID];
-        [self.drmSessionManager reportReading];
+- (void)reportReadingIfRequired {
+    if (reportingStatus == kBlioXPSProviderReportingStatusRequired) {
+        if ([drmSessionManager reportReading]) {
+            reportingStatus = kBlioXPSProviderReportingStatusComplete;
+        }
     }
 }
 
@@ -375,7 +386,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 
 - (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
     UIImage *thumbnail = nil;
-    NSString *thumbnailsLocation = [self.book manifestLocationForKey:@"thumbnailDirectory"];
+    NSString *thumbnailsLocation = [self.book manifestLocationForKey:BlioManifestThumbnailDirectoryKey];
     if ([thumbnailsLocation isEqualToString:BlioManifestEntryLocationXPS]) {
         NSString *thumbPath = [BlioXPSMetaDataDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.jpg", pageNumber]];
         NSData *thumbData = [self dataForComponentAtPath:thumbPath];
@@ -546,8 +557,21 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     NSData *componentData = [self rawDataForComponentAtPath:componentPath];
              
     if (encrypted) {
-		//if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
-        if (![self.drmSessionManager decryptData:componentData] ) {
+        BOOL decrypted = NO;
+        if (!decryptionAvailable) {
+            // Check if this is first run
+            if (self.drmSessionManager && decryptionAvailable) {
+                if ([self.drmSessionManager decryptData:componentData]) {
+                    decrypted = YES;
+                }
+            }
+        } else {
+            if ([self.drmSessionManager decryptData:componentData]) {
+                decrypted = YES;
+            }
+        }
+        
+        if (!decrypted) {
 			NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
             return nil;
         }
