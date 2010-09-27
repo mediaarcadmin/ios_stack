@@ -423,6 +423,8 @@
 		7D6D9FBF124E9A7B005FD8CE /* EucPageTurningView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3637701238F534002BDD2B /* EucPageTurningView.m */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
 		7D6D9FC4124E9AD2005FD8CE /* THEmbeddedResourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0217A812402B17008CE201 /* THEmbeddedResourceManager.m */; };
 		7D6D9FC7124E9AE6005FD8CE /* THOpenGLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4F3108124CD872001C2D8A /* THOpenGLUtils.m */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
+		7D6DA2231250C404005FD8CE /* euc_page_turning.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 7D021761124025E7008CE201 /* euc_page_turning.vsh */; };
+		7D6DA2241250C408005FD8CE /* euc_page_turning.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 7D021760124025E7008CE201 /* euc_page_turning.fsh */; };
 		7D79D072117F75C90081F554 /* EucCSSLayoutRunExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D79D070117F75C90081F554 /* EucCSSLayoutRunExtractor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D79D073117F75C90081F554 /* EucCSSLayoutRunExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79D071117F75C90081F554 /* EucCSSLayoutRunExtractor.m */; };
 		7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883FCB111C7735009669A8 /* EucMenuView.m */; };
@@ -526,9 +528,9 @@
 			fileType = pattern.proxy;
 			isEditable = 1;
 			outputFiles = (
-				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_NAME).c",
+				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_NAME).m",
 			);
-			script = "pushd \"${INPUT_FILE_DIR}\"\nxxd -i \"${INPUT_FILE_NAME}\" \"${DERIVED_FILES_DIR}/${INPUT_FILE_NAME}.c\"\npopd";
+			script = "pushd \"${INPUT_FILE_DIR}\"\nxxd -i \"${INPUT_FILE_NAME}\" - | sed 's/unsigned/const unsigned/' | sed 's/ =/ __attribute__((used)) =/' > \"${DERIVED_FILES_DIR}/${INPUT_FILE_NAME}.m\"\npopd";
 		};
 		7D021790124029C7008CE201 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -3588,6 +3590,8 @@
 				7D6D9FBF124E9A7B005FD8CE /* EucPageTurningView.m in Sources */,
 				7D6D9FC4124E9AD2005FD8CE /* THEmbeddedResourceManager.m in Sources */,
 				7D6D9FC7124E9AE6005FD8CE /* THOpenGLUtils.m in Sources */,
+				7D6DA2231250C404005FD8CE /* euc_page_turning.vsh in Sources */,
+				7D6DA2241250C408005FD8CE /* euc_page_turning.fsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
