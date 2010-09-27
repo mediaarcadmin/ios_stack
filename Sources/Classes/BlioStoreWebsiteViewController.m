@@ -120,7 +120,7 @@
 - (void)launchWebsite:(id)sender {	
 	// TODO: take out this beta alert below!
 	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
-								 message:NSLocalizedStringWithDefaultValue(@"BETA_MOBILE_STORE_NOT_AVAILABLE",nil,[NSBundle mainBundle],@"The Blio Book Store is not available for this beta release.",@"Alert Text informing the end-user that the Blio Book Store is not available for this beta release.")
+								 message:NSLocalizedStringWithDefaultValue(@"BETA_MOBILE_STORE_NOT_AVAILABLE",nil,[NSBundle mainBundle],@"The Blio Book Store cannot be accessed through this link during the beta testing period.",@"Alert Text informing the end-user that the Blio Book Store is not available for this beta release.")
 								delegate:nil 
 					   cancelButtonTitle:@"OK"
 					   otherButtonTitles:nil];
