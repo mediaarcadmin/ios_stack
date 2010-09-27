@@ -97,6 +97,5 @@
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
 
 - (BOOL)toolbarShowShouldBeSuppressed;
-- (void)didFinishReading;
 
 @end

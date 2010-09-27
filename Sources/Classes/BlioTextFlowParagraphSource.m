@@ -18,7 +18,7 @@
 @interface BlioTextFlowParagraphSource ()
 
 @property (nonatomic, retain) BlioTextFlow *textFlow;
-@property (nonatomic, assign) NSUInteger currentFlowTreeSection;
+@property (nonatomic, assign) NSUInteger currentFlowTreeIndex;
 @property (nonatomic, retain) BlioTextFlowFlowTree *currentFlowTree;
 
 @end
@@ -28,7 +28,7 @@
 
 @synthesize textFlow;
 
-@synthesize currentFlowTreeSection;
+@synthesize currentFlowTreeIndex;
 @synthesize currentFlowTree;
 
 - (id)initWithBookID:(NSManagedObjectID *)bookID
@@ -45,17 +45,16 @@
         [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:textFlow.bookID];
         [textFlow release];
     }
-    free(sectionScaleFactors);
     [currentFlowTree release];
     
     [super dealloc];
 }
 
-- (BlioTextFlowFlowTree *)flowFlowTreeForSection:(NSUInteger)section
+- (BlioTextFlowFlowTree *)flowFlowTreeForIndex:(NSUInteger)index
 {
-    if(section != self.currentFlowTreeSection || !self.currentFlowTree) {
-        self.currentFlowTree = [self.textFlow flowTreeForSectionIndex:section];
-        self.currentFlowTreeSection = section;
+    if(index != self.currentFlowTreeIndex || !self.currentFlowTree) {
+        self.currentFlowTree = [self.textFlow flowTreeForFlowIndex:index];
+        self.currentFlowTreeIndex = index;
     }    
     return self.currentFlowTree;
 }
@@ -63,7 +62,7 @@
 - (BlioTextFlowParagraph *)paragraphWithID:(NSIndexPath *)paragraphID
 {
     BlioTextFlowParagraph *ret = nil;
-    BlioTextFlowFlowTree *flowFlowTree = [self flowFlowTreeForSection:[paragraphID indexAtPosition:0]];
+    BlioTextFlowFlowTree *flowFlowTree = [self flowFlowTreeForIndex:[paragraphID indexAtPosition:0]];
     
     if(flowFlowTree) {
         uint32_t key = [paragraphID indexAtPosition:1];
@@ -78,20 +77,20 @@
 
 - (void)bookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint toParagraphID:(id *)paragraphID wordOffset:(uint32_t *)wordOffset
 {
-    NSUInteger sectionIndex = 0;
+    NSUInteger flowIndex = 0;
     NSUInteger bookmarkPageIndex = bookmarkPoint.layoutPage - 1;
-    NSArray *sections = self.textFlow.sections;
-    NSUInteger nextSectionIndex = 0;
-    for(BlioTextFlowSection *section in sections) {
-        if(section.startPage <= bookmarkPageIndex) {
-            sectionIndex = nextSectionIndex;
-            ++nextSectionIndex;
+    NSArray *flowReferences = self.textFlow.flowReferences;
+    NSUInteger nextFlowIndex = 0;
+    for(BlioTextFlowFlowReference *flowReference in flowReferences) {
+        if(flowReference.startPage <= bookmarkPageIndex) {
+            flowIndex = nextFlowIndex;
+            ++nextFlowIndex;
         } else {
             break;
         }
     }
     
-    BlioTextFlowFlowTree *flowFlowTree = [self flowFlowTreeForSection:sectionIndex];
+    BlioTextFlowFlowTree *flowFlowTree = [self flowFlowTreeForIndex:flowIndex];
     BlioTextFlowParagraph *bestParagraph = flowFlowTree.firstParagraph;
 
     BOOL stop = NO;
@@ -108,7 +107,7 @@
         bestParagraph = nextParagraph;
     }
     
-    NSUInteger indexes[2] = { sectionIndex, bestParagraph.key };
+    NSUInteger indexes[2] = { flowIndex, bestParagraph.key };
     *paragraphID = [NSIndexPath indexPathWithIndexes:indexes length:2];
     
     uint32_t bestWordOffset = 0;

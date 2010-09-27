@@ -27,7 +27,8 @@ static const NSInteger kBlioBookProcessingStateIncomplete = 2;
 static const NSInteger kBlioBookProcessingStateFailed = 3;
 static const NSInteger kBlioBookProcessingStateNotSupported = 4;
 static const NSInteger kBlioBookProcessingStatePaused = 5;
-static const NSInteger kBlioBookProcessingStateComplete = 6;
+static const NSInteger kBlioBookProcessingStateSuspended = 6;
+static const NSInteger kBlioBookProcessingStateComplete = 7;
 
 static NSString * const BlioManifestEntryLocationFileSystem = @"fileSystem";
 static NSString * const BlioManifestEntryLocationXPS = @"xps";
@@ -53,6 +54,23 @@ static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
 static NSString * const BlioXPSComponentExtensionRels = @"rels";
 static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 
+static NSString * const BlioManifestAudiobookKey = @"audiobookFilename";
+static NSString * const BlioManifestEPubKey = @"epubFilename";
+static NSString * const BlioManifestPDFKey = @"pdfFilename";
+static NSString * const BlioManifestTextFlowKey = @"textFlowFilename";
+static NSString * const BlioManifestXPSKey = @"xpsFilename";
+static NSString * const BlioManifestCoverKey = @"coverFilename";
+static NSString * const BlioManifestThumbnailDirectoryKey = @"thumbnailDirectory";
+static NSString * const BlioManifestRightsKey = @"rightsFilename";
+static NSString * const BlioManifestAudiobookDataFilesKey = @"audiobookDataFiles";
+static NSString * const BlioManifestAudiobookTimingFilesKey = @"audiobookTimingFiles";
+static NSString * const BlioManifestKNFBMetadataKey = @"KNFBMetadataFilename";
+static NSString * const BlioManifestPreAvailabilityCompleteKey = @"preAvailabilityComplete";
+static NSString * const BlioManifestDrmHeaderKey = @"drmHeaderFilename";
+
+static NSString * const BlioManifestEntryLocationKey = @"location";
+static NSString * const BlioManifestEntryPathKey = @"path";
+
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end
@@ -76,8 +94,11 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 @property (nonatomic, retain) NSNumber *libraryPosition;
 @property (nonatomic, retain) NSNumber *reflowRight;
 
-// Legacy core data attribute-backed dynamic properties TODO: remove these
+// the following two attributes are used to quickly calculate the number of TTS-compatible books
+@property (nonatomic, retain) NSNumber *hasAudiobook;
 @property (nonatomic, retain) NSNumber *hasAudiobookRights;
+
+// Legacy core data attribute-backed dynamic properties TODO: remove these
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 
@@ -115,6 +136,7 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow etc.)
 - (void)flushCaches;
+- (void)reportReadingIfRequired;
 
 - (NSArray *)sortedBookmarks;
 - (NSArray *)sortedNotes;

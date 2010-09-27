@@ -13,6 +13,7 @@
 #import "NSString+BlioAdditions.h"
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
+#import "Reachability.h"
 
 @implementation BlioProcessingCompleteOperation
 
@@ -36,7 +37,7 @@
 		if (!blioOp.operationSuccess) {
 			NSLog(@"BlioProcessingCompleteOperation: failed dependency found! Operation: %@ Sending Failed Notification...",blioOp);
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
-			if (currentProcessingState != kBlioBookProcessingStateNotSupported) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
+			if (currentProcessingState != kBlioBookProcessingStateNotSupported && currentProcessingState != kBlioBookProcessingStatePaused && currentProcessingState != kBlioBookProcessingStateSuspended) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
 			[self cancel];
 			return;
 		}
@@ -122,9 +123,9 @@
 	self.percentageComplete = 100;
 	
 	NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-	[manifestEntry setValue:[book manifestLocationForKey:self.filenameKey] forKey:@"location"];
-	[manifestEntry setValue:[book manifestRelativePathForKey:self.filenameKey] forKey:@"path"];
-	[manifestEntry setValue:[NSNumber numberWithBool:YES] forKey:@"preAvailabilityComplete"];
+	[manifestEntry setValue:[book manifestLocationForKey:self.filenameKey] forKey:BlioManifestEntryLocationKey];
+	[manifestEntry setValue:[book manifestRelativePathForKey:self.filenameKey] forKey:BlioManifestEntryPathKey];
+	[manifestEntry setValue:[NSNumber numberWithBool:YES] forKey:BlioManifestPreAvailabilityCompleteKey];
 	 // WARNING: this may need to change if more manifest keys are added to a manifest entry!
 	[self setBookManifestValue:manifestEntry forKey:self.filenameKey];
 //	NSLog(@"BlioProcessingPreAvailabilityCompleteOperation complete for key: %@",self.filenameKey);
@@ -167,15 +168,15 @@
 		return;
 	} else {
         NSMutableDictionary *manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:@"path"];
-		[self setBookManifestValue:manifestEntry forKey:@"drmHeaderFilename"];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:BlioManifestEntryPathKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestDrmHeaderKey];
 	}
 	
 	
 	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore) {
 		NSLog(@"ERROR: Title (%@) is not an online store title!",[self getBookValueForKey:@"title"]);
-		NSLog(@"xpsFilename: %@", [self getBookManifestPathForKey:@"xpsFilename"]);
+		NSLog(@"xpsFilename: %@", [self getBookManifestPathForKey:BlioManifestXPSKey]);
 		// TODO: remove the following two lines for final version (we're bypassing for now since Three Little Pigs doesn't need a license)
 		self.operationSuccess = YES;
 		self.percentageComplete = 100;
@@ -287,7 +288,7 @@
 		expectedContentLength = NSURLResponseUnknownLength;
         executing = NO;
         finished = NO;
-		resume = NO;
+		resume = YES;
     }
     
     return self;
@@ -345,6 +346,14 @@
 	if (self.url == nil) {
         [self willChangeValueForKey:@"isFinished"];
 		NSLog(@"URL is nil, will prematurely abort start");
+        finished = YES;
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }
+
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+        [self willChangeValueForKey:@"isFinished"];
+		NSLog(@"Internet connection is dead, will prematurely abort start");
         finished = YES;
         [self didChangeValueForKey:@"isFinished"];
         return;
@@ -423,7 +432,7 @@
 		if ([bytesAlreadyDownloaded longValue] != 0)
 		{
 			NSString * rangeString = [NSString stringWithFormat:@"bytes=%@-",[bytesAlreadyDownloaded stringValue]];
-			NSLog(@"rangeString: %@",rangeString);
+			NSLog(@"will use rangeString: %@",rangeString);
 			[aRequest addValue:rangeString forHTTPHeaderField:@"Range"];
 		}
 		else resume = NO;
@@ -480,8 +489,8 @@
 					break;
 				}
 			}			
+			NSLog(@"Accept-Ranges: %@",acceptRanges);
 			if (acceptRanges == nil) {
-//				NSLog(@"No Accept-Ranges available.");
 				//  most servers accept byte ranges without explicitly saying so- will try partial download.
 				resume = YES;
 				[theConnection cancel];
@@ -507,13 +516,15 @@
 		}
 	}
 	else if (theConnection == connection) {
-		if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] &&  // i.e. we're not a file:// download
-            (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO)) {
-			// we are not getting partial content; try again from scratch.
-			// TODO: just erase previous progress and keep using this connection instead of starting from scratch
-			resume = NO;
-			[theConnection cancel];
-			[self startDownload];
+		if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {  // i.e. we're not a file:// download
+			NSLog(@"downloadConnection httpResponse.statusCode: %i",httpResponse.statusCode);
+			if (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO) {
+				// we are not getting partial content; try again from scratch.
+				// TODO: just erase previous progress and keep using this connection instead of starting from scratch
+				resume = NO;
+				[theConnection cancel];
+				[self startDownload];
+			}
 		}		
 	}
 }
@@ -589,8 +600,8 @@
 		else {
 			//[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
-            [manifestEntry setValue:(NSString *)uniqueString forKey:@"path"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+            [manifestEntry setValue:(NSString *)uniqueString forKey:BlioManifestEntryPathKey];
             
             [self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
             [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
@@ -615,7 +626,7 @@
 
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
-		self.filenameKey = @"xpsFilename";
+		self.filenameKey = BlioManifestXPSKey;
     }
     return self;
 }
@@ -631,9 +642,9 @@
 				
 				// set manifest location for record-keeping purposes (though the app will likely request a new URL at a later time should this one fail now.)
 				NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:@"location"];
-				[manifestEntry setValue:[newXPSURL absoluteString] forKey:@"path"];
-				[self setBookManifestValue:manifestEntry forKey:@"xpsFilename"];		
+				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:BlioManifestEntryLocationKey];
+				[manifestEntry setValue:[newXPSURL absoluteString] forKey:BlioManifestEntryPathKey];
+				[self setBookManifestValue:manifestEntry forKey:BlioManifestXPSKey];		
 			}
 			else {
 				NSLog(@"new XPS URL was not able to be obtained from server! Cancelling BlioProcessingDownloadPaidBookOperation...");
@@ -690,25 +701,25 @@
 	BOOL hasTextflowData = [self bookManifestPath:BlioXPSTextFlowSectionsFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasTextflowData) {
 		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSTextFlowSectionsFile forKey:@"path"];
-		[self setBookManifestValue:manifestEntry forKey:@"textFlowFilename"];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:BlioXPSTextFlowSectionsFile forKey:BlioManifestEntryPathKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestTextFlowKey];
 	}
 	
 	BOOL hasCoverData = [self bookManifestPath:BlioXPSCoverImage existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasCoverData) {
 		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSCoverImage forKey:@"path"];
-		[self setBookManifestValue:manifestEntry forKey:@"coverFilename"];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:BlioXPSCoverImage forKey:BlioManifestEntryPathKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestCoverKey];
 	}
 	
 	BOOL hasThumbnailData = [self bookManifestPath:BlioXPSMetaDataDir existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasThumbnailData) {
 		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSMetaDataDir forKey:@"path"];
-		[self setBookManifestValue:manifestEntry forKey:@"thumbnailDirectory"];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:BlioXPSMetaDataDir forKey:BlioManifestEntryPathKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestThumbnailDirectoryKey];
 	}
 	
 	BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
@@ -717,12 +728,12 @@
 		BOOL hasRightsData = [self bookManifestPath:BlioXPSKNFBRightsFile existsForLocation:BlioManifestEntryLocationXPS];
 		if (hasRightsData) {
 			manifestEntry = [NSMutableDictionary dictionary];
-			[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-			[manifestEntry setValue:BlioXPSKNFBRightsFile forKey:@"path"];
-			[self setBookManifestValue:manifestEntry forKey:@"rightsFilename"];
+			[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+			[manifestEntry setValue:BlioXPSKNFBRightsFile forKey:BlioManifestEntryPathKey];
+			[self setBookManifestValue:manifestEntry forKey:BlioManifestRightsKey];
 			
 			// Parse Rights file and modify book attributes accordingly
-			NSData * data = [self getBookManifestDataForKey:@"rightsFilename"];
+			NSData * data = [self getBookManifestDataForKey:BlioManifestRightsKey];
 			if (data) {
 				// test to see if valid XML found
 //				NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -748,18 +759,18 @@
 		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobookRights"]; 
 		
 		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSAudiobookDirectory forKey:@"path"];
-		[self setBookManifestValue:manifestEntry forKey:@"audiobookFilename"];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:BlioXPSAudiobookDirectory forKey:BlioManifestEntryPathKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestAudiobookKey];
 		
 		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSAudiobookMetadataFile forKey:@"path"];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:BlioXPSAudiobookMetadataFile forKey:BlioManifestEntryPathKey];
 		[self setBookManifestValue:manifestEntry forKey:@"audiobookMetadataFilename"];
 		
 		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSAudiobookReferencesFile forKey:@"path"];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:BlioXPSAudiobookReferencesFile forKey:BlioManifestEntryPathKey];
 		[self setBookManifestValue:manifestEntry forKey:@"audiobookReferencesFilename"];
 		
 		NSData * data = [self getBookManifestDataForKey:@"audiobookReferencesFilename"];
@@ -780,12 +791,12 @@
 	if (hasKNFBMetadata) {
 		NSLog(@"Metadata file is present. parsing XML...");
 		manifestEntry = [NSMutableDictionary dictionary];
-		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-		[manifestEntry setValue:BlioXPSKNFBMetadataFile forKey:@"path"];
-		[self setBookManifestValue:manifestEntry forKey:@"KNFBMetadataFilename"];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:BlioXPSKNFBMetadataFile forKey:BlioManifestEntryPathKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestKNFBMetadataKey];
 		
 		// Parse Metadata file and modify book attributes accordingly
-		NSData * data = [self getBookManifestDataForKey:@"KNFBMetadataFilename"];
+		NSData * data = [self getBookManifestDataForKey:BlioManifestKNFBMetadataKey];
 		if (data) {
 			// test to see if valid XML found
 //			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -900,14 +911,14 @@
 			else {
 				NSMutableDictionary * manifestEntry = nil;
 				manifestEntry = [NSMutableDictionary dictionary];
-				[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-				[manifestEntry setValue:self.audioFiles forKey:@"path"];
-				[self setBookManifestValue:manifestEntry forKey:@"audiobookDataFiles"];	
+				[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+				[manifestEntry setValue:self.audioFiles forKey:BlioManifestEntryPathKey];
+				[self setBookManifestValue:manifestEntry forKey:BlioManifestAudiobookDataFilesKey];	
 				
 				manifestEntry = [NSMutableDictionary dictionary];
-				[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:@"location"];
-				[manifestEntry setValue:self.timingFiles forKey:@"path"];
-				[self setBookManifestValue:manifestEntry forKey:@"audiobookTimingFiles"];			
+				[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+				[manifestEntry setValue:self.timingFiles forKey:BlioManifestEntryPathKey];
+				[self setBookManifestValue:manifestEntry forKey:BlioManifestAudiobookTimingFilesKey];			
 			}
 		}
 	}
@@ -994,8 +1005,8 @@
         }
 		else {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
-            [manifestEntry setValue:self.localFilename forKey:@"path"];
+            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+            [manifestEntry setValue:self.localFilename forKey:BlioManifestEntryPathKey];
             
             [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
             
@@ -1114,7 +1125,7 @@
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
         self.localFilename = @"cover";
-		self.filenameKey = @"coverFilename";
+		self.filenameKey = BlioManifestCoverKey;
     }
     return self;
 }
@@ -1221,10 +1232,10 @@
     }
     
     NSData *imageData = nil;
-    BOOL hasCover = [self hasBookManifestValueForKey:@"coverFilename"];
+    BOOL hasCover = [self hasBookManifestValueForKey:BlioManifestCoverKey];
     
     if (hasCover) {
-        imageData = [self getBookManifestDataForKey:@"coverFilename"];
+        imageData = [self getBookManifestDataForKey:BlioManifestCoverKey];
     }
     
     if (nil == imageData) {
@@ -1293,8 +1304,8 @@
     [gridThumb release];
     
     NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
-    [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
-    [gridThumbManifestEntry setValue:pixelSpecificFilename forKey:@"path"];
+    [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+    [gridThumbManifestEntry setValue:pixelSpecificFilename forKey:BlioManifestEntryPathKey];
     [self setBookManifestValue:gridThumbManifestEntry forKey:pixelSpecificKey];
 
     if ([self isCancelled]) {
@@ -1319,8 +1330,8 @@
     [listThumb release];
     	
     NSDictionary *listThumbManifestEntry = [NSMutableDictionary dictionary];
-    [listThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:@"location"];
-    [listThumbManifestEntry setValue:pixelSpecificFilename forKey:@"path"];
+    [listThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+    [listThumbManifestEntry setValue:pixelSpecificFilename forKey:BlioManifestEntryPathKey];
     [self setBookManifestValue:listThumbManifestEntry forKey:pixelSpecificKey];
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
@@ -1345,7 +1356,7 @@
 @implementation BlioProcessingDownloadEPubOperation
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
-		self.filenameKey = @"epubFilename";
+		self.filenameKey = BlioManifestEPubKey;
     }
     return self;
 }
@@ -1357,7 +1368,7 @@
 
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
-		self.filenameKey = @"pdfFilename";
+		self.filenameKey = BlioManifestPDFKey;
     }
     return self;
 }
@@ -1369,7 +1380,7 @@
 
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
-		self.filenameKey = @"xpsFilename";
+		self.filenameKey = BlioManifestXPSKey;
     }
     return self;
 }
@@ -1380,7 +1391,7 @@
 @implementation BlioProcessingDownloadTextFlowOperation
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
-		self.filenameKey = @"textFlowFilename";
+		self.filenameKey = BlioManifestTextFlowKey;
     }
     return self;
 }
@@ -1430,8 +1441,8 @@
 			}			
             else {
                 NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-                [manifestEntry setValue:BlioManifestEntryLocationTextflow forKey:@"location"];
-                [manifestEntry setValue:rootFile forKey:@"path"];
+                [manifestEntry setValue:BlioManifestEntryLocationTextflow forKey:BlioManifestEntryLocationKey];
+                [manifestEntry setValue:rootFile forKey:BlioManifestEntryPathKey];
 				[self setBookManifestValue:manifestEntry forKey:self.filenameKey];
 				self.operationSuccess = YES;
 				self.percentageComplete = 100;
@@ -1454,7 +1465,7 @@
 @implementation BlioProcessingDownloadAudiobookOperation
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
-		self.filenameKey = @"audiobookFilename";
+		self.filenameKey = BlioManifestAudiobookKey;
     }
     return self;
 }

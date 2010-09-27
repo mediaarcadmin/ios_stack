@@ -12,6 +12,7 @@ typedef enum  {
 	BlioSoapActionAcquireLicense = 0,
     BlioSoapActionJoinDomain,
     BlioSoapActionLeaveDomain,
+	BlioSoapActionAcknowledgeLicense,
 } BlioSoapActionType;
 
 @interface BlioLicenseClient : NSObject {

@@ -19,6 +19,9 @@
 // TEMPORARY
 #import "BlioDrmManager.h"
 #import "BlioXpsClient.h"
+#import "BlioStoreArchiveViewController.h"
+#import "BlioAlertManager.h"
+#import "BlioAppSettingsConstants.h"
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
@@ -67,6 +70,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize logoView;
 @synthesize selectedLibraryBookView;
 @synthesize openBookViewController;
+@synthesize libraryVaultButton;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @synthesize settingsPopoverController;
@@ -92,7 +96,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.logoView = nil;
     self.selectedLibraryBookView = nil;
     self.openBookViewController = nil;
-	
+	self.libraryVaultButton = nil;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	self.settingsPopoverController = nil;
 #endif
@@ -124,6 +128,30 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
+	
+	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
+	
+	UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, mainScreenBounds.size.width, 60)];
+//	self.tableView.tableHeaderView = headerView;
+	UIView * tableBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -mainScreenBounds.size.height, mainScreenBounds.size.width, mainScreenBounds.size.height)];
+	tableBackgroundView.backgroundColor = [UIColor colorWithRed:226.0f/255.0f green:231.0f/255.0f blue:237.0f/255.0f alpha:1];
+	tableBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	[headerView addSubview:tableBackgroundView];
+	[tableBackgroundView release];
+	self.libraryVaultButton = [UIButton buttonWithType: UIButtonTypeCustom];
+	self.libraryVaultButton.frame = CGRectMake(0, -1, mainScreenBounds.size.width, 61);
+	self.libraryVaultButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	self.libraryVaultButton.titleLabel.font = [UIFont boldSystemFontOfSize: 16];
+	self.libraryVaultButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
+	[self.libraryVaultButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+	[self.libraryVaultButton setTitle:NSLocalizedString(@"View Your Archive",@"Label for button in library that shows Book Vault.") forState:UIControlStateNormal];
+	[self.libraryVaultButton setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.75f] forState:UIControlStateNormal];
+	[self.libraryVaultButton setBackgroundImage:[UIImage imageNamed:@"table-headerbar-background.png"] forState:UIControlStateNormal];
+	[self.libraryVaultButton addTarget:self action:@selector(showStore:) forControlEvents:UIControlEventTouchUpInside];
+	[headerView addSubview:self.libraryVaultButton];
+	self.tableView.backgroundColor = [UIColor whiteColor];
+	[headerView release];
+	
 	MRGridView *aGridView = [[MRGridView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.gridView = aGridView;
     
@@ -164,8 +192,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
                               [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
+                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
                               nil];
     BlioAccessibilitySegmentedControl *segmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
     
@@ -177,10 +205,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [segmentedControl addTarget:self action:@selector(changeLibraryLayout:) forControlEvents:UIControlEventValueChanged];
     
     [segmentedControl setIsAccessibilityElement:NO];
-    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
-    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
 	
-	[[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
+	[[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
+    [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
+    [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
     
     self.libraryLayout = kBlioLibraryLayoutUndefined;
     [segmentedControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"]];
@@ -238,7 +266,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.backgroundColor = [UIColor clearColor];
 	
 	[self calculateMaxLayoutPageEquivalentCount];
 	
@@ -491,7 +518,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
                                               authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
 											 ePubPath:nil
-		 //                                   pdfPath:@"PDFs/Three Little Pigs.pdf
 											  pdfPath:nil
 											  xpsPath:@"XPS/Three Little Pigs.xps"
 										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
@@ -503,6 +529,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 ];
 		
 #endif // DEMO_MODE
+#ifdef DEV_MODE
 
         [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
                                               authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
@@ -601,8 +628,40 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 										   fromBundle:YES
 		 ];
+		
+#endif // DEV_MODE
         
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    // Workaround to properly set the UIBarButtonItem's tint color in iOS 4
+    // From http://stackoverflow.com/questions/3151549/uitoolbar-tint-on-ios4
+    for (UIBarButtonItem * item in self.toolbarItems)
+    {
+        item.style = UIBarButtonItemStylePlain;
+        item.style = UIBarButtonItemStyleBordered;
+    }
+    
+    [super viewWillAppear:animated];
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	
+	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertLibrary"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertLibrary"];
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Introducing Your Library",@"\"Introducing Your Library\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"INTRO_LIBRARY_ALERT",nil,[NSBundle mainBundle],@"The library is where you'll find all your downloaded books. Since you're just getting started, tap on the \"View Your Archive\" option to retrieve a few complimentary books!",@"Alert Text encouraging the end-user to go to the Archive and download complimentary books.")
+									delegate:nil
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];		
+	}
+	
+	// resume suspended operations related to paid books.
+//	[self.processingDelegate resumeSuspendedProcessingForSourceID:BlioBookSourceOnlineStore];
+	
+	
 }
 
 - (void)didReceiveMemoryWarning {
@@ -904,6 +963,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	//	NSLog(@"selected cell %i",index);
 	BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:index];
 	if ([[cell.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+//		if ([[cell.book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+//			// cancel all other operations related to paid books.
+//			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
+//		}
+		
 		[self bookSelected:cell.bookView];
 	}
 }
@@ -930,7 +994,69 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
 }
 
-#pragma mark Table View Methods
+-(void)delayedChangeTableCellBackground:(NSIndexPath*)indexPath {
+	[UIView beginAnimations:@"changeDraggedRowBackgroundColor" context:nil];
+	[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:indexPath] forRowAtIndexPath:indexPath];
+	[UIView commitAnimations];
+}
+
+#pragma mark - 
+#pragma mark UITableViewDelegate methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return kBlioLibraryListRowHeight;
+}
+
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	//	NSLog(@"willDisplayCell");
+	if ([indexPath row] % 2) {
+		cell.backgroundColor = [UIColor whiteColor];
+	}
+	else {                        
+		cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
+	}
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([indexPath row] == bookCount) {
+			[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			[self showStore:[tableView cellForRowAtIndexPath:indexPath]];
+			return;
+		}
+	}
+
+		
+		
+		
+    BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+//		if ([[selectedBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+//			// cancel all other operations related to paid books.
+//			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
+//		}
+		BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
+		if (nil != aBookViewController) {
+			[aBookViewController setManagedObjectContext:self.managedObjectContext];
+			aBookViewController.toolbarsVisibleAfterAppearance = YES;
+			[self.navigationController pushViewController:aBookViewController animated:YES];
+			[aBookViewController release];
+		}
+		
+		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	}    
+	else [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+	
+}
+
+#pragma mark - 
+#pragma mark UITableViewDataSource methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     NSUInteger count = [[self.fetchedResultsController sections] count];
@@ -950,27 +1076,33 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         bookCount = [sectionInfo numberOfObjects];
         self.logoView.numberOfBooksInLibrary = bookCount;
     }
-	return bookCount;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return kBlioLibraryListRowHeight;
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	//	NSLog(@"willDisplayCell");
-	if ([indexPath row] % 2) {
-		cell.backgroundColor = [UIColor whiteColor];
-	}
-	else {                        
-		cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
-	}
+	return bookCount + 1;
 }
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	
+
+	static NSString *GenericTableCellIdentifier = @"GenericTableCellIdentifier";
+
 	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
+	
+	NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([indexPath row] == bookCount) {
+			UITableViewCell * genericCell = nil;
+			genericCell = [tableView dequeueReusableCellWithIdentifier:GenericTableCellIdentifier];
+			if (genericCell == nil) {
+				genericCell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:GenericTableCellIdentifier] autorelease];
+				genericCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+				genericCell.selectionStyle = UITableViewCellSelectionStyleGray;
+				genericCell.textLabel.text = NSLocalizedString(@"View Your Archive",@"Label for button in library that shows the Archive.");
+			}
+			return genericCell;
+		}
+	}
 	
 	BlioLibraryListCell *cell;
 	
@@ -982,23 +1114,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self configureTableCell:cell atIndexPath:indexPath];
 	return cell;
 	
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
-		BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
-		if (nil != aBookViewController) {
-			[aBookViewController setManagedObjectContext:self.managedObjectContext];
-			aBookViewController.toolbarsVisibleAfterAppearance = YES;
-			[self.navigationController pushViewController:aBookViewController animated:YES];
-			[aBookViewController release];
-		}
-		
-		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-	}    
-	else [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
-
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1051,12 +1166,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self performSelector:@selector(delayedChangeTableCellBackground:) withObject:toIndexPath afterDelay:.01];
 	}
 }
--(void)delayedChangeTableCellBackground:(NSIndexPath*)indexPath {
-	[UIView beginAnimations:@"changeDraggedRowBackgroundColor" context:nil];
-	[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:indexPath] forRowAtIndexPath:indexPath];
-	[UIView commitAnimations];
-}
-
  - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	 if (editingStyle == UITableViewCellEditingStyleDelete) {
 		 // Delete the row from the data source.
@@ -1238,6 +1347,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)showStore:(id)sender {    
     BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];
+	if (sender == self.libraryVaultButton || [sender isKindOfClass:[UITableViewCell class]]) {
+		for (id vc in aStoreController.viewControllers) {
+			if ([vc isKindOfClass:[UINavigationController class]]) {
+				UINavigationController * nc = (UINavigationController*)vc;
+				if ([nc.viewControllers count] > 0 && [[nc.viewControllers objectAtIndex:0] isKindOfClass:[BlioStoreArchiveViewController class]]) {
+					[aStoreController setSelectedViewController:nc];
+					break;
+				}
+			}
+		}
+	}
 	[self presentModalViewController:aStoreController animated:YES];
     [aStoreController release];    
 }
@@ -1367,7 +1487,15 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.processingDelegate pauseProcessingForBook:book];
 }
 -(void) enqueueBook:(BlioBook*)book {
-		[self.processingDelegate enqueueBook:book];
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_DOWNLOAD_BOOK",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to download this book.",@"Alert message when the user tries to download a book without an Internet connection.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
+		return;
+	}
+	else [self.processingDelegate enqueueBook:book];
 }
 
 - (void)changeLibraryLayout:(id)sender {
@@ -1384,14 +1512,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 				[self.gridView reloadData];
 				self.gridView.hidden = NO;
 				self.tableView.hidden = YES;
-                // [self.tableView setBackgroundColor:[UIColor clearColor]];
                 break;
             case kBlioLibraryLayoutList:
 				[self.view bringSubviewToFront:self.tableView];
 				[self.tableView reloadData];
 				self.gridView.hidden = YES;
 				self.tableView.hidden = NO;
-                [self.tableView setBackgroundColor:[UIColor whiteColor]];
                 break;
             default:
                 NSLog(@"Unexpected library layout %ld", (long)newLayout);
@@ -1615,7 +1741,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryGridViewCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel;
+@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel,statusBadge;
 @synthesize accessibilityElements;
 
 - (void)dealloc {
@@ -1631,6 +1757,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.stateLabel = nil;
     self.delegate = nil;
     self.accessibilityElements = nil;
+	self.statusBadge = nil;
     [super dealloc];
 }
 
@@ -1687,6 +1814,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		resumeButton.hidden = YES;
 		[self.contentView addSubview:resumeButton];
 		
+		statusBadge = [[UIImageView alloc] initWithFrame:CGRectMake(bookWidth - 25, bookHeight - 30, 20, 20)];
+		statusBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+		[self.contentView addSubview:statusBadge];		
+		
         [aBookView release];
 	}
     return self;
@@ -1699,7 +1830,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	pauseButton.hidden = YES;
 	resumeButton.hidden = YES;
 	stateLabel.hidden = YES;
+	stateLabel.font = [UIFont boldSystemFontOfSize:12.0];
 	self.bookView.alpha = 1;
+	self.statusBadge.image = nil;
 }
 -(void)onPauseButtonPressed:(id)sender {
 	[delegate pauseProcessingForBook:[self book]];
@@ -1767,9 +1900,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.titleLabel.text = [newBook title];
 	self.cellContentDescription = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
-    if ([newBook audioRights]) {
-        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
-    }
+//    if ([newBook audioRights]) {
+//        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
+//    }
     self.progressSlider.value = [[newBook progress] floatValue];
     [self setNeedsLayout];
 //	NSLog(@"[[self.book valueForKey:@processingState] intValue]: %i",[[self.book valueForKey:@"processingState"] intValue]);
@@ -1818,10 +1951,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
 			self.resumeButton.hidden = NO;
 			self.stateLabel.hidden = NO;
-			self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
+			stateLabel.font = [UIFont boldSystemFontOfSize:10.0];
+			self.stateLabel.text = NSLocalizedString(@"Update App","\"Update App\" status indicator in BlioLibraryGridViewCell");
 			self.progressView.hidden = YES;
-			self.pauseButton.hidden = YES;			
+			self.pauseButton.hidden = YES;
+			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
+			self.resumeButton.hidden = YES;
+			self.stateLabel.hidden = NO;
+			stateLabel.font = [UIFont boldSystemFontOfSize:10.0];
+			self.stateLabel.text = NSLocalizedString(@"Suspended","\"Suspended\" status indicator in BlioLibraryGridViewCell");
+			self.progressView.hidden = YES;
+			self.pauseButton.hidden = YES;
+			self.progressSlider.hidden = YES;
+			//			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
+		}		
 	}
 	else {
 		self.resumeButton.hidden = YES;
@@ -1830,6 +1975,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.pauseButton.hidden = YES;
 		self.progressBackgroundView.hidden = YES;
 		bookView.alpha = 1;
+		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
+		}
+		else if (![self.book audioRights]) {
+			self.statusBadge.image = [UIImage imageNamed:@"badge-tts.png"];
+		}
+		
 	}
 }
 -(void) listenToProcessingNotifications {
@@ -1876,11 +2028,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)onProcessingFailedNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
-		self.resumeButton.hidden = NO;
-		self.stateLabel.hidden = NO;
-		self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
-		self.progressView.hidden = YES;
-		self.pauseButton.hidden = YES;		
+//		self.resumeButton.hidden = NO;
+//		self.stateLabel.hidden = NO;
+//		self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
+//		self.progressView.hidden = YES;
+//		self.pauseButton.hidden = YES;		
 	}
 }
 
@@ -2020,7 +2172,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.progressView removeFromSuperview];
 		self.accessoryView = resumeButton;
 		[self resetAuthorText];
-		self.progressSlider.hidden = NO;
+		self.progressSlider.hidden = YES;
 	}			
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
 		[self listenToProcessingNotifications];
@@ -2042,7 +2194,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 				progressView.progress = 0;
 			}
 			self.accessoryView = pauseButton;
-			self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+			
+			if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+			else self.authorLabel.text = NSLocalizedString(@"Processing...","\"Processing...\" status indicator in BlioLibraryListCell");
+
+		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed) {
+			self.accessoryView = nil;
+			self.authorLabel.text = NSLocalizedString(@"Retrieving Information...","\"Retrieving Information...\" status indicator in BlioLibraryListCell");
+			self.progressView.hidden = YES;
+			self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
 			self.accessoryView = resumeButton;
@@ -2058,10 +2219,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
 			self.accessoryView = resumeButton;
-			self.authorLabel.text = NSLocalizedString(@"Not Supported...","\"Not Supported...\" status indicator in BlioLibraryListCell");
+			self.authorLabel.text = NSLocalizedString(@"App Update Required","\"App Update Required\" status indicator in BlioLibraryListCell");
 			self.progressView.hidden = YES;
 			self.progressSlider.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
+		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
+			self.accessoryView = nil;
+			self.authorLabel.text = NSLocalizedString(@"Suspended","\"Suspended\" status indicator in BlioLibraryListCell");
+			self.progressView.hidden = YES;
+			self.progressSlider.hidden = YES;
+//			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
 	}
 	else {
@@ -2149,13 +2317,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
-	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
-		//	NSLog(@"BlioLibraryListViewCell onProcessingCompleteNotification entered");
-		//	progressView.hidden = YES;
-		//	[self resetAuthorText];
-		//	self.accessoryView = nil;
-		// bookView.alpha = 1;
-//		[(BlioLibraryViewController*)delegate calculateMaxLayoutPageEquivalentCount];
+	//	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
+	//	NSLog(@"BlioLibraryListViewCell onProcessingCompleteNotification entered");
+	//	progressView.hidden = YES;
+	//	[self resetAuthorText];
+	//	self.accessoryView = nil;
+	// bookView.alpha = 1;
+	//		[(BlioLibraryViewController*)delegate calculateMaxLayoutPageEquivalentCount];
+	//	}
+	if ([[note object] isKindOfClass:[BlioProcessingDownloadOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
+		if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+		else self.authorLabel.text = NSLocalizedString(@"Processing...","\"Processing...\" status indicator in BlioLibraryListCell");
 	}
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {

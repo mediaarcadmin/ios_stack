@@ -31,12 +31,57 @@ static int mutationCount = 0;
 	return self;
 }
 
+- (void)flushBookCache {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    pthread_mutex_lock(&sBookMutationMutex);
+    {
+        ++mutationCount;
+        if(mutationCount != 1) {
+            NSLog(@"rrewrewrewrew");
+        }
+        BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+        if (nil == book) {
+            NSLog(@"Failed to retrieve book");
+        } else {
+            [book flushCaches];
+        }
+        --mutationCount;
+    }
+    pthread_mutex_unlock(&sBookMutationMutex);
+    
+    [pool drain];
+}
+
+- (void)reportBookReadingIfRequired {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    pthread_mutex_lock(&sBookMutationMutex);
+    {
+        ++mutationCount;
+        if(mutationCount != 1) {
+            NSLog(@"rrewrewrewrew");
+        }
+        BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+        if (nil == book) {
+            NSLog(@"Failed to retrieve book");
+        } else {
+            [book reportReadingIfRequired];
+        }
+        --mutationCount;
+    }
+    pthread_mutex_unlock(&sBookMutationMutex);
+    
+    [pool drain];
+}
+
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self flushBookCache];
+    
     self.bookID = nil;
 	self.sourceSpecificID = nil;
     self.cacheDirectory = nil;
     self.tempDirectory = nil;
+    
     [super dealloc];
 }
 

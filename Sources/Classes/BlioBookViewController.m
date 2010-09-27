@@ -159,7 +159,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (id)initWithBook:(BlioBook *)newBook delegate:(id <BlioCoverViewDelegate>)aDelegate {
-    
+    NSLog(@"BlioBookViewController inited");
     if (!(newBook || aDelegate)) {
         [self release];
         return nil;
@@ -184,6 +184,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             BlioBookmarkPoint *implicitPoint = [newBook implicitBookmarkPoint];
             [self.bookView goToBookmarkPoint:implicitPoint animated:NO];
         }
+        
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        }
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     } 
     
     return self;
@@ -522,6 +527,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
+	
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
+                                            style:UIBarButtonItemStylePlain
+                                           target:self 
+                                           action:nil];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
+    [item setEnabled:NO];
+	
+    [readingItems addObject:item];
+    [item release]; 
+	
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
     
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
                                             style:UIBarButtonItemStylePlain
@@ -532,11 +552,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.contentsButton = item;
     [readingItems addObject:item];
     [item release];
-    
+	
+ /*     
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
-    
+  
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
@@ -547,7 +568,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
     [readingItems addObject:item];
     [item release];
-    
+ */   
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];  
@@ -941,6 +962,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         //        if(_contentsSheet) {
         //            [self performSelector:@selector(dismissContents)];
         //        }
+        [self.book reportReadingIfRequired];
+        
         if(_bookView) {
             // Need to do this now before the view is removed and doesn't have a window.
             if ([_bookView wantsTouchesSniffed]) {
@@ -1040,10 +1063,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)didReceiveMemoryWarning 
 {
+    [self.book reportReadingIfRequired];
     [self.book flushCaches];
 	[super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
 }
 
+- (void)applicationDidEnterBackground:(NSNotification *)notification {
+    [self.book reportReadingIfRequired];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification {
+    [self.book reportReadingIfRequired];
+}
 
 - (void)dealloc 
 {

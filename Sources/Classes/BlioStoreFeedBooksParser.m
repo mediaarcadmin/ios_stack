@@ -77,7 +77,7 @@
 	else {
 		NSLog(@"ERROR: BlioStoreFeedBooksParser: %@, %@",error,[error userInfo]);
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
-									 message:[[error userInfo] objectForKey:NSLocalizedDescriptionKey]
+									 message:[[error userInfo] objectForKey:NSLocalizedDescriptionKey] ? [[error userInfo] objectForKey:NSLocalizedDescriptionKey] : NSLocalizedStringWithDefaultValue(@"ERROR_WHILE_PARSING_FEED",nil,[NSBundle mainBundle],@"An error occurred while reading this feed. Please try again later.",@"Alert message shown to end-user when parsing of a Get Books feed fails.")
 									delegate:self 
 						   cancelButtonTitle:@"OK"
 						   otherButtonTitles:nil];				

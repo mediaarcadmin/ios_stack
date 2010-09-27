@@ -12,23 +12,28 @@
 
 - (NSString *)pathRelativeTo:(NSURL *)baseUrl
 {
-    NSString *baseString;
-    if(CFURLHasDirectoryPath((CFURLRef)baseUrl)) {
-        baseString = [baseUrl absoluteString];
-    } else {
-        NSURL *baseWithoutFile = (NSURL *)CFURLCreateCopyDeletingLastPathComponent(kCFAllocatorDefault, (CFURLRef)baseUrl);
-        baseString = [baseWithoutFile absoluteString];
-        [baseWithoutFile release];
-    }
-    NSString *selfString = [self absoluteString];
-    if([selfString hasPrefix:baseString]) {
-        NSUInteger baseStringLength = baseString.length;
-        if([baseString characterAtIndex:baseStringLength - 1] != '/') {
-            ++baseStringLength;
+    NSString *baseString = nil;
+    if(baseUrl) {
+        if(CFURLHasDirectoryPath((CFURLRef)baseUrl)) {
+            baseString = [baseUrl absoluteString];
+        } else {
+            NSURL *baseWithoutFile = (NSURL *)CFURLCreateCopyDeletingLastPathComponent(kCFAllocatorDefault, (CFURLRef)baseUrl);
+            baseString = [baseWithoutFile absoluteString];
+            [baseWithoutFile release];
         }
-        return [selfString substringFromIndex:baseStringLength];
     }
-    return nil;
+    
+    NSString *selfString = [self absoluteString];
+    if(baseString) {
+        if([selfString hasPrefix:baseString]) {
+            NSUInteger baseStringLength = baseString.length;
+            if([baseString characterAtIndex:baseStringLength - 1] != '/') {
+                ++baseStringLength;
+            }
+            return [selfString substringFromIndex:baseStringLength];
+        }
+    }
+    return selfString;
 }
 
 @end

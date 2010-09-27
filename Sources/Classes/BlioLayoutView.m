@@ -83,6 +83,9 @@
     
     self.delegate = nil;
     
+    BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    [aBook flushCaches];
+    
     self.bookID = nil;
     [layoutCacheLock release];
         
@@ -206,12 +209,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 - (BOOL)wantsTouchesSniffed {
     return YES;
-}
-
-- (void)didFinishReading {
-    if (xpsProvider) {
-        [xpsProvider reportReading]; 
-    }
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
@@ -456,6 +453,31 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return [NSArray array];
 }
 
+- (NSString *)eucSelector:(EucSelector *)selector accessibilityLabelForElementWithIdentifier:(id)wordID ofBlockWithIdentifier:(id)blockID {
+    NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
+    
+    BlioTextFlowBlock *block = nil;
+    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+        if (candidateBlock.blockID == blockID) {
+            block = candidateBlock;
+            break;
+        }
+    }
+    
+    if (block) {
+        BlioTextFlowPositionedWord *word = nil;
+        for (BlioTextFlowPositionedWord *candidateWord in [block words]) {
+            if([[candidateWord wordID] isEqual:wordID]) {
+                word = candidateWord;
+                break;
+            }
+        }        
+        if (word) {
+            return word.string;
+        }
+    } 
+    return nil;
+}
 
 - (NSArray *)bookmarkRangesForCurrentPage {
     NSInteger pageIndex = self.pageNumber - 1;

@@ -16,8 +16,8 @@
 
 typedef enum {
     kBlioLibraryLayoutUndefined = -1,
-    kBlioLibraryLayoutGrid = 0,
-    kBlioLibraryLayoutList = 1,
+    kBlioLibraryLayoutList = 0,
+	kBlioLibraryLayoutGrid = 1,
 } BlioLibraryLayout;
 
 typedef enum {
@@ -104,6 +104,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	BlioLibrarySortType librarySortType;
     BlioLibraryBookView *selectedLibraryBookView;
     BlioBookViewController *openBookViewController;
+	UIButton * libraryVaultButton;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
 #endif
@@ -122,6 +123,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 @property (nonatomic, assign) BlioLibrarySortType librarySortType;
+@property (nonatomic, retain) UIButton * libraryVaultButton;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @property (nonatomic, retain) UIPopoverController * settingsPopoverController;
@@ -132,6 +134,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 -(void)calculateMaxLayoutPageEquivalentCount;
 -(void)fetchResults;
 - (CGRect)visibleRect;
+- (void)showStore:(id)sender;
 
 @end
 
@@ -188,6 +191,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     id delegate;
     NSArray *accessibilityElements;
 	NSString * librarySortKey;
+	UIImageView * statusBadge;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
@@ -202,6 +206,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) UILabel *stateLabel;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) NSArray *accessibilityElements;
+@property (nonatomic, retain) UIImageView *statusBadge;
 
 -(void)listenToProcessingNotifications;
 -(void)stopListeningToProcessingNotifications;

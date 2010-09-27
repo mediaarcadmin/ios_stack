@@ -1,8 +1,16 @@
 #import "BlioBookVault.h"
 #import <libxml/xmlstring.h>
+
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
+
+#ifdef TEST_MODE
+static NSString* const testBookvaultUrl = @"http://prl.kreader.net/Bookvault.asmx";
+#else
+static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.com/BookVault.asmx";
+#endif
+
 @implementation BookVault_RegisterSale
 - (id)init
 {
@@ -2831,11 +2839,21 @@
 }
 + (BookVaultSoap *)BookVaultSoap
 {
-	return [[[BookVaultSoap alloc] initWithAddress:@"http://bookvault.blioreader.com/BookVault.asmx"] autorelease];
+#ifdef TEST_MODE
+	return [[[BookVaultSoap alloc] initWithAddress:testBookvaultUrl] autorelease];
+#else	
+	return [[[BookVaultSoap alloc] initWithAddress:productionBookvaultUrl] autorelease];
+#endif
 }
 + (BookVaultSoap12 *)BookVaultSoap12
 {
-	return [[[BookVaultSoap12 alloc] initWithAddress:@"http://bookvault.blioreader.com/BookVault.asmx"] autorelease];
+#ifdef TEST_MODE
+	return [[[BookVaultSoap12 alloc] initWithAddress:testBookvaultUrl] autorelease];
+#else	
+	//return [[[BookVaultSoap12 alloc] initWithAddress:@"http://bookvault.blioreader.com/BookVault.asmx"] autorelease];
+	return [[[BookVaultSoap12 alloc] initWithAddress:productionBookvaultUrl] autorelease];
+#endif
+	
 }
 @end
 @implementation BookVaultSoap
@@ -3119,6 +3137,7 @@ parameters:(BookVault_RegisterSale *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRegisterSale;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3212,6 +3231,7 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeVaultContentsWithToken;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3305,6 +3325,7 @@ parameters:(BookVault_VaultContents *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeVaultContents;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3398,6 +3419,7 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRequestDownloadWithToken;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3491,6 +3513,7 @@ parameters:(BookVault_RequestDownload *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRequestDownload;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3584,6 +3607,7 @@ parameters:(BookVault_Login *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeLogin;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3722,6 +3746,7 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 }
 @end
 @implementation BookVaultSoapResponse
+@synthesize responseType;
 @synthesize headers;
 @synthesize bodyParts;
 @synthesize error;
@@ -3736,6 +3761,7 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	return self;
 }
 -(void)dealloc {
+	self.responseType = nil;
     self.headers = nil;
     self.bodyParts = nil;
     self.error = nil;	

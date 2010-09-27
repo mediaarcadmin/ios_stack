@@ -13,7 +13,8 @@
 #include "drmexpreval.h"
 #include "drmblackbox.h"
 #if DRM_SUPPORT_REVOCATION
-#include <drmrevocationstore.h>
+//#include <drmrevocationstore.h>
+#include "drmrevocationstore.h"
 #endif /* DRM_SUPPORT_REVOCATION */
 #include "drmmetercertstore.h"
 #include "drmsyncstorecontext.h"
