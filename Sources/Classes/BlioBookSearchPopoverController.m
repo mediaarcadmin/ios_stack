@@ -25,7 +25,9 @@
 @property (nonatomic, assign) UIBarButtonItem *barButtonItem;
 
 - (void)setSearchStatus:(BlioBookSearchStatus)newStatus;
+- (BOOL)shouldExpand;
 - (void)highlightCurrentSearchResult;
+- (void)removeHighlights;
 
 @end
 
@@ -64,6 +66,8 @@
         self.popoverContentSize = CGSizeMake(320, SEARCHCOLLAPSEDPOPOVERHEIGHT);
         currentSearchResult = -1;
         resultsInterval = [[UIDevice currentDevice] blioDeviceSearchInterval];
+        
+        self.delegate = self;
     }
     
     [aResultsController release];
@@ -92,6 +96,12 @@
     }
 }
 
+- (void)removeHighlights {
+    if ([self.bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
+        [self.bookView highlightWordAtBookmarkPoint:nil];
+    }
+}
+
 #pragma mark -
 #pragma mark Search Status
 
@@ -100,17 +110,35 @@
     searchStatus = newStatus;
     [self.resultsController setSearchStatus:newStatus];
     
+    if ([self shouldExpand]) {
+        self.popoverContentSize = CGSizeMake(320, SEARCHEXPANDEDPOPOVERHEIGHT);
+    } else {
+        self.popoverContentSize = CGSizeMake(320, SEARCHCOLLAPSEDPOPOVERHEIGHT);
+    }
+    
     switch (newStatus) {
         case kBlioBookSearchStatusIdle:
-            self.popoverContentSize = CGSizeMake(320, SEARCHCOLLAPSEDPOPOVERHEIGHT);
             break;
         default:
-            self.popoverContentSize = CGSizeMake(320, SEARCHEXPANDEDPOPOVERHEIGHT);
             if (currentStatus == kBlioBookSearchStatusIdle) {
                 [self.resultsController.view setNeedsLayout];
             }
             break;
     }
+}
+
+- (BOOL)shouldExpand {
+    BOOL expand = NO;
+    
+    if (searchStatus != kBlioBookSearchStatusIdle) {
+        expand = YES;
+    }
+    
+    if ([self.toolbar inlineMode]) {
+        expand = NO;
+    }
+    
+    return expand;
 }
 
 - (BOOL)isSearchActive {
@@ -129,10 +157,22 @@
 }
 
 #pragma mark -
+#pragma mark UIPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    [self.bookSearchController cancel];
+    if ([self isSearchActive]) {
+        [self setSearchStatus:kBlioBookSearchStatusStopped];
+    }
+    
+    [self removeHighlights];
+}
+
+#pragma mark -
 #pragma mark Results Controller delegate
 
 - (void)resultsController:(BlioBookSearchResultsTableViewController *)resultsController didSelectResultAtIndex:(NSUInteger)index {
-    [self.toolbar.searchBar resignFirstResponder];
+    [self.toolbar.searchBar endEditing:YES];
     currentSearchResult = index;
     [self highlightCurrentSearchResult];
     self.popoverContentSize = CGSizeMake(320, SEARCHCOLLAPSEDPOPOVERHEIGHT);
@@ -158,6 +198,18 @@
     return [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
 }
 
+#pragma mark -
+#pragma mark BlioBookSearchToolbar Delegate
+
+- (void)nextResult {
+    currentSearchResult++;
+    [self highlightCurrentSearchResult];
+}
+
+- (void)previousResult {
+    currentSearchResult--;
+    [self highlightCurrentSearchResult];
+}
 
 #pragma mark -
 #pragma mark SearchBar Delegate
@@ -165,7 +217,7 @@
     if ([self.toolbar inlineMode]) {
         [self.toolbar setInlineMode:NO];
         
-        if ([self isSearchActive]) {
+        if ([self shouldExpand]) {
             self.popoverContentSize = CGSizeMake(320, SEARCHEXPANDEDPOPOVERHEIGHT);
         }
     }
@@ -213,15 +265,11 @@
     }
 }
 
-- (void)representFromBarButtonItem:(UIBarButtonItem *)item {
-    [self presentPopoverFromBarButtonItem:item permittedArrowDirections:UIPopoverArrowDirectionAny animated:NO];
-}
-
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
     if (self.barButtonItem) {
         // Force the popover back to the toolbar
         // Changing the popover size forces an animation that syncs with the keyboard
-        // presenting teh popover again ensures that the positioning at the end of the animation is correct
+        // presenting the popover again ensures that the positioning at the end of the animation is correct
         CGSize currentSize = self.popoverContentSize;
         self.popoverContentSize = CGSizeMake(currentSize.width, currentSize.height + 1);
         self.popoverContentSize = currentSize;

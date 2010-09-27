@@ -1594,6 +1594,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         // Reset the search resultsi
         self.searchViewController = nil;
+        self.searchPopover = nil;
     }
 }
 

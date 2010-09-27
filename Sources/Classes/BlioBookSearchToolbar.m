@@ -345,6 +345,12 @@
     }
 }
 
+- (BOOL)resignFirstResponder {
+    NSLog(@"Can resign %d isfirst %d", [self canResignFirstResponder], [self isFirstResponder]);
+    NSLog(@"nextResponder: %@", [self nextResponder]);
+    return [super resignFirstResponder];
+}
+
 @end
 
 static const CGFloat kBlioBookSearchCustomSearchFieldTextInset = 5;
