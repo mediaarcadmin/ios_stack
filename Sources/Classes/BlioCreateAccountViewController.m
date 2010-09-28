@@ -134,6 +134,7 @@
 }
 - (UITextField *)createFirstNameTextField
 {
+	NSLog(@"createFirstNameTextField");
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
 	self.firstNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	firstNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -280,12 +281,51 @@
 		[confirmPasswordField becomeFirstResponder];
 	}
 	else {
+		if (!firstNameField.text || [firstNameField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"FIRSTNAME_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your first name before creating your account.",@"Alert Text informing the end-user that the first name must be entered to create an account.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];
+			[firstNameField becomeFirstResponder];
+			return NO;
+		}
+		if (!lastNameField.text || [lastNameField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"LASTNAME_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your last name before creating your account.",@"Alert Text informing the end-user that the last name must be entered to create an account.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"	
+							   otherButtonTitles:nil];
+			[lastNameField becomeFirstResponder];
+			return NO;
+		}
+		
 		// TODO: validate email address using regex
+
+		if (!emailField.text || [emailField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your email address before creating your account.",@"Alert Text informing the end-user that the email address must be entered to create an account.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];
+			[emailField becomeFirstResponder];
+			return NO;
+		}
+		if (!passwordField.text || [passwordField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your password before creating your account.",@"Alert Text informing the end-user that the password must be entered to create an account.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];			
+			[passwordField becomeFirstResponder];
+			return NO;
+		}
+		
 		
 		
 		
 		// check to confirm password fields match
-		if (![passwordField.text isEqualToString:confirmPasswordField.text]) {
+		if (!confirmPasswordField.text || ![passwordField.text isEqualToString:confirmPasswordField.text]) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORDS_MUST_MATCH_ALERT_TEXT",nil,[NSBundle mainBundle],@"Please make sure your passwords match.",@"Alert Text informing the end-user that the password and confirm password fields must match.")
 										delegate:nil 
