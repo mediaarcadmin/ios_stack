@@ -23,18 +23,46 @@
 @synthesize titleLineContents = _titleLineContents;
 @synthesize fullBleed = _fullBleed;
 
-+ (CGSize)_marginsForPointSize:(CGFloat)pointSize
+- (CGSize)_marginsForFrame:(CGRect)frame
+                 pointSize:(CGFloat)pointSize
 {
-    return CGSizeMake(roundf(pointSize / 0.9f), roundf(pointSize / 1.2f));
+    if(frame.size.width > 768) {
+        return CGSizeMake(roundf(pointSize * 5.777778f), roundf(pointSize * 4));
+    } else if(frame.size.width > 480) {
+        return CGSizeMake(roundf(pointSize * 5.777778f), roundf(pointSize * 5.777778f));
+    } else {
+        return CGSizeMake(roundf(pointSize / 0.9f), roundf(pointSize / 1.2f));
+    }
 }
 
-+ (CGRect)pageTextViewFrameForFrame:(CGRect)frame
+- (CGFloat)_titleMarginForFrame:(CGRect)frame
+                      pointSize:(CGFloat)pointSize
+{
+    if(frame.size.width > 480) {
+        return roundf(pointSize *  1.4f);   
+    } else {
+        return roundf(pointSize *  1.4f);   
+    }
+}
+
+- (CGFloat)_titleOffsetForFrame:(CGRect)frame
+                      pointSize:(CGFloat)pointSize
+{
+    if(frame.size.width > 480) {
+        return roundf(pointSize * -1.0f);   
+    } else {
+        return 0.0f;   
+    }
+}
+
+
+- (CGRect)pageTextViewFrameForFrame:(CGRect)frame
                        forPointSize:(CGFloat)pointSize
 {
-    CGSize margins = [self _marginsForPointSize:pointSize];
+    CGSize margins = [self _marginsForFrame:frame pointSize:pointSize];
     frame.origin.x += margins.width;
     frame.size.width -= margins.width + margins.width;
-    frame.origin.y += margins.height + roundf(pointSize *  1.4f);
+    frame.origin.y += margins.height + [self _titleMarginForFrame:frame pointSize:pointSize];
     frame.size.height -= frame.origin.y + margins.height;  
     return frame;
 }
@@ -55,13 +83,13 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         _textPointSize = pointSize;
         _titlePointSize = titlePointSize;
         
-        _margins = [[self class] _marginsForPointSize:pointSize];
+        _margins = [self _marginsForFrame:frame pointSize:pointSize];
 
         _pageNumberRenderer = [[THStringRenderer alloc] initWithFontName:pageNumberFont styleFlags:pageNumberFontStyleFlags];
         _titleRenderer = [[THStringRenderer alloc] initWithFontName:titleFont styleFlags:titleFontStyleFlags];
 
-        _pageTextView = [[textViewClass alloc] initWithFrame:[[self class] pageTextViewFrameForFrame:frame 
-                                                                                        forPointSize:_titlePointSize] 
+        _pageTextView = [[textViewClass alloc] initWithFrame:[self  pageTextViewFrameForFrame:frame 
+                                                                                 forPointSize:_titlePointSize] 
                                                    pointSize:pointSize];
 
         _pageTextView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -116,8 +144,8 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 - (void)setTitleLinePosition:(EucPageViewTitleLinePosition)position
 {
-    CGRect protoFrame = [[self class] pageTextViewFrameForFrame:self.frame
-                                                   forPointSize:_textPointSize];
+    CGRect protoFrame = [self pageTextViewFrameForFrame:self.frame
+                                           forPointSize:_textPointSize];
     if(position == EucPageViewTitleLinePositionTop) {
     } else if(position == EucPageViewTitleLinePositionBottom) {
         CGRect myBounds = self.bounds;
@@ -184,11 +212,14 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         CGFloat pageNumberWidth = [pageNumberRenderer widthOfString:pageNumberString pointSize:_titlePointSize];;
         CGFloat spaceWidth = [pageNumberRenderer widthOfString:@" " pointSize:_titlePointSize];        
         
+        CGFloat pointSize = _pageTextView.pointSize;
         CGPoint pageNumberPoint;
         if(_titleLinePosition == EucPageViewTitleLinePositionBottom) {
-            pageNumberPoint.y = bounds.size.height - (_margins.height + roundf(_titlePointSize *  1.4f)) - [_pageNumberRenderer descenderForPointSize:_titlePointSize];
+            pageNumberPoint.y = bounds.size.height - (_margins.height + [self _titleMarginForFrame:bounds pointSize:pointSize]) - [_pageNumberRenderer descenderForPointSize:_titlePointSize];
+            pageNumberPoint.y -= [self _titleOffsetForFrame:bounds pointSize:pointSize];
         } else {
             pageNumberPoint.y = _margins.height;
+            pageNumberPoint.y += [self _titleOffsetForFrame:bounds pointSize:pointSize];
         }                
         if(_titleLineContents == EucPageViewTitleLineContentsCenteredPageNumber) {
             pageNumberPoint.x = (bounds.size.width - pageNumberWidth) / 2;
