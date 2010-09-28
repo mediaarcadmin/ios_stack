@@ -357,22 +357,26 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
     GLfloat xStep = ((GLfloat)pageSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
     GLfloat yStep = ((GLfloat)pageSize.height / (Y_VERTEX_COUNT - 1));
-    GLfloat baseXCoord = (_viewportLogicalSize.width - pageSize.width) * 0.5f;
-    GLfloat yCoord = (_viewportLogicalSize.height - pageSize.height) * 0.5f;
 
-    _pageFrame = CGRectMake(baseXCoord, yCoord, pageSize.width, pageSize.height);
+    _pageFrame = CGRectMake(0.0f, 0.0f, pageSize.width, pageSize.height);
     
-    GLfloat maxX = pageSize.width + baseXCoord;
-    GLfloat maxY = pageSize.height + yCoord;
+    _pageTransform = CATransform3DMakeTranslation(-(_viewportLogicalSize.width - pageSize.width) * 0.5f, 
+                                                  -(_viewportLogicalSize.height - pageSize.height) * 0.5f,
+                                                  0.0);
+    _inversePageTransform = CATransform3DInvert(_pageTransform);
+    
+    GLfloat maxX = pageSize.width;
+    GLfloat maxY = pageSize.height;
         
+    GLfloat yCoord = 0.0f;
     for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-        GLfloat xCoord = baseXCoord;
+        GLfloat xCoord = 0.0f;
         for(int column = 0; column < X_VERTEX_COUNT; ++column) {
             _stablePageVertices[row][column].x = MIN(xCoord, maxX);
             _stablePageVertices[row][column].y = MIN(yCoord, maxY);
             // z is already 0.
             
-            if(xCoord == baseXCoord && (row % 2) == 1) {
+            if(xCoord == 0.0f && (row % 2) == 1) {
                 xCoord += xStep * 0.5f;
             } else {
                 xCoord += xStep;
@@ -915,7 +919,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     
     
     // Set up model and perspective matrices.
-    CATransform3D modelViewMatrix = CATransform3DMakeRotation((CGFloat)M_PI, 0, 0, 1);
+    CATransform3D modelViewMatrix = _pageTransform;
+    modelViewMatrix = CATransform3DRotate(modelViewMatrix, (CGFloat)M_PI, 0, 0, 1);
     modelViewMatrix = THCATransform3DLookAt(modelViewMatrix, 
                                             THVec3Make(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, -(_viewportLogicalSize.height * 0.5f) / tanf(FOV_ANGLE * ((float)M_PI / 360.0f))), 
                                             THVec3Make(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, 0.0f), 
@@ -1156,7 +1161,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGPoint viewTouchPoint =  [touch locationInView:self];
 
     THVec2 modelTouchPoint = { (viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
-                                    (viewTouchPoint.y / size.height) * _viewportLogicalSize.height };
+                               (viewTouchPoint.y / size.height) * _viewportLogicalSize.height };
     
     _touchRow = ((modelTouchPoint.y / _viewportLogicalSize.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
     if(first) {

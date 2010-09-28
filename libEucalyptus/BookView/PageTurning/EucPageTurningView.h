@@ -61,6 +61,9 @@ typedef struct {
     GLuint _bookEdgeTexture;
     THVec2 _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
+    CATransform3D _pageTransform;
+    CATransform3D _inversePageTransform;
+    
     UITouch *_touch;
     NSTimeInterval _touchBeganTime;
     NSInteger _touchRow;
