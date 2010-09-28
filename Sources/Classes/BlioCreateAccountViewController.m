@@ -205,7 +205,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	if (section == 0) return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CREATE_ACCOUNT_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Passwords must have a minimum of 6 characters, including at least one upper case and one digit. Characters %@ are not allowed.",@"Explanatory message that appears at the bottom of the Create Account fields."),BlioPasswordInvalidCharacters];
+	if (section == 0) return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CREATE_ACCOUNT_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Passwords must have a minimum of 8 characters, including at least one upper case and one digit. Characters %@ are not allowed.",@"Explanatory message that appears at the bottom of the Create Account fields."),BlioPasswordInvalidCharacters];
 	return nil;
 }
 
