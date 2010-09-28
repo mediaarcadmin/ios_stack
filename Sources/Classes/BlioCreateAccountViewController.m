@@ -117,7 +117,7 @@
 - (UITextField *)createConfirmPasswordTextField
 {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.confirmPasswordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.confirmPasswordField) self.confirmPasswordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	confirmPasswordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	confirmPasswordField.keyboardType = UIKeyboardTypeAlphabet;
 	confirmPasswordField.keyboardAppearance = UIKeyboardAppearanceDefault;
@@ -136,7 +136,7 @@
 {
 	NSLog(@"createFirstNameTextField");
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.firstNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.firstNameField) self.firstNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	firstNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	firstNameField.keyboardType = UIKeyboardTypeAlphabet;
 	firstNameField.keyboardAppearance = UIKeyboardAppearanceDefault;
@@ -151,7 +151,7 @@
 - (UITextField *)createLastNameTextField
 {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.lastNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.lastNameField) self.lastNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	lastNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	lastNameField.keyboardType = UIKeyboardTypeAlphabet;
 	lastNameField.keyboardAppearance = UIKeyboardAppearanceDefault;
