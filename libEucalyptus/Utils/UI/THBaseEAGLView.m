@@ -6,16 +6,15 @@
 //  Copyright 2008 Things Made Out Of Other Things Limited. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
-#import <objc/message.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import "THLog.h"
 #import "THBaseEAGLView.h"
 
 @interface THBaseEAGLView ()
 
-@property (nonatomic, assign) id animationTimer;
+@property (nonatomic, assign) CADisplayLink *displayLink;
 
 - (BOOL)_createFramebuffer;
 - (void)_destroyFramebuffer;
@@ -27,7 +26,7 @@
 
 @synthesize animating = _animating;
 @synthesize eaglContext = _eaglContext;
-@synthesize animationTimer = _animationTimer;
+@synthesize displayLink = _displayLink;
 @synthesize animationInterval = _animationInterval;
 
 + (Class)layerClass 
@@ -85,6 +84,7 @@
 - (void)setNeedsDraw
 {
     if(!_animating && !_needsDraw) {
+        _needsDraw = YES;
         [self performSelector:@selector(drawView) withObject:nil afterDelay:0];
     }
 }
@@ -164,33 +164,19 @@
 - (void)setAnimating:(BOOL)animating
 {
     if(animating != _animating) {
+        CADisplayLink *displayLink = self.displayLink;
         if(animating) {
-            // Actually, don't use displaylink - it causes lots of jittering
-            // during interaction on early devices.
-            // Use CADisplayLink, if available.
-            Class displayLinkClass = NSClassFromString(@"CADisplayLink");
-            if(displayLinkClass) {
-                if(!self.animationTimer) {
-                    id displayLink = objc_msgSend(displayLinkClass, @selector(displayLinkWithTarget:selector:), self, @selector(drawView));
-                    objc_msgSend(displayLink, @selector(setFrameInterval:), round(_animationInterval * 60.0));
-                    objc_msgSend(displayLink, @selector(addToRunLoop:forMode:), [NSRunLoop currentRunLoop], NSDefaultRunLoopMode);
-                    self.animationTimer = displayLink;
-                } else {
-                    id displayLink = self.animationTimer;
-                    objc_msgSend(displayLink, @selector(setFrameInterval:), round(_animationInterval * 60.0));
-                    objc_msgSend(displayLink, @selector(setPaused:), NO);
-                }
+            if(!displayLink) {
+                displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(drawView)];
+                [displayLink setFrameInterval:round(_animationInterval * 60.0)];
+                [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+                self.displayLink = displayLink;
             } else {
-                self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:self.animationInterval target:self selector:@selector(drawView) userInfo:nil repeats:YES];
+                [displayLink setFrameInterval:round(_animationInterval * 60.0)];
+                objc_msgSend(displayLink, @selector(setPaused:), NO);
             }
         } else {
-            id animationTimer = self.animationTimer;
-            if([animationTimer isKindOfClass:[NSTimer class]]) {
-                [animationTimer invalidate];
-                self.animationTimer = nil;
-            } else {
-                objc_msgSend(animationTimer, @selector(setPaused:), YES);
-            }
+            [displayLink setPaused:YES];
         }
         _animating = animating;        
     }
@@ -208,9 +194,9 @@
 - (void)dealloc 
 {    
     self.animating = NO;
-    if(self.animationTimer) {
-        [self.animationTimer invalidate]; // Works with NSTimer and CADisplayLink.
-        self.animationTimer = nil;
+    if(_displayLink) {
+        [_displayLink invalidate];
+        [_displayLink release];
     }
     if(!_needsDraw) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
