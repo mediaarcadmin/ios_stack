@@ -523,9 +523,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     } else if ([directory isEqualToString:BlioXPSEncryptedImagesDir] && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
         if (self.bookIsEncrypted) {
             encrypted = YES;
+            componentPath = [path stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
         }
         cached = YES;
-        componentPath = [path stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
     } else if ([directory isEqualToString:BlioXPSEncryptedTextFlowDir]) {  
         if (![path isEqualToString:@"/Documents/1/Other/KNFB/Flow/Sections.xml"]) {
             if (self.bookIsEncrypted) {
