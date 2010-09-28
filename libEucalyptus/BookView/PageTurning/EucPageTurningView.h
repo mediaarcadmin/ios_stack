@@ -114,7 +114,6 @@ typedef struct {
     
     GLfloat _constantAttenuationFactor;
     GLfloat _linearAttenutaionFactor;
-    GLfloat _quadraticAttenuationFactor;
     
     GLfloat _ambientLightColor[4];
     GLfloat _diffuseLightColor[4];
@@ -140,7 +139,6 @@ typedef struct {
 
 @property (nonatomic, assign) GLfloat constantAttenuationFactor;
 @property (nonatomic, assign) GLfloat linearAttenutaionFactor;
-@property (nonatomic, assign) GLfloat quadraticAttenuationFactor;
 
 @property (nonatomic, copy) UIColor *ambientLightColor;
 @property (nonatomic, copy) UIColor *diffuseLightColor;

@@ -79,7 +79,7 @@
     
     self.constantAttenuation.text = [NSNumber numberWithFloat:pageTurningView.constantAttenuationFactor].stringValue;
     self.linearAttenuation.text = [NSNumber numberWithFloat:pageTurningView.linearAttenutaionFactor].stringValue;
-    self.quadraticAttenuation.text = [NSNumber numberWithFloat:pageTurningView.quadraticAttenuationFactor].stringValue;
+    self.quadraticAttenuation.text = [NSNumber numberWithFloat:0.0f].stringValue;
     
     THVec3 lightPosition = pageTurningView.lightPosition;
     self.lightX.text = [NSNumber numberWithFloat:lightPosition.x].stringValue;
@@ -110,7 +110,7 @@
     
     pageTurningView.constantAttenuationFactor = self.constantAttenuation.text.floatValue;
     pageTurningView.linearAttenutaionFactor = self.linearAttenuation.text.floatValue;
-    pageTurningView.quadraticAttenuationFactor = self.quadraticAttenuation.text.floatValue;
+    //pageTurningView.quadraticAttenuationFactor = 0.0f;
     
     THVec3 lightPosition = {self.lightX.text.floatValue, self.lightY.text.floatValue, self.lightZ.text.floatValue};
     pageTurningView.lightPosition = lightPosition;

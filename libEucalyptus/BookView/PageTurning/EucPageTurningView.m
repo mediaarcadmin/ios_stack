@@ -89,7 +89,6 @@ static CATransform3D THCATransform3DPerspective(CATransform3D perspectiveMatrix,
 
 @synthesize constantAttenuationFactor = _constantAttenuationFactor;
 @synthesize linearAttenutaionFactor = _linearAttenutaionFactor;
-@synthesize quadraticAttenuationFactor = _quadraticAttenuationFactor;
 
 @synthesize lightPosition = _lightPosition;
 
@@ -192,7 +191,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
     _constantAttenuationFactor = 0.55f;   
     _linearAttenutaionFactor = 0.05f;
-    _quadraticAttenuationFactor = 0.0f;
 
     GLfloat dim[4] = {0.2f, 0.2f, 0.2f, 1.0f};
     memcpy(_ambientLightColor, dim, 4 * sizeof(GLfloat));
@@ -231,11 +229,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
-    
-    GLenum glError;
-    if((glError = glGetError()) != GL_NO_ERROR) {
-        NSLog(@"gl error 0x%x", glError);
-    }    
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
     NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
@@ -281,12 +274,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     glUseProgram(_program);
     
-    //glDeleteShader(vertexShader);
-    //glDeleteShader(fragmentShader);
-    
-    if((glError = glGetError()) != GL_NO_ERROR) {
-        NSLog(@"gl error 0x%x", glError);
-    }    
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
     
     _textureUploadContext = [[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
     
@@ -1020,7 +1009,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {        
     [super drawView];
     
-    GLenum glError;
     BOOL animating = self.isAnimating;
     
     BOOL shouldStopAnimating = !animating;
@@ -1054,11 +1042,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     projectionMatrix = THCATransform3DPerspective(projectionMatrix, FOV_ANGLE, (GLfloat)_viewportLogicalSize.width / (GLfloat)_viewportLogicalSize.height, 0.5f, 1000.0f);
     glUniformMatrix4fv(glGetUniformLocation(_program, "uProjectionMatrix"), sizeof(projectionMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&projectionMatrix);
 
-    if((glError = glGetError()) != GL_NO_ERROR) {
-        NSLog(@"gl error 0x%x", glError);
-    }
-    
-
     // Set up light.
     THVec3 lightPosition = THVec3Make(_viewportLogicalSize.width * _lightPosition.x, 
                                       _viewportLogicalSize.height * _lightPosition.y, 
@@ -1069,24 +1052,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glUniform4fv(glGetUniformLocation(_program, "uLight.ambientColor"), 1, (GLfloat *)&_ambientLightColor);
     glUniform4fv(glGetUniformLocation(_program, "uLight.diffuseColor"), 1, (GLfloat *)&_diffuseLightColor);
 
-    glUniform3f(glGetUniformLocation(_program, "uLight.attenuationFactors"), 
+    glUniform2f(glGetUniformLocation(_program, "uLight.attenuationFactors"), 
                 _constantAttenuationFactor + (_dimQuotient * (0.9f - 0.55f)), 
-                _linearAttenutaionFactor, 
-                _quadraticAttenuationFactor);
-    
-    if((glError = glGetError()) != GL_NO_ERROR) {
-        NSLog(@"gl error 0x%x", glError);
-    }
-    
+                _linearAttenutaionFactor);
     
     // Set up the material.
     glUniform4fv(glGetUniformLocation(_program, "uMaterial.specularColor"), 1, (GLfloat *)&_specularColor);
     glUniform1f(glGetUniformLocation(_program, "uMaterial.shininess"), _shininess);
-          
-    if((glError = glGetError()) != GL_NO_ERROR) {
-        NSLog(@"gl error 0x%x", glError);
-    }
-    
+              
     // Tell the renderer id we're doing white-on-black.
     GLint invert = _pageTextureIsDark ? 1 : 0;
     glUniform1i(glGetUniformLocation(_program, "uInvertContentsLuminance"), invert);
@@ -1144,7 +1117,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);        
-        glVertexAttribPointer(glGetAttribLocation(_program, "aContentsTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageContentsInformation[_flatPageIndex].textureCoordinates->textureCoordinates);
+        //glVertexAttribPointer(glGetAttribLocation(_program, "aContentsTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageContentsInformation[_flatPageIndex].textureCoordinates->textureCoordinates);
         
         const THVec3 *pageVertices, *pageVertexNormals;        
         if(!_isTurningAutomatically) {
@@ -1224,7 +1197,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     pageEdgeNormals[i] = THVec3Normalize(pageEdgeNormals[i]);
                 }
                 
-                glClear(GL_DEPTH_BUFFER_BIT);
+                //glClear(GL_DEPTH_BUFFER_BIT);
                 
                 glVertexAttribPointer(glGetAttribLocation(_program, "aPosition"), 3, GL_FLOAT, GL_FALSE, 0, pageEdge);
                 glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, pageEdgeNormals);

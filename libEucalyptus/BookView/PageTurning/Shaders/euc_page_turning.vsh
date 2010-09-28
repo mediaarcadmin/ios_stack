@@ -2,7 +2,7 @@ struct Light {
     vec3 position;
     vec4 ambientColor;
     vec4 diffuseColor;
-    vec3 attenuationFactors; // constant, linear, quadratic
+    vec2 attenuationFactors; // constant, linear.
 };
 
 struct Material {
@@ -20,10 +20,15 @@ uniform Material uMaterial;
 attribute vec2 aPageTextureCoordinate;
 attribute vec2 aContentsTextureCoordinate;
 attribute vec4 aPosition;
-attribute vec3 aNormal;
+attribute vec4 aNormal;
 
-varying vec4 vColor;
-varying vec2 vTextureCoordinate[2];
+varying lowp vec4 vColor;
+varying mediump vec2 vTextureCoordinate[2];
+
+uniform lowp float uBackContentsBleed;
+
+varying lowp float vBackContentsBleed;
+varying lowp float vBackContentsBleedAddition;
 
 const float cFZero = 0.0;
 const float cFOne = 1.0;
@@ -53,8 +58,8 @@ vec4 lightingEquation(in vec3 vertexPosition, in vec3 normal)
     }
     
     // Calculate attenuation using vector math to do all components together.
-    vec3 attenuationMultiples = vec3(cFOne, lightDistance, lightDistance * lightDistance);
-    float attenuationFactor = 1.0 / dot(attenuationMultiples, uLight.attenuationFactors);
+    vec2 attenuationMultiples = vec2(cFOne, lightDistance);
+    float attenuationFactor = cFOne / dot(attenuationMultiples, uLight.attenuationFactors);
     buildColor *= attenuationFactor;
     
     return clamp(buildColor, cFZero, cFOne);
@@ -63,7 +68,15 @@ vec4 lightingEquation(in vec3 vertexPosition, in vec3 normal)
 void main()
 {
     vec4 projectedPosition = uModelviewMatrix * aPosition;
-    vec4 projectedNormal = uNormalMatrix * vec4(aNormal, cFOne);
+    vec4 projectedNormal = uNormalMatrix * aNormal;
+    
+    if(projectedNormal.z <= cFZero) {
+        vBackContentsBleed = uBackContentsBleed;
+        vBackContentsBleedAddition = cFOne - uBackContentsBleed;
+    } else {
+        vBackContentsBleed = cFOne;
+        vBackContentsBleedAddition = cFZero;
+    }
     
     vColor = lightingEquation(projectedPosition.xyz / projectedPosition.w, 
                               normalize(projectedNormal.xyz / projectedNormal.w));
