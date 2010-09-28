@@ -907,7 +907,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [titleView setAuthor:[self.book authorsWithStandardFormat]];
         
         [self setNavigationBarButtons];
-        [self layoutPauseButton];        
+        [self layoutPauseButton];     
+        
+        if(animated) {
+            CATransition *animation = [CATransition animation];
+            animation.type = kCATransitionPush;
+            animation.subtype = kCATransitionFromRight;
+            animation.duration = 1.0/3.0;
+            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            
+            [animation setValue:_bookView forKey:@"THView"];                
+            [[toolbar layer] addAnimation:animation forKey:@"PageViewTransitionIn"];
+        } 
     }
 }
 
