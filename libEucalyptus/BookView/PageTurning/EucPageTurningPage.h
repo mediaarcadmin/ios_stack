@@ -28,12 +28,15 @@ typedef enum EucPageFlatnessState {
     
     NSMutableData *_meshVertices;
  
-    
     CGSize _naturalPixelSize;
+    
+    GLuint _frontTexture;
+    GLuint _backTexture;
 }
 
 
 - (id)initWithMeshSource:(EucPageTurningMeshSource *)meshSource
+         pointDimensions:(THIVec2)pointDimensions
                     size:(THVec2)size 
              frontSource:(id)frontSource
               backSource:(id)backSource
@@ -50,16 +53,11 @@ typedef enum EucPageFlatnessState {
 
 @property (nonatomic, assign) EucPageFlatnessState flatnessState;
 
-/*
-
 @property (nonatomic, assign, readonly) GLuint frontTexture;
-@property (nonatomic, retain, readonly) NSData *frontTextureCoordinates;
-
 @property (nonatomic, assign, readonly) GLuint backTexture;
-@property (nonatomic, retain, readonly) NSData *backTextureCoordinates;
 
+/*
 - (void)stepPhysicsForHoldAtPoint:(CGPoint *)point;
-
 */
 
 @end

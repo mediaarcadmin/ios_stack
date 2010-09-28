@@ -21,49 +21,6 @@
 
 #define FOV_ANGLE ((GLfloat)10.0f)
 
-static CATransform3D THCATransform3DLookAt(CATransform3D modelViewMatrix,
-                                           THVec3 eye,
-                                           THVec3 lookAt, 
-                                           THVec3 up) 
-{
-    THVec3 viewingVetor = THVec3Normalize(THVec3Subtract(lookAt, eye));
-
-    THVec3 side  = THVec3Normalize(THVec3CrossProduct(viewingVetor, up));
-    THVec3 newUp = THVec3Normalize(THVec3CrossProduct(side, viewingVetor));
-    
-    CATransform3D result = { side.x,  newUp.x, -viewingVetor.x, 0.0f,
-                             side.y,  newUp.y, -viewingVetor.y, 0.0f,
-                             side.z,  newUp.z, -viewingVetor.z, 0.0f,
-                             0.0f,    0.0f,    0.0f,            1.0f };
-
-    result = CATransform3DConcat(modelViewMatrix, result);
-    result = CATransform3DTranslate(result, -eye.x, -eye.y, -eye.z);
-    
-    return result;
-}
-
-static CATransform3D THCATransform3DPerspective(CATransform3D perspectiveMatrix, GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far) 
-{ 
-    GLfloat left, right, bottom, top;      
-    
-    top = near * tanf(fovy * (float)M_PI / 360.0f);   
-    bottom = -top; 
-    
-    left = bottom * aspect;
-    right = top * aspect;  
-        
-    GLfloat twoNear = 2.0f * near;
-    GLfloat deltaX = right - left;
-    GLfloat deltaY = top - bottom;
-    GLfloat deltaz = far - near;
-    
-    CATransform3D m = { twoNear / deltaX, 0.0f, 0.0f, 0.0f,
-                        0.0f, twoNear / deltaY, 0.0f, 0.0f,
-                        (right + left) / deltaX, (top + bottom) / deltaY, -(far + near) / deltaz, -1.0f,
-                        0.0f, 0.0f, (-twoNear * far) / deltaz, 0.0f };
-    
-    return CATransform3DConcat(perspectiveMatrix, m); 
-} 
 
 @interface EucPageTurningView ()
 
@@ -154,20 +111,6 @@ static CATransform3D THCATransform3DPerspective(CATransform3D perspectiveMatrix,
     }
 }
 
-#define indexForPageVertex(column, row)  ((row) * X_VERTEX_COUNT + (column))
-
-static uint32_t nextPowerOfTwo(uint32_t n)
-{
-      --n;
-      n |= n >> 16;
-      n |= n >> 8;
-      n |= n >> 4;
-      n |= n >> 2;
-      n |= n >> 1;
-      ++n;
-      return n;
-}
-
 static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsizei length, const void *pvrtcData)
 {
     GLenum format;
@@ -185,6 +128,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)_pageTurningViewInternalInit
 {       
+    EAGLContext *eaglContext = self.eaglContext;
+    [EAGLContext setCurrentContext:eaglContext];
+    
     GLfloat white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     memcpy(_specularColor, white, 4 * sizeof(GLfloat));
     _shininess = 60.0;
@@ -206,29 +152,61 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     for(int row = 0; row < Y_VERTEX_COUNT - 1; ++row) {
         if((row % 2) == 0) {
             int i = 0;
-            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
+            _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row, X_VERTEX_COUNT);
             for(; i < X_VERTEX_COUNT; ++i) {
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row+1);
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
+                _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row+1, X_VERTEX_COUNT);
+                _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row, X_VERTEX_COUNT);
             }
-            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(X_VERTEX_COUNT - 1, row+1);
-            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(X_VERTEX_COUNT - 1, row+1);
+            _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(X_VERTEX_COUNT - 1, row+1, X_VERTEX_COUNT);
+            _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(X_VERTEX_COUNT - 1, row+1, X_VERTEX_COUNT);
         } else {
             int i = X_VERTEX_COUNT - 1;
-            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
+            _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row, X_VERTEX_COUNT);
             for(; i >= 0; --i) {
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row+1);
-                _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(i, row);
+                _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row+1, X_VERTEX_COUNT);
+                _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(i, row, X_VERTEX_COUNT);
             } 
-            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(0, row+1);
-            _triangleStripIndices[triangleStripIndex++] = indexForPageVertex(0, row+1);
+            _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(0, row+1, X_VERTEX_COUNT);
+            _triangleStripIndices[triangleStripIndex++] = THGLIndexForColumnAndRow(0, row+1, X_VERTEX_COUNT);
         }
     }
-        
     NSParameterAssert(triangleStripIndex == TRIANGLE_STRIP_COUNT);
+
+    glGenBuffers(1, &_triangleStripIndicesBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, TRIANGLE_STRIP_COUNT * sizeof(GLubyte), &_triangleStripIndices, GL_STATIC_DRAW);
         
-    EAGLContext *eaglContext = self.eaglContext;
-    [EAGLContext setCurrentContext:eaglContext];
+            
+    // Construct the texture coordinate mesh (page meshes constructed in 
+    // layoutSubviews.
+    THVec2 meshTextureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
+
+    GLfloat xStep = (1.0f * 2) / (2 * X_VERTEX_COUNT - 3);
+    GLfloat yStep = (1.0f / (Y_VERTEX_COUNT - 1));
+    GLfloat baseXCoord = 0.0f;
+    GLfloat yCoord = 0.0f;
+        
+    GLfloat maxX = 1.0f;
+    GLfloat maxY = 1.0f;
+    
+    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+        GLfloat xCoord = baseXCoord;
+        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+            meshTextureCoordinates[row][column].x = MIN(xCoord, maxX);
+            meshTextureCoordinates[row][column].y = MIN(yCoord, maxY);
+            
+            if(xCoord == baseXCoord && (row % 2) == 1) {
+                xCoord += xStep * 0.5f;
+            } else {
+                xCoord += xStep;
+            }
+        }
+        yCoord += yStep;
+    }
+    
+    glGenBuffers(1, &_meshTextureCoordinateBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _meshTextureCoordinateBuffer);
+    glBufferData(GL_ARRAY_BUFFER, X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THVec2), &meshTextureCoordinates, GL_STATIC_DRAW);
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
     NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
@@ -292,7 +270,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     //tempFile = fopen("/tmp/vertexdata", "w");
     
     for(NSUInteger i = 0; i < 4; ++i) {
-        _pageContentsInformation[i].textureCoordinates = calloc(1, sizeof(TextureCoordinates));
         _pageContentsInformation[i].pageIndex = NSUIntegerMax;
     }
 }
@@ -318,12 +295,20 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [_textureUploadContext release];
     
     [EAGLContext setCurrentContext:self.eaglContext];
+    
+    if(_meshTextureCoordinateBuffer) {
+        glDeleteBuffers(1, &_meshTextureCoordinateBuffer);
+    }
+    
+    if(_triangleStripIndicesBuffer) {
+        glDeleteBuffers(1, &_triangleStripIndicesBuffer);
+    }
+    
     for(int i = 0; i < 4; ++i) {
         [_pageContentsInformation[i].view release];
         if(_pageContentsInformation[i].texture) {
             glDeleteTextures(1, &(_pageContentsInformation[i].texture));
         }
-        free(_pageContentsInformation[i].textureCoordinates);
     }    
     
     if(_program) {
@@ -460,115 +445,55 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
-- (void)_createTextureIn:(GLuint *)textureRef 
-   fromRGBABitmapContext:(CGContextRef)context
-   setTextureCoordinates:(TextureCoordinates *)coordinates
+- (void)_createTextureIn:(GLuint *)textureRef fromRGBABitmapContext:(CGContextRef)context
 {
     size_t contextWidth = CGBitmapContextGetWidth(context);
     size_t contextHeight = CGBitmapContextGetHeight(context);
-
-    size_t powerOfTwoWidth;
-    size_t powerOfTwoHeight;
     
     [EAGLContext setCurrentContext:_textureUploadContext];
     
-    BOOL newTextureSize = NO;
+    CGContextRef textureContext = NULL;
+    void *textureData;
     BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(context) != contextWidth * 4;
-    if(!*textureRef || // There's no existing texture
-       !coordinates || // There are no pre-calculated texture coordinates.
-       coordinates->texturePixelWidth < contextWidth || 
-       coordinates->texturePixelHeight < contextHeight || // The new texture is larger than the existing one.
-       dataIsNonContiguous
-       ) {
-        // If any of the above are true, we can't use upload a subimage to
-        // an existing texture, we need a new one.
-        newTextureSize = YES;
+    if(dataIsNonContiguous || (textureData = CGBitmapContextGetData(context)) == NULL) {
+        // We need to generate contiguous data to upload, and we need to be
+        // able to access the context's backing data.
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        textureData = malloc(contextWidth * contextHeight * 4);
+        textureContext = CGBitmapContextCreate(NULL, contextWidth, contextHeight, 8, contextWidth * 4, 
+                                               colorSpace, kCGImageAlphaPremultipliedLast);
+        CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
         
-        powerOfTwoWidth = nextPowerOfTwo(contextWidth);
-        powerOfTwoHeight = nextPowerOfTwo(contextHeight);
-
-        GLubyte *textureData = NULL;
+        CGImageRef image = CGBitmapContextCreateImage(context);
+        CGContextDrawImage(textureContext, CGRectMake(0.0f, 0.0f, contextWidth, contextHeight), image);
+        CGImageRelease(image);
+        CGColorSpaceRelease(colorSpace);
         
-        if(powerOfTwoWidth != contextWidth ||
-           powerOfTwoHeight != contextHeight ||
-           dataIsNonContiguous) {
-            // We need to generate contiguous, power-of-two sized data to
-            // upload.
-            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-
-            size_t byteLength = powerOfTwoWidth * powerOfTwoHeight * 4;
-            textureData = (GLubyte *)malloc(byteLength);
-            memset(textureData, 0xFFFFFFFF, byteLength);        
-            CGContextRef textureContext = CGBitmapContextCreate(textureData, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
-                                                                colorSpace, kCGImageAlphaPremultipliedLast);
-            CGImageRef image = CGBitmapContextCreateImage(context);
-            
-            CGContextDrawImage(textureContext, CGRectMake(0, powerOfTwoHeight - contextHeight, contextWidth, contextHeight), image);
-            CGImageRelease(image);
-            CGColorSpaceRelease(colorSpace);
-            
-            context = (CGContextRef)[(id)textureContext autorelease];
-        }
-        
-        if(!*textureRef) { 
-            glGenTextures(1, textureRef);
-        }
-        glBindTexture(GL_TEXTURE_2D, *textureRef); 
-        
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, powerOfTwoWidth, powerOfTwoHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));
-    
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
-        
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);        
-        
-        if(textureData) {
-            free(textureData);
-        }
-    } else {
-        // We're able to just overwrite a subsection of the old texture directly.
-        glBindTexture(GL_TEXTURE_2D, *textureRef); 
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, contextWidth, contextHeight, GL_RGBA, GL_UNSIGNED_BYTE, CGBitmapContextGetData(context));    
-        powerOfTwoWidth = coordinates->texturePixelWidth;
-        powerOfTwoHeight = coordinates->texturePixelHeight;
+        context = textureContext;
     }
     
-    if(coordinates) {
-        if(coordinates->innerPixelWidth != contextWidth || coordinates->innerPixelHeight != contextHeight || newTextureSize) {
-            // We need to regenerate the texture coordinates.
-            CGFloat po2WidthScale = (CGFloat)contextWidth / (CGFloat)powerOfTwoWidth;
-            CGFloat po2HeightScale = (CGFloat)contextHeight / (CGFloat)powerOfTwoHeight;
-                        
-            GLfloat xStep = 2.0f / (2 * X_VERTEX_COUNT - 3);
-            GLfloat yStep = 1.0f / (Y_VERTEX_COUNT - 1);
-            
-            GLfloat yCoord = 0.0f;
-            for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-                GLfloat xCoord = 0.0f;
-                for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                    coordinates->textureCoordinates[row][column].x = MIN(xCoord, 1.0f) * po2WidthScale;
-                    coordinates->textureCoordinates[row][column].y = MIN(yCoord, 1.0f) * po2HeightScale;                    
-                    if(xCoord == 0.0f && (row % 2) == 1) {
-                        xCoord += xStep * 0.5f;
-                    } else {
-                        xCoord += xStep;
-                    }
-                }
-                yCoord += yStep;
-            }
-            
-            coordinates->innerPixelWidth = contextWidth;
-            coordinates->innerPixelHeight = contextHeight;
-            coordinates->texturePixelWidth = powerOfTwoWidth;
-            coordinates->texturePixelHeight = powerOfTwoHeight;            
-        }
-    }    
+    if(!*textureRef) { 
+        glGenTextures(1, textureRef);
+    }
+    glBindTexture(GL_TEXTURE_2D, *textureRef); 
+
+    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, contextWidth, contextHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
+    
+    if(textureContext) {
+        CGContextRelease(textureContext);
+        free(textureData);
+    }
 }
 
-- (void)_createTextureIn:(GLuint *)textureRef 
-                    from:(id)viewOrImage
-   setTextureCoordinates:(TextureCoordinates *)coordinates
+- (void)_createTextureIn:(GLuint *)textureRef from:(id)viewOrImage
 {   
     CGFloat scaleFactor = 1.0f;
     CGSize scaledSize, rawSize;
@@ -592,21 +517,20 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     } else {
         scaledSize = rawSize;
     }
-    
-    CGSize powerOfTwoSize = CGSizeMake(nextPowerOfTwo(scaledSize.width), nextPowerOfTwo(scaledSize.height));
 
-    GLuint powerOfTwoWidth = powerOfTwoSize.height;
-    GLuint powerOfTwoHeight = powerOfTwoSize.width;
-    
-    size_t byteLength = powerOfTwoWidth * powerOfTwoHeight * 4;
-    GLubyte *textureData = (GLubyte *)malloc(byteLength);
-    
-    memset(textureData, 0xFFFFFFFF, byteLength);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef textureContext = CGBitmapContextCreate(textureData, powerOfTwoWidth, powerOfTwoHeight, 8, powerOfTwoWidth * 4, 
+    
+    // Despite what the slightly misleading docs say, if we don't allocate our
+    // own texturedata, CGBitmapContextGetData can return NULL!
+    size_t bufferLength = scaledSize.width * scaledSize.height * 4;
+    void *textureData = malloc(bufferLength);
+
+    CGContextRef textureContext = CGBitmapContextCreate(textureData, scaledSize.width, scaledSize.height, 8, scaledSize.width * 4, 
                                                         colorSpace, kCGImageAlphaPremultipliedLast);
-    CGContextTranslateCTM(textureContext, 0, powerOfTwoHeight - scaledSize.height);
     if([viewOrImage isKindOfClass:[UIView class]]) {
+        uint32_t pattern = 0xFFFFFFFF;
+        memset_pattern4(textureData, &pattern, bufferLength);
+
         CGContextSetFillColorSpace(textureContext, colorSpace);
         CGContextSetStrokeColorSpace(textureContext, colorSpace);
         
@@ -625,46 +549,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             [view.layer renderInContext:textureContext];
         }
     } else {
-        CGImageRef image = ((UIImage *)viewOrImage).CGImage;
-        CGContextDrawImage(textureContext, CGRectMake(0, 0, scaledSize.width, scaledSize.height), image);
+        CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
+        CGContextDrawImage(textureContext, CGRectMake(0, 0, scaledSize.width, scaledSize.height), ((UIImage *)viewOrImage).CGImage);
     }
         
-    [self _createTextureIn:textureRef
-     fromRGBABitmapContext:textureContext
-     setTextureCoordinates:nil];
-    
+    [self _createTextureIn:textureRef fromRGBABitmapContext:textureContext];
+
     CGContextRelease(textureContext);
-    CGColorSpaceRelease(colorSpace);
     free(textureData);
-    
-    if(coordinates && coordinates->innerPixelWidth != scaledSize.width && coordinates -> innerPixelHeight != scaledSize.height) {
-        // We need to regenerate the texture coordinates.
-        CGFloat po2WidthScale = (CGFloat)scaledSize.width / (CGFloat)powerOfTwoWidth;
-        CGFloat po2HeightScale = (CGFloat)scaledSize.height / (CGFloat)powerOfTwoHeight;
-        
-        GLfloat xStep = 2.0f / (2 * X_VERTEX_COUNT - 3);
-        GLfloat yStep = 1.0f / (Y_VERTEX_COUNT - 1);
-        
-        GLfloat yCoord = 0.0f;
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            GLfloat xCoord = 0.0f;
-            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-                coordinates->textureCoordinates[row][column].x = MIN(xCoord, 1.0f) * po2WidthScale;
-                coordinates->textureCoordinates[row][column].y = MIN(yCoord, 1.0f) * po2HeightScale;                    
-                if(xCoord == 0.0f && (row % 2) == 1) {
-                    xCoord = xStep * 0.5f;
-                } else {
-                    xCoord += xStep;
-                }
-            }
-            yCoord += yStep;
-        }
-        
-        coordinates->innerPixelWidth = scaledSize.width;
-        coordinates->innerPixelHeight = scaledSize.height;
-        coordinates->texturePixelWidth = powerOfTwoWidth;
-        coordinates->texturePixelHeight = powerOfTwoHeight;            
-    }        
     
     THLog(@"CreatedTexture of scaled size (%f, %f) from point size (%f, %f)", scaledSize.width, scaledSize.height, rawSize.width, rawSize.height);
 }
@@ -672,8 +564,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
     [self _createTextureIn:&_blankPageTexture 
-                      from:pageTexture
-     setTextureCoordinates:&_blankPageTextureCoordinates];
+                      from:pageTexture];
     _pageTextureIsDark = isDark;
 }
 
@@ -683,8 +574,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [_pageContentsInformation[page].view release];
         if(view) {
             [self _createTextureIn:&_pageContentsInformation[page].texture
-                              from:view
-             setTextureCoordinates:_pageContentsInformation[page].textureCoordinates];
+                              from:view];
         }
         _pageContentsInformation[page].view = [view retain];
     }
@@ -756,8 +646,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     for(int i = 0; i < 4; ++i) {
         if(view == _pageContentsInformation[i].view) {
             [self _createTextureIn:&_pageContentsInformation[i].texture
-                              from:view
-             setTextureCoordinates:_pageContentsInformation[i].textureCoordinates];
+                              from:view];
             break;
         }
     }
@@ -779,8 +668,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                                                 fromRect:thisPageRect
                                                                  minSize:minSize];
         [self _createTextureIn:&_pageContentsInformation[pageOffset].texture
-         fromRGBABitmapContext:thisPageBitmap
-         setTextureCoordinates:_pageContentsInformation[pageOffset].textureCoordinates];
+         fromRGBABitmapContext:thisPageBitmap];
         _pageContentsInformation[pageOffset].pageIndex = newPageIndex; 
     } else {
         _pageContentsInformation[pageOffset].pageIndex = NSUIntegerMax; 
@@ -933,14 +821,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
     }
     for(int i = 0; i < Y_VERTEX_COUNT; ++i) {
-        [self _addConstraintFrom:indexForPageVertex(0, i) to:indexForPageVertex(X_VERTEX_COUNT - 1, i)];
+        [self _addConstraintFrom:THGLIndexForColumnAndRow(0, i, X_VERTEX_COUNT) to:THGLIndexForColumnAndRow(X_VERTEX_COUNT - 1, i, X_VERTEX_COUNT)];
     }    
     for(int i = 0; i < X_VERTEX_COUNT; ++i) {
-        [self _addConstraintFrom:indexForPageVertex(i, 0) to:indexForPageVertex(i, Y_VERTEX_COUNT - 1)];
+        [self _addConstraintFrom:THGLIndexForColumnAndRow(i, 0, X_VERTEX_COUNT) to:THGLIndexForColumnAndRow(i, Y_VERTEX_COUNT - 1, X_VERTEX_COUNT)];
     }
     
-    //[self _addConstraintFrom:indexForPageVertex(0, 0) to:indexForPageVertex(X_VERTEX_COUNT - 1, Y_VERTEX_COUNT - 1)];
-    //[self _addConstraintFrom:indexForPageVertex(X_VERTEX_COUNT - 1, 0) to:indexForPageVertex(0, Y_VERTEX_COUNT - 1)];  
+    //[self _addConstraintFrom:THGLIndexForColumnAndRow(0, 0, X_VERTEX_COUNT) to:THGLIndexForColumnAndRow(X_VERTEX_COUNT - 1, Y_VERTEX_COUNT - 1, X_VERTEX_COUNT)];
+    //[self _addConstraintFrom:THGLIndexForColumnAndRow(X_VERTEX_COUNT - 1, 0, X_VERTEX_COUNT) to:THGLIndexForColumnAndRow(0, Y_VERTEX_COUNT - 1, X_VERTEX_COUNT)];  
     
     NSParameterAssert(_constraintCount == CONSTRAINT_COUNT);
 }
@@ -1061,9 +949,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glUniform1f(glGetUniformLocation(_program, "uMaterial.shininess"), _shininess);
               
     // Tell the renderer id we're doing white-on-black.
-    GLint invert = _pageTextureIsDark ? 1 : 0;
-    glUniform1i(glGetUniformLocation(_program, "uInvertContentsLuminance"), invert);
-    glUniform1i(glGetUniformLocation(_program, "uPaperIsDark"), invert);
+    glUniform1i(glGetUniformLocation(_program, "uInvertContentsLuminance"), _pageTextureIsDark ? 1 : 0);
     
     // Clear the buffer, ready to draw.
     glEnable(GL_DEPTH_TEST);
@@ -1074,17 +960,22 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glUniform1i(glGetUniformLocation(_program, "sPaperTexture"), 0);
     glUniform1i(glGetUniformLocation(_program, "sContentsTexture"), 1);
 
-    // Set up the attributes we're passing arrays to.  We'll set the arrays eow.
-    glEnableVertexAttribArray(glGetAttribLocation(_program, "aPageTextureCoordinate"));
-    glEnableVertexAttribArray(glGetAttribLocation(_program, "aContentsTextureCoordinate"));
+    // Enable the array attributes - they'll be set later.    
+    
+    // Set up to use the unchanging texture coordinates for the mesh.
+    glEnableVertexAttribArray(glGetAttribLocation(_program, "aTextureCoordinate"));
     glEnableVertexAttribArray(glGetAttribLocation(_program, "aPosition"));
     glEnableVertexAttribArray(glGetAttribLocation(_program, "aNormal"));
-    
+
+    glBindBuffer(GL_ARRAY_BUFFER, _meshTextureCoordinateBuffer);
+    glVertexAttribPointer(glGetAttribLocation(_program, "aTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     // Set up to draw the flat page.
-    glVertexAttribPointer(glGetAttribLocation(_program, "aPageTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _blankPageTextureCoordinates.textureCoordinates);
-    glVertexAttribPointer(glGetAttribLocation(_program, "aContentsTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageContentsInformation[_flatPageIndex].textureCoordinates->textureCoordinates);
     glVertexAttribPointer(glGetAttribLocation(_program, "aPosition"), 3, GL_FLOAT, GL_FALSE, 0, _stablePageVertices);
+    
     glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, _stablePageVertexNormals);
+    
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
@@ -1094,7 +985,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
     glUniform1f(glGetUniformLocation(_program, "uBackContentsBleed"), 0.2);
     
-/*
+    /*
+
     for(int i = 0; i < TRIANGLE_STRIP_COUNT; ++i) {
         THVec3 vertex = ((THVec3 *)_stablePageVertexNormals)[_triangleStripIndices[i]];
         THVec3 projectedVertex = THVec3Normalize(THCATransform3DVec3Multiply(normalMatrix, vertex));
@@ -1103,10 +995,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
               vertex.x, vertex.y, vertex.z,
               projectedVertex.x, projectedVertex.y, projectedVertex.z);              
     }
-*/
-  
+ }
+     */
+    
     // Draw the flat page.
-    glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, _triangleStripIndices);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
+    glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     if(!shouldStopAnimating) {
         // If we're animating, we have a curved page to draw on top.
@@ -1117,7 +1012,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_flatPageIndex-1].texture);        
-        //glVertexAttribPointer(glGetAttribLocation(_program, "aContentsTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageContentsInformation[_flatPageIndex].textureCoordinates->textureCoordinates);
         
         const THVec3 *pageVertices, *pageVertexNormals;        
         if(!_isTurningAutomatically) {
@@ -1153,8 +1047,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, invertedPageVertexNormals);
         }
         
-        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT - 2, GL_UNSIGNED_BYTE, _triangleStripIndices);
-        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
+        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
         if(_isTurningAutomatically) {
             if(_automaticTurnPercentage > 0.0f) {
                 // Construct and draw the page edge.
@@ -1207,7 +1103,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
                 glUniform1i(glGetUniformLocation(_program, "uDisableContentsTexture"), 1);
                 
-                glVertexAttribPointer(glGetAttribLocation(_program, "aPageTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageEdgeTextureCoordinates);
+                glVertexAttribPointer(glGetAttribLocation(_program, "aTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageEdgeTextureCoordinates);
 
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, Y_VERTEX_COUNT * 2);
                 
@@ -1531,11 +1427,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     turning = YES;
                 }                
             } else {
-                CGFloat tapTurnMargin = 0.1f * _pageContentsInformation->textureCoordinates->innerPixelWidth;
+                CGFloat tapTurnMargin = 0.1f * self.bounds.size.width;
                 if(point.x < tapTurnMargin && _pageContentsInformation[0].pageIndex != NSUIntegerMax) {
                     [self turnToPageAtIndex:_pageContentsInformation[0].pageIndex];
                     turning = YES;
-                } else if(point.x > (_pageContentsInformation->textureCoordinates->innerPixelWidth - tapTurnMargin) && _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
+                } else if(point.x > (self.bounds.size.width - tapTurnMargin) && _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
                     [self turnToPageAtIndex:_pageContentsInformation[2].pageIndex];
                     turning = YES;
                 }                

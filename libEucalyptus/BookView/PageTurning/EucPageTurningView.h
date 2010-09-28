@@ -25,18 +25,9 @@ typedef struct {
 } VerletContstraint;
 
 typedef struct {
-    THVec2 textureCoordinates[Y_VERTEX_COUNT][X_VERTEX_COUNT];
-    GLuint innerPixelWidth;
-    GLuint innerPixelHeight;
-    GLuint texturePixelWidth;
-    GLuint texturePixelHeight;
-} TextureCoordinates;
-
-typedef struct {
     NSUInteger pageIndex;
     UIView *view;
     GLuint texture;
-    TextureCoordinates *textureCoordinates;
 } PageContentsInformation;
 
 @interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate> {
@@ -54,7 +45,10 @@ typedef struct {
     THVec3 _pageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     
     GLubyte _triangleStripIndices[TRIANGLE_STRIP_COUNT];
-
+    
+    GLuint _meshTextureCoordinateBuffer;
+    GLuint _triangleStripIndicesBuffer;
+    
     // Currently unused - see comments in the source file.
     //GLfloatTriplet _forceAccumulators[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     
@@ -63,7 +57,6 @@ typedef struct {
         
     BOOL _pageTextureIsDark;
     GLuint _blankPageTexture;
-    TextureCoordinates _blankPageTextureCoordinates;
 
     GLuint _bookEdgeTexture;
     THVec2 _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];

@@ -1,7 +1,7 @@
 precision mediump float;
 
 varying lowp vec4 vColor;
-varying mediump vec2 vTextureCoordinate[2];
+varying mediump vec2 vTextureCoordinate;
 
 uniform lowp sampler2D sPaperTexture;
 uniform lowp sampler2D sContentsTexture;
@@ -23,8 +23,8 @@ void main()
 {
     lowp float contentsDisablingAddition = float(uDisableContentsTexture);
 
-    lowp vec4 paperColor = texture2D(sPaperTexture, vTextureCoordinate[0]);
-    lowp vec4 contentsColor = min(texture2D(sContentsTexture, vTextureCoordinate[1]) + contentsDisablingAddition, 1.0);
+    lowp vec4 paperColor = texture2D(sPaperTexture, vTextureCoordinate);
+    lowp vec4 contentsColor = min(texture2D(sContentsTexture, vTextureCoordinate) + contentsDisablingAddition, 1.0);
     
     contentsColor = contentsColor * vBackContentsBleed + vBackContentsBleedAddition;
 

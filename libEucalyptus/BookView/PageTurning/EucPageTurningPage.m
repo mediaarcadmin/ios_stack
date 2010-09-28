@@ -29,6 +29,9 @@
 @synthesize meshVertices = _meshVertices;
 @synthesize flatnessState = _flatnessState;
 
+@synthesize frontTexture = _frontTexture;
+@synthesize frontTexture = _backTexture;
+
 - (id)initWithMeshSource:(EucPageTurningMeshSource *)meshSource
                     size:(THVec2)size 
              frontSource:(id)frontSource

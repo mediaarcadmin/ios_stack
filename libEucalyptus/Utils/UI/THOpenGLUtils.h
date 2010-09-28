@@ -161,3 +161,7 @@ static inline GLuint THGLIndexForColumnAndRow(GLuint column, GLuint row, GLuint 
 #pragma mark Utility Functions
 
 GLuint THGLLoadShader(GLenum type, const char *shaderSource, GLint shaderSourceLength);
+
+CATransform3D THCATransform3DLookAt(CATransform3D modelViewMatrix, THVec3 eye, THVec3 lookAt, THVec3 up);
+
+CATransform3D THCATransform3DPerspective(CATransform3D perspectiveMatrix, GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far);

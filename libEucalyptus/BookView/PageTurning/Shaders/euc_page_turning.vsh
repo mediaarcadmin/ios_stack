@@ -17,13 +17,12 @@ uniform mat4 uNormalMatrix;
 uniform Light uLight;
 uniform Material uMaterial;
 
-attribute vec2 aPageTextureCoordinate;
-attribute vec2 aContentsTextureCoordinate;
+attribute vec2 aTextureCoordinate;
 attribute vec4 aPosition;
 attribute vec4 aNormal;
 
 varying lowp vec4 vColor;
-varying mediump vec2 vTextureCoordinate[2];
+varying mediump vec2 vTextureCoordinate;
 
 uniform lowp float uBackContentsBleed;
 
@@ -81,8 +80,7 @@ void main()
     vColor = lightingEquation(projectedPosition.xyz / projectedPosition.w, 
                               normalize(projectedNormal.xyz / projectedNormal.w));
     
-    vTextureCoordinate[0] = aPageTextureCoordinate;
-    vTextureCoordinate[1] = aContentsTextureCoordinate;
+    vTextureCoordinate = aTextureCoordinate;
         
     gl_Position = uProjectionMatrix * projectedPosition;
 }
