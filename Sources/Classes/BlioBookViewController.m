@@ -24,6 +24,7 @@
 #import "BlioAlertManager.h"
 #import "BlioBookManager.h"
 #import "BlioBeveledView.h"
+#import "Reachability.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -2452,6 +2453,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type { 
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_WEBTOOL",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to use this web tool.",@"Alert message when the user tries to download a book without an Internet connection.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles: nil];		
+		return;
+	}
+	
 	NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
     NSString *encodedParam = [[[wordStrings componentsJoinedByString:@" "] 
 							   stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 

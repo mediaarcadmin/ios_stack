@@ -309,7 +309,7 @@
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				ePubOp = (BlioProcessingDownloadEPubOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadEPubOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				ePubOp = (BlioProcessingDownloadEPubOperation*)[self operationByClass:[BlioProcessingDownloadEPubOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				
 				if (!ePubOp || ePubOp.isCancelled) // TODO: honor force reprocess option here
 				{
@@ -390,7 +390,7 @@
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				pdfOp = (BlioProcessingDownloadPdfOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadPdfOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				pdfOp = (BlioProcessingDownloadPdfOperation*)[self operationByClass:[BlioProcessingDownloadPdfOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				
 				if (!pdfOp || pdfOp.isCancelled) {
 					
@@ -440,7 +440,7 @@
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				audiobookOp = (BlioProcessingDownloadAudiobookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadAudiobookOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				audiobookOp = (BlioProcessingDownloadAudiobookOperation*)[self operationByClass:[BlioProcessingDownloadAudiobookOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!audiobookOp || audiobookOp.isCancelled) {
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
@@ -479,7 +479,7 @@
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:[BlioProcessingDownloadXPSOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!xpsOp || xpsOp.isCancelled) {
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
@@ -521,7 +521,7 @@
 //			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadPaidBookOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:[BlioProcessingDownloadPaidBookOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!paidBookOp || paidBookOp.isCancelled) {
 					if (manifestLocation && [manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						stringURL = [aBook manifestPathForKey:BlioManifestXPSKey];
@@ -550,7 +550,7 @@
 
 			NSMutableArray * xpsOps = [NSMutableArray array];
 
-			BlioProcessingOperation * licenseOp = [self operationByClass:NSClassFromString(@"BlioProcessingLicenseAcquisitionOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			BlioProcessingOperation * licenseOp = [self operationByClass:[BlioProcessingLicenseAcquisitionOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!licenseOp || licenseOp.isCancelled) {
 				
 				
@@ -568,7 +568,7 @@
 			[xpsOps addObject:licenseOp];
 			[bookOps addObject:licenseOp];
 			
-			BlioProcessingOperation * manifestOp = [self operationByClass:NSClassFromString(@"BlioProcessingXPSManifestOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!manifestOp || manifestOp.isCancelled) {
 				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
 				manifestOp.bookID = bookID;
@@ -702,7 +702,7 @@
         if (nil != stringURL) {
             // we still need to finish downloading this file
             // so check to see if operation already exists
-            textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadTextFlowOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+            textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:[BlioProcessingDownloadTextFlowOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
             if (!textFlowOp || textFlowOp.isCancelled) {
                 if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
                     url = [NSURL fileURLWithPath:stringURL];
@@ -1075,9 +1075,9 @@
 		}		
 	}
 }
-- (void)stopDownloadingOperations {
-	NSArray * downloadOperations = [self downloadOperations];
-	for (BlioProcessingOperation * op in downloadOperations) {
+- (void)stopInternetOperations {
+	NSArray * internetOperations = [self internetOperations];
+	for (BlioProcessingOperation * op in internetOperations) {
 		[op cancel];
 	}
 	// any processing operations that are dependent on these downloads will also cancel (as intended).
@@ -1124,11 +1124,11 @@
 	return nil;
 	
 }
-- (NSArray *)downloadOperations {
+- (NSArray *)internetOperations {
 	NSArray * operations = [preAvailabilityQueue operations];
 	NSMutableArray * tempArray = [NSMutableArray array];
 	for (BlioProcessingOperation * op in operations) {
-		if ([op isKindOfClass:[BlioProcessingDownloadOperation class]]) {
+		if ([op isKindOfClass:[BlioProcessingDownloadOperation class]] || [op isKindOfClass:[BlioProcessingLicenseAcquisitionOperation class]]) {
 			[tempArray addObject:op];
 		}
 	}

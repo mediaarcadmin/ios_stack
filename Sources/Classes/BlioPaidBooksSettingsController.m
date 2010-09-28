@@ -180,27 +180,22 @@
 	//self.registrationOn = !self.registrationOn;
 	
 	sender.enabled = NO;
+	
+	BOOL changeSuccess = NO;
 	[activityIndicator startAnimating];  // thread issue...
 	if ( [(UISwitch*)sender isOn] ) {
-		if ( ![self.drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-										delegate:self 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
-		}
+		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore];
 	}
 	else {
-		if ( ![self.drmSessionManager leaveDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"UNREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to unregister device. Please try again later.",@"Alert message shown when device unregistration fails.")
-										delegate:self 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
-		}
+		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
 	}
 	[activityIndicator stopAnimating];
-	[self.navigationController popViewControllerAnimated:YES];
+	if (!changeSuccess) {
+		if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [(UISwitch*)sender setOn:YES];
+		else [(UISwitch*)sender setOn:NO];
+	}
+	sender.enabled = YES;
+//	[self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark -

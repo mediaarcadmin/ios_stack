@@ -95,8 +95,8 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void)suspendProcessingForBook:(BlioBook*)aBook;
 - (void)stopProcessingForBook:(BlioBook*)aBook;
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave;
-- (void)stopDownloadingOperations;
-- (NSArray *)downloadOperations;
+- (void)stopInternetOperations;
+- (NSArray *)internetOperations;
 - (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (BlioProcessingDownloadOperation*) incompleteDownloadOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 @end

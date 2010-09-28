@@ -161,6 +161,11 @@
 		}
 	}
 	
+	if ([self isCancelled]) {
+		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
+		return;
+	}
+	
 	BOOL isEncrypted = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (!isEncrypted) {
         self.operationSuccess = YES;
@@ -183,6 +188,11 @@
 		return;
 	}
     
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+		NSLog(@"Internet connection is dead, will prematurely abort main");
+        return;
+    }
+	
 	if ([[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] == nil) {
 		NSLog(@"ERROR: no valid token, cancelling BlioProcessingLicenseAcquisitionOperation...");
 		[self cancel];
@@ -552,7 +562,7 @@
 //			NSLog(@"[self.downloadFile seekToEndOfFile]: %llu",[self.downloadFile seekToEndOfFile]);
 //			NSLog(@"expectedContentLength: %lld",expectedContentLength);
 			self.percentageComplete = [self.downloadFile seekToEndOfFile]*100/expectedContentLength;
-//			NSLog(@"Download operation percentageComplete for asset %@: %u",self.localFilename,self.percentageComplete);
+//			NSLog(@"Download operation percentageComplete for asset %@: %u",self.sourceSpecificID,self.percentageComplete);
 		}
 		else self.percentageComplete = 50;
 	}
@@ -631,6 +641,28 @@
     return self;
 }
 - (void)start {
+	for (BlioProcessingOperation * blioOp in [self dependencies]) {
+		if (!blioOp.operationSuccess) {
+			NSLog(@"failed dependency found: %@",blioOp);
+			[self cancel];
+			break;
+		}
+	}	
+	if ([self isCancelled]) {
+        [self willChangeValueForKey:@"isFinished"];
+		NSLog(@"Operation cancelled, will prematurely abort start");
+        finished = YES;
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }
+	
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+        [self willChangeValueForKey:@"isFinished"];
+		NSLog(@"Internet connection is dead, will prematurely abort start");
+        finished = YES;
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }
 	
 	if (self.url == nil) {
 		if ([[BlioStoreManager sharedInstance] tokenForSourceID:self.sourceID]) {
@@ -696,6 +728,7 @@
 		NSLog(@"BlioProcessingXPSManifestOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
 	}
+	
 	NSDictionary *manifestEntry;
 		
 	BOOL hasTextflowData = [self bookManifestPath:BlioXPSTextFlowSectionsFile existsForLocation:BlioManifestEntryLocationXPS];
