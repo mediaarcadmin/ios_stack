@@ -14,7 +14,7 @@
 
 @class BlioBookSearchToolbar, BlioBookSearchResultsTableViewController;
 
-@interface BlioBookSearchPopoverController : BlioModalPopoverController <BlioBookSearchDelegate> {
+@interface BlioBookSearchPopoverController : BlioModalPopoverController <UIPopoverControllerDelegate, BlioBookSearchDelegate> {
     BlioBookSearchResultsTableViewController *resultsController;
     UINavigationController *navigationController;
     BlioBookSearchToolbar *toolbar;
