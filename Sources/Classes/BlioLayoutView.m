@@ -61,13 +61,7 @@
     
     self.pageTurningView = nil;
     self.pageTexture = nil;
-    
-    if(self.selector) {
-        [self.selector removeObserver:self forKeyPath:@"tracking"];
-        [self.selector detatch];
-        self.selector = nil;
-    }    
-    
+        
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
     
@@ -147,16 +141,6 @@
             [self.pageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
         }
 
-        
-        EucSelector *aSelector = [[EucSelector alloc] init];
-        aSelector.shouldSniffTouches = YES;
-        aSelector.dataSource = self;
-        aSelector.delegate =  self;
-        [aSelector attachToView:self];
-        [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
-        self.selector = aSelector;
-        [aSelector release];
-                
         NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
@@ -165,6 +149,29 @@
     }
 
     return self;
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    if(self.selector) {
+        [self.selector removeObserver:self forKeyPath:@"tracking"];
+        [self.selector detatch];
+        self.selector = nil;
+    }
+}
+
+- (void)didMoveToSuperview
+{
+    if(self.superview) {
+        EucSelector *aSelector = [[EucSelector alloc] init];
+        aSelector.shouldSniffTouches = YES;
+        aSelector.dataSource = self;
+        aSelector.delegate =  self;
+        [aSelector attachToView:self];
+        [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
+        self.selector = aSelector;
+        [aSelector release];        
+    }
 }
 
 - (void)layoutSubviews {
