@@ -11,7 +11,7 @@
 
 @implementation BlioStoreHelper
 
-@synthesize delegate, timeout, username, token, isLoggedIn, sourceID, storeTitle;
+@synthesize delegate, timeout, username, token, sourceID, storeTitle;
 
 -(void) dealloc {
 	self.token = nil;
@@ -33,12 +33,16 @@
 	// abstract method	
 	return NO;
 }
+-(BOOL)isLoggedIn {
+	return [self hasValidToken];
+}
 -(BlioDeviceRegisteredStatus)deviceRegistered {
 	// abstract method	
 	return BlioDeviceRegisteredStatusUndefined;
 }
--(void)setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
+-(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
 	// abstract method	
+	return NO;
 }
 -(void)retrieveBooks {
 	// abstract method	

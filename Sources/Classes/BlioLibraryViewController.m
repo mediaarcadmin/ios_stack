@@ -2196,6 +2196,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			}
 			self.accessoryView = pauseButton;
 			
+			if (progressView.progress == 0) NSLocalizedString(@"Calculating...","\"Calculating...\" status indicator in BlioLibraryListCell");
 			if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
 			else self.authorLabel.text = NSLocalizedString(@"Processing...","\"Processing...\" status indicator in BlioLibraryListCell");
 

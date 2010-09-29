@@ -76,7 +76,6 @@ static NSString * const DigitalLockerInputDataEmailOptionKey = @"EmailOption";
 	NSString * _AppID;	
 }
 
-+(NSString *) IPAddress;
 +(NSString *) SessionId;
 
 @property (nonatomic, readonly) NSString * ClientIPAddress;

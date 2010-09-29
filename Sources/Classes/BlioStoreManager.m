@@ -27,15 +27,25 @@
 	
 	return sharedStoreManager;
 }
+
 - (id) init {
 	if((self = [super init])) {
 		self.storeHelpers = [NSMutableDictionary dictionaryWithCapacity:1];
 		self.deviceRegistrationPromptAlertViews = [NSMutableDictionary dictionaryWithCapacity:1];
-		[self setStoreHelper:[[[BlioOnlineStoreHelper alloc] init] autorelease]];
+		[self addStoreHelper:[[[BlioOnlineStoreHelper alloc] init] autorelease]];
 	}
 	return self;
 }
--(void)setStoreHelper:(BlioStoreHelper*)helper {
+
+-(void) dealloc {
+	self.storeHelpers = nil;
+	self.deviceRegistrationPromptAlertViews = nil;
+	self.rootViewController = nil;
+	self.loginViewController = nil;
+	[super dealloc];
+}
+
+-(void)addStoreHelper:(BlioStoreHelper*)helper {
 	helper.delegate = self;
 	[storeHelpers setObject:helper forKey:[NSNumber numberWithInt:helper.sourceID]];
 }
@@ -102,14 +112,15 @@
 //		NSLog(@"[storeHelper deviceRegistered]: %i",[storeHelper deviceRegistered]);
 		if ([storeHelper deviceRegistered] == BlioDeviceRegisteredStatusUndefined) {
 			
-			BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-			if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
-				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-											 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-											delegate:nil 
-								   cancelButtonTitle:nil
-								   otherButtonTitles:@"OK", nil];
-			[drmSessionManager release];
+			[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
+//			BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
+//			if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
+//				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+//											 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
+//											delegate:nil 
+//								   cancelButtonTitle:nil
+//								   otherButtonTitles:@"OK", nil];
+//			[drmSessionManager release];
 			
 			
 			// ask end-user if he/she would like to register device
@@ -137,16 +148,18 @@
 		BlioStoreHelper * storeHelper = [self storeHelperForSourceID:[[keys objectAtIndex:0] intValue]];
 		if (storeHelper ) {
 			if ( buttonIndex == 1 ) {
-				BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-				if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
-					[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-												 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-													delegate:nil 
-												cancelButtonTitle:nil
-												otherButtonTitles:@"OK", nil];
-				[drmSessionManager release];
+				[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
+
+//				BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
+//				if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
+//					[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+//												 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
+//													delegate:nil 
+//												cancelButtonTitle:nil
+//												otherButtonTitles:@"OK", nil];
+//				[drmSessionManager release];
 			}
-			else if (  buttonIndex == 0 )
+			else if (buttonIndex == 0)
 				[[NSUserDefaults standardUserDefaults] setInteger:BlioDeviceRegisteredStatusUnregistered forKey:kBlioDeviceRegisteredDefaultsKey];
 		}
 	}
@@ -172,11 +185,11 @@
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] URLForBookWithID:sourceSpecificID];
 	return nil;	
 }
--(void) dealloc {
-	self.storeHelpers = nil;
-	self.deviceRegistrationPromptAlertViews = nil;
-	self.rootViewController = nil;
-	self.loginViewController = nil;
-	[super dealloc];
+-(BlioDeviceRegisteredStatus)deviceRegisteredForSourceID:(BlioBookSourceID)sourceID {
+	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] deviceRegistered];
 }
+-(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID {
+	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] setDeviceRegistered:status];
+}
+
 @end

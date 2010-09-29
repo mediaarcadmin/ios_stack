@@ -90,7 +90,7 @@
 
 - (UITextField *)createEmailTextField {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.emailField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.emailField) self.emailField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	emailField.keyboardType = UIKeyboardTypeAlphabet;
 	emailField.keyboardAppearance = UIKeyboardAppearanceDefault;
@@ -114,7 +114,7 @@
 - (UITextField *)createPasswordTextField
 {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.passwordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.passwordField) self.passwordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	passwordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	passwordField.keyboardType = UIKeyboardTypeAlphabet;
 	passwordField.keyboardAppearance = UIKeyboardAppearanceDefault;

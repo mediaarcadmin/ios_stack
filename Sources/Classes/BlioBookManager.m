@@ -119,7 +119,7 @@ static pthread_key_t sManagedObjectContextKey;
     if (aBookID) {
         book = (BlioBook *)[context objectWithID:aBookID];
     }
-    
+    else NSLog(@"WARNING: BlioBookManager bookWithID: aBookID is nil!");
     if (book) {
         [context refreshObject:book mergeChanges:YES];
     }

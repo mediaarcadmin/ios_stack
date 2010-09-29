@@ -336,23 +336,16 @@ static void *background_init_thread(void * arg) {
 	NSLog(@"previousNetStatus: %i",previousNetStatus);
 	NSLog(@"self.networkStatus: %i",self.networkStatus);
 	if (previousNetStatus != NotReachable && self.networkStatus == NotReachable) { // if changed from available to unavailable
-		[self.processingManager stopDownloadingOperations];
-		if ([[self.processingManager downloadOperations] count] > 0)
+		if ([[self.processingManager internetOperations] count] > 0)
 		{
 			// ALERT user to what just happened.
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
 															message:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")
-														   delegate:self
+														   delegate:nil
 												  cancelButtonTitle:@"OK"
 												  otherButtonTitles:nil];
-//			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-//															message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")]
-//														   delegate:self
-//												  cancelButtonTitle:@"OK"
-//												  otherButtonTitles:nil];
-//			[alert show];
-//			[alert release];
 		}
+		[self.processingManager stopInternetOperations];
 	}
 	else if (previousNetStatus == NotReachable && self.networkStatus != NotReachable) { // if changed from unavailable to available
 		[self.processingManager resumeProcessing];

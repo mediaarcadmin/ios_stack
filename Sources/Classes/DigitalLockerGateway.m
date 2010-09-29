@@ -6,10 +6,9 @@
 //  Copyright 2010 CrossComm, Inc. All rights reserved.
 //
 
-#include <ifaddrs.h>
-#include <arpa/inet.h>
-
 #import "DigitalLockerGateway.h"
+#import "NSString+BlioAdditions.h"
+#import "UIDevice+BlioAdditions.h"
 
 @implementation DigitalLockerXMLObject
 
@@ -184,7 +183,7 @@ static NSString * SessionId = nil;
 -(id)init {
 	self = [super init];
 	if (self) {
-		_ClientIPAddress = [DigitalLockerState IPAddress];
+		_ClientIPAddress = [UIDevice IPAddress];
 		[_ClientIPAddress retain];
 		_ClientDomain = @"gw.bliodigitallocker.net";
 		[_ClientDomain retain];
@@ -213,39 +212,6 @@ static NSString * SessionId = nil;
 	SessionId = [[NSString alloc] initWithString:sessionId];
 }
 
-+(NSString *) IPAddress {
-	NSString *address = @"error";
-	struct ifaddrs *interfaces = NULL;
-	struct ifaddrs *temp_addr = NULL;
-	int success = 0;
-	
-	// retrieve the current interfaces - returns 0 on success
-	success = getifaddrs(&interfaces);
-	if (success == 0)
-	{
-		// Loop through linked list of interfaces
-		temp_addr = interfaces;
-		while(temp_addr != NULL)
-		{
-			if(temp_addr->ifa_addr->sa_family == AF_INET)
-			{
-				// Check if interface is en0 which is the wifi connection on the iPhone
-				if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"])
-				{
-					// Get NSString from C String
-					address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
-				}
-			}
-			
-			temp_addr = temp_addr->ifa_next;
-		}
-	}
-	
-	// Free memory
-	freeifaddrs(interfaces);
-	
-	return address;
-}
 -(NSString *) serialize {
 	NSArray * keys = [NSArray arrayWithObjects:@"ClientIPAddress",@"ClientDomain",@"ClientLanguage",@"ClientLocation",@"SiteKey",nil];
 	NSMutableString * serialization = [NSMutableString stringWithString:@"<State>"];
@@ -254,7 +220,9 @@ static NSString * SessionId = nil;
 		NSString * valueForKey = [self valueForKey:key];
 		if (valueForKey) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,valueForKey,key]];
 	}
-	[serialization appendString:[NSString stringWithFormat:@"<ClientUserAgent>%@; %@</ClientUserAgent>", self.ClientUserAgent, self.AppID]];
+	NSString * systemNameVersion = [NSString stringWithFormat:@"%@/%@",[[UIDevice currentDevice] systemName],[[UIDevice currentDevice] systemVersion]];
+	NSString * hash = [[DigitalLockerBlioAppID md5Hash] substringWithRange:NSMakeRange(5, 6)];
+	[serialization appendString:[NSString stringWithFormat:@"<ClientUserAgent>%@; %@; %@%@</ClientUserAgent>", self.ClientUserAgent,systemNameVersion, self.AppID,hash]];
 	[serialization appendString:@"</State>"];
 	NSLog(@"serialization: %@",serialization);
 	return serialization;

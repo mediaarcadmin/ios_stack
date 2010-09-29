@@ -6,4 +6,5 @@
 - (NSInteger)blioDeviceMaximumTileSize;
 - (BOOL)blioDevicePerCharacterSearchEnabled;
 - (NSTimeInterval)blioDeviceSearchInterval;
++(NSString *) IPAddress;
 @end
