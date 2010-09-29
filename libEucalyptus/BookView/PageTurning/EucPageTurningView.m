@@ -472,8 +472,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGContextDrawImage(textureContext, CGRectMake(0.0f, 0.0f, contextWidth, contextHeight), image);
         CGImageRelease(image);
         CGColorSpaceRelease(colorSpace);
-        
-        context = textureContext;
     }
     
     if(!*textureRef) { 
@@ -557,6 +555,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGContextDrawImage(textureContext, CGRectMake(0, 0, scaledSize.width, scaledSize.height), ((UIImage *)viewOrImage).CGImage);
     }
         
+    CGColorSpaceRelease(colorSpace);
+    
     [self _createTextureIn:textureRef fromRGBABitmapContext:textureContext];
 
     CGContextRelease(textureContext);
