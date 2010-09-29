@@ -263,10 +263,12 @@
     BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
     [indexPath release];
     
-    ret.layoutPage = bookmarkPoint.layoutPage;
-    ret.blockOffset = bookmarkPoint.blockOffset;
-    ret.wordOffset = bookmarkPoint.wordOffset;
-    ret.elementOffset = eucIndexPoint.element;
+    if(bookmarkPoint) {
+        ret.layoutPage = bookmarkPoint.layoutPage;
+        ret.blockOffset = bookmarkPoint.blockOffset;
+        ret.wordOffset = bookmarkPoint.wordOffset;
+        ret.elementOffset = eucIndexPoint.element;
+    }
 
     [eucIndexPoint release];
     

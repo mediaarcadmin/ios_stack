@@ -316,7 +316,8 @@ static void *background_init_thread(void * arg) {
 -(void)applicationDidEnterBackground:(UIApplication *)application {
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);	
+        NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #endif
