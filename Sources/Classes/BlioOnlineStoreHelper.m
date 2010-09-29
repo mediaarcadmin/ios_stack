@@ -11,6 +11,8 @@
 #import "BlioStoreManager.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
+#import	"Reachability.h"
+#import "BlioDrmSessionManager.h"
 
 #define KNFB_STORE 12151
 #define HP_STORE 12308
@@ -87,7 +89,6 @@
 				return;
 			}
 			else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
-				self.isLoggedIn = YES;
 				self.token = [bodyPart LoginResult].Token;
 				self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
 				NSLog(@"timeout: %@",self.timeout);
@@ -232,23 +233,69 @@
 -(BlioDeviceRegisteredStatus)deviceRegistered {
 	return [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey];
 }
--(void) setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
-	NSLog(@"setDeviceRegistered: %i",status);
-	[[NSUserDefaults standardUserDefaults] setInteger:status forKey:kBlioDeviceRegisteredDefaultsKey];
-	NSLog(@"deviceRegistered: %i", [self deviceRegistered]);
+-(BOOL) setDeviceRegistered:(BlioDeviceRegisteredStatus)targetStatus {
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+		NSString * internetMessage = NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_DEREGISTRATION",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to deregister this device.",@"Alert message when the user tries to deregister the device without an Internet connection.");
+		if (targetStatus == BlioDeviceRegisteredStatusRegistered) internetMessage = NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_REGISTRATION",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to register this device.",@"Alert message when the user tries to register the device without an Internet connection.");
+		
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+									 message:internetMessage
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles: nil];		
+		return NO;
+	}
+	if (![self hasValidToken]) {
+		NSString * loginMessage = NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_DEREGISTRATION",nil,[NSBundle mainBundle],@"You must be logged in to deregister this device.",@"Alert message when the user tries to deregister the device without being logged in.");
+		if (targetStatus == BlioDeviceRegisteredStatusRegistered) loginMessage = NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_REGISTRATION",nil,[NSBundle mainBundle],@"You must be logged in to register this device.",@"Alert message when the user tries to register the device without being logged in.");
+		
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+									 message:loginMessage
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles: nil];		
+		return NO;
+	}
+	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
+	if ( targetStatus == BlioDeviceRegisteredStatusRegistered ) {
+		if ( ![drmSessionManager joinDomain:self.token domainName:@"novel"] ) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
+										delegate:nil 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:@"OK", nil];
+			return NO;
+		}
+	}
+	else {
+		if ( ![drmSessionManager leaveDomain:self.token] ) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"UNREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to unregister device. Please try again later.",@"Alert message shown when device unregistration fails.")
+										delegate:nil 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:@"OK", nil];
+			return NO;
+		}
+	}
+	[drmSessionManager release];
+	[[NSUserDefaults standardUserDefaults] setInteger:targetStatus forKey:kBlioDeviceRegisteredDefaultsKey];
+	return YES;
 }
 - (void)logout {
 	self.token = nil;
-	self.isLoggedIn = NO;
 	self.username = nil;
 	self.timeout = [NSDate distantPast];
 }
 -(void)retrieveBooks {
 	if (![BlioStoreManager sharedInstance].processingDelegate) {
-		NSLog(@"ERROR: no processingManager set for BlioOnlineStoreHelper! Aborting archiveBooks...");
+		NSLog(@"ERROR: no processingManager set for BlioOnlineStoreHelper! Aborting retrieveBooks...");
 		return;
 	}
-
+	if (![self hasValidToken]) {
+		NSLog(@"ERROR: Store helper does not have a valid token! Aborting retrieveBooks...");
+		return;
+	}
+	
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
 	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];

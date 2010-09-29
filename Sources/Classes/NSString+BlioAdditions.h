@@ -11,5 +11,6 @@
 @interface NSString (BlioAdditions)
 
 + (NSString *)uniqueStringWithBaseString:(NSString *)baseString;
+- (NSString *)md5Hash;
 
 @end

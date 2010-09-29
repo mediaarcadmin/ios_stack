@@ -7,6 +7,7 @@
 //
 
 #import "NSData+MBBase64.h"
+#import <CommonCrypto/CommonDigest.h>
 
 @implementation NSString (BlioAdditions)
 
@@ -33,4 +34,17 @@
     return ret;
 }
 
+- (NSString *)md5Hash {
+	const char *cString = [self UTF8String];
+	unsigned char result[CC_MD5_DIGEST_LENGTH];
+	CC_MD5(cString, strlen(cString), result);
+	NSMutableString * resultString = [[NSMutableString alloc] initWithCapacity: 33];
+	for (int i = 0; i < 16; i++)
+	{
+		[resultString appendFormat: @"%02x", result[i]];
+	}
+	NSString * finalResult = [resultString copy];
+	[resultString release];
+	return [finalResult autorelease];
+}
 @end
