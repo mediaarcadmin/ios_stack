@@ -267,6 +267,13 @@
 
 
 #pragma mark -
+
+@interface BlioProcessingDownloadOperation (PRIVATE)
+
+-(void)finish;
+
+@end
+
 @implementation BlioProcessingDownloadOperation
 
 @synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength;
@@ -314,6 +321,14 @@
 
 - (BOOL)isFinished {
     return finished;
+}
+-(void)cancel {
+	[super cancel];
+	NSLog(@"Cancelling download...");
+	if (self.connection) {
+		[self.connection cancel];
+	}	
+	[self finish];
 }
 
 - (void)finish {
