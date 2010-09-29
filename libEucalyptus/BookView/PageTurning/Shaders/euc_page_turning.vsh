@@ -17,12 +17,12 @@ uniform mat4 uNormalMatrix;
 uniform Light uLight;
 uniform Material uMaterial;
 
-attribute vec2 aTextureCoordinate;
-attribute vec4 aPosition;
+attribute highp vec2 aTextureCoordinate;
+attribute highp vec4 aPosition;
 attribute vec4 aNormal;
 
 varying lowp vec4 vColor;
-varying mediump vec2 vTextureCoordinate;
+varying highp vec2 vTextureCoordinate;
 
 uniform lowp float uBackContentsBleed;
 

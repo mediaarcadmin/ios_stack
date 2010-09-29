@@ -1,7 +1,7 @@
 precision mediump float;
 
 varying lowp vec4 vColor;
-varying mediump vec2 vTextureCoordinate;
+varying highp vec2 vTextureCoordinate;
 
 uniform lowp sampler2D sPaperTexture;
 uniform lowp sampler2D sContentsTexture;
