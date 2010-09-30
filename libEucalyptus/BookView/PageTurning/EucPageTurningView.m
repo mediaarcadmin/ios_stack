@@ -1579,6 +1579,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                                 }
                             }                               
                         }
+                        memcpy(_oldPageVertices, _pageVertices, sizeof(_oldPageVertices));
                     } else {
                         shouldAnimate = NO;
                     }
@@ -2033,6 +2034,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     
     CGFloat pageOriginX = _rightPageRect.origin.x;
     THVec3 pageTouchPoint = _pageTouchPoint;
+    
+    NSLog(@"%f", pageTouchPoint.x);
+    
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
     int j;
     for(j=0; j < NUM_ITERATIONS; ++j) {              
