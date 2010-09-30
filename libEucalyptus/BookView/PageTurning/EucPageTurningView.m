@@ -42,6 +42,9 @@
 @synthesize viewDataSource = _viewDataSource;
 @synthesize bitmapDataSource = _bitmapDataSource;
 
+@synthesize twoSidedPages = _twoSidedPages;
+@synthesize fitTwoPages = _fitTwoPages;
+
 @synthesize shininess = _shininess;
 
 @synthesize constantAttenuationFactor = _constantAttenuationFactor;
@@ -128,6 +131,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)_pageTurningViewInternalInit
 {       
+    //self.twoSidedPages = YES;
+    //self.fitTwoPages = YES;
+    
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
     
@@ -339,34 +345,55 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         _viewportLogicalSize.width = 4.0f;
         _viewportLogicalSize.height = (size.height / size.width) * _viewportLogicalSize.width;
     } else {
+        // Landscape.
         _viewportLogicalSize.height = 4.0f;
         _viewportLogicalSize.width = (size.width / size.height) * _viewportLogicalSize.height;
     }
     
     // Construct a hex-mesh of triangles:
-    CGSize pageSize;
-    if(_pageAspectRatio == 0.0f) {
-        pageSize = _viewportLogicalSize;
-    } else {
-        pageSize.height = _viewportLogicalSize.height;
-        pageSize.width =  pageSize.height * _pageAspectRatio;
-        if(pageSize.width > _viewportLogicalSize.width) {
-            pageSize.width = _viewportLogicalSize.width;
-            pageSize.height = pageSize.width / _pageAspectRatio;
-        }        
+    CGFloat aspectRatio = _pageAspectRatio;
+    if(aspectRatio == 0.0f) {
+        if(!_fitTwoPages || size.width < size.height) {
+            aspectRatio = size.width / size.height;
+        } else {
+            // If we're landscape, and in fit-two mode, use the portrait 
+            // aspect for pages.
+            aspectRatio = size.height / size.width;
+        }
     }
-    GLfloat xStep = ((GLfloat)pageSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
-    GLfloat yStep = ((GLfloat)pageSize.height / (Y_VERTEX_COUNT - 1));
 
-    _pageFrame = CGRectMake(0.0f, 0.0f, pageSize.width, pageSize.height);
+    CGFloat availableWidth;
+    if(_fitTwoPages) {
+        availableWidth = _viewportLogicalSize.width * 0.5f;
+    } else {
+        availableWidth = _viewportLogicalSize.width;
+    }
     
-    _pageTransform = CATransform3DMakeTranslation(-(_viewportLogicalSize.width - pageSize.width) * 0.5f, 
-                                                  -(_viewportLogicalSize.height - pageSize.height) * 0.5f,
-                                                  0.0);
-    _inversePageTransform = CATransform3DInvert(_pageTransform);
+    _pageLogicalSize.height = _viewportLogicalSize.height;
+    _pageLogicalSize.width =  roundf(_pageLogicalSize.height * aspectRatio);
+    if(_pageLogicalSize.width > availableWidth) {
+        _pageLogicalSize.width = availableWidth;
+        _pageLogicalSize.height = roundf(_pageLogicalSize.width / aspectRatio);
+    }        
+
+    GLfloat xStep = ((GLfloat)_pageLogicalSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
+    GLfloat yStep = ((GLfloat)_pageLogicalSize.height / (Y_VERTEX_COUNT - 1));
     
-    GLfloat maxX = pageSize.width;
-    GLfloat maxY = pageSize.height;
+    if(_fitTwoPages) {
+        _rightPageTransform = CATransform3DMakeTranslation(_viewportLogicalSize.width * 0.5f, 
+                                                           (_viewportLogicalSize.height - _pageLogicalSize.height) * 0.5f,
+                                                           0.0);
+    } else {
+        _rightPageTransform = CATransform3DMakeTranslation((_viewportLogicalSize.width - _pageLogicalSize.width) * 0.5f, 
+                                                           (_viewportLogicalSize.height - _pageLogicalSize.height) * 0.5f,
+                                                           0.0);
+    }
+    
+    _rightPageRect = CGRectApplyAffineTransform(CGRectMake(0, 0, _pageLogicalSize.width, _pageLogicalSize.height),
+                                                CATransform3DGetAffineTransform(_rightPageTransform));
+    
+    GLfloat maxX = _pageLogicalSize.width;
+    GLfloat maxY = _pageLogicalSize.height;
         
     GLfloat yCoord = 0.0f;
     for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
@@ -493,6 +520,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGContextRelease(textureContext);
         free(textureData);
     }
+    
+    THLog(@"CreatedTexture of size (%ld, %ld)", (long)contextWidth, (long)contextHeight);
 }
 
 - (void)_createTextureIn:(GLuint *)textureRef from:(id)viewOrImage
@@ -760,7 +789,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 }
 
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex {
-    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(PageContentsInformation); ++i) {
+    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation); ++i) {
         if(pageIndex == _pageContentsInformation[i].pageIndex) {
             [self _setupBitmapPage:pageIndex forInternalPageOffset:i];
             break;
@@ -885,12 +914,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (void)_cyclePageContentsInformationForTurnForwards:(BOOL)forwards
 {
     if(forwards) {
-        PageContentsInformation tempView = _pageContentsInformation[0];
+        EucPageTurningPageContentsInformation tempView = _pageContentsInformation[0];
         _pageContentsInformation[0] = _pageContentsInformation[1];
         _pageContentsInformation[1] = _pageContentsInformation[2];
         _pageContentsInformation[2] = tempView;
     } else {
-        PageContentsInformation tempView = _pageContentsInformation[2];
+        EucPageTurningPageContentsInformation tempView = _pageContentsInformation[2];
         _pageContentsInformation[2] = _pageContentsInformation[1];
         _pageContentsInformation[1] = _pageContentsInformation[0];
         _pageContentsInformation[0] = tempView;
@@ -919,8 +948,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     
     
     // Set up model and perspective matrices.
-    CATransform3D modelViewMatrix = _pageTransform;
-    modelViewMatrix = CATransform3DRotate(modelViewMatrix, (CGFloat)M_PI, 0, 0, 1);
+    CATransform3D modelViewMatrix = CATransform3DMakeRotation((CGFloat)M_PI, 0, 0, 1);
+    modelViewMatrix = CATransform3DConcat(_rightPageTransform, modelViewMatrix);
     modelViewMatrix = THCATransform3DLookAt(modelViewMatrix, 
                                             THVec3Make(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, -(_viewportLogicalSize.height * 0.5f) / tanf(FOV_ANGLE * ((float)M_PI / 360.0f))), 
                                             THVec3Make(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, 0.0f), 
@@ -1008,6 +1037,32 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+    if(_rightPageRect.origin.x > 0.0f) {
+        NSInteger leftPageIndex = _flatPageIndex - (shouldStopAnimating ? 1 : 2);
+        if(leftPageIndex >= 0) {
+            GLuint texture = _pageContentsInformation[leftPageIndex].texture;
+            if(texture) {
+                CATransform3D oldModelViewMatrix = modelViewMatrix;
+                modelViewMatrix = CATransform3DRotate(modelViewMatrix, (CGFloat)M_PI, 0, 1, 0);
+                glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
+                CATransform3D oldNormalMatrix = normalMatrix;
+                normalMatrix = THCATransform3DTranspose(CATransform3DInvert(modelViewMatrix));
+                glUniformMatrix4fv(glGetUniformLocation(_program, "uNormalMatrix"), sizeof(normalMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&normalMatrix);
+                
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, texture);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
+                glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                
+                modelViewMatrix = oldModelViewMatrix;
+                glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
+                normalMatrix = oldNormalMatrix;
+                glUniformMatrix4fv(glGetUniformLocation(_program, "uNormalMatrix"), sizeof(normalMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&normalMatrix);
+            }
+        }
+    }
+    
     if(!shouldStopAnimating) {
         // If we're animating, we have a curved page to draw on top.
         
@@ -1148,41 +1203,61 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
 }
 
-- (void)setTouchPointForX:(GLfloat)x
+- (void)_setPageTouchPointForViewportX:(GLfloat)x
 {
-    _touchPoint.x = x;
-    _touchPoint.y = ((GLfloat)_touchRow / (Y_VERTEX_COUNT - 1)) * _viewportLogicalSize.height;
-    _touchPoint.z = - _viewportLogicalSize.width * sqrtf(-(powf((x/_viewportLogicalSize.width), 2) - 1));    
+    CGRect touchablePageRect = _rightPageRect;
+    CGFloat pageX = x - touchablePageRect.origin.x;
+    if(pageX > touchablePageRect.size.width) {
+        pageX = touchablePageRect.size.width;
+    } else if(pageX < -touchablePageRect.size.width) {
+        pageX = -touchablePageRect.size.width;
+    }
+    _pageTouchPoint.x = pageX;
+    _pageTouchPoint.y = ((GLfloat)_touchRow / (Y_VERTEX_COUNT - 1)) * touchablePageRect.size.height;
+    _pageTouchPoint.z = -touchablePageRect.size.width * sqrtf(-(powf(((pageX)/touchablePageRect.size.width), 2) - 1));    
 }
 
-- (void)setTouchLocationFromTouch:(UITouch *)touch firstTouch:(BOOL)first;
+- (void)_setTouchLocationFromTouch:(UITouch *)touch firstTouch:(BOOL)first;
 {
     CGSize size = self.bounds.size;
     CGPoint viewTouchPoint =  [touch locationInView:self];
 
-    THVec2 modelTouchPoint = { (viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
-                               (viewTouchPoint.y / size.height) * _viewportLogicalSize.height };
+    CGFloat oldViewportTouchX = _viewportTouchPoint.x;
     
-    _touchRow = ((modelTouchPoint.y / _viewportLogicalSize.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
+    _viewportTouchPoint = CGPointMake((viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
+                                      (viewTouchPoint.y / size.height) * _viewportLogicalSize.height);
+        
+    CGRect touchablePageRect = _rightPageRect;
+    CGPoint touchablePagePoint = CGPointMake(_viewportTouchPoint.x - touchablePageRect.origin.x,
+                                             _viewportTouchPoint.y - touchablePageRect.origin.y);
+    
+    if(touchablePagePoint.y <= touchablePageRect.origin.y) {
+        _touchRow = 0;
+    } else if(touchablePagePoint.y >= (touchablePageRect.origin.y + touchablePageRect.size.height)) {
+        _touchRow = Y_VERTEX_COUNT - 1;
+    } else {
+        _touchRow = (((touchablePagePoint.y - touchablePageRect.origin.y) / 
+                       touchablePageRect.size.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
+    }
+    NSLog(@"TouchRow: %ld, (%f, %f)", (long)_touchRow, touchablePagePoint.x, touchablePagePoint.y);
     if(first) {
-        _touchXOffset = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - modelTouchPoint.x;
+        _touchXOffset = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - touchablePagePoint.x;
     }
     
-    modelTouchPoint.x =  modelTouchPoint.x + _touchXOffset;
-    if(modelTouchPoint.x > _viewportLogicalSize.width) {
-        modelTouchPoint.x = _viewportLogicalSize.width;
-    } 
+    _viewportTouchPoint.x = _viewportTouchPoint.x + _touchXOffset;
     NSTimeInterval thisTouchTime = [touch timestamp];
     if(_touchTime) {
         GLfloat difference = (GLfloat)(thisTouchTime - _touchTime);
-        if(difference) {
-            _touchVelocity = (modelTouchPoint.x - _touchPoint.x) / (30.0f * difference);
+        if(difference && !first) {
+            _touchVelocity = (_viewportTouchPoint.x - oldViewportTouchX) / (30.0f * difference);
         } else {
             _touchVelocity = 0;
         }
+    } else {
+        _touchVelocity = 0;
     }
     _touchTime = thisTouchTime;
-    [self setTouchPointForX:modelTouchPoint.x];
+    [self _setPageTouchPointForViewportX:_viewportTouchPoint.x];
 }
 
 
@@ -1195,7 +1270,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         _touch = touch;
         _touchBeganTime = [touch timestamp];
         if(self.isAnimating) {
-            [self setTouchLocationFromTouch:_touch firstTouch:YES];
+            [self _setTouchLocationFromTouch:_touch firstTouch:YES];
         } else {
             _vibrated = NO;
         }
@@ -1252,13 +1327,23 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 CGPoint previousLocation = [_touch previousLocationInView:self];
                 if(previousLocation.x < location.x) {
                     if(_pageContentsInformation[0].view || _pageContentsInformation[0].pageIndex != NSUIntegerMax) {
-                        for(int column = 1; column < X_VERTEX_COUNT; ++column) {
-                            for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
-                                GLfloat radius = _pageVertices[row][column].x;                            
-                                _pageVertices[row][column].z = -radius * sinf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
-                                _pageVertices[row][column].x = radius * cosf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
-                            }
-                        }                    
+                        if(_rightPageRect.origin.x == 0.0f) {
+                            // Position the page floating just outside the field of view.
+                            for(int column = 1; column < X_VERTEX_COUNT; ++column) {
+                                for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
+                                    GLfloat radius = _pageVertices[row][column].x;                            
+                                    _pageVertices[row][column].z = -radius * sinf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
+                                    _pageVertices[row][column].x = radius * cosf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
+                                }
+                            }   
+                        } else {
+                            // Position the page flat on the left.
+                            for(int column = 1; column < X_VERTEX_COUNT; ++column) {
+                                for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
+                                    _pageVertices[row][column].x = -_pageVertices[row][column].x;
+                                }
+                            }                               
+                        }
                     } else {
                         shouldAnimate = NO;
                     }
@@ -1274,7 +1359,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
                 if(shouldAnimate) {
                     _vibrated = NO;
-                    [self setTouchLocationFromTouch:_touch firstTouch:YES];
+                    [self _setTouchLocationFromTouch:_touch firstTouch:YES];
                     self.animating = YES;
                 } else {
                     if(!_vibrated) {
@@ -1284,7 +1369,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
             } else if(!_vibrated) {
                 // Set touch location
-                [self setTouchLocationFromTouch:_touch firstTouch:NO];
+                [self _setTouchLocationFromTouch:_touch firstTouch:NO];
             }
         }
     } else if([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]]) {
@@ -1336,7 +1421,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
     if([touches containsObject:_touch]) {
         if([event timestamp] > [_touch timestamp] + 0.1) {
-            [self setTouchLocationFromTouch:_touch firstTouch:NO];
+            [self _setTouchLocationFromTouch:_touch firstTouch:NO];
         }
         //NSLog(@"Real: %f", _touchVelocity);
         
@@ -1349,7 +1434,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _touchVelocity = _touchVelocity < 0 ? -0.4f : 0.4f;
         }
         //NSLog(@"Corrected: %f", _touchVelocity);
-        _touchPoint.x = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x;
+        //_pageTouchPoint.x = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x;
         _touchTime = 0;
         
         _touch = nil;
@@ -1367,7 +1452,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_pinchUnderway) {
             _pinchUnderway = NO;            
             if(_pageContentsInformation[3].view || _pageContentsInformation[3].pageIndex != NSUIntegerMax) {
-                PageContentsInformation tempView = _pageContentsInformation[1];
+                EucPageTurningPageContentsInformation tempView = _pageContentsInformation[1];
                 _pageContentsInformation[1] = _pageContentsInformation[3];
                 _pageContentsInformation[3] = tempView;
                 
@@ -1632,11 +1717,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (void)_verlet
 {    
     if(!_touch && _touchVelocity) {
-        GLfloat newX = _touchPoint.x + _touchVelocity /** difference*/;
-        if(newX > _viewportLogicalSize.width) {
-            newX = _viewportLogicalSize.width;
-        } 
-        [self setTouchPointForX:newX];
+        GLfloat newX = _viewportTouchPoint.x + _touchVelocity /** difference*/;
+        _viewportTouchPoint.x = newX;
+        [self _setPageTouchPointForViewportX:newX];
     }
     
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
@@ -1678,17 +1761,19 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         pageHasRigidEdge = NO;
     }
     
+    CGFloat pageOriginX = _rightPageRect.origin.x;
+    THVec3 pageTouchPoint = _pageTouchPoint;
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
     int j;
     for(j=0; j < NUM_ITERATIONS; ++j) {              
         if(_touch || _touchVelocity) {        
-            _pageVertices[MAX(0, _touchRow-1)][X_VERTEX_COUNT - 1].x = _touchPoint.x;
-            _pageVertices[_touchRow][X_VERTEX_COUNT - 1] = _touchPoint;
-            _pageVertices[MIN(Y_VERTEX_COUNT - 1, _touchRow+1)][X_VERTEX_COUNT - 1].x = _touchPoint.x;
+            _pageVertices[MAX(0, _touchRow-1)][X_VERTEX_COUNT - 1].x = pageTouchPoint.x;
+            _pageVertices[_touchRow][X_VERTEX_COUNT - 1] = pageTouchPoint;
+            _pageVertices[MIN(Y_VERTEX_COUNT - 1, _touchRow+1)][X_VERTEX_COUNT - 1].x = pageTouchPoint.x;
         }
         
         for(int i = 0; i < CONSTRAINT_COUNT; ++i) {
-            VerletContstraint constraint = _constraints[i];
+            EucPageTurningVerletContstraint constraint = _constraints[i];
             THVec3 a = flatPageVertices[constraint.particleAIndex];
             THVec3 b = flatPageVertices[constraint.particleBIndex];
             THVec3 delta = THVec3Subtract(b, a);
@@ -1705,8 +1790,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             delta = THVec3Multiply(delta, contraintLengthSquared/(THVec3DotProduct(delta)+contraintLengthSquared)-0.5);
             flatPageVertices[constraint.particleAIndex] = THVec3Subtract(a, delta); 
             flatPageVertices[constraint.particleBIndex] = THVec3Add(b, delta); 
-            flatPageVertices[constraint.particleAIndex].z = MIN(0, flatPageVertices[constraint.particleAIndex].z);
-            flatPageVertices[constraint.particleBIndex].z = MIN(0, flatPageVertices[constraint.particleBIndex].z);            
+            flatPageVertices[constraint.particleAIndex].z = MIN(0.0f, flatPageVertices[constraint.particleAIndex].z);
+            flatPageVertices[constraint.particleBIndex].z = MIN(0.0f, flatPageVertices[constraint.particleBIndex].z);            
         }
         
         
@@ -1714,6 +1799,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         // above the surface.
         BOOL isFlat = !_touch && _touchVelocity >= 0;
         BOOL hasFlipped = !_touch && _touchVelocity <= 0;
+        BOOL hasFlippedFlat = !_touch && _touchVelocity <= 0;
         for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
             GLfloat xCoord = _stablePageVertices[row][0].x;
             GLfloat yCoord = _stablePageVertices[row][0].y;
@@ -1724,10 +1810,17 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 GLfloat diff = yCoord - vertex.y;
                 _pageVertices[row][column].y = (vertex.y += diff * 0.5f);
 
-                if(hasFlipped &&
-                   (column > 0 && vertex.x > xCoord && 
-                    atanf(-vertex.z / vertex.x) < (((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f))) { 
-                    hasFlipped = NO;
+                // Test if this vertes is out of our field of view.
+                if(hasFlipped && 
+                   column > 0) {
+                    // See if the vertex is outside the FOV angle.
+                    CGFloat angle = atanf(-vertex.z / (vertex.x + pageOriginX));
+                    if(angle < 0) {
+                        angle = (GLfloat)M_PI + angle;
+                    }
+                    if(angle < (((GLfloat)M_PI - (FOV_ANGLE / (360.0f * ((GLfloat)M_PI * 2.0f)))) / 2.0f)) { 
+                        hasFlipped = NO;
+                    }
                 }
             }
                                     
@@ -1735,23 +1828,38 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _pageVertices[row][0].y = yCoord;
             _pageVertices[row][0].z = zCoord;
             
-
-            if(_pageVertices[row][X_VERTEX_COUNT - 1].x > (_stablePageVertices[row][X_VERTEX_COUNT - 1].x - 0.0125f)) {
+            CGFloat lastx = _pageVertices[row][X_VERTEX_COUNT - 1].x;
+            if(lastx > (_stablePageVertices[row][X_VERTEX_COUNT - 1].x - 0.0125f)) {
                 _pageVertices[row][X_VERTEX_COUNT - 1].x = _stablePageVertices[row][X_VERTEX_COUNT - 1].x;
-            } else {
+                if(hasFlippedFlat) {
+                    hasFlippedFlat = NO;
+                }                
+            } else if(lastx < (-_stablePageVertices[row][X_VERTEX_COUNT - 1].x + 0.0125f)) {
+                _pageVertices[row][X_VERTEX_COUNT - 1].x = -_stablePageVertices[row][X_VERTEX_COUNT - 1].x;
                 if(isFlat) {
                     isFlat = NO;
-                }                
+                }                         
+            } else {
+                if(hasFlippedFlat) {
+                    hasFlippedFlat = NO;
+                }
+                if(isFlat) {
+                    isFlat = NO;
+                }         
                 if(_touch || _touchVelocity) {
                     if(pageHasRigidEdge) {
-                        _pageVertices[row][X_VERTEX_COUNT - 1].x = _touchPoint.x;
-                        _pageVertices[row][X_VERTEX_COUNT - 1].z = _touchPoint.z;
+                        _pageVertices[row][X_VERTEX_COUNT - 1].x = pageTouchPoint.x;
+                        _pageVertices[row][X_VERTEX_COUNT - 1].z = pageTouchPoint.z;
                     } else {
-                        GLfloat diff = _touchPoint.x - _pageVertices[row][X_VERTEX_COUNT - 1].x;
+                        GLfloat diff = pageTouchPoint.x - _pageVertices[row][X_VERTEX_COUNT - 1].x;
                         _pageVertices[row][X_VERTEX_COUNT - 1].x += diff * 0.2f;
                     }
                 }
             }
+        }
+                   
+        if(hasFlippedFlat) {
+            hasFlipped = YES;
         }
         
         if(isFlat || hasFlipped) {

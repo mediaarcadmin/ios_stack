@@ -175,6 +175,12 @@
 }
 
 - (void)layoutSubviews {
+    CGRect myBounds = self.bounds;
+    if(myBounds.size.width > myBounds.size.height) {
+        self.pageTurningView.fitTwoPages = YES;
+    } else {
+        self.pageTurningView.fitTwoPages = NO;
+    }    
     [super layoutSubviews];
     CGSize newSize = self.bounds.size;
     if(!CGSizeEqualToSize(newSize, self.pageSize)) {

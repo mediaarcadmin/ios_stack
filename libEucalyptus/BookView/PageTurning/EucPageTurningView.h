@@ -13,6 +13,10 @@
 
 @protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource, EucPageTurningViewBitmapDataSource;
 
+
+#pragma mark -
+#pragma mark Private constants and structs
+
 #define X_VERTEX_COUNT 11
 #define Y_VERTEX_COUNT 16
 #define TRIANGLE_STRIP_COUNT ((Y_VERTEX_COUNT - 1) * (X_VERTEX_COUNT * 2 + 3))
@@ -22,20 +26,22 @@ typedef struct {
     GLubyte particleAIndex;
     GLubyte particleBIndex;
     GLfloat lengthSquared;
-} VerletContstraint;
+} EucPageTurningVerletContstraint;
 
 typedef struct {
     NSUInteger pageIndex;
     UIView *view;
     GLuint texture;
-} PageContentsInformation;
+} EucPageTurningPageContentsInformation;
+
+#pragma mark -
 
 @interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate> {
     GLuint _program;
     
     CGSize _viewportLogicalSize;
+    CGSize _pageLogicalSize;
     CGFloat _pageAspectRatio;
-    CGRect _pageFrame;
     
     THVec3 _stablePageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     THVec3 _stablePageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
@@ -52,7 +58,7 @@ typedef struct {
     // Currently unused - see comments in the source file.
     //GLfloatTriplet _forceAccumulators[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     
-    VerletContstraint _constraints[CONSTRAINT_COUNT];
+    EucPageTurningVerletContstraint _constraints[CONSTRAINT_COUNT];
     int _constraintCount;
         
     BOOL _pageTextureIsDark;
@@ -61,15 +67,16 @@ typedef struct {
     GLuint _bookEdgeTexture;
     THVec2 _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
-    CATransform3D _pageTransform;
-    CATransform3D _inversePageTransform;
+    CATransform3D _rightPageTransform;
+    CGRect _rightPageRect;
     
     UITouch *_touch;
     NSTimeInterval _touchBeganTime;
     NSInteger _touchRow;
     GLfloat _touchXOffset;
     NSTimeInterval _touchTime;
-    THVec3 _touchPoint;
+    THVec3 _pageTouchPoint;
+    CGPoint _viewportTouchPoint;
     GLfloat _touchVelocity;
     
     BOOL _pinchUnderway;
@@ -82,12 +89,15 @@ typedef struct {
     id<EucPageTurningViewViewDataSource> _viewDataSource;
     id<EucPageTurningViewBitmapDataSource> _bitmapDataSource;
     
-    EAGLContext *_textureUploadContext;
-    PageContentsInformation _pageContentsInformation[4];
+    BOOL _twoSidedPages;
+    BOOL _fitTwoPages;
     
-    int _flatPageIndex;
+    EAGLContext *_textureUploadContext;
+    EucPageTurningPageContentsInformation _pageContentsInformation[6];
+    
+    NSInteger _flatPageIndex;
     BOOL _viewsNeedRecache;
-    BOOL _recacheFlags[3];
+    BOOL _recacheFlags[5];
     
     GLvoid *_atRenderScreenshotBuffer;
     
@@ -130,6 +140,30 @@ typedef struct {
 
 @property (nonatomic, readonly) UIImage *screenshot;
 
+
+@property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
+@property (nonatomic, assign) BOOL twoSidedPages;
+@property (nonatomic, assign) BOOL fitTwoPages;
+
+- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+
+#pragma mark View based page contents
+
+@property (nonatomic, retain) UIView *currentPageView;
+@property (nonatomic, readonly) NSArray *pageViews;
+- (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
+- (void)refreshView:(UIView *)view;
+
+
+#pragma mark Bitmap based page contents
+@property (nonatomic, assign) NSUInteger currentPageIndex;
+
+- (void)turnToPageAtIndex:(NSUInteger)newPageIndex;
+- (void)refreshPageAtIndex:(NSUInteger)pageIndex;
+
+
+#pragma mark Light-related properties.
+
 @property (nonatomic, copy) UIColor *specularColor;
 @property (nonatomic, assign) GLfloat shininess;
 
@@ -141,24 +175,10 @@ typedef struct {
 
 @property (nonatomic, assign) THVec3 lightPosition;
 
-@property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
-
-- (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
-
-// View based page contents:
-
-@property (nonatomic, retain) UIView *currentPageView;
-@property (nonatomic, readonly) NSArray *pageViews;
-- (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
-- (void)refreshView:(UIView *)view;
-
-// Bitmap based page contents:
-@property (nonatomic, assign) NSUInteger currentPageIndex;
-- (void)turnToPageAtIndex:(NSUInteger)newPageIndex;
-- (void)refreshPageAtIndex:(NSUInteger)pageIndex;
-
 @end
 
+
+#pragma mark -
 
 @protocol EucPageTurningViewViewDataSource <NSObject>
 
@@ -171,6 +191,8 @@ typedef struct {
 @end
 
 
+#pragma mark -
+
 @protocol EucPageTurningViewBitmapDataSource <NSObject>
 
 - (CGRect)pageTurningView:(EucPageTurningView *)pageTurningView contentRectForPageAtIndex:(NSUInteger)index;
@@ -181,6 +203,8 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 @end
 
+
+#pragma mark -
 
 @protocol EucPageTurningViewDelegate <NSObject>
 
