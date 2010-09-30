@@ -34,6 +34,11 @@ typedef struct {
     GLuint texture;
 } EucPageTurningPageContentsInformation;
 
+typedef enum EucPageTurningViewZoomHandlingKind {
+    EucPageTurningViewZoomHandlingKindInnerScaling = 0,
+    EucPageTurningViewZoomHandlingKindZoom,
+} EucPageTurningViewZoomHandlingKind;
+
 #pragma mark -
 
 @interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate> {
@@ -83,6 +88,9 @@ typedef struct {
     UITouch *_pinchTouches[2];
     CGPoint _pinchStartPoints[2];
     
+    CATransform3D _zoomMatrix;
+    CATransform3D _pinchStartZoomMatrix;
+    
     BOOL _vibrated;
     
     id<EucPageTurningViewDelegate> _delegate;
@@ -91,6 +99,7 @@ typedef struct {
     
     BOOL _twoSidedPages;
     BOOL _fitTwoPages;
+    EucPageTurningViewZoomHandlingKind _zoomHandlingKind;
     
     EAGLContext *_textureUploadContext;
     EucPageTurningPageContentsInformation _pageContentsInformation[6];
@@ -144,6 +153,8 @@ typedef struct {
 @property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
 @property (nonatomic, assign) BOOL twoSidedPages;
 @property (nonatomic, assign) BOOL fitTwoPages;
+
+@property (nonatomic, assign) EucPageTurningViewZoomHandlingKind zoomHandlingKind;
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 

@@ -17,6 +17,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <tgmath.h>
 #import "THBaseEAGLView.h"
+#import "THGeometryUtils.h"
 #import "THEmbeddedResourceManager.h"
 
 #define FOV_ANGLE ((GLfloat)10.0f)
@@ -44,6 +45,7 @@
 
 @synthesize twoSidedPages = _twoSidedPages;
 @synthesize fitTwoPages = _fitTwoPages;
+@synthesize zoomHandlingKind = _zoomHandlingKind;
 
 @synthesize shininess = _shininess;
 
@@ -133,6 +135,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 {       
     //self.twoSidedPages = YES;
     //self.fitTwoPages = YES;
+    
+    self.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
+    
+    _zoomMatrix = CATransform3DIdentity;
     
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
@@ -954,8 +960,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                                             THVec3Make(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, -(_viewportLogicalSize.height * 0.5f) / tanf(FOV_ANGLE * ((float)M_PI / 360.0f))), 
                                             THVec3Make(_viewportLogicalSize.width * 0.5f, _viewportLogicalSize.height * 0.5f, 0.0f), 
                                             THVec3Make(0.0f, 1.0f, 0.0f));
-
-    glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
     
     CATransform3D normalMatrix = THCATransform3DTranspose(CATransform3DInvert(modelViewMatrix));
     glUniformMatrix4fv(glGetUniformLocation(_program, "uNormalMatrix"), sizeof(normalMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&normalMatrix);
@@ -990,6 +994,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // Perform zooming, and finally actually set the model view matrix.
+    modelViewMatrix = CATransform3DConcat(modelViewMatrix, _zoomMatrix);
+    glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);    
+    
     // Assign GL_TEXTUREs to our samplers (we'll bind the textures before use).    
     glUniform1i(glGetUniformLocation(_program, "sPaperTexture"), 0);
     glUniform1i(glGetUniformLocation(_program, "sContentsTexture"), 1);
@@ -1304,6 +1312,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _pinchStartPoints[0] = [_pinchTouches[0] locationInView:self];
             _pinchStartPoints[1] = [_pinchTouches[1] locationInView:self];
             
+            _pinchStartZoomMatrix = _zoomMatrix;
+            
             THLog(@"Pinch Began: %@, %@", NSStringFromCGPoint(_pinchStartPoints[0]), NSStringFromCGPoint(_pinchStartPoints[1]));
         }
         
@@ -1379,21 +1389,47 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _pinchUnderway = YES;
         }        
         
-        if([_viewDataSource respondsToSelector:@selector(pageTurningView:scaledViewForView:pinchStartedAt:pinchNowAt:currentScaledView:)]) {
-            CGPoint currentPinchPoints[2] = { [_pinchTouches[0] locationInView:self], [_pinchTouches[1] locationInView:self] };
-            UIView *scaledView = [_viewDataSource pageTurningView:self 
-                                                scaledViewForView:_pageContentsInformation[1].view 
-                                                   pinchStartedAt:_pinchStartPoints
-                                                       pinchNowAt:currentPinchPoints
-                                                currentScaledView:_pageContentsInformation[3].view];
-            if(scaledView && scaledView != _pageContentsInformation[3].view) {
-                [self _setView:scaledView forInternalPageOffsetPage:3];
-                _flatPageIndex = 3;
-                
-                //NSLog(@"Pinch %f -> %f, scalefactor %f", (float)startDistance,(float)nowDistance, (float)(nowDistance / startDistance));
-                
-                [self drawView];
+        CGPoint currentPinchPoints[2] = { [_pinchTouches[0] locationInView:self], [_pinchTouches[1] locationInView:self] };
+
+        if(_zoomHandlingKind == EucPageTurningViewZoomHandlingKindInnerScaling) {
+            if([_viewDataSource respondsToSelector:@selector(pageTurningView:scaledViewForView:pinchStartedAt:pinchNowAt:currentScaledView:)]) {
+                UIView *scaledView = [_viewDataSource pageTurningView:self 
+                                                    scaledViewForView:_pageContentsInformation[1].view 
+                                                       pinchStartedAt:_pinchStartPoints
+                                                           pinchNowAt:currentPinchPoints
+                                                    currentScaledView:_pageContentsInformation[3].view];
+                if(scaledView && scaledView != _pageContentsInformation[3].view) {
+                    [self _setView:scaledView forInternalPageOffsetPage:3];
+                    _flatPageIndex = 3;
+                    
+                    //NSLog(@"Pinch %f -> %f, scalefactor %f", (float)startDistance,(float)nowDistance, (float)(nowDistance / startDistance));
+                    
+                    [self drawView];
+                }
             }
+        } else {
+            CGFloat oldDistance = CGPointDistance(_pinchStartPoints[0], _pinchStartPoints[1]);
+            CGFloat newDistance = CGPointDistance(currentPinchPoints[0], currentPinchPoints[1]);
+            CGFloat zoom = newDistance / oldDistance;
+            _zoomMatrix = CATransform3DScale(_pinchStartZoomMatrix, zoom, zoom, 1.0f);
+            
+            /*
+            CGPoint oldCenter = CGPointMake(_pinchStartPoints[0].x + (_pinchStartPoints[0].x - _pinchStartPoints[1].x) * 0.5,
+                                            _pinchStartPoints[0].y + (_pinchStartPoints[0].y - _pinchStartPoints[1].y) * 0.5);
+            CGPoint newCenter = CGPointMake(currentPinchPoints[0].x + (currentPinchPoints[0].x - currentPinchPoints[1].x) * 0.5,
+                                            currentPinchPoints[0].y + (currentPinchPoints[0].y - currentPinchPoints[1].y) * 0.5);
+            
+            
+            _zoomMatrix = CATransform3DTranslate(_zoomMatrix, newCenter.x - oldCenter.x, newCenter.y - oldCenter.y, 0.0f);
+            */
+            
+            CGRect testRect = { { 0.0f, 0.0f }, { 1.0f, 1.0f } };
+            testRect = CGRectApplyAffineTransform(testRect, CATransform3DGetAffineTransform(_zoomMatrix));
+            if(testRect.size.width <= 1.0f) {
+                _zoomMatrix = CATransform3DIdentity;
+            }
+            
+            [self setNeedsDraw];
         }
     }
     
