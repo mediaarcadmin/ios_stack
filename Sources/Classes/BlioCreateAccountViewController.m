@@ -121,7 +121,7 @@
 	confirmPasswordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	confirmPasswordField.keyboardType = UIKeyboardTypeAlphabet;
 	confirmPasswordField.keyboardAppearance = UIKeyboardAppearanceDefault;
-	confirmPasswordField.returnKeyType = UIReturnKeyDone;
+	confirmPasswordField.returnKeyType = UIReturnKeyGo;
 	confirmPasswordField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	confirmPasswordField.autocorrectionType = UITextAutocorrectionTypeNo;
 	confirmPasswordField.placeholder = NSLocalizedString(@"Confirm Password",@"\"Confirm Password\" placeholder");

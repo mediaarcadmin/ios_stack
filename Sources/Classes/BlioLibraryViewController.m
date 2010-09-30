@@ -1117,13 +1117,34 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-	//    if (self.libraryLayout == kBlioLibraryLayoutList)
+    NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([indexPath row] >= bookCount) return NO;
+    }
 	return YES;
-	//    else
-	//        return NO;
 }
 - (BOOL)tableView:(UITableView *)tableview canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([indexPath row] >= bookCount) return NO;
+    }
 	return YES;	
+}
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
+	NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[proposedDestinationIndexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([proposedDestinationIndexPath row] >= bookCount) return [NSIndexPath indexPathForRow:bookCount-1 inSection:[proposedDestinationIndexPath section]];
+    }
+	return proposedDestinationIndexPath;		
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
@@ -1178,7 +1199,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
 	 }   
  }
-
 #pragma mark -
 #pragma mark Fetched Results Controller Delegate
 //- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
