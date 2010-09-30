@@ -907,6 +907,9 @@
 		C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
 		C9F47A0E1129BC7E00563348 /* downloadButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0A1129BC7E00563348 /* downloadButton.png */; };
 		C9F47A0F1129BC7E00563348 /* downloadButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */; };
+		C9F4812C1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
+		C9F4812D1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
+		C9F4812E1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
 		C9F748591140100100680E93 /* shadow-bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F748581140100100680E93 /* shadow-bottom.png */; };
 		C9F749431140261700680E93 /* shadow-right.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749401140261700680E93 /* shadow-right.png */; };
 		C9F749441140261700680E93 /* shadow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749411140261700680E93 /* shadow-left.png */; };
@@ -1675,6 +1678,8 @@
 		C9E5DBF8117C6F9900950BA0 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C9F47A0A1129BC7E00563348 /* downloadButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downloadButton.png; sourceTree = "<group>"; };
 		C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downloadButtonPressed.png; sourceTree = "<group>"; };
+		C9F4812A1252465900083923 /* BlioTextFlowBlockCombiner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowBlockCombiner.h; sourceTree = "<group>"; };
+		C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowBlockCombiner.m; sourceTree = "<group>"; };
 		C9F748581140100100680E93 /* shadow-bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow-bottom.png"; sourceTree = "<group>"; };
 		C9F749401140261700680E93 /* shadow-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow-right.png"; sourceTree = "<group>"; };
 		C9F749411140261700680E93 /* shadow-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow-left.png"; sourceTree = "<group>"; };
@@ -2654,6 +2659,8 @@
 				C9985D6E113EB0A2009E5263 /* BlioLayoutContentView.h */,
 				C9985D6F113EB0A2009E5263 /* BlioLayoutContentView.m */,
 				C9DA75B511E71FA500F584A1 /* BlioLayoutDataSource.h */,
+				C9F4812A1252465900083923 /* BlioTextFlowBlockCombiner.h */,
+				C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */,
 			);
 			name = LayoutView;
 			sourceTree = "<group>";
@@ -3653,6 +3660,7 @@
 				DCE78E3C123CB9960038970C /* BlioCreateAccountViewController.m in Sources */,
 				DCEB07751242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 				DC8CB3251249298400C1EED9 /* BlioRoundedRectActivityView.m in Sources */,
+				C9F4812E1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3768,6 +3776,7 @@
 				A3C66F2E1242A63700C61BDA /* BlioCreateAccountViewController.m in Sources */,
 				7DB7029F1248D38E00BC3272 /* NSArray+BlioAdditions.m in Sources */,
 				DC8CB3261249298400C1EED9 /* BlioRoundedRectActivityView.m in Sources */,
+				C9F4812C1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3882,6 +3891,7 @@
 				DCE78E3D123CB9960038970C /* BlioCreateAccountViewController.m in Sources */,
 				DCEB07761242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 				DC8CB3271249298400C1EED9 /* BlioRoundedRectActivityView.m in Sources */,
+				C9F4812D1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

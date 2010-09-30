@@ -17,6 +17,9 @@
 #import "BlioLayoutScrollView.h"
 #import "BlioLayoutContentView.h"
 #import "UIDevice+BlioAdditions.h"
+#import "BlioTextFlowBlockCombiner.h"
+
+#define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 
 @interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource> {
     NSData *data;
@@ -1771,26 +1774,39 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     NSInteger targetPage = [currentPageLayer pageNumber];
     NSInteger pageIndex = targetPage - 1;
-    if ([self.lastBlock pageIndex] != pageIndex) self.lastBlock = nil;
+    if ([self.lastBlock pageIndex] != pageIndex) {
+        self.lastBlock = nil;
+    }
     
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    BlioTextFlowBlockCombiner *blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
+    blockCombiner.verticalSpacing = [self cropForPage:targetPage].size.height * PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING;
+
     BlioTextFlowBlock *targetBlock = nil;
     
     // Work out targetBlock on the current page
     if (self.lastBlock) {
+        targetBlock = self.lastBlock;
         if (!reversed) {
-            targetBlock = [self.textFlow nextBlockForBlock:self.lastBlock 
-                                           includingFolioBlocks:NO
-                                                     onSamePage:YES];                
+            while (targetBlock == self.lastBlock) {
+                targetBlock = [self.textFlow nextBlockForBlock:targetBlock 
+                                          includingFolioBlocks:NO
+                                                    onSamePage:YES];
+                targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+            }
         } else {
-            targetBlock = [self.textFlow previousBlockForBlock:self.lastBlock 
-                                               includingFolioBlocks:NO
-                                                         onSamePage:YES];        
+            while (targetBlock == self.lastBlock) {
+                targetBlock = [self.textFlow previousBlockForBlock:targetBlock 
+                                              includingFolioBlocks:NO
+                                                        onSamePage:YES];  
+                targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+            }
         }
     } else {
         if (!reversed) {
-            NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
             if (pageBlocks.count > 0) {
                 targetBlock = [pageBlocks objectAtIndex:0];
+                targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
             }
         }
     }
@@ -1818,10 +1834,13 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             // Zoom to the last block on the previous page, if there are any
             // blocks on it, otherwise zoom to the page.
             NSInteger newPageIndex = pageIndex - 1;
-            NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:newPageIndex includingFolioBlocks:NO];
+            pageBlocks = [self.textFlow blocksForPageAtIndex:newPageIndex includingFolioBlocks:NO];
+            blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
+            blockCombiner.verticalSpacing = [self cropForPage:newPageIndex + 1].size.height * PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING;
             
             if (pageBlocks.count > 0) {
                 targetBlock = [pageBlocks lastObject];
+                targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
             } else {
                 // If the previous page has no blocks, zoom to page
                 [self zoomToPage:targetPage - 1];
@@ -1870,7 +1889,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     NSInteger pageIndex = targetPage - 1;
     
     self.scrollingAnimationInProgress = YES;
-    NSArray *blocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
 
     [self.scrollView setPagingEnabled:NO];
     [self.scrollView setBounces:NO];
@@ -1878,11 +1897,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     BlioTextFlowBlock *targetBlock = nil;
     CGAffineTransform viewTransform = [self blockTransformForPage:targetPage];
     
-    NSUInteger count = [blocks count];
+    NSUInteger count = [pageBlocks count];
     
     if (count > 0) { 
         for (NSUInteger index = 0; index < count; index++) {
-            BlioTextFlowBlock *block = [blocks objectAtIndex:index];
+            BlioTextFlowBlock *block = [pageBlocks objectAtIndex:index];
             CGRect blockRect = [block rect];
             CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
             if (CGRectContainsPoint(pageRect, pointInTargetPage)) {
@@ -1941,9 +1960,18 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock context:(void *)context {
-    NSInteger targetPageNumber = [targetBlock pageIndex] + 1;
+    
+    NSInteger pageIndex = [targetBlock pageIndex];
+    
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    BlioTextFlowBlockCombiner *blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
+    blockCombiner.verticalSpacing = [self cropForPage:pageIndex + 1].size.height * PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING;
+
+    CGRect combinedBlockRect = [blockCombiner combinedRectForBlock:targetBlock];
+
+    NSInteger targetPageNumber = pageIndex + 1;
     CGFloat zoomScale;
-    CGPoint newContentOffset = [self contentOffsetToFitRect:[targetBlock rect] onPage:targetPageNumber zoomScale:&zoomScale];
+    CGPoint newContentOffset = [self contentOffsetToFitRect:combinedBlockRect onPage:targetPageNumber zoomScale:&zoomScale];
     newContentOffset = CGPointMake(roundf(newContentOffset.x), roundf(newContentOffset.y));
     CGPoint currentContentOffset = [self.scrollView contentOffset];
     
