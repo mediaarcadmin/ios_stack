@@ -878,8 +878,16 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         minSize.height *= scaleFactor;
     }
     NSUInteger rightPageIndex = newPageIndex;
-    if(_twoSidedPages && _oddPagesOnLeft && (rightPageIndex % 2) == 1) {
-        rightPageIndex++;
+    if(_twoSidedPages) {
+        if(_oddPagesOnLeft) {
+            if((rightPageIndex % 2) == 0) {
+                rightPageIndex++;
+            }
+        } else {
+            if((rightPageIndex % 2) == 1) {
+                rightPageIndex++;
+            }            
+        }
     }
     if(rightPageIndex != _pageContentsInformation[3].pageIndex) {
         if(_twoSidedPages) {
@@ -931,8 +939,16 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         BOOL forwards = newPageIndex > _pageContentsInformation[3].pageIndex;
         
         NSUInteger rightPageIndex = newPageIndex;
-        if(_twoSidedPages && _oddPagesOnLeft && (rightPageIndex % 2) == 1) {
-            rightPageIndex++;
+        if(_twoSidedPages) {
+            if(_oddPagesOnLeft) {
+                if((rightPageIndex % 2) == 0) {
+                    rightPageIndex++;
+                }
+            } else {
+                if((rightPageIndex % 2) == 1) {
+                    rightPageIndex++;
+                }            
+            }
         }
         
         [self _setupBitmapPage:rightPageIndex forInternalPageOffset:forwards ? 5 : 1];
@@ -2034,9 +2050,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     
     CGFloat pageOriginX = _rightPageRect.origin.x;
     THVec3 pageTouchPoint = _pageTouchPoint;
-    
-    NSLog(@"%f", pageTouchPoint.x);
-    
+        
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
     int j;
     for(j=0; j < NUM_ITERATIONS; ++j) {              
