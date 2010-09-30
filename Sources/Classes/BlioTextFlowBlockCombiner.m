@@ -58,6 +58,18 @@
     return lastBlock;
 }
 
+- (BlioTextFlowBlock *)firstCombinedBlockForBlock:(BlioTextFlowBlock *)block {
+    BlioTextFlowBlock *firstBlock = nil;
+    
+    for (BlioTextFlowCombinedBlock *combinedBlock in self.combinedBlocks) {
+        if ([combinedBlock containsTextFlowBlock:block]) {
+            firstBlock = [combinedBlock.blocks objectAtIndex:0];
+            break;
+        }
+    }
+    return firstBlock;
+}
+
 - (CGRect)combinedRectForBlock:(BlioTextFlowBlock *)block {
     CGRect combinedRect = CGRectNull;
     
@@ -79,12 +91,15 @@
             BOOL intersection = NO;
             
             for (BlioTextFlowCombinedBlock *combinedBlock in combinedBlocks) {
-                CGRect combinedRect = [combinedBlock rect];
-                CGRect blockRect = CGRectInset([block rect], -horizontalSpacing, -verticalSpacing);
-                if (CGRectIntersectsRect(combinedRect, blockRect)) {
-                    intersection = YES;
-                    [combinedBlock.blocks addObject:block];
-                    break;
+                BlioTextFlowBlock *lastBlock = [combinedBlock.blocks lastObject];
+                if (block.blockIndex == (lastBlock.blockIndex + 1)) {
+                    CGRect combinedRect = [combinedBlock rect];
+                    CGRect blockRect = CGRectInset([block rect], -horizontalSpacing, -verticalSpacing);
+                    if (CGRectIntersectsRect(combinedRect, blockRect)) {
+                        intersection = YES;
+                        [combinedBlock.blocks addObject:block];
+                        break;
+                    }
                 }
             }
             

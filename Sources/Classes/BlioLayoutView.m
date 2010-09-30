@@ -91,10 +91,10 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 - (void)setLayoutMode:(BlioLayoutPageMode)newLayoutMode animated:(BOOL)animated;
 - (CGPoint)contentOffsetToCenterPage:(NSInteger)aPageNumber zoomScale:(CGFloat)zoomScale;
 - (CGPoint)contentOffsetToFillPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale;
-- (CGPoint)contentOffsetToFitRect:(CGRect)rect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale;
+- (CGPoint)contentOffsetToFitRect:(CGRect)rect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale reversed:(BOOL)reversed;
 
 - (void)zoomToNextBlockReversed:(BOOL)reversed;
-- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect context:(void *)context;
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context;
 - (void)zoomToPage:(NSInteger)targetPageNumber;
 - (void)zoomOut;
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point;
@@ -619,12 +619,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return visiblePageRect;
 }
 
-- (CGPoint)contentOffsetToFitRect:(CGRect)aRect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)scale {
+- (CGPoint)contentOffsetToFitRect:(CGRect)aRect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)scale reversed:(BOOL)reversed {
     CGAffineTransform blockTransform = [self blockTransformForPage:aPageNumber];
     CGRect targetRect = CGRectApplyAffineTransform(aRect, blockTransform);
     CGRect viewBounds = self.contentView.bounds;
     CGFloat zoomScale = CGRectGetWidth(viewBounds) / CGRectGetWidth(targetRect);
     targetRect = CGRectInset(targetRect, -kBlioPDFBlockInsetX / zoomScale, -kBlioPDFBlockInsetY / zoomScale);
+    //targetRect = CGRectInset(targetRect, -kBlioPDFBlockInsetX / zoomScale, 0);
+
     targetRect = [self fitRectToContentView:targetRect];
 
     // Clamp the page crop to the bottom of the layout view
@@ -639,18 +641,29 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     CGAffineTransform boundsTransform = [self boundsTransformForPage:aPageNumber cropRect:&cropRect allowEstimate:YES];
     CGRect pageRect = CGRectApplyAffineTransform(cropRect, boundsTransform);
     
-    CGFloat contentOffsetY = round(targetRect.origin.y * zoomScale);
+    CGFloat contentOffsetY;
+    CGFloat heightOfScrollView = CGRectGetHeight(self.bounds);
+    
+    if (!reversed) {
+        contentOffsetY = round(CGRectGetMinY(targetRect) * zoomScale);
+    } else {
+        contentOffsetY = round(CGRectGetMaxY(targetRect) * zoomScale - heightOfScrollView);
+    }
     // maxContentOffsetYToClampPage = A - B - C
     // Where A = scaled content view height
     //       B = height of layout view
     //       C = scaled inset of page crop
     CGFloat scaledContentViewHeight = CGRectGetHeight(viewBounds) * zoomScale;
-    CGFloat heightOfScrollView = CGRectGetHeight(self.bounds);
     CGFloat scaledInsetOfPageCrop = CGRectGetMinY(pageRect) * zoomScale;
     CGFloat maxContentOffsetYToClampPage = scaledContentViewHeight - heightOfScrollView - scaledInsetOfPageCrop;
+    CGFloat minContentOffsetYToClampPage = scaledInsetOfPageCrop;
     
     if (contentOffsetY > maxContentOffsetYToClampPage) {
         contentOffsetY = maxContentOffsetYToClampPage;
+    }
+    
+    if (contentOffsetY < minContentOffsetYToClampPage) {
+        contentOffsetY = minContentOffsetYToClampPage;
     }
 
     return CGPointMake(contentOffsetX, contentOffsetY);
@@ -1872,7 +1885,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             matchLastBlock = YES;
         }
         
-        for (BlioTextFlowBlock *block in pageBlocks) {
+        NSEnumerator *blockEnumerator;
+        if (!reversed) {
+            blockEnumerator = [pageBlocks objectEnumerator];
+        } else {
+            blockEnumerator = [pageBlocks reverseObjectEnumerator];
+        }
+
+        for (BlioTextFlowBlock *block in blockEnumerator) {
             if (matchLastBlock && !lastBlockMatched) {
                 if ([block compare:currentBlock] == NSOrderedSame) {
                     lastBlockMatched = YES;
@@ -1931,7 +1951,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                     targetBlock = [self.textFlow previousBlockForBlock:targetBlock 
                                               includingFolioBlocks:NO
                                                         onSamePage:YES];  
-                    targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+                    targetBlock = [blockCombiner firstCombinedBlockForBlock:targetBlock];
                 }
             }
         }
@@ -1947,6 +1967,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     // Work out targetBlock on an adjacent page 
     if (nil == targetBlock) {
+        // Don't use visibleRect because it is no longer relevalnt
+        useVisibleRect = NO;
+
         if (!reversed) {
             if (pageIndex >= ([self pageCount] - 1)) {
                 // If we are already at the last page, zoom to page
@@ -1990,9 +2013,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
         [zoomToNextBlockInv setSelector:@selector(zoomToNextBlockReversed:)];
         [zoomToNextBlockInv setArgument:&reversed atIndex:2];
         if (useVisibleRect) {
-            [self zoomToBlock:targetBlock visibleRect:visibleRect context:zoomToNextBlockInv];
+            [self zoomToBlock:targetBlock visibleRect:visibleRect reversed:reversed context:zoomToNextBlockInv];
         } else {
-            [self zoomToBlock:targetBlock visibleRect:CGRectNull context:zoomToNextBlockInv];
+            [self zoomToBlock:targetBlock visibleRect:CGRectNull reversed:reversed context:zoomToNextBlockInv];
         }
     }
 }
@@ -2050,7 +2073,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     if (nil != targetBlock) {
-        [self zoomToBlock:targetBlock visibleRect:CGRectNull context:nil];
+        self.lastBlock = targetBlock;
+        [self zoomToBlock:targetBlock visibleRect:CGRectNull reversed:NO context:nil];
     } else if (self.scrollView.zoomScale > 1) {
         [self zoomOut];
     } else {
@@ -2095,7 +2119,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
 }
 
-- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect context:(void *)context {
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context {
     
     NSInteger pageIndex = [targetBlock pageIndex];
     
@@ -2111,16 +2135,23 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     if ([self blockRect:combined isPartiallyVisibleInRect:visibleRect]) {
         CGRect intersection = CGRectIntersection(visibleRect, combined);
         if (!CGRectIsNull(intersection)) {
-            nonVisibleBlockRect.origin.x = CGRectGetMinX(combined);
-            nonVisibleBlockRect.origin.y = MAX(CGRectGetMinY(combined), CGRectGetMaxY(intersection));
-            nonVisibleBlockRect.size.width = CGRectGetWidth(combined);
-            nonVisibleBlockRect.size.height = CGRectGetMaxY(combined) - nonVisibleBlockRect.origin.y;
+            if (!reversed) {
+                nonVisibleBlockRect.origin.x = CGRectGetMinX(combined);
+                nonVisibleBlockRect.origin.y = MAX(CGRectGetMinY(combined), CGRectGetMaxY(intersection));
+                nonVisibleBlockRect.size.width = CGRectGetWidth(combined);
+                nonVisibleBlockRect.size.height = CGRectGetMaxY(combined) - nonVisibleBlockRect.origin.y;
+            } else {
+                nonVisibleBlockRect.origin.x = CGRectGetMinX(combined);
+                nonVisibleBlockRect.origin.y = MIN(CGRectGetMinY(combined), CGRectGetMinY(intersection));
+                nonVisibleBlockRect.size.width = CGRectGetWidth(combined);
+                nonVisibleBlockRect.size.height = MIN(CGRectGetMaxY(combined), CGRectGetMinY(intersection)) - nonVisibleBlockRect.origin.y;
+            }
         }
     }
     
     NSInteger targetPageNumber = pageIndex + 1;
     CGFloat zoomScale;
-    CGPoint newContentOffset = [self contentOffsetToFitRect:nonVisibleBlockRect onPage:targetPageNumber zoomScale:&zoomScale];
+    CGPoint newContentOffset = [self contentOffsetToFitRect:nonVisibleBlockRect onPage:targetPageNumber zoomScale:&zoomScale reversed:reversed];
     newContentOffset = CGPointMake(roundf(newContentOffset.x), roundf(newContentOffset.y));
     CGPoint currentContentOffset = [self.scrollView contentOffset];
     

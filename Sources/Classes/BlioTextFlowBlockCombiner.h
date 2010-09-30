@@ -23,6 +23,7 @@
 @property (nonatomic, assign) CGFloat horizontalSpacing;
 
 - (id)initWithTextFlowBlocks:(NSArray *)theBlocks;
+- (BlioTextFlowBlock *)firstCombinedBlockForBlock:(BlioTextFlowBlock *)block;
 - (BlioTextFlowBlock *)lastCombinedBlockForBlock:(BlioTextFlowBlock *)block;
 - (CGRect)combinedRectForBlock:(BlioTextFlowBlock *)block;
 
