@@ -124,13 +124,7 @@
             [aPDFDataSource release];
         }
         
-        EucPageTurningView *aPageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
-        aPageTurningView.delegate = self;
-        aPageTurningView.bitmapDataSource = self;
-        aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [self addSubview:aPageTurningView];
-        self.pageTurningView = aPageTurningView;
-        [aPageTurningView release];
+
         
         pageCount = [self.dataSource pageCount];
         // Cache the first page crop to allow fast estimating of crops
@@ -145,7 +139,6 @@
         if (page > self.pageCount) page = self.pageCount;
         self.pageNumber = page;
         
-        self.pageTurningView.currentPageIndex = self.pageNumber - 1;
     }
 
     return self;
@@ -157,6 +150,25 @@
         [self.selector removeObserver:self forKeyPath:@"tracking"];
         [self.selector detatch];
         self.selector = nil;
+    }
+    if(newSuperview && !self.superview) {
+        EucPageTurningView *aPageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
+        aPageTurningView.delegate = self;
+        aPageTurningView.bitmapDataSource = self;
+        aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
+        [self addSubview:aPageTurningView];
+        self.pageTurningView = aPageTurningView;
+        [aPageTurningView release];
+        
+        [aPageTurningView addObserver:self forKeyPath:@"leftPageFrame" options:0 context:NULL];
+        [aPageTurningView addObserver:self forKeyPath:@"rightPageFrame" options:0 context:NULL];        
+        
+        self.pageTurningView.currentPageIndex = self.pageNumber - 1;
+    } else if (!newSuperview) {
+        EucPageTurningView *aPageTurningView = self.pageTurningView;
+        [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
+        [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];        
     }
 }
 
@@ -178,8 +190,10 @@
     CGRect myBounds = self.bounds;
     if(myBounds.size.width > myBounds.size.height) {
         self.pageTurningView.fitTwoPages = YES;
+        self.pageTurningView.twoSidedPages = YES;
     } else {
         self.pageTurningView.fitTwoPages = NO;
+        self.pageTurningView.twoSidedPages = NO;
     }    
     [super layoutSubviews];
     CGSize newSize = self.bounds.size;
@@ -201,10 +215,12 @@
 - (CGContextRef)pageTurningView:(EucPageTurningView *)aPageTurningView 
 RGBABitmapContextForPageAtIndex:(NSUInteger)index
                        fromRect:(CGRect)rect 
-                        minSize:(CGSize)size {
+                        minSize:(CGSize)size 
+                     getContext:(id *)context {
     return [self.dataSource RGBABitmapContextForPage:index + 1
                                             fromRect:rect 
-                                             minSize:size];
+                                             minSize:size
+                                          getContext:context];
 }
 
 #pragma mark -
@@ -548,6 +564,14 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     if(object == self.selector &&
        [keyPath isEqualToString:@"tracking"]) {
         self.pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
+    } else if(object == self.pageTurningView) {
+        if([keyPath isEqualToString:@"leftPageFrame"]) {
+            CGRect frame = ((EucPageTurningView *)object).leftPageFrame;
+            NSLog(@"Left page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+        } else if([keyPath isEqualToString:@"rightPageFrame"]) {
+            CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
+            NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+        }
     }
 }
 

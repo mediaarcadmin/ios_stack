@@ -26,6 +26,7 @@
 @optional
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect
-                                 minSize:(CGSize)size;
+                                 minSize:(CGSize)size
+                              getContext:(id *)context;
 
 @end

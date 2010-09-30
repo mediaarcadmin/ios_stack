@@ -17,17 +17,15 @@ uniform mat4 uNormalMatrix;
 uniform Light uLight;
 uniform Material uMaterial;
 
+uniform bool uFlipContentsX;
+
 attribute highp vec2 aTextureCoordinate;
 attribute highp vec4 aPosition;
 attribute vec4 aNormal;
 
 varying lowp vec4 vColor;
-varying highp vec2 vTextureCoordinate;
-
-uniform lowp float uBackContentsBleed;
-
-varying lowp float vBackContentsBleed;
-varying lowp float vBackContentsBleedAddition;
+varying highp vec2 vPaperCoordinate;
+varying highp vec2 vContentsCoordinate;
 
 const float cFZero = 0.0;
 const float cFOne = 1.0;
@@ -51,15 +49,12 @@ vec4 lightingEquation(in vec3 vertexPosition, in vec3 normal)
     
     // Specular.
     vec3 halfVector = normalize(lightDirection + vec3(cFZero, cFZero, cFOne));
-    float normalDotHalf =  dot(normal, halfVector);
-    if(normalDotHalf > cFZero) {
-        buildColor += pow(normalDotHalf, uMaterial.shininess) * uMaterial.specularColor;
-    }
+    float normalDotHalf = min(dot(normal, halfVector), cFZero);
+    buildColor += pow(normalDotHalf, uMaterial.shininess) * uMaterial.specularColor;
     
     // Calculate attenuation using vector math to do all components together.
     vec2 attenuationMultiples = vec2(cFOne, lightDistance);
-    float attenuationFactor = cFOne / dot(attenuationMultiples, uLight.attenuationFactors);
-    buildColor *= attenuationFactor;
+    buildColor /= dot(attenuationMultiples, uLight.attenuationFactors);
     
     return clamp(buildColor, cFZero, cFOne);
 }
@@ -68,19 +63,12 @@ void main()
 {
     vec4 projectedPosition = uModelviewMatrix * aPosition;
     vec4 projectedNormal = uNormalMatrix * aNormal;
-    
-    if(projectedNormal.z <= cFZero) {
-        vBackContentsBleed = uBackContentsBleed;
-        vBackContentsBleedAddition = cFOne - uBackContentsBleed;
-    } else {
-        vBackContentsBleed = cFOne;
-        vBackContentsBleedAddition = cFZero;
-    }
-    
+        
     vColor = lightingEquation(projectedPosition.xyz / projectedPosition.w, 
                               normalize(projectedNormal.xyz / projectedNormal.w));
     
-    vTextureCoordinate = aTextureCoordinate;
+    vPaperCoordinate = aTextureCoordinate;
+    vContentsCoordinate = vec2(abs(float(uFlipContentsX) - aTextureCoordinate.x), aTextureCoordinate.y);
         
     gl_Position = uProjectionMatrix * projectedPosition;
 }

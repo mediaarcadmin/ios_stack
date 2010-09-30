@@ -47,6 +47,16 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     CGSize _viewportLogicalSize;
     CGSize _pageLogicalSize;
     CGFloat _pageAspectRatio;
+        
+    CGAffineTransform _viewportToBoundsPointsTransform;
+
+    
+    CATransform3D _rightPageTransform;
+    CGRect _rightPageRect;
+    CGRect _leftPageRect;
+    
+    CGRect _leftPageFrame;
+    CGRect _rightPageFrame;
     
     THVec3 _stablePageVertices[Y_VERTEX_COUNT][X_VERTEX_COUNT];
     THVec3 _stablePageVertexNormals[Y_VERTEX_COUNT][X_VERTEX_COUNT];
@@ -72,8 +82,6 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     GLuint _bookEdgeTexture;
     THVec2 _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
-    CATransform3D _rightPageTransform;
-    CGRect _rightPageRect;
     
     UITouch *_touch;
     NSTimeInterval _touchBeganTime;
@@ -97,14 +105,16 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     id<EucPageTurningViewViewDataSource> _viewDataSource;
     id<EucPageTurningViewBitmapDataSource> _bitmapDataSource;
     
+    BOOL _oddPagesOnLeft;
     BOOL _twoSidedPages;
     BOOL _fitTwoPages;
+    BOOL _leftPageVisible;
     EucPageTurningViewZoomHandlingKind _zoomHandlingKind;
     
     EAGLContext *_textureUploadContext;
-    EucPageTurningPageContentsInformation _pageContentsInformation[6];
+    EucPageTurningPageContentsInformation _pageContentsInformation[7];
     
-    NSInteger _flatPageIndex;
+    NSInteger _rightFlatPageIndex;
     BOOL _viewsNeedRecache;
     BOOL _recacheFlags[5];
     
@@ -151,8 +161,15 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 
 @property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
+
+// After changing these, ensure -layoutSubviews is called for consistent behaviour. 
 @property (nonatomic, assign) BOOL twoSidedPages;
 @property (nonatomic, assign) BOOL fitTwoPages;
+@property (nonatomic, assign) BOOL oddPagesOnLeft;
+
+@property (nonatomic, assign, readonly) CGRect leftPageFrame;
+@property (nonatomic, assign, readonly) CGRect rightPageFrame;
+
 
 @property (nonatomic, assign) EucPageTurningViewZoomHandlingKind zoomHandlingKind;
 
@@ -162,7 +179,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 @property (nonatomic, retain) UIView *currentPageView;
 @property (nonatomic, readonly) NSArray *pageViews;
-- (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount;
+- (void)turnToPageView:(UIView *)newCurrentView forwards:(BOOL)forwards pageCount:(NSUInteger)pageCount onLeft:(BOOL)onLeft;
 - (void)refreshView:(UIView *)view;
 
 
@@ -206,11 +223,28 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 @protocol EucPageTurningViewBitmapDataSource <NSObject>
 
+@required
 - (CGRect)pageTurningView:(EucPageTurningView *)pageTurningView contentRectForPageAtIndex:(NSUInteger)index;
+
+@optional
 - (CGContextRef)pageTurningView:(EucPageTurningView *)pageTurningView 
 RGBABitmapContextForPageAtIndex:(NSUInteger)index
                        fromRect:(CGRect)rect
                         minSize:(CGSize)rect;
+
+// 'context' is an optional object that will be kept alive alongside the
+// CGContextRef.  
+// This callback was created because before iOS 4 there was no way to specify
+// how to free bitmap data that a context had been created 'around'. 
+// (CGBitmapContextCreateWithData is new in iOS 4).
+// After libEucalyptus supports only iOS 4+, this callback
+// will be removed and the regular RGBABitmapContextForPageAtIndex: callback
+// made required rather than optional.
+- (CGContextRef)pageTurningView:(EucPageTurningView *)pageTurningView 
+RGBABitmapContextForPageAtIndex:(NSUInteger)index
+                       fromRect:(CGRect)rect
+                        minSize:(CGSize)rect
+                     getContext:(id *)context;
 
 @end
 

@@ -330,8 +330,8 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect
-                                 minSize:(CGSize)size {
-    
+                                 minSize:(CGSize)size 
+                              getContext:(id *)context {
     [renderingLock lock];
     memset(&properties,0,sizeof(properties));
     XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
@@ -373,10 +373,11 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         bitmapContext = CGBitmapContextCreate(imageInfo->pBits, width, height, 8, imageInfo->rowStride, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
         BlioXPSBitmapReleaseCallback *releaseCallback = [[BlioXPSBitmapReleaseCallback alloc] init];
         releaseCallback.data = imageInfo->pBits;
-                
-        objc_setAssociatedObject((id)bitmapContext, @"XPSBitmapReleaseCallback", releaseCallback, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        [releaseCallback release];
         
+        *context = [releaseCallback autorelease];
+        
+        //NSLog(@"Create: %p", imageInfo->pBits);
+                
         CGColorSpaceRelease(colorSpace);
     }
     [renderingLock unlock];
@@ -823,6 +824,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 
 - (void)dealloc {
     if (self.data) {
+        //NSLog(@"Release: %p", self.data);
         XPS_ReleaseImageMemory(self.data);
     }
     [super dealloc];

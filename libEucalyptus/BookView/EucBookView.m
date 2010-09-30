@@ -393,7 +393,7 @@
             if(count < 0) {
                 count = -count;
             }
-            [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count];
+            [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count onLeft:NO];
         } else {
             _pageTurningView.currentPageView = newPageView;
             [_pageTurningView setNeedsDraw];
