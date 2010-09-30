@@ -910,6 +910,8 @@
 		C9F4812C1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
 		C9F4812D1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
 		C9F4812E1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
+		C9F484BC1254913500083923 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
+		C9F484BD1254913600083923 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
 		C9F748591140100100680E93 /* shadow-bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F748581140100100680E93 /* shadow-bottom.png */; };
 		C9F749431140261700680E93 /* shadow-right.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749401140261700680E93 /* shadow-right.png */; };
 		C9F749441140261700680E93 /* shadow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749411140261700680E93 /* shadow-left.png */; };
@@ -2314,6 +2316,8 @@
 				7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */,
 				7DBD0F731201977D009CD9DA /* BlioTextFlowXAMLTreeNode.h */,
 				7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */,
+				C9F4812A1252465900083923 /* BlioTextFlowBlockCombiner.h */,
+				C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */,
 			);
 			name = TextFlow;
 			sourceTree = "<group>";
@@ -2659,8 +2663,6 @@
 				C9985D6E113EB0A2009E5263 /* BlioLayoutContentView.h */,
 				C9985D6F113EB0A2009E5263 /* BlioLayoutContentView.m */,
 				C9DA75B511E71FA500F584A1 /* BlioLayoutDataSource.h */,
-				C9F4812A1252465900083923 /* BlioTextFlowBlockCombiner.h */,
-				C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */,
 			);
 			name = LayoutView;
 			sourceTree = "<group>";
@@ -3661,6 +3663,7 @@
 				DCEB07751242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 				DC8CB3251249298400C1EED9 /* BlioRoundedRectActivityView.m in Sources */,
 				C9F4812E1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */,
+				C9F484BD1254913600083923 /* NSArray+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3892,6 +3895,7 @@
 				DCEB07761242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 				DC8CB3271249298400C1EED9 /* BlioRoundedRectActivityView.m in Sources */,
 				C9F4812D1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */,
+				C9F484BC1254913500083923 /* NSArray+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

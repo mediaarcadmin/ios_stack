@@ -74,12 +74,12 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 
 @property (nonatomic) NSInteger pageNumber;
 @property (nonatomic) CGFloat lastZoomScale;
-@property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) UIImage *pageSnapshot;
 @property (nonatomic, retain) UIImage *highlightsSnapshot;
 @property (nonatomic, retain) NSMutableArray *accessibilityElements;
 @property (nonatomic, retain) BlioTimeOrderedCache *accessibilityCache;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
+@property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated shouldZoomOut:(BOOL)zoomOut targetZoomScale:(CGFloat)targetZoom targetContentOffset:(CGPoint)targetOffset;
 
@@ -94,7 +94,7 @@ static const CGFloat kBlioLayoutViewAccessibilityOffset = 0.1f;
 - (CGPoint)contentOffsetToFitRect:(CGRect)rect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)zoomScale;
 
 - (void)zoomToNextBlockReversed:(BOOL)reversed;
-- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock context:(void *)context;
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect context:(void *)context;
 - (void)zoomToPage:(NSInteger)targetPageNumber;
 - (void)zoomOut;
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point;
@@ -146,9 +146,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 @synthesize bookID, textFlow, scrollView, containerView, contentView, currentPageLayer, scrollingAnimationInProgress, pageNumber, pageCount, selector;
 @synthesize lastZoomScale;
 @synthesize pageCropsCache, viewTransformsCache, checkerBoard, shadowBottom, shadowTop, shadowLeft, shadowRight;
-@synthesize lastBlock, pageSnapshot, highlightsSnapshot;
+@synthesize pageSnapshot, highlightsSnapshot;
 @synthesize accessibilityElements, accessibilityCache;
 @synthesize dataSource;
+@synthesize lastBlock;
 
 - (void)dealloc {
     //NSLog(@"*************** dealloc called for layoutview");
@@ -172,9 +173,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     self.pageSnapshot = nil;
     self.highlightsSnapshot = nil;
     self.shadowRight = nil;
-    
     self.lastBlock = nil;
-    
+        
     [self.selector detatch];
     self.selector = nil;
     
@@ -441,7 +441,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.selector setSelectedRange:nil];
 
     self.scrollingAnimationInProgress = YES;
-    self.lastBlock = nil;
     cachedViewTransformPage = -1;
     
     BlioLayoutPageMode newLayoutMode;
@@ -463,6 +462,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     // Force the selector to reattach
     [self.selector attachToLayer:self.currentPageLayer];
     [self clearSnapshots];
+    self.lastBlock = nil;
     
     //[self displayHighlightsForLayer:self.currentPageLayer excluding:nil];
     
@@ -609,6 +609,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
 
     return CGPointMake(contentOffsetX, contentOffsetY);
+}
+
+- (CGRect)visibleRectForPageLayer:(BlioLayoutPageLayer *)pageLayer {
+    CGAffineTransform blockTransform = [self blockTransformForPage:pageLayer.pageNumber];
+    CGRect visibleLayerRect = [pageLayer convertRect:self.window.layer.frame fromLayer:self.window.layer];
+    visibleLayerRect = CGRectInset(visibleLayerRect, -1, -1); // Accommodate rounding errors when zooming to page
+    CGRect visiblePageRect = CGRectApplyAffineTransform(visibleLayerRect, CGAffineTransformInvert(blockTransform));
+    return visiblePageRect;
 }
 
 - (CGPoint)contentOffsetToFitRect:(CGRect)aRect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)scale {
@@ -1688,6 +1696,7 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
     if (self.scrollingAnimationInProgress) return;
 
+    self.lastBlock = nil;
     NSInteger currentPageNumber;
     
     if (sender.zoomScale != lastZoomScale) {
@@ -1718,7 +1727,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
             }
             self.pageNumber = currentPageNumber;
             self.currentPageLayer = aLayer;
-            self.lastBlock = nil;
         
         if ([self.delegate respondsToSelector:@selector(toolbarsVisible)] && [self.delegate toolbarsVisible]) {
             UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
@@ -1756,50 +1764,175 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 #pragma mark -
 #pragma mark Zoom Interactions
 
+- (CGFloat)verticalSpacingForPage:(NSInteger)page {
+    return [self cropForPage:page].size.height * PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING;
+}
+
+- (BOOL)blockRect:(CGRect)blockRect isFullyVisibleInRect:(CGRect)visibleRect {
+    CGRect intersection = CGRectIntersection(blockRect, visibleRect);
+    if (CGRectEqualToRect(intersection, blockRect)) {
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)blockRect:(CGRect)blockRect isPartiallyVisibleInRect:(CGRect)visibleRect {
+    if ((CGRectGetMinX(blockRect) >= CGRectGetMinX(visibleRect)) && (CGRectGetMaxX(blockRect) <= CGRectGetMaxX(visibleRect))) {
+        CGRect intersection = CGRectIntersection(blockRect, visibleRect);
+        if (!CGRectIsNull(intersection)) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (BOOL)blockRect:(CGRect)blockRect isTopVisibleInRect:(CGRect)visibleRect {
+    if ([self blockRect:blockRect isPartiallyVisibleInRect:visibleRect]) {
+        if ((CGRectGetMinY(blockRect) >= CGRectGetMinY(visibleRect)) && (CGRectGetMinY(blockRect) <= CGRectGetMaxY(visibleRect))) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (BOOL)blockRect:(CGRect)blockRect isBottomVisibleInRect:(CGRect)visibleRect {
+    if ([self blockRect:blockRect isPartiallyVisibleInRect:visibleRect]) {
+        if ((CGRectGetMaxY(blockRect) <= CGRectGetMaxY(visibleRect)) && (CGRectGetMaxY(blockRect) >= CGRectGetMinY(visibleRect))) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (BOOL)fullPageWidthForPage:(NSInteger)page isVisibleInRect:(CGRect)visibleRect {
+    CGRect screenCrop = [self cropForPage:page];
+    CGAffineTransform blockTransform = [self blockTransformForPage:page];
+    CGRect pageCrop = CGRectApplyAffineTransform(screenCrop, CGAffineTransformInvert(blockTransform));
+    
+    return [self blockRect:pageCrop isPartiallyVisibleInRect:visibleRect];    
+}
+
 - (void)zoomToPreviousBlock {
+    blockRecursionDepth = 0;
     [self zoomToNextBlockReversed:YES];
 }
 
 - (void)zoomToNextBlock {
+    blockRecursionDepth = 0;
     [self zoomToNextBlockReversed:NO];
 }
 
 - (void)zoomToNextBlockReversed:(BOOL)reversed {
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         
     if (nil == self.currentPageLayer) {
-        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         return;
     }
     
+    blockRecursionDepth++;
+    if (blockRecursionDepth > 100) {
+        NSLog(@"Warning: block recursion reached a depth of 100 on page %d. Bailing out.", [currentPageLayer pageNumber]);
+        [self zoomOut];
+        return;
+    }
+    
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    
     NSInteger targetPage = [currentPageLayer pageNumber];
     NSInteger pageIndex = targetPage - 1;
+    
     if ([self.lastBlock pageIndex] != pageIndex) {
         self.lastBlock = nil;
     }
     
     NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     BlioTextFlowBlockCombiner *blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
-    blockCombiner.verticalSpacing = [self cropForPage:targetPage].size.height * PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING;
+    blockCombiner.verticalSpacing = [self verticalSpacingForPage:targetPage];
 
     BlioTextFlowBlock *targetBlock = nil;
+    BlioTextFlowBlock *currentBlock = nil;
     
-    // Work out targetBlock on the current page
-    if (self.lastBlock) {
-        targetBlock = self.lastBlock;
+    // Work out what parts of the page are visible
+    CGRect visibleRect = [self visibleRectForPageLayer:currentPageLayer];
+    BOOL fullPageWidthVisible = [self fullPageWidthForPage:targetPage isVisibleInRect:visibleRect];
+    BOOL useVisibleRect = !(fullPageWidthVisible && (nil == self.lastBlock));
+    
+    if (useVisibleRect) {
+        // Find first textFlow block that is partially visible. Loop past any textFlow
+        // blocks that are fully visible. If we hit a non-visible block exit. If we hit a 
+        // another partially visible block make it the target block only if the last block was fully visible
+        
+        BOOL partiallyVisibleBlockFound = NO;
+        BOOL lastBlockWasFullyVisible = NO;
+        BOOL matchLastBlock = NO;
+        BOOL lastBlockMatched = NO;
+        
+        if (self.lastBlock) {
+            currentBlock = self.lastBlock;
+            self.lastBlock = nil;
+            matchLastBlock = YES;
+        }
+        
+        for (BlioTextFlowBlock *block in pageBlocks) {
+            if (matchLastBlock && !lastBlockMatched) {
+                if ([block compare:currentBlock] == NSOrderedSame) {
+                    lastBlockMatched = YES;
+                } else {
+                    continue;
+                }
+            }
+            
+            CGRect blockRect = [block rect];
+            
+            if (!partiallyVisibleBlockFound) {
+                if ([self blockRect:blockRect isPartiallyVisibleInRect:visibleRect]) {
+                    partiallyVisibleBlockFound = YES;
+                    currentBlock = block;
+                    if ([self blockRect:blockRect isFullyVisibleInRect:visibleRect]) {
+                        lastBlockWasFullyVisible = YES;
+                    }
+                }
+            } else {
+                if ([self blockRect:blockRect isFullyVisibleInRect:visibleRect]) {
+                    currentBlock = block;
+                    lastBlockWasFullyVisible = YES;
+                } else {
+                    if (lastBlockWasFullyVisible) {
+                        if ([self blockRect:blockRect isPartiallyVisibleInRect:visibleRect]) {
+                            currentBlock = block;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
+    
+    // If we now have a block that is current work out whether the targetBlock on the same page should be itself, the next or previous block
+    if (currentBlock) {
+        targetBlock = currentBlock;
+        CGRect blockRect = [targetBlock rect];
+        
+        BOOL topVisible    = [self blockRect:blockRect isTopVisibleInRect:visibleRect];
+        BOOL bottomVisible = [self blockRect:blockRect isBottomVisibleInRect:visibleRect];
+        
         if (!reversed) {
-            while (targetBlock == self.lastBlock) {
-                targetBlock = [self.textFlow nextBlockForBlock:targetBlock 
+            if (bottomVisible) {
+                while (targetBlock == currentBlock) {
+                    targetBlock = [self.textFlow nextBlockForBlock:targetBlock 
                                           includingFolioBlocks:NO
                                                     onSamePage:YES];
-                targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+                    targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+                }
             }
         } else {
-            while (targetBlock == self.lastBlock) {
-                targetBlock = [self.textFlow previousBlockForBlock:targetBlock 
+            if (topVisible) {
+                while (targetBlock == currentBlock) {
+                    targetBlock = [self.textFlow previousBlockForBlock:targetBlock 
                                               includingFolioBlocks:NO
                                                         onSamePage:YES];  
-                targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+                    targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+                }
             }
         }
     } else {
@@ -1830,13 +1963,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
                 return;
             }
             
-            
             // Zoom to the last block on the previous page, if there are any
             // blocks on it, otherwise zoom to the page.
             NSInteger newPageIndex = pageIndex - 1;
             pageBlocks = [self.textFlow blocksForPageAtIndex:newPageIndex includingFolioBlocks:NO];
             blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
-            blockCombiner.verticalSpacing = [self cropForPage:newPageIndex + 1].size.height * PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING;
+            blockCombiner.verticalSpacing = [self verticalSpacingForPage:newPageIndex + 1];
             
             if (pageBlocks.count > 0) {
                 targetBlock = [pageBlocks lastObject];
@@ -1850,19 +1982,25 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     self.lastBlock = targetBlock;
-    
+        
     if (nil != targetBlock) {
         NSMethodSignature * zoomToNextBlockSig = [BlioLayoutView instanceMethodSignatureForSelector:@selector(zoomToNextBlockReversed:)];
         NSInvocation * zoomToNextBlockInv = [NSInvocation invocationWithMethodSignature:zoomToNextBlockSig];    
         [zoomToNextBlockInv setTarget:self];    
         [zoomToNextBlockInv setSelector:@selector(zoomToNextBlockReversed:)];
         [zoomToNextBlockInv setArgument:&reversed atIndex:2];
-        [self zoomToBlock:targetBlock context:zoomToNextBlockInv];
+        if (useVisibleRect) {
+            [self zoomToBlock:targetBlock visibleRect:visibleRect context:zoomToNextBlockInv];
+        } else {
+            [self zoomToBlock:targetBlock visibleRect:CGRectNull context:zoomToNextBlockInv];
+        }
     }
 }
 
 - (void)zoomAtPoint:(NSString *)pointString {
     if ([self.scrollView isDecelerating]) return;
+    
+    self.lastBlock = nil;
     
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     CGPoint point = CGPointFromString(pointString);
@@ -1912,19 +2050,17 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     }
     
     if (nil != targetBlock) {
-        self.lastBlock = targetBlock;
-        [self zoomToBlock:targetBlock context:nil];
-        return;
+        [self zoomToBlock:targetBlock visibleRect:CGRectNull context:nil];
     } else if (self.scrollView.zoomScale > 1) {
         [self zoomOut];
     } else {
         [self zoomToPage:targetPage];
-    }
-    
-    self.lastBlock = nil;
+    }    
 }
 
 - (void)zoomToPage:(NSInteger)targetPageNumber {
+    self.lastBlock = nil;
+    
     CGFloat zoomScale;
     CGPoint newContentOffset = [self contentOffsetToFillPage:targetPageNumber zoomScale:&zoomScale];
     CGPoint currentContentOffset = [self.scrollView contentOffset];
@@ -1959,19 +2095,32 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
 }
 
-- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock context:(void *)context {
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect context:(void *)context {
     
     NSInteger pageIndex = [targetBlock pageIndex];
     
     NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     BlioTextFlowBlockCombiner *blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
-    blockCombiner.verticalSpacing = [self cropForPage:pageIndex + 1].size.height * PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING;
-
-    CGRect combinedBlockRect = [blockCombiner combinedRectForBlock:targetBlock];
-
+    blockCombiner.verticalSpacing = [self verticalSpacingForPage:pageIndex + 1];
+    
+    CGRect combined = [blockCombiner combinedRectForBlock:targetBlock];
+    CGRect nonVisibleBlockRect = combined;
+    
+    // Determine if the combined block is currently partially visible (i.e. it's full width is visible and
+    // At least part of it's height is visible - so there is an intersection)
+    if ([self blockRect:combined isPartiallyVisibleInRect:visibleRect]) {
+        CGRect intersection = CGRectIntersection(visibleRect, combined);
+        if (!CGRectIsNull(intersection)) {
+            nonVisibleBlockRect.origin.x = CGRectGetMinX(combined);
+            nonVisibleBlockRect.origin.y = MAX(CGRectGetMinY(combined), CGRectGetMaxY(intersection));
+            nonVisibleBlockRect.size.width = CGRectGetWidth(combined);
+            nonVisibleBlockRect.size.height = CGRectGetMaxY(combined) - nonVisibleBlockRect.origin.y;
+        }
+    }
+    
     NSInteger targetPageNumber = pageIndex + 1;
     CGFloat zoomScale;
-    CGPoint newContentOffset = [self contentOffsetToFitRect:combinedBlockRect onPage:targetPageNumber zoomScale:&zoomScale];
+    CGPoint newContentOffset = [self contentOffsetToFitRect:nonVisibleBlockRect onPage:targetPageNumber zoomScale:&zoomScale];
     newContentOffset = CGPointMake(roundf(newContentOffset.x), roundf(newContentOffset.y));
     CGPoint currentContentOffset = [self.scrollView contentOffset];
     
@@ -2014,6 +2163,8 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)zoomOut {
+    self.lastBlock = nil;
+    
     [UIView beginAnimations:@"BlioZoomPage" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationBeginsFromCurrentState:YES];
@@ -2027,10 +2178,11 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:1]]; 
     self.lastZoomScale = 1;
     [UIView commitAnimations];
-    self.lastBlock = nil;
 }
 
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point {
+    self.lastBlock = nil;
+    
     [UIView beginAnimations:@"BlioZoomPage" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationBeginsFromCurrentState:YES];

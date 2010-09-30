@@ -15,6 +15,8 @@
     NSMutableArray *combinedBlocks;
     CGFloat verticalSpacing;
     CGFloat horizontalSpacing;
+    CGSize minimumBlockSize;
+    BOOL applyMinimumSize;
 }
 
 @property (nonatomic, assign) CGFloat verticalSpacing;
