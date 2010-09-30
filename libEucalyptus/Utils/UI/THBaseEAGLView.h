@@ -11,8 +11,6 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
-@class CADisplayLink;
-
 @interface THBaseEAGLView : UIView {
     GLint _backingWidth;
     GLint _backingHeight;
@@ -26,7 +24,7 @@
     GLuint _depthRenderbuffer;
     
     BOOL _animating;
-    CADisplayLink *_displayLink;
+    id _animationTimer;
     NSTimeInterval _animationInterval;
     
     BOOL _needsDraw;
