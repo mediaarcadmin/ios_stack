@@ -15,6 +15,9 @@
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/THPair.h>
 #import "UIDevice+BlioAdditions.h"
+#import "BlioTextFlowBlockCombiner.h"
+
+#define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 
 @interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource> {
     NSData *data;
@@ -36,6 +39,7 @@
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
 @property (nonatomic, retain) UIImage *pageTexture;
 @property (nonatomic, assign) BOOL pageTextureIsDark;
+@property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -53,11 +57,13 @@
 @synthesize pageCropsCache, viewTransformsCache;
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
+@synthesize lastBlock;
 
 - (void)dealloc {
     self.textFlow = nil;
     self.pageCropsCache = nil;
     self.viewTransformsCache = nil;
+    self.lastBlock = nil;
     
     self.pageTurningView = nil;
     self.pageTexture = nil;

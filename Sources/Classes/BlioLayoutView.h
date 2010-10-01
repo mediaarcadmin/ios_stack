@@ -38,6 +38,9 @@
     id<BlioLayoutDataSource> dataSource;
     
     NSLock *layoutCacheLock;
+    
+    BlioTextFlowBlock *lastBlock;
+    NSUInteger blockRecursionDepth;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;

@@ -12,6 +12,7 @@
 #import "BlioPaidBooksSettingsController.h"
 #import "BlioAboutSettingsController.h"
 #import "BlioHelpSettingsController.h"
+#import "BlioStoreManager.h"
 
 @implementation BlioAppSettingsController
 
@@ -71,7 +72,8 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 5;
+    return 6
+	;
 }
 
 
@@ -91,6 +93,9 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
+	cell.textLabel.textAlignment = UITextAlignmentLeft;
+	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
 	switch ( [indexPath section] ) {
 		case 0:
 			[cell.textLabel setText:@"Reading Voice"];
@@ -107,10 +112,15 @@
 		case 4:
 			[cell.textLabel setText:@"About"];
 			break;
+		case 5:
+			cell.textLabel.textAlignment = UITextAlignmentCenter;
+			cell.accessoryType = UITableViewCellAccessoryNone;
+			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) cell.textLabel.text = @"Logout";
+			else cell.textLabel.text = @"Login";
+			break;
 		default:
 			break;
 	}
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
     return cell;
 }
@@ -148,12 +158,29 @@
 			[self.navigationController pushViewController:aboutController animated:YES];
 			[aboutController release];
 			break;
+		case 5:
+			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+				[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+				[tableView cellForRowAtIndexPath:indexPath].textLabel.text = @"Login";
+			}
+			else {
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+			}
+			[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			break;
 		default:
 			break;
 	}
 }
-
+-(void)loginDismissed:(NSNotification*)note {
+	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+		[self.tableView reloadData];
+	}
+}
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
 

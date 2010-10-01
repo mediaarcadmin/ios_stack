@@ -100,8 +100,15 @@
 }
 -(void)storeHelper:(BlioStoreHelper*)storeHelper receivedLoginResult:(NSInteger)loginResult {
 	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
-	if (loginResult != BlioLoginResultSuccess && isShowingLoginView == NO) {
+	if (loginResult == BlioLoginResultInvalidPassword && isShowingLoginView == NO) {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
+	}
+	else if (loginResult == BlioLoginResultError && isShowingLoginView == NO) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"BACKGROUND_LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"The app cannot login at this time due to a server error. You can try again later by logging in within the Settings area.",@"Alert message when the login web service has failed.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];		
 	}
 	else if (isShowingLoginView == YES) {
 		[loginViewController receivedLoginResult:loginResult];		
