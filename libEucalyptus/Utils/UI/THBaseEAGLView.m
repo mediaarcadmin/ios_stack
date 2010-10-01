@@ -114,9 +114,9 @@
     if(_didJustMoveToNewWindow) {
         [self drawView];
         _didJustMoveToNewWindow = NO;
-    } //else {
+    } else {
         [self setNeedsDraw];
-    //}
+    }
 }
 
 - (BOOL)_createFramebuffer 

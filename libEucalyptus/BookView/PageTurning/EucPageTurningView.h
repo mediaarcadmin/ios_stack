@@ -118,7 +118,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     
     NSInteger _rightFlatPageIndex;
     BOOL _viewsNeedRecache;
-    BOOL _recacheFlags[5];
+    BOOL _recacheFlags[6];
     
     GLvoid *_atRenderScreenshotBuffer;
     

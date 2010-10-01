@@ -594,7 +594,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         free(textureData);
     }
     
-    THLog(@"CreatedTexture of size (%ld, %ld)", (long)contextWidth, (long)contextHeight);
+    THLog(@"Created Texture of size (%ld, %ld)", (long)contextWidth, (long)contextHeight);
 }
 
 - (void)_createTextureIn:(GLuint *)textureRef from:(id)viewOrImage invertingLuminance:(BOOL)invertingLuminance
@@ -691,7 +691,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     CGContextRelease(textureContext);
     free(textureData);
     
-    THLog(@"CreatedTexture of scaled size (%f, %f) from point size (%f, %f)", scaledSize.width, scaledSize.height, rawSize.width, rawSize.height);
+    THLog(@"Created Texture of scaled size (%f, %f) from point size (%f, %f)", scaledSize.width, scaledSize.height, rawSize.width, rawSize.height);
 }
 
 - (void)_createTextureIn:(GLuint *)textureRef from:(id)viewOrImage
@@ -2296,10 +2296,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
     }
     
+    memset(_recacheFlags, 0, sizeof(_recacheFlags));
+    _viewsNeedRecache = NO;    
+
     if(_viewDataSource && [_delegate respondsToSelector:@selector(pageTurningView:didTurnToView:)]) {
         [_delegate pageTurningView:self didTurnToView:_pageContentsInformation[3].view ?: _pageContentsInformation[2].view];
     }                    
-    _viewsNeedRecache = NO;    
 }
 
 - (void)_setNeedsAccessibilityElementsRebuild
