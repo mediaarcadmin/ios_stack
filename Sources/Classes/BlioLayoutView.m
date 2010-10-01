@@ -201,7 +201,12 @@
         // The first page is page 0 as far as the page turning view is concerned,
         // so it's an even page, so if it's mean to to be on the left, the odd 
         // pages should be on the right.
-        self.pageTurningView.oddPagesOnRight = [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
+        
+        // Disabled for now because many books seem to have the property set even
+        // though their first page is the cover, and the odd pages are 
+        // clearly meant to be on the left (e.g. they have page numbers on the 
+        // outside).
+        //self.pageTurningView.oddPagesOnRight = [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
     } else {
         self.pageTurningView.fitTwoPages = NO;
         self.pageTurningView.twoSidedPages = NO;
