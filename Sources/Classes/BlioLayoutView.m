@@ -927,8 +927,14 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceCMYK();
-        
-    CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
+    
+    size_t bytesPerRow = 4 * width;
+    size_t totalBytes = bytesPerRow * height;
+    
+    NSMutableData *bitmapData = [[NSMutableData alloc] initWithCapacity:totalBytes];
+    [bitmapData setLength:totalBytes];
+    
+    CGContextRef bitmapContext = CGBitmapContextCreate([bitmapData mutableBytes], width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
     CGColorSpaceRelease(colorSpace);
     
     CGFloat widthScale  = size.width / CGRectGetWidth(rect);
@@ -950,6 +956,8 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
     CGContextDrawPDFPage(bitmapContext, aPage);
     [pdfLock unlock];
+    
+    *context = [bitmapData autorelease];
     
     return (CGContextRef)[(id)bitmapContext autorelease];
 }
