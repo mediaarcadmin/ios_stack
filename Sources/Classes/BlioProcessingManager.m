@@ -731,7 +731,6 @@
     for (BlioProcessingOperation *preAvailOp in textFlowPreAvailOps) {
         BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
         if (!preExist || preExist.isCancelled) {
-            
             preAvailOp.bookID = bookID;
             preAvailOp.sourceID = sourceID;
             preAvailOp.sourceSpecificID = sourceSpecificID;
@@ -745,7 +744,7 @@
         }
         else {
             // if it already exists, it is dependent on a completed operation
-            [bookOps addObject:preExist];
+			[bookOps addObject:preExist];
             [newTextFlowPreAvailOps addObject:preExist];
         }
     }

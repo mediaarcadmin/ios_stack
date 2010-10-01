@@ -39,6 +39,7 @@ static int mutationCount = 0;
         if(mutationCount != 1) {
             NSLog(@"rrewrewrewrew");
         }
+		if (!self.bookID) NSLog(@"WARNING: self.bookID for %@ is nil, flushBookCache will fail!",[self description]);
         BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
         if (nil == book) {
             NSLog(@"Failed to retrieve book in BlioProcessing flushBookCache");
@@ -53,6 +54,7 @@ static int mutationCount = 0;
 }
 
 - (void)reportBookReadingIfRequired {
+	NSLog(@"reportBookReadingIfRequired");
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     pthread_mutex_lock(&sBookMutationMutex);
     {
@@ -75,8 +77,7 @@ static int mutationCount = 0;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self flushBookCache];
-    
+	if (self.bookID) [self flushBookCache];
     self.bookID = nil;
 	self.sourceSpecificID = nil;
     self.cacheDirectory = nil;

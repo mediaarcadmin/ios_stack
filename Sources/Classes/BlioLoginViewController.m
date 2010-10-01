@@ -118,7 +118,7 @@
 	passwordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	passwordField.keyboardType = UIKeyboardTypeAlphabet;
 	passwordField.keyboardAppearance = UIKeyboardAppearanceDefault;
-	passwordField.returnKeyType = UIReturnKeyDone;
+	passwordField.returnKeyType = UIReturnKeyGo;
 	passwordField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	passwordField.autocorrectionType = UITextAutocorrectionTypeNo;
 	passwordField.placeholder = NSLocalizedString(@"Password",@"\"Password\" placeholder");
@@ -195,12 +195,12 @@
 	if ( loginResult == BlioLoginResultSuccess ) {
 		[self dismissModalViewControllerAnimated:YES];
 	}
-	else if ( loginResult == BlioLoginResultInvalidPassword ) 
+	else if ( loginResult == BlioLoginResultInvalidPassword ) {
 		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
-	else
-		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
+		passwordField.text = @"";
+	}
+	else loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
 	[activityIndicatorView stopAnimating];
-	passwordField.text = @"";
 	if (loginErrorText != nil) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
 									 message:loginErrorText

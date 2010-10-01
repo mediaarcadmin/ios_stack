@@ -23,7 +23,6 @@
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect;
 - (UIImage *)thumbnailForPage:(NSInteger)page;
 
-@optional
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect
                                  minSize:(CGSize)size

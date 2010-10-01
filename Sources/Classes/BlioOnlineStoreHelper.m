@@ -285,6 +285,7 @@
 	self.token = nil;
 	self.username = nil;
 	self.timeout = [NSDate distantPast];
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:BlioBookSourceOnlineStore]];
 }
 -(void)retrieveBooks {
 	if (![BlioStoreManager sharedInstance].processingDelegate) {
