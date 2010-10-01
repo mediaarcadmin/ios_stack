@@ -871,7 +871,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)setCurrentPageIndex:(NSUInteger)newPageIndex
 {
-    CGSize minSize = self.bounds.size;
+    CGSize minSize = _rightPageFrame.size;
     if([self respondsToSelector:@selector(contentScaleFactor)]) {
         CGFloat scaleFactor = self.contentScaleFactor;
         minSize.width *= scaleFactor;
