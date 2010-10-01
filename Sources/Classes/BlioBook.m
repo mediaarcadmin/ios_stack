@@ -208,6 +208,11 @@
     return [self hasManifestValueForKey:BlioManifestDrmHeaderKey];
 }
 
+- (BOOL)firstLayoutPageOnLeft {
+    return [self hasManifestValueForKey:BlioManifestFirstLayoutPageOnLeftKey];
+}
+
+
 - (UIImage *)missingCoverImageOfSize:(CGSize)size {
     if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(size, NO, 0);

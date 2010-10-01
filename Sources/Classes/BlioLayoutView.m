@@ -191,6 +191,9 @@
     if(myBounds.size.width > myBounds.size.height) {
         self.pageTurningView.fitTwoPages = YES;
         self.pageTurningView.twoSidedPages = YES;
+        // The first page is page 0 as far as the page turning view is concerned,
+        // so it's an even page.
+        self.pageTurningView.oddPagesOnLeft = ![[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
     } else {
         self.pageTurningView.fitTwoPages = NO;
         self.pageTurningView.twoSidedPages = NO;

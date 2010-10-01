@@ -880,11 +880,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     NSUInteger rightPageIndex = newPageIndex;
     if(_twoSidedPages) {
         if(_oddPagesOnLeft) {
-            if((rightPageIndex % 2) == 0) {
+            if((rightPageIndex % 2) == 1) {
                 rightPageIndex++;
             }
         } else {
-            if((rightPageIndex % 2) == 1) {
+            if((rightPageIndex % 2) == 0) {
                 rightPageIndex++;
             }            
         }
@@ -941,13 +941,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         NSUInteger rightPageIndex = newPageIndex;
         if(_twoSidedPages) {
             if(_oddPagesOnLeft) {
-                if((rightPageIndex % 2) == 0) {
-                    rightPageIndex++;
-                }
-            } else {
                 if((rightPageIndex % 2) == 1) {
                     rightPageIndex++;
-                }            
+                }                       
+            } else {
+                if((rightPageIndex % 2) == 0) {
+                    rightPageIndex++;
+                }                
             }
         }
         

@@ -67,6 +67,7 @@ static NSString * const BlioManifestAudiobookTimingFilesKey = @"audiobookTimingF
 static NSString * const BlioManifestKNFBMetadataKey = @"KNFBMetadataFilename";
 static NSString * const BlioManifestPreAvailabilityCompleteKey = @"preAvailabilityComplete";
 static NSString * const BlioManifestDrmHeaderKey = @"drmHeaderFilename";
+static NSString * const BlioManifestFirstLayoutPageOnLeftKey = @"firstLayoutPageOnLeft";
 
 static NSString * const BlioManifestEntryLocationKey = @"location";
 static NSString * const BlioManifestEntryPathKey = @"path";
@@ -131,6 +132,7 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 @property (nonatomic, assign, readonly) BOOL isEncrypted;
 @property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForList;
 @property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForGrid;
+@property (nonatomic, assign, readonly) BOOL firstLayoutPageOnLeft;
 
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
