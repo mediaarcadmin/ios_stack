@@ -199,8 +199,9 @@
         self.pageTurningView.fitTwoPages = YES;
         self.pageTurningView.twoSidedPages = YES;
         // The first page is page 0 as far as the page turning view is concerned,
-        // so it's an even page.
-        self.pageTurningView.oddPagesOnLeft = ![[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
+        // so it's an even page, so if it's mean to to be on the left, the odd 
+        // pages should be on the right.
+        self.pageTurningView.oddPagesOnRight = [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
     } else {
         self.pageTurningView.fitTwoPages = NO;
         self.pageTurningView.twoSidedPages = NO;

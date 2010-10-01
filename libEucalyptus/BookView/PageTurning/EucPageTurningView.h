@@ -105,7 +105,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     id<EucPageTurningViewViewDataSource> _viewDataSource;
     id<EucPageTurningViewBitmapDataSource> _bitmapDataSource;
     
-    BOOL _oddPagesOnLeft;
+    BOOL _oddPagesOnRight;
     BOOL _twoSidedPages;
     BOOL _fitTwoPages;
     BOOL _leftPageVisible;
@@ -165,7 +165,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 // After changing these, ensure -layoutSubviews is called for consistent behaviour. 
 @property (nonatomic, assign) BOOL twoSidedPages;
 @property (nonatomic, assign) BOOL fitTwoPages;
-@property (nonatomic, assign) BOOL oddPagesOnLeft;
+@property (nonatomic, assign) BOOL oddPagesOnRight;
 
 @property (nonatomic, assign, readonly) CGRect leftPageFrame;
 @property (nonatomic, assign, readonly) CGRect rightPageFrame;

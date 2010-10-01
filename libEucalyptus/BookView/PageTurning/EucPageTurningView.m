@@ -49,7 +49,7 @@
 
 @synthesize twoSidedPages = _twoSidedPages;
 @synthesize fitTwoPages = _fitTwoPages;
-@synthesize oddPagesOnLeft = _oddPagesOnLeft;
+@synthesize oddPagesOnRight = _oddPagesOnRight;
 @synthesize zoomHandlingKind = _zoomHandlingKind;
 
 @synthesize zoomMatrix = _zoomMatrix;
@@ -879,12 +879,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
     NSUInteger rightPageIndex = newPageIndex;
     if(_twoSidedPages) {
-        if(_oddPagesOnLeft) {
-            if((rightPageIndex % 2) == 1) {
-                rightPageIndex++;
-            }
-        } else {
+        if(_oddPagesOnRight) {
             if((rightPageIndex % 2) == 0) {
+                rightPageIndex++;
+            }                
+        } else {
+            if((rightPageIndex % 2) == 1) {
                 rightPageIndex++;
             }            
         }
@@ -940,14 +940,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         NSUInteger rightPageIndex = newPageIndex;
         if(_twoSidedPages) {
-            if(_oddPagesOnLeft) {
-                if((rightPageIndex % 2) == 1) {
-                    rightPageIndex++;
-                }                       
-            } else {
+            if(_oddPagesOnRight) {
                 if((rightPageIndex % 2) == 0) {
                     rightPageIndex++;
                 }                
+            } else {
+                if((rightPageIndex % 2) == 1) {
+                    rightPageIndex++;
+                }            
             }
         }
         
