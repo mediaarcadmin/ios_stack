@@ -49,6 +49,9 @@
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
 
+- (NSInteger)leftPageIndex;
+- (NSInteger)rightPageIndex;
+
 @end
 
 @implementation BlioLayoutView
@@ -369,20 +372,39 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return CGRectZero;
 }
 
+static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, BOOL preserveAspect) {
+    
+    CGFloat xScale = targetRect.size.width / sourceRect.size.width;
+    CGFloat yScale = targetRect.size.height / sourceRect.size.height;
+    
+    CGAffineTransform scaleTransform;
+    if (preserveAspect) {
+        CGFloat scale = xScale < yScale ? xScale : yScale;
+        scaleTransform = CGAffineTransformMakeScale(scale, scale);
+    } else {
+        scaleTransform = CGAffineTransformMakeScale(xScale, yScale);
+    } 
+    CGRect scaledRect = CGRectApplyAffineTransform(sourceRect, scaleTransform);
+    CGFloat xOffset = (targetRect.size.width - scaledRect.size.width);
+    CGFloat yOffset = (targetRect.size.height - scaledRect.size.height);
+    CGAffineTransform offsetTransform = CGAffineTransformMakeTranslation((targetRect.origin.x - scaledRect.origin.x) + xOffset/2.0f, (targetRect.origin.y - scaledRect.origin.y) + yOffset/2.0f);
+    CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, offsetTransform);
+    return transform;
+}
+
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex {
     // TODO: Make sure this is cached in LayoutView or pageTurningView
     CGRect pageCrop = [self pageTurningView:self.pageTurningView contentRectForPageAtIndex:pageIndex];
     CGRect viewRect = self.bounds;
-    CGFloat dpiRatio = [self.dataSource dpiRatio];
+    CGRect pageFrame;
     
-    CGFloat scale = MIN(CGRectGetWidth(viewRect)/CGRectGetWidth(pageCrop), CGRectGetHeight(viewRect)/CGRectGetHeight(pageCrop));
-    scale = scale * dpiRatio;
-    
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
-    CGRect scaledPage = CGRectApplyAffineTransform(pageCrop, scaleTransform);
-    CGAffineTransform centerTransform = CGAffineTransformMakeTranslation((CGRectGetWidth(viewRect) - CGRectGetWidth(scaledPage))/2.0f, (CGRectGetHeight(viewRect) - CGRectGetHeight(scaledPage))/2.0f);
-    
-    return CGAffineTransformConcat(scaleTransform, centerTransform);
+    if (pageIndex == [self leftPageIndex]) {
+        pageFrame = [self.pageTurningView leftPageFrame];
+    } else {
+        pageFrame = [self.pageTurningView rightPageFrame];
+    }
+
+    return transformRectToFitRect(pageCrop, pageFrame, true);
 }
 
 #pragma mark -
@@ -429,10 +451,30 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return [self.pageTurningView screenshot];
 }
 
+- (NSInteger)leftPageIndex {
+    return self.pageNumber - 2;
+}
+
+- (NSInteger)rightPageIndex {
+    return self.pageNumber - 1;
+}
+
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
-    NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    return [pageBlocks valueForKey:@"blockID"];
+    NSMutableArray *pagesBlocks = [NSMutableArray array];
+    
+    if (self.pageTurningView.fitTwoPages) {
+        NSInteger leftPageIndex = [self leftPageIndex];
+        if (leftPageIndex >= 0) {
+            [pagesBlocks addObjectsFromArray:[self.textFlow blocksForPageAtIndex:leftPageIndex includingFolioBlocks:NO]];
+        }
+    }
+    
+    NSInteger rightPageIndex = [self rightPageIndex];
+    if (rightPageIndex < pageCount) {
+        [pagesBlocks addObjectsFromArray:[self.textFlow blocksForPageAtIndex:rightPageIndex includingFolioBlocks:NO]];
+    }
+    
+    return [pagesBlocks valueForKey:@"blockID"];
 }
 
 - (CGRect)eucSelector:(EucSelector *)selector frameOfBlockWithIdentifier:(id)blockID {
