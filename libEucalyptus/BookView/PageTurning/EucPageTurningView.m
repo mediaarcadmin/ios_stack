@@ -34,7 +34,7 @@
 - (void)_verlet;
 - (BOOL)_satisfyConstraints;
 - (void)_setupConstraints;
-- (void)_postAnimationViewAndTextureRecache;
+- (void)_cacheNonVisiblePages;
 - (CGFloat)_tapTurnMarginForView:(UIView *)view;
 - (void)_setNeedsAccessibilityElementsRebuild;
 
@@ -322,7 +322,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         glDeleteBuffers(1, &_triangleStripIndicesBuffer);
     }
     
-    for(int i = 0; i < 6; ++i) {
+    for(int i = 0; i < 7; ++i) {
         [_pageContentsInformation[i].view release];
         if(_pageContentsInformation[i].texture) {
             glDeleteTextures(1, &(_pageContentsInformation[i].texture));
@@ -342,150 +342,166 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [super dealloc];
 }
 
-- (void)setPageAspectRatio:(CGFloat)pageAspectRatio
+- (void)_layoutPages
 {
-    if(_pageAspectRatio != pageAspectRatio) {
-        _pageAspectRatio = pageAspectRatio;
-        [self setNeedsLayout];
+    CGSize size = self.bounds.size;
+    if(!CGSizeEqualToSize(size, _lastLayoutBoundsSize)) {
+        [self willChangeValueForKey:@"zoomMatrix"];
+        [self willChangeValueForKey:@"rightPageFrame"];
+        [self willChangeValueForKey:@"leftPageFrame"];
+        
+        if(size.width < size.height) {
+            _viewportLogicalSize.width = 4.0f;
+            _viewportLogicalSize.height = (size.height / size.width) * _viewportLogicalSize.width;
+        } else {
+            // Landscape.
+            _viewportLogicalSize.height = 4.0f;
+            _viewportLogicalSize.width = (size.width / size.height) * _viewportLogicalSize.height;
+        }
+        
+        _zoomMatrix = CATransform3DIdentity;
+        _viewportToBoundsPointsTransform = CGAffineTransformMakeScale(size.width /_viewportLogicalSize.width, 
+                                                                      size.height /_viewportLogicalSize.height);
+        
+        // Construct a hex-mesh of triangles:
+        CGFloat aspectRatio = _pageAspectRatio;
+        if(aspectRatio == 0.0f) {
+            if(!_fitTwoPages || size.width < size.height) {
+                aspectRatio = size.width / size.height;
+            } else {
+                // If we're landscape, and in fit-two mode, use the portrait 
+                // aspect for pages.
+                aspectRatio = size.height / size.width;
+            }
+        }
+        
+        CGFloat availableWidth;
+        if(_fitTwoPages) {
+            availableWidth = _viewportLogicalSize.width * 0.5f;
+        } else {
+            availableWidth = _viewportLogicalSize.width;
+        }
+        
+        _pageLogicalSize.height = _viewportLogicalSize.height;
+        _pageLogicalSize.width =  _pageLogicalSize.height * aspectRatio;
+        if(_pageLogicalSize.width > availableWidth) {
+            _pageLogicalSize.width = availableWidth;
+            _pageLogicalSize.height = _pageLogicalSize.width / aspectRatio;
+        }        
+        
+        GLfloat xStep = ((GLfloat)_pageLogicalSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
+        GLfloat yStep = ((GLfloat)_pageLogicalSize.height / (Y_VERTEX_COUNT - 1));
+        
+        if(_fitTwoPages) {
+            _rightPageTransform = CATransform3DMakeTranslation(_viewportLogicalSize.width * 0.5f, 
+                                                               (_viewportLogicalSize.height - _pageLogicalSize.height) * 0.5f,
+                                                               0.0);
+        } else {
+            _rightPageTransform = CATransform3DMakeTranslation((_viewportLogicalSize.width - _pageLogicalSize.width) * 0.5f, 
+                                                               (_viewportLogicalSize.height - _pageLogicalSize.height) * 0.5f,
+                                                               0.0);
+        }
+        
+        _rightPageRect = CGRectApplyAffineTransform(CGRectMake(0, 0, _pageLogicalSize.width, _pageLogicalSize.height),
+                                                    CATransform3DGetAffineTransform(_rightPageTransform));
+        _leftPageRect = _rightPageRect;
+        _leftPageRect.origin.x -= _rightPageRect.size.width;
+        
+        self.rightPageFrame = CGRectApplyAffineTransform(_rightPageRect, _viewportToBoundsPointsTransform);
+        self.leftPageFrame = CGRectApplyAffineTransform(_leftPageRect, _viewportToBoundsPointsTransform);
+        
+        GLfloat maxX = _pageLogicalSize.width;
+        GLfloat maxY = _pageLogicalSize.height;
+        
+        GLfloat yCoord = 0.0f;
+        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+            GLfloat xCoord = 0.0f;
+            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+                _stablePageVertices[row][column].x = MIN(xCoord, maxX);
+                _stablePageVertices[row][column].y = MIN(yCoord, maxY);
+                // z is already 0.
+                
+                if(xCoord == 0.0f && (row % 2) == 1) {
+                    xCoord += xStep * 0.5f;
+                } else {
+                    xCoord += xStep;
+                }
+            }
+            yCoord += yStep;
+        }
+        
+        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+            for(int column = 0; column < X_VERTEX_COUNT; ++column) {
+                // x and y are already 0.
+                _stablePageVertexNormals[row][column].z = -1;
+            }
+        }
+        
+        memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+        memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+        
+        _leftPageVisible = _rightPageRect.origin.x > 0.0f;
+        
+        [self _setupConstraints];
+        
+        [super layoutSubviews];
+        
+        UIView *view = [_pageContentsInformation[3].view retain];
+        if(!view) {
+            [_pageContentsInformation[2].view retain];
+        }
+        NSUInteger pageIndex = _pageContentsInformation[3].pageIndex;
+        if(pageIndex == NSUIntegerMax) {
+            pageIndex = _pageContentsInformation[2].pageIndex;
+        }
+        
+        [EAGLContext setCurrentContext:self.eaglContext];
+        for(int i = 0; i < 7; ++i) {
+            [_pageContentsInformation[i].view release];
+            _pageContentsInformation[i].view = nil;
+            if(_pageContentsInformation[i].texture) {
+                glDeleteTextures(1, &(_pageContentsInformation[i].texture));
+                _pageContentsInformation[i].texture = 0;
+            }
+            _pageContentsInformation[i].pageIndex = NSUIntegerMax;
+        }    
+        
+        if(view) {
+            [self setCurrentPageView:view];
+            [view release];
+        } else if(pageIndex != NSUIntegerMax) {
+            [self turnToPageAtIndex:pageIndex animated:NO];
+        }
+        
+        [self didChangeValueForKey:@"leftPageFrame"];
+        [self didChangeValueForKey:@"rightPageFrame"];
+        [self didChangeValueForKey:@"zoomMatrix"];
+        
+        _lastLayoutBoundsSize = size;
+        
+        [self setNeedsDraw];
     }
+}    
+
+- (void)didMoveToSuperview
+{
+    [super didMoveToSuperview];
+    [self _layoutPages];
 }
 
 - (void)layoutSubviews
 {    
-    [self willChangeValueForKey:@"zoomMatrix"];
-    [self willChangeValueForKey:@"rightPageFrame"];
-    [self willChangeValueForKey:@"leftPageFrame"];
-    
-    CGSize size = self.bounds.size;
-    if(size.width < size.height) {
-        _viewportLogicalSize.width = 4.0f;
-        _viewportLogicalSize.height = (size.height / size.width) * _viewportLogicalSize.width;
-    } else {
-        // Landscape.
-        _viewportLogicalSize.height = 4.0f;
-        _viewportLogicalSize.width = (size.width / size.height) * _viewportLogicalSize.height;
-    }
-    
-    _zoomMatrix = CATransform3DIdentity;
-    _viewportToBoundsPointsTransform = CGAffineTransformMakeScale(size.width /_viewportLogicalSize.width, 
-                                                                  size.height /_viewportLogicalSize.height);
-    
-    // Construct a hex-mesh of triangles:
-    CGFloat aspectRatio = _pageAspectRatio;
-    if(aspectRatio == 0.0f) {
-        if(!_fitTwoPages || size.width < size.height) {
-            aspectRatio = size.width / size.height;
-        } else {
-            // If we're landscape, and in fit-two mode, use the portrait 
-            // aspect for pages.
-            aspectRatio = size.height / size.width;
-        }
-    }
-
-    CGFloat availableWidth;
-    if(_fitTwoPages) {
-        availableWidth = _viewportLogicalSize.width * 0.5f;
-    } else {
-        availableWidth = _viewportLogicalSize.width;
-    }
-    
-    _pageLogicalSize.height = _viewportLogicalSize.height;
-    _pageLogicalSize.width =  _pageLogicalSize.height * aspectRatio;
-    if(_pageLogicalSize.width > availableWidth) {
-        _pageLogicalSize.width = availableWidth;
-        _pageLogicalSize.height = _pageLogicalSize.width / aspectRatio;
-    }        
-
-    GLfloat xStep = ((GLfloat)_pageLogicalSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
-    GLfloat yStep = ((GLfloat)_pageLogicalSize.height / (Y_VERTEX_COUNT - 1));
-    
-    if(_fitTwoPages) {
-        _rightPageTransform = CATransform3DMakeTranslation(_viewportLogicalSize.width * 0.5f, 
-                                                           (_viewportLogicalSize.height - _pageLogicalSize.height) * 0.5f,
-                                                           0.0);
-    } else {
-        _rightPageTransform = CATransform3DMakeTranslation((_viewportLogicalSize.width - _pageLogicalSize.width) * 0.5f, 
-                                                           (_viewportLogicalSize.height - _pageLogicalSize.height) * 0.5f,
-                                                           0.0);
-    }
-    
-    _rightPageRect = CGRectApplyAffineTransform(CGRectMake(0, 0, _pageLogicalSize.width, _pageLogicalSize.height),
-                                                CATransform3DGetAffineTransform(_rightPageTransform));
-    _leftPageRect = _rightPageRect;
-    _leftPageRect.origin.x -= _rightPageRect.size.width;
-    
-    self.rightPageFrame = CGRectApplyAffineTransform(_rightPageRect, _viewportToBoundsPointsTransform);
-    self.leftPageFrame = CGRectApplyAffineTransform(_leftPageRect, _viewportToBoundsPointsTransform);
-    
-    GLfloat maxX = _pageLogicalSize.width;
-    GLfloat maxY = _pageLogicalSize.height;
-        
-    GLfloat yCoord = 0.0f;
-    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-        GLfloat xCoord = 0.0f;
-        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-            _stablePageVertices[row][column].x = MIN(xCoord, maxX);
-            _stablePageVertices[row][column].y = MIN(yCoord, maxY);
-            // z is already 0.
-            
-            if(xCoord == 0.0f && (row % 2) == 1) {
-                xCoord += xStep * 0.5f;
-            } else {
-                xCoord += xStep;
-            }
-        }
-        yCoord += yStep;
-    }
-    
-    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-        for(int column = 0; column < X_VERTEX_COUNT; ++column) {
-            // x and y are already 0.
-            _stablePageVertexNormals[row][column].z = -1;
-        }
-    }
-    
-    memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-    memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-    
-    _leftPageVisible = _rightPageRect.origin.x > 0.0f;
-    
-    [self _setupConstraints];
-    
+    [self _layoutPages];
     [super layoutSubviews];
-    
-    UIView *view = [_pageContentsInformation[3].view retain];
-    if(!view) {
-        [_pageContentsInformation[2].view retain];
-    }
-    NSUInteger pageIndex = _pageContentsInformation[3].pageIndex;
-    if(pageIndex == NSUIntegerMax) {
-        pageIndex = _pageContentsInformation[2].pageIndex;
-    }
-    
-    for(int i = 0; i < 6; ++i) {
-        [_pageContentsInformation[i].view release];
-        _pageContentsInformation[i].view = nil;
-        if(_pageContentsInformation[i].texture) {
-            glDeleteTextures(1, &(_pageContentsInformation[i].texture));
-            _pageContentsInformation[i].texture = 0;
-        }
-        _pageContentsInformation[i].pageIndex = NSUIntegerMax;
-    }    
-    
-    if(view) {
-        [self setCurrentPageView:view];
-        [view release];
-    } else if(pageIndex != NSUIntegerMax) {
-        [self setCurrentPageIndex:pageIndex];
-    }
-    
-    [self didChangeValueForKey:@"leftPageFrame"];
-    [self didChangeValueForKey:@"rightPageFrame"];
-    [self didChangeValueForKey:@"zoomMatrix"];
-    
-    [self setNeedsDraw];
 }
 
+- (void)setPageAspectRatio:(CGFloat)pageAspectRatio
+{
+    if(_pageAspectRatio != pageAspectRatio) {
+        _pageAspectRatio = pageAspectRatio;
+        [self _layoutPages];
+    }
+}
 
 - (UIImage *)screenshot
 {
@@ -699,6 +715,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             [self _createTextureIn:&_pageContentsInformation[page].texture
                               from:view];
         } else {
+            [EAGLContext setCurrentContext:self.eaglContext];
             glDeleteTextures(1, &_pageContentsInformation[page].texture);
             _pageContentsInformation[page].texture = 0;
         }
@@ -733,7 +750,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (NSArray *)pageViews
 {
     NSMutableArray *views = [[NSMutableArray alloc] initWithCapacity:6];
-    for(NSUInteger i = 0; i < 6; ++i) {
+    for(NSUInteger i = 0; i < 7; ++i) {
         UIView *view = _pageContentsInformation[i].view;
         if(view) {
             [views addObject:view];
@@ -809,7 +826,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)refreshView:(UIView *)view
 {
-    for(int i = 0; i < 6; ++i) {
+    for(int i = 0; i < 7; ++i) {
         if(view == _pageContentsInformation[i].view) {
             [self _createTextureIn:&_pageContentsInformation[i].texture
                               from:view];
@@ -818,7 +835,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
 }
 
-- (NSUInteger)currentPageIndex {
+- (NSUInteger)leftPageIndex 
+{
+    return _pageContentsInformation[2].pageIndex;
+}
+
+- (NSUInteger)rightPageIndex 
+{
     return _pageContentsInformation[3].pageIndex;
 }
 
@@ -851,6 +874,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     } else {
         _pageContentsInformation[pageOffset].pageIndex = NSUIntegerMax; 
         if(_pageContentsInformation[pageOffset].texture) {
+            [EAGLContext setCurrentContext:self.eaglContext];
             glDeleteTextures(1, &_pageContentsInformation[pageOffset].texture);
             _pageContentsInformation[pageOffset].texture = 0;
         }
@@ -869,72 +893,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [self _setupBitmapPage:newPageIndex forInternalPageOffset:pageOffset minSize:minSize];
 }
 
-- (void)setCurrentPageIndex:(NSUInteger)newPageIndex
-{
-    CGSize minSize = _rightPageFrame.size;
-    if([self respondsToSelector:@selector(contentScaleFactor)]) {
-        CGFloat scaleFactor = self.contentScaleFactor;
-        minSize.width *= scaleFactor;
-        minSize.height *= scaleFactor;
-    }
-    NSUInteger rightPageIndex = newPageIndex;
-    if(_twoSidedPages) {
-        if(_oddPagesOnRight) {
-            if((rightPageIndex % 2) == 0) {
-                rightPageIndex++;
-            }                
-        } else {
-            if((rightPageIndex % 2) == 1) {
-                rightPageIndex++;
-            }            
-        }
-    }
-    if(rightPageIndex != _pageContentsInformation[3].pageIndex) {
-        if(_twoSidedPages) {
-            if(rightPageIndex >= 3) {
-                [self _setupBitmapPage:rightPageIndex - 3 forInternalPageOffset:0 minSize:minSize];
-            } else {
-                _pageContentsInformation[0].pageIndex = NSUIntegerMax;
-                glDeleteTextures(1, &_pageContentsInformation[0].texture);
-                _pageContentsInformation[0].texture = 0;
-            }            
-            if(rightPageIndex >= 2) {
-                [self _setupBitmapPage:rightPageIndex - 2 forInternalPageOffset:1 minSize:minSize];
-            } else {
-                _pageContentsInformation[1].pageIndex = NSUIntegerMax;
-                glDeleteTextures(1, &_pageContentsInformation[1].texture);
-                _pageContentsInformation[1].texture = 0;
-            }
-            if(rightPageIndex >= 1) {
-                [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:2 minSize:minSize];
-            } else {
-                _pageContentsInformation[2].pageIndex = NSUIntegerMax;
-                glDeleteTextures(1, &_pageContentsInformation[2].texture);
-                _pageContentsInformation[2].texture = 0;
-            }
-            [self _setupBitmapPage:rightPageIndex forInternalPageOffset:3 minSize:minSize];
-            [self _setupBitmapPage:rightPageIndex + 1 forInternalPageOffset:4 minSize:minSize];
-            [self _setupBitmapPage:rightPageIndex + 2 forInternalPageOffset:5 minSize:minSize];
-        } else {
-            if(rightPageIndex >= 1) {
-                [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:1 minSize:minSize];
-            } else {
-                _pageContentsInformation[1].pageIndex = NSUIntegerMax;
-                glDeleteTextures(1, &_pageContentsInformation[1].texture);
-                _pageContentsInformation[1].texture = 0;
-            }
-            [self _setupBitmapPage:rightPageIndex forInternalPageOffset:3 minSize:minSize];
-            [self _setupBitmapPage:rightPageIndex + 1 forInternalPageOffset:5 minSize:minSize];        
-        }
-    }
-    _rightFlatPageIndex = 3;    
-}
-
-- (void)turnToPageAtIndex:(NSUInteger)newPageIndex 
+- (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated
 {
     if(_pageContentsInformation[2].pageIndex != newPageIndex &&
        _pageContentsInformation[3].pageIndex != newPageIndex) {
-        [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         
         BOOL forwards = newPageIndex > _pageContentsInformation[3].pageIndex;
         
@@ -951,53 +913,74 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             }
         }
         
-        [self _setupBitmapPage:rightPageIndex forInternalPageOffset:forwards ? 5 : 1];
-        [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
-        
-        _isTurningAutomatically = YES;
-        _automaticTurnIsForwards = forwards;
-        if(forwards) {
-            _rightFlatPageIndex = 5;
-            _automaticTurnFrame = 0;
-        } else {
-            _rightFlatPageIndex = 3;
-            _automaticTurnFrame = 0;
-        }
-        
-        NSUInteger pageCount;
-        if(forwards) {
-            pageCount = rightPageIndex - _pageContentsInformation[3].pageIndex;
-        } else {
-            if(_twoSidedPages) {
-                pageCount = _pageContentsInformation[2].pageIndex - rightPageIndex;
+        if(animated) {
+            [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+
+            [self _setupBitmapPage:rightPageIndex forInternalPageOffset:forwards ? 5 : 1];
+            [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
+            
+            _isTurningAutomatically = YES;
+            _automaticTurnIsForwards = forwards;
+            if(forwards) {
+                _rightFlatPageIndex = 5;
+                _automaticTurnFrame = 0;
             } else {
-                pageCount = _pageContentsInformation[3].pageIndex - rightPageIndex;
+                _rightFlatPageIndex = 3;
+                _automaticTurnFrame = 0;
             }
-        }
-        
-        if(_twoSidedPages) {
-            pageCount /= 2;
-        }
-        
-        CGFloat percentage = (CGFloat)pageCount / 512.0f;
-        if(pageCount == 1) {
-            percentage = 0;
-        } else if(percentage > 1.0f) {
-            percentage = 1.0f;
+            
+            NSUInteger pageCount;
+            if(forwards) {
+                pageCount = rightPageIndex - _pageContentsInformation[3].pageIndex;
+            } else {
+                if(_twoSidedPages) {
+                    pageCount = _pageContentsInformation[2].pageIndex - rightPageIndex;
+                } else {
+                    pageCount = _pageContentsInformation[3].pageIndex - rightPageIndex;
+                }
+            }
+            
+            if(_twoSidedPages) {
+                pageCount /= 2;
+            }
+            
+            CGFloat percentage = (CGFloat)pageCount / 512.0f;
+            if(pageCount == 1) {
+                percentage = 0;
+            } else if(percentage > 1.0f) {
+                percentage = 1.0f;
+            } else {
+                percentage = powf(percentage, 0.7f);
+            }
+            for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
+                GLfloat yCoord = (GLfloat)row / (GLfloat)Y_VERTEX_COUNT-1;
+                _pageEdgeTextureCoordinates[row][0].x = 0.5f + percentage * 0.5f;
+                _pageEdgeTextureCoordinates[row][0].y = yCoord;
+                _pageEdgeTextureCoordinates[row][1].x = 0.5f - percentage * 0.5f;
+                _pageEdgeTextureCoordinates[row][1].y = yCoord;
+            }                
+            
+            _automaticTurnPercentage = percentage;
+            
+            self.animating = YES;
         } else {
-            percentage = powf(percentage, 0.7f);
+            [self _setupBitmapPage:rightPageIndex forInternalPageOffset:3];
+            if(_twoSidedPages) {
+                [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:2];
+            }
+            
+            _rightFlatPageIndex = 3;
+            
+            _recacheFlags[1] = YES;
+            _recacheFlags[5] = YES; 
+            if(_twoSidedPages) {
+                _recacheFlags[0] = YES;
+                _recacheFlags[4] = YES; 
+            }
+            [self _cacheNonVisiblePages];
+            
+            [self setNeedsDraw];
         }
-        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
-            GLfloat yCoord = (GLfloat)row / (GLfloat)Y_VERTEX_COUNT-1;
-            _pageEdgeTextureCoordinates[row][0].x = 0.5f + percentage * 0.5f;
-            _pageEdgeTextureCoordinates[row][0].y = yCoord;
-            _pageEdgeTextureCoordinates[row][1].x = 0.5f - percentage * 0.5f;
-            _pageEdgeTextureCoordinates[row][1].y = yCoord;
-        }                
-        
-        _automaticTurnPercentage = percentage;
-        
-        self.animating = YES;
     }    
 }
 
@@ -1150,7 +1133,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (void)drawView 
 {        
     [super drawView];
-    
+        
     BOOL animating = self.isAnimating;
     
     BOOL shouldStopAnimating = !animating;
@@ -1201,7 +1184,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
               
     // Tell the renderer id we're doing white-on-black.
     glUniform1i(glGetUniformLocation(_program, "uInvertContentsLuminance"), _pageTextureIsDark ? 1 : 0);
-    
+
+    glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
+    glUniform1i(glGetUniformLocation(_program, "uDisableContentsTexture"), 0);
+
     // Clear the buffer, ready to draw.
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -1240,14 +1226,17 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
     
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture);    
-    
-    // Draw the flat page.
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
-    glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    if(_pageContentsInformation[_rightFlatPageIndex].texture) {        
+        // Draw the right-hand (or only) flat page.
 
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture);    
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
+        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+    
     if(_leftPageVisible) {
         NSInteger leftFlatPageIndex = _rightFlatPageIndex - (shouldStopAnimating ? 1 : 3);
         if(leftFlatPageIndex >= 0 && _twoSidedPages) {
@@ -1445,7 +1434,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [eaglContext presentRenderbuffer:GL_RENDERBUFFER];
 
     if(_viewsNeedRecache) {
-        [self _postAnimationViewAndTextureRecache];
+        [self _cacheNonVisiblePages];
+        [self _setNeedsAccessibilityElementsRebuild];
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     }
     
     if(shouldStopAnimating) {
@@ -1800,15 +1791,15 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 CGFloat tapTurnMargin = 0.1f * self.bounds.size.width;
                 if(point.x < tapTurnMargin) {
                     if(_pageContentsInformation[1].pageIndex != NSUIntegerMax) {
-                        [self turnToPageAtIndex:_pageContentsInformation[1].pageIndex];
+                        [self turnToPageAtIndex:_pageContentsInformation[1].pageIndex animated:YES];
                         turning = YES;
                     } 
                 } else if(point.x > (self.bounds.size.width - tapTurnMargin)) {
                     if(_pageContentsInformation[4].pageIndex != NSUIntegerMax) {
-                        [self turnToPageAtIndex:_pageContentsInformation[4].pageIndex];
+                        [self turnToPageAtIndex:_pageContentsInformation[4].pageIndex animated:YES];
                         turning = YES;
                     } else if(_pageContentsInformation[5].pageIndex != NSUIntegerMax) {
-                        [self turnToPageAtIndex:_pageContentsInformation[5].pageIndex];
+                        [self turnToPageAtIndex:_pageContentsInformation[5].pageIndex animated:YES];
                         turning = YES;
                     }
                 }                
@@ -2184,8 +2175,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return shouldStopAnimating;
 }
 
-- (void)_postAnimationViewAndTextureRecache
+- (void)_cacheNonVisiblePages
 {
+    [EAGLContext setCurrentContext:self.eaglContext];
     if(_twoSidedPages) {
         if(_recacheFlags[1]) {
             if(_viewDataSource) {
@@ -2307,10 +2299,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     if(_viewDataSource && [_delegate respondsToSelector:@selector(pageTurningView:didTurnToView:)]) {
         [_delegate pageTurningView:self didTurnToView:_pageContentsInformation[3].view ?: _pageContentsInformation[2].view];
     }                    
-    _viewsNeedRecache = NO;
-    
-    [self _setNeedsAccessibilityElementsRebuild];
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+    _viewsNeedRecache = NO;    
 }
 
 - (void)_setNeedsAccessibilityElementsRebuild

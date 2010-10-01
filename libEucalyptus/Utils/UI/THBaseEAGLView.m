@@ -86,15 +86,14 @@
 {
     if(!_animating && !_needsDraw) {
         [self performSelector:@selector(drawView) withObject:nil afterDelay:0];
+        _needsDraw = YES;
     }
 }
 
 - (void)drawView 
 {
-    if(_needsDraw) {
-        _needsDraw = NO;
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
-    }    
+    _needsDraw = NO;
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
 }
 
 - (void)didMoveToWindow
@@ -115,9 +114,9 @@
     if(_didJustMoveToNewWindow) {
         [self drawView];
         _didJustMoveToNewWindow = NO;
-    } else {
+    } //else {
         [self setNeedsDraw];
-    }
+    //}
 }
 
 - (BOOL)_createFramebuffer 
@@ -212,7 +211,7 @@
         [self.animationTimer invalidate]; // Works with NSTimer and CADisplayLink.
         self.animationTimer = nil;
     }
-    if(!_needsDraw) {
+    if(_needsDraw) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
     }
     

@@ -44,6 +44,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 @interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate> {
     GLuint _program;
     
+    CGSize _lastLayoutBoundsSize;
+    
     CGSize _viewportLogicalSize;
     CGSize _pageLogicalSize;
     CGFloat _pageAspectRatio;
@@ -159,10 +161,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 @property (nonatomic, readonly) UIImage *screenshot;
 
-
+// These must be set up before the view appears.
 @property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
-
-// After changing these, ensure -layoutSubviews is called for consistent behaviour. 
 @property (nonatomic, assign) BOOL twoSidedPages;
 @property (nonatomic, assign) BOOL fitTwoPages;
 @property (nonatomic, assign) BOOL oddPagesOnRight;
@@ -184,11 +184,13 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 
 #pragma mark Bitmap based page contents
-@property (nonatomic, assign) NSUInteger currentPageIndex;
+// In non-fitTwoPages mode, the right page index only is valid.
+// Will return NSUIntegerMax if a page is not visible on the specified side.
+@property (nonatomic, assign, readonly) NSUInteger rightPageIndex;
+@property (nonatomic, assign, readonly) NSUInteger leftPageIndex;
 
-- (void)turnToPageAtIndex:(NSUInteger)newPageIndex;
+- (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated;
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex;
-
 
 #pragma mark Light-related properties.
 

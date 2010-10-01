@@ -1370,7 +1370,6 @@
 				7D9A96F810D7E48200C2E00A /* TestResources */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
-				7D27117A124928110087C4E3 /* Accelerate.framework */,
 			);
 			name = libEucalyptus;
 			sourceTree = "<group>";
@@ -1378,6 +1377,7 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D27117A124928110087C4E3 /* Accelerate.framework */,
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 				7DD48E5010C2E41C0001203D /* UIKit.framework */,
 				7DD48E5810C2E44F0001203D /* OpenGLES.framework */,

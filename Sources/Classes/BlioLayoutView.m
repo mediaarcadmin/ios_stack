@@ -130,8 +130,6 @@
             [aPDFDataSource release];
         }
         
-
-        
         pageCount = [self.dataSource pageCount];
         // Cache the first page crop to allow fast estimating of crops
         firstPageCrop = [self.dataSource cropRectForPage:1];
@@ -152,30 +150,27 @@
         [self.selector detatch];
         self.selector = nil;
     }
-    if(newSuperview && !self.superview) {
+    
+    if(newSuperview && !self.pageTurningView) {
         EucPageTurningView *aPageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
         aPageTurningView.delegate = self;
         aPageTurningView.bitmapDataSource = self;
         aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
+        if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
+            [aPageTurningView setPageAspectRatio:0];
+        } else {
+            [aPageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
+        }        
         [self addSubview:aPageTurningView];
+        
         self.pageTurningView = aPageTurningView;
         [aPageTurningView release];
         
         [aPageTurningView addObserver:self forKeyPath:@"leftPageFrame" options:0 context:NULL];
         [aPageTurningView addObserver:self forKeyPath:@"rightPageFrame" options:0 context:NULL];        
         
-        self.pageTurningView.currentPageIndex = self.pageNumber - 1;
-    } else if (!newSuperview) {
-        EucPageTurningView *aPageTurningView = self.pageTurningView;
-        [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
-        [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];        
-    }
-    
-    if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
-        [self.pageTurningView setPageAspectRatio:0];
-    } else {
-        [self.pageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
+        [aPageTurningView turnToPageAtIndex:self.pageNumber - 1 animated:NO];
     }
 }
 
@@ -190,6 +185,14 @@
         [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         self.selector = aSelector;
         [aSelector release];        
+    } else {
+        EucPageTurningView *aPageTurningView = self.pageTurningView;
+        if(aPageTurningView) {
+            [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
+            [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];
+            [aPageTurningView removeFromSuperview];
+            self.pageTurningView = nil;
+        }
     }
 }
 
@@ -262,8 +265,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
     if(self.pageTurningView) {
-            [pageTurningView setCurrentPageIndex:targetPage - 1];      
-            [pageTurningView setNeedsDraw];
+        [pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
         self.pageNumber = targetPage;
     }
 }
@@ -399,7 +401,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 - (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)aPageTurningView
 {
     self.selector.selectionDisabled = NO;
-    self.pageNumber = aPageTurningView.currentPageIndex + 1;
+    NSUInteger pageIndex = aPageTurningView.rightPageIndex;
+    if(pageIndex == NSUIntegerMax) {
+        pageIndex = aPageTurningView.leftPageIndex;
+    }
+    self.pageNumber = pageIndex + 1;
     //_temporaryHighlightingDisabled = NO;
 #if 0
     if(_temporaryHighlightRange) {
