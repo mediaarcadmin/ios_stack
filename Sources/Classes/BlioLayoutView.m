@@ -403,7 +403,21 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         pageFrame = [self.pageTurningView rightPageFrame];
     }
 
-    return transformRectToFitRect(pageCrop, pageFrame, true);
+    CGAffineTransform pageTransform = transformRectToFitRect(pageCrop, pageFrame, true);
+    
+    CGFloat dpiRatio = [self.dataSource dpiRatio];
+    
+    if (dpiRatio != 1) {
+        CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
+        
+        CGRect mediaRect = [self.dataSource mediaRectForPage:pageIndex + 1];
+        CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(pageCrop.origin.x - mediaRect.origin.x, pageCrop.origin.y - mediaRect.origin.y);
+        CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
+        CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
+        return viewTransform;
+    }
+        
+    return pageTransform;
 }
 
 #pragma mark -
