@@ -471,11 +471,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 }
 
 - (NSInteger)leftPageIndex {
-    return self.pageNumber - 2;
+    return [self.pageTurningView leftPageIndex];
 }
 
 - (NSInteger)rightPageIndex {
-    return self.pageNumber - 1;
+    return [self.pageTurningView rightPageIndex];
 }
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
