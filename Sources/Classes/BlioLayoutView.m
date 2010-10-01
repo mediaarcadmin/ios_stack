@@ -395,7 +395,6 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex {
     // TODO: Make sure this is cached in LayoutView or pageTurningView
     CGRect pageCrop = [self pageTurningView:self.pageTurningView contentRectForPageAtIndex:pageIndex];
-    CGRect viewRect = self.bounds;
     CGRect pageFrame;
     
     if (pageIndex == [self leftPageIndex]) {
