@@ -135,11 +135,6 @@
         pageCount = [self.dataSource pageCount];
         // Cache the first page crop to allow fast estimating of crops
         firstPageCrop = [self.dataSource cropRectForPage:1];
-        if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
-            [self.pageTurningView setPageAspectRatio:1];
-        } else {
-            [self.pageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
-        }
 
         NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
         if (page > self.pageCount) page = self.pageCount;
@@ -175,6 +170,12 @@
         EucPageTurningView *aPageTurningView = self.pageTurningView;
         [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
         [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];        
+    }
+    
+    if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
+        [self.pageTurningView setPageAspectRatio:0];
+    } else {
+        [self.pageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
     }
 }
 
@@ -360,11 +361,14 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex {
-    // TODO: Make sure this is cached in LayoutView of pageTurningView
+    // TODO: Make sure this is cached in LayoutView or pageTurningView
     CGRect pageCrop = [self pageTurningView:self.pageTurningView contentRectForPageAtIndex:pageIndex];
     CGRect viewRect = self.bounds;
+    CGFloat dpiRatio = [self.dataSource dpiRatio];
     
     CGFloat scale = MIN(CGRectGetWidth(viewRect)/CGRectGetWidth(pageCrop), CGRectGetHeight(viewRect)/CGRectGetHeight(pageCrop));
+    scale = scale * dpiRatio;
+    
     CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
     CGRect scaledPage = CGRectApplyAffineTransform(pageCrop, scaleTransform);
     CGAffineTransform centerTransform = CGAffineTransformMakeTranslation((CGRectGetWidth(viewRect) - CGRectGetWidth(scaledPage))/2.0f, (CGRectGetHeight(viewRect) - CGRectGetHeight(scaledPage))/2.0f);
@@ -838,6 +842,41 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 - (CGFloat)dpiRatio {
     return 72/96.0f;
+}
+
+
+- (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
+                                fromRect:(CGRect)rect
+                                 minSize:(CGSize)size 
+                              getContext:(id *)context {
+    
+    if (nil == pdf) return nil;
+
+    size_t width  = size.width;
+    size_t height = size.height;
+        
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        
+    CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
+    CGColorSpaceRelease(colorSpace);
+    
+    CGFloat widthScale  = size.width / CGRectGetWidth(rect);
+    CGFloat heightScale = size.height / CGRectGetHeight(rect);
+    
+    CGContextSetFillColorWithColor(bitmapContext, [UIColor whiteColor].CGColor);
+    
+    CGRect pageRect = CGRectMake(0, 0, width, height);
+    CGContextFillRect(bitmapContext, pageRect);
+    CGContextClipToRect(bitmapContext, pageRect);
+    
+    CGContextConcatCTM(bitmapContext, CGAffineTransformMakeScale(widthScale, heightScale));
+    
+    [pdfLock lock];
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
+    CGContextDrawPDFPage(bitmapContext, aPage);
+    [pdfLock unlock];
+    
+    return (CGContextRef)[(id)bitmapContext autorelease];
 }
 
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
