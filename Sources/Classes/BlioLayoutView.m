@@ -906,12 +906,14 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     size_t height = size.height;
         
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceCMYK();
         
     CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
     CGColorSpaceRelease(colorSpace);
     
     CGFloat widthScale  = size.width / CGRectGetWidth(rect);
     CGFloat heightScale = size.height / CGRectGetHeight(rect);
+    heightScale = heightScale;widthScale = widthScale;
     
     CGContextSetFillColorWithColor(bitmapContext, [UIColor whiteColor].CGColor);
     
@@ -919,7 +921,10 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     CGContextFillRect(bitmapContext, pageRect);
     CGContextClipToRect(bitmapContext, pageRect);
     
-    CGContextConcatCTM(bitmapContext, CGAffineTransformMakeScale(widthScale, heightScale));
+    CGRect cropRect = [self cropRectForPage:page];
+    CGAffineTransform fitTransform = transformRectToFitRect(cropRect, pageRect, YES);
+    //CGContextConcatCTM(bitmapContext, CGAffineTransformMakeScale(widthScale, heightScale));
+    CGContextConcatCTM(bitmapContext, fitTransform);
     
     [pdfLock lock];
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
