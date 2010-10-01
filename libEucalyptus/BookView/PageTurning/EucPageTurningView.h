@@ -51,7 +51,6 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     CGFloat _pageAspectRatio;
         
     CGAffineTransform _viewportToBoundsPointsTransform;
-
     
     CATransform3D _rightPageTransform;
     CGRect _rightPageRect;

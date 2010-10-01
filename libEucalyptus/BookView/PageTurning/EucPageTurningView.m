@@ -359,6 +359,15 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             _viewportLogicalSize.width = (size.width / size.height) * _viewportLogicalSize.height;
         }
         
+        
+        CGFloat scaleFactor;
+        if([self respondsToSelector:@selector(contentScaleFactor)]) {
+            scaleFactor = self.contentScaleFactor;
+        } else {
+            scaleFactor = 1.0f;
+        }        
+        CGFloat pixelViewportDimension = (size.width * scaleFactor) / _viewportLogicalSize.width;
+        
         _zoomMatrix = CATransform3DIdentity;
         _viewportToBoundsPointsTransform = CGAffineTransformMakeScale(size.width /_viewportLogicalSize.width, 
                                                                       size.height /_viewportLogicalSize.height);
@@ -388,6 +397,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             _pageLogicalSize.width = availableWidth;
             _pageLogicalSize.height = _pageLogicalSize.width / aspectRatio;
         }        
+        
+        _pageLogicalSize.width = floorf(_pageLogicalSize.width * pixelViewportDimension) / pixelViewportDimension;
+        _pageLogicalSize.height = floorf(_pageLogicalSize.height * pixelViewportDimension) / pixelViewportDimension;
         
         GLfloat xStep = ((GLfloat)_pageLogicalSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
         GLfloat yStep = ((GLfloat)_pageLogicalSize.height / (Y_VERTEX_COUNT - 1));
@@ -583,8 +595,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, contextWidth, contextHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);    
     
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
@@ -849,6 +861,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
    forInternalPageOffset:(NSUInteger)pageOffset
                  minSize:(CGSize)minSize
 {
+    THLog(@"requesting Texture of size (%f, %f)", (long)minSize.width, (long)minSize.height);
+    
     CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
                                    contentRectForPageAtIndex:newPageIndex];
     if(!CGRectIsEmpty(thisPageRect)) {
@@ -890,6 +904,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         minSize.width *= scaleFactor;
         minSize.height *= scaleFactor;
     }
+    minSize.width = roundf(minSize.width);
+    minSize.height = roundf(minSize.height);
     [self _setupBitmapPage:newPageIndex forInternalPageOffset:pageOffset minSize:minSize];
 }
 
@@ -1655,13 +1671,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             
             _zoomMatrix = CATransform3DTranslate(_zoomMatrix, newCenter.x - oldCenter.x, newCenter.y - oldCenter.y, 0.0f);
             */
-            
-            CGRect testRect = { { 0.0f, 0.0f }, { 1.0f, 1.0f } };
-            testRect = CGRectApplyAffineTransform(testRect, CATransform3DGetAffineTransform(newZoomMatrix));
-            if(testRect.size.width <= 1.0f) {
-                newZoomMatrix = CATransform3DIdentity;
-            }
-            
+                        
             self.zoomMatrix = newZoomMatrix;            
         }
     }
@@ -2328,12 +2338,71 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [self willChangeValueForKey:@"rightPageFrame"];
     [self willChangeValueForKey:@"leftPageFrame"];
     
+    CGSize bounds = self.bounds.size;
+    CGFloat pointViewportDimension = bounds.width / _viewportLogicalSize.width;
+
+    CGFloat contentScaleFactor;
+    if([self respondsToSelector:@selector(contentScaleFactor)]) {
+        contentScaleFactor = self.contentScaleFactor;
+    } else {
+        contentScaleFactor = 1.0f;
+    }
+    
+    CGFloat pixelViewportDimension = pointViewportDimension * contentScaleFactor;
+    
+    // Change the zoom to the nearest zoom that will scale the zoom rect edges
+    // to pixel boundaries.
+    /*CGFloat zoomFactor = zoomMatrix.m11;
+    if(zoomFactor < 1.0f) {
+        zoomFactor = 1.0f;
+    }
+    CGFloat scaledPixelDimension = pixelViewportDimension * zoomFactor;    
+    CGFloat pixelPerfectScaleFactor = roundf(scaledPixelDimension) / pixelViewportDimension;
+    
+    zoomMatrix.m11 = pixelPerfectScaleFactor;
+    zoomMatrix.m22 = pixelPerfectScaleFactor;*/
+    
     _zoomMatrix = zoomMatrix;
-    CGAffineTransform affineZoomMatrix = CATransform3DGetAffineTransform(zoomMatrix);
-    CGRect rightPageFrame = CGRectApplyAffineTransform(_rightPageRect, affineZoomMatrix);
-    self.rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, _viewportToBoundsPointsTransform);
-    CGRect leftPageFrame = CGRectApplyAffineTransform(_leftPageRect, affineZoomMatrix);
-    self.leftPageFrame = CGRectApplyAffineTransform(leftPageFrame, _viewportToBoundsPointsTransform);
+    
+    CGRect rightPageFrame = _rightPageRect;
+    rightPageFrame.origin.x -= _viewportLogicalSize.width * 0.5f;
+    rightPageFrame.origin.y -= _viewportLogicalSize.height * 0.5f;
+    CGAffineTransform scaleAndTranslate = CATransform3DGetAffineTransform(CATransform3DConcat(zoomMatrix, _rightPageTransform));
+    rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, scaleAndTranslate);
+    rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, CGAffineTransformInvert(CATransform3DGetAffineTransform(_rightPageTransform)));
+    rightPageFrame.origin.x += _viewportLogicalSize.width * 0.5f;
+    rightPageFrame.origin.y += _viewportLogicalSize.height * 0.5f;
+    
+    rightPageFrame.origin.x *= pixelViewportDimension;
+    rightPageFrame.origin.y *= pixelViewportDimension;
+    rightPageFrame.size.width *= pixelViewportDimension;
+    rightPageFrame.size.height *= pixelViewportDimension;
+    
+    /*
+    // Make the frame integral by making it span all the pixels it's more than
+    // 0.5 into - that way a texture created at this size and applied
+    // with GL_LINEAR /should/ pixel-align...
+     
+    // This scheme doesn't work...
+     
+    _rightPageFrame.origin.x = roundf(_rightPageFrame.origin.x);
+    _rightPageFrame.origin.y = roundf(_rightPageFrame.origin.y);
+    _rightPageFrame.size.width = roundf(rightPageFrame.origin.x + rightPageFrame.size.width) - _rightPageFrame.origin.x;
+    _rightPageFrame.size.height = roundf(rightPageFrame.origin.y + rightPageFrame.size.height) - _rightPageFrame.origin.y;
+     */
+    
+    // Hopefully, if we CGRectIntegral this, that way a texture created at this 
+    // size and applied with GL_LINEAR will pixel-align..
+    _rightPageFrame = CGRectIntegral(rightPageFrame);
+    
+    // Translate it back to points. 
+    _rightPageFrame.origin.x /= contentScaleFactor;
+    _rightPageFrame.origin.y /= contentScaleFactor;
+    _rightPageFrame.size.width /= contentScaleFactor;
+    _rightPageFrame.size.height /= contentScaleFactor;
+    
+    _leftPageFrame = _rightPageFrame;
+    _leftPageFrame.origin.x -= _rightPageFrame.size.width;
     
     [self didChangeValueForKey:@"leftPageFrame"];
     [self didChangeValueForKey:@"rightPageFrame"];
