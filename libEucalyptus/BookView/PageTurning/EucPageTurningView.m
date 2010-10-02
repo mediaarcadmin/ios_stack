@@ -1551,7 +1551,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         // We've already started to turn the page.
         // Remove the touch we're 'using' and pass the rest on.
         NSMutableSet *unusedTouches = [touches mutableCopy];
-        [unusedTouches removeObject:_touch];
+        if([unusedTouches containsObject:_touch]) {
+            [unusedTouches removeObject:_touch];
+        }
         if(unusedTouches.count) {
             [_pageContentsInformation[3].view touchesBegan:unusedTouches withEvent:event];
         }
@@ -1679,21 +1681,41 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 _zoomingDelegateMessageSent = YES;
             }
             
+            CATransform3D newZoomMatrix = _pinchStartZoomMatrix;
+
+            CGRect bounds = self.bounds;
+            CGPoint newCenter = CGPointMake(currentPinchPoints[0].x + (currentPinchPoints[1].x - currentPinchPoints[0].x) * 0.5,
+                                            currentPinchPoints[0].y + (currentPinchPoints[1].y - currentPinchPoints[0].y) * 0.5);
+            
+            // First, translate the new touch point to the center of the zooming area.
+            newZoomMatrix = CATransform3DConcat(newZoomMatrix, CATransform3DMakeTranslation(
+                                                                                            (bounds.size.width * 0.5 - newCenter.x) / _viewportToBoundsPointsTransform.a, 
+                                                                                            -(bounds.size.height * 0.5 - newCenter.y) / _viewportToBoundsPointsTransform.d,
+                                                                                            0.0f));     
+                        
+            // Now, zoom to the new pinch width.
             CGFloat oldDistance = CGPointDistance(_pinchStartPoints[0], _pinchStartPoints[1]);
             CGFloat newDistance = CGPointDistance(currentPinchPoints[0], currentPinchPoints[1]);
             CGFloat zoom = newDistance / oldDistance;
-            CATransform3D newZoomMatrix = CATransform3DScale(_pinchStartZoomMatrix, zoom, zoom, 1.0f);
+            newZoomMatrix = CATransform3DConcat(newZoomMatrix, CATransform3DMakeScale( zoom, zoom, 1.0f));
             
-            /*
-            CGPoint oldCenter = CGPointMake(_pinchStartPoints[0].x + (_pinchStartPoints[0].x - _pinchStartPoints[1].x) * 0.5,
-                                            _pinchStartPoints[0].y + (_pinchStartPoints[0].y - _pinchStartPoints[1].y) * 0.5);
-            CGPoint newCenter = CGPointMake(currentPinchPoints[0].x + (currentPinchPoints[0].x - currentPinchPoints[1].x) * 0.5,
-                                            currentPinchPoints[0].y + (currentPinchPoints[0].y - currentPinchPoints[1].y) * 0.5);
+            // Now, translate by the movement of the pinch centerpoint.
+            CGPoint oldCenter = CGPointMake(_pinchStartPoints[0].x + (_pinchStartPoints[1].x - _pinchStartPoints[0].x) * 0.5,
+                                            _pinchStartPoints[0].y + (_pinchStartPoints[1].y - _pinchStartPoints[0].y) * 0.5);
+            CGPoint translate = CGPointMake(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
+            newZoomMatrix = CATransform3DConcat(CATransform3DMakeTranslation(
+                                                                                            translate.x / _viewportToBoundsPointsTransform.a, 
+                                                                                            -translate.y / _viewportToBoundsPointsTransform.d,
+                                                                                            0.0f), newZoomMatrix);     
             
+            // Translate the whole thing back by the reverse of the amount
+            // we had to move it to get the touch point into the center of
+            // the zooming area.
+            newZoomMatrix = CATransform3DConcat(newZoomMatrix, CATransform3DMakeTranslation(
+                                                                                            -(bounds.size.width * 0.5 - newCenter.x) / _viewportToBoundsPointsTransform.a, 
+                                                                                            (bounds.size.height * 0.5- newCenter.y) / _viewportToBoundsPointsTransform.d,
+                                                                                            0.0f));     
             
-            _zoomMatrix = CATransform3DTranslate(_zoomMatrix, newCenter.x - oldCenter.x, newCenter.y - oldCenter.y, 0.0f);
-            */
-                        
             self.zoomMatrix = newZoomMatrix;            
         }
     }
@@ -1701,13 +1723,19 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     if(self.isAnimating || _vibrated || _pinchUnderway) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_touch) {
-            [unusedTouches removeObject:_touch];
+            if([unusedTouches containsObject:_touch]) {
+                [unusedTouches removeObject:_touch];
+            }            
         } 
         if(_pinchTouches[0]) {
-            [unusedTouches removeObject:_pinchTouches[0]];
+            if([unusedTouches containsObject:_pinchTouches[0]]) {
+                [unusedTouches removeObject:_pinchTouches[0]];
+            }            
         }
         if(_pinchTouches[1]) {
-            [unusedTouches removeObject:_pinchTouches[1]];
+            if([unusedTouches containsObject:_pinchTouches[1]]) {
+                [unusedTouches removeObject:_pinchTouches[1]];
+            }            
         }
         if(unusedTouches.count) {
             [_pageContentsInformation[3].view touchesMoved:unusedTouches withEvent:event];
@@ -1790,7 +1818,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     if(self.isAnimating || _vibrated) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_touch) {
-            [unusedTouches removeObject:_touch];
+            if([unusedTouches containsObject:_touch]) {
+                [unusedTouches removeObject:_touch];
+            }            
         }
         if(unusedTouches.count) {
             [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
@@ -1799,10 +1829,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     } else if(_pinchUnderway) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_pinchTouches[0]) {
-            [unusedTouches removeObject:_pinchTouches[0]];
+            if([unusedTouches containsObject:_pinchTouches[0]]) {
+                [unusedTouches removeObject:_pinchTouches[0]];
+            }            
         }
         if(_pinchTouches[1]) {
-            [unusedTouches removeObject:_pinchTouches[1]];
+            if([unusedTouches containsObject:_pinchTouches[1]]) {
+                [unusedTouches removeObject:_pinchTouches[1]];
+            }            
         }
         if(unusedTouches.count) {
             [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
@@ -1845,7 +1879,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             if(turning) {
                 NSMutableSet *unusedTouches = [touches mutableCopy];
                 if(_touch) {
-                    [unusedTouches removeObject:_touch];
+                    if([unusedTouches containsObject:_touch]) {
+                        [unusedTouches removeObject:_touch];
+                    }            
                 }
                 if(unusedTouches.count) {
                     [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
@@ -1867,7 +1903,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     if(self.isAnimating || _vibrated) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_touch) {
-            [unusedTouches removeObject:_touch];
+            if([unusedTouches containsObject:_touch]) {
+                [unusedTouches removeObject:_touch];
+            }            
         }
         if(unusedTouches.count) {
             [_pageContentsInformation[3].view touchesCancelled:unusedTouches withEvent:event];
@@ -1876,10 +1914,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     } else if(_pinchUnderway) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_pinchTouches[0]) {
-            [unusedTouches removeObject:_pinchTouches[0]];
+            if([unusedTouches containsObject:_pinchTouches[0]]) {
+                [unusedTouches removeObject:_pinchTouches[0]];
+            }            
         }
         if(_pinchTouches[1]) {
-            [unusedTouches removeObject:_pinchTouches[1]];
+            if([unusedTouches containsObject:_pinchTouches[1]]) {
+                [unusedTouches removeObject:_pinchTouches[1]];
+            }            
         }
         if(unusedTouches.count) {
             [_pageContentsInformation[3].view touchesCancelled:unusedTouches withEvent:event];
@@ -2387,6 +2429,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGFloat scaledPixelDimension = pixelViewportDimension * zoomFactor;    
     CGFloat zoomFactor = roundf(scaledPixelDimension) / pixelViewportDimension;
     */
+    
+    // Temporary - constrain to 2048 sided textures.
+    CGFloat maxSide = MAX(_rightPageRect.size.width * pixelViewportDimension, _rightPageRect.size.height * pixelViewportDimension);
+    if(maxSide * zoomFactor > 2048) {
+        zoomFactor = 2048 / maxSide;  
+    }
+    
     zoomMatrix.m11 = zoomFactor;
     zoomMatrix.m22 = zoomFactor;
     
@@ -2396,11 +2445,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGRect rightPageFrame = _rightPageRect;
     rightPageFrame.origin.x -= _viewportLogicalSize.width * 0.5f;
     rightPageFrame.origin.y -= _viewportLogicalSize.height * 0.5f;
-    CGAffineTransform scaleAndTranslate = CATransform3DGetAffineTransform(CATransform3DConcat(zoomMatrix, _rightPageTransform));
-    rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, scaleAndTranslate);
-    rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, CGAffineTransformInvert(CATransform3DGetAffineTransform(_rightPageTransform)));
+    zoomMatrix.m42 = -zoomMatrix.m42; // Flip the y translation component of this matrix.
+    rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, CATransform3DGetAffineTransform(zoomMatrix));
     rightPageFrame.origin.x += _viewportLogicalSize.width * 0.5f;
     rightPageFrame.origin.y += _viewportLogicalSize.height * 0.5f;
+
     
     rightPageFrame.origin.x *= pixelViewportDimension;
     rightPageFrame.origin.y *= pixelViewportDimension;

@@ -1004,10 +1004,12 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
     NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
     
-    self.pageNumber = pageNumber;  
+    self.pageNumber = pageNumber; 
+    
+    self.selector.selectedRange = nil;
     
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
-    [self _updatePageNumberLabel];    
+    [self _updatePageNumberLabel];  
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view
@@ -1043,6 +1045,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)pageTurningView
 {
     _selector.selectionDisabled = NO;
+    [_selector redisplaySelectedRange];    
+    
     _temporaryHighlightingDisabled = NO;
     
     if(_temporaryHighlightRange) {

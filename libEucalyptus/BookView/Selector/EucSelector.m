@@ -1224,7 +1224,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 }
 
 
-- (void)redisplaySelectedRange
+- (void)_redisplaySelectedRange
 {
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
@@ -1296,6 +1296,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     }
 }
 
+
 - (void)setSelectedRange:(EucSelectorRange *)newRange
 {
     if(newRange != _selectedRange &&
@@ -1315,10 +1316,21 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         [_selectedRange release];
         _selectedRange = [newRange retain];
         if(newRange) {
-            [self redisplaySelectedRange];
+            [self _redisplaySelectedRange];
         } 
     }
 }
+
+- (void)redisplaySelectedRange
+{
+    if(self.selectedRange) {
+        [self _redisplaySelectedRange];
+        if(self.trackingStage == EucSelectorTrackingStageNone) {
+            self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
+        }    
+    }
+}
+
 
 - (void)_moveSelectionBoundaryToBlockAndElement:(THPair *)closestBlockAndElement 
                                  isLeftBoundary:(BOOL)isLeftBoundary  
