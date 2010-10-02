@@ -440,7 +440,14 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     if(pageIndex == NSUIntegerMax) {
         pageIndex = aPageTurningView.leftPageIndex;
     }
-    self.pageNumber = pageIndex + 1;
+    if(self.pageNumber == pageIndex + 1) {
+        if(self.selector.selectedRange) {
+            [self.selector redisplaySelectedRange];
+        }
+    } else {
+        self.selector.selectedRange = nil;
+        self.pageNumber = pageIndex + 1;
+    }
     //_temporaryHighlightingDisabled = NO;
 #if 0
     if(_temporaryHighlightRange) {
@@ -466,11 +473,14 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 - (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView 
 {
     [self.selector setShouldHideMenu:YES];
+    [self.selector setSelectionDisabled:YES];
 }
 
 - (void)pageTurningViewDidEndZooming:(EucPageTurningView *)scrollView 
 {
+    [self.selector setSelectionDisabled:NO];
     [self.selector setShouldHideMenu:NO];
+    [self.selector redisplaySelectedRange];
 }
 
 #pragma mark -
@@ -661,7 +671,9 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         } else if([keyPath isEqualToString:@"rightPageFrame"]) {
             //CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
             //NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
-            [self.selector redisplaySelectedRange];
+            
+            // Would be nice, but it's /really/ slow.
+            //[self.selector redisplaySelectedRange];
         }
     }
 }
