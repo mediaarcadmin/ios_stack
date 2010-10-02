@@ -1029,7 +1029,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [self _updatePageNumberLabel];
 }
 
-- (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
+- (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)pageTurningView
 {
     if([_delegate respondsToSelector:@selector(bookViewPageTurnWillBegin:)]) {
         [_delegate bookViewPageTurnWillBegin:self];
@@ -1040,7 +1040,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [self _removeTemporaryHighlights];    
 }
 
-- (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
+- (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)pageTurningView
 {
     _selector.selectionDisabled = NO;
     _temporaryHighlightingDisabled = NO;

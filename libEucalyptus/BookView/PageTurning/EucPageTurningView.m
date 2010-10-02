@@ -107,8 +107,8 @@
     if(animating) {
         if(!self.isAnimating) {
             // Curtail background tasks to allow smooth animation.
-            if([_delegate respondsToSelector:@selector(pageTurningViewAnimationWillBegin:)]) {
-                [_delegate pageTurningViewAnimationWillBegin:self];   
+            if([_delegate respondsToSelector:@selector(pageTurningViewWillBeginAnimating:)]) {
+                [_delegate pageTurningViewWillBeginAnimating:self];   
             }
             [THBackgroundProcessingMediator curtailBackgroundProcessing];
             super.animating = YES;
@@ -118,8 +118,8 @@
             // Allow background tasks again.
             [THBackgroundProcessingMediator allowBackgroundProcessing];
             super.animating = NO;
-            if([_delegate respondsToSelector:@selector(pageTurningViewAnimationDidEnd:)]) {
-                [_delegate pageTurningViewAnimationDidEnd:self];   
+            if([_delegate respondsToSelector:@selector(pageTurningViewDidEndAnimation:)]) {
+                [_delegate pageTurningViewDidEndAnimation:self];   
             }        
         }
     }
@@ -359,7 +359,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             _viewportLogicalSize.width = (size.width / size.height) * _viewportLogicalSize.height;
         }
         
-        
         CGFloat scaleFactor;
         if([self respondsToSelector:@selector(contentScaleFactor)]) {
             scaleFactor = self.contentScaleFactor;
@@ -398,8 +397,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             _pageLogicalSize.height = _pageLogicalSize.width / aspectRatio;
         }        
         
-        _pageLogicalSize.width = floorf(_pageLogicalSize.width * pixelViewportDimension) / pixelViewportDimension;
-        _pageLogicalSize.height = floorf(_pageLogicalSize.height * pixelViewportDimension) / pixelViewportDimension;
+        // We make sure the height and width are integral pixel sizes, and
+        // divisble by two in pixels so that they can lie in an integral
+        // rect in the centre of the screen.
+        _pageLogicalSize.width = (floorf(_pageLogicalSize.width * pixelViewportDimension * 0.5) * 2) / pixelViewportDimension;
+        _pageLogicalSize.height = (floorf(_pageLogicalSize.height * pixelViewportDimension * 0.5) * 2) / pixelViewportDimension;
         
         GLfloat xStep = ((GLfloat)_pageLogicalSize.width * 2) / (2 * X_VERTEX_COUNT - 3);
         GLfloat yStep = ((GLfloat)_pageLogicalSize.height / (Y_VERTEX_COUNT - 1));
@@ -595,8 +597,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, contextWidth, contextHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
     
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
@@ -1247,10 +1249,16 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture);    
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);    
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);    
+
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
     }
     
     if(_leftPageVisible) {
@@ -1273,11 +1281,18 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, texture);
+                
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);    
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                
                 glCullFace(GL_FRONT);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
                 glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                 glCullFace(GL_BACK);
+                
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
 
                 if(_twoSidedPages) {
                     glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
@@ -1657,6 +1672,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
             }
         } else {
+            if(!_zoomingDelegateMessageSent) {
+                if([_delegate respondsToSelector:@selector(pageTurningViewWillBeginZooming:)]) {
+                    [_delegate pageTurningViewWillBeginZooming:self];   
+                }
+                _zoomingDelegateMessageSent = YES;
+            }
+            
             CGFloat oldDistance = CGPointDistance(_pinchStartPoints[0], _pinchStartPoints[1]);
             CGFloat newDistance = CGPointDistance(currentPinchPoints[0], currentPinchPoints[1]);
             CGFloat zoom = newDistance / oldDistance;
@@ -1748,6 +1770,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
                     [self drawView];
                 }
+            } else {
+                if([_delegate respondsToSelector:@selector(pageTurningViewDidEndZooming:)]) {
+                    [_delegate pageTurningViewDidEndZooming:self];   
+                }
+                _zoomingDelegateMessageSent = NO;
             }
             [THBackgroundProcessingMediator allowBackgroundProcessing];
         }
@@ -2350,19 +2377,21 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     
     CGFloat pixelViewportDimension = pointViewportDimension * contentScaleFactor;
     
-    // Change the zoom to the nearest zoom that will scale the zoom rect edges
-    // to pixel boundaries.
-    /*CGFloat zoomFactor = zoomMatrix.m11;
+    CGFloat zoomFactor = zoomMatrix.m11;
     if(zoomFactor < 1.0f) {
         zoomFactor = 1.0f;
     }
+    /*
+    // Change the zoom to the nearest zoom that will scale the zoom rect edges
+    // to pixel boundaries.
     CGFloat scaledPixelDimension = pixelViewportDimension * zoomFactor;    
-    CGFloat pixelPerfectScaleFactor = roundf(scaledPixelDimension) / pixelViewportDimension;
-    
-    zoomMatrix.m11 = pixelPerfectScaleFactor;
-    zoomMatrix.m22 = pixelPerfectScaleFactor;*/
+    CGFloat zoomFactor = roundf(scaledPixelDimension) / pixelViewportDimension;
+    */
+    zoomMatrix.m11 = zoomFactor;
+    zoomMatrix.m22 = zoomFactor;
     
     _zoomMatrix = zoomMatrix;
+    //self.layer.sublayerTransform = zoomMatrix;
     
     CGRect rightPageFrame = _rightPageRect;
     rightPageFrame.origin.x -= _viewportLogicalSize.width * 0.5f;
@@ -2381,7 +2410,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     /*
     // Make the frame integral by making it span all the pixels it's more than
     // 0.5 into - that way a texture created at this size and applied
-    // with GL_LINEAR /should/ pixel-align...
+    // with GL_NEAREST /should/ pixel-align...
      
     // This scheme doesn't work...
      
@@ -2392,7 +2421,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
      */
     
     // Hopefully, if we CGRectIntegral this, that way a texture created at this 
-    // size and applied with GL_LINEAR will pixel-align..
+    // size and applied with GL_NEAREST will pixel-align..
     _rightPageFrame = CGRectIntegral(rightPageFrame);
     
     // Translate it back to points. 

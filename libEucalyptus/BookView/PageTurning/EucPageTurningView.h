@@ -111,6 +111,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     BOOL _fitTwoPages;
     BOOL _leftPageVisible;
     EucPageTurningViewZoomHandlingKind _zoomHandlingKind;
+    BOOL _zoomingDelegateMessageSent;
     
     EAGLContext *_textureUploadContext;
     EucPageTurningPageContentsInformation _pageContentsInformation[7];
@@ -256,8 +257,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 @optional
 
-- (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView;
-- (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView;
+- (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)pageTurningView;
+- (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)pageTurningView;
+
+- (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView; 
+- (void)pageTurningViewDidEndZooming:(EucPageTurningView *)scrollView;
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didTurnToView:(UIView *)view;
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view;

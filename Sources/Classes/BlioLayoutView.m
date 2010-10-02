@@ -184,7 +184,7 @@
         aSelector.shouldSniffTouches = YES;
         aSelector.dataSource = self;
         aSelector.delegate =  self;
-        [aSelector attachToView:self];
+        [aSelector attachToView:pageTurningView];
         [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         self.selector = aSelector;
         [aSelector release];        
@@ -200,6 +200,7 @@
 }
 
 - (void)layoutSubviews {
+    self.selector.selectedRange = nil;
     CGRect myBounds = self.bounds;
     if(myBounds.size.width > myBounds.size.height) {
         self.pageTurningView.fitTwoPages = YES;
@@ -425,15 +426,14 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 #pragma mark -
 #pragma mark Status callbacks
 
-- (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)aPageTurningView
+- (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
 {
-    
     self.selector.selectionDisabled = YES;
     //self.temporaryHighlightingDisabled = YES;
     //[self _removeTemporaryHighlights];    
 }
 
-- (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)aPageTurningView
+- (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
 {
     self.selector.selectionDisabled = NO;
     NSUInteger pageIndex = aPageTurningView.rightPageIndex;
@@ -461,6 +461,16 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         [pageRange release];
     }
 #endif
+}
+
+- (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView 
+{
+    [self.selector setShouldHideMenu:YES];
+}
+
+- (void)pageTurningViewDidEndZooming:(EucPageTurningView *)scrollView 
+{
+    [self.selector setShouldHideMenu:NO];
 }
 
 #pragma mark -
@@ -646,11 +656,12 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         self.pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
     } else if(object == self.pageTurningView) {
         if([keyPath isEqualToString:@"leftPageFrame"]) {
-            CGRect frame = ((EucPageTurningView *)object).leftPageFrame;
-            NSLog(@"Left page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+            //CGRect frame = ((EucPageTurningView *)object).leftPageFrame;
+            //NSLog(@"Left page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
         } else if([keyPath isEqualToString:@"rightPageFrame"]) {
-            CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
-            NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+            //CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
+            //NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+            [self.selector redisplaySelectedRange];
         }
     }
 }

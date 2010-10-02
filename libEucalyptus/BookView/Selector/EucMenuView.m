@@ -231,7 +231,7 @@ static const CGFloat sOuterYPadding = 2.0f;
         if(arrowPoint.x < arrowXMargin) {
             arrowPoint.x = arrowXMargin;
         }
-        if(arrowPoint.x > backgroundRect.size.width - arrowXMargin) {
+        if(arrowPoint.x > backgroundRect.size.width - arrowXMargin - arrowImage.size.width) {
             arrowPoint.x = backgroundRect.size.width - arrowXMargin - arrowImage.size.width;
         }
         [arrowImage drawAtPoint:arrowPoint];

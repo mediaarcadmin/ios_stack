@@ -845,6 +845,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             } 
             case EucSelectorTrackingStageSelectedAndWaiting:
             {
+                self.tracking = NO;
                 if(previousStage == EucSelectorTrackingStageFirstSelection && self.selectedRangeIsHighlight) {
                     self.selectedRangeOriginalHighlightRange = self.selectedRange;
                     if([self.delegate respondsToSelector:@selector(eucSelector:willBeginEditingHighlightWithRange:)]) {
@@ -884,6 +885,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             }
             case EucSelectorTrackingStageChangingSelection:
             {         
+                self.tracking = YES;
                 [self _setupLoupe:@"Line"];
                 break;
             } 
@@ -1226,6 +1228,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
+        if(_cachedBlockAndElementIdentifierToRects) {
+            CFRelease(_cachedBlockAndElementIdentifierToRects);
+            _cachedBlockAndElementIdentifierToRects = NULL;
+        }
+        
         // Work out he rects to highlight
         NSArray *highlightRects = [self _highlightRectsForRange:selectedRange];
         
@@ -1360,31 +1367,33 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         }
     }
     
-    if(newSelectedRange) {
-        if(![newSelectedRange isEqual:self.selectedRange]) {
-            NSString *newSelectedWord;
-            if(isLeftBoundary) {
-                newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.startElementId 
-                                     ofBlockWithIdentifier:newSelectedRange.startBlockId];
+    if(&UIAccessibilityAnnouncementNotification != NULL) {
+        if(newSelectedRange) {
+            if(![newSelectedRange isEqual:self.selectedRange]) {
+                NSString *newSelectedWord;
+                if(isLeftBoundary) {
+                    newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.startElementId 
+                                         ofBlockWithIdentifier:newSelectedRange.startBlockId];
+                    
+                } else {
+                    newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.endElementId 
+                                         ofBlockWithIdentifier:newSelectedRange.endBlockId];
+                }
+                NSString *entireSelection = [self _accessibilityLabelForRange:newSelectedRange];
                 
-            } else {
-                newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.endElementId 
-                                     ofBlockWithIdentifier:newSelectedRange.endBlockId];
-            }
-            NSString *entireSelection = [self _accessibilityLabelForRange:newSelectedRange];
+                NSString *announcementFormat = NSLocalizedString(@"%@. Selection: %@", @"Accessibility announcement for extending text selection. Arg0 = newly selected word, Arg1 = entire selection");
+                
+                NSString *announcement = [NSString stringWithFormat:announcementFormat, newSelectedWord ?: @"", entireSelection ?: @""];
+                
+                if(announcement) {
+                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, announcement);
+                }
+                
+                [self.accessibilityMask setSelectionString:entireSelection];
+            }                
             
-            NSString *announcementFormat = NSLocalizedString(@"%@. Selection: %@", @"Accessibility announcement for extending text selection. Arg0 = newly selected word, Arg1 = entire selection");
-            
-            NSString *announcement = [NSString stringWithFormat:announcementFormat, newSelectedWord ?: @"", entireSelection ?: @""];
-            
-            if(announcement) {
-                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, announcement);
-            }
-            
-            [self.accessibilityMask setSelectionString:entireSelection];
-        }                
-        
-        self.selectedRange = newSelectedRange;
+            self.selectedRange = newSelectedRange;
+        }
     }
     
     UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
@@ -1420,26 +1429,28 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 }
             }
             
-            if(![newSelectedRange isEqual:self.selectedRange]) {
-                NSString *labelFormat = @"%@";
-                if(!self.accessibilityAnnouncedSelecting) {
-                    labelFormat = NSLocalizedString(@"Selecting: %@", @"Accessibility announcement when selector is first used.  Arg = word hovered over");
-                    self.accessibilityAnnouncedSelecting = YES;
+            if(&UIAccessibilityAnnouncementNotification != NULL) {
+                if(![newSelectedRange isEqual:self.selectedRange]) {
+                    NSString *labelFormat = @"%@";
+                    if(!self.accessibilityAnnouncedSelecting) {
+                        labelFormat = NSLocalizedString(@"Selecting: %@", @"Accessibility announcement when selector is first used.  Arg = word hovered over");
+                        self.accessibilityAnnouncedSelecting = YES;
+                    }
+                    NSString *labelString;
+                    if(newSelectedRangeIsHighlight) {
+                        NSString *highlightString = [self _accessibilityLabelForRange:newSelectedRange];
+                        NSString *labelStringFormat = NSLocalizedString(@"Highlight: %@", @"Accessibility announcement when selector is first used and the user is hovering over an existing highlight.  Arg = highlighted text hovered over");
+                        labelString = [NSString stringWithFormat:labelStringFormat, highlightString ?: @""];
+                    } else {
+                        labelString = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:elementId 
+                                         ofBlockWithIdentifier:blockId];
+                    }
+                    NSString *label = [NSString stringWithFormat:labelFormat, labelString ?: @""];
+                    if(label) {
+                        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
+                    }
+                    [self.accessibilityMask setSelectionString:labelString];
                 }
-                NSString *labelString;
-                if(newSelectedRangeIsHighlight) {
-                    NSString *highlightString = [self _accessibilityLabelForRange:newSelectedRange];
-                    NSString *labelStringFormat = NSLocalizedString(@"Highlight: %@", @"Accessibility announcement when selector is first used and the user is hovering over an existing highlight.  Arg = highlighted text hovered over");
-                    labelString = [NSString stringWithFormat:labelStringFormat, highlightString ?: @""];
-                } else {
-                    labelString = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:elementId 
-                                     ofBlockWithIdentifier:blockId];
-                }
-                NSString *label = [NSString stringWithFormat:labelFormat, labelString ?: @""];
-                if(label) {
-                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
-                }
-                [self.accessibilityMask setSelectionString:labelString];
             }
         }
         
@@ -1649,7 +1660,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
            (self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
             self.trackingTouch = nil;
-            self.trackingStage = EucSelectorTrackingStageNone;
+            //self.trackingStage = EucSelectorTrackingStageNone;
         } else {
             self.trackingTouchHasMoved = YES;
             [self _trackTouch:trackingTouch];
@@ -1708,8 +1719,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [self touchesEnded:touchSet];
                 break;
             case UITouchPhaseCancelled:
-            default:
                 [self touchesCancelled:touchSet];
+                break;
+            default:
                 break;
         }
     }
