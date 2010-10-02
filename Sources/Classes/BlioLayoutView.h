@@ -64,7 +64,6 @@ typedef enum BlioLayoutPageMode {
     UIImage *pageSnapshot;
     UIImage *highlightsSnapshot;
     BOOL isCancelled;
-    BlioTextFlowBlock *lastBlock;
     BlioLayoutPageMode layoutMode;
     CGAffineTransform cachedViewTransform;
     NSInteger cachedViewTransformPage;
@@ -77,6 +76,9 @@ typedef enum BlioLayoutPageMode {
     id<BlioLayoutDataSource> dataSource;
     
     NSLock *layoutCacheLock;
+    
+    BlioTextFlowBlock *lastBlock;
+    NSUInteger blockRecursionDepth;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;

@@ -15,12 +15,15 @@
     NSMutableArray *combinedBlocks;
     CGFloat verticalSpacing;
     CGFloat horizontalSpacing;
+    CGSize minimumBlockSize;
+    BOOL applyMinimumSize;
 }
 
 @property (nonatomic, assign) CGFloat verticalSpacing;
 @property (nonatomic, assign) CGFloat horizontalSpacing;
 
 - (id)initWithTextFlowBlocks:(NSArray *)theBlocks;
+- (BlioTextFlowBlock *)firstCombinedBlockForBlock:(BlioTextFlowBlock *)block;
 - (BlioTextFlowBlock *)lastCombinedBlockForBlock:(BlioTextFlowBlock *)block;
 - (CGRect)combinedRectForBlock:(BlioTextFlowBlock *)block;
 

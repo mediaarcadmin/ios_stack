@@ -40,6 +40,8 @@
 - (id)initWithTextFlowBlocks:(NSArray *)theBlocks {
     if ((self = [super init])) {
         blocks = [theBlocks retain];
+        minimumBlockSize = CGSizeZero;
+        applyMinimumSize = NO; // experimental
     }
     return self;
 }
@@ -54,6 +56,18 @@
         }
     }
     return lastBlock;
+}
+
+- (BlioTextFlowBlock *)firstCombinedBlockForBlock:(BlioTextFlowBlock *)block {
+    BlioTextFlowBlock *firstBlock = nil;
+    
+    for (BlioTextFlowCombinedBlock *combinedBlock in self.combinedBlocks) {
+        if ([combinedBlock containsTextFlowBlock:block]) {
+            firstBlock = [combinedBlock.blocks objectAtIndex:0];
+            break;
+        }
+    }
+    return firstBlock;
 }
 
 - (CGRect)combinedRectForBlock:(BlioTextFlowBlock *)block {
@@ -77,12 +91,15 @@
             BOOL intersection = NO;
             
             for (BlioTextFlowCombinedBlock *combinedBlock in combinedBlocks) {
-                CGRect combinedRect = [combinedBlock rect];
-                CGRect blockRect = CGRectInset([block rect], -horizontalSpacing, -verticalSpacing);
-                if (CGRectIntersectsRect(combinedRect, blockRect)) {
-                    intersection = YES;
-                    [combinedBlock.blocks addObject:block];
-                    break;
+                BlioTextFlowBlock *lastBlock = [combinedBlock.blocks lastObject];
+                if (block.blockIndex == (lastBlock.blockIndex + 1)) {
+                    CGRect combinedRect = [combinedBlock rect];
+                    CGRect blockRect = CGRectInset([block rect], -horizontalSpacing, -verticalSpacing);
+                    if (CGRectIntersectsRect(combinedRect, blockRect)) {
+                        intersection = YES;
+                        [combinedBlock.blocks addObject:block];
+                        break;
+                    }
                 }
             }
             
@@ -90,6 +107,22 @@
                 BlioTextFlowCombinedBlock *newCombinedBlock = [[BlioTextFlowCombinedBlock alloc] init];
                 [newCombinedBlock.blocks addObject:block];
                 [combinedBlocks addObject:newCombinedBlock];
+            }
+        }
+            
+        if (applyMinimumSize) {
+            
+            CGSize minSize = minimumBlockSize;
+            
+            if (CGSizeEqualToSize(minSize, CGSizeZero)) {
+                minSize = CGSizeMake(MAX(horizontalSpacing, verticalSpacing), MAX(horizontalSpacing, verticalSpacing));
+            }
+            
+            for (BlioTextFlowCombinedBlock *combinedBlock in [NSArray arrayWithArray:combinedBlocks]) {
+                if ((CGRectGetWidth([combinedBlock rect]) < minSize.width) &&
+                    (CGRectGetHeight([combinedBlock rect]) < minSize.height)) {
+                    [combinedBlocks removeObject:combinedBlock];
+                }
             }
         }
     }
@@ -125,8 +158,14 @@
 
 - (BOOL)containsTextFlowBlock:(BlioTextFlowBlock *)aBlock {
     BOOL contains = NO;
+    
+    // We don't want to compare against nil because block {0, 0} will match
+    if (nil == aBlock) {
+        return NO;
+    }
+    
     for (BlioTextFlowBlock *block in self.blocks) {
-        if (aBlock == block) {
+        if ([aBlock compare:block] == NSOrderedSame) {
             contains = YES;
             break;
         }
