@@ -140,9 +140,6 @@ typedef enum EucSelectorTrackingStage {
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange;
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)selectedRange movedToRange:(EucSelectorRange *)selectedRange;
 
-- (void)eucSelectorWillBeginModalAccessibility:(EucSelector *)selector ;
-- (void)eucSelectorDidEndModalAccessibility:(EucSelector *)selector ;
-
 @end
 
 
