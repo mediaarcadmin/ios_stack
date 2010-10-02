@@ -983,6 +983,15 @@
 		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
 		DCC45AD311B458A400CBD491 /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
 		DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
+		DCC9B4ED1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */; };
+		DCC9B4EE1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */; };
+		DCC9B4EF1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */; };
+		DCC9B5B2125535A800B17FBB /* CCInAppPurchaseService.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */; };
+		DCC9B5B3125535A800B17FBB /* CCInAppPurchaseService.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */; };
+		DCC9B5B4125535A800B17FBB /* CCInAppPurchaseService.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */; };
+		DCC9B64C1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */; };
+		DCC9B64D1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */; };
+		DCC9B64E1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */; };
 		DCCE466A11B9AE22002D7E01 /* icon-freebooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DCCE466911B9AE22002D7E01 /* icon-freebooks.png */; };
 		DCCE467511BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCE467411BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m */; };
 		DCD1034B11CAB587003B737E /* DRM in Resources */ = {isa = PBXBuildFile; fileRef = DC2EB05411C96E28006AC1B6 /* DRM */; };
@@ -1749,6 +1758,12 @@
 		DCC45ACB11B458A400CBD491 /* voiceSamples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = voiceSamples; sourceTree = "<group>"; };
 		DCC4696811B5C31400CBD491 /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Acapela For iPhone LF USEnglish Heather"; path = "TTS/Acapela For iPhone LF USEnglish Heather"; sourceTree = "<group>"; };
+		DCC9B4EB1254E84600B17FBB /* BlioInAppPurchaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioInAppPurchaseManager.h; sourceTree = "<group>"; };
+		DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioInAppPurchaseManager.m; sourceTree = "<group>"; };
+		DCC9B5B0125535A800B17FBB /* CCInAppPurchaseService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCInAppPurchaseService.h; sourceTree = "<group>"; };
+		DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCInAppPurchaseService.m; sourceTree = "<group>"; };
+		DCC9B64A1255BFA000B17FBB /* BlioPurchaseVoicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioPurchaseVoicesViewController.h; sourceTree = "<group>"; };
+		DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioPurchaseVoicesViewController.m; sourceTree = "<group>"; };
 		DCCE466911B9AE22002D7E01 /* icon-freebooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-freebooks.png"; sourceTree = "<group>"; };
 		DCCE467311BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreFreeBooksViewController.h; sourceTree = "<group>"; };
 		DCCE467411BC5D5E002D7E01 /* BlioStoreFreeBooksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFreeBooksViewController.m; sourceTree = "<group>"; };
@@ -1905,10 +1920,14 @@
 				DC0B993D1194F03B0040CEFB /* BlioStoreHelper.m */,
 				A368C69C116A3A52008653CF /* BlioOnlineStoreHelper.h */,
 				A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */,
+				DCC9B4EB1254E84600B17FBB /* BlioInAppPurchaseManager.h */,
+				DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */,
 				DCEB075D1242A2A10073881D /* Digital Locker Gateway */,
 				A3892C1D1164331A006D8DF4 /* BookVault */,
 				C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */,
 				C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */,
+				DCC9B5B0125535A800B17FBB /* CCInAppPurchaseService.h */,
+				DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */,
 				DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */,
 				DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */,
 				7D9147C31151494A00BCBB23 /* FlowView */,
@@ -1961,6 +1980,8 @@
 				A3A67375113078E300138097 /* BlioAudioSettingsController.m */,
 				DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */,
 				DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */,
+				DCC9B64A1255BFA000B17FBB /* BlioPurchaseVoicesViewController.h */,
+				DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */,
 				A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */,
 				A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */,
 				DC50779F116A3F2800CD40B3 /* Reachability.h */,
@@ -2629,7 +2650,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2935,10 +2956,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3661,6 +3682,9 @@
 				DCEB07751242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 				DC8CB3251249298400C1EED9 /* BlioRoundedRectActivityView.m in Sources */,
 				C9F4812E1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */,
+				DCC9B4ED1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */,
+				DCC9B5B2125535A800B17FBB /* CCInAppPurchaseService.m in Sources */,
+				DCC9B64D1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3777,6 +3801,9 @@
 				7DB7029F1248D38E00BC3272 /* NSArray+BlioAdditions.m in Sources */,
 				DC8CB3261249298400C1EED9 /* BlioRoundedRectActivityView.m in Sources */,
 				C9F4812C1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */,
+				DCC9B4EE1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */,
+				DCC9B5B3125535A800B17FBB /* CCInAppPurchaseService.m in Sources */,
+				DCC9B64E1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3892,6 +3919,9 @@
 				DCEB07761242AFEF0073881D /* DigitalLockerGateway.m in Sources */,
 				DC8CB3271249298400C1EED9 /* BlioRoundedRectActivityView.m in Sources */,
 				C9F4812D1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */,
+				DCC9B4EF1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */,
+				DCC9B5B4125535A800B17FBB /* CCInAppPurchaseService.m in Sources */,
+				DCC9B64C1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
