@@ -37,7 +37,7 @@
 - (void)_cacheNonVisiblePages;
 - (CGFloat)_tapTurnMarginForView:(UIView *)view;
 - (void)_setNeedsAccessibilityElementsRebuild;
-- (void)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
+- (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
 
 @end
 
@@ -1475,7 +1475,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     _pageTouchPoint.x = pageX;
     _pageTouchPoint.y = ((GLfloat)_touchRow / (Y_VERTEX_COUNT - 1)) * touchablePageRect.size.height;
-    _pageTouchPoint.z = -touchablePageRect.size.width * sqrtf(-(powf(((pageX)/touchablePageRect.size.width), 2) - 1));    
+    _pageTouchPoint.z = -sqrtf(touchablePageRect.size.width * touchablePageRect.size.width - pageX * pageX);    
 }
 
 - (void)_setTouchLocationFromTouch:(UITouch *)touch firstTouch:(BOOL)first;
@@ -1483,33 +1483,55 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGSize size = self.bounds.size;
     CGPoint viewTouchPoint =  [touch locationInView:self];
 
-    CGFloat oldViewportTouchX = _viewportTouchPoint.x;
     
-    _viewportTouchPoint = CGPointMake((viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
-                                      (viewTouchPoint.y / size.height) * _viewportLogicalSize.height);
+    CGAffineTransform affineZoomMatrix = CATransform3DGetAffineTransform(_zoomMatrix);
+    affineZoomMatrix.ty = -affineZoomMatrix.ty; // Screen coordinates are upside0down to GL.
+    
+    CGPoint projectedTouchPoint = CGPointMake((viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
+                                              (viewTouchPoint.y / size.height) * _viewportLogicalSize.height);
         
-    CGRect touchablePageRect = _rightPageRect;
-    CGPoint touchablePagePoint = CGPointMake(_viewportTouchPoint.x - touchablePageRect.origin.x,
-                                             _viewportTouchPoint.y - touchablePageRect.origin.y);
+    // Project the page rect.
+    CGRect projectedPageFrame = _rightPageRect;
+    projectedPageFrame.origin.x -= _viewportLogicalSize.width * 0.5f;
+    projectedPageFrame.origin.y -= _viewportLogicalSize.height * 0.5f;
+    projectedPageFrame = CGRectApplyAffineTransform(projectedPageFrame, affineZoomMatrix);
+    projectedPageFrame.origin.x += _viewportLogicalSize.width * 0.5f;
+    projectedPageFrame.origin.y += _viewportLogicalSize.height * 0.5f;
     
-    if(touchablePagePoint.y <= touchablePageRect.origin.y) {
+    // Where on the page is the point?
+    CGPoint touchablePagePoint = CGPointMake((projectedTouchPoint.x - projectedPageFrame.origin.x),
+                                             (projectedTouchPoint.y - projectedPageFrame.origin.y));
+    
+    // Scale back to viewport coordinates.
+    touchablePagePoint.x /= affineZoomMatrix.a;
+    touchablePagePoint.y /= affineZoomMatrix.d;
+    touchablePagePoint.x += _rightPageRect.origin.x;
+    touchablePagePoint.y += _rightPageRect.origin.y;
+    
+    NSLog(@"(%f, %f)", touchablePagePoint.x, touchablePagePoint.y);
+    
+    if(touchablePagePoint.y <= _rightPageRect.origin.x) {
         _touchRow = 0;
-    } else if(touchablePagePoint.y >= (touchablePageRect.origin.y + touchablePageRect.size.height)) {
+    } else if(touchablePagePoint.y >= _rightPageRect.origin.x + _rightPageRect.size.height) {
         _touchRow = Y_VERTEX_COUNT - 1;
     } else {
-        _touchRow = (((touchablePagePoint.y - touchablePageRect.origin.y) / 
-                       touchablePageRect.size.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
+        _touchRow = (((touchablePagePoint.y - _rightPageRect.origin.y) / 
+                       _rightPageRect.size.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
     }
     if(first) {
         _touchXOffset = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - touchablePagePoint.x;
     }
     
-    _viewportTouchPoint.x = _viewportTouchPoint.x + _touchXOffset;
+    touchablePagePoint.x += _touchXOffset;
+    
+    CGFloat oldViewportTouchX = _viewportTouchPoint.x;
+    _viewportTouchPoint = touchablePagePoint;
+    
     NSTimeInterval thisTouchTime = [touch timestamp];
     if(_touchTime) {
         GLfloat difference = (GLfloat)(thisTouchTime - _touchTime);
         if(difference && !first) {
-            _touchVelocity = (_viewportTouchPoint.x - oldViewportTouchX) / (30.0f * difference);
+            _touchVelocity = (touchablePagePoint.x - oldViewportTouchX) / (30.0f * difference);
         } else {
             _touchVelocity = 0;
         }
@@ -1517,7 +1539,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         _touchVelocity = 0;
     }
     _touchTime = thisTouchTime;
-    [self _setPageTouchPointForViewportX:_viewportTouchPoint.x];
+    [self _setPageTouchPointForViewportX:touchablePagePoint.x];
 }
 
 
@@ -2379,7 +2401,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return _dimQuotient;
 }
 
-- (void)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
+- (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
     [self willChangeValueForKey:@"rightPageFrame"];
     [self willChangeValueForKey:@"leftPageFrame"];
@@ -2446,11 +2468,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGFloat widthMargin = _viewportLogicalSize.width - (_rightPageRect.origin.x + _rightPageRect.size.width);
     CGFloat heightMargin = _rightPageRect.origin.y;
             
+    CGPoint remainingTranslation = CGPointZero;
+    
     CGFloat leftUnderflow = (_fitTwoPages ? leftPageFrame.origin.x : rightPageFrame.origin.x) - widthMargin;
     if(leftUnderflow > 0.0f) {
         rightPageFrame.origin.x -= leftUnderflow;
         leftPageFrame.origin.x -= leftUnderflow;
         zoomMatrix.m41 -= leftUnderflow;
+        remainingTranslation.x += leftUnderflow;
     }
         
     CGFloat rightUnderflow = (_viewportLogicalSize.width - widthMargin) - (rightPageFrame.origin.x + rightPageFrame.size.width);
@@ -2458,6 +2483,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         rightPageFrame.origin.x += rightUnderflow;
         leftPageFrame.origin.x += rightUnderflow;
         zoomMatrix.m41 += rightUnderflow;
+        remainingTranslation.x -= rightUnderflow;
     }
     
     CGFloat topUnderflow = rightPageFrame.origin.y - heightMargin;
@@ -2465,6 +2491,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         leftPageFrame.origin.y -= topUnderflow;
         rightPageFrame.origin.y -= topUnderflow;
         zoomMatrix.m42 -= topUnderflow;
+        remainingTranslation.y -= topUnderflow;
     }
     
     CGFloat bottomUnderflow = (_viewportLogicalSize.height - heightMargin) - (rightPageFrame.origin.y + rightPageFrame.size.height);
@@ -2472,6 +2499,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         leftPageFrame.origin.y += bottomUnderflow;
         rightPageFrame.origin.y += bottomUnderflow;
         zoomMatrix.m42 += bottomUnderflow;
+        remainingTranslation.y += bottomUnderflow;
     }
     
     _zoomFactor = MIN(zoomMatrix.m11, zoomMatrix.m22);
@@ -2497,6 +2525,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [self didChangeValueForKey:@"rightPageFrame"];
     
     [self setNeedsDraw];
+    
+    return remainingTranslation;
 }
 
 @end
