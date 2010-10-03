@@ -117,7 +117,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @synthesize draggingKnobVerticalOffset = _draggingKnobVerticalOffset;
 
 @synthesize menuController = _menuController;
-@synthesize shouldHideMenu = _shouldHideMenu;
 @synthesize menuShouldBeAvailable = _menuShouldBeAvailable;
 
 @synthesize accessibilityMask = _accessibilityMask;
@@ -728,9 +727,13 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             self.menuShouldBeAvailable = NO;
             [self.menuController setMenuVisible:NO animated:YES];
         }
+        
+        if(previousStage == EucSelectorTrackingStageDelay) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+        }
 
         if(previousStage != EucSelectorTrackingStageFirstSelection && 
-           (stage == EucSelectorTrackingStageNone || stage == EucSelectorTrackingStageFirstSelection)) {
+           (stage <= EucSelectorTrackingStageDelay || stage == EucSelectorTrackingStageFirstSelection)) {
             if(self.selectedRangeIsHighlight &&
                [self.delegate respondsToSelector:@selector(eucSelector:didEndEditingHighlightWithRange:movedToRange:)]) {
                 [self.delegate eucSelector:self 
@@ -765,7 +768,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [snapshotLayer removeFromSuperlayer];
                 self.snapshotLayer = nil;
                 
-                    [CATransaction commit];
+                [CATransaction commit];
             }
         }
         
@@ -803,6 +806,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             case EucSelectorTrackingStageNone:
             {
                 self.selectedRangeIsHighlight = NO;
+                [_selectedRange release];
+                _selectedRange = nil;
                 [self _removeAllHighlightLayers];
                 [self _clearSelectionCaches];
                 EucSelectorAccessibilityMask *mask = self.accessibilityMask;
@@ -815,13 +820,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 self.tracking = NO;
                 break;
             } 
+            case EucSelectorTrackingStageDelay:
+            {
+                [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
+                break;
+            }
             case EucSelectorTrackingStageFirstSelection:
             {
-                if(previousStage == EucSelectorTrackingStageNone) {
-                    self.tracking = YES;
-                } else {
-                    [self _removeAllHighlightLayers];
-                }
+                self.tracking = YES;
+                [self _removeAllHighlightLayers];
                 [self _setupLoupe:@"Magnification"];
                 [self _trackTouch:self.trackingTouch];
                 
@@ -1224,7 +1231,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 }
 
 
-- (void)_redisplaySelectedRange
+- (void)redisplaySelectedRange
 {
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
@@ -1316,18 +1323,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         [_selectedRange release];
         _selectedRange = [newRange retain];
         if(newRange) {
-            [self _redisplaySelectedRange];
+            [self redisplaySelectedRange];
         } 
-    }
-}
-
-- (void)redisplaySelectedRange
-{
-    if(self.selectedRange) {
-        [self _redisplaySelectedRange];
-        if(self.trackingStage == EucSelectorTrackingStageNone) {
-            self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
-        }    
     }
 }
 
@@ -1632,11 +1629,25 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)setSelectionDisabled:(BOOL)selectionDisabled
 {
-    _selectionDisabled = selectionDisabled;
-    if(_selectionDisabled) {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
-        self.trackingStage = EucSelectorTrackingStageNone;
-        self.trackingTouch = nil;
+    if(selectionDisabled != _selectionDisabled) {
+        if(selectionDisabled) {
+            self.shouldHideMenu = YES;
+            if(self.trackingTouch) {
+                NSSet *touchSet = [[NSSet alloc] initWithObjects:&_trackingTouch count:1];
+                [self touchesCancelled:touchSet];
+                [touchSet release];
+            }
+            if(self.trackingStage <= EucSelectorTrackingStageDelay) {
+                self.trackingStage = EucSelectorTrackingStageNone;
+            }
+            [self _removeAllHighlightLayers];
+        } else {
+            if(self.trackingStage > EucSelectorTrackingStageDelay) {
+                [self redisplaySelectedRange];
+            }
+            self.shouldHideMenu = NO;
+        }
+        _selectionDisabled = selectionDisabled;
     }
 }
 
@@ -1644,23 +1655,24 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     if(!self.selectionDisabled && !self.trackingTouch) {
         UITouch *touch = [touches anyObject];
-        BOOL currentlyTracking = self.isTracking;
 
+        EucSelectorTrackingStage currentStage = self.trackingStage;
+        
         self.trackingTouch = touch;
         self.trackingTouchHasMoved = NO;
-        if(currentlyTracking) {
+        if(currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
             [self _setDraggingKnobFromTouch:touch];
-        }
-        if(!currentlyTracking || 
-           !self.draggingKnob) {
-            [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
-        } else {
             if(self.draggingKnob) {
                 self.trackingStage = EucSelectorTrackingStageChangingSelection;
                 [self _trackTouch:touch];
-            } 
+            }             
         }
         
+        currentStage = self.trackingStage;
+        if(currentStage == EucSelectorTrackingStageNone || 
+           currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
+            self.trackingStage = EucSelectorTrackingStageDelay;
+        }
     }
 }
 
@@ -1668,11 +1680,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     UITouch *trackingTouch = self.trackingTouch;
     if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
-        if(!self.isTracking || 
-           (self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+        EucSelectorTrackingStage currentStage = self.trackingStage;
+        if(currentStage == EucSelectorTrackingStageDelay) {
             self.trackingTouch = nil;
-            //self.trackingStage = EucSelectorTrackingStageNone;
+            self.trackingStage = EucSelectorTrackingStageNone;
         } else {
             self.trackingTouchHasMoved = YES;
             [self _trackTouch:trackingTouch];
@@ -1684,9 +1695,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     UITouch *trackingTouch = self.trackingTouch;
     if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
-        if(!self.isTracking || 
-           (self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+        EucSelectorTrackingStage currentStage = self.trackingStage;
+        if(currentStage == EucSelectorTrackingStageDelay) {
             self.trackingTouch = nil;
             self.trackingStage = EucSelectorTrackingStageNone;
         } else {
@@ -1705,11 +1715,14 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (void)touchesCancelled:(NSSet *)touches
 {
     if([touches containsObject:self.trackingTouch]) {
-        if(self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting  && !self.draggingKnob) {
+        EucSelectorTrackingStage currentStage = self.trackingStage;
+        if(currentStage == EucSelectorTrackingStageDelay) {
             // This was a touch outside the selection.
             // Since it was cancelled, treat it as if it never existed.
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
             self.trackingTouch = nil;
+            if(self.selectedRange != nil) {
+                self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
+            }
         } else {
             [self touchesEnded:touches];
         }
@@ -1719,7 +1732,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (void)observeTouch:(UITouch *)touch
 {
     if(!self.selectionDisabled) {
-        NSSet *touchSet = [NSSet setWithObject:touch];
+        NSSet *touchSet = [[NSSet  alloc] initWithObjects:&touch count:1];
         switch(touch.phase) {
             case UITouchPhaseBegan:
                 [self touchesBegan:touchSet];
@@ -1736,23 +1749,39 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             default:
                 break;
         }
+        [touchSet release];
     }
 }
 
 - (void)setShouldHideMenu:(BOOL)shouldHideMenu
 {
-    if(shouldHideMenu != _shouldHideMenu) {
-        _shouldHideMenu = shouldHideMenu;
-        EucMenuController *menuController = self.menuController;
-        if(menuController && self.menuShouldBeAvailable) {
-            if(menuController.menuVisible && shouldHideMenu) {
+    EucMenuController *menuController = self.menuController;
+    if(shouldHideMenu) {
+        if(_shouldHideMenuCount == 0) {
+            if(menuController && menuController.menuVisible) {
                 [menuController setMenuVisible:NO animated:YES];
-            } else if(!menuController.menuVisible && !shouldHideMenu) {
+            }
+        }
+        ++_shouldHideMenuCount;
+    } else {
+        --_shouldHideMenuCount;
+        if(_shouldHideMenuCount == 0) {
+            if(menuController && self.menuShouldBeAvailable &&
+               !menuController.menuVisible) {
                 [self _positionMenu];
                 [menuController setMenuVisible:YES animated:YES];
             }
         }
     }
+    if(_shouldHideMenuCount < 0) {
+        THWarn(@"Selector menu set to visible more times than it has been hidden");
+        _shouldHideMenuCount = 0;
+    }
+}
+
+- (BOOL)shouldHideMenu
+{
+    return _shouldHideMenuCount != 0;
 }
 
 @end

@@ -1038,14 +1038,15 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     }
     
     _selector.selectionDisabled = YES;
+    
     _temporaryHighlightingDisabled = YES;
+    
     [self _removeTemporaryHighlights];    
 }
 
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)pageTurningView
 {
     _selector.selectionDisabled = NO;
-    [_selector redisplaySelectedRange];    
     
     _temporaryHighlightingDisabled = NO;
     

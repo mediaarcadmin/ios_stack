@@ -435,19 +435,15 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
 {
-    self.selector.selectionDisabled = NO;
     NSUInteger pageIndex = aPageTurningView.rightPageIndex;
     if(pageIndex == NSUIntegerMax) {
         pageIndex = aPageTurningView.leftPageIndex;
     }
-    if(self.pageNumber == pageIndex + 1) {
-        if(self.selector.selectedRange) {
-            [self.selector redisplaySelectedRange];
-        }
-    } else {
-        self.selector.selectedRange = nil;
+    if(self.pageNumber != pageIndex + 1) {
         self.pageNumber = pageIndex + 1;
+        self.selector.selectedRange = nil;
     }
+    self.selector.selectionDisabled = NO;
     //_temporaryHighlightingDisabled = NO;
 #if 0
     if(_temporaryHighlightRange) {
@@ -472,15 +468,19 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
 
 - (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView 
 {
-    [self.selector setShouldHideMenu:YES];
+    // Would be nice to just hide the menu and redisplay the range after every 
+    // zoom step, but it's far too slow, so we just disable selection while 
+    // zooming is going on.
+    //[self.selector setShouldHideMenu:YES];
     [self.selector setSelectionDisabled:YES];
 }
 
 - (void)pageTurningViewDidEndZooming:(EucPageTurningView *)scrollView 
 {
+    // See comment in pageTurningViewWillBeginZooming: about disabling selection
+    // during zoom.
+    // [self.selector setShouldHideMenu:NO];
     [self.selector setSelectionDisabled:NO];
-    [self.selector setShouldHideMenu:NO];
-    [self.selector redisplaySelectedRange];
 }
 
 #pragma mark -

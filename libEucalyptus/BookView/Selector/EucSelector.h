@@ -15,6 +15,7 @@
 
 typedef enum EucSelectorTrackingStage {
     EucSelectorTrackingStageNone,
+    EucSelectorTrackingStageDelay,
     EucSelectorTrackingStageFirstSelection,
     EucSelectorTrackingStageSelectedAndWaiting,
     EucSelectorTrackingStageChangingSelection,
@@ -58,7 +59,7 @@ typedef enum EucSelectorTrackingStage {
     CGFloat _draggingKnobVerticalOffset;
     
     EucMenuController *_menuController;
-    BOOL _shouldHideMenu;
+    NSInteger _shouldHideMenuCount;
     BOOL _menuShouldBeAvailable;
     
     NSArray *_cachedBlockIdentifiers;
