@@ -1653,25 +1653,31 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)touchesBegan:(NSSet *)touches
 {
-    if(!self.selectionDisabled && !self.trackingTouch) {
-        UITouch *touch = [touches anyObject];
+    // We don't want to start tracking a pinch.
+    // In the other touches...: methods, we /do/ track even if there is more
+    // than one touch, because the touch we started tracking herre could be
+    // in the set.
+    if(touches.count == 1) { 
+        if(!self.selectionDisabled && !self.trackingTouch) {
+            UITouch *touch = [touches anyObject];
 
-        EucSelectorTrackingStage currentStage = self.trackingStage;
-        
-        self.trackingTouch = touch;
-        self.trackingTouchHasMoved = NO;
-        if(currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
-            [self _setDraggingKnobFromTouch:touch];
-            if(self.draggingKnob) {
-                self.trackingStage = EucSelectorTrackingStageChangingSelection;
-                [self _trackTouch:touch];
-            }             
-        }
-        
-        currentStage = self.trackingStage;
-        if(currentStage == EucSelectorTrackingStageNone || 
-           currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
-            self.trackingStage = EucSelectorTrackingStageDelay;
+            EucSelectorTrackingStage currentStage = self.trackingStage;
+            
+            self.trackingTouch = touch;
+            self.trackingTouchHasMoved = NO;
+            if(currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
+                [self _setDraggingKnobFromTouch:touch];
+                if(self.draggingKnob) {
+                    self.trackingStage = EucSelectorTrackingStageChangingSelection;
+                    [self _trackTouch:touch];
+                }             
+            }
+            
+            currentStage = self.trackingStage;
+            if(currentStage == EucSelectorTrackingStageNone || 
+               currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
+                self.trackingStage = EucSelectorTrackingStageDelay;
+            }
         }
     }
 }
