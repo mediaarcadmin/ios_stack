@@ -2419,37 +2419,79 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     // nice and crisp, and the pages with have pixel-aligned edges.
     // Make sure the width is also divisible by two so that it can be centered
     // on a pixel boundry.
-    zoomMatrix.m11 = roundf(pixelSize.width * zoomFactor * 0.5) / (pixelSize.width * 0.5);
-    zoomMatrix.m22 = roundf(pixelSize.height * zoomFactor * 0.5) / (pixelSize.height * 0.5);
+    zoomMatrix.m11 = roundf(pixelSize.width * zoomFactor * 0.5f) / (pixelSize.width * 0.5f);
+    zoomMatrix.m22 = roundf(pixelSize.height * zoomFactor * 0.5f) / (pixelSize.height * 0.5f);
     
     CGPoint wholePixelTranslation = CGPointMake(roundf(translation.x * pixelViewportDimension) / pixelViewportDimension,
                                                 roundf(translation.y * pixelViewportDimension) / pixelViewportDimension);
-    zoomMatrix.m41 = wholePixelTranslation.x;
-    zoomMatrix.m42 = -wholePixelTranslation.y;
     
-    _zoomMatrix = zoomMatrix;
+    zoomMatrix.m41 = wholePixelTranslation.x;
+    zoomMatrix.m42 = wholePixelTranslation.y;
+    
     //self.layer.sublayerTransform = zoomMatrix;
     
     CGRect rightPageFrame = _rightPageRect;
     rightPageFrame.origin.x -= _viewportLogicalSize.width * 0.5f;
     rightPageFrame.origin.y -= _viewportLogicalSize.height * 0.5f;
-    zoomMatrix.m42 = -zoomMatrix.m42; // Flip the y translation component of this matrix.
     rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, CATransform3DGetAffineTransform(zoomMatrix));
     rightPageFrame.origin.x += _viewportLogicalSize.width * 0.5f;
     rightPageFrame.origin.y += _viewportLogicalSize.height * 0.5f;
+    
+    
+    CGRect leftPageFrame = rightPageFrame;
+    leftPageFrame.origin.x -= rightPageFrame.size.width;
 
+    // Now, fix up the translation to make sure the pages are not outside where 
+    // they're meant to be.
+    CGFloat widthMargin = _viewportLogicalSize.width - (_rightPageRect.origin.x + _rightPageRect.size.width);
+    CGFloat heightMargin = _rightPageRect.origin.y;
+            
+    CGFloat leftUnderflow = (_fitTwoPages ? leftPageFrame.origin.x : rightPageFrame.origin.x) - widthMargin;
+    if(leftUnderflow > 0.0f) {
+        rightPageFrame.origin.x -= leftUnderflow;
+        leftPageFrame.origin.x -= leftUnderflow;
+        zoomMatrix.m41 -= leftUnderflow;
+    }
+        
+    CGFloat rightUnderflow = (_viewportLogicalSize.width - widthMargin) - (rightPageFrame.origin.x + rightPageFrame.size.width);
+    if(rightUnderflow > 0.0f) {
+        rightPageFrame.origin.x += rightUnderflow;
+        leftPageFrame.origin.x += rightUnderflow;
+        zoomMatrix.m41 += rightUnderflow;
+    }
+    
+    CGFloat topUnderflow = rightPageFrame.origin.y - heightMargin;
+    if(topUnderflow > 0.0f) {
+        leftPageFrame.origin.y -= topUnderflow;
+        rightPageFrame.origin.y -= topUnderflow;
+        zoomMatrix.m42 -= topUnderflow;
+    }
+    
+    CGFloat bottomUnderflow = (_viewportLogicalSize.height - heightMargin) - (rightPageFrame.origin.y + rightPageFrame.size.height);
+    if(bottomUnderflow > 0.0f) {
+        leftPageFrame.origin.y += bottomUnderflow;
+        rightPageFrame.origin.y += bottomUnderflow;
+        zoomMatrix.m42 += bottomUnderflow;
+    }
+    
+    _zoomFactor = MIN(zoomMatrix.m11, zoomMatrix.m22);
+    _zoomTranslation = CGPointMake(zoomMatrix.m41, zoomMatrix.m42);
+
+    _zoomMatrix = zoomMatrix;
+    _zoomMatrix.m42 = -zoomMatrix.m42; // OpenGL coordinates are upside-down compared to screen, so flip the y translation.
+    
     rightPageFrame.origin.x *= pointViewportDimension;
     rightPageFrame.origin.y *= pointViewportDimension;
     rightPageFrame.size.width *= pointViewportDimension;
     rightPageFrame.size.height *= pointViewportDimension;
     
+    leftPageFrame.origin.x *= pointViewportDimension;
+    leftPageFrame.origin.y *= pointViewportDimension;
+    leftPageFrame.size.width *= pointViewportDimension;
+    leftPageFrame.size.height *= pointViewportDimension;
+    
     _rightPageFrame = rightPageFrame;
-    
-    _leftPageFrame = _rightPageFrame;
-    _leftPageFrame.origin.x -= _rightPageFrame.size.width;
-    
-    _zoomFactor = zoomFactor;
-    _zoomTranslation = translation;
+    _leftPageFrame = leftPageFrame;
     
     [self didChangeValueForKey:@"leftPageFrame"];
     [self didChangeValueForKey:@"rightPageFrame"];
