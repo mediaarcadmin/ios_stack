@@ -25,7 +25,7 @@
 
 @interface EucPageTurningView ()
 
-@property (nonatomic, assign) CATransform3D zoomMatrix;
+@property (nonatomic, assign, readonly) CATransform3D zoomMatrix;
 @property (nonatomic, assign) CGRect leftPageFrame;
 @property (nonatomic, assign) CGRect rightPageFrame;
 
@@ -37,6 +37,7 @@
 - (void)_cacheNonVisiblePages;
 - (CGFloat)_tapTurnMarginForView:(UIView *)view;
 - (void)_setNeedsAccessibilityElementsRebuild;
+- (void)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
 
 @end
 
@@ -367,7 +368,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }        
         CGFloat pixelViewportDimension = (size.width * scaleFactor) / _viewportLogicalSize.width;
         
-        _zoomMatrix = CATransform3DIdentity;
         _viewportToBoundsPointsTransform = CGAffineTransformMakeScale(size.width /_viewportLogicalSize.width, 
                                                                       size.height /_viewportLogicalSize.height);
         
@@ -486,6 +486,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         } else if(pageIndex != NSUIntegerMax) {
             [self turnToPageAtIndex:pageIndex animated:NO];
         }
+        
+        [self _setZoomMatrixFromTranslation:CGPointZero zoomFactor:1.0f];
         
         [self didChangeValueForKey:@"leftPageFrame"];
         [self didChangeValueForKey:@"rightPageFrame"];
@@ -1249,16 +1251,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture);    
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);    
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);    
-
-        
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
     }
     
     if(_leftPageVisible) {
@@ -1282,17 +1277,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, texture);
                 
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);    
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                
                 glCullFace(GL_FRONT);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
                 glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                 glCullFace(GL_BACK);
-                
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
 
                 if(_twoSidedPages) {
                     glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
@@ -1577,7 +1566,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _pinchStartPoints[0] = [_pinchTouches[0] locationInView:self];
             _pinchStartPoints[1] = [_pinchTouches[1] locationInView:self];
             
-            _pinchStartZoomMatrix = _zoomMatrix;
+            _pinchStartZoomFactor = _zoomFactor;
+            _pinchStartZoomTranslation = _zoomTranslation;
             
             THLog(@"Pinch Began: %@, %@", NSStringFromCGPoint(_pinchStartPoints[0]), NSStringFromCGPoint(_pinchStartPoints[1]));
         }
@@ -1681,42 +1671,29 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 _zoomingDelegateMessageSent = YES;
             }
             
-            CATransform3D newZoomMatrix = _pinchStartZoomMatrix;
-
-            CGRect bounds = self.bounds;
-            CGPoint newCenter = CGPointMake(currentPinchPoints[0].x + (currentPinchPoints[1].x - currentPinchPoints[0].x) * 0.5,
-                                            currentPinchPoints[0].y + (currentPinchPoints[1].y - currentPinchPoints[0].y) * 0.5);
-            
-            // First, translate the new touch point to the center of the zooming area.
-            newZoomMatrix = CATransform3DConcat(newZoomMatrix, CATransform3DMakeTranslation(
-                                                                                            (bounds.size.width * 0.5 - newCenter.x) / _viewportToBoundsPointsTransform.a, 
-                                                                                            -(bounds.size.height * 0.5 - newCenter.y) / _viewportToBoundsPointsTransform.d,
-                                                                                            0.0f));     
-                        
-            // Now, zoom to the new pinch width.
+            CGFloat newZoomFactor = _pinchStartZoomFactor;
             CGFloat oldDistance = CGPointDistance(_pinchStartPoints[0], _pinchStartPoints[1]);
             CGFloat newDistance = CGPointDistance(currentPinchPoints[0], currentPinchPoints[1]);
             CGFloat zoom = newDistance / oldDistance;
-            newZoomMatrix = CATransform3DConcat(newZoomMatrix, CATransform3DMakeScale( zoom, zoom, 1.0f));
+            newZoomFactor *= zoom;
+
+            CGPoint oldCenter = CGPointMake((_pinchStartPoints[0].x + (_pinchStartPoints[1].x - _pinchStartPoints[0].x) * 0.5) / _viewportToBoundsPointsTransform.a - _viewportLogicalSize.width * 0.5,
+                                            (_pinchStartPoints[0].y + (_pinchStartPoints[1].y - _pinchStartPoints[0].y) * 0.5) / _viewportToBoundsPointsTransform.d - _viewportLogicalSize.height * 0.5);
+            CGPoint newCenter = CGPointMake((currentPinchPoints[0].x + (currentPinchPoints[1].x - currentPinchPoints[0].x) * 0.5) / _viewportToBoundsPointsTransform.a - _viewportLogicalSize.width * 0.5,
+                                            (currentPinchPoints[0].y + (currentPinchPoints[1].y - currentPinchPoints[0].y) * 0.5) / _viewportToBoundsPointsTransform.d - _viewportLogicalSize.height * 0.5);
             
-            // Now, translate by the movement of the pinch centerpoint.
-            CGPoint oldCenter = CGPointMake(_pinchStartPoints[0].x + (_pinchStartPoints[1].x - _pinchStartPoints[0].x) * 0.5,
-                                            _pinchStartPoints[0].y + (_pinchStartPoints[1].y - _pinchStartPoints[0].y) * 0.5);
-            CGPoint translate = CGPointMake(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
-            newZoomMatrix = CATransform3DConcat(CATransform3DMakeTranslation(
-                                                                                            translate.x / _viewportToBoundsPointsTransform.a, 
-                                                                                            -translate.y / _viewportToBoundsPointsTransform.d,
-                                                                                            0.0f), newZoomMatrix);     
+            CGPoint zoomCounteractingTranslation = CGPointMake((oldCenter.x * _pinchStartZoomFactor - oldCenter.x * newZoomFactor) / _pinchStartZoomFactor,
+                                                               (oldCenter.y * _pinchStartZoomFactor - oldCenter.y * newZoomFactor) / _pinchStartZoomFactor); 
             
-            // Translate the whole thing back by the reverse of the amount
-            // we had to move it to get the touch point into the center of
-            // the zooming area.
-            newZoomMatrix = CATransform3DConcat(newZoomMatrix, CATransform3DMakeTranslation(
-                                                                                            -(bounds.size.width * 0.5 - newCenter.x) / _viewportToBoundsPointsTransform.a, 
-                                                                                            (bounds.size.height * 0.5- newCenter.y) / _viewportToBoundsPointsTransform.d,
-                                                                                            0.0f));     
+            CGPoint movementTranslation = CGPointMake((newCenter.x - oldCenter.x), (newCenter.y - oldCenter.y));
             
-            self.zoomMatrix = newZoomMatrix;            
+            CGPoint newZoomTranslation = CGPointMake(movementTranslation.x + zoomCounteractingTranslation.x,
+                                                     movementTranslation.y + zoomCounteractingTranslation.y);
+            
+            newZoomTranslation.x += _pinchStartZoomTranslation.x * newZoomFactor / _pinchStartZoomFactor;
+            newZoomTranslation.y += _pinchStartZoomTranslation.y * newZoomFactor / _pinchStartZoomFactor;
+            
+            [self _setZoomMatrixFromTranslation:newZoomTranslation zoomFactor:newZoomFactor];
         }
     }
     
@@ -2402,10 +2379,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return _dimQuotient;
 }
 
-- (void)setZoomMatrix:(CATransform3D)zoomMatrix
+- (void)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
     [self willChangeValueForKey:@"rightPageFrame"];
     [self willChangeValueForKey:@"leftPageFrame"];
+    
+    CATransform3D zoomMatrix = CATransform3DIdentity;
     
     CGSize bounds = self.bounds.size;
     CGFloat pointViewportDimension = bounds.width / _viewportLogicalSize.width;
@@ -2419,25 +2398,34 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     
     CGFloat pixelViewportDimension = pointViewportDimension * contentScaleFactor;
     
-    CGFloat zoomFactor = zoomMatrix.m11;
+ 
+    CGSize pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
+                                  _rightPageRect.size.height * pixelViewportDimension);
+    
     if(zoomFactor < 1.0f) {
         zoomFactor = 1.0f;
     }
-    /*
-    // Change the zoom to the nearest zoom that will scale the zoom rect edges
-    // to pixel boundaries.
-    CGFloat scaledPixelDimension = pixelViewportDimension * zoomFactor;    
-    CGFloat zoomFactor = roundf(scaledPixelDimension) / pixelViewportDimension;
-    */
     
     // Temporary - constrain to 2048 sided textures.
-    CGFloat maxSide = MAX(_rightPageRect.size.width * pixelViewportDimension, _rightPageRect.size.height * pixelViewportDimension);
-    if(maxSide * zoomFactor > 2048) {
-        zoomFactor = 2048 / maxSide;  
+    CGFloat maxSide = MAX(pixelSize.width, pixelSize.height);
+    if(maxSide * zoomFactor > 2048.0f) {
+        zoomFactor = 2048.0f / maxSide;  
+        pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
+                               _rightPageRect.size.height * pixelViewportDimension);
     }
     
-    zoomMatrix.m11 = zoomFactor;
-    zoomMatrix.m22 = zoomFactor;
+    // Massage the zoom matrix to the nearest matrix that will scale the zoom 
+    // rect edges to pixel boundaries, so that our page textures will look
+    // nice and crisp, and the pages with have pixel-aligned edges.
+    // Make sure the width is also divisible by two so that it can be centered
+    // on a pixel boundry.
+    zoomMatrix.m11 = roundf(pixelSize.width * zoomFactor * 0.5) / (pixelSize.width * 0.5);
+    zoomMatrix.m22 = roundf(pixelSize.height * zoomFactor * 0.5) / (pixelSize.height * 0.5);
+    
+    CGPoint wholePixelTranslation = CGPointMake(roundf(translation.x * pixelViewportDimension) / pixelViewportDimension,
+                                                roundf(translation.y * pixelViewportDimension) / pixelViewportDimension);
+    zoomMatrix.m41 = wholePixelTranslation.x;
+    zoomMatrix.m42 = -wholePixelTranslation.y;
     
     _zoomMatrix = zoomMatrix;
     //self.layer.sublayerTransform = zoomMatrix;
@@ -2450,37 +2438,18 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     rightPageFrame.origin.x += _viewportLogicalSize.width * 0.5f;
     rightPageFrame.origin.y += _viewportLogicalSize.height * 0.5f;
 
+    rightPageFrame.origin.x *= pointViewportDimension;
+    rightPageFrame.origin.y *= pointViewportDimension;
+    rightPageFrame.size.width *= pointViewportDimension;
+    rightPageFrame.size.height *= pointViewportDimension;
     
-    rightPageFrame.origin.x *= pixelViewportDimension;
-    rightPageFrame.origin.y *= pixelViewportDimension;
-    rightPageFrame.size.width *= pixelViewportDimension;
-    rightPageFrame.size.height *= pixelViewportDimension;
-    
-    /*
-    // Make the frame integral by making it span all the pixels it's more than
-    // 0.5 into - that way a texture created at this size and applied
-    // with GL_NEAREST /should/ pixel-align...
-     
-    // This scheme doesn't work...
-     
-    _rightPageFrame.origin.x = roundf(_rightPageFrame.origin.x);
-    _rightPageFrame.origin.y = roundf(_rightPageFrame.origin.y);
-    _rightPageFrame.size.width = roundf(rightPageFrame.origin.x + rightPageFrame.size.width) - _rightPageFrame.origin.x;
-    _rightPageFrame.size.height = roundf(rightPageFrame.origin.y + rightPageFrame.size.height) - _rightPageFrame.origin.y;
-     */
-    
-    // Hopefully, if we CGRectIntegral this, that way a texture created at this 
-    // size and applied with GL_NEAREST will pixel-align..
-    _rightPageFrame = CGRectIntegral(rightPageFrame);
-    
-    // Translate it back to points. 
-    _rightPageFrame.origin.x /= contentScaleFactor;
-    _rightPageFrame.origin.y /= contentScaleFactor;
-    _rightPageFrame.size.width /= contentScaleFactor;
-    _rightPageFrame.size.height /= contentScaleFactor;
+    _rightPageFrame = rightPageFrame;
     
     _leftPageFrame = _rightPageFrame;
     _leftPageFrame.origin.x -= _rightPageFrame.size.width;
+    
+    _zoomFactor = zoomFactor;
+    _zoomTranslation = translation;
     
     [self didChangeValueForKey:@"leftPageFrame"];
     [self didChangeValueForKey:@"rightPageFrame"];

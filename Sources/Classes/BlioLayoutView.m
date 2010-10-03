@@ -666,11 +666,11 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
         self.pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
     } else if(object == self.pageTurningView) {
         if([keyPath isEqualToString:@"leftPageFrame"]) {
-            //CGRect frame = ((EucPageTurningView *)object).leftPageFrame;
-            //NSLog(@"Left page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+            CGRect frame = ((EucPageTurningView *)object).leftPageFrame;
+            NSLog(@"Left page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
         } else if([keyPath isEqualToString:@"rightPageFrame"]) {
-            //CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
-            //NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+            CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
+            NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
             
             // Would be nice, but it's /really/ slow.
             //[self.selector redisplaySelectedRange];

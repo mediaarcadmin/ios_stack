@@ -97,8 +97,14 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     UITouch *_pinchTouches[2];
     CGPoint _pinchStartPoints[2];
     
+    
+    CGFloat _zoomFactor;
+    CGPoint _zoomTranslation;
+    
+    CGFloat _pinchStartZoomFactor;
+    CGPoint _pinchStartZoomTranslation;
+    
     CATransform3D _zoomMatrix;
-    CATransform3D _pinchStartZoomMatrix;
     
     BOOL _vibrated;
     
