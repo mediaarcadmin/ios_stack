@@ -1464,10 +1464,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
 }
 
-- (void)_setPageTouchPointForViewportX:(GLfloat)x
+- (void)_setPageTouchPointForPageX:(GLfloat)x
 {
     CGRect touchablePageRect = _rightPageRect;
-    CGFloat pageX = x - touchablePageRect.origin.x;
+    CGFloat pageX = x;
     if(pageX > touchablePageRect.size.width) {
         pageX = touchablePageRect.size.width;
     } else if(pageX < -touchablePageRect.size.width) {
@@ -1475,7 +1475,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     _pageTouchPoint.x = pageX;
     _pageTouchPoint.y = ((GLfloat)_touchRow / (Y_VERTEX_COUNT - 1)) * touchablePageRect.size.height;
-    _pageTouchPoint.z = -sqrtf(touchablePageRect.size.width * touchablePageRect.size.width - pageX * pageX);    
+    _pageTouchPoint.z = -touchablePageRect.size.width * sqrtf(-(powf(((pageX)/touchablePageRect.size.width), 2) - 1));
+    //_pageTouchPoint.z = -sqrtf(touchablePageRect.size.width * touchablePageRect.size.width - pageX * pageX);    
 }
 
 - (void)_setTouchLocationFromTouch:(UITouch *)touch firstTouch:(BOOL)first;
@@ -1483,9 +1484,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGSize size = self.bounds.size;
     CGPoint viewTouchPoint =  [touch locationInView:self];
 
+    if(first) {
+        _scrollStartZoomMatrix = _zoomMatrix;
+    }
     
-    CGAffineTransform affineZoomMatrix = CATransform3DGetAffineTransform(_zoomMatrix);
-    affineZoomMatrix.ty = -affineZoomMatrix.ty; // Screen coordinates are upside0down to GL.
+    CGAffineTransform affineZoomMatrix = CATransform3DGetAffineTransform(_scrollStartZoomMatrix);
+    affineZoomMatrix.ty = -affineZoomMatrix.ty; // Screen coordinates are upside-down to GL.
     
     CGPoint projectedTouchPoint = CGPointMake((viewTouchPoint.x / size.width) * _viewportLogicalSize.width,
                                               (viewTouchPoint.y / size.height) * _viewportLogicalSize.height);
@@ -1499,39 +1503,123 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     projectedPageFrame.origin.y += _viewportLogicalSize.height * 0.5f;
     
     // Where on the page is the point?
-    CGPoint touchablePagePoint = CGPointMake((projectedTouchPoint.x - projectedPageFrame.origin.x),
-                                             (projectedTouchPoint.y - projectedPageFrame.origin.y));
+    CGPoint pageTouchPoint = CGPointMake((projectedTouchPoint.x - projectedPageFrame.origin.x),
+                                         (projectedTouchPoint.y - projectedPageFrame.origin.y));
     
     // Scale back to viewport coordinates.
-    touchablePagePoint.x /= affineZoomMatrix.a;
-    touchablePagePoint.y /= affineZoomMatrix.d;
-    touchablePagePoint.x += _rightPageRect.origin.x;
-    touchablePagePoint.y += _rightPageRect.origin.y;
-    
-    NSLog(@"(%f, %f)", touchablePagePoint.x, touchablePagePoint.y);
-    
-    if(touchablePagePoint.y <= _rightPageRect.origin.x) {
+    pageTouchPoint.x /= affineZoomMatrix.a;
+    pageTouchPoint.y /= affineZoomMatrix.d;
+    //pageTouchPoint.x -= _rightPageRect.origin.x;
+    //pageTouchPoint.y -= _rightPageRect.origin.y;
+        
+    if(pageTouchPoint.y <= _rightPageRect.origin.y) {
         _touchRow = 0;
-    } else if(touchablePagePoint.y >= _rightPageRect.origin.x + _rightPageRect.size.height) {
+    } else if(pageTouchPoint.y >= _rightPageRect.origin.x + _rightPageRect.size.height) {
         _touchRow = Y_VERTEX_COUNT - 1;
     } else {
-        _touchRow = (((touchablePagePoint.y - _rightPageRect.origin.y) / 
+        _touchRow = (((pageTouchPoint.y - _rightPageRect.origin.y) / 
                        _rightPageRect.size.height) + 0.5f / Y_VERTEX_COUNT) * (Y_VERTEX_COUNT - 1);
     }
     if(first) {
-        _touchXOffset = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - touchablePagePoint.x;
+        _scrollStartTranslation = _scrollTranslation;
+        if(!self.isAnimating) {
+            _touchStartPoint = pageTouchPoint;
+            _isTurning = 0; 
+        } else {
+            if(_isTurning == -1) {
+                _touchStartPoint.x = (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x) - _rightPageRect.size.width ;
+                _touchStartPoint.y = pageTouchPoint.y;
+            } else {
+                _touchStartPoint.x = _rightPageRect.size.width - (_pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - pageTouchPoint.x);
+                _touchStartPoint.y = pageTouchPoint.y;
+            }
+        }
     }
     
-    touchablePagePoint.x += _touchXOffset;
+    CGPoint translation = pageTouchPoint;
+    translation.x -= _touchStartPoint.x;
+    translation.y -= _touchStartPoint.y;
+    translation.x += _scrollStartTranslation.x;
+    translation.y += _scrollStartTranslation.y;
+    CGPoint translationAfterScroll = [self _setZoomMatrixFromTranslation:translation zoomFactor:_zoomFactor];
     
     CGFloat oldViewportTouchX = _viewportTouchPoint.x;
-    _viewportTouchPoint = touchablePagePoint;
+
+    if(translationAfterScroll.x < -0.000001f && _isTurning >= 0) {
+        pageTouchPoint = CGPointMake(_rightPageRect.size.width + translationAfterScroll.x,
+                                     translationAfterScroll.y);
+        if(_isTurning != 1) {
+            memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+            memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+            if(_pageContentsInformation[4].view || _pageContentsInformation[4].pageIndex != NSUIntegerMax ||
+               _pageContentsInformation[5].view || _pageContentsInformation[5].pageIndex != NSUIntegerMax) {
+                _rightFlatPageIndex = 5;
+            } else {
+                if(!_vibrated) {
+                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                    _vibrated = YES;
+                }                
+            }
+            _isTurning = 1;
+            oldViewportTouchX = pageTouchPoint.x;
+        }
+        if(!self.isAnimating) {
+            self.animating = YES;
+        }
+    } else if(translationAfterScroll.x > 0.000001f && _isTurning <= 0) {
+        pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? (-_rightPageRect.size.width + translationAfterScroll.x) : translationAfterScroll.x,
+                                     translationAfterScroll.y);
+        if(_isTurning != -1) {
+            if(_pageContentsInformation[1].view || _pageContentsInformation[1].pageIndex != NSUIntegerMax ||
+               _pageContentsInformation[2].view || _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
+                if(_rightPageRect.origin.x == 0.0f) {
+                    // Position the page floating just outside the field of view.
+                    for(int column = 1; column < X_VERTEX_COUNT; ++column) {
+                        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
+                            GLfloat radius = _pageVertices[row][column].x;                            
+                            _pageVertices[row][column].z = -radius * sinf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
+                            _pageVertices[row][column].x = radius * cosf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
+                        }
+                    }   
+                } else {
+                    // Position the page flat on the left.
+                    for(int column = 1; column < X_VERTEX_COUNT; ++column) {
+                        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
+                            _pageVertices[row][column].x = -_pageVertices[row][column].x;
+                        }
+                    }                               
+                }
+                memcpy(_oldPageVertices, _pageVertices, sizeof(_oldPageVertices));
+                _rightFlatPageIndex = 3;
+                _isTurning = YES;
+            } else {
+                if(!_vibrated) {
+                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                    _vibrated = YES;
+                }
+            }
+            _isTurning = -1;
+            oldViewportTouchX = pageTouchPoint.x;
+        }
+        if(!self.isAnimating) {
+            self.animating = YES;
+        }        
+    } else {
+        if(_isTurning == 1 && self.isAnimating) {
+            pageTouchPoint = CGPointMake(_stablePageVertices[_touchRow][X_VERTEX_COUNT - 1].x,
+                                         translationAfterScroll.y);
+        } else {
+            pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? -_rightPageRect.size.width : 0, translationAfterScroll.y);
+        } 
+    }
+    
+    _viewportTouchPoint = pageTouchPoint;
     
     NSTimeInterval thisTouchTime = [touch timestamp];
     if(_touchTime) {
         GLfloat difference = (GLfloat)(thisTouchTime - _touchTime);
         if(difference && !first) {
-            _touchVelocity = (touchablePagePoint.x - oldViewportTouchX) / (30.0f * difference);
+            _touchVelocity = (pageTouchPoint.x - oldViewportTouchX) / (30.0f * difference);
         } else {
             _touchVelocity = 0;
         }
@@ -1539,7 +1627,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         _touchVelocity = 0;
     }
     _touchTime = thisTouchTime;
-    [self _setPageTouchPointForViewportX:touchablePagePoint.x];
+    if(_isTurning != 0) {
+        [self _setPageTouchPointForPageX:pageTouchPoint.x];
+    }
 }
 
 
@@ -1551,14 +1641,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         // Store touch
         _touch = touch;
         _touchBeganTime = [touch timestamp];
-        if(self.isAnimating) {
-            [self _setTouchLocationFromTouch:_touch firstTouch:YES];
-        } else {
-            _vibrated = NO;
-        }
+        [self _setTouchLocationFromTouch:_touch firstTouch:YES];
     }
     
-    if(self.isAnimating || _vibrated) {
+    if(self.isAnimating) {
         // We've already started to turn the page.
         // Remove the touch we're 'using' and pass the rest on.
         NSMutableSet *unusedTouches = [touches mutableCopy];
@@ -1571,31 +1657,30 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         [unusedTouches release];
     } else {
         // We haven't started to move yet.  We'll pass all the touches on.
+        [_pageContentsInformation[3].view touchesBegan:touches withEvent:event];   
+    }
         
-        if(touches.count > 1 || ![touches containsObject:_touch]) {
-            // This is a pinch.  Track both touches
-            // We store the touches in a different ivar for a pinch.
-            _pinchTouches[0] = _touch;
-            _touch = nil;
-            
-            for(UITouch *secondTouch in touches) {
-                if(secondTouch != _pinchTouches[0]) {
-                    _pinchTouches[1] = secondTouch;
-                    break;
-                }
+    if(touches.count > 1 || ![touches containsObject:_touch]) {
+        // This is a pinch.  Track both touches
+        // We store the touches in a different ivar for a pinch.
+        _pinchTouches[0] = _touch;
+        _touch = nil;
+        
+        for(UITouch *secondTouch in touches) {
+            if(secondTouch != _pinchTouches[0]) {
+                _pinchTouches[1] = secondTouch;
+                break;
             }
-            
-            _pinchStartPoints[0] = [_pinchTouches[0] locationInView:self];
-            _pinchStartPoints[1] = [_pinchTouches[1] locationInView:self];
-            
-            _pinchStartZoomFactor = _zoomFactor;
-            _pinchStartZoomTranslation = _zoomTranslation;
-            
-            THLog(@"Pinch Began: %@, %@", NSStringFromCGPoint(_pinchStartPoints[0]), NSStringFromCGPoint(_pinchStartPoints[1]));
         }
         
-        [_pageContentsInformation[3].view touchesBegan:touches withEvent:event];
-    }
+        _pinchStartPoints[0] = [_pinchTouches[0] locationInView:self];
+        _pinchStartPoints[1] = [_pinchTouches[1] locationInView:self];
+        
+        _pinchStartZoomFactor = _zoomFactor;
+        _scrollStartTranslation = _scrollTranslation;
+        
+        THLog(@"Pinch Began: %@, %@", NSStringFromCGPoint(_pinchStartPoints[0]), NSStringFromCGPoint(_pinchStartPoints[1]));
+    }    
 }
 
 
@@ -1603,62 +1688,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
     if([touches containsObject:_touch]) {
         if(self.userInteractionEnabled) {
-            // If first movement
-            if(!self.isAnimating) {
-                // usleep(180000); Test to see if it would be acceptable to re-cache
-                // the view here (it would not).
-                
-                // Store touch, note direction.
-                BOOL shouldAnimate = YES;
-                CGPoint location = [_touch locationInView:self];
-                CGPoint previousLocation = [_touch previousLocationInView:self];
-                if(previousLocation.x < location.x) {
-                    if(_pageContentsInformation[1].view || _pageContentsInformation[1].pageIndex != NSUIntegerMax) {
-                        if(_rightPageRect.origin.x == 0.0f) {
-                            // Position the page floating just outside the field of view.
-                            for(int column = 1; column < X_VERTEX_COUNT; ++column) {
-                                for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
-                                    GLfloat radius = _pageVertices[row][column].x;                            
-                                    _pageVertices[row][column].z = -radius * sinf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
-                                    _pageVertices[row][column].x = radius * cosf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
-                                }
-                            }   
-                        } else {
-                            // Position the page flat on the left.
-                            for(int column = 1; column < X_VERTEX_COUNT; ++column) {
-                                for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
-                                    _pageVertices[row][column].x = -_pageVertices[row][column].x;
-                                }
-                            }                               
-                        }
-                        memcpy(_oldPageVertices, _pageVertices, sizeof(_oldPageVertices));
-                    } else {
-                        shouldAnimate = NO;
-                    }
-                } else {
-                    if(_pageContentsInformation[5].view || _pageContentsInformation[5].pageIndex != NSUIntegerMax) {
-                        _rightFlatPageIndex = 5;
-                    } else {
-                        shouldAnimate = NO;
-                    }
-                }
-                if(!_vibrated) {
-                    [_pageContentsInformation[3].view touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
-                }
-                if(shouldAnimate) {
-                    _vibrated = NO;
-                    [self _setTouchLocationFromTouch:_touch firstTouch:YES];
-                    self.animating = YES;
-                } else {
-                    if(!_vibrated) {
-                        AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
-                        _vibrated = YES;
-                    }
-                }
-            } else if(!_vibrated) {
-                // Set touch location
-                [self _setTouchLocationFromTouch:_touch firstTouch:NO];
-            }
+            [self _setTouchLocationFromTouch:_touch firstTouch:NO];
         }
     } else if([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]]) {
         if(!_pinchUnderway) {
@@ -1712,37 +1742,33 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             CGPoint newZoomTranslation = CGPointMake(movementTranslation.x + zoomCounteractingTranslation.x,
                                                      movementTranslation.y + zoomCounteractingTranslation.y);
             
-            newZoomTranslation.x += _pinchStartZoomTranslation.x * newZoomFactor / _pinchStartZoomFactor;
-            newZoomTranslation.y += _pinchStartZoomTranslation.y * newZoomFactor / _pinchStartZoomFactor;
+            newZoomTranslation.x += _scrollStartTranslation.x * newZoomFactor / _pinchStartZoomFactor;
+            newZoomTranslation.y += _scrollStartTranslation.y * newZoomFactor / _pinchStartZoomFactor;
             
             [self _setZoomMatrixFromTranslation:newZoomTranslation zoomFactor:newZoomFactor];
         }
     }
     
-    if(self.isAnimating || _vibrated || _pinchUnderway) {
-        NSMutableSet *unusedTouches = [touches mutableCopy];
-        if(_touch) {
-            if([unusedTouches containsObject:_touch]) {
-                [unusedTouches removeObject:_touch];
-            }            
-        } 
-        if(_pinchTouches[0]) {
-            if([unusedTouches containsObject:_pinchTouches[0]]) {
-                [unusedTouches removeObject:_pinchTouches[0]];
-            }            
-        }
-        if(_pinchTouches[1]) {
-            if([unusedTouches containsObject:_pinchTouches[1]]) {
-                [unusedTouches removeObject:_pinchTouches[1]];
-            }            
-        }
-        if(unusedTouches.count) {
-            [_pageContentsInformation[3].view touchesMoved:unusedTouches withEvent:event];
-        }
-        [unusedTouches release];
-    } else {
-        [_pageContentsInformation[3].view touchesMoved:touches withEvent:event];
-    }    
+    NSMutableSet *unusedTouches = [touches mutableCopy];
+    if(_touch) {
+        if([unusedTouches containsObject:_touch]) {
+            [unusedTouches removeObject:_touch];
+        }            
+    } 
+    if(_pinchTouches[0]) {
+        if([unusedTouches containsObject:_pinchTouches[0]]) {
+            [unusedTouches removeObject:_pinchTouches[0]];
+        }            
+    }
+    if(_pinchTouches[1]) {
+        if([unusedTouches containsObject:_pinchTouches[1]]) {
+            [unusedTouches removeObject:_pinchTouches[1]];
+        }            
+    }
+    if(unusedTouches.count) {
+        [_pageContentsInformation[3].view touchesMoved:unusedTouches withEvent:event];
+    }
+    [unusedTouches release];
 }
 
 - (void)_touchesEndedOrCancelled:(NSSet *)touches withEvent:(UIEvent *)event
@@ -1814,7 +1840,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if(self.isAnimating || _vibrated) {
+    if(self.isAnimating) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_touch) {
             if([unusedTouches containsObject:_touch]) {
@@ -1824,7 +1850,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(unusedTouches.count) {
             [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
         }
-        [unusedTouches release];
+        [unusedTouches release];        
     } else if(_pinchUnderway) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_pinchTouches[0]) {
@@ -1899,7 +1925,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if(self.isAnimating || _vibrated) {
+    if(self.isAnimating) {
         NSMutableSet *unusedTouches = [touches mutableCopy];
         if(_touch) {
             if([unusedTouches containsObject:_touch]) {
@@ -2075,7 +2101,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     if(!_touch && _touchVelocity) {
         GLfloat newX = _viewportTouchPoint.x + _touchVelocity /** difference*/;
         _viewportTouchPoint.x = newX;
-        [self _setPageTouchPointForViewportX:newX];
+        [self _setPageTouchPointForPageX:newX];
     }
     
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
@@ -2491,7 +2517,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         leftPageFrame.origin.y -= topUnderflow;
         rightPageFrame.origin.y -= topUnderflow;
         zoomMatrix.m42 -= topUnderflow;
-        remainingTranslation.y -= topUnderflow;
+        remainingTranslation.y += topUnderflow;
     }
     
     CGFloat bottomUnderflow = (_viewportLogicalSize.height - heightMargin) - (rightPageFrame.origin.y + rightPageFrame.size.height);
@@ -2499,11 +2525,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         leftPageFrame.origin.y += bottomUnderflow;
         rightPageFrame.origin.y += bottomUnderflow;
         zoomMatrix.m42 += bottomUnderflow;
-        remainingTranslation.y += bottomUnderflow;
+        remainingTranslation.y -= bottomUnderflow;
     }
     
     _zoomFactor = MIN(zoomMatrix.m11, zoomMatrix.m22);
-    _zoomTranslation = CGPointMake(zoomMatrix.m41, zoomMatrix.m42);
+    _scrollTranslation = CGPointMake(zoomMatrix.m41, zoomMatrix.m42);
 
     _zoomMatrix = zoomMatrix;
     _zoomMatrix.m42 = -zoomMatrix.m42; // OpenGL coordinates are upside-down compared to screen, so flip the y translation.

@@ -87,7 +87,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     UITouch *_touch;
     NSTimeInterval _touchBeganTime;
     NSInteger _touchRow;
-    GLfloat _touchXOffset;
+    CGPoint _touchStartPoint;
     NSTimeInterval _touchTime;
     THVec3 _pageTouchPoint;
     CGPoint _viewportTouchPoint;
@@ -99,12 +99,16 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     
     
     CGFloat _zoomFactor;
-    CGPoint _zoomTranslation;
+    CGPoint _scrollTranslation;
     
     CGFloat _pinchStartZoomFactor;
-    CGPoint _pinchStartZoomTranslation;
+    CGPoint _scrollStartTranslation;
+    CGRect _scrollStartRightPageRect;
     
     CATransform3D _zoomMatrix;
+    CATransform3D _scrollStartZoomMatrix;
+    
+    NSInteger _isTurning;
     
     BOOL _vibrated;
     
