@@ -87,4 +87,14 @@
     }
 }
 
+
+- (EucCSSLayoutDocumentRun *)previousDocumentRunForDocumentRun:(EucCSSLayoutDocumentRun *)run
+{
+    if(run.nextNodeInDocument) {
+        return [self documentRunForNodeWithKey:[self.document nodeForKey:run.id].previous.key];
+    } else {
+        return nil;
+    }
+}
+
 @end

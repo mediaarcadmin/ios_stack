@@ -24,6 +24,7 @@ typedef struct EucCSSLayoutDocumentRunPoint {
 typedef enum EucCSSLayoutDocumentRunComponentKind {
     EucCSSLayoutDocumentRunComponentKindNone = 0,
     EucCSSLayoutDocumentRunComponentKindSpace,
+    EucCSSLayoutDocumentRunComponentKindNonbreakingSpace,
     EucCSSLayoutDocumentRunComponentKindHardBreak,
     EucCSSLayoutDocumentRunComponentKindOpenNode,
     EucCSSLayoutDocumentRunComponentKindCloseNode,
@@ -109,5 +110,6 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 - (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
 
 - (NSArray *)words;
+- (NSArray *)attributeValuesForWordsForAttributeName:(NSString *)attribute;
 
 @end

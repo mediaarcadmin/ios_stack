@@ -24,6 +24,7 @@
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocumentNode.h"
+#import "EucCSSDocumentTreeNode.h"
 #import "THStringRenderer.h"
 #import "THNSStringSmartQuotes.h"
 #import "THPair.h"
@@ -620,6 +621,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                         // No break - fall through.
                     case 0x0009: // tab
                     case 0x0020: // Space
+                    case 0x00A0: // Non-breaking Space
                         if(!_previousInlineCharacterWasSpace) {
                             if(wordStart != cursor) {
                                 CFIndex wordLength = cursor - wordStart;
@@ -660,7 +662,14 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                                     CFRelease(string);
                                 }
                             }
-                            _previousInlineCharacterWasSpace = YES;
+                            if(ch == 0x00A0) {
+                                EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                                info.kind = EucCSSLayoutDocumentRunComponentKindNonbreakingSpace;
+                                [self _addComponent:&info];
+                                wordStart = cursor + 1;
+                            } else {
+                                _previousInlineCharacterWasSpace = YES;
+                            }
                         }
                         if(whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
                            whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP ||
@@ -764,13 +773,14 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             EucCSSLayoutDocumentRunComponentInfo componentInfo = _componentInfos[i];
             switch(componentInfo.kind) {
                 case EucCSSLayoutDocumentRunComponentKindSpace:
+                case EucCSSLayoutDocumentRunComponentKindNonbreakingSpace:
                     {
                         if(whiteSpaceModel != CSS_WHITE_SPACE_PRE && 
                            whiteSpaceModel != CSS_WHITE_SPACE_NOWRAP) {
                             breaks[breaksCount].x0 = lineSoFarWidth;
                             lineSoFarWidth += _componentInfos[i].width;
                             breaks[breaksCount].x1 = lineSoFarWidth;
-                            breaks[breaksCount].penalty = 0;
+                            breaks[breaksCount].penalty = componentInfo.kind == EucCSSLayoutDocumentRunComponentKindNonbreakingSpace ? 1024 : 0;
                             breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
                             breakInfos[breaksCount].point = _componentInfos[i].point;
                             breakInfos[breaksCount].consumesComponent = YES;
@@ -1082,6 +1092,41 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     }
     
     return words;
+}
+
+- (NSArray *)attributeValuesForWordsForAttributeName:(NSString *)attributeName
+{
+    NSUInteger wordsCount = _wordsCount;
+    NSMutableArray *attributeValues = [NSMutableArray arrayWithCapacity:wordsCount];
+    
+    EucCSSIntermediateDocumentNode *lastDocumentNode = nil;
+    NSString *lastAttribute = nil;
+    for(NSUInteger i = 0; i < wordsCount; ++i) {
+        NSString *attribute = lastAttribute;
+        EucCSSIntermediateDocumentNode *documentNode = (id)_componentInfos[_wordToComponent[i + 1]].documentNode;
+        if(documentNode != lastDocumentNode) {
+            BOOL found = NO;
+            EucCSSIntermediateDocumentNode *containingNode = documentNode;
+            do {
+                EucCSSIntermediateDocumentNode *containingNode = documentNode.parent;
+                if([containingNode respondsToSelector:@selector(documentTreeNode)]) {
+                    NSString *newAttribute =  [(id <EucCSSDocumentTreeNode>)[containingNode performSelector:@selector(documentTreeNode)] attributeWithName:attributeName];
+                    if(newAttribute) {
+                        if(![newAttribute isEqualToString:attribute]) {
+                            lastAttribute = newAttribute;
+                            attribute = newAttribute;
+                        }
+                        found = YES;
+                    }
+                }
+            } while(containingNode && !found);
+        
+            lastDocumentNode = documentNode;
+        }
+        [attributeValues addObject:attribute ?: @""];
+    }
+    
+    return attributeValues;    
 }
 
 @end

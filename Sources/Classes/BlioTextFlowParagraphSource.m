@@ -9,9 +9,18 @@
 #import "BlioTextFlowParagraphSource.h"
 
 #import "BlioTextFlow.h"
+
 #import "BlioTextFlowFlowTree.h"
 #import "BlioTextFlowParagraph.h"
 #import "BlioTextFlowParagraphWords.h"
+
+#import "BlioFlowEucBook.h"
+#import "BlioTextFlowXAMLTree.h"
+#import "BlioTextFlowXAMLTreeNode.h"
+
+#import <libEucalyptus/EucCSSIntermediateDocument.h>
+#import <libEucalyptus/EucCSSLayoutRunExtractor.h>
+#import <libEucalyptus/EucCSSLayoutDocumentRun.h>
 
 #import "BlioBookManager.h"
 
@@ -41,10 +50,12 @@
 
 - (void)dealloc
 {
+    NSManagedObjectID *myBookID = [textFlow.bookID retain];
     if(textFlow) {
-        [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:textFlow.bookID];
         [textFlow release];
+        [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:myBookID];
     }
+    [myBookID release];
     [currentFlowTree release];
     
     [super dealloc];
@@ -133,24 +144,110 @@
 - (BlioBookmarkPoint *)bookmarkPointFromParagraphID:(id)paragraphID wordOffset:(uint32_t)wordOffset
 {
     BlioBookmarkPoint *ret = nil;
-    
-    BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
-    if(paragraph) {
-        BlioTextFlowParagraphWords *paragraphWords = paragraph.paragraphWords;
-        NSArray *words = paragraphWords.words;
 
-        if(wordOffset >= words.count) {
-            ret = [self bookmarkPointFromParagraphID:[self nextParagraphIdForParagraphWithID:paragraphID]
-                                          wordOffset:0];
-        } else {
-            BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
-            ret = [[BlioBookmarkPoint alloc] init];
+    if(self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
+        NSManagedObjectID *bookID = self.textFlow.bookID;
+        BlioFlowEucBook *bUpeBook = (BlioFlowEucBook *)[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID];
+        
+        EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
+        eucIndexPoint.source = [paragraphID indexAtPosition:0];
+        EucCSSIntermediateDocument *document = [bUpeBook intermediateDocumentForIndexPoint:eucIndexPoint];
+        [eucIndexPoint release];
+        
+        EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
+        
+        uint32_t xamlFlowTreeKey = [paragraphID indexAtPosition:1];
+        uint32_t documentKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:xamlFlowTreeKey];
+        EucCSSLayoutDocumentRun *wordContainingDocumentRun = [runExtractor documentRunForNodeWithKey:documentKey];
+        
+        NSArray *thisParagraphTags = [wordContainingDocumentRun attributeValuesForWordsForAttributeName:@"Tag"];
+        if(thisParagraphTags.count > wordOffset) {
+            NSUInteger afterWordCount = 0;
+            NSString *thisPageTag = [thisParagraphTags objectAtIndex:wordOffset];
+            if(thisPageTag != (NSString *)[NSNull null] &&
+               [thisPageTag hasPrefix:@"__"]) {
+                NSArray *afterAttributes = [thisParagraphTags subarrayWithRange:NSMakeRange(wordOffset, thisParagraphTags.count - wordOffset)];
+                
+                
+                EucCSSLayoutDocumentRun *documentRun = wordContainingDocumentRun;
+                BOOL seenNextPage = NO;
+                do {
+                    NSLog(@"afterAttributes: %@", afterAttributes);
+                    NSUInteger count = 0;
+                    NSUInteger lastThisPage = 0;
+                    for(NSString *attribute in afterAttributes) {
+                        if([attribute hasPrefix:@"__"]) {
+                            if([attribute isEqualToString:thisPageTag]) {
+                                lastThisPage = count;
+                            } else {
+                                seenNextPage = YES; 
+                                break;
+                            }
+                        } else {
+                            lastThisPage = count;
+                        }
+                        ++count;
+                    }
+                    afterWordCount += lastThisPage;
+                    if(!seenNextPage) {
+                        documentRun = [runExtractor nextDocumentRunForDocumentRun:documentRun];
+                        afterAttributes = [documentRun attributeValuesForWordsForAttributeName:@"Tag"];
+                    }
+                } while(documentRun && !seenNextPage);
+                
+                NSLog(@"afterWordCount: %ld", (long)afterWordCount);
 
-            ret.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:word.blockID] + 1;
-            ret.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:word.blockID];
-            ret.wordOffset = word.wordIndex;
+                
+                NSUInteger pageIndex = [[thisPageTag substringFromIndex:2] integerValue];
+                NSUInteger afterBlockCount = 0;
+                NSArray *pageBlocks = [textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+                BlioTextFlowBlock *wordContainingBlock = nil;
+                for(BlioTextFlowBlock *block in [pageBlocks reverseObjectEnumerator]) {
+                    if(!block.folio) {
+                        NSUInteger blockWordCount = [[block words] count];
+                        if(blockWordCount < afterWordCount) {
+                            afterWordCount -= blockWordCount;
+                        } else {
+                            wordContainingBlock = block;
+                            break;
+                        }
+                    }
+                    afterBlockCount++;
+                }
+                if(wordContainingBlock) {
+                    NSUInteger blockIndex = pageBlocks.count - afterBlockCount;
+                    NSUInteger blockWordIndex = wordContainingBlock.words.count - afterWordCount;
+                    
+                    NSArray *xamlWordStrings = wordContainingDocumentRun.words;
+                    NSLog(@"XAML: %@", [xamlWordStrings subarrayWithRange:NSMakeRange(wordOffset, xamlWordStrings.count - wordOffset)]);
+                    NSArray *blockWordStrings = wordContainingBlock.wordStrings;
+                    NSLog(@"Block: %@", [blockWordStrings subarrayWithRange:NSMakeRange(blockWordIndex, blockWordStrings.count - blockWordIndex)]);
+                    NSLog(@"{%ld, %ld, %ld}", (long)pageIndex, (long)blockIndex, (long)blockWordIndex);
+                }                
+            }
+        }        
+        
+        [runExtractor release];
+        [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:bookID];
+    } else {
+        BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
+        if(paragraph) {
+            BlioTextFlowParagraphWords *paragraphWords = paragraph.paragraphWords;
+            NSArray *words = paragraphWords.words;
 
-            [ret autorelease];
+            if(wordOffset >= words.count) {
+                ret = [self bookmarkPointFromParagraphID:[self nextParagraphIdForParagraphWithID:paragraphID]
+                                              wordOffset:0];
+            } else {
+                BlioTextFlowPositionedWord *word = [words objectAtIndex:wordOffset];
+                ret = [[BlioBookmarkPoint alloc] init];
+
+                ret.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:word.blockID] + 1;
+                ret.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:word.blockID];
+                ret.wordOffset = word.wordIndex;
+
+                [ret autorelease];
+            }
         }
     }
     return ret;

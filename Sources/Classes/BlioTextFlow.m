@@ -321,7 +321,10 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 newBlockIDString = [[NSString alloc] initWithUTF8String:atts[i+1]];
             } else if (strcmp("Folio", atts[i]) == 0) {
                 folio = (strcmp("True", atts[i+1]) == 0);
+            } else if (strcmp("Surround", atts[i]) == 0) {
+                folio = (strcmp("True", atts[i+1]) == 0);
             }
+            
         }
         
         NSInteger targetIndex = context->pageIndex;
@@ -362,6 +365,10 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         }
                 
         if (textString) {
+            if([textString isEqualToString:@"Hassel"]) {
+                NSLog(@"fdsfds");
+            }
+            
             if(rectFound) {
                 BlioTextFlowBlock *block = context->block;
                 BlioTextFlowPositionedWord *newWord = [[BlioTextFlowPositionedWord alloc] init];

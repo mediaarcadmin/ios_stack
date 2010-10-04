@@ -26,7 +26,9 @@ struct css_computed_style;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *blockLevelNode;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *blockLevelParent;
 
+@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *previous;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *next;
+- (EucCSSIntermediateDocumentNode *)previousUnder:(EucCSSIntermediateDocumentNode *)under;
 - (EucCSSIntermediateDocumentNode *)nextUnder:(EucCSSIntermediateDocumentNode *)under;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextDisplayable;

@@ -195,7 +195,8 @@
                 for(i = startComponentOffset, info = componentInfos;
                     i < componentsCount && i < afterEndComponentOffset; 
                     ++i, ++info) {
-                    if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace) {
+                    if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace || 
+                       info->kind == EucCSSLayoutDocumentRunComponentKindNonbreakingSpace) {
                         spacesRemaining++;
                     }
                 }    
@@ -298,7 +299,8 @@
                 ++_renderItemCount;
                 
                 xPosition += info->width;
-            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace) {
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace || 
+                      info->kind == EucCSSLayoutDocumentRunComponentKindNonbreakingSpace) {
                 if(extraWidthNeeded != 0.0f) {
                     CGFloat extraSpace = extraWidthNeeded / spacesRemaining;
                     xPosition += extraSpace;

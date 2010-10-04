@@ -47,6 +47,27 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     [super dealloc];
 }
 
+- (EucCSSIntermediateDocumentNode *)_nodeBefore:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
+{
+    uint32_t childCount =  self.childCount;
+    if(childCount > 1) {
+        uint32_t afterKey = child.key;
+        uint32_t *childKeys = self.childKeys;
+        NSUInteger i = 1;
+        for(; i < childCount; ++i) {
+            if(childKeys[i] == afterKey) {
+                return [_document nodeForKey:childKeys[i-1]];
+            }
+        }
+    }
+    // This is our last child.
+    if(self == under) {
+        return nil;
+    }
+    return [self.parent _nodeBefore:self under:under];
+}
+
+
 - (EucCSSIntermediateDocumentNode *)_nodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
 {
     uint32_t childCount =  self.childCount;
@@ -79,10 +100,24 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     } 
 }
 
+- (EucCSSIntermediateDocumentNode *)previousUnder:(EucCSSIntermediateDocumentNode *)under {
+    if(self != under){
+        return [self.parent _nodeBefore:self under:under];
+    } else {
+        return NULL;
+    } 
+}
+
 - (EucCSSIntermediateDocumentNode *)next
 {
     return [self nextUnder:nil];
 }
+
+- (EucCSSIntermediateDocumentNode *)previous
+{
+    return [self previousUnder:nil];
+}
+
 
 - (EucCSSIntermediateDocumentNode *)displayableNodeAfter:(EucCSSIntermediateDocumentNode *)child under:(EucCSSIntermediateDocumentNode *)under
 {
