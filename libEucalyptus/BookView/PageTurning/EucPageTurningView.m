@@ -1539,9 +1539,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGPoint translation = pageTouchPoint;
     translation.x -= _touchStartPoint.x;
     translation.y -= _touchStartPoint.y;
+    translation.x *= _zoomFactor;
+    translation.y *= _zoomFactor;
     translation.x += _scrollStartTranslation.x;
     translation.y += _scrollStartTranslation.y;
     CGPoint translationAfterScroll = [self _setZoomMatrixFromTranslation:translation zoomFactor:_zoomFactor];
+    translationAfterScroll.x /= _zoomFactor;
+    translationAfterScroll.y /= _zoomFactor;
     
     CGFloat oldViewportTouchX = _viewportTouchPoint.x;
 
