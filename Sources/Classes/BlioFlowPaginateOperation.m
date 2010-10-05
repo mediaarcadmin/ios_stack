@@ -22,6 +22,7 @@
 @property (nonatomic, retain) EucBookPaginator *paginator;
 @property (nonatomic, copy) NSString *bookTitle;
 @property (nonatomic, assign) CFAbsoluteTime startTime;
+@property (nonatomic, assign) BOOL bookCheckedOut;
 
 @end
 
@@ -30,6 +31,7 @@
 @synthesize paginator;
 @synthesize bookTitle;
 @synthesize startTime;
+@synthesize bookCheckedOut;
 
 - (BOOL)isConcurrent {
     return YES;
@@ -44,6 +46,9 @@
 }
 
 - (void)finish {
+    if(bookCheckedOut) {
+        [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
+    }
     [self reportBookReadingIfRequired];
 
     [self willChangeValueForKey:@"isExecuting"];
@@ -118,6 +123,9 @@
         NSLog(@"Paginating book %@", self.bookTitle);
         
         eucBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID] retain];
+        if(eucBook) {
+            [self setBookCheckedOut:YES];
+        }
         
         [pool drain];
     }
@@ -169,7 +177,6 @@
     
     [eucBook release];
     
-    [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
     
     [pool drain];
 }
@@ -199,7 +206,7 @@
 	
     self.operationSuccess = YES;
     self.percentageComplete = 100;
-    
+        
     CFAbsoluteTime elapsedTime = CFAbsoluteTimeGetCurrent() - self.startTime;
     NSLog(@"Pagination of book %@ took %ld seconds", self.bookTitle, (long)round(elapsedTime));
     

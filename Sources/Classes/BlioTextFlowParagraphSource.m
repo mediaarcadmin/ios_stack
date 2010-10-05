@@ -19,6 +19,7 @@
 #import "BlioTextFlowXAMLTreeNode.h"
 
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
+#import <libEucalyptus/EucCSSIntermediateDocumentNode.h>
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>
 #import <libEucalyptus/EucCSSLayoutDocumentRun.h>
 
@@ -106,24 +107,34 @@
     }
     
     if(self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
+        // See comments in
+        // - (BlioBookmarkPoint *)bookmarkPointFromParagraphID:(id)paragraphID wordOffset:(uint32_t)wordOffset;
+        // about the overall word matching strategy used here.
+
+        
         // Build an array of word hashes to search for from around the point.
         NSString *lookForStrings[MATCHING_WINDOW_SIZE];
         char lookForHashes[MATCHING_WINDOW_SIZE];
 
         NSArray *pageBlocks = [textFlow blocksForPageAtIndex:bookmarkPoint.layoutPage - 1 includingFolioBlocks:YES];
-        NSArray *words = ((BlioTextFlowBlock *)[pageBlocks objectAtIndex:bookmarkPoint.blockOffset]).wordStrings;
+        NSArray *words;
+        if(pageBlocks.count > bookmarkPoint.blockOffset) {
+            words = ((BlioTextFlowBlock *)[pageBlocks objectAtIndex:bookmarkPoint.blockOffset]).wordStrings;
+        } else {
+            words = [NSArray array];
+        }
         NSInteger middleWordOffset = bookmarkPoint.wordOffset;
         {
             NSInteger tryPageOffset = bookmarkPoint.layoutPage - 1;
             NSInteger tryBlockOffset = bookmarkPoint.blockOffset;
                 
-            while(middleWordOffset + MATCHING_WINDOW_SIZE / 2 > words.count) {
+            while(middleWordOffset + MATCHING_WINDOW_SIZE / 2 + 1 > words.count) {
                 ++tryBlockOffset;
                 if(tryBlockOffset >= pageBlocks.count) {
                     tryBlockOffset = 0;
                     ++tryPageOffset;
                     if(tryPageOffset > self.textFlow.lastPageIndex) {
-                        NSInteger needMore = middleWordOffset + MATCHING_WINDOW_SIZE / 2 - words.count;
+                        NSInteger needMore = middleWordOffset + MATCHING_WINDOW_SIZE / 2 + 1 - words.count;
                         NSMutableArray *newWords = [[NSMutableArray alloc] initWithCapacity:needMore];
                         for(NSInteger i = 0; i < needMore; ++i) {
                             [newWords addObject:@""];
@@ -180,12 +191,12 @@
             lookForStrings[j] = [words objectAtIndex:middleWordOffset + i];
         }
         
-        /*
-        NSLog(@"Searching for:");
+        
+        /*NSLog(@"Searching for:");
         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
             NSLog(@"\t%@", lookForStrings[i]);
-        }
-        */
+        }*/
+        
         
         NSManagedObjectID *bookID = self.textFlow.bookID;
         BlioFlowEucBook *bUpeBook = (BlioFlowEucBook *)[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID];
@@ -196,15 +207,20 @@
         [eucIndexPoint release];
         
         EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
-        
+        EucCSSLayoutDocumentRun *documentRun = nil;
+
         NSUInteger lookForPageIndex = bookmarkPoint.layoutPage - 1;
         
-        NSUInteger lowerBoundPageIndex = 0;
-        NSUInteger upperBoundPageIndex = 0;
+        // Bound our search from the last XAML run that starts on a previous
+        // page to the one we're looking for, to the first XAML run on a 
+        // subsequent page.
         uint32_t lowerBoundRunKey = 0;
         uint32_t upperBoundRunKey = 0;
         BOOL upperBoundFound = NO;
-        EucCSSLayoutDocumentRun *documentRun = [runExtractor documentRunForNodeWithKey:0];
+        /*
+        NSUInteger lowerBoundPageIndex = 0;
+        NSUInteger upperBoundPageIndex = 0;
+        documentRun = [runExtractor documentRunForNodeWithKey:0];
         while(documentRun && !upperBoundFound) {
             upperBoundRunKey = documentRun.id;
             NSArray *thisParagraphTags = [documentRun attributeValuesForWordsForAttributeName:@"Tag"];
@@ -226,7 +242,28 @@
             }
             documentRun = [runExtractor nextDocumentRunForDocumentRun:documentRun];
         }
-    
+        */
+        // Above commented out code is the 'proper' way to do this, but 
+        EucCSSIntermediateDocumentNode *node = document.rootNode;
+        while(!upperBoundFound && (node = node.next)) {      
+            upperBoundRunKey = node.key;
+            if([node respondsToSelector:@selector(documentTreeNode)]) {
+                NSString *tag = [(id <EucCSSDocumentTreeNode>)[node performSelector:@selector(documentTreeNode)] attributeWithName:@"Tag"];
+                if(tag) {
+                    if([tag hasPrefix:@"__"]) {
+                        NSUInteger pageIndex = [[tag substringFromIndex:2] integerValue];
+                        if(pageIndex < lookForPageIndex) {
+                            lowerBoundRunKey = node.key;
+                        }
+                        if(pageIndex > lookForPageIndex) {
+                            upperBoundFound = YES;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
         char blockHashes[MATCHING_WINDOW_SIZE];
         NSString *blockStrings[MATCHING_WINDOW_SIZE];
         
@@ -247,6 +284,7 @@
         
         uint32_t examiningRunKey = lowerBoundRunKey;
         documentRun = [runExtractor documentRunForNodeWithKey:examiningRunKey];
+        examiningRunKey = documentRun.id;
         while(documentRun && examiningRunKey <= upperBoundRunKey) {
             NSArray *words = documentRun.words;
             NSUInteger examiningWordOffset = 0;
@@ -265,12 +303,12 @@
                 
                 int distance = levenshtein_distance_with_bytes(lookForHashes, MATCHING_WINDOW_SIZE, blockHashes, MATCHING_WINDOW_SIZE);
                 if(distance < bestDistance) {
-                    /*
-                     NSLog(@"Found, distance %d:", distance);
+                    
+                     /*NSLog(@"Found, distance %d:", distance);
                      for(NSInteger i = 0;  i < MATCHING_WINDOW_SIZE; ++i) {
                          NSLog(@"\t%@", blockStrings[i]);
-                     }
-                    */
+                     }*/
+                    
                     bestDistance = distance;
                     bestRunKey = runKeys[MATCHING_WINDOW_SIZE / 2];
                     bestWordOffset = wordOffsets[MATCHING_WINDOW_SIZE / 2];
@@ -334,6 +372,28 @@
     BlioBookmarkPoint *ret = nil;
 
     if(self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
+        // Crazilt, not all the runs in the XAML document are tagged with their 
+        // layout page, there's not defined way to match words in a XAML run with 
+        // words in a layout block /and/ sometimes the words differ slightly!
+        
+        // We still need to be able to match arbitrary points in both 
+        // representations though...
+        
+        // The idea here is to look for the closest match we can find to the 
+        // MATCHING_WINDOW_SIZE words around the point that this paragraph ID
+        // and word offset define in the XAML flow.
+        
+        // To do this, we find a range of blocks in the document that this 
+        // point may match to, given the sparse information on the start points
+        // of some of the runs in the XAML document, and then go through all the 
+        // runs of MATCHING_WINDOW_SIZE length in this range of blocks, looking
+        // for the closest match to our MATCHING_WINDOW_SIZE words from the XAML.
+        
+        // Closest match is done by hashing all the words in the windows
+        // to single-byte values, then calculating the levenshtein distance
+        // between these hash arrays for both candidate windows, and choosing
+        // the word in the center if the best matching window.
+        
         NSManagedObjectID *bookID = self.textFlow.bookID;
         BlioFlowEucBook *bUpeBook = (BlioFlowEucBook *)[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID];
         
@@ -348,10 +408,12 @@
         uint32_t documentKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:xamlFlowTreeKey];
         EucCSSLayoutDocumentRun *wordContainingDocumentRun = [runExtractor documentRunForNodeWithKey:documentKey];
         
-        NSUInteger startPageNumber = 0;
-        NSUInteger endPageNumber = 0;
+        NSUInteger startPageIndex = 0;
+        NSUInteger endPageIndex = 0;
         
         
+        // Find the page number of a /subsequent/ run in the XAML document
+        // to bound our block search.
         {
             EucCSSLayoutDocumentRun *testDocumentRun = wordContainingDocumentRun;
             NSArray *thisParagraphTags = [testDocumentRun attributeValuesForWordsForAttributeName:@"Tag"];
@@ -368,12 +430,13 @@
                     thisPageTag = [thisParagraphTags objectAtIndex:testOffset++];
                 }
             } while(testDocumentRun && (thisPageTag == (NSString *)[NSNull null] || ![thisPageTag hasPrefix:@"__"]));
-            --testOffset;
             if(testDocumentRun) {
-                endPageNumber = [[thisPageTag substringFromIndex:2] integerValue];
+                endPageIndex = [[thisPageTag substringFromIndex:2] integerValue];
             }
         }
         
+        // Find the page number of a /previous/ run in the XAML document
+        // to bound our block search.
         {
             EucCSSLayoutDocumentRun *testDocumentRun = wordContainingDocumentRun;
             NSArray *thisParagraphTags = [testDocumentRun attributeValuesForWordsForAttributeName:@"Tag"];
@@ -390,15 +453,25 @@
                     thisPageTag = [thisParagraphTags objectAtIndex:testOffset--];
                 }
             } while(testDocumentRun && (thisPageTag == (NSString *)[NSNull null] || ![thisPageTag hasPrefix:@"__"]));
-            ++testOffset;
             if(testDocumentRun) {
-                startPageNumber = [[thisPageTag substringFromIndex:2] integerValue];
+                startPageIndex = [[thisPageTag substringFromIndex:2] integerValue];
             }
         }
-        if(endPageNumber < startPageNumber) {
-            endPageNumber = (startPageNumber == 0 ? 0 : startPageNumber - 1);
+        if(startPageIndex == 0) {
+            startPageIndex = ((BlioTextFlowFlowReference *)[textFlow.flowReferences objectAtIndex:[paragraphID indexAtPosition:0]]).startPage;
         }
+        if(endPageIndex < startPageIndex) {
+            NSArray *flowReferences = textFlow.flowReferences;
+            NSUInteger nextFlow = [paragraphID indexAtPosition:0] + 1;
+            if(nextFlow < flowReferences.count) {
+                endPageIndex = ((BlioTextFlowFlowReference *)[textFlow.flowReferences objectAtIndex:nextFlow]).startPage - 1;
+            } else {
+                endPageIndex = textFlow.lastPageIndex;
+            }
+        }        
         
+        // Extract MATCHING_WINDOW_SIZE strings to look for from around the 
+        // position of the word we're looking for in XAML document.        
         NSString *lookForStrings[MATCHING_WINDOW_SIZE];
         char lookForHashes[MATCHING_WINDOW_SIZE];
         {
@@ -465,17 +538,21 @@
         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
             blockStrings[i] = @"";
             blockHashes[i] = emptyHash;
-            pageIndexes[i] = startPageNumber;
+            pageIndexes[i] = startPageIndex;
             blockOffsets[i] = 0;
             wordOffsets[i] = 0;
         }
         
         int bestDistance = INT_MAX;
-        NSUInteger bestPageIndex = startPageNumber;
+        NSUInteger bestPageIndex = startPageIndex;
         NSUInteger bestBlockOffset = 0;
         NSUInteger bestWordOffset = 0;
         
-        for(NSInteger examiningPage = startPageNumber; examiningPage <= endPageNumber; ++examiningPage) {
+        
+        // Step through the words in the blocks, looking for the one that has
+        // a window of MATCHING_WINDOW_SIZE that's most similar to the one
+        // we're looking for.
+        for(NSInteger examiningPage = startPageIndex; examiningPage <= endPageIndex; ++examiningPage) {
             NSUInteger examiningBlockOffset = 0;
             for(BlioTextFlowBlock *block in [textFlow blocksForPageAtIndex:examiningPage includingFolioBlocks:YES]) {
                 if(!block.folio) {
@@ -516,6 +593,7 @@
             }
         }
         
+        // Phew!
         ret = [[BlioBookmarkPoint alloc] init];
         ret.layoutPage = bestPageIndex + 1;
         ret.blockOffset = bestBlockOffset;
@@ -599,7 +677,7 @@
         EucCSSLayoutDocumentRun *nextParagraphRun = [runExtractor nextDocumentRunForDocumentRun:thisParagraphRun];
         
         if(nextParagraphRun) {
-            NSUInteger indexes[2] = { [paragraphID indexAtPosition:0], nextParagraphRun.id };
+            NSUInteger indexes[2] = { [paragraphID indexAtPosition:0], [EucCSSIntermediateDocument documentTreeNodeKeyForKey:nextParagraphRun.id] };
             ret = [NSIndexPath indexPathWithIndexes:indexes length:2];
         } else {
             NSUInteger newSection = [paragraphID indexAtPosition:0] + 1;

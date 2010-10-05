@@ -208,11 +208,13 @@
         NSArray *myNavPoints = self.navPoints;
         NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] initWithCapacity:myNavPoints.count];
         for(THPair *navPoint in myNavPoints) {
+            NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
+            
             EucBookPageIndexPoint *indexPoint = nil;
             NSString *identifier = navPoint.second;
             NSString *tocIndexString = [[identifier matchPOSIXRegex:@"^textflowTOCIndex:([[:digit:]]+)$"] match:1];
             if(tocIndexString) {
-                BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
+                BlioBookmarkPoint *point = [[[BlioBookmarkPoint alloc] init] autorelease];
                 BlioTextFlowTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
                 point.layoutPage = entry.startPage + 1;
                 indexPoint = [self bookPageIndexPointFromBookmarkPoint:point];
@@ -226,6 +228,8 @@
             if(indexPoint) {
                 [buildIdToIndexPoint setObject:indexPoint forKey:identifier];
             }
+            
+            [innerPool drain];
         }
         idToIndexPoint = buildIdToIndexPoint;
     }
