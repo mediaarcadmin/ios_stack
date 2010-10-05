@@ -216,10 +216,11 @@
         // subsequent page.
         uint32_t lowerBoundRunKey = 0;
         uint32_t upperBoundRunKey = 0;
-        BOOL upperBoundFound = NO;
         /*
         NSUInteger lowerBoundPageIndex = 0;
         NSUInteger upperBoundPageIndex = 0;
+        BOOL upperBoundFound = NO;
+
         documentRun = [runExtractor documentRunForNodeWithKey:0];
         while(documentRun && !upperBoundFound) {
             upperBoundRunKey = documentRun.id;
@@ -243,26 +244,24 @@
             documentRun = [runExtractor nextDocumentRunForDocumentRun:documentRun];
         }
         */
-        // Above commented out code is the 'proper' way to do this, but 
-        EucCSSIntermediateDocumentNode *node = document.rootNode;
-        while(!upperBoundFound && (node = node.next)) {      
+        // Above commented out code is the 'proper' way to do this, but this is
+        // MUCH faster.
+        NSArray *rawNodes = ((EucCSSXMLTree *)(document.documentTree)).nodes;
+        for(BlioTextFlowXAMLTreeNode *node in rawNodes) {
             upperBoundRunKey = node.key;
-            if([node respondsToSelector:@selector(documentTreeNode)]) {
-                NSString *tag = [(id <EucCSSDocumentTreeNode>)[node performSelector:@selector(documentTreeNode)] attributeWithName:@"Tag"];
-                if(tag) {
-                    if([tag hasPrefix:@"__"]) {
-                        NSUInteger pageIndex = [[tag substringFromIndex:2] integerValue];
-                        if(pageIndex < lookForPageIndex) {
-                            lowerBoundRunKey = node.key;
-                        }
-                        if(pageIndex > lookForPageIndex) {
-                            upperBoundFound = YES;
-                            break;
-                        }
-                    }
+            NSString *tag = node.tag;
+            if(tag && [tag hasPrefix:@"__"]) {
+                NSUInteger pageIndex = [[tag substringFromIndex:2] integerValue];
+                if(pageIndex < lookForPageIndex) {
+                    lowerBoundRunKey = node.key;
+                }
+                if(pageIndex > lookForPageIndex) {
+                    break;
                 }
             }
         }
+        upperBoundRunKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:upperBoundRunKey];
+        lowerBoundRunKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:lowerBoundRunKey];
         
         char blockHashes[MATCHING_WINDOW_SIZE];
         NSString *blockStrings[MATCHING_WINDOW_SIZE];

@@ -12,6 +12,10 @@
 @interface BlioTextFlowXAMLTreeNode : EucCSSXMLTreeNode {
     BOOL _inlineStyleConstructed;
     NSString *_constructedInlineStyle;
+    BOOL _tagFound;
+    NSString *_tag;
 }
+
+@property (nonatomic, retain, readonly) NSString *tag;
 
 @end
