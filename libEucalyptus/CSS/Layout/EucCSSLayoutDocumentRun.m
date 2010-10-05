@@ -63,10 +63,10 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 @synthesize nextNodeInDocument = _nextNodeInDocument;
 @synthesize scaleFactor = _scaleFactor;
 
-pthread_mutex_t sCachedRunsMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t sCachedRunsMutex = PTHREAD_MUTEX_INITIALIZER;
 static NSInteger sCachedRunsCount = 0;
 static const NSInteger sCachedRunsCapacity = 48;
-EucCSSLayoutDocumentRun **sCachedRuns = NULL;
+static EucCSSLayoutDocumentRun **sCachedRuns = NULL;
 
 + (void)initialize
 {

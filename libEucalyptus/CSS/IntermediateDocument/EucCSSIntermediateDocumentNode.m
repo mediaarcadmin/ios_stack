@@ -53,18 +53,23 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     if(childCount > 1) {
         uint32_t afterKey = child.key;
         uint32_t *childKeys = self.childKeys;
-        NSUInteger i = 1;
-        for(; i < childCount; ++i) {
-            if(childKeys[i] == afterKey) {
-                return [_document nodeForKey:childKeys[i-1]];
+        if(afterKey != childKeys[0]) {
+            for(NSUInteger i = 1; i <= childCount; ++i) {
+                if(childKeys[i] == afterKey || i == childCount) {
+                    EucCSSIntermediateDocumentNode *before = [_document nodeForKey:childKeys[i-1]];
+                    while(before.childCount) {
+                        before = [_document nodeForKey:before.childKeys[before.childCount-1]];
+                    }
+                    return before;
+                }
             }
-        }
+        } 
     }
     // This is our last child.
     if(self == under) {
         return nil;
     }
-    return [self.parent _nodeBefore:self under:under];
+    return self;
 }
 
 
