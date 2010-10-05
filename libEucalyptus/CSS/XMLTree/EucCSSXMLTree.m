@@ -13,6 +13,7 @@
 
 @implementation EucCSSXMLTree
 
+@synthesize nodes = _nodes;
 @synthesize idToNode = _idToNode;
 
 typedef struct EucCSSXMLTreeContext

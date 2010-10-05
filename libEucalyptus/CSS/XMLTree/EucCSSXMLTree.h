@@ -17,7 +17,8 @@
     NSDictionary *_idToNode;
 }
 
-@property (nonatomic, readonly) NSDictionary *idToNode;
+@property (nonatomic, retain, readonly) NSArray *nodes;
+@property (nonatomic, retain, readonly) NSDictionary *idToNode;
 
 - (id)initWithData:(NSData *)xmlData;
 - (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass;

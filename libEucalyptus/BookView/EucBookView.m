@@ -598,7 +598,7 @@
                          
         EucBookPageIndexPoint *endPoint = highlightRange.endPoint;
         EucBookPageIndexPoint *pageEndPoint = pageIndexPointRange.second;
-        if([pageEndPoint compare:endPoint] != NSOrderedDescending) {
+        if([endPoint compare:pageEndPoint] != NSOrderedAscending) {
             endBlockId = [blockIds lastObject];
             endElementId = [[pageTextView identifiersForElementsOfBlockWithIdentifier:endBlockId] lastObject];
         } else {
@@ -633,20 +633,24 @@
             
             id elementId;
             if(isFirstBlock) {
-                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
-                    ++elementIdIndex;
+                if(elementIdCount) {
+                    while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                        ++elementIdIndex;
+                    }
                 }
                 isFirstBlock = NO;
             }
             
-            do {
-                elementId = [elementIds objectAtIndex:elementIdIndex];
-                [nonCoalescedRects addObjectsFromArray:[pageTextView rectsForElementWithIdentifier:elementId
-                                                                             ofBlockWithIdentifier:blockId]];
-                ++elementIdIndex;
-            } while (isLastBlock ? 
-                     ([elementId compare:endElementId] < NSOrderedSame) : 
-                     elementIdIndex < elementIdCount);
+            if(elementIdCount) {
+                do {
+                    elementId = [elementIds objectAtIndex:elementIdIndex];
+                    [nonCoalescedRects addObjectsFromArray:[pageTextView rectsForElementWithIdentifier:elementId
+                                                                                 ofBlockWithIdentifier:blockId]];
+                    ++elementIdIndex;
+                } while (isLastBlock ? 
+                         ([elementId compare:endElementId] < NSOrderedSame) : 
+                         elementIdIndex < elementIdCount);
+            }
             ++blockIdIndex;
         }
         
