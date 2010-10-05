@@ -365,10 +365,6 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         }
                 
         if (textString) {
-            if([textString isEqualToString:@"Hassel"]) {
-                NSLog(@"fdsfds");
-            }
-            
             if(rectFound) {
                 BlioTextFlowBlock *block = context->block;
                 BlioTextFlowPositionedWord *newWord = [[BlioTextFlowPositionedWord alloc] init];

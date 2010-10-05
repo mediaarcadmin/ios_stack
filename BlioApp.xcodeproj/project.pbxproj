@@ -133,6 +133,9 @@
 		7D9147CA1151497900BCBB23 /* BlioFlowPaginateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */; };
 		7D9148D4115159E400BCBB23 /* Aliases in Resources */ = {isa = PBXBuildFile; fileRef = 7D9148D3115159E400BCBB23 /* Aliases */; };
 		7D94C63A117630050067B732 /* BlioTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */; };
+		7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
+		7D9A6885125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
+		7D9A6886125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
 		7DA5665511529FD2000A849D /* BlioTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */; };
 		7DA5665B11529FE2000A849D /* BlioTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */; };
 		7DAA2FF011512A8D006634CC /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
@@ -1302,6 +1305,8 @@
 		7D94C63311762C4F0067B732 /* BlioParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioParagraphSource.h; sourceTree = "<group>"; };
 		7D94C638117630050067B732 /* BlioTextFlowParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraphSource.h; sourceTree = "<group>"; };
 		7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraphSource.m; sourceTree = "<group>"; };
+		7D9A6882125ABC7200130A53 /* levenshtein_distance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = levenshtein_distance.c; sourceTree = "<group>"; };
+		7D9A6883125ABC7200130A53 /* levenshtein_distance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = levenshtein_distance.h; sourceTree = "<group>"; };
 		7DA481241247708E0073AB09 /* BlioBUpeBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBUpeBook.h; sourceTree = "<group>"; };
 		7DA5665211529FD2000A849D /* BlioTextFlowFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowFlow.h; sourceTree = "<group>"; };
 		7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowFlow.m; sourceTree = "<group>"; };
@@ -2342,6 +2347,16 @@
 			name = FlowView;
 			sourceTree = "<group>";
 		};
+		7D9A6881125ABC7200130A53 /* LevenshteinDistance */ = {
+			isa = PBXGroup;
+			children = (
+				7D9A6882125ABC7200130A53 /* levenshtein_distance.c */,
+				7D9A6883125ABC7200130A53 /* levenshtein_distance.h */,
+			);
+			name = LevenshteinDistance;
+			path = Sources/LevenshteinDistance;
+			sourceTree = SOURCE_ROOT;
+		};
 		7DA5664F11529F74000A849D /* TextFlow */ = {
 			isa = PBXGroup;
 			children = (
@@ -2713,7 +2728,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
+				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2747,6 +2762,7 @@
 		C9B620BD1137BDB10012CE7E /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				7D9A6881125ABC7200130A53 /* LevenshteinDistance */,
 				A37DADE311B211DA005F949A /* DRM */,
 				C9B620BF1137BE170012CE7E /* ZipArchive */,
 			);
@@ -3014,10 +3030,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataTouchUnitTests.octest;
+			path = GDataIPhoneUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3752,6 +3768,7 @@
 				C90DAB3C1256289900D8E663 /* BlioLegacyLayoutContentView.m in Sources */,
 				C90DAB3D1256289900D8E663 /* BlioLegacyLayoutScrollView.m in Sources */,
 				C90DAB3E1256289900D8E663 /* BlioLegacyLayoutView.m in Sources */,
+				7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3875,6 +3892,7 @@
 				C90DAB361256289900D8E663 /* BlioLegacyLayoutContentView.m in Sources */,
 				C90DAB371256289900D8E663 /* BlioLegacyLayoutScrollView.m in Sources */,
 				C90DAB381256289900D8E663 /* BlioLegacyLayoutView.m in Sources */,
+				7D9A6885125ABC7200130A53 /* levenshtein_distance.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3998,6 +4016,7 @@
 				C90DAB391256289900D8E663 /* BlioLegacyLayoutContentView.m in Sources */,
 				C90DAB3A1256289900D8E663 /* BlioLegacyLayoutScrollView.m in Sources */,
 				C90DAB3B1256289900D8E663 /* BlioLegacyLayoutView.m in Sources */,
+				7D9A6886125ABC7200130A53 /* levenshtein_distance.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
