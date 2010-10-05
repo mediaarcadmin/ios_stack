@@ -170,7 +170,7 @@
 }
 
 - (BOOL)audioRights {
-    return NO;//[[self valueForKey:@"hasAudiobookRights"] boolValue];
+    return [[self valueForKey:@"hasAudiobookRights"] boolValue];
 }
 - (BOOL)reflowEnabled {
     return [[self valueForKey:@"reflowRight"] boolValue];
