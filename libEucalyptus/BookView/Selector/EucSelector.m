@@ -1375,37 +1375,33 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             break;
         }
     }
-    
-    if(&UIAccessibilityAnnouncementNotification != NULL) {
-        if(newSelectedRange) {
-            if(![newSelectedRange isEqual:self.selectedRange]) {
-                NSString *newSelectedWord;
-                if(isLeftBoundary) {
-                    newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.startElementId 
-                                         ofBlockWithIdentifier:newSelectedRange.startBlockId];
-                    
-                } else {
-                    newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.endElementId 
-                                         ofBlockWithIdentifier:newSelectedRange.endBlockId];
-                }
-                NSString *entireSelection = [self _accessibilityLabelForRange:newSelectedRange];
+
+    if(newSelectedRange && ![newSelectedRange isEqual:self.selectedRange]) {
+        if(&UIAccessibilityAnnouncementNotification != NULL) {
+            NSString *newSelectedWord;
+            if(isLeftBoundary) {
+                newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.startElementId 
+                                     ofBlockWithIdentifier:newSelectedRange.startBlockId];
                 
-                NSString *announcementFormat = NSLocalizedString(@"%@. Selection: %@", @"Accessibility announcement for extending text selection. Arg0 = newly selected word, Arg1 = entire selection");
-                
-                NSString *announcement = [NSString stringWithFormat:announcementFormat, newSelectedWord ?: @"", entireSelection ?: @""];
-                
-                if(announcement) {
-                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, announcement);
-                }
-                
-                [self.accessibilityMask setSelectionString:entireSelection];
-            }                
+            } else {
+                newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.endElementId 
+                                     ofBlockWithIdentifier:newSelectedRange.endBlockId];
+            }
+            NSString *entireSelection = [self _accessibilityLabelForRange:newSelectedRange];
             
-            self.selectedRange = newSelectedRange;
-        }
+            NSString *announcementFormat = NSLocalizedString(@"%@. Selection: %@", @"Accessibility announcement for extending text selection. Arg0 = newly selected word, Arg1 = entire selection");
+            
+            NSString *announcement = [NSString stringWithFormat:announcementFormat, newSelectedWord ?: @"", entireSelection ?: @""];
+            
+            if(announcement) {
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, announcement);
+            }
+            
+            [self.accessibilityMask setSelectionString:entireSelection];
+        }       
+        self.selectedRange = newSelectedRange;
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
-    
-    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 
 
