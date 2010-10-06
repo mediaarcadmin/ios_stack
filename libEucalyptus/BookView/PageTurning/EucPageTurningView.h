@@ -92,7 +92,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     THVec3 _pageTouchPoint;
     CGPoint _viewportTouchPoint;
     GLfloat _touchVelocity;
-    
+
+    BOOL _dragUnderway;
     BOOL _pinchUnderway;
     UITouch *_pinchTouches[2];
     CGPoint _pinchStartPoints[2];

@@ -13,7 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
+@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
 struct THBreak;
 
 typedef struct EucCSSLayoutDocumentRunPoint {
@@ -51,6 +51,8 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 
 @interface EucCSSLayoutDocumentRun : NSObject {
     uint32_t _id;
+    
+    EucCSSIntermediateDocument *_document;
     
     EucCSSIntermediateDocumentNode *_startNode;
     EucCSSIntermediateDocumentNode *_underNode;
