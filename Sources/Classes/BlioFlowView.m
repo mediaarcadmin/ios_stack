@@ -284,7 +284,7 @@
 
 - (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link
 {
-    BOOL handled;
+    BOOL handled = NO;
     if([link.scheme isEqualToString:@"textflow"]) {
         NSString *internalURI = link.relativeString;
         
