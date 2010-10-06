@@ -51,7 +51,7 @@
 
 - (NSArray *)hyperlinksForPage:(NSInteger)page;
 - (BlioLayoutHyperlink *)hyperlinkForPage:(NSInteger)page atPoint:(CGPoint)point;
-- (void)hyperlinkTapped:(NSURL *)url;
+- (void)hyperlinkTapped:(NSString *)link;
 
 @end
 
@@ -908,7 +908,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)touchEnded:(UITouch *)touch {
-    NSLog(@"Touches ended in view");
     BlioLayoutHyperlink *touchedHyperlink = nil;
     
     if ([self.delegate toolbarsVisible]) {
@@ -933,7 +932,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 
     if ([touchedHyperlink link]) {
-        [self hyperlinkTapped:[NSURL URLWithString:[touchedHyperlink link]]];
+        [self hyperlinkTapped:[touchedHyperlink link]];
     }
 }
         
@@ -949,9 +948,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
-- (void)hyperlinkTapped:(NSURL *)url {
-    NSLog(@"Hyperlink tapped: %@", url);
+- (void)hyperlinkTapped:(NSString *)link {
     hyperlinkTapped = YES;
+    NSURL *hyperlink = [self.textFlow hyperlinkForReferenceId:link];
+    NSLog(@"hyperlink lookup %@", hyperlink);
 }
 
 - (NSArray *)hyperlinksForPage:(NSInteger)page {
