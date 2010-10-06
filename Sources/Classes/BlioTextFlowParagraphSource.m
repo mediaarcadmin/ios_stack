@@ -268,22 +268,23 @@
         
         uint32_t runKeys[MATCHING_WINDOW_SIZE];
         uint32_t wordOffsets[MATCHING_WINDOW_SIZE];
+                
+        uint32_t examiningRunKey = lowerBoundRunKey;
+        documentRun = [runExtractor documentRunForNodeWithKey:examiningRunKey];
+        examiningRunKey = documentRun.id;
         
         char emptyHash = [@"" hash] % 256;
         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
             blockStrings[i] = @"";
             blockHashes[i] = emptyHash;
-            runKeys[i] = lowerBoundRunKey;
+            runKeys[i] = examiningRunKey;
             wordOffsets[i] = 0;
         }
         
         int bestDistance = INT_MAX;
-        uint32_t bestRunKey = 0;
+        uint32_t bestRunKey = examiningRunKey;
         uint32_t bestWordOffset = 0;
         
-        uint32_t examiningRunKey = lowerBoundRunKey;
-        documentRun = [runExtractor documentRunForNodeWithKey:examiningRunKey];
-        examiningRunKey = documentRun.id;
         while(documentRun && examiningRunKey <= upperBoundRunKey) {
             NSArray *words = documentRun.words;
             NSUInteger examiningWordOffset = 0;
