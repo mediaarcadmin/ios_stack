@@ -538,6 +538,11 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     }
 }
 
+static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lhs) 
+{
+    return (int)(*rhs).startPage - (int)(*lhs).startPage;
+}
+
 - (void)parseSectionsXML
 {
     BlioTextFlowSectionsXMLParsingContext context = { [NSMutableArray array], [NSMutableArray array] };
@@ -573,7 +578,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         [tocEntry release];
     }
 
-    self.tableOfContents = context.buildTableOfContents;
+    self.tableOfContents = [context.buildTableOfContents blioStableSortedArrayUsingFunction:(int (*)(id *arg1, id *arg2))tocEntryCompare];
 }
 
 - (NSArray *)flowReferences
@@ -584,16 +589,10 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return flowReferences;
 }
 
-static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lhs) 
-{
-    return (int)(*rhs).startPage - (int)(*lhs).startPage;
-}
-
 - (NSArray *)tableOfContents
 {
     if(!tableOfContents) {
         [self parseSectionsXML];
-        self.tableOfContents = [tableOfContents blioStableSortedArrayUsingFunction:(int (*)(id *arg1, id *arg2))tocEntryCompare];
     }
     return tableOfContents;
 }

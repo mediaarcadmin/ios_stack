@@ -53,6 +53,10 @@
 - (EucCSSIntermediateDocument *)intermediateDocumentForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier;
 
+// Takes absolute file:/// url strings (/not/ persistable - they 
+// may change on a iOS backup/restore).
+@property (nonatomic, readonly, retain) NSDictionary *idToIndexPoint;
+
 // Set to NO to not save the index point internally.
 @property (nonatomic, assign) BOOL persistsPositionAutomatically; // default: YES;
 
@@ -63,9 +67,7 @@
 - (id<EucCSSDocumentTree>)documentTreeForURL:(NSURL *)url;
 - (NSURL *)documentURLForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
-// Takes absolute file:/// url strings (/not/ persistable - they 
-// may change on a iOS backup/restore).
-@property (nonatomic, retain) NSDictionary *idToIndexPoint;
+- (NSDictionary *)buildIdToIndexPoint;
 
 // Default is YES.  Controls whether to look for a HEAD element in the supplied
 // document trees to parse for CSS etc.

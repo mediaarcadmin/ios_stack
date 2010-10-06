@@ -1641,34 +1641,16 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
     UITouch *touch = [touches anyObject];
     // If we're not currently tracking a touch
-    if(!_touch) {
+    if(touches.count == 1 && !_dragUnderway) {
         // Store touch
         _touch = touch;
         _touchBeganTime = [touch timestamp];
         [self _setTouchLocationFromTouch:_touch firstTouch:YES];
     }
-    
-    if(self.isAnimating) {
-        // We've already started to turn the page.
-        // Remove the touch we're 'using' and pass the rest on.
-        NSMutableSet *unusedTouches = [touches mutableCopy];
-        if([unusedTouches containsObject:_touch]) {
-            [unusedTouches removeObject:_touch];
-        }
-        if(unusedTouches.count) {
-            [_pageContentsInformation[3].view touchesBegan:unusedTouches withEvent:event];
-        }
-        [unusedTouches release];
-    } else {
-        // We haven't started to move yet.  We'll pass all the touches on.
-        [_pageContentsInformation[3].view touchesBegan:touches withEvent:event];   
-    }
-        
-    if(touches.count > 1 || ![touches containsObject:_touch]) {
+    if(touches.count == 2 && !_pinchUnderway && !_dragUnderway) {
         // This is a pinch.  Track both touches
         // We store the touches in a different ivar for a pinch.
-        _pinchTouches[0] = _touch;
-        _touch = nil;
+        _pinchTouches[0] = touch;
         
         for(UITouch *secondTouch in touches) {
             if(secondTouch != _pinchTouches[0]) {
@@ -1685,16 +1667,24 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         THLog(@"Pinch Began: %@, %@", NSStringFromCGPoint(_pinchStartPoints[0]), NSStringFromCGPoint(_pinchStartPoints[1]));
     }    
+    
+    // We haven't started to move yet.  We'll pass all the touches on.
+    [_pageContentsInformation[3].view touchesBegan:touches withEvent:event];   
 }
 
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if([touches containsObject:_touch]) {
+    if(_touch && [touches containsObject:_touch]) {
         if(self.userInteractionEnabled) {
+            if(!_dragUnderway) {
+                _dragUnderway = YES;
+                [_pageContentsInformation[3].view touchesCancelled:[NSSet setWithObjects:&_touch count:1] withEvent:event];
+            }            
             [self _setTouchLocationFromTouch:_touch firstTouch:NO];
         }
-    } else if([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]]) {
+    } else if(_pinchTouches[0] && _pinchTouches[1] &&
+              ([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]])) {
         if(!_pinchUnderway) {
             [THBackgroundProcessingMediator curtailBackgroundProcessing];
             [_pageContentsInformation[3].view touchesCancelled:[NSSet setWithObjects:_pinchTouches count:2] withEvent:event];
@@ -1754,20 +1744,22 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     
     NSMutableSet *unusedTouches = [touches mutableCopy];
-    if(_touch) {
+    if(_dragUnderway && _touch) {
         if([unusedTouches containsObject:_touch]) {
             [unusedTouches removeObject:_touch];
         }            
     } 
-    if(_pinchTouches[0]) {
-        if([unusedTouches containsObject:_pinchTouches[0]]) {
-            [unusedTouches removeObject:_pinchTouches[0]];
-        }            
-    }
-    if(_pinchTouches[1]) {
-        if([unusedTouches containsObject:_pinchTouches[1]]) {
-            [unusedTouches removeObject:_pinchTouches[1]];
-        }            
+    if(_pinchUnderway) {
+        if(_pinchTouches[0]) {
+            if([unusedTouches containsObject:_pinchTouches[0]]) {
+                [unusedTouches removeObject:_pinchTouches[0]];
+            }            
+        }
+        if(_pinchTouches[1]) {
+            if([unusedTouches containsObject:_pinchTouches[1]]) {
+                [unusedTouches removeObject:_pinchTouches[1]];
+            }            
+        }
     }
     if(unusedTouches.count) {
         [_pageContentsInformation[3].view touchesMoved:unusedTouches withEvent:event];
@@ -1777,36 +1769,30 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)_touchesEndedOrCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if([touches containsObject:_touch]) {
-        if([event timestamp] > [_touch timestamp] + 0.1) {
-            [self _setTouchLocationFromTouch:_touch firstTouch:NO];
+    if(_touch && [touches containsObject:_touch]) {
+        if(_dragUnderway) {
+            if([event timestamp] > [_touch timestamp] + 0.1) {
+                [self _setTouchLocationFromTouch:_touch firstTouch:NO];
+            }
+            //NSLog(@"Real: %f", _touchVelocity);
+            
+            GLfloat absTouchVelocity = fabsf(_touchVelocity);
+            if(absTouchVelocity < 0.02f) {
+                _touchVelocity = 0;
+            } else if(absTouchVelocity < 0.2f) {
+                _touchVelocity = _touchVelocity < 0 ? -0.2f : 0.2f;
+            } else if(absTouchVelocity > 0.4f) {
+                _touchVelocity = _touchVelocity < 0 ? -0.4f : 0.4f;
+            }
+            //NSLog(@"Corrected: %f", _touchVelocity);
+            //_pageTouchPoint.x = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x;
+            _touchTime = 0;
+            _dragUnderway = NO;
         }
-        //NSLog(@"Real: %f", _touchVelocity);
-        
-        GLfloat absTouchVelocity = fabsf(_touchVelocity);
-        if(absTouchVelocity < 0.02f) {
-            _touchVelocity = 0;
-        } else if(absTouchVelocity < 0.2f) {
-            _touchVelocity = _touchVelocity < 0 ? -0.2f : 0.2f;
-        } else if(absTouchVelocity > 0.4f) {
-            _touchVelocity = _touchVelocity < 0 ? -0.4f : 0.4f;
-        }
-        //NSLog(@"Corrected: %f", _touchVelocity);
-        //_pageTouchPoint.x = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x;
-        _touchTime = 0;
-        
+
         _touch = nil;
-    } else if([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]]) {
-        UITouch *remainingTouch = nil;
-        if(![touches containsObject:_pinchTouches[0]]) {
-            remainingTouch = _pinchTouches[0];
-        } else if(![touches containsObject:_pinchTouches[1]]) {
-            remainingTouch = _pinchTouches[1];
-        }
-        
-        _pinchTouches[0] = nil;
-        _pinchTouches[1] = nil;
-        
+    } else if((_pinchTouches[0] && [touches containsObject:_pinchTouches[0]]) || 
+              (_pinchTouches[1] && [touches containsObject:_pinchTouches[1]])) {
         if(_pinchUnderway) {
             _pinchUnderway = NO;       
             if(_zoomHandlingKind == EucPageTurningViewZoomHandlingKindInnerScaling) {
@@ -1835,28 +1821,20 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             [THBackgroundProcessingMediator allowBackgroundProcessing];
         }
-        
-        if(remainingTouch) {
-            [self touchesBegan:[NSSet setWithObject:remainingTouch] withEvent:event];
-        }
+        _pinchTouches[0] = nil;
+        _pinchTouches[1] = nil;
     }
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if(self.isAnimating) {
-        NSMutableSet *unusedTouches = [touches mutableCopy];
-        if(_touch) {
-            if([unusedTouches containsObject:_touch]) {
-                [unusedTouches removeObject:_touch];
-            }            
-        }
-        if(unusedTouches.count) {
-            [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
-        }
-        [unusedTouches release];        
-    } else if(_pinchUnderway) {
-        NSMutableSet *unusedTouches = [touches mutableCopy];
+    NSMutableSet *unusedTouches = [touches mutableCopy];    
+    if(_dragUnderway) {
+        if([unusedTouches containsObject:_touch]) {
+            [unusedTouches removeObject:_touch];
+        }            
+    } 
+    if(_pinchUnderway) {
         if(_pinchTouches[0]) {
             if([unusedTouches containsObject:_pinchTouches[0]]) {
                 [unusedTouches removeObject:_pinchTouches[0]];
@@ -1867,14 +1845,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 [unusedTouches removeObject:_pinchTouches[1]];
             }            
         }
-        if(unusedTouches.count) {
-            [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
-        }
-        [unusedTouches release];     
-    } else {
-        if(_touch && 
-           [touches containsObject:_touch] && 
-           [_touch timestamp] - _touchBeganTime < 0.2) {
+    }
+
+    if(!_dragUnderway && _touch && [touches containsObject:_touch]) {
+        if(!self.animating) {
             BOOL turning = NO;
             
             CGPoint point = [_touch locationInView:self];
@@ -1906,42 +1880,33 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             
             if(turning) {
-                NSMutableSet *unusedTouches = [touches mutableCopy];
-                if(_touch) {
-                    if([unusedTouches containsObject:_touch]) {
-                        [unusedTouches removeObject:_touch];
-                    }            
-                }
-                if(unusedTouches.count) {
-                    [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
-                }
-                [unusedTouches release];   
                 [_pageContentsInformation[3].view touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
-            } else {
-                [_pageContentsInformation[3].view touchesEnded:touches withEvent:event];
+                
+                if([unusedTouches containsObject:_touch]) {
+                    [unusedTouches removeObject:_touch];
+                }          
             }
-        } else {
-            [_pageContentsInformation[3].view touchesEnded:touches withEvent:event];
+            _touch = nil;
         }
     }
+    
+    if(unusedTouches.count) {
+        [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
+    }
+    [unusedTouches release];
+    
     [self _touchesEndedOrCancelled:touches withEvent:event];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if(self.isAnimating) {
-        NSMutableSet *unusedTouches = [touches mutableCopy];
-        if(_touch) {
-            if([unusedTouches containsObject:_touch]) {
-                [unusedTouches removeObject:_touch];
-            }            
-        }
-        if(unusedTouches.count) {
-            [_pageContentsInformation[3].view touchesCancelled:unusedTouches withEvent:event];
-        }
-        [unusedTouches release];
-    } else if(_pinchUnderway) {
-        NSMutableSet *unusedTouches = [touches mutableCopy];
+    NSMutableSet *unusedTouches = [touches mutableCopy];    
+    if(_dragUnderway) {
+        if([unusedTouches containsObject:_touch]) {
+            [unusedTouches removeObject:_touch];
+        }            
+    } 
+    if(_pinchUnderway) {
         if(_pinchTouches[0]) {
             if([unusedTouches containsObject:_pinchTouches[0]]) {
                 [unusedTouches removeObject:_pinchTouches[0]];
@@ -1952,13 +1917,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 [unusedTouches removeObject:_pinchTouches[1]];
             }            
         }
-        if(unusedTouches.count) {
-            [_pageContentsInformation[3].view touchesCancelled:unusedTouches withEvent:event];
-        }
-        [unusedTouches release];        
-    } else {
-        [_pageContentsInformation[3].view touchesCancelled:touches withEvent:event];
     }
+    if(unusedTouches.count) {
+        [_pageContentsInformation[3].view touchesCancelled:unusedTouches withEvent:event];
+    }
+    [unusedTouches release];
     [self _touchesEndedOrCancelled:touches withEvent:event];
 }
 

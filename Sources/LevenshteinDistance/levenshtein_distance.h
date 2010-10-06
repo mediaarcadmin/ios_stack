@@ -4,7 +4,7 @@
 //
 // http://www.merriampark.com/ldc.htm
 
-int levenshtein_distance(char *s, char *t);
-int levenshtein_distance_with_bytes(char *s, int n, char *t, int m);
+int levenshtein_distance(const char *s, const char *t);
+int levenshtein_distance_with_bytes(const char *s, int n, const char *t, int m);
 
 

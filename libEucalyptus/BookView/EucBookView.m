@@ -776,10 +776,7 @@ typedef enum {
 {
     if(buttonIndex != alertView.cancelButtonIndex) {
         UIApplication *application = [UIApplication sharedApplication];
-        
-        // Looks nice if we leave time for the sheet's fading to fade out.
-        [application beginIgnoringInteractionEvents];
-        [application performSelector:@selector(openURL:) withObject:((THAlertViewWithUserInfo *)alertView).userInfo afterDelay:0];
+        [application performSelector:@selector(openURL:) withObject:((THAlertViewWithUserInfo *)alertView).userInfo afterDelay:0.5];
     }
 }
 

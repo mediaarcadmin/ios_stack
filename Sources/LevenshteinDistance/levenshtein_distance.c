@@ -19,7 +19,7 @@ int minimum(int a, int b, int c);
 /*Implementation of Levenshtein distance*/
 /****************************************/
 
-int levenshtein_distance(char *s, char *t)
+int levenshtein_distance(const char *s, const char *t)
 /*Compute levenshtein distance between s and t*/
 {
     //Step 1
@@ -29,7 +29,7 @@ int levenshtein_distance(char *s, char *t)
     return levenshtein_distance_with_bytes(s, n, t, m);
 }
 
-int levenshtein_distance_with_bytes(char *s, int n, char *t, int m)
+int levenshtein_distance_with_bytes(const char *s, int n, const char *t, int m)
 {
     int k,i,j,cost,*d,distance;
     if(n!=0&&m!=0)

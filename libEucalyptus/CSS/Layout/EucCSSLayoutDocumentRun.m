@@ -89,7 +89,7 @@ static EucCSSLayoutDocumentRun **sCachedRuns = NULL;
            cachedRun->_id == id &&
            cachedRun->_startNode.key == inlineNode.key &&
            cachedRun->_underNode.key == underNode.key &&
-           cachedRun->_startNode.document == inlineNode.document) {
+           cachedRun->_document == inlineNode.document) {
             ret = [cachedRun autorelease];
             
             size_t toMove = sCachedRunsCount - i - 1;
@@ -134,8 +134,17 @@ static EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         
         _scaleFactor = scaleFactor;
         
+        
         _startNode = [inlineNode retain];
         _underNode = [underNode retain];
+        
+        // Retain this, because we're retaining nodes, but nodes don't retain
+        // their documents.
+        // No need to do this - noone should be using the rund after the 
+        // document's gone.
+        //_document = [_startNode.document retain];        
+        _document = _startNode.document;        
+        
         css_computed_style *inlineNodeStyle = inlineNode.computedStyle;
         
         // _wordToComponent is 1-indexed for words - word '0' is the start of 
@@ -221,6 +230,9 @@ static EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     [_nextNodeInDocument release];
 
     [_sizeDependentComponentIndexes release];
+    
+    // See comments in init.
+    //[_document release];
     
     [_sharedHyphenator release];
     
