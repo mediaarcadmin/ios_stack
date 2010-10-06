@@ -458,7 +458,11 @@
             }
         }
         if(startPageIndex == 0) {
-            startPageIndex = ((BlioTextFlowFlowReference *)[textFlow.flowReferences objectAtIndex:[paragraphID indexAtPosition:0]]).startPage;
+            NSArray *flowReferences = textFlow.flowReferences;
+            NSUInteger thisFlow = [paragraphID indexAtPosition:0];
+            if(thisFlow < flowReferences.count) {
+                startPageIndex = ((BlioTextFlowFlowReference *)[textFlow.flowReferences objectAtIndex:thisFlow]).startPage;
+            }
         }
         if(endPageIndex < startPageIndex) {
             NSArray *flowReferences = textFlow.flowReferences;
