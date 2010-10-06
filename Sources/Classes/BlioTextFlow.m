@@ -775,17 +775,35 @@ static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char
     return tree;    
 }
 
-- (NSURL *)hyperlinkForReferenceId:(NSString *)referenceId {
-    NSURL *hyperlink = nil;
+- (BlioTextFlowReference *)referenceForReferenceId:(NSString *)referenceId {
+    BlioTextFlowReference *referenceMatch = nil;
+    
     for (BlioTextFlowReference *reference in [self references]) {
         if ([reference.referenceId hasSuffix:referenceId]) {
             if (reference.hyperlink) {
-                hyperlink = [NSURL URLWithString:reference.hyperlink];
+                referenceMatch = reference;
                 break;
             }
         }
     }
-    return hyperlink;
+    return referenceMatch;
+    
+   // BlioTextFlowReference *matchedReference = nil;
+//    NSInteger matchLength = 0;
+//    
+//    for (BlioTextFlowReference *reference in [self references]) {
+//        NSRange suffixRange = [reference.referenceId  rangeOfString:referenceId options:(NSAnchoredSearch | NSBackwardsSearch)];
+//        if (suffixRange.length > matchLength) {
+//            matchedReference = reference;
+//            matchLength = suffixRange.length;
+//        }
+//    }
+//    
+//    if (matchedReference) {
+//        return [NSURL URLWithString:matchedReference.hyperlink];
+//    }
+//    
+//    return nil;
 }
 
 #pragma mark -
