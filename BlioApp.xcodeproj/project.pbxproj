@@ -860,6 +860,12 @@
 		C90DAB3C1256289900D8E663 /* BlioLegacyLayoutContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAB301256289900D8E663 /* BlioLegacyLayoutContentView.m */; };
 		C90DAB3D1256289900D8E663 /* BlioLegacyLayoutScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAB321256289900D8E663 /* BlioLegacyLayoutScrollView.m */; };
 		C90DAB3E1256289900D8E663 /* BlioLegacyLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAB341256289900D8E663 /* BlioLegacyLayoutView.m */; };
+		C90DAE8D125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */; };
+		C90DAE8E125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */; };
+		C90DAE8F125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */; };
+		C90DAEBD125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */; };
+		C90DAEBE125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */; };
+		C90DAEBF125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */; };
 		C918B6991121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */; };
 		C918B8B51122AEE1008B6ADC /* Feeds in Resources */ = {isa = PBXBuildFile; fileRef = C918B8B21122AEE1008B6ADC /* Feeds */; };
 		C9221746123504E500992E2E /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
@@ -1610,6 +1616,11 @@
 		C90DAB331256289900D8E663 /* BlioLegacyLayoutScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLegacyLayoutScrollView.h; sourceTree = "<group>"; };
 		C90DAB341256289900D8E663 /* BlioLegacyLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLegacyLayoutView.m; sourceTree = "<group>"; };
 		C90DAB351256289900D8E663 /* BlioLegacyLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLegacyLayoutView.h; sourceTree = "<group>"; };
+		C90DAE8B125CB03000D8E663 /* BlioLayoutHyperlink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutHyperlink.h; sourceTree = "<group>"; };
+		C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutHyperlink.m; sourceTree = "<group>"; };
+		C90DAEBB125CB46E00D8E663 /* BlioLayoutPDFDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutPDFDataSource.h; sourceTree = "<group>"; };
+		C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutPDFDataSource.m; sourceTree = "<group>"; };
+		C90DAECE125CB5B800D8E663 /* BlioLayoutGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutGeometry.h; sourceTree = "<group>"; };
 		C918B6971121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreFeedBooksNonGDataParser.h; sourceTree = "<group>"; };
 		C918B6981121AB7C008B6ADC /* BlioStoreFeedBooksNonGDataParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreFeedBooksNonGDataParser.m; sourceTree = "<group>"; };
 		C918B8B21122AEE1008B6ADC /* Feeds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Feeds; sourceTree = "<group>"; };
@@ -2621,12 +2632,12 @@
 		C90DAB2A1256287E00D8E663 /* Legacy */ = {
 			isa = PBXGroup;
 			children = (
-				C90DAB301256289900D8E663 /* BlioLegacyLayoutContentView.m */,
 				C90DAB311256289900D8E663 /* BlioLegacyLayoutContentView.h */,
-				C90DAB321256289900D8E663 /* BlioLegacyLayoutScrollView.m */,
+				C90DAB301256289900D8E663 /* BlioLegacyLayoutContentView.m */,
 				C90DAB331256289900D8E663 /* BlioLegacyLayoutScrollView.h */,
-				C90DAB341256289900D8E663 /* BlioLegacyLayoutView.m */,
+				C90DAB321256289900D8E663 /* BlioLegacyLayoutScrollView.m */,
 				C90DAB351256289900D8E663 /* BlioLegacyLayoutView.h */,
+				C90DAB341256289900D8E663 /* BlioLegacyLayoutView.m */,
 			);
 			name = Legacy;
 			sourceTree = "<group>";
@@ -2754,7 +2765,12 @@
 				C90DAB2A1256287E00D8E663 /* Legacy */,
 				C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */,
 				C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */,
+				C90DAECE125CB5B800D8E663 /* BlioLayoutGeometry.h */,
 				C9DA75B511E71FA500F584A1 /* BlioLayoutDataSource.h */,
+				C90DAE8B125CB03000D8E663 /* BlioLayoutHyperlink.h */,
+				C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */,
+				C90DAEBB125CB46E00D8E663 /* BlioLayoutPDFDataSource.h */,
+				C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */,
 			);
 			name = LayoutView;
 			sourceTree = "<group>";
@@ -3769,6 +3785,8 @@
 				C90DAB3D1256289900D8E663 /* BlioLegacyLayoutScrollView.m in Sources */,
 				C90DAB3E1256289900D8E663 /* BlioLegacyLayoutView.m in Sources */,
 				7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */,
+				C90DAE8D125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
+				C90DAEBD125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3893,6 +3911,8 @@
 				C90DAB371256289900D8E663 /* BlioLegacyLayoutScrollView.m in Sources */,
 				C90DAB381256289900D8E663 /* BlioLegacyLayoutView.m in Sources */,
 				7D9A6885125ABC7200130A53 /* levenshtein_distance.c in Sources */,
+				C90DAE8E125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
+				C90DAEBE125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4017,6 +4037,8 @@
 				C90DAB3A1256289900D8E663 /* BlioLegacyLayoutScrollView.m in Sources */,
 				C90DAB3B1256289900D8E663 /* BlioLegacyLayoutView.m in Sources */,
 				7D9A6886125ABC7200130A53 /* levenshtein_distance.c in Sources */,
+				C90DAE8F125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
+				C90DAEBF125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

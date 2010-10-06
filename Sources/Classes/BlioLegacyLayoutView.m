@@ -18,6 +18,7 @@
 #import "BlioLegacyLayoutContentView.h"
 #import "UIDevice+BlioAdditions.h"
 #import "BlioTextFlowBlockCombiner.h"
+#import "BlioLayoutGeometry.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 
@@ -111,26 +112,6 @@ static const CGFloat kBlioLegacyLayoutViewAccessibilityOffset = 0.1f;
 @end
 
 @implementation BlioLegacyLayoutView
-
-static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, BOOL preserveAspect) {
-    
-    CGFloat xScale = targetRect.size.width / sourceRect.size.width;
-    CGFloat yScale = targetRect.size.height / sourceRect.size.height;
-    
-    CGAffineTransform scaleTransform;
-    if (preserveAspect) {
-        CGFloat scale = xScale < yScale ? xScale : yScale;
-        scaleTransform = CGAffineTransformMakeScale(scale, scale);
-    } else {
-        scaleTransform = CGAffineTransformMakeScale(xScale, yScale);
-    } 
-    CGRect scaledRect = CGRectApplyAffineTransform(sourceRect, scaleTransform);
-    CGFloat xOffset = (targetRect.size.width - scaledRect.size.width);
-    CGFloat yOffset = (targetRect.size.height - scaledRect.size.height);
-    CGAffineTransform offsetTransform = CGAffineTransformMakeTranslation((targetRect.origin.x - scaledRect.origin.x) + xOffset/2.0f, (targetRect.origin.y - scaledRect.origin.y) + yOffset/2.0f);
-    CGAffineTransform transform = CGAffineTransformConcat(scaleTransform, offsetTransform);
-    return transform;
-}
 
 static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect targetRect) {
     CGFloat scale = targetRect.size.width / sourceRect.size.width;
@@ -2636,6 +2617,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
+    return nil;
+}
+
+- (NSArray *)hyperlinksForPage:(NSInteger)pageNumber {
     return nil;
 }
 

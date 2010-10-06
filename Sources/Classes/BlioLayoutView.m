@@ -16,21 +16,11 @@
 #import <libEucalyptus/THPair.h>
 #import "UIDevice+BlioAdditions.h"
 #import "BlioTextFlowBlockCombiner.h"
+#import "BlioLayoutPDFDataSource.h"
+#import "BlioLayoutGeometry.h"
+#import "BlioLayoutHyperlink.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
-
-@interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource> {
-    NSData *data;
-    NSInteger pageCount;
-    CGPDFDocumentRef pdf;
-    NSLock *pdfLock;
-}
-
-@property (nonatomic, retain) NSData *data;
-
-- (id)initWithPath:(NSString *)aPath;
-
-@end
 
 @interface BlioLayoutView()
 
@@ -43,6 +33,7 @@
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
+
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)page;
 
 - (NSArray *)bookmarkRangesForCurrentPage;
@@ -52,12 +43,22 @@
 - (NSInteger)leftPageIndex;
 - (NSInteger)rightPageIndex;
 
+- (void)stopSniffingTouches; 
+- (void)startSniffingTouches;
+- (void)touchBegan:(UITouch *)touch;
+- (void)touchMoved:(UITouch *)touch;
+- (void)touchEnded:(UITouch *)touch;
+
+- (NSArray *)hyperlinksForPage:(NSInteger)page;
+- (BlioLayoutHyperlink *)hyperlinkForPage:(NSInteger)page atPoint:(CGPoint)point;
+- (void)hyperlinkTapped:(NSURL *)url;
+
 @end
 
 @implementation BlioLayoutView
 
 @synthesize bookID, textFlow, pageNumber, pageCount, selector, pageSize;
-@synthesize pageCropsCache, viewTransformsCache;
+@synthesize pageCropsCache, viewTransformsCache, hyperlinksCache;
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
 @synthesize lastBlock;
@@ -65,6 +66,7 @@
 - (void)dealloc {
     self.textFlow = nil;
     self.pageCropsCache = nil;
+    self.hyperlinksCache = nil;
     self.viewTransformsCache = nil;
     self.lastBlock = nil;
     
@@ -91,6 +93,7 @@
     
     self.bookID = nil;
     [layoutCacheLock release];
+    [hyperlinksCacheLock release];
         
     [super dealloc];
 }
@@ -119,6 +122,7 @@
         self.pageSize = self.bounds.size;
         
         layoutCacheLock = [[NSLock alloc] init];
+        hyperlinksCacheLock = [[NSLock alloc] init];
         
         // Prefer the checkout over calling [aBook textFlow] because we wat to retain the result
         textFlow = [[[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:self.bookID] retain];
@@ -151,6 +155,7 @@
     if(self.selector) {
         [self.selector removeObserver:self forKeyPath:@"tracking"];
         [self.selector detatch];
+        [self stopSniffingTouches];
         self.selector = nil;
     }
     
@@ -187,7 +192,8 @@
         [aSelector attachToView:pageTurningView];
         [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         self.selector = aSelector;
-        [aSelector release];        
+        [aSelector release];   
+        [self startSniffingTouches];
     } else {
         EucPageTurningView *aPageTurningView = self.pageTurningView;
         if(aPageTurningView) {
@@ -375,7 +381,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return CGRectZero;
 }
 
-static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, BOOL preserveAspect) {
+CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, BOOL preserveAspect) {
     
     CGFloat xScale = targetRect.size.width / sourceRect.size.width;
     CGFloat yScale = targetRect.size.height / sourceRect.size.height;
@@ -858,171 +864,133 @@ static CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect target
     return self.textFlow;
 }
 
-@end
+#pragma mark -
+#pragma mark Touch Handling
 
-@implementation BlioLayoutPDFDataSource
-
-@synthesize data;
-
-- (void)dealloc {
-    [pdfLock lock];
-    if (pdf) CGPDFDocumentRelease(pdf);
-    self.data = nil;
-    [pdfLock unlock];
-    [pdfLock release];
-    [super dealloc];
-}
-
-- (id)initWithPath:(NSString *)aPath {
-    if ((self = [super init])) {
-        NSData *aData = [[NSData alloc] initWithContentsOfMappedFile:aPath];
-        CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)aData);
-        CGPDFDocumentRef aPdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-        pageCount = CGPDFDocumentGetNumberOfPages(aPdf);
-        CGPDFDocumentRelease(aPdf);
-        CGDataProviderRelease(pdfProvider);
-        self.data = aData;
-        [aData release];
-        
-        pdfLock = [[NSLock alloc] init];
-    }
-    return self;
-}
-
-- (NSInteger)pageCount {
-    return pageCount;
-}
-
-- (void)openDocumentWithoutLock {
-    if (self.data) {
-        CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.data);
-        pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
-        CGDataProviderRelease(pdfProvider);
-    }
-}
-
-- (CGRect)cropRectForPage:(NSInteger)page {
-    [pdfLock lock];
-    if (nil == pdf) {
-        [self openDocumentWithoutLock];
-        if (nil == pdf) {
-            [pdfLock unlock];
-            return CGRectZero;
+- (void)startSniffingTouches {
+    for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
+        if([window isKindOfClass:[THEventCapturingWindow class]]) {
+            [window addTouchObserver:self forView:self.pageTurningView];
         }
     }
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    CGRect cropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
-    [pdfLock unlock];
-    
-    return cropRect;
 }
 
-- (CGRect)mediaRectForPage:(NSInteger)page {    
-    [pdfLock lock];
-    if (nil == pdf) {
-        [self openDocumentWithoutLock];
-        if (nil == pdf) {
-            [pdfLock unlock];
-            return CGRectZero;
+- (void)stopSniffingTouches {
+    for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
+        if([window isKindOfClass:[THEventCapturingWindow class]]) {
+            [window removeTouchObserver:self forView:self.pageTurningView];
         }
     }
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    CGRect mediaRect = CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox);
-    [pdfLock unlock];
-    
-    return mediaRect;
 }
 
-- (CGFloat)dpiRatio {
-    return 72/96.0f;
+- (void)observeTouch:(UITouch *)touch {
+    switch(touch.phase) {
+        case UITouchPhaseBegan:
+            [self touchBegan:touch];
+            break;
+        case UITouchPhaseMoved: 
+            [self touchMoved:touch];
+            break;
+        case UITouchPhaseEnded:
+            [self touchEnded:touch];
+            break;
+        default:
+            break;
+    }
 }
 
+- (void)touchBegan:(UITouch *)touch {
+    startTouchPoint = [touch locationInView:self];
+}
 
-- (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
-                                fromRect:(CGRect)rect
-                                 minSize:(CGSize)size 
-                              getContext:(id *)context {
+- (void)touchMoved:(UITouch *)touch {
+    startTouchPoint = CGPointMake(-1, -1);
+}
+
+- (void)touchEnded:(UITouch *)touch {
+    NSLog(@"Touches ended in view");
+    BlioLayoutHyperlink *touchedHyperlink = nil;
     
-    if (nil == pdf) return nil;
-
-    size_t width  = size.width;
-    size_t height = size.height;
+    if ([self.delegate toolbarsVisible]) {
+        return;
+    }
+    
+    CGPoint point = [touch locationInView:self];
+    if (CGPointEqualToPoint(point, startTouchPoint)) {
+        if (self.pageTurningView.fitTwoPages) {
+            NSInteger leftPageIndex = [self leftPageIndex];
+            if (leftPageIndex >= 0) {
+                touchedHyperlink = [self hyperlinkForPage:leftPageIndex + 1 atPoint:point];
+            }
+        }
         
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceCMYK();
-    
-    size_t bytesPerRow = 4 * width;
-    size_t totalBytes = bytesPerRow * height;
-    
-    NSMutableData *bitmapData = [[NSMutableData alloc] initWithCapacity:totalBytes];
-    [bitmapData setLength:totalBytes];
-    
-    CGContextRef bitmapContext = CGBitmapContextCreate([bitmapData mutableBytes], width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
-    CGColorSpaceRelease(colorSpace);
-    
-    CGFloat widthScale  = size.width / CGRectGetWidth(rect);
-    CGFloat heightScale = size.height / CGRectGetHeight(rect);
-    heightScale = heightScale;widthScale = widthScale;
-    
-    CGContextSetFillColorWithColor(bitmapContext, [UIColor whiteColor].CGColor);
-    
-    CGRect pageRect = CGRectMake(0, 0, width, height);
-    CGContextFillRect(bitmapContext, pageRect);
-    CGContextClipToRect(bitmapContext, pageRect);
-    
-    CGRect cropRect = [self cropRectForPage:page];
-    CGAffineTransform fitTransform = transformRectToFitRect(cropRect, pageRect, YES);
-    //CGContextConcatCTM(bitmapContext, CGAffineTransformMakeScale(widthScale, heightScale));
-    CGContextConcatCTM(bitmapContext, fitTransform);
-    
-    [pdfLock lock];
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    CGContextDrawPDFPage(bitmapContext, aPage);
-    [pdfLock unlock];
-    
-    *context = [bitmapData autorelease];
-    
-    return (CGContextRef)[(id)bitmapContext autorelease];
+        if (nil == touchedHyperlink) {
+            NSInteger rightPageIndex = [self rightPageIndex];
+            if (rightPageIndex < pageCount) {
+                touchedHyperlink = [self hyperlinkForPage:rightPageIndex + 1 atPoint:point];
+            }
+        }
+    }
+
+    if ([touchedHyperlink link]) {
+        [self hyperlinkTapped:[NSURL URLWithString:[touchedHyperlink link]]];
+    }
+}
+        
+#pragma mark -
+#pragma mark Hyperlinks
+
+- (BOOL)toolbarShowShouldBeSuppressed {
+    if (hyperlinkTapped) {
+        hyperlinkTapped = NO;
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
-- (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
-    //NSLog(@"drawPage %d inContext %@ inRect: %@ withTransform %@ andBounds %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(rect), NSStringFromCGAffineTransform(transform), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+- (void)hyperlinkTapped:(NSURL *)url {
+    NSLog(@"Hyperlink tapped: %@", url);
+    hyperlinkTapped = YES;
+}
+
+- (NSArray *)hyperlinksForPage:(NSInteger)page {
     
-    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);    
-    CGContextFillRect(ctx, rect);
-    CGContextClipToRect(ctx, rect);
+    [hyperlinksCacheLock lock];
     
-    CGContextConcatCTM(ctx, transform);
-    [pdfLock lock];
-    if (nil == pdf) return;
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    CGPDFPageRetain(aPage);
-    CGContextDrawPDFPage(ctx, aPage);
-    CGPDFPageRelease(aPage);
-    [pdfLock unlock];
+    NSArray *hyperlinksArray = [self.hyperlinksCache objectForKey:[NSNumber numberWithInt:page]];
+    
+    if (nil == hyperlinksArray) {
+        if (nil == self.hyperlinksCache) {
+            self.hyperlinksCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
+        }
+        
+        NSArray *hyperlinks = [self.dataSource hyperlinksForPage:page];
+        if (hyperlinks != nil) {
+            [self.hyperlinksCache setObject:hyperlinks forKey:[NSNumber numberWithInt:page]];
+        }
+        hyperlinksArray = [self.hyperlinksCache objectForKey:[NSNumber numberWithInt:page]];
+    }
+    
+    [hyperlinksCacheLock unlock];
+    
+    return hyperlinksArray;
 }
 
-- (void)openDocumentIfRequired {
-    [pdfLock lock];
-    [self openDocumentWithoutLock];
-    [pdfLock unlock];
-}
-
-- (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
-    return nil;
-}
-
-- (void)closeDocument {
-    [pdfLock lock];
-    if (pdf) CGPDFDocumentRelease(pdf);
-    pdf = NULL;
-    [pdfLock unlock];
-}
-
-- (void)closeDocumentIfRequired {
-    [self closeDocument];
+- (BlioLayoutHyperlink *)hyperlinkForPage:(NSInteger)page atPoint:(CGPoint)point {
+    
+    BlioLayoutHyperlink *hyperlinkMatch = nil;
+    CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:page - 1];
+    
+    for (BlioLayoutHyperlink *hyperlink in [self hyperlinksForPage:page]) {
+        CGRect hyperlinkRect = CGRectApplyAffineTransform([hyperlink rect], viewTransform);
+        if (CGRectContainsPoint(hyperlinkRect, point)) {
+            hyperlinkMatch = hyperlink;
+            break;
+        }
+    }
+    
+    return hyperlinkMatch;
 }
 
 @end
-
-

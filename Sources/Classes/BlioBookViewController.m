@@ -1341,6 +1341,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [self toggleToolbars];
             }
         } else if(phase == UITouchPhaseEnded) {
+            NSLog(@"Touches ended in controller");
             if(!_touchMoved) {
                 if([self toolbarsVisible] ||
                    ![self.bookView respondsToSelector:@selector(toolbarShowShouldBeSuppressed)] ||
