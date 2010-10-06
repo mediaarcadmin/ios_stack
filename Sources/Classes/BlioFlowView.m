@@ -12,6 +12,7 @@
 #import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import "BlioParagraphSource.h"
+#import "levenshtein_distance.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucHighlightRange.h>
@@ -286,23 +287,29 @@
     BOOL handled;
     if([link.scheme isEqualToString:@"textflow"]) {
         NSString *internalURI = link.relativeString;
-        NSString *realNodeTag = nil;
         
         // Find the node UUID that best matches this link and jump to it.
         // Node IDs are of the format: 
         // textflow:<flow reference index, integer>#<Tag attribute from the XAML>.
         
-        for(NSString *potentialID in [[(EucBUpeBook *)_eucBook idToIndexPoint] keyEnumerator]) {
+        /*for(NSString *potentialID in [[(EucBUpeBook *)_eucBook idToIndexPoint] keyEnumerator]) {
             if([potentialID hasSuffix:internalURI]) {
                 realNodeTag = potentialID;
             }
+        }*/
+        NSString *bestRealNodeTag = nil;
+        int bestRealNodeTagDistance = INT_MAX;
+        for(NSString *potentialID in [[(EucBUpeBook *)_eucBook idToIndexPoint] keyEnumerator]) {
+            int thisDistance = levenshtein_distance([internalURI UTF8String], [potentialID UTF8String]);
+            if(thisDistance < bestRealNodeTagDistance) {
+                bestRealNodeTagDistance = thisDistance;
+                bestRealNodeTag = potentialID;
+            }
         }
-        if(realNodeTag) {
-            [bookView goToUuid:realNodeTag animated:YES];
-        } else {
-            // just to test:
-            [bookView goToUuid:@"textflow:0" animated:YES];
-        }
+        
+        if(bestRealNodeTag) {
+            [bookView goToUuid:bestRealNodeTag animated:YES];
+        } 
     }
     return !handled;
 }
