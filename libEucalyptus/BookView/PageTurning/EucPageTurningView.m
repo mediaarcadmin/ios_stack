@@ -230,7 +230,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
     NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
-    glGenTextures(1, &_bookEdgeTexture);
+    _bookEdgeTexture = [self _unusedTexture];
     glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
     texImage2DPVRTC(0, 4, 0, 512, [bookEdge bytes]);
     [bookEdge release];
@@ -239,7 +239,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    glGenTextures(1, &_alphaWhiteTexture);
+    _alphaWhiteTexture = [self _unusedTexture];
     glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
     uint32_t whiteSquare[4] = { 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &whiteSquare);
@@ -285,8 +285,17 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     glEnable(GL_CULL_FACE);
     
-    _textureUploadContext = [[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
-    _textureUploadContextLock = [[NSLock alloc] init];
+    _textureGenerationOperationQueue = [[NSOperationQueue alloc] init];
+    if([_textureGenerationOperationQueue respondsToSelector:@"setName"]) {
+        _textureGenerationOperationQueue.name = @"Texture Generation Queue";
+    }
+    
+    _backgroundThreadEAGLContext = self.eaglContext;//[[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
+    _backgroundThreadEAGLContextLock = [[NSLock alloc] init];
+    
+    _textureLock = [[NSLock alloc] init];
+    _recycledTextures = [[NSMutableArray alloc] init];
+
     
     _animatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"animatedBookTurnVertices" ofType:@"vertexData"]];
     _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THVec3) * 2);
@@ -319,7 +328,15 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)dealloc
 {
+    [_textureGenerationOperationQueue cancelAllOperations];
+    [_textureGenerationOperationQueue waitUntilAllOperationsAreFinished];
+    [_textureGenerationOperationQueue release];
+    
     [EAGLContext setCurrentContext:self.eaglContext];
+    
+    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
+        [_pageContentsInformation[i] release];
+    }        
     
     if(_meshTextureCoordinateBuffer) {
         glDeleteBuffers(1, &_meshTextureCoordinateBuffer);
@@ -328,7 +345,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_triangleStripIndicesBuffer) {
         glDeleteBuffers(1, &_triangleStripIndicesBuffer);
     }
-    
+        
     if(_bookEdgeTexture) {
         glDeleteTextures(1, &_bookEdgeTexture);
     }
@@ -338,17 +355,21 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_blankPageTexture) {
         glDeleteTextures(1, &_blankPageTexture);
     }
-    
-    for(int i = 0; i < 7; ++i) {
-        [_pageContentsInformation[i] release];
-    }    
-    
-    [_textureUploadContextLock release];
-    [_textureUploadContext release];
-    
+
+    for(NSNumber *textureNumber in _recycledTextures) {
+        GLuint texture = [textureNumber intValue];
+        glDeleteTextures(1, &texture);
+    }
+    [_recycledTextures release];    
+    [_textureLock release];
+
+    [_backgroundThreadEAGLContextLock release];
+    [_backgroundThreadEAGLContext release];
+
     if(_program) {
         glDeleteProgram(_program);
     }
+    
     
     [_animatedTurnData release];
     [_reverseAnimatedTurnData release];
@@ -492,7 +513,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
         
         [EAGLContext setCurrentContext:self.eaglContext];
-        for(int i = 0; i < 7; ++i) {
+        for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
             [_pageContentsInformation[i] release];
             _pageContentsInformation[i] = nil;
         }    
@@ -592,7 +613,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     size_t contextWidth = CGBitmapContextGetWidth(context);
     size_t contextHeight = CGBitmapContextGetHeight(context);
     
-    [EAGLContext setCurrentContext:_textureUploadContext];
+    [EAGLContext setCurrentContext:_backgroundThreadEAGLContext];
     
     CGContextRef textureContext = NULL;
     void *textureData;
@@ -612,8 +633,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGColorSpaceRelease(colorSpace);
     }
     
-    GLuint textureRef;
-    glGenTextures(1, &textureRef);
+    GLuint textureRef = [self _unusedTexture];
 
     glBindTexture(GL_TEXTURE_2D, textureRef); 
 
@@ -753,10 +773,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_pageContentsInformation[page].view != view) {
         [_pageContentsInformation[page] release];
         if(view) {
-            _pageContentsInformation[page] = 
-                [[EucPageTurningPageContentsInformation alloc] initWithMainMainThreadContext:self.eaglContext
-                                                                          otherThreadContext:_textureUploadContext 
-                                                                      otherThreadContextLock:_textureUploadContextLock];
+            _pageContentsInformation[page] = [[EucPageTurningPageContentsInformation alloc] initWithPageTurningView:self];
             _pageContentsInformation[page].view = view;
             _pageContentsInformation[page].texture = [self _createTextureFrom:view];
         } else {
@@ -797,7 +814,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (NSArray *)pageViews
 {
     NSMutableArray *views = [[NSMutableArray alloc] initWithCapacity:6];
-    for(NSUInteger i = 0; i < 7; ++i) {
+    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
         UIView *view = _pageContentsInformation[i].view;
         if(view) {
             [views addObject:view];
@@ -873,7 +890,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)refreshView:(UIView *)view
 {
-    for(int i = 0; i < 7; ++i) {
+    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
         if(view == _pageContentsInformation[i].view) {
             [self _setView:view forInternalPageOffsetPage:i forceRefresh:YES];
             break;
@@ -917,10 +934,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
         
         [_pageContentsInformation[pageOffset] release];
-        _pageContentsInformation[pageOffset] = 
-                [[EucPageTurningPageContentsInformation alloc] initWithMainMainThreadContext:self.eaglContext
-                                                                          otherThreadContext:_textureUploadContext 
-                                                                      otherThreadContextLock:_textureUploadContextLock];
+        _pageContentsInformation[pageOffset] = [[EucPageTurningPageContentsInformation alloc] initWithPageTurningView:self];
         _pageContentsInformation[pageOffset].pageIndex = newPageIndex;
         _pageContentsInformation[pageOffset].texture = [self _createTextureFromRGBABitmapContext:thisPageBitmap];
     } else {
@@ -2505,7 +2519,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         return translation;
     } else {
         [self willChangeValueForKey:@"translation"];
-        [self willChangeValueForKey:@"zoomfactor"];
+        [self willChangeValueForKey:@"zoomFactor"];
         [self willChangeValueForKey:@"rightPageFrame"];
         [self willChangeValueForKey:@"leftPageFrame"];
         
@@ -2626,7 +2640,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         [self didChangeValueForKey:@"leftPageFrame"];
         [self didChangeValueForKey:@"rightPageFrame"];
-        [self didChangeValueForKey:@"zoomfactor"];
+        [self didChangeValueForKey:@"zoomFactor"];
         [self didChangeValueForKey:@"translation"];
         
         [self setNeedsDraw];
@@ -2634,5 +2648,48 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         return remainingTranslation;
     }
 }
+
+#pragma mark -
+#pragma mark Texture Management
+
+- (GLuint)_unusedTexture
+{
+    GLuint ret;
+    [_textureLock lock];
+    
+    if(_recycledTextures.count) {
+        ret = [[_recycledTextures lastObject] intValue];
+        [_recycledTextures removeLastObject];
+    } else {
+        BOOL isMainThread = [NSThread isMainThread];
+        if(isMainThread) {
+            [EAGLContext setCurrentContext:self.eaglContext];
+        } else{
+            [_backgroundThreadEAGLContextLock lock];
+            [EAGLContext setCurrentContext:_backgroundThreadEAGLContext];
+        }
+        
+        glGenTextures(1, &ret);
+        
+        if(isMainThread) {
+            [_backgroundThreadEAGLContextLock unlock];
+        }
+    }
+        
+    [_textureLock unlock];
+    
+    return ret;
+}
+
+- (void)_recycleTexture:(GLuint)texture
+{
+    [_textureLock lock];
+    
+    [_recycledTextures addObject:[NSNumber numberWithInt:texture]];
+    
+    [_textureLock unlock];
+}
+     
+                                        
 
 @end

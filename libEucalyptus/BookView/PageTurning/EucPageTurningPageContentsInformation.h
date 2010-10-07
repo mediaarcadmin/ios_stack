@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "THOpenGLUtils.h"
 
+@class EucPageTurningView;
+
 @interface EucPageTurningPageContentsInformation : NSObject {
-    EAGLContext *_mainThreadContext;
-    EAGLContext *_otherThreadContext;
-    NSLock *_otherThreadContextLock;
+    EucPageTurningView *_pageTurningView;
     
     NSUInteger _pageIndex;
     UIView *_view;
@@ -24,17 +24,13 @@
 @property (nonatomic, retain) UIView *view;
 @property (nonatomic, assign) NSUInteger pageIndex;
 
-
-// These /say/ assign, but actually, after assignment, the textures belong
-// to this object, and will be deleted when they're finished with.
 @property (nonatomic, assign) GLuint texture;
 @property (nonatomic, assign) GLuint zoomedTexture;
 
 @property (nonatomic, assign) CGRect zoomedTextureRect;
 
 
-- (id)initWithMainMainThreadContext:(EAGLContext *)mainThreadContext 
-                 otherThreadContext:(EAGLContext *)otherThreadContext
-             otherThreadContextLock:(NSLock *)otherThreadContextLock;
+- (id)initWithPageTurningView:(EucPageTurningView *)pageTurningView;
 
 @end
+

@@ -7,6 +7,7 @@
 //
 
 #import "EucPageTurningPageContentsInformation.h"
+#import "EucPageTurningView.h"
 
 @implementation EucPageTurningPageContentsInformation
 
@@ -14,14 +15,10 @@
 @synthesize pageIndex = _pageIndex;
 @synthesize zoomedTextureRect = _zoomedTextureRect;
 
-- (id)initWithMainMainThreadContext:(EAGLContext *)mainThreadContext 
-                 otherThreadContext:(EAGLContext *)otherThreadContext
-             otherThreadContextLock:(NSLock *)otherThreadContextLock
+- (id)initWithPageTurningView:(EucPageTurningView *)pageTurningView
 {
     if((self = [super init])) {
-        mainThreadContext = [_mainThreadContext retain];
-        otherThreadContext = [_otherThreadContext retain];
-        otherThreadContextLock = [_otherThreadContextLock retain];
+        _pageTurningView = pageTurningView;
     }
     return self;
 }
@@ -29,30 +26,14 @@
 - (void)dealloc
 {   
     [_view release];
-    
-    BOOL mainThread = [NSThread isMainThread];
-    if(mainThread) {
-        [EAGLContext setCurrentContext:_mainThreadContext];
-    } else {
-        [_otherThreadContextLock lock];
-        [EAGLContext setCurrentContext:_otherThreadContext];
-    }
-    
+
     if(_texture) {
-        glDeleteTextures(1, &_texture);
+        [_pageTurningView _recycleTexture:_texture];
     }
     if(_zoomedTexture) {
-        glDeleteTextures(1, &_zoomedTexture);
+        [_pageTurningView _recycleTexture:_zoomedTexture];
     }
-    
-    if(mainThread) {
-        [_otherThreadContextLock unlock];
-    }
-    [_otherThreadContextLock release];
-    
-    [_mainThreadContext release];
-    [_otherThreadContext release];
-    
+        
     [super dealloc];
 }
 
@@ -65,19 +46,7 @@
 {
     if(texture != _texture) {
         if(_texture) {
-            BOOL mainThread = [NSThread isMainThread];
-            if(mainThread) {
-                [EAGLContext setCurrentContext:_mainThreadContext];
-            } else {
-                [_otherThreadContextLock lock];
-                [EAGLContext setCurrentContext:_otherThreadContext];
-            }
-            
-            glDeleteTextures(1, &_texture);
-            
-            if(mainThread) {
-                [_otherThreadContextLock unlock];
-            }            
+            [_pageTurningView _recycleTexture:_texture];
         }
         _texture = texture;
     }
@@ -92,19 +61,7 @@
 {
     if(zoomedTexture != _zoomedTexture) {
         if(_zoomedTexture) {
-            BOOL mainThread = [NSThread isMainThread];
-            if(mainThread) {
-                [EAGLContext setCurrentContext:_mainThreadContext];
-            } else {
-                [_otherThreadContextLock lock];
-                [EAGLContext setCurrentContext:_otherThreadContext];
-            }
-            
-            glDeleteTextures(1, &_zoomedTexture);
-            
-            if(mainThread) {
-                [_otherThreadContextLock unlock];
-            }            
+            [_pageTurningView _recycleTexture:_zoomedTexture];
         }
         _zoomedTexture = zoomedTexture;
     }

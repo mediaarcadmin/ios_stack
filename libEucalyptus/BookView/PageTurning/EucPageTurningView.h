@@ -124,8 +124,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     EucPageTurningViewZoomHandlingKind _zoomHandlingKind;
     BOOL _zoomingDelegateMessageSent;
     
-    EAGLContext *_textureUploadContext;
-    NSLock *_textureUploadContextLock;
+    EAGLContext *_backgroundThreadEAGLContext;
+    NSLock *_backgroundThreadEAGLContextLock;
     EucPageTurningPageContentsInformation *_pageContentsInformation[7];
     
     NSInteger _rightFlatPageIndex;
@@ -161,6 +161,11 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     
     NSArray *_accessibilityElements;
     THAccessibilityElement *_nextPageTapZone;
+    
+    NSLock *_textureLock;
+    NSMutableArray *_recycledTextures;
+    
+    NSOperationQueue *_textureGenerationOperationQueue;
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
@@ -223,6 +228,11 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 @property (nonatomic, copy) UIColor *diffuseLightColor;
 
 @property (nonatomic, assign) THVec3 lightPosition;
+
+#pragma mark Private
+
+- (GLuint)_unusedTexture;
+- (void)_recycleTexture:(GLuint)texture;
 
 @end
 
