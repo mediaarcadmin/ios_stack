@@ -402,6 +402,8 @@
 		7D53BE301149AE6D004F64DC /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D58226911F858AB00D4150C /* EucCSSLayoutPositionedContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D58226711F858AB00D4150C /* EucCSSLayoutPositionedContainer.h */; };
 		7D58226A11F858AB00D4150C /* EucCSSLayoutPositionedContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D58226811F858AB00D4150C /* EucCSSLayoutPositionedContainer.m */; };
+		7D589BAF125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D589BAD125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h */; };
+		7D589BB0125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D589BAE125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m */; };
 		7D5D69C410C2D33200BBF826 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libEucalyptus.a */; };
 		7D5D69C710C2D33200BBF826 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D5D69C810C2D33200BBF826 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
@@ -1164,6 +1166,8 @@
 		7D53BDA011499DCE004F64DC /* EucCSSXMLTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSXMLTreeNode.m; sourceTree = "<group>"; };
 		7D58226711F858AB00D4150C /* EucCSSLayoutPositionedContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutPositionedContainer.h; sourceTree = "<group>"; };
 		7D58226811F858AB00D4150C /* EucCSSLayoutPositionedContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutPositionedContainer.m; sourceTree = "<group>"; };
+		7D589BAD125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageTurningPageContentsInformation.h; sourceTree = "<group>"; };
+		7D589BAE125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageTurningPageContentsInformation.m; sourceTree = "<group>"; };
 		7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EucConfiguration.plist; sourceTree = "<group>"; };
 		7D658C6D103DEAD900EB5003 /* THImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THImageFactory.h; sourceTree = "<group>"; };
 		7D658C6E103DEAD900EB5003 /* THImageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THImageFactory.m; sourceTree = "<group>"; };
@@ -2269,6 +2273,8 @@
 			children = (
 				7D36376F1238F534002BDD2B /* EucPageTurningView.h */,
 				7D3637701238F534002BDD2B /* EucPageTurningView.m */,
+				7D589BAD125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h */,
+				7D589BAE125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m */,
 				7D02175F124025E7008CE201 /* Shaders */,
 			);
 			path = PageTurning;
@@ -2931,6 +2937,7 @@
 				7D0217A912402B17008CE201 /* THEmbeddedResourceManager.h in Headers */,
 				7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */,
 				7DC0FE391234E85F00FBE9B3 /* EucSelectorAccessibilityMask.h in Headers */,
+				7D589BAF125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3580,6 +3587,7 @@
 				7D6D9FC7124E9AE6005FD8CE /* THOpenGLUtils.m in Sources */,
 				7D6DA2231250C404005FD8CE /* euc_page_turning.vsh in Sources */,
 				7D6DA2241250C408005FD8CE /* euc_page_turning.fsh in Sources */,
+				7D589BB0125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

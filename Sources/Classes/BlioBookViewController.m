@@ -1159,8 +1159,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return ([[self.navigationController navigationBar] isHidden] == NO);
 }
 
-- (void)toggleToolbars:(BlioLibraryToolbarsState)toolbarState
+- (void)delayedToggleToolbars:(NSNumber *)toolbarStateNumber
 {
+    BlioLibraryToolbarsState toolbarState = [toolbarStateNumber integerValue];
+    
     if(_fadeState != BookViewControlleUIFadeStateNone) return;
     
     // Set the fade state
@@ -1264,6 +1266,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [UIView commitAnimations];   
         
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+}
+
+- (void)toggleToolbars:(BlioLibraryToolbarsState)toolbarState
+{
+    // We do this with performSelector afterDelay 0 so that if something else
+    // happens later in this event loop cycle (i.e. a tap-turn starts), the 
+    // toggle can be cancelled.
+    [self performSelector:@selector(delayedToggleToolbars:) withObject:[NSNumber numberWithInteger:toolbarState] afterDelay:0];
+}
+
+- (void)cancelPendingToolbarShow
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedToggleToolbars:) object:[NSNumber numberWithInteger:kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible]];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedToggleToolbars:) object:[NSNumber numberWithInteger:kBlioLibraryToolbarsStateNoneVisible]];
 }
 
 - (void)updatePauseButton {

@@ -19,6 +19,7 @@
 #import "THBaseEAGLView.h"
 #import "THGeometryUtils.h"
 #import "THEmbeddedResourceManager.h"
+#import "EucPageTurningPageContentsInformation.h"
 
 #define FOV_ANGLE ((GLfloat)10.0f)
 
@@ -56,6 +57,8 @@
 @synthesize zoomMatrix = _zoomMatrix;
 @synthesize rightPageFrame = _rightPageFrame;
 @synthesize leftPageFrame = _leftPageFrame;
+@synthesize unzoomedRightPageFrame = _unzoomedRightPageFrame;
+@synthesize unzoomedLeftPageFrame = _unzoomedLeftPageFrame;
 
 @synthesize shininess = _shininess;
 
@@ -233,9 +236,17 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [bookEdge release];
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glGenTextures(1, &_alphaWhiteTexture);
+    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+    uint32_t whiteSquare[4] = { 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff };
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &whiteSquare);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         
     NSData *vertexShaderSource = [THEmbeddedResourceManager embeddedResourceWithName:@"euc_page_turning.vsh"];
     GLuint vertexShader = THGLLoadShader(GL_VERTEX_SHADER, vertexShaderSource.bytes, vertexShaderSource.length);
@@ -275,6 +286,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glEnable(GL_CULL_FACE);
     
     _textureUploadContext = [[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
+    _textureUploadContextLock = [[NSLock alloc] init];
     
     _animatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"animatedBookTurnVertices" ofType:@"vertexData"]];
     _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THVec3) * 2);
@@ -286,11 +298,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     //self.exclusiveTouch = YES;
     self.opaque = YES;
     self.userInteractionEnabled = YES;
-    //tempFile = fopen("/tmp/vertexdata", "w");
-    
-    for(NSUInteger i = 0; i < 4; ++i) {
-        _pageContentsInformation[i].pageIndex = NSUIntegerMax;
-    }
+    //tempFile = fopen("/tmp/vertexdata", "w");    
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -311,8 +319,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)dealloc
 {
-    [_textureUploadContext release];
-    
     [EAGLContext setCurrentContext:self.eaglContext];
     
     if(_meshTextureCoordinateBuffer) {
@@ -323,12 +329,22 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         glDeleteBuffers(1, &_triangleStripIndicesBuffer);
     }
     
+    if(_bookEdgeTexture) {
+        glDeleteTextures(1, &_bookEdgeTexture);
+    }
+    if(_alphaWhiteTexture) {
+        glDeleteTextures(1, &_alphaWhiteTexture);
+    }
+    if(_blankPageTexture) {
+        glDeleteTextures(1, &_blankPageTexture);
+    }
+    
     for(int i = 0; i < 7; ++i) {
-        [_pageContentsInformation[i].view release];
-        if(_pageContentsInformation[i].texture) {
-            glDeleteTextures(1, &(_pageContentsInformation[i].texture));
-        }
+        [_pageContentsInformation[i] release];
     }    
+    
+    [_textureUploadContextLock release];
+    [_textureUploadContext release];
     
     if(_program) {
         glDeleteProgram(_program);
@@ -350,6 +366,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [self willChangeValueForKey:@"zoomMatrix"];
         [self willChangeValueForKey:@"rightPageFrame"];
         [self willChangeValueForKey:@"leftPageFrame"];
+        [self willChangeValueForKey:@"unzoomedRightPageFrame"];
+        [self willChangeValueForKey:@"unzoomedLeftPageFrame"];
         
         if(size.width < size.height) {
             _viewportLogicalSize.width = 4.0f;
@@ -464,20 +482,19 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         if(!view) {
             [_pageContentsInformation[2].view retain];
         }
-        NSUInteger pageIndex = _pageContentsInformation[3].pageIndex;
-        if(pageIndex == NSUIntegerMax) {
+        NSUInteger pageIndex;
+        if(_pageContentsInformation[3]) {
+            pageIndex = _pageContentsInformation[3].pageIndex;
+        } else if(_pageContentsInformation[2]) {
             pageIndex = _pageContentsInformation[2].pageIndex;
+        } else {
+            pageIndex = NSUIntegerMax;
         }
         
         [EAGLContext setCurrentContext:self.eaglContext];
         for(int i = 0; i < 7; ++i) {
-            [_pageContentsInformation[i].view release];
-            _pageContentsInformation[i].view = nil;
-            if(_pageContentsInformation[i].texture) {
-                glDeleteTextures(1, &(_pageContentsInformation[i].texture));
-                _pageContentsInformation[i].texture = 0;
-            }
-            _pageContentsInformation[i].pageIndex = NSUIntegerMax;
+            [_pageContentsInformation[i] release];
+            _pageContentsInformation[i] = nil;
         }    
         
         if(view) {
@@ -489,6 +506,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         [self _setZoomMatrixFromTranslation:CGPointZero zoomFactor:1.0f];
         
+        _unzoomedLeftPageFrame = _leftPageFrame;
+        _unzoomedRightPageFrame = _rightPageFrame;
+        
+        [self didChangeValueForKey:@"unzoomedLeftPageFrame"];
+        [self didChangeValueForKey:@"unzoomedRightPageFrame"];
         [self didChangeValueForKey:@"leftPageFrame"];
         [self didChangeValueForKey:@"rightPageFrame"];
         [self didChangeValueForKey:@"zoomMatrix"];
@@ -565,7 +587,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
-- (void)_createTextureIn:(GLuint *)textureRef fromRGBABitmapContext:(CGContextRef)context
+- (GLuint)_createTextureFromRGBABitmapContext:(CGContextRef)context
 {
     size_t contextWidth = CGBitmapContextGetWidth(context);
     size_t contextHeight = CGBitmapContextGetHeight(context);
@@ -590,10 +612,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGColorSpaceRelease(colorSpace);
     }
     
-    if(!*textureRef) { 
-        glGenTextures(1, textureRef);
-    }
-    glBindTexture(GL_TEXTURE_2D, *textureRef); 
+    GLuint textureRef;
+    glGenTextures(1, &textureRef);
+
+    glBindTexture(GL_TEXTURE_2D, textureRef); 
 
     glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
@@ -611,9 +633,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
     
     THLog(@"Created Texture of size (%ld, %ld)", (long)contextWidth, (long)contextHeight);
+    
+    return textureRef;
 }
 
-- (void)_createTextureIn:(GLuint *)textureRef from:(id)viewOrImage invertingLuminance:(BOOL)invertingLuminance
+- (GLuint)_createTextureFrom:(id)viewOrImage invertingLuminance:(BOOL)invertingLuminance
 {   
     CGFloat scaleFactor = 1.0f;
     CGSize scaledSize, rawSize;
@@ -702,41 +726,48 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     CGColorSpaceRelease(colorSpace);
     
-    [self _createTextureIn:textureRef fromRGBABitmapContext:textureContext];
+    GLuint ret = [self _createTextureFromRGBABitmapContext:textureContext];
 
     CGContextRelease(textureContext);
     free(textureData);
     
     THLog(@"Created Texture of scaled size (%f, %f) from point size (%f, %f)", scaledSize.width, scaledSize.height, rawSize.width, rawSize.height);
+
+    return ret;
 }
 
-- (void)_createTextureIn:(GLuint *)textureRef from:(id)viewOrImage
+- (GLuint)_createTextureFrom:(id)viewOrImage
 {
-    return [self _createTextureIn:textureRef from:viewOrImage invertingLuminance:NO];
+    return [self _createTextureFrom:viewOrImage invertingLuminance:NO];
 }
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
-    [self _createTextureIn:&_blankPageTexture 
-                      from:pageTexture
-        invertingLuminance:isDark];
+    _blankPageTexture = [self _createTextureFrom:pageTexture
+                              invertingLuminance:isDark];
     _pageTextureIsDark = isDark;
+}
+
+- (void)_setView:(UIView *)view forInternalPageOffsetPage:(int)page forceRefresh:(BOOL)forceRefresh
+{
+    if(_pageContentsInformation[page].view != view) {
+        [_pageContentsInformation[page] release];
+        if(view) {
+            _pageContentsInformation[page] = 
+                [[EucPageTurningPageContentsInformation alloc] initWithMainMainThreadContext:self.eaglContext
+                                                                          otherThreadContext:_textureUploadContext 
+                                                                      otherThreadContextLock:_textureUploadContextLock];
+            _pageContentsInformation[page].view = view;
+            _pageContentsInformation[page].texture = [self _createTextureFrom:view];
+        } else {
+            _pageContentsInformation[page] = nil;
+        }
+    }
 }
 
 - (void)_setView:(UIView *)view forInternalPageOffsetPage:(int)page
 {
-    if(_pageContentsInformation[page].view != view) {
-        [_pageContentsInformation[page].view release];
-        if(view) {
-            [self _createTextureIn:&_pageContentsInformation[page].texture
-                              from:view];
-        } else {
-            [EAGLContext setCurrentContext:self.eaglContext];
-            glDeleteTextures(1, &_pageContentsInformation[page].texture);
-            _pageContentsInformation[page].texture = 0;
-        }
-        _pageContentsInformation[page].view = [view retain];
-    }
+    [self _setView:view forInternalPageOffsetPage:page forceRefresh:NO];
 }
 
 - (UIView *)currentPageView
@@ -746,7 +777,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)setCurrentPageView:(UIView *)newCurrentView;
 {
-    if(newCurrentView != _pageContentsInformation[3].view) {
+    if(newCurrentView != self.currentPageView) {
         if(!_twoSidedPages) {
             [self _setView:[_viewDataSource pageTurningView:self previousViewForView:newCurrentView] forInternalPageOffsetPage:1];
             [self _setView:newCurrentView forInternalPageOffsetPage:3];
@@ -844,8 +875,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 {
     for(int i = 0; i < 7; ++i) {
         if(view == _pageContentsInformation[i].view) {
-            [self _createTextureIn:&_pageContentsInformation[i].texture
-                              from:view];
+            [self _setView:view forInternalPageOffsetPage:i forceRefresh:YES];
             break;
         }
     }
@@ -853,12 +883,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (NSUInteger)leftPageIndex 
 {
-    return _pageContentsInformation[2].pageIndex;
+    return _pageContentsInformation[2].pageIndex ?: NSUIntegerMax;
 }
 
 - (NSUInteger)rightPageIndex 
 {
-    return _pageContentsInformation[3].pageIndex;
+    return _pageContentsInformation[3].pageIndex ?: NSUIntegerMax;
 }
 
 - (void)_setupBitmapPage:(NSUInteger)newPageIndex 
@@ -886,16 +916,16 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                                         minSize:minSize];
         }
         
-        [self _createTextureIn:&_pageContentsInformation[pageOffset].texture
-         fromRGBABitmapContext:thisPageBitmap];
-        _pageContentsInformation[pageOffset].pageIndex = newPageIndex; 
+        [_pageContentsInformation[pageOffset] release];
+        _pageContentsInformation[pageOffset] = 
+                [[EucPageTurningPageContentsInformation alloc] initWithMainMainThreadContext:self.eaglContext
+                                                                          otherThreadContext:_textureUploadContext 
+                                                                      otherThreadContextLock:_textureUploadContextLock];
+        _pageContentsInformation[pageOffset].pageIndex = newPageIndex;
+        _pageContentsInformation[pageOffset].texture = [self _createTextureFromRGBABitmapContext:thisPageBitmap];
     } else {
-        _pageContentsInformation[pageOffset].pageIndex = NSUIntegerMax; 
-        if(_pageContentsInformation[pageOffset].texture) {
-            [EAGLContext setCurrentContext:self.eaglContext];
-            glDeleteTextures(1, &_pageContentsInformation[pageOffset].texture);
-            _pageContentsInformation[pageOffset].texture = 0;
-        }
+        [_pageContentsInformation[pageOffset] release];
+        _pageContentsInformation[pageOffset] = nil;
     }    
 }
 
@@ -915,8 +945,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated
 {
-    if(_pageContentsInformation[2].pageIndex != newPageIndex &&
-       _pageContentsInformation[3].pageIndex != newPageIndex) {
+    if((!_pageContentsInformation[2] || _pageContentsInformation[2].pageIndex != newPageIndex) &&
+       (!_pageContentsInformation[3] || _pageContentsInformation[3].pageIndex != newPageIndex)) {
         
         BOOL forwards = newPageIndex > _pageContentsInformation[3].pageIndex;
         
@@ -1005,7 +1035,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 }
 
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex {
-    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation); ++i) {
+    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
         if(pageIndex == _pageContentsInformation[i].pageIndex) {
             [self _setupBitmapPage:pageIndex forInternalPageOffset:i];
             break;
@@ -1130,8 +1160,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (void)_cyclePageContentsInformationForTurnForwards:(BOOL)forwards
 {
     if(forwards) {
-        EucPageTurningPageContentsInformation tempView0 = _pageContentsInformation[0];
-        EucPageTurningPageContentsInformation tempView1 = _pageContentsInformation[1];
+        EucPageTurningPageContentsInformation *tempView0 = _pageContentsInformation[0];
+        EucPageTurningPageContentsInformation *tempView1 = _pageContentsInformation[1];
         _pageContentsInformation[0] = _pageContentsInformation[2];
         _pageContentsInformation[1] = _pageContentsInformation[3];
         _pageContentsInformation[2] = _pageContentsInformation[4];
@@ -1139,8 +1169,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         _pageContentsInformation[4] = tempView0;
         _pageContentsInformation[5] = tempView1;
     } else {
-        EucPageTurningPageContentsInformation tempView4 = _pageContentsInformation[4];
-        EucPageTurningPageContentsInformation tempView5 = _pageContentsInformation[5];
+        EucPageTurningPageContentsInformation *tempView4 = _pageContentsInformation[4];
+        EucPageTurningPageContentsInformation *tempView5 = _pageContentsInformation[5];
         _pageContentsInformation[4] = _pageContentsInformation[2];
         _pageContentsInformation[5] = _pageContentsInformation[3];
         _pageContentsInformation[2] = _pageContentsInformation[0];
@@ -1224,6 +1254,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     // Assign GL_TEXTUREs to our samplers (we'll bind the textures before use).    
     glUniform1i(glGetUniformLocation(_program, "sPaperTexture"), 0);
     glUniform1i(glGetUniformLocation(_program, "sContentsTexture"), 1);
+    glUniform1i(glGetUniformLocation(_program, "sZoomedContentsTexture"), 2);
+
+    // 'disable' the zoomed texture
+    CGRect invisibleZoomedTextureRect = { { -1.0f, -1.0f } , { -1.0f, -1.0f } };
+    glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
 
     // Enable the array attributes - they'll be set later.    
     
@@ -1251,16 +1288,29 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture);    
+        if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture) {
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture); 
+            CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex].zoomedTextureRect;
+            glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
+                         (GLfloat *)&zoomedTextureRect);
+        }
+        
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        
+        if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture) {
+            glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+        }        
     }
     
     if(_leftPageVisible) {
         NSInteger leftFlatPageIndex = _rightFlatPageIndex - (shouldStopAnimating ? 1 : 3);
         if(leftFlatPageIndex >= 0 && _twoSidedPages) {
-            GLuint texture = _pageContentsInformation[leftFlatPageIndex].texture;
-            if(texture) {
+            if(_pageContentsInformation[leftFlatPageIndex].texture) {
                 CATransform3D oldModelViewMatrix = modelViewMatrix;
                 modelViewMatrix = CATransform3DRotate(modelViewMatrix, (GLfloat)M_PI, 0, 1, 0);
                 glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
@@ -1275,7 +1325,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
                 
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, texture);
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].texture);
+                if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture) {
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].texture);    
+                    CGRect zoomedTextureRect = _pageContentsInformation[leftFlatPageIndex].zoomedTextureRect;
+                    glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
+                                 (GLfloat *)&zoomedTextureRect);
+                }
                 
                 glCullFace(GL_FRONT);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
@@ -1283,6 +1340,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                 glCullFace(GL_BACK);
 
+                if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture) {
+                    glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+                }                                        
+                
                 if(_twoSidedPages) {
                     glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
                 } else {
@@ -1340,6 +1403,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-2].texture);
+        if(_pageContentsInformation[_rightFlatPageIndex-2].zoomedTexture) {
+            CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex - 2].zoomedTextureRect;
+            glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
+                         (GLfloat *)&zoomedTextureRect);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-2].zoomedTexture);
+        }                                                    
+        
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
 
@@ -1348,6 +1419,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_twoSidedPages) {
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-1].texture);
+            if(_pageContentsInformation[_rightFlatPageIndex-1].zoomedTexture) {
+                CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex - 1].zoomedTextureRect;
+                glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
+                             (GLfloat *)&zoomedTextureRect);
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-1].zoomedTexture);
+            }                                                                
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 1);
         } else {
             glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 0.2);
@@ -1362,6 +1440,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         } else {
             glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0);
         }
+        
+        glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
+                     (GLfloat *)&invisibleZoomedTextureRect);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -1416,13 +1499,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
 
-                glUniform1i(glGetUniformLocation(_program, "uDisableContentsTexture"), 1);
+                glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 0.0f);
                 
                 glVertexAttribPointer(glGetAttribLocation(_program, "aTextureCoordinate"), 2, GL_FLOAT, GL_FALSE, 0, _pageEdgeTextureCoordinates);
 
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, Y_VERTEX_COUNT * 2);
                 
-                glUniform1i(glGetUniformLocation(_program, "uDisableContentsTexture"), 0);
+                glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
             }
             
             if(++_automaticTurnFrame >= (_automaticTurnIsForwards ? _animatedTurnFrameCount : (_reverseAnimatedTurnFrameCount + 1))) {
@@ -1555,27 +1638,27 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_isTurning != 1) {
             memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
             memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-            if(_pageContentsInformation[4].view || _pageContentsInformation[4].pageIndex != NSUIntegerMax ||
-               _pageContentsInformation[5].view || _pageContentsInformation[5].pageIndex != NSUIntegerMax) {
+            if(_pageContentsInformation[4] ||
+               _pageContentsInformation[5]) {
                 _rightFlatPageIndex = 5;
+                _isTurning = 1;
             } else {
                 if(!_vibrated) {
                     AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
                     _vibrated = YES;
                 }                
             }
-            _isTurning = 1;
             oldViewportTouchX = pageTouchPoint.x;
         }
-        if(!self.isAnimating) {
+        if(_isTurning != 0 && !self.isAnimating) {
             self.animating = YES;
         }
     } else if(translationAfterScroll.x > 0.000001f && _isTurning <= 0) {
         pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? (-_rightPageRect.size.width + translationAfterScroll.x) : translationAfterScroll.x,
                                      translationAfterScroll.y);
         if(_isTurning != -1) {
-            if(_pageContentsInformation[1].view || _pageContentsInformation[1].pageIndex != NSUIntegerMax ||
-               _pageContentsInformation[2].view || _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
+            if(_pageContentsInformation[1] ||
+               _pageContentsInformation[2]) {
                 if(_rightPageRect.origin.x == 0.0f) {
                     // Position the page floating just outside the field of view.
                     for(int column = 1; column < X_VERTEX_COUNT; ++column) {
@@ -1595,17 +1678,16 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
                 memcpy(_oldPageVertices, _pageVertices, sizeof(_oldPageVertices));
                 _rightFlatPageIndex = 3;
-                _isTurning = YES;
+                _isTurning = -1;
             } else {
                 if(!_vibrated) {
                     AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
                     _vibrated = YES;
                 }
             }
-            _isTurning = -1;
             oldViewportTouchX = pageTouchPoint.x;
         }
-        if(!self.isAnimating) {
+        if(_isTurning != 0 && !self.isAnimating) {
             self.animating = YES;
         }        
     } else {
@@ -1641,31 +1723,40 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
     UITouch *touch = [touches anyObject];
     // If we're not currently tracking a touch
-    if(touches.count == 1 && !_dragUnderway) {
+    if(!_touch && touches.count == 1) {
         // Store touch
         _touch = touch;
         _touchBeganTime = [touch timestamp];
         [self _setTouchLocationFromTouch:_touch firstTouch:YES];
     }
-    if(touches.count == 2 && !_pinchUnderway && !_dragUnderway) {
+    if(!_pinchUnderway && !_dragUnderway) {
         // This is a pinch.  Track both touches
         // We store the touches in a different ivar for a pinch.
-        _pinchTouches[0] = touch;
-        
+        if(_touch) {
+            _pinchTouches[0] = _touch;
+        } else {
+            _pinchTouches[0] = [touches anyObject];
+        }
         for(UITouch *secondTouch in touches) {
             if(secondTouch != _pinchTouches[0]) {
                 _pinchTouches[1] = secondTouch;
                 break;
             }
         }
-        
-        _pinchStartPoints[0] = [_pinchTouches[0] locationInView:self];
-        _pinchStartPoints[1] = [_pinchTouches[1] locationInView:self];
-        
-        _pinchStartZoomFactor = _zoomFactor;
-        _scrollStartTranslation = _scrollTranslation;
-        
-        THLog(@"Pinch Began: %@, %@", NSStringFromCGPoint(_pinchStartPoints[0]), NSStringFromCGPoint(_pinchStartPoints[1]));
+        if(_pinchTouches[0] && _pinchTouches[1]) {
+            _touch = nil;
+            
+            _pinchStartPoints[0] = [_pinchTouches[0] locationInView:self];
+            _pinchStartPoints[1] = [_pinchTouches[1] locationInView:self];
+            
+            _pinchStartZoomFactor = _zoomFactor;
+            _scrollStartTranslation = _scrollTranslation;
+            
+            THLog(@"Pinch Began: %@, %@", NSStringFromCGPoint(_pinchStartPoints[0]), NSStringFromCGPoint(_pinchStartPoints[1]));
+        } else {
+            _pinchTouches[0] = nil;
+            _pinchTouches[1] = nil;
+        }
     }    
     
     // We haven't started to move yet.  We'll pass all the touches on.
@@ -1796,8 +1887,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_pinchUnderway) {
             _pinchUnderway = NO;       
             if(_zoomHandlingKind == EucPageTurningViewZoomHandlingKindInnerScaling) {
-                if(_pageContentsInformation[6].view || _pageContentsInformation[6].pageIndex != NSUIntegerMax) {
-                    EucPageTurningPageContentsInformation tempView = _pageContentsInformation[3];
+                if(_pageContentsInformation[6]) {
+                    EucPageTurningPageContentsInformation *tempView = _pageContentsInformation[3];
                     _pageContentsInformation[3] = _pageContentsInformation[6];
                     _pageContentsInformation[6] = tempView;
                     
@@ -1864,15 +1955,15 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             } else {
                 CGFloat tapTurnMargin = 0.1f * self.bounds.size.width;
                 if(point.x < tapTurnMargin) {
-                    if(_pageContentsInformation[1].pageIndex != NSUIntegerMax) {
+                    if(_pageContentsInformation[1]) {
                         [self turnToPageAtIndex:_pageContentsInformation[1].pageIndex animated:YES];
                         turning = YES;
                     } 
                 } else if(point.x > (self.bounds.size.width - tapTurnMargin)) {
-                    if(_pageContentsInformation[4].pageIndex != NSUIntegerMax) {
+                    if(_pageContentsInformation[4]) {
                         [self turnToPageAtIndex:_pageContentsInformation[4].pageIndex animated:YES];
                         turning = YES;
-                    } else if(_pageContentsInformation[5].pageIndex != NSUIntegerMax) {
+                    } else if(_pageContentsInformation[5]) {
                         [self turnToPageAtIndex:_pageContentsInformation[5].pageIndex animated:YES];
                         turning = YES;
                     }
@@ -2259,12 +2350,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _setView:nil forInternalPageOffsetPage:1];
                 }
             } else {
-                if(_pageContentsInformation[2].pageIndex != NSUIntegerMax) {
+                if(_pageContentsInformation[2]) {
                     [self _setupBitmapPage:_pageContentsInformation[2].pageIndex - 1 forInternalPageOffset:1];
                 } else {
-                    _pageContentsInformation[1].pageIndex = NSUIntegerMax;
-                    glDeleteTextures(1, &_pageContentsInformation[1].texture);
-                    _pageContentsInformation[1].texture = 0;                    
+                    [_pageContentsInformation[1] release];
+                    _pageContentsInformation[1] = nil;
                 }
             }
         }
@@ -2277,12 +2367,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _setView:nil forInternalPageOffsetPage:0];
                 }
             } else {
-                if(_pageContentsInformation[1].pageIndex != NSUIntegerMax) {
+                if(_pageContentsInformation[1]) {
                     [self _setupBitmapPage:_pageContentsInformation[1].pageIndex - 1 forInternalPageOffset:0];
                 } else {
-                    _pageContentsInformation[0].pageIndex = NSUIntegerMax;
-                    glDeleteTextures(1, &_pageContentsInformation[0].texture);
-                    _pageContentsInformation[0].texture = 0;                    
+                    [_pageContentsInformation[0] release];
+                    _pageContentsInformation[0] = nil;
                 }
             }
         }
@@ -2298,12 +2387,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _setView:nil forInternalPageOffsetPage:4];
                 }         
             } else {
-                if(_pageContentsInformation[3].pageIndex != NSUIntegerMax) {
+                if(_pageContentsInformation[3]) {
                     [self _setupBitmapPage:_pageContentsInformation[3].pageIndex + 1 forInternalPageOffset:4];
                 } else {
-                    _pageContentsInformation[4].pageIndex = NSUIntegerMax;
-                    glDeleteTextures(1, &_pageContentsInformation[4].texture);
-                    _pageContentsInformation[4].texture = 0;                    
+                    [_pageContentsInformation[4] release];
+                    _pageContentsInformation[4] = nil;
                 }
             }
         }
@@ -2316,12 +2404,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _setView:nil forInternalPageOffsetPage:5];
                 }    
             } else {
-                if(_pageContentsInformation[4].pageIndex != NSUIntegerMax) {
+                if(_pageContentsInformation[4]) {
                     [self _setupBitmapPage:_pageContentsInformation[4].pageIndex + 1 forInternalPageOffset:5];
                 } else {
-                    _pageContentsInformation[5].pageIndex = NSUIntegerMax;
-                    glDeleteTextures(1, &_pageContentsInformation[5].texture);
-                    _pageContentsInformation[5].texture = 0;                    
+                    [_pageContentsInformation[5] release];
+                    _pageContentsInformation[5] = nil;
                 }
             }
         }
@@ -2335,12 +2422,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _setView:nil forInternalPageOffsetPage:1];
                 }
             } else {
-                if(_pageContentsInformation[3].pageIndex != NSUIntegerMax) {
+                if(_pageContentsInformation[3]) {
                     [self _setupBitmapPage:_pageContentsInformation[3].pageIndex - 1 forInternalPageOffset:1];
                 } else {
-                    _pageContentsInformation[1].pageIndex = NSUIntegerMax;
-                    glDeleteTextures(1, &_pageContentsInformation[1].texture);
-                    _pageContentsInformation[1].texture = 0;                    
+                    [_pageContentsInformation[1] release];
+                    _pageContentsInformation[1] = nil;
                 }
             }
         }
@@ -2356,12 +2442,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _setView:nil forInternalPageOffsetPage:5];
                 }         
             } else {
-                if(_pageContentsInformation[3].pageIndex != NSUIntegerMax) {
+                if(_pageContentsInformation[3]) {
                     [self _setupBitmapPage:_pageContentsInformation[3].pageIndex + 1 forInternalPageOffset:5];
                 } else {
-                    _pageContentsInformation[5].pageIndex = NSUIntegerMax;
-                    glDeleteTextures(1, &_pageContentsInformation[5].texture);
-                    _pageContentsInformation[5].texture = 0;                    
+                    [_pageContentsInformation[5] release];
+                    _pageContentsInformation[5] = nil;
                 }
             }
         }
@@ -2394,132 +2479,160 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return _dimQuotient;
 }
 
+- (CGFloat)zoomFactor
+{
+    return _zoomFactor;
+}
+
+- (CGPoint)translation
+{
+    CGPoint translation = _scrollTranslation;
+    translation.x *= _viewportToBoundsPointsTransform.a;
+    translation.y *= _viewportToBoundsPointsTransform.d;
+    return translation;
+}
+
+- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor 
+{
+    translation.x /= _viewportToBoundsPointsTransform.a;
+    translation.y /= _viewportToBoundsPointsTransform.d;
+    [self _setZoomMatrixFromTranslation:translation zoomFactor:zoomFactor];
+}
+
 - (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
-    [self willChangeValueForKey:@"rightPageFrame"];
-    [self willChangeValueForKey:@"leftPageFrame"];
-    
-    CATransform3D zoomMatrix = CATransform3DIdentity;
-    
-    CGSize bounds = self.bounds.size;
-    CGFloat pointViewportDimension = bounds.width / _viewportLogicalSize.width;
-
-    CGFloat contentScaleFactor;
-    if([self respondsToSelector:@selector(contentScaleFactor)]) {
-        contentScaleFactor = self.contentScaleFactor;
+    if(_zoomFactor == 1.0 && zoomFactor == 1.0) {
+        return translation;
     } else {
-        contentScaleFactor = 1.0f;
-    }
-    
-    CGFloat pixelViewportDimension = pointViewportDimension * contentScaleFactor;
-    
- 
-    CGSize pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
-                                  _rightPageRect.size.height * pixelViewportDimension);
-    
-    if(zoomFactor < 1.0f) {
-        zoomFactor = 1.0f;
-    }
-    
-    // Temporary - constrain to 2048 sided textures.
-    CGFloat maxSide = MAX(pixelSize.width, pixelSize.height);
-    if(maxSide * zoomFactor > 2048.0f) {
-        zoomFactor = 2048.0f / maxSide;  
-        pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
-                               _rightPageRect.size.height * pixelViewportDimension);
-    }
-    
-    // Massage the zoom matrix to the nearest matrix that will scale the zoom 
-    // rect edges to pixel boundaries, so that our page textures will look
-    // nice and crisp, and the pages with have pixel-aligned edges.
-    // Make sure the width is also divisible by two so that it can be centered
-    // on a pixel boundry.
-    zoomMatrix.m11 = roundf(pixelSize.width * zoomFactor * 0.5f) / (pixelSize.width * 0.5f);
-    zoomMatrix.m22 = roundf(pixelSize.height * zoomFactor * 0.5f) / (pixelSize.height * 0.5f);
-    
-    CGPoint wholePixelTranslation = CGPointMake(roundf(translation.x * pixelViewportDimension) / pixelViewportDimension,
-                                                roundf(translation.y * pixelViewportDimension) / pixelViewportDimension);
-    
-    zoomMatrix.m41 = wholePixelTranslation.x;
-    zoomMatrix.m42 = wholePixelTranslation.y;
-    
-    //self.layer.sublayerTransform = zoomMatrix;
-    
-    CGRect rightPageFrame = _rightPageRect;
-    rightPageFrame.origin.x -= _viewportLogicalSize.width * 0.5f;
-    rightPageFrame.origin.y -= _viewportLogicalSize.height * 0.5f;
-    rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, CATransform3DGetAffineTransform(zoomMatrix));
-    rightPageFrame.origin.x += _viewportLogicalSize.width * 0.5f;
-    rightPageFrame.origin.y += _viewportLogicalSize.height * 0.5f;
-    
-    
-    CGRect leftPageFrame = rightPageFrame;
-    leftPageFrame.origin.x -= rightPageFrame.size.width;
-
-    // Now, fix up the translation to make sure the pages are not outside where 
-    // they're meant to be.
-    CGFloat widthMargin = _viewportLogicalSize.width - (_rightPageRect.origin.x + _rightPageRect.size.width);
-    CGFloat heightMargin = _rightPageRect.origin.y;
-            
-    CGPoint remainingTranslation = CGPointZero;
-    
-    CGFloat leftUnderflow = (_fitTwoPages ? leftPageFrame.origin.x : rightPageFrame.origin.x) - widthMargin;
-    if(leftUnderflow > 0.0f) {
-        rightPageFrame.origin.x -= leftUnderflow;
-        leftPageFrame.origin.x -= leftUnderflow;
-        zoomMatrix.m41 -= leftUnderflow;
-        remainingTranslation.x += leftUnderflow;
-    }
+        [self willChangeValueForKey:@"translation"];
+        [self willChangeValueForKey:@"zoomfactor"];
+        [self willChangeValueForKey:@"rightPageFrame"];
+        [self willChangeValueForKey:@"leftPageFrame"];
         
-    CGFloat rightUnderflow = (_viewportLogicalSize.width - widthMargin) - (rightPageFrame.origin.x + rightPageFrame.size.width);
-    if(rightUnderflow > 0.0f) {
-        rightPageFrame.origin.x += rightUnderflow;
-        leftPageFrame.origin.x += rightUnderflow;
-        zoomMatrix.m41 += rightUnderflow;
-        remainingTranslation.x -= rightUnderflow;
-    }
-    
-    CGFloat topUnderflow = rightPageFrame.origin.y - heightMargin;
-    if(topUnderflow > 0.0f) {
-        leftPageFrame.origin.y -= topUnderflow;
-        rightPageFrame.origin.y -= topUnderflow;
-        zoomMatrix.m42 -= topUnderflow;
-        remainingTranslation.y += topUnderflow;
-    }
-    
-    CGFloat bottomUnderflow = (_viewportLogicalSize.height - heightMargin) - (rightPageFrame.origin.y + rightPageFrame.size.height);
-    if(bottomUnderflow > 0.0f) {
-        leftPageFrame.origin.y += bottomUnderflow;
-        rightPageFrame.origin.y += bottomUnderflow;
-        zoomMatrix.m42 += bottomUnderflow;
-        remainingTranslation.y -= bottomUnderflow;
-    }
-    
-    _zoomFactor = MIN(zoomMatrix.m11, zoomMatrix.m22);
-    _scrollTranslation = CGPointMake(zoomMatrix.m41, zoomMatrix.m42);
+        CATransform3D zoomMatrix = CATransform3DIdentity;
+        
+        CGSize bounds = self.bounds.size;
+        CGFloat pointViewportDimension = bounds.width / _viewportLogicalSize.width;
 
-    _zoomMatrix = zoomMatrix;
-    _zoomMatrix.m42 = -zoomMatrix.m42; // OpenGL coordinates are upside-down compared to screen, so flip the y translation.
-    
-    rightPageFrame.origin.x *= pointViewportDimension;
-    rightPageFrame.origin.y *= pointViewportDimension;
-    rightPageFrame.size.width *= pointViewportDimension;
-    rightPageFrame.size.height *= pointViewportDimension;
-    
-    leftPageFrame.origin.x *= pointViewportDimension;
-    leftPageFrame.origin.y *= pointViewportDimension;
-    leftPageFrame.size.width *= pointViewportDimension;
-    leftPageFrame.size.height *= pointViewportDimension;
-    
-    _rightPageFrame = rightPageFrame;
-    _leftPageFrame = leftPageFrame;
-    
-    [self didChangeValueForKey:@"leftPageFrame"];
-    [self didChangeValueForKey:@"rightPageFrame"];
-    
-    [self setNeedsDraw];
-    
-    return remainingTranslation;
+        CGFloat contentScaleFactor;
+        if([self respondsToSelector:@selector(contentScaleFactor)]) {
+            contentScaleFactor = self.contentScaleFactor;
+        } else {
+            contentScaleFactor = 1.0f;
+        }
+        
+        CGFloat pixelViewportDimension = pointViewportDimension * contentScaleFactor;
+        
+     
+        CGSize pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
+                                      _rightPageRect.size.height * pixelViewportDimension);
+        
+        if(zoomFactor < 1.0f) {
+            zoomFactor = 1.0f;
+        }
+        
+        // Temporary - constrain to 2048 sided textures.
+        CGFloat maxSide = MAX(pixelSize.width, pixelSize.height);
+        if(maxSide * zoomFactor > 2048.0f) {
+            zoomFactor = 2048.0f / maxSide;  
+            pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
+                                   _rightPageRect.size.height * pixelViewportDimension);
+        }
+        
+        // Massage the zoom matrix to the nearest matrix that will scale the zoom 
+        // rect edges to pixel boundaries, so that our page textures will look
+        // nice and crisp, and the pages with have pixel-aligned edges.
+        // Make sure the width is also divisible by two so that it can be centered
+        // on a pixel boundry.
+        zoomMatrix.m11 = roundf(pixelSize.width * zoomFactor * 0.5f) / (pixelSize.width * 0.5f);
+        zoomMatrix.m22 = roundf(pixelSize.height * zoomFactor * 0.5f) / (pixelSize.height * 0.5f);
+        
+        CGPoint wholePixelTranslation = CGPointMake(roundf(translation.x * pixelViewportDimension) / pixelViewportDimension,
+                                                    roundf(translation.y * pixelViewportDimension) / pixelViewportDimension);
+        
+        zoomMatrix.m41 = wholePixelTranslation.x;
+        zoomMatrix.m42 = wholePixelTranslation.y;
+        
+        //self.layer.sublayerTransform = zoomMatrix;
+        
+        CGRect rightPageFrame = _rightPageRect;
+        rightPageFrame.origin.x -= _viewportLogicalSize.width * 0.5f;
+        rightPageFrame.origin.y -= _viewportLogicalSize.height * 0.5f;
+        rightPageFrame = CGRectApplyAffineTransform(rightPageFrame, CATransform3DGetAffineTransform(zoomMatrix));
+        rightPageFrame.origin.x += _viewportLogicalSize.width * 0.5f;
+        rightPageFrame.origin.y += _viewportLogicalSize.height * 0.5f;
+        
+        
+        CGRect leftPageFrame = rightPageFrame;
+        leftPageFrame.origin.x -= rightPageFrame.size.width;
+
+        // Now, fix up the translation to make sure the pages are not outside where 
+        // they're meant to be.
+        CGFloat widthMargin = _viewportLogicalSize.width - (_rightPageRect.origin.x + _rightPageRect.size.width);
+        CGFloat heightMargin = _rightPageRect.origin.y;
+                
+        CGPoint remainingTranslation = CGPointZero;
+        
+        CGFloat leftUnderflow = (_fitTwoPages ? leftPageFrame.origin.x : rightPageFrame.origin.x) - widthMargin;
+        if(leftUnderflow > 0.0f) {
+            rightPageFrame.origin.x -= leftUnderflow;
+            leftPageFrame.origin.x -= leftUnderflow;
+            zoomMatrix.m41 -= leftUnderflow;
+            remainingTranslation.x += leftUnderflow;
+        }
+            
+        CGFloat rightUnderflow = (_viewportLogicalSize.width - widthMargin) - (rightPageFrame.origin.x + rightPageFrame.size.width);
+        if(rightUnderflow > 0.0f) {
+            rightPageFrame.origin.x += rightUnderflow;
+            leftPageFrame.origin.x += rightUnderflow;
+            zoomMatrix.m41 += rightUnderflow;
+            remainingTranslation.x -= rightUnderflow;
+        }
+        
+        CGFloat topUnderflow = rightPageFrame.origin.y - heightMargin;
+        if(topUnderflow > 0.0f) {
+            leftPageFrame.origin.y -= topUnderflow;
+            rightPageFrame.origin.y -= topUnderflow;
+            zoomMatrix.m42 -= topUnderflow;
+            remainingTranslation.y += topUnderflow;
+        }
+        
+        CGFloat bottomUnderflow = (_viewportLogicalSize.height - heightMargin) - (rightPageFrame.origin.y + rightPageFrame.size.height);
+        if(bottomUnderflow > 0.0f) {
+            leftPageFrame.origin.y += bottomUnderflow;
+            rightPageFrame.origin.y += bottomUnderflow;
+            zoomMatrix.m42 += bottomUnderflow;
+            remainingTranslation.y -= bottomUnderflow;
+        }
+        
+        _zoomFactor = MIN(zoomMatrix.m11, zoomMatrix.m22);
+        _scrollTranslation = CGPointMake(zoomMatrix.m41, zoomMatrix.m42);
+
+        _zoomMatrix = zoomMatrix;
+        _zoomMatrix.m42 = -zoomMatrix.m42; // OpenGL coordinates are upside-down compared to screen, so flip the y translation.
+        
+        rightPageFrame.origin.x *= pointViewportDimension;
+        rightPageFrame.origin.y *= pointViewportDimension;
+        rightPageFrame.size.width *= pointViewportDimension;
+        rightPageFrame.size.height *= pointViewportDimension;
+        
+        leftPageFrame.origin.x *= pointViewportDimension;
+        leftPageFrame.origin.y *= pointViewportDimension;
+        leftPageFrame.size.width *= pointViewportDimension;
+        leftPageFrame.size.height *= pointViewportDimension;
+        
+        _rightPageFrame = rightPageFrame;
+        _leftPageFrame = leftPageFrame;
+        
+        [self didChangeValueForKey:@"leftPageFrame"];
+        [self didChangeValueForKey:@"rightPageFrame"];
+        [self didChangeValueForKey:@"zoomfactor"];
+        [self didChangeValueForKey:@"translation"];
+        
+        [self setNeedsDraw];
+        
+        return remainingTranslation;
+    }
 }
 
 @end

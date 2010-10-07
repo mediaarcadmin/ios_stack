@@ -11,6 +11,7 @@
 #import "THBaseEAGLView.h"
 #import "THAccessibilityElement.h"
 
+@class EucPageTurningPageContentsInformation;
 @protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource, EucPageTurningViewBitmapDataSource;
 
 
@@ -28,11 +29,6 @@ typedef struct {
     GLfloat lengthSquared;
 } EucPageTurningVerletContstraint;
 
-typedef struct {
-    NSUInteger pageIndex;
-    UIView *view;
-    GLuint texture;
-} EucPageTurningPageContentsInformation;
 
 typedef enum EucPageTurningViewZoomHandlingKind {
     EucPageTurningViewZoomHandlingKindInnerScaling = 0,
@@ -55,6 +51,9 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     CATransform3D _rightPageTransform;
     CGRect _rightPageRect;
     CGRect _leftPageRect;
+    
+    CGRect _unzoomedLeftPageFrame;
+    CGRect _unzoomedRightPageFrame;
     
     CGRect _leftPageFrame;
     CGRect _rightPageFrame;
@@ -83,6 +82,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     GLuint _bookEdgeTexture;
     THVec2 _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
+    GLuint _alphaWhiteTexture;
     
     UITouch *_touch;
     NSTimeInterval _touchBeganTime;
@@ -125,7 +125,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     BOOL _zoomingDelegateMessageSent;
     
     EAGLContext *_textureUploadContext;
-    EucPageTurningPageContentsInformation _pageContentsInformation[7];
+    NSLock *_textureUploadContextLock;
+    EucPageTurningPageContentsInformation *_pageContentsInformation[7];
     
     NSInteger _rightFlatPageIndex;
     BOOL _viewsNeedRecache;
@@ -181,10 +182,17 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 @property (nonatomic, assign, readonly) CGRect leftPageFrame;
 @property (nonatomic, assign, readonly) CGRect rightPageFrame;
 
+@property (nonatomic, assign, readonly) CGRect unzoomedLeftPageFrame;
+@property (nonatomic, assign, readonly) CGRect unzoomedRightPageFrame;
 
 @property (nonatomic, assign) EucPageTurningViewZoomHandlingKind zoomHandlingKind;
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
+
+@property (nonatomic, assign, readonly) CGFloat zoomFactor;
+@property (nonatomic, assign, readonly) CGPoint translation;
+- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
+
 
 #pragma mark View based page contents
 
