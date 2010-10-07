@@ -2457,7 +2457,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     if (targetPoint != nil) {
-        [self.bookView goToBookmarkPoint:targetPoint animated:YES];
+        [self.bookView goToBookmarkPoint:targetPoint animated:YES saveToHistory:NO];
     }
  
 }

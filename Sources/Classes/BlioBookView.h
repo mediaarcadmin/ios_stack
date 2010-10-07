@@ -72,7 +72,10 @@
 
 @property (nonatomic, readonly) BlioBookmarkPoint *currentBookmarkPoint;
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save;
+
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (void)pushCurrentBookmarkPoint;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 
@@ -99,10 +102,6 @@
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
 
-- (BOOL)toolbarShowShouldBeSuppressed;
-
-- (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint; 
-- (void)pushUuid:(NSString *)uuid;
-- (void)pushPageNumber:(NSInteger)pageNumber;
+- (BOOL)toolbarShowShouldBeSuppressed; 
 
 @end

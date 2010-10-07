@@ -367,8 +367,16 @@
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
 {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
+ 
     id paragraphId = nil;
     uint32_t wordOffset = 0;
     [paragraphSource bookmarkPoint:bookmarkPoint toParagraphID:&paragraphId wordOffset:&wordOffset];
@@ -378,6 +386,13 @@
     
     [self fillArrayWithCurrentBlock];
     [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
+}
+
+#pragma mark -
+#pragma mark Back Button History
+
+- (void)pushCurrentBookmarkPoint {
+    // Do nothing as there is no delegate
 }
 
 - (NSString *)pageLabelForPageNumber:(NSInteger)page {

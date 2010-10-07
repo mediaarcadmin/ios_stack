@@ -142,8 +142,16 @@
     return [self bookmarkPointFromBookPageIndexPoint:[_eucBookView.book currentPageIndexPoint]];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
 {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
+    
     EucBookPageIndexPoint *eucIndexPoint;
     if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
        _textFlowFlowTreeKind == BlioTextFlowFlowTreeKindFlow &&
@@ -157,8 +165,6 @@
     }
     
     [_eucBookView goToIndexPoint:eucIndexPoint animated:animated];
-    
-    [self pushBookmarkPoint:bookmarkPoint];
 }
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
@@ -168,14 +174,14 @@
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
 {
+    [self pushCurrentBookmarkPoint];
     [_eucBookView goToUuid:uuid animated:animated];
-    [self pushUuid:uuid];
 }
 
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 {
+    [self pushCurrentBookmarkPoint];
     [_eucBookView goToPageNumber:pageNumber animated:animated];
-    [self pushPageNumber:pageNumber];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
@@ -224,41 +230,29 @@
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
+    [self pushCurrentBookmarkPoint];
     [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
-    [self pushBookmarkPoint:bookmarkPoint];
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated
 {
+    [self pushCurrentBookmarkPoint];
     EucHighlightRange *eucRange = [[EucHighlightRange alloc] init];
     eucRange.startPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.startPoint];
     eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
     [_eucBookView highlightWordsInHighlightRange:eucRange animated:animated];
     [eucRange release];
-    [self pushBookmarkPoint:blioRange.startPoint];
 }
-     
+
 #pragma mark -
 #pragma mark Back Button History
 
-- (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+- (void)pushCurrentBookmarkPoint {
+    BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
     if (bookmarkPoint) {
         [self.delegate pushBookmarkPoint:bookmarkPoint];
     }
 }
-
-- (void)pushUuid:(NSString *)uuid {
-    EucBookPageIndexPoint *indexPoint = [(EucBUpeBook *)_eucBook indexPointForId:uuid];
-    BlioBookmarkPoint *bookmarkPoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
-    [self pushBookmarkPoint:bookmarkPoint];
-}
-       
-- (void)pushPageNumber:(NSInteger)pageNumber {
-    id<EucBookContentsTableViewControllerDataSource> contentsSource = self.contentsDataSource;
-    NSString* section = [contentsSource sectionUuidForPageNumber:pageNumber];
-    [self pushUuid:section];
-}
-
 
 #pragma mark -
 #pragma mark EucBookView delegate methods

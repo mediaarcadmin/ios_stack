@@ -365,6 +365,14 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
+{
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
@@ -405,6 +413,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return ret;
 }
 
+#pragma mark -
+#pragma mark Back Button History
+
+- (void)pushCurrentBookmarkPoint {
+    BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
+    if (bookmarkPoint) {
+        [self.delegate pushBookmarkPoint:bookmarkPoint];
+    }
+}
 
 #pragma mark -
 #pragma mark BlioBookDelegate
