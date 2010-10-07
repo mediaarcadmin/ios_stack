@@ -292,30 +292,49 @@
     if([link.scheme isEqualToString:@"textflow"]) {
         NSString *internalURI = link.relativeString;
         
-        // Find the node UUID that best matches this link and jump to it.
-        // Node IDs are of the format: 
-        // textflow:<flow reference index, integer>#<Tag attribute from the XAML>.
-        
-        /*for(NSString *potentialID in [[(EucBUpeBook *)_eucBook idToIndexPoint] keyEnumerator]) {
-            if([potentialID hasSuffix:internalURI]) {
-                realNodeTag = potentialID;
-            }
-        }*/
-        NSString *bestRealNodeTag = nil;
-        int bestRealNodeTagDistance = INT_MAX;
-        for(NSString *potentialID in [[(EucBUpeBook *)_eucBook idToIndexPoint] keyEnumerator]) {
-            int thisDistance = levenshtein_distance([internalURI UTF8String], [potentialID UTF8String]);
-            if(thisDistance < bestRealNodeTagDistance) {
-                bestRealNodeTagDistance = thisDistance;
-                bestRealNodeTag = potentialID;
+        if([_eucBook isKindOfClass:[BlioFlowEucBook class]]) {
+            BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+            BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:self.bookID];
+            BlioTextFlowReference *reference = [textFlow referenceForReferenceId:internalURI];
+            [bookManager checkInTextFlowForBookWithID:self.bookID];
+            
+            if ([reference hyperlink]) {
+                BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+                bookmarkPoint.layoutPage = reference.pageIndex + 1;
+                
+                if (link.fragment == nil) {
+                    // Handle page lookup without an anchor by going straight to the page
+                    [self goToBookmarkPoint:bookmarkPoint animated:YES];
+                    return !handled;
+                }
+                
+                NSDictionary *idToIndexPoint = [(EucBUpeBook *)_eucBook idToIndexPoint];
+                NSString *matchKey = nil;
+                
+                for (NSString *longKey in [idToIndexPoint allKeys]) {
+                    NSRange firstHash = [longKey rangeOfString:@"#"];
+                    NSString *shortKey = longKey;
+                    if ((firstHash.location != NSNotFound) && (firstHash.location < ([longKey length] - 1))) {
+                        shortKey = [longKey substringFromIndex:firstHash.location + 1];
+                    }
+                    if ([shortKey isEqualToString:[reference hyperlink]]) {
+                        matchKey = longKey;
+                        break;
+                    }
+                }
+                
+                if (matchKey) {
+                    [self goToUuid:matchKey animated:YES];
+                    return !handled;
+                } else {
+                    // Handle failure cases by going straight to the page
+                    [self goToBookmarkPoint:bookmarkPoint animated:YES];
+                }
             }
         }
-        
-        if(bestRealNodeTag) {
-            [bookView goToUuid:bestRealNodeTag animated:YES];
-        } 
     }
-    return !handled;
+        
+    return handled;
 }
 
 #pragma mark -

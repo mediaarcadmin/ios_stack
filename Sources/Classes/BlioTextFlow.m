@@ -577,21 +577,29 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 NSString *idString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != idString) {
                     newReference.referenceId = idString;
+                    newReference.hyperlink = idString;
                     [idString release];
                     idFound = YES;
                 }                
             }
         }
         
+        BlioTextFlowReference *lastReference = context->lastReference;
+        
         if(pageIndexFound && idFound) {
-            BlioTextFlowReference *lastReference = context->lastReference;
-            if (lastReference != nil) {
+            NSURL *referenceURI = [[NSURL alloc] initWithString:newReference.referenceId];
+            NSString *anchor = referenceURI.fragment;
+            if ([anchor hasPrefix:@"filepos"] && lastReference) {
                 newReference.hyperlink = lastReference.referenceId;
                 [context->buildReferences addObject:newReference];
                 [newReference release];
                 [lastReference release];
                 context->lastReference = nil;
             } else {
+                if (lastReference) {
+                    [context->buildReferences addObject:lastReference];
+                    [lastReference release];
+                }
                 context->lastReference = newReference;
             }
         } else {
@@ -601,6 +609,11 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             if(!idFound) {
                 NSLog(@"Warning - Reference with no id - ignoring");
             }
+            if (lastReference) {
+                [context->buildReferences addObject:lastReference];
+                [lastReference release];
+            }
+            context->lastReference = nil;
             [newReference release];
         }
     }
@@ -630,11 +643,15 @@ static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lh
         XML_ParserFree(flowParser);
     }
     
+    // Handle the case of a final non-paired reference
+    if (context.lastReference != nil) {
+        [context.buildReferences addObject:context.lastReference];
+        [context.lastReference release];
+        context.lastReference = nil;
+    }
+    
     self.flowReferences = context.buildFlowReferences;
     self.references = context.buildReferences;
-        
-    // Release in case of a non-matched pair
-    [context.lastReference release];
     
     // If there are no TOC entries for page index 0, add an artificial one.
     BOOL makeArtificialFrontEnrty = YES;
