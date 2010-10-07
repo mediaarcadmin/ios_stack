@@ -39,6 +39,8 @@
 - (CGRect)nonToolbarRect;
 - (void)firstPageDidRender;
 
+- (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+
 @end
 
 #pragma mark -
@@ -98,5 +100,9 @@
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
 
 - (BOOL)toolbarShowShouldBeSuppressed;
+
+- (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint; 
+- (void)pushUuid:(NSString *)uuid;
+- (void)pushPageNumber:(NSInteger)pageNumber;
 
 @end

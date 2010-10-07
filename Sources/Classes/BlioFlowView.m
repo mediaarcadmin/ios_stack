@@ -157,6 +157,8 @@
     }
     
     [_eucBookView goToIndexPoint:eucIndexPoint animated:animated];
+    
+    [self pushBookmarkPoint:bookmarkPoint];
 }
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
@@ -166,12 +168,14 @@
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
 {
-    return [_eucBookView goToUuid:uuid animated:animated];
+    [_eucBookView goToUuid:uuid animated:animated];
+    [self pushUuid:uuid];
 }
 
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 {
-    return [_eucBookView goToPageNumber:pageNumber animated:animated];
+    [_eucBookView goToPageNumber:pageNumber animated:animated];
+    [self pushPageNumber:pageNumber];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
@@ -221,6 +225,7 @@
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
     [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
+    [self pushBookmarkPoint:bookmarkPoint];
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated
@@ -230,7 +235,30 @@
     eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
     [_eucBookView highlightWordsInHighlightRange:eucRange animated:animated];
     [eucRange release];
+    [self pushBookmarkPoint:blioRange.startPoint];
 }
+     
+#pragma mark -
+#pragma mark Back Button History
+
+- (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    if (bookmarkPoint) {
+        [self.delegate pushBookmarkPoint:bookmarkPoint];
+    }
+}
+
+- (void)pushUuid:(NSString *)uuid {
+    EucBookPageIndexPoint *indexPoint = [(EucBUpeBook *)_eucBook indexPointForId:uuid];
+    BlioBookmarkPoint *bookmarkPoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
+    [self pushBookmarkPoint:bookmarkPoint];
+}
+       
+- (void)pushPageNumber:(NSInteger)pageNumber {
+    id<EucBookContentsTableViewControllerDataSource> contentsSource = self.contentsDataSource;
+    NSString* section = [contentsSource sectionUuidForPageNumber:pageNumber];
+    [self pushUuid:section];
+}
+
 
 #pragma mark -
 #pragma mark EucBookView delegate methods

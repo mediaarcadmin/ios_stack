@@ -65,6 +65,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) UIBarButtonItem *contentsButton;
 @property (nonatomic, retain) UIBarButtonItem *viewSettingsButton;
 @property (nonatomic, retain) UIBarButtonItem *searchButton;
+@property (nonatomic, retain) NSMutableArray *historyStack;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
@@ -117,7 +118,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize searchViewController;
 @synthesize delegate;
 @synthesize coverView;
-
+@synthesize historyStack;
 @synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, viewSettingsButton, searchButton;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
@@ -172,6 +173,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.delegate = aDelegate;
         self.wantsFullScreenLayout = YES;
         [self initialiseControls];
+        self.historyStack = [NSMutableArray array];
         
         self.coverView = [self.delegate coverViewViewForOpening];
         
@@ -532,10 +534,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:nil];
+                                           action:@selector(goBackInHistory)];
     
     [item setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
-    [item setEnabled:NO];
 	
     [readingItems addObject:item];
     [item release]; 
@@ -1117,6 +1118,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.contentsButton = nil;
     self.viewSettingsButton = nil;
     self.searchButton = nil;
+    self.historyStack = nil;
 	[super dealloc];
 }
 
@@ -2424,6 +2426,40 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.searchPopover presentPopoverFromBarButtonItem:self.searchButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
         [self.searchPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     }
+}
+
+#pragma mark -
+#pragma mark Back button history
+
+- (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    [self.historyStack addObject:bookmarkPoint];
+}
+
+- (BlioBookmarkPoint *)popBookmarkPoint {
+    BlioBookmarkPoint *bookmarkPoint = [[[self.historyStack lastObject] retain] autorelease];
+    if (bookmarkPoint) {
+        [self.historyStack removeLastObject];
+    }
+    return bookmarkPoint;
+}
+
+- (void)goBackInHistory {
+    BlioBookmarkPoint *targetPoint = nil;
+    BlioBookmarkPoint *savedPoint = nil;
+    
+    while (((savedPoint = [self popBookmarkPoint])) != nil) {
+        NSInteger currentPage = [self.bookView pageNumber];
+        NSInteger bookmarkedPage = [self.bookView pageNumberForBookmarkPoint:savedPoint];
+        if (currentPage != bookmarkedPage) {
+            targetPoint = savedPoint;
+            break;
+        }
+    }
+    
+    if (targetPoint != nil) {
+        [self.bookView goToBookmarkPoint:targetPoint animated:YES];
+    }
+ 
 }
 
 #pragma mark -

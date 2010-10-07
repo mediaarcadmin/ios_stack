@@ -140,6 +140,8 @@ typedef enum {
     UIBarButtonItem* viewSettingsButton;
     UIBarButtonItem* searchButton;
     BOOL shouldDisplaySearchAfterRotation;
+    
+    NSMutableArray *historyStack;
 }
 
 // Designated initializers.
