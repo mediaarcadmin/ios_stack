@@ -286,7 +286,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glEnable(GL_CULL_FACE);
     
     _textureGenerationOperationQueue = [[NSOperationQueue alloc] init];
-    if([_textureGenerationOperationQueue respondsToSelector:@"setName"]) {
+    if([_textureGenerationOperationQueue respondsToSelector:@selector(setName:)]) {
         _textureGenerationOperationQueue.name = @"Texture Generation Queue";
     }
     
