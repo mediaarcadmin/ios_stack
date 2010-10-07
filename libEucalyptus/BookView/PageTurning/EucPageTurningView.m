@@ -19,6 +19,7 @@
 #import "THBaseEAGLView.h"
 #import "THGeometryUtils.h"
 #import "THEmbeddedResourceManager.h"
+#import "THPair.h"
 #import "EucPageTurningPageContentsInformation.h"
 
 #define FOV_ANGLE ((GLfloat)10.0f)
@@ -39,6 +40,10 @@
 - (CGFloat)_tapTurnMarginForView:(UIView *)view;
 - (void)_setNeedsAccessibilityElementsRebuild;
 - (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
+
+- (void)_retextureForPanAndZoom;
+- (void)_scheduleRetextureForPanAndZoom;
+- (void)_cancelRetextureForPanAndZoom;
 
 @end
 
@@ -908,6 +913,57 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return _pageContentsInformation[3].pageIndex ?: NSUIntegerMax;
 }
 
+- (THPair *)_alphaBledBitmapDataAndSizeForPageAtIndex:(NSUInteger)index
+                                           inPageRect:(CGRect)pageRect
+                                               ofSize:(CGSize)size
+{
+    CGContextRef thisPageBitmap;
+    
+    CGSize sizeMinusTwoPixels = CGSizeMake(size.width - 2.0f, size.height - 2.0f);
+    CGRect pageRectMinusTwoPixels = CGRectMake(pageRect.origin.x + size.width / pageRect.size.width,
+                                               pageRect.origin.x + size.height / pageRect.size.height,
+                                               pageRect.size.width - 2 * size.width / pageRect.size.width,
+                                               pageRect.size.height - 2 * size.height / pageRect.size.height);
+        
+    if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
+        id context = nil;
+        thisPageBitmap = [_bitmapDataSource pageTurningView:self
+                            RGBABitmapContextForPageAtIndex:index
+                                                   fromRect:pageRectMinusTwoPixels
+                                                    minSize:sizeMinusTwoPixels
+                                                 getContext:&context];
+        [[context retain] autorelease];
+    } else {
+        thisPageBitmap = [_bitmapDataSource pageTurningView:self
+                            RGBABitmapContextForPageAtIndex:index
+                                                   fromRect:pageRectMinusTwoPixels
+                                                    minSize:sizeMinusTwoPixels];
+    }
+
+    if(CGBitmapContextGetWidth(thisPageBitmap) == sizeMinusTwoPixels.width &&
+       CGBitmapContextGetHeight(thisPageBitmap) == sizeMinusTwoPixels.height) {;
+        CGContextRef textureContext = NULL;
+        void *textureData = calloc(4, size.width * size.height);
+
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        textureContext = CGBitmapContextCreate(NULL, size.width, size.height, 8, size.width * 4, 
+                                               colorSpace, kCGImageAlphaPremultipliedLast);
+        CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
+        CGImageRef image = CGBitmapContextCreateImage(thisPageBitmap);
+        CGContextDrawImage(textureContext, CGRectMake(1.0f, 1.0f, sizeMinusTwoPixels.width, sizeMinusTwoPixels.height), image);
+        CGImageRelease(image);
+        CGColorSpaceRelease(colorSpace);
+
+        
+        return [THPair pairWithFirst:[NSData dataWithBytesNoCopy:textureData 
+                                                          length:4 * size.width * size.height
+                                                    freeWhenDone:YES]
+                              second:[NSValue valueWithCGSize:size]];
+    } else {
+        return nil;
+    }
+}
+
 - (void)_setupBitmapPage:(NSUInteger)newPageIndex 
    forInternalPageOffset:(NSUInteger)pageOffset
                  minSize:(CGSize)minSize
@@ -919,13 +975,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(!CGRectIsEmpty(thisPageRect)) {
         CGContextRef thisPageBitmap;
         if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
-            id context = nil;
+            id bitmapcontext = nil;
             thisPageBitmap = [_bitmapDataSource pageTurningView:self
                                 RGBABitmapContextForPageAtIndex:newPageIndex
                                                        fromRect:thisPageRect
                                                         minSize:minSize
-                                                     getContext:&context];
-            [[context retain] autorelease];
+                                                     getContext:&bitmapcontext];
+            [[bitmapcontext retain] autorelease];
         } else {
             thisPageBitmap = [_bitmapDataSource pageTurningView:self
                                 RGBABitmapContextForPageAtIndex:newPageIndex
@@ -1173,6 +1229,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)_cyclePageContentsInformationForTurnForwards:(BOOL)forwards
 {
+    _pageContentsInformation[2].currentTextureGenerationOperation = nil;
+    _pageContentsInformation[2].currentZoomedTextureGenerationOperation = nil;
+    _pageContentsInformation[3].currentTextureGenerationOperation = nil;
+    _pageContentsInformation[3].currentZoomedTextureGenerationOperation = nil;
     if(forwards) {
         EucPageTurningPageContentsInformation *tempView0 = _pageContentsInformation[0];
         EucPageTurningPageContentsInformation *tempView1 = _pageContentsInformation[1];
@@ -2516,8 +2576,17 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
     if(_zoomFactor == 1.0 && zoomFactor == 1.0) {
+        if(_pageContentsInformation[2].currentZoomedTextureGenerationOperation) {
+            _pageContentsInformation[2].currentZoomedTextureGenerationOperation = nil;
+        }
+        if(_pageContentsInformation[3].currentZoomedTextureGenerationOperation) {
+            _pageContentsInformation[3].currentZoomedTextureGenerationOperation = nil;
+        }
         return translation;
     } else {
+        CGFloat previousZoomFactor = _zoomFactor;
+        CGPoint previousTranslation = _scrollTranslation;
+        
         [self willChangeValueForKey:@"translation"];
         [self willChangeValueForKey:@"zoomFactor"];
         [self willChangeValueForKey:@"rightPageFrame"];
@@ -2643,10 +2712,91 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         [self didChangeValueForKey:@"zoomFactor"];
         [self didChangeValueForKey:@"translation"];
         
+        if(_zoomFactor != previousZoomFactor || 
+           !CGPointEqualToPoint(_scrollTranslation, previousTranslation)) {
+            [self _scheduleRetextureForPanAndZoom];
+        }
         [self setNeedsDraw];
-        
+
         return remainingTranslation;
     }
+}
+
+- (void)_retextureForPanAndZoom
+{
+    if(_zoomFactor != 1.0f) {
+        CGFloat contentScaleFactor;
+        if([self respondsToSelector:@selector(contentScaleFactor)]) {
+            contentScaleFactor = self.contentScaleFactor;
+        } else {
+            contentScaleFactor = 1.0f;
+        }
+                
+        CGRect bounds = self.bounds;
+        if(_fitTwoPages && CGRectIntersectsRect(_leftPageFrame, bounds)) {
+        }
+        if(CGRectIntersectsRect(_rightPageFrame, bounds)) {
+            NSUInteger pageIndex = _pageContentsInformation[3].pageIndex;
+            
+            CGRect scaledPageFrame = _rightPageFrame;
+            scaledPageFrame.origin.x *= contentScaleFactor;
+            scaledPageFrame.origin.y *= contentScaleFactor;
+            scaledPageFrame.size.width *= contentScaleFactor;
+            scaledPageFrame.size.height *= contentScaleFactor;
+            
+            CGPoint center = CGPointMake((bounds.size.width * contentScaleFactor) * 0.5f,
+                                         (bounds.size.height * contentScaleFactor) * 0.5f);
+            
+            CGRect centeredTextureRect = CGRectMake(center.x - 1024, center.y - 1024, 
+                                                    center.x + 1024, center.y + 1024);
+            
+            CGRect intersect = CGRectIntersection(scaledPageFrame, centeredTextureRect);
+            
+            CGRect scaledIntersection = CGRectMake((intersect.origin.x  - scaledPageFrame.origin.x) / scaledPageFrame.size.width,
+                                                   (intersect.origin.y  - scaledPageFrame.origin.y) / scaledPageFrame.size.height,
+                                                   intersect.size.width / scaledPageFrame.size.width, 
+                                                   intersect.size.height / scaledPageFrame.size.height);
+            
+            EucPageTurningTextureGenerationOperation *textureGenerationOperation = [[EucPageTurningTextureGenerationOperation alloc] init];
+            textureGenerationOperation.delegate = self;
+            textureGenerationOperation.eaglContext = _backgroundThreadEAGLContext;
+            textureGenerationOperation.contextLock = _backgroundThreadEAGLContextLock;
+            textureGenerationOperation.pageIndex = pageIndex;
+            textureGenerationOperation.textureRect = scaledIntersection;
+            
+            CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
+                                           contentRectForPageAtIndex:pageIndex];
+            CGRect textureFrom = CGRectMake(thisPageRect.origin.x + scaledIntersection.origin.x * thisPageRect.size.width,
+                                            thisPageRect.origin.y + scaledIntersection.origin.y * thisPageRect.size.height,
+                                            scaledIntersection.size.width * thisPageRect.size.width,
+                                            scaledIntersection.size.height * thisPageRect.size.height);
+            
+            NSInvocation *textureUploadInvocation = [NSInvocation invocationWithMethodSignature:
+                                                       [self methodSignatureForSelector:@selector(_alphaBledBitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:)]];
+            textureUploadInvocation.selector = @selector(_alphaBledBitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:);
+            textureUploadInvocation.target = self;
+            [textureUploadInvocation setArgument:&pageIndex atIndex:2];
+            [textureUploadInvocation setArgument:&textureFrom atIndex:3];
+            [textureUploadInvocation setArgument:&(intersect.size) atIndex:4];
+            
+            textureGenerationOperation.generationInvocation = textureUploadInvocation;
+            
+            _pageContentsInformation[3].currentZoomedTextureGenerationOperation = textureGenerationOperation;
+            
+            [_textureGenerationOperationQueue addOperation:textureGenerationOperation];
+        }
+    }
+}            
+             
+- (void)_scheduleRetextureForPanAndZoom
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_retextureForPanAndZoom) object:nil];
+    [self performSelector:@selector(_retextureForPanAndZoom) withObject:nil afterDelay:0.2f];
+}
+
+- (void)_cancelRetextureForPanAndZoom
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_retextureForPanAndZoom) object:nil];
 }
 
 #pragma mark -
@@ -2654,6 +2804,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (GLuint)_unusedTexture
 {
+    EAGLContext *beforeContext = [EAGLContext currentContext];
+
     GLuint ret;
     [_textureLock lock];
     
@@ -2671,12 +2823,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         glGenTextures(1, &ret);
         
-        if(isMainThread) {
+        if(!isMainThread) {
             [_backgroundThreadEAGLContextLock unlock];
         }
     }
-        
+    
     [_textureLock unlock];
+    
+    [EAGLContext setCurrentContext:beforeContext];
     
     return ret;
 }
@@ -2690,6 +2844,42 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [_textureLock unlock];
 }
      
-                                        
+- (GLuint)textureGenerationOperationGetTextureId:(EucPageTurningTextureGenerationOperation *)operation
+{
+    return [self _unusedTexture];
+}
+
+- (void)textureGenerationOperation:(EucPageTurningTextureGenerationOperation *)operation generatedTexture:(GLuint)texture;
+{
+    NSUInteger index = NSUIntegerMax;
+    
+    NSUInteger operationPageIndex = operation.pageIndex;
+    CGRect textureRect = operation.textureRect;
+    
+    if(_pageContentsInformation[2] && _pageContentsInformation[2].pageIndex == operationPageIndex) {
+        index = 2;
+    } else if(_pageContentsInformation[3] && _pageContentsInformation[3].pageIndex == operationPageIndex) {
+        index = 3;
+    }
+    if(index != NSUIntegerMax) {
+        if(CGRectEqualToRect(CGRectMake(0.0f, 0.0f, 1.0f, 1.0f), textureRect)) {
+            _pageContentsInformation[index].texture = texture;
+        } else {
+            _pageContentsInformation[index].zoomedTexture = texture;
+            _pageContentsInformation[index].zoomedTextureRect = textureRect;
+        }
+        
+        if(_pageContentsInformation[index].currentTextureGenerationOperation == operation) {
+            _pageContentsInformation[index].currentTextureGenerationOperation = nil;
+        }
+        if(_pageContentsInformation[index].currentZoomedTextureGenerationOperation == operation) {
+            _pageContentsInformation[index].currentZoomedTextureGenerationOperation = nil;
+        }        
+        
+        [self setNeedsDraw];
+    } else {
+        [self _recycleTexture:texture];
+    }    
+}
 
 @end
