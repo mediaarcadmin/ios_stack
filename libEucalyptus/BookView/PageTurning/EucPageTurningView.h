@@ -10,6 +10,7 @@
 #import "THOpenGLUtils.h"
 #import "THBaseEAGLView.h"
 #import "THAccessibilityElement.h"
+#import "EucPageTurningTextureGenerationOperation.h"
 
 @class EucPageTurningPageContentsInformation;
 @protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource, EucPageTurningViewBitmapDataSource;
@@ -37,7 +38,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 #pragma mark -
 
-@interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate> {
+@interface EucPageTurningView : THBaseEAGLView <THAccessibilityElementDelegate, EucPageTurningTextureGenerationOperationDelegate> {
     GLuint _program;
     
     CGSize _lastLayoutBoundsSize;

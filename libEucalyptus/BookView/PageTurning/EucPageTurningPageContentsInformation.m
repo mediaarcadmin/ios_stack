@@ -15,6 +15,9 @@
 @synthesize pageIndex = _pageIndex;
 @synthesize zoomedTextureRect = _zoomedTextureRect;
 
+@synthesize currentTextureGenerationOperation = _currentTextureGenerationOperation;
+@synthesize currentZoomedTextureGenerationOperation = _currentZoomedTextureGenerationOperation;
+
 - (id)initWithPageTurningView:(EucPageTurningView *)pageTurningView
 {
     if((self = [super init])) {
@@ -25,6 +28,9 @@
 
 - (void)dealloc
 {   
+    NSParameterAssert(!_currentTextureGenerationOperation);
+    NSParameterAssert(!_currentZoomedTextureGenerationOperation);
+    
     [_view release];
 
     if(_texture) {
@@ -66,5 +72,28 @@
         _zoomedTexture = zoomedTexture;
     }
 }
+
+- (void)setCurrentTextureGenerationOperation:(EucPageTurningTextureGenerationOperation *)textureGenerationOperation
+{
+    if(textureGenerationOperation != _currentTextureGenerationOperation) {
+        if(_currentTextureGenerationOperation) {
+            [_currentTextureGenerationOperation cancel];
+            [_currentTextureGenerationOperation release];
+        }
+        _currentTextureGenerationOperation = [textureGenerationOperation retain];
+    }
+}
+
+- (void)setCurrentZoomedTextureGenerationOperation:(EucPageTurningTextureGenerationOperation *)zoomedTextureGenerationOperation
+{
+    if(zoomedTextureGenerationOperation != _currentZoomedTextureGenerationOperation) {
+        if(_currentZoomedTextureGenerationOperation) {
+            [_currentZoomedTextureGenerationOperation cancel];
+            [_currentTextureGenerationOperation release];
+        }
+        _currentZoomedTextureGenerationOperation = [zoomedTextureGenerationOperation retain];
+    }
+}
+
 
 @end

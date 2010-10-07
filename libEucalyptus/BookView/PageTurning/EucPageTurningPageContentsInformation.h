@@ -9,16 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "THOpenGLUtils.h"
 
-@class EucPageTurningView;
+@class EucPageTurningView, EucPageTurningTextureGenerationOperation;
 
 @interface EucPageTurningPageContentsInformation : NSObject {
     EucPageTurningView *_pageTurningView;
-    
+
     NSUInteger _pageIndex;
     UIView *_view;
     GLuint _texture;
     GLuint _zoomedTexture;
-    CGRect _zoomedTextureRect;    
+    CGRect _zoomedTextureRect;
+    
+    EucPageTurningTextureGenerationOperation *_currentTextureGenerationOperation;
+    EucPageTurningTextureGenerationOperation *_currentZoomedTextureGenerationOperation;
+    CGRect _zoomedTextureGenerationRect;
 }
 
 @property (nonatomic, retain) UIView *view;
@@ -26,9 +30,10 @@
 
 @property (nonatomic, assign) GLuint texture;
 @property (nonatomic, assign) GLuint zoomedTexture;
-
 @property (nonatomic, assign) CGRect zoomedTextureRect;
 
+@property (nonatomic, retain) EucPageTurningTextureGenerationOperation *currentTextureGenerationOperation;
+@property (nonatomic, retain) EucPageTurningTextureGenerationOperation *currentZoomedTextureGenerationOperation;
 
 - (id)initWithPageTurningView:(EucPageTurningView *)pageTurningView;
 
