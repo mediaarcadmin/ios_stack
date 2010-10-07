@@ -159,7 +159,7 @@ typedef enum BlioTextFlowFlowTreeKind
 
 - (BlioTextFlowFlowTree *)flowTreeForFlowIndex:(NSUInteger)sectionIndex;
 - (BlioTextFlowXAMLTree *)xamlTreeForFlowIndex:(NSUInteger)sectionIndex;
-- (NSURL *)hyperlinkForReferenceId:(NSString *)referenceId;
+- (BlioTextFlowReference *)referenceForReferenceId:(NSString *)referenceId;
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;

@@ -950,8 +950,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)hyperlinkTapped:(NSString *)link {
     hyperlinkTapped = YES;
-    NSURL *hyperlink = [self.textFlow hyperlinkForReferenceId:link];
-    NSLog(@"hyperlink lookup %@", hyperlink);
+    BlioTextFlowReference *reference = [self.textFlow referenceForReferenceId:link];
+    
+    if (reference) {
+        [self goToPageNumber:reference.pageIndex + 1 animated:YES];
+    }
 }
 
 - (NSArray *)hyperlinksForPage:(NSInteger)page {
