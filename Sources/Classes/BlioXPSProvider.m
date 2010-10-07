@@ -336,23 +336,26 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     [renderingLock lock];
     memset(&properties,0,sizeof(properties));
     XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
-    //CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
+    CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
     [renderingLock unlock];
     
     OutputFormat format;
     memset(&format,0,sizeof(format));
     
-    CGFloat widthScale  = size.width / CGRectGetWidth(rect);
-    CGFloat heightScale = size.height / CGRectGetHeight(rect);
-
-    XPS_ctm render_ctm = { widthScale, 0, 0, heightScale, 0, 0 };
+    CGFloat pageSizeScaleWidth  = size.width / pageCropRect.size.width;
+    CGFloat pageSizeScaleHeight = size.height / pageCropRect.size.height;
+    
+    CGFloat pageZoomScaleWidth  = size.width / CGRectGetWidth(rect);
+    CGFloat pageZoomScaleHeight = size.height / CGRectGetHeight(rect);
+    
+    XPS_ctm render_ctm = { pageZoomScaleWidth, 0, 0, pageZoomScaleHeight, rect.origin.x, rect.origin.y };
     format.xResolution = 96;			
     format.yResolution = 96;	
     format.colorDepth = 8;
     format.colorSpace = XPS_COLORSPACE_RGBA;
     format.pagesizescale = 1;	
-    format.pagesizescalewidth = widthScale;		
-    format.pagesizescaleheight = heightScale;
+    format.pagesizescalewidth = pageSizeScaleWidth;		
+    format.pagesizescaleheight = pageSizeScaleHeight;
     format.ctm = &render_ctm;				
     format.formatType = OutputFormat_RAW;
     imageInfo = NULL;
@@ -369,16 +372,13 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         size_t height = imageInfo->height;
         
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        //bitmapContext = CGBitmapContextCreateWithData(imageInfo->pBits, width, height, 8, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast, XPSBitmapReleaseCallback, NULL);
 
         bitmapContext = CGBitmapContextCreate(imageInfo->pBits, width, height, 8, imageInfo->rowStride, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
         BlioXPSBitmapReleaseCallback *releaseCallback = [[BlioXPSBitmapReleaseCallback alloc] init];
         releaseCallback.data = imageInfo->pBits;
         
         *context = [releaseCallback autorelease];
-        
-        //NSLog(@"Create: %p", imageInfo->pBits);
-                
+                        
         CGColorSpaceRelease(colorSpace);
     }
     [renderingLock unlock];
