@@ -32,6 +32,7 @@
 - (void)toggleToolbars;
 - (BOOL)toolbarsVisible;
 - (BOOL)audioPlaying;
+- (void)cancelPendingToolbarShow;
 
 @property (nonatomic, readonly) BOOL audioPlaying;
 

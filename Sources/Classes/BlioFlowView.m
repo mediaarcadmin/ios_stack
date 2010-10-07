@@ -237,6 +237,8 @@
 
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
 {
+    [_delegate cancelPendingToolbarShow];
+
     _pageViewIsTurning = YES;
 }
 
@@ -284,6 +286,8 @@
 
 - (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link
 {
+    [_delegate cancelPendingToolbarShow];
+
     BOOL handled = NO;
     if([link.scheme isEqualToString:@"textflow"]) {
         NSString *internalURI = link.relativeString;

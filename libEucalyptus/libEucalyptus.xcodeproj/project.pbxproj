@@ -402,6 +402,8 @@
 		7D53BE301149AE6D004F64DC /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D58226911F858AB00D4150C /* EucCSSLayoutPositionedContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D58226711F858AB00D4150C /* EucCSSLayoutPositionedContainer.h */; };
 		7D58226A11F858AB00D4150C /* EucCSSLayoutPositionedContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D58226811F858AB00D4150C /* EucCSSLayoutPositionedContainer.m */; };
+		7D589BAF125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D589BAD125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h */; };
+		7D589BB0125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D589BAE125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m */; };
 		7D5D69C410C2D33200BBF826 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libEucalyptus.a */; };
 		7D5D69C710C2D33200BBF826 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D5D69C810C2D33200BBF826 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
@@ -459,6 +461,8 @@
 		7D9A987610D7E73800C2E00A /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC610C2E61E0001203D /* BookPaper.png */; };
 		7D9A98A210D7E85100C2E00A /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC910C2E61E0001203D /* EPubDefault.css */; };
 		7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A986610D7E6F100C2E00A /* HyphenationPatterns */; };
+		7DAC9908125DA21C00695E4C /* EucPageTurningTextureUploadOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DAC9906125DA21C00695E4C /* EucPageTurningTextureUploadOperation.h */; };
+		7DAC9909125DA21C00695E4C /* EucPageTurningTextureUploadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAC9907125DA21C00695E4C /* EucPageTurningTextureUploadOperation.m */; };
 		7DB0412411452788000C2980 /* THCALayerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB0409E11451687000C2980 /* THCALayerAdditions.m */; };
 		7DB041251145278F000C2980 /* THCALayerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB0409D11451687000C2980 /* THCALayerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */; };
@@ -1164,6 +1168,8 @@
 		7D53BDA011499DCE004F64DC /* EucCSSXMLTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSXMLTreeNode.m; sourceTree = "<group>"; };
 		7D58226711F858AB00D4150C /* EucCSSLayoutPositionedContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutPositionedContainer.h; sourceTree = "<group>"; };
 		7D58226811F858AB00D4150C /* EucCSSLayoutPositionedContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutPositionedContainer.m; sourceTree = "<group>"; };
+		7D589BAD125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageTurningPageContentsInformation.h; sourceTree = "<group>"; };
+		7D589BAE125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageTurningPageContentsInformation.m; sourceTree = "<group>"; };
 		7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EucConfiguration.plist; sourceTree = "<group>"; };
 		7D658C6D103DEAD900EB5003 /* THImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THImageFactory.h; sourceTree = "<group>"; };
 		7D658C6E103DEAD900EB5003 /* THImageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THImageFactory.m; sourceTree = "<group>"; };
@@ -1206,6 +1212,8 @@
 		7D9AA9C9114A8F6A0055C381 /* libEucalyptusBUpe.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusBUpe.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D9AA9E4114A90620055C381 /* EucBUpeBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpeBook.h; sourceTree = "<group>"; };
 		7D9AA9E5114A90620055C381 /* EucBUpeBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBUpeBook.m; sourceTree = "<group>"; };
+		7DAC9906125DA21C00695E4C /* EucPageTurningTextureUploadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageTurningTextureUploadOperation.h; sourceTree = "<group>"; };
+		7DAC9907125DA21C00695E4C /* EucPageTurningTextureUploadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageTurningTextureUploadOperation.m; sourceTree = "<group>"; };
 		7DB0409D11451687000C2980 /* THCALayerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THCALayerAdditions.h; sourceTree = "<group>"; };
 		7DB0409E11451687000C2980 /* THCALayerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCALayerAdditions.m; sourceTree = "<group>"; };
 		7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorRange.h; sourceTree = "<group>"; };
@@ -2269,7 +2277,11 @@
 			children = (
 				7D36376F1238F534002BDD2B /* EucPageTurningView.h */,
 				7D3637701238F534002BDD2B /* EucPageTurningView.m */,
+				7D589BAD125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h */,
+				7D589BAE125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m */,
 				7D02175F124025E7008CE201 /* Shaders */,
+				7DAC9906125DA21C00695E4C /* EucPageTurningTextureUploadOperation.h */,
+				7DAC9907125DA21C00695E4C /* EucPageTurningTextureUploadOperation.m */,
 			);
 			path = PageTurning;
 			sourceTree = "<group>";
@@ -2931,6 +2943,8 @@
 				7D0217A912402B17008CE201 /* THEmbeddedResourceManager.h in Headers */,
 				7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */,
 				7DC0FE391234E85F00FBE9B3 /* EucSelectorAccessibilityMask.h in Headers */,
+				7D589BAF125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h in Headers */,
+				7DAC9908125DA21C00695E4C /* EucPageTurningTextureUploadOperation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3580,6 +3594,8 @@
 				7D6D9FC7124E9AE6005FD8CE /* THOpenGLUtils.m in Sources */,
 				7D6DA2231250C404005FD8CE /* euc_page_turning.vsh in Sources */,
 				7D6DA2241250C408005FD8CE /* euc_page_turning.fsh in Sources */,
+				7D589BB0125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m in Sources */,
+				7DAC9909125DA21C00695E4C /* EucPageTurningTextureUploadOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
