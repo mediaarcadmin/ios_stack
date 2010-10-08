@@ -185,7 +185,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self initialiseBookView];
             [self setToolbarsVisibleAfterAppearance:YES];
             BlioBookmarkPoint *implicitPoint = [newBook implicitBookmarkPoint];
-            [self.bookView goToBookmarkPoint:implicitPoint animated:NO];
+            [self.bookView goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
+            [self.bookView pushCurrentBookmarkPoint];
         }
         
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
