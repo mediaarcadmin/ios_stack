@@ -270,10 +270,19 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
+    [self pushCurrentBookmarkPoint];
     [self goToPageNumber:[self.textFlow pageNumberForSectionUuid:uuid] animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
+    [self goToPageNumber:targetPage animated:animated saveToHistory:YES];
+}
+
+- (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated saveToHistory:(BOOL)save {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
+    
     if(self.pageTurningView) {
         [pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
         self.pageNumber = targetPage;
@@ -294,11 +303,20 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 {
     if (save) {
         [self pushCurrentBookmarkPoint];
+        [self goToPageNumber:bookmarkPoint.layoutPage animated:animated saveToHistory:YES];
+    } else {
+        [self goToPageNumber:bookmarkPoint.layoutPage animated:animated saveToHistory:NO];
     }
-    [self goToPageNumber:bookmarkPoint.layoutPage animated:animated];
 }
 
 - (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
+    [self goToBookmarkRange:bookmarkRange animated:animated saveToHistory:YES];
+}
+
+- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
 }
 
@@ -844,7 +862,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         [endPoint setLayoutPage:self.pageNumber];
     }
     
-    
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
     [range setStartPoint:startPoint];
     [range setEndPoint:endPoint];
@@ -866,9 +883,36 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark TTS
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
+}
+
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
+    BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
+    [self highlightWordsInBookmarkRange:range animated:YES];
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
+    [self highlightWordsInBookmarkRange:bookmarkRange animated:animated saveToHistory:NO];
+}
+
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save {
+    
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
+    
+    if (bookmarkRange) {
+        if (self.pageNumber != bookmarkRange.startPoint.layoutPage) {
+            [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
+        }
+        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:bookmarkRange];
+        [self.selector temporarilyHighlightSelectorRange:range animated:animated];
+    } else {
+        [self.selector removeTemporaryHighlight];
+    }
 }
 
 #pragma mark -

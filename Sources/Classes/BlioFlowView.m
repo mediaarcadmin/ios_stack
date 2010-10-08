@@ -228,15 +228,27 @@
     return _pageViewIsTurning || self.selector.tracking;
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
+}
+
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save;
 {
-    [self pushCurrentBookmarkPoint];
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
 }
 
-- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated {
+    [self highlightWordsInBookmarkRange:blioRange animated:animated saveToHistory:NO];
+}
+
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated saveToHistory:(BOOL)save
 {
-    [self pushCurrentBookmarkPoint];
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     EucHighlightRange *eucRange = [[EucHighlightRange alloc] init];
     eucRange.startPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.startPoint];
     eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
