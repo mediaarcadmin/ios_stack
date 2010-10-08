@@ -84,9 +84,13 @@
 
 - (void)setNeedsDraw
 {
-    if(!_animating && !_needsDraw) {
-        [self performSelector:@selector(drawView) withObject:nil afterDelay:0];
-        _needsDraw = YES;
+    if(![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(setNeedsDraw) withObject:nil waitUntilDone:NO];
+    } else {
+        if(!_animating && !_needsDraw) {
+            [self performSelector:@selector(drawView) withObject:nil afterDelay:0.0f];
+            _needsDraw = YES;
+        }
     }
 }
 

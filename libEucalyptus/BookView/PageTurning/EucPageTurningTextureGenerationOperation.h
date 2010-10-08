@@ -18,6 +18,8 @@
     NSInvocation *_generationInvocation;
     NSUInteger pageIndex;
     CGRect textureRect;
+    BOOL _isZoomed;
+    GLuint generatedTextureID;
 }
 
 @property (nonatomic, assign) id<EucPageTurningTextureGenerationOperationDelegate> delegate;
@@ -26,18 +28,21 @@
 @property (nonatomic, retain) NSInvocation *generationInvocation;
 @property (nonatomic, assign) NSUInteger pageIndex;
 @property (nonatomic, assign) CGRect textureRect;
+@property (nonatomic, assign) BOOL isZoomed;
+
+@property (nonatomic, assign) GLuint generatedTextureID;
 
 @end
 
 
-@protocol EucPageTurningTextureGenerationOperationDelegate
+@protocol EucPageTurningTextureGenerationOperationDelegate <NSObject>
 
 @required
 
 // Called on the main thread.
-- (void)textureGenerationOperation:(EucPageTurningTextureGenerationOperation *)operation generatedTexture:(GLuint)texture;
+- (void)textureGenerationOperationGeneratedTexture:(EucPageTurningTextureGenerationOperation *)operation;
 
-// Called on background thread.
+// Called on background threads.
 - (GLuint)textureGenerationOperationGetTextureId:(EucPageTurningTextureGenerationOperation *)operation;
 
 @end

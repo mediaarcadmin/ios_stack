@@ -8,6 +8,7 @@
 
 #import "EucPageTurningPageContentsInformation.h"
 #import "EucPageTurningView.h"
+#import "THLog.h"
 
 @implementation EucPageTurningPageContentsInformation
 
@@ -28,9 +29,15 @@
 
 - (void)dealloc
 {   
-    NSParameterAssert(!_currentTextureGenerationOperation);
-    NSParameterAssert(!_currentZoomedTextureGenerationOperation);
-    
+    if(_currentTextureGenerationOperation) {
+        THLog(@"EucPageTurningPageContentsInformation deallocing with pending texture generation operation!");
+        _currentTextureGenerationOperation = nil;
+    }
+    if(_currentZoomedTextureGenerationOperation) {
+        THLog(@"EucPageTurningPageContentsInformation deallocing with pending zoomed texture generation operation!");
+        _currentZoomedTextureGenerationOperation = nil;
+    }
+
     [_view release];
 
     if(_texture) {

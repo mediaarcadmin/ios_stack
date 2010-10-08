@@ -18,9 +18,13 @@
 
 @synthesize pageIndex = _pageIndex;
 @synthesize textureRect = _textureRect;
+@synthesize isZoomed = _isZoomed;
+
+@synthesize generatedTextureID = _generatedTextureID;
 
 - (void)dealloc
 {
+    [_generationInvocation release]; 
     [_eaglContext release];
     [_contextLock release];
     
@@ -55,9 +59,11 @@
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
         
         [contextLock unlock];
-        [self.delegate textureGenerationOperation:self generatedTexture:textureID];
-    } else {
-        [self.delegate textureGenerationOperation:self generatedTexture:0];
+        
+        self.generatedTextureID = textureID;
+        [((NSObject *)self.delegate) performSelectorOnMainThread:@selector(textureGenerationOperationGeneratedTexture:) 
+                                                      withObject:self 
+                                                   waitUntilDone:NO];
     }
     self.generationInvocation = nil;
 }
