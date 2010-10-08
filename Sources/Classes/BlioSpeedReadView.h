@@ -25,6 +25,7 @@
     NSInteger pageCount;
     
     id<BlioParagraphSource> paragraphSource;
+    id<BlioBookViewDelegate> delegate;
     id currentParagraphID;
 	uint32_t currentWordOffset;
         
@@ -81,5 +82,6 @@
 @property (nonatomic, retain) UILabel *bigTextLabel;
 @property (nonatomic, retain) UILabel *sampleTextLabel;
 
+@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
 
 @end

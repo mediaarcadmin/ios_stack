@@ -251,7 +251,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         lastLayout = kBlioPageLayoutPageLayout;
     } 
     //TODO: Remove this override
-    lastLayout = kBlioPageLayoutPageLayout;
+    lastLayout = kBlioPageLayoutSpeedRead;
 
     switch (lastLayout) {
         case kBlioPageLayoutSpeedRead: {
@@ -259,6 +259,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds 
                                                                                  bookID:self.book.objectID
                                                                                animated:YES];
+                aBookView.delegate = self;
                 self.bookView = aBookView; 
                 [aBookView release];
             }   
@@ -1649,6 +1650,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutSpeedRead && ([self.book hasEPub] || [self.book hasTextFlow])) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
+            speedReadView.delegate = self;
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
