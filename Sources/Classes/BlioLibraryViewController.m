@@ -559,6 +559,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										   fromBundle:YES
 		 ];
         
+        [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands Fixed" 
+                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Virgin Islands Links Fixed.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"VirginIslandsFixed" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+        
         [self.processingDelegate enqueueBookWithTitle:@"Woodstock - Peace, Music, and Memories" 
                                               authors:[NSArray arrayWithObjects:@"Littleproud, Brad", @"Hague, Joanne", nil]
 											coverPath:nil

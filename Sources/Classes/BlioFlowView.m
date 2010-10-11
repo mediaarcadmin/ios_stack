@@ -20,6 +20,7 @@
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/THPair.h>
+#import "NSArray+BlioAdditions.h"
 
 @interface BlioFlowView ()
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
@@ -332,7 +333,7 @@
             BlioTextFlowReference *reference = [textFlow referenceForReferenceId:internalURI];
             [bookManager checkInTextFlowForBookWithID:self.bookID];
             
-            if ([reference hyperlink]) {
+            if (reference) {
                 BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
                 bookmarkPoint.layoutPage = reference.pageIndex + 1;
                 
@@ -343,22 +344,23 @@
                 }
                 
                 NSDictionary *idToIndexPoint = [(EucBUpeBook *)_eucBook idToIndexPoint];
-                NSString *matchKey = nil;
                 
-                for (NSString *longKey in [idToIndexPoint allKeys]) {
+                NSArray *longKeys = [idToIndexPoint allKeys];
+                NSMutableArray *shortKeys = [NSMutableArray arrayWithCapacity:[longKeys count]];
+                for (NSString *longKey in longKeys) {
                     NSRange firstHash = [longKey rangeOfString:@"#"];
                     NSString *shortKey = longKey;
                     if ((firstHash.location != NSNotFound) && (firstHash.location < ([longKey length] - 1))) {
                         shortKey = [longKey substringFromIndex:firstHash.location + 1];
                     }
-                    if ([shortKey isEqualToString:[reference hyperlink]]) {
-                        matchKey = longKey;
-                        break;
-                    }
+                    [shortKeys addObject:shortKey];
                 }
                 
+                NSString *matchKey = [shortKeys longestComponentizedMatch:[reference referenceId] componentsSeperatedByString:@"/" forKeyPath:@"self"];
+          
                 if (matchKey) {
-                    [self goToUuid:matchKey animated:YES];
+                    NSUInteger keyIndex = [shortKeys indexOfObject:matchKey];
+                    [self goToUuid:[longKeys objectAtIndex:keyIndex] animated:YES];
                     return !handled;
                 } else {
                     // Handle failure cases by going straight to the page

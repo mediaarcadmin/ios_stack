@@ -249,9 +249,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         lastLayout = kBlioPageLayoutPlainText;
     } else if (((![self.book hasEPub] && ![self.book hasTextFlow]) || ![self.book reflowEnabled]) && (lastLayout == kBlioPageLayoutPlainText)) {
         lastLayout = kBlioPageLayoutPageLayout;
-    } 
-    //TODO: Remove this override
-    lastLayout = kBlioPageLayoutSpeedRead;
+    }
 
     switch (lastLayout) {
         case kBlioPageLayoutSpeedRead: {

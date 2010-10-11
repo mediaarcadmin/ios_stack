@@ -203,7 +203,6 @@
 
 @property (nonatomic, assign) NSInteger pageIndex;
 @property (nonatomic, retain) NSString *referenceId;
-@property (nonatomic, retain) NSString *hyperlink;
 
 @end
 
@@ -220,16 +219,15 @@
 
 @implementation BlioTextFlowReference
 
-@synthesize referenceId, hyperlink, pageIndex;
+@synthesize referenceId, pageIndex;
 
 - (void)dealloc {
     self.referenceId = nil;
-    self.hyperlink = nil;
     [super dealloc];
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"{ PageIndex: %d, Id: %@, Hyperlink: %@ }", self.pageIndex, self.referenceId, self.hyperlink];            
+    return [NSString stringWithFormat:@"{ PageIndex: %d, ReferenceId: %@ }", self.pageIndex, self.referenceId];            
 }
             
 @end
@@ -491,7 +489,6 @@ typedef struct BlioTextFlowSectionsXMLParsingContext
     NSMutableArray *buildTableOfContents;
     NSMutableArray *buildFlowReferences;
     NSMutableArray *buildReferences;
-    BlioTextFlowReference *lastReference; 
 } BlioTextFlowSectionsXMLParsingContext;
 
 static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) {
@@ -577,31 +574,14 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 NSString *idString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != idString) {
                     newReference.referenceId = idString;
-                    newReference.hyperlink = idString;
                     [idString release];
                     idFound = YES;
                 }                
             }
         }
         
-        BlioTextFlowReference *lastReference = context->lastReference;
-        
         if(pageIndexFound && idFound) {
-            NSURL *referenceURI = [[NSURL alloc] initWithString:newReference.referenceId];
-            NSString *anchor = referenceURI.fragment;
-            if ([anchor hasPrefix:@"filepos"] && lastReference) {
-                newReference.hyperlink = lastReference.referenceId;
-                [context->buildReferences addObject:newReference];
-                [newReference release];
-                [lastReference release];
-                context->lastReference = nil;
-            } else {
-                if (lastReference) {
-                    [context->buildReferences addObject:lastReference];
-                    [lastReference release];
-                }
-                context->lastReference = newReference;
-            }
+            [context->buildReferences addObject:newReference];
         } else {
             if(!pageIndexFound) {
                 NSLog(@"Warning - Reference with no page index - ignoring");
@@ -609,13 +589,8 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             if(!idFound) {
                 NSLog(@"Warning - Reference with no id - ignoring");
             }
-            if (lastReference) {
-                [context->buildReferences addObject:lastReference];
-                [lastReference release];
-            }
-            context->lastReference = nil;
-            [newReference release];
         }
+        [newReference release];
     }
 }
 
@@ -626,7 +601,7 @@ static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lh
 
 - (void)parseSectionsXML
 {
-    BlioTextFlowSectionsXMLParsingContext context = { [NSMutableArray array], [NSMutableArray array], [NSMutableArray array], nil };
+    BlioTextFlowSectionsXMLParsingContext context = { [NSMutableArray array], [NSMutableArray array], [NSMutableArray array] };
 
     BlioBook *aBook = self.book;
     NSData *data = [aBook manifestDataForKey:BlioManifestTextFlowKey];
@@ -641,13 +616,6 @@ static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lh
             NSLog(@"TextFlow sections parsing error: '%s'", anError);
         }
         XML_ParserFree(flowParser);
-    }
-    
-    // Handle the case of a final non-paired reference
-    if (context.lastReference != nil) {
-        [context.buildReferences addObject:context.lastReference];
-        [context.lastReference release];
-        context.lastReference = nil;
     }
     
     self.flowReferences = context.buildFlowReferences;
@@ -793,34 +761,10 @@ static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char
 }
 
 - (BlioTextFlowReference *)referenceForReferenceId:(NSString *)referenceId {
-    BlioTextFlowReference *referenceMatch = nil;
+    NSArray *referencesArray = [self references];
+    BlioTextFlowReference *referenceMatch = [referencesArray longestComponentizedMatch:referenceId componentsSeperatedByString:@"/" forKeyPath:@"referenceId"];
     
-    for (BlioTextFlowReference *reference in [self references]) {
-        if ([reference.referenceId hasSuffix:referenceId]) {
-            if (reference.hyperlink) {
-                referenceMatch = reference;
-                break;
-            }
-        }
-    }
     return referenceMatch;
-    
-   // BlioTextFlowReference *matchedReference = nil;
-//    NSInteger matchLength = 0;
-//    
-//    for (BlioTextFlowReference *reference in [self references]) {
-//        NSRange suffixRange = [reference.referenceId  rangeOfString:referenceId options:(NSAnchoredSearch | NSBackwardsSearch)];
-//        if (suffixRange.length > matchLength) {
-//            matchedReference = reference;
-//            matchLength = suffixRange.length;
-//        }
-//    }
-//    
-//    if (matchedReference) {
-//        return [NSURL URLWithString:matchedReference.hyperlink];
-//    }
-//    
-//    return nil;
 }
 
 #pragma mark -
