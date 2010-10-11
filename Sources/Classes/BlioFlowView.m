@@ -336,13 +336,7 @@
             if (reference) {
                 BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
                 bookmarkPoint.layoutPage = reference.pageIndex + 1;
-                
-                if (link.fragment == nil) {
-                    // Handle page lookup without an anchor by going straight to the page
-                    [self goToBookmarkPoint:bookmarkPoint animated:YES];
-                    return !handled;
-                }
-                
+
                 NSDictionary *idToIndexPoint = [(EucBUpeBook *)_eucBook idToIndexPoint];
                 
                 NSArray *longKeys = [idToIndexPoint allKeys];
