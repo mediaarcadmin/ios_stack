@@ -32,6 +32,7 @@
 @property (nonatomic, retain) UIImage *pageTexture;
 @property (nonatomic, assign) BOOL pageTextureIsDark;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
+@property (nonatomic, retain) NSTimer *delayedTouchesTimer;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -45,6 +46,7 @@
 - (NSInteger)leftPageIndex;
 - (NSInteger)rightPageIndex;
 
+- (BOOL)touchesShouldBeSuppressed;
 - (void)handleTapAtPoint:(CGPoint)point;
 
 - (NSArray *)hyperlinksForPage:(NSInteger)page;
@@ -68,8 +70,12 @@
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
 @synthesize lastBlock;
+@synthesize delayedTouchesTimer;
 
 - (void)dealloc {
+    [self.delayedTouchesTimer invalidate];
+    self.delayedTouchesTimer = nil;
+    
     self.textFlow = nil;
     self.pageCropsCache = nil;
     self.hyperlinksCache = nil;
@@ -124,6 +130,7 @@
     if((self = [super initWithFrame:frame])) {
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;        
         self.opaque = YES;
+        self.multipleTouchEnabled = YES;
         self.bookID = aBookID;
         self.pageSize = self.bounds.size;
         
@@ -947,23 +954,55 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    startTouchPoint = [[touches anyObject] locationInView:self];
+- (BOOL)touchesShouldBeSuppressed {
+    if (hyperlinkTapped || pageViewIsTurning || self.selector.tracking || self.selector.selectedRange) {
+        hyperlinkTapped = NO;
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
-- (void)touchesMoved:(NSSet *)toucheds withEvent:(UIEvent *)event {
+- (void)delayedTouchesBegan:(NSTimer *)timer {
     startTouchPoint = CGPointMake(-1, -1);
+
+    NSDictionary *touchesAndEvent = [timer userInfo];
+    [self.pageTurningView touchesBegan:[touchesAndEvent valueForKey:@"touches"] withEvent:[touchesAndEvent valueForKey:@"event"]];
+    self.delayedTouchesTimer = nil;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {    
+    if ([[event touchesForView:self] count] > 1) {
+        startTouchPoint = CGPointMake(-1, -1);
+        [self.delayedTouchesTimer fire];
+        self.delayedTouchesTimer = nil;
+        [self.pageTurningView touchesBegan:touches withEvent:event];
+    } else {
+        [self.delayedTouchesTimer invalidate];
+        self.delayedTouchesTimer = nil;
+        
+        startTouchPoint = [[touches anyObject] locationInView:self];
+        NSDictionary *touchesAndEvent = [NSDictionary dictionaryWithObjectsAndKeys:touches, @"touches", event, @"event", nil];
+        self.delayedTouchesTimer = [NSTimer scheduledTimerWithTimeInterval:0.2f target:self selector:@selector(delayedTouchesBegan:) userInfo:touchesAndEvent repeats:NO];
+    }
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    startTouchPoint = CGPointMake(-1, -1);
+    
+    [self.delayedTouchesTimer fire];
+    self.delayedTouchesTimer = nil;
+
+    [self.pageTurningView touchesMoved:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.delayedTouchesTimer invalidate];
+    self.delayedTouchesTimer = nil;
+    
     BlioLayoutHyperlink *touchedHyperlink = nil;
-    
-    // For consistency leave this out as flow view doesn't do this
-    //if ([self.delegate toolbarsVisible]) {
-    //    return;
-    //}
-    
     CGPoint point = [[touches anyObject] locationInView:self];
+    
     if (CGPointEqualToPoint(point, startTouchPoint)) {
         if (self.pageTurningView.fitTwoPages) {
             NSInteger leftPageIndex = [self leftPageIndex];
@@ -978,20 +1017,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 touchedHyperlink = [self hyperlinkForPage:rightPageIndex + 1 atPoint:point];
             }
         }
-    }
-
-    if ([touchedHyperlink link]) {
-        [self hyperlinkTapped:[touchedHyperlink link]];
+        
+        if ([self touchesShouldBeSuppressed]) {
+            return;
+        } else if ([touchedHyperlink link]) {
+            [self hyperlinkTapped:[touchedHyperlink link]];
+        } else {
+            [self handleTapAtPoint:point];
+        }
     } else {
-        [self handleTapAtPoint:point];
+        [self.pageTurningView touchesEnded:touches withEvent:event];
     }
 }
 
 - (void)handleTapAtPoint:(CGPoint)point {
-    
-    if ([self toolbarShowShouldBeSuppressed]) {
-        return;
-    }
     
     CGFloat screenWidth = CGRectGetWidth(self.bounds);
     CGFloat leftHandHotZone = screenWidth * BLIOLAYOUT_LHSHOTZONE;
@@ -1013,12 +1052,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Hyperlinks
 
 - (BOOL)toolbarShowShouldBeSuppressed {
-    if (hyperlinkTapped || pageViewIsTurning || self.selector.tracking || self.selector.selectedRange) {
-        hyperlinkTapped = NO;
-        return YES;
-    } else {
-        return NO;
-    }
+    return [self touchesShouldBeSuppressed];
 }
 
 - (void)hyperlinkTapped:(NSString *)link {

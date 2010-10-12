@@ -40,6 +40,7 @@
     NSLock *layoutCacheLock;
     NSLock *hyperlinksCacheLock;
     CGPoint startTouchPoint;
+    NSTimer *delayedTouchesTimer;
     BOOL hyperlinkTapped;
     BOOL pageViewIsTurning;
     
