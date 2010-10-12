@@ -13,8 +13,6 @@
 		7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9710C2CD820085778B /* TransitionTestMain.m */; };
 		7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */; };
 		7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */; };
-		7D035BDA11ECD03B00F39592 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
-		7D035BDB11ECD03B00F39592 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
 		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
 		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */; };
@@ -124,6 +122,8 @@
 		7D19047711494CEA00375803 /* parserutilserror.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903E811494CEA00375803 /* parserutilserror.h */; };
 		7D19047811494CEA00375803 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1903E911494CEA00375803 /* utils.c */; };
 		7D19047911494CEA00375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903EA11494CEA00375803 /* utils.h */; };
+		7D239FC71261C134005B5D78 /* Readings in Resources */ = {isa = PBXBuildFile; fileRef = 7D239FB21261C134005B5D78 /* Readings */; };
+		7D239FC81261C134005B5D78 /* Readings in Resources */ = {isa = PBXBuildFile; fileRef = 7D239FB21261C134005B5D78 /* Readings */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
 		7D27117B124928110087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D27117A124928110087C4E3 /* Accelerate.framework */; };
@@ -980,6 +980,7 @@
 		7D23416D1149602300C318E7 /* EucCSSRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSRenderer.h; sourceTree = "<group>"; };
 		7D23416E1149602300C318E7 /* EucCSSRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSRenderer.m; sourceTree = "<group>"; };
 		7D2341981149614F00C318E7 /* libEucalyptusCSS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusCSS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D239FB21261C134005B5D78 /* Readings */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Readings; sourceTree = "<group>"; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
 		7D27117A124928110087C4E3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -1182,6 +1183,7 @@
 		7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLocalBookReference.h; sourceTree = "<group>"; };
 		7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSFileManagerAdditions.m; sourceTree = "<group>"; };
 		7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSFileManagerAdditions.h; sourceTree = "<group>"; };
+		7D6F60A81261D5BA000D4072 /* Readings-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Readings-Info.plist"; sourceTree = "<group>"; };
 		7D79D070117F75C90081F554 /* EucCSSLayoutRunExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutRunExtractor.h; sourceTree = "<group>"; };
 		7D79D071117F75C90081F554 /* EucCSSLayoutRunExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutRunExtractor.m; sourceTree = "<group>"; };
 		7D883F5D111C5862009669A8 /* EucMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucMenuItem.h; sourceTree = "<group>"; };
@@ -2559,6 +2561,7 @@
 				7D034F9610C2CD820085778B /* Other Sources */,
 				7D034F9810C2CD820085778B /* Resources */,
 				7D034F8B10C2CCBF0085778B /* TransitionTest-Info.plist */,
+				7D6F60A81261D5BA000D4072 /* Readings-Info.plist */,
 			);
 			path = TransitionTest;
 			sourceTree = "<group>";
@@ -2604,6 +2607,7 @@
 		7D9A96F810D7E48200C2E00A /* TestResources */ = {
 			isa = PBXGroup;
 			children = (
+				7D239FB21261C134005B5D78 /* Readings */,
 				7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */,
 				7D9A979210D7E48E00C2E00A /* book */,
 				7DCA5804114985C7007EDB15 /* pg103.epub */,
@@ -3278,8 +3282,8 @@
 				7D4A006711DBA34E00DDA5B7 /* SelectionEnd.png in Resources */,
 				7D4A006811DBA34E00DDA5B7 /* SelectionKnob.png in Resources */,
 				7D4A006911DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */,
-				7D035BDA11ECD03B00F39592 /* Pride and Prejudice in Resources */,
 				7D0D925512130F7F00CD994D /* EPubOverrides.css in Resources */,
+				7D239FC71261C134005B5D78 /* Readings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3356,8 +3360,8 @@
 				7D4A009C11DBA34E00DDA5B7 /* SelectionEnd.png in Resources */,
 				7D4A009D11DBA34E00DDA5B7 /* SelectionKnob.png in Resources */,
 				7D4A009E11DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */,
-				7D035BDB11ECD03B00F39592 /* Pride and Prejudice in Resources */,
 				7D0D92851213185B00CD994D /* EPubOverrides.css in Resources */,
+				7D239FC81261C134005B5D78 /* Readings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
