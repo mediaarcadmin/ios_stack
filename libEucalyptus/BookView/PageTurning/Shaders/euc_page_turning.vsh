@@ -73,7 +73,7 @@ void main()
     vPaperCoordinate = aTextureCoordinate;
     vContentsCoordinate = vec2(abs(float(uFlipContentsX) - aTextureCoordinate.x), aTextureCoordinate.y);
     vZoomedContentsCoordinate = vec2((vContentsCoordinate.x - uZoomedTextureRect.x) / uZoomedTextureRect.z + vContentsCoordinate.x,
-                                     (vContentsCoordinate.y - uZoomedTextureRect.z) / uZoomedTextureRect.w + vContentsCoordinate.y);
+                                     (vContentsCoordinate.y - uZoomedTextureRect.y) / uZoomedTextureRect.w + vContentsCoordinate.y);
         
     gl_Position = uProjectionMatrix * projectedPosition;
 }

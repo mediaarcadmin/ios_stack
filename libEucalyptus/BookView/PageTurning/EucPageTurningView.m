@@ -295,7 +295,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         _textureGenerationOperationQueue.name = @"Texture Generation Queue";
     }
     
-    _backgroundThreadEAGLContext = self.eaglContext;//[[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
+    _backgroundThreadEAGLContext = [[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
     _backgroundThreadEAGLContextLock = [[NSRecursiveLock alloc] init];
     
     _textureLock = [[NSLock alloc] init];
