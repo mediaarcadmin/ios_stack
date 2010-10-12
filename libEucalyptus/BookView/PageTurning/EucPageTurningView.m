@@ -813,7 +813,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)_setView:(UIView *)view forInternalPageOffsetPage:(int)page forceRefresh:(BOOL)forceRefresh
 {
-    if(_pageContentsInformation[page].view != view) {
+    if(forceRefresh || _pageContentsInformation[page].view != view) {
+        UIView *oldView = [_pageContentsInformation[page].view retain]; // In case it's the same as the new view.
         [_pageContentsInformation[page] release];
         if(view) {
             _pageContentsInformation[page] = [[EucPageTurningPageContentsInformation alloc] initWithPageTurningView:self];
@@ -822,6 +823,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         } else {
             _pageContentsInformation[page] = nil;
         }
+        [oldView release];
     }
 }
 
