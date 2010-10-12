@@ -281,7 +281,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return [self.dataSource thumbnailForPage:index + 1];
 }
 
-- (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index
+- (NSArray *)pageTurningView1:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index
 {
     NSMutableArray *ret = nil;
     int max = roundf((float)rand() / (float)RAND_MAX * 4);
@@ -871,7 +871,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
             
             for (NSValue *rectValue in coalescedRects) {
-                THPair *highlightPair = [[THPair alloc] initWithFirst:(id)rectValue second:(id)highlightRange.color];
+                THPair *highlightPair = [[THPair alloc] initWithFirst:(id)rectValue second:(id)[highlightRange.color colorWithAlphaComponent:0.5f]];
                 [allHighlights addObject:highlightPair];
                 [highlightPair release];
             }
