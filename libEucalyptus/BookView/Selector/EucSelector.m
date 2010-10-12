@@ -733,7 +733,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         }
 
         if(previousStage != EucSelectorTrackingStageFirstSelection && 
-           (stage <= EucSelectorTrackingStageDelay || stage == EucSelectorTrackingStageFirstSelection)) {
+           (stage < EucSelectorTrackingStageDelay || stage == EucSelectorTrackingStageFirstSelection)) {
             if(self.selectedRangeIsHighlight &&
                [self.delegate respondsToSelector:@selector(eucSelector:didEndEditingHighlightWithRange:movedToRange:)]) {
                 [self.delegate eucSelector:self 
@@ -744,7 +744,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [_cachedHighlightRanges release];
                 _cachedHighlightRanges = nil;                
             }
-            self.selectedRangeOriginalHighlightRange = nil;
+            //self.selectedRangeOriginalHighlightRange = nil;
             self.selectionColor = nil;
         }
         

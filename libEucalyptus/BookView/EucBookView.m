@@ -1211,7 +1211,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [_rangeBeingEdited release];
     _rangeBeingEdited = nil;
 
-    self.selector.selectedRange = nil;
     [self refreshHighlights];
 }
 
