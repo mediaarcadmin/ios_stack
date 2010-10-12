@@ -362,13 +362,13 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         UITouch *touch = [touches anyObject];
         CGPoint location = [touch locationInView:touch.window];
         
-        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+        /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
                 CGFloat scaleFactor = self.contentScaleFactor;
                 location.x /= scaleFactor;
                 location.y /= scaleFactor;
             }
-        }
+        }*/
         
         if(CGRectContainsPoint([_pageTextView frame], location)) {
             _touch = touch;
@@ -385,13 +385,13 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         UITouch *touch = _touch;
         CGPoint location = [touch locationInView:touch.window];
         
-        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+        /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
                 CGFloat scaleFactor = self.contentScaleFactor;
                 location.x /= scaleFactor;
                 location.y /= scaleFactor;
             }
-        }
+        }*/
         CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
         
         [_pageTextView handleTouchMoved:touch atLocation:locationInTextView];
@@ -404,13 +404,13 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         UITouch *touch = _touch;
         CGPoint location = [touch locationInView:touch.window];
         
-        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+        /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
                 CGFloat scaleFactor = self.contentScaleFactor;
                 location.x /= scaleFactor;
                 location.y /= scaleFactor;
             }
-        }
+        }*/
         CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
         
         [_pageTextView handleTouchCancelled:touch atLocation:locationInTextView];
@@ -426,13 +426,13 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         
         CGPoint location = [touch locationInView:touch.window];
         
-        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+        /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
                 CGFloat scaleFactor = self.contentScaleFactor;
                 location.x /= scaleFactor;
                 location.y /= scaleFactor;
             }
-        }
+        }*/
         CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
         
         [_pageTextView handleTouchEnded:touch atLocation:locationInTextView];

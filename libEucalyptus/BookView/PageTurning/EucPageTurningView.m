@@ -3024,6 +3024,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
                                                                     colorSpace, kCGImageAlphaPremultipliedLast);
                 CGColorSpaceRelease(colorSpace);
+                CGContextScaleCTM(textureContext, 1.0f, -1.0f);
+                CGContextTranslateCTM(textureContext, 0, -minSize.height);
                 CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
                 for(THPair *highlight in highlights) {
                     CGRect highlightRect = [highlight.first CGRectValue];
