@@ -127,7 +127,13 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
     BlioBookmarkRange *searchBookmarkRange = [[self.resultsController.searchResults objectAtIndex:currentSearchResult] bookmarkRange];
     if ([self.bookView respondsToSelector:@selector(highlightWordsInBookmarkRange:animated:)]) {
         [self.bookView highlightWordsInBookmarkRange:searchBookmarkRange animated:NO];
+    } else if ([self.bookView respondsToSelector:@selector(goToBookmarkRange:animated:)]) {
+        [self.bookView goToBookmarkRange:searchBookmarkRange animated:NO];
+    } else if ([self.bookView respondsToSelector:@selector(goToBookmarkPoint:animated:)]) {
+        [self.bookView goToBookmarkPoint:searchBookmarkRange.startPoint animated:NO];
     }
+
+
 }
 
 - (void)nextResult {

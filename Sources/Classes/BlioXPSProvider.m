@@ -616,10 +616,12 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         if (self.bookIsEncrypted) {
             encrypted = YES;
             gzipped = YES;
+            componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
+        } else {
+            componentPath = [BlioXPSPagesDir stringByAppendingPathComponent:path];
         }
         mapped = YES;
         cached = YES;
-        componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
     } else if ([directory isEqualToString:BlioXPSEncryptedImagesDir] && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
         if (self.bookIsEncrypted) {
             encrypted = YES;

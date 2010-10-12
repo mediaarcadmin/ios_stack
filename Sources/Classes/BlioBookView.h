@@ -94,13 +94,19 @@
 // BookMarkRange methods - some of these should be required once flow view is ready
 - (BlioBookmarkRange *)selectedRange;
 - (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange;
+
+- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated saveToHistory:(BOOL)save;
 - (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
+- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save;
+
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save;
 
 - (BOOL)toolbarShowShouldBeSuppressed; 
 

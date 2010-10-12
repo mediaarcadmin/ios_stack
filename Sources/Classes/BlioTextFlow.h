@@ -105,12 +105,10 @@
 @interface BlioTextFlowReference : NSObject {
     NSInteger pageIndex;
     NSString *referenceId;
-    NSString *hyperlink;
 }
 
 @property (nonatomic, assign, readonly) NSInteger pageIndex;
 @property (nonatomic, retain, readonly) NSString *referenceId;
-@property (nonatomic, retain, readonly) NSString *hyperlink;
 
 @end
 

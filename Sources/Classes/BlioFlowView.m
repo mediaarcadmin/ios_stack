@@ -20,6 +20,7 @@
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/THPair.h>
+#import "NSArray+BlioAdditions.h"
 
 @interface BlioFlowView ()
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
@@ -228,15 +229,27 @@
     return _pageViewIsTurning || self.selector.tracking;
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
+}
+
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save;
 {
-    [self pushCurrentBookmarkPoint];
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
 }
 
-- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated {
+    [self highlightWordsInBookmarkRange:blioRange animated:animated saveToHistory:NO];
+}
+
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated saveToHistory:(BOOL)save
 {
-    [self pushCurrentBookmarkPoint];
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     EucHighlightRange *eucRange = [[EucHighlightRange alloc] init];
     eucRange.startPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.startPoint];
     eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
@@ -320,33 +333,28 @@
             BlioTextFlowReference *reference = [textFlow referenceForReferenceId:internalURI];
             [bookManager checkInTextFlowForBookWithID:self.bookID];
             
-            if ([reference hyperlink]) {
+            if (reference) {
                 BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
                 bookmarkPoint.layoutPage = reference.pageIndex + 1;
-                
-                if (link.fragment == nil) {
-                    // Handle page lookup without an anchor by going straight to the page
-                    [self goToBookmarkPoint:bookmarkPoint animated:YES];
-                    return !handled;
-                }
-                
+
                 NSDictionary *idToIndexPoint = [(EucBUpeBook *)_eucBook idToIndexPoint];
-                NSString *matchKey = nil;
                 
-                for (NSString *longKey in [idToIndexPoint allKeys]) {
+                NSArray *longKeys = [idToIndexPoint allKeys];
+                NSMutableArray *shortKeys = [NSMutableArray arrayWithCapacity:[longKeys count]];
+                for (NSString *longKey in longKeys) {
                     NSRange firstHash = [longKey rangeOfString:@"#"];
                     NSString *shortKey = longKey;
                     if ((firstHash.location != NSNotFound) && (firstHash.location < ([longKey length] - 1))) {
                         shortKey = [longKey substringFromIndex:firstHash.location + 1];
                     }
-                    if ([shortKey isEqualToString:[reference hyperlink]]) {
-                        matchKey = longKey;
-                        break;
-                    }
+                    [shortKeys addObject:shortKey];
                 }
                 
+                NSString *matchKey = [shortKeys longestComponentizedMatch:[reference referenceId] componentsSeperatedByString:@"/" forKeyPath:@"self"];
+          
                 if (matchKey) {
-                    [self goToUuid:matchKey animated:YES];
+                    NSUInteger keyIndex = [shortKeys indexOfObject:matchKey];
+                    [self goToUuid:[longKeys objectAtIndex:keyIndex] animated:YES];
                     return !handled;
                 } else {
                     // Handle failure cases by going straight to the page

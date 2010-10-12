@@ -161,7 +161,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (id)initWithBook:(BlioBook *)newBook delegate:(id <BlioCoverViewDelegate>)aDelegate {
-    NSLog(@"BlioBookViewController inited");
     if (!(newBook || aDelegate)) {
         [self release];
         return nil;
@@ -185,7 +184,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self initialiseBookView];
             [self setToolbarsVisibleAfterAppearance:YES];
             BlioBookmarkPoint *implicitPoint = [newBook implicitBookmarkPoint];
-            [self.bookView goToBookmarkPoint:implicitPoint animated:NO];
+            [self.bookView goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
+            [self.bookView pushCurrentBookmarkPoint];
         }
         
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
@@ -249,14 +249,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         lastLayout = kBlioPageLayoutPlainText;
     } else if (((![self.book hasEPub] && ![self.book hasTextFlow]) || ![self.book reflowEnabled]) && (lastLayout == kBlioPageLayoutPlainText)) {
         lastLayout = kBlioPageLayoutPageLayout;
-    } 
-    
+    }
+
     switch (lastLayout) {
         case kBlioPageLayoutSpeedRead: {
             if ([self.book hasEPub] || [self.book hasTextFlow]) {
                 BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds 
                                                                                  bookID:self.book.objectID
                                                                                animated:YES];
+                aBookView.delegate = self;
                 self.bookView = aBookView; 
                 [aBookView release];
             }   
@@ -1647,6 +1648,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutSpeedRead && ([self.book hasEPub] || [self.book hasTextFlow])) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
+            speedReadView.delegate = self;
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
@@ -2498,7 +2500,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self updatePageJumpPanelForPage:pageNum animated:animated];
     [self updatePieButtonForPage:pageNum animated:animated];
     
-    if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
+    if ([self.bookView respondsToSelector:@selector(goToBookmarkRange:animated:)]) {
         [self.bookView goToBookmarkRange:bookmarkRange animated:animated];
     } else {
         BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;

@@ -29,6 +29,7 @@
 @implementation BlioSpeedReadView
 
 @synthesize pageNumber, currentWordOffset, currentParagraphID, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame
              bookID:(NSManagedObjectID *)bookID 
@@ -392,7 +393,10 @@
 #pragma mark Back Button History
 
 - (void)pushCurrentBookmarkPoint {
-    // Do nothing as there is no delegate
+    BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
+    if (bookmarkPoint) {
+        [self.delegate pushBookmarkPoint:bookmarkPoint];
+    }
 }
 
 - (NSString *)pageLabelForPageNumber:(NSInteger)page {
@@ -442,6 +446,7 @@
     [backgroundImage release];
     [currentParagraphID release];
     [paragraphSource release];
+    [delegate release];
     [super dealloc];
 }
 
