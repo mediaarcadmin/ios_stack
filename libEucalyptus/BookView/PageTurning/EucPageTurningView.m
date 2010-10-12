@@ -253,7 +253,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     _alphaWhiteZoomedContent = [self _unusedTexture];
     glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
-    uint32_t whiteSquare[4] = { 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff };
+    uint32_t whiteSquare[4] = { 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &whiteSquare);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -3020,15 +3020,17 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             CGSize minSize = _unzoomedRightPageFrame.size;
             if(highlights && highlights.count) {                
                 size_t bufferLength = minSize.width * minSize.height * 4;
-                void *textureData = calloc(1, bufferLength);
-                
+                void *textureData = malloc(bufferLength);
+                uint32_t pattern = 0x00000000;
+                memset_pattern4(textureData, &pattern, bufferLength);
+
                 CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
                 CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
                                                                     colorSpace, kCGImageAlphaPremultipliedLast);
                 CGColorSpaceRelease(colorSpace);
                 CGContextScaleCTM(textureContext, 1.0f, -1.0f);
                 CGContextTranslateCTM(textureContext, 0, -minSize.height);
-                CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
+                CGContextSetBlendMode(textureContext, kCGBlendModeMultiply);
                 for(THPair *highlight in highlights) {
                     CGRect highlightRect = [highlight.first CGRectValue];
                     UIColor *highlightColor = highlight.second;
