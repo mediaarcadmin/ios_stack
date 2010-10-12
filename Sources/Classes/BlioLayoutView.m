@@ -45,11 +45,6 @@
 - (NSInteger)leftPageIndex;
 - (NSInteger)rightPageIndex;
 
-- (void)stopSniffingTouches; 
-- (void)startSniffingTouches;
-- (void)touchBegan:(UITouch *)touch;
-- (void)touchMoved:(UITouch *)touch;
-- (void)touchEnded:(UITouch *)touch;
 - (void)handleTapAtPoint:(CGPoint)point;
 
 - (NSArray *)hyperlinksForPage:(NSInteger)page;
@@ -166,7 +161,6 @@
     if(self.selector) {
         [self.selector removeObserver:self forKeyPath:@"tracking"];
         [self.selector detatch];
-        [self stopSniffingTouches];
         self.selector = nil;
     }
     
@@ -200,11 +194,10 @@
         aSelector.shouldSniffTouches = YES;
         aSelector.dataSource = self;
         aSelector.delegate =  self;
-        [aSelector attachToView:pageTurningView];
+        [aSelector attachToView:self];
         [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
         self.selector = aSelector;
         [aSelector release];   
-        [self startSniffingTouches];
     } else {
         EucPageTurningView *aPageTurningView = self.pageTurningView;
         if(aPageTurningView) {
@@ -217,7 +210,6 @@
 }
 
 - (void)layoutSubviews {
-    self.selector.selectedRange = nil;
     CGRect myBounds = self.bounds;
     if(myBounds.size.width > myBounds.size.height) {
         self.pageTurningView.fitTwoPages = YES;
@@ -243,6 +235,10 @@
         }        
         self.pageSize = newSize;
     }
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [self.selector setSelectedRange:nil];
 }
 
 #pragma mark -
@@ -482,6 +478,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
 {
     self.selector.selectionDisabled = YES;
+    [self.delegate cancelPendingToolbarShow];
+    pageViewIsTurning = YES;
     //self.temporaryHighlightingDisabled = YES;
     //[self _removeTemporaryHighlights];    
 }
@@ -497,6 +495,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         self.selector.selectedRange = nil;
     }
     self.selector.selectionDisabled = NO;
+    pageViewIsTurning = NO;
     //_temporaryHighlightingDisabled = NO;
 #if 0
     if(_temporaryHighlightRange) {
@@ -819,7 +818,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
-    return self.pageTurningView;
+    return self;
 }
 
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range {
@@ -940,54 +939,31 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Touch Handling
 
-- (void)startSniffingTouches {
-    for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
-        if([window isKindOfClass:[THEventCapturingWindow class]]) {
-            [window addTouchObserver:self forView:self.pageTurningView];
-        }
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if ([self pointInside:point withEvent:event]) {
+        return self;
+    } else {
+        return nil;
     }
 }
 
-- (void)stopSniffingTouches {
-    for(THEventCapturingWindow *window in [[UIApplication sharedApplication] windows]) {
-        if([window isKindOfClass:[THEventCapturingWindow class]]) {
-            [window removeTouchObserver:self forView:self.pageTurningView];
-        }
-    }
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    startTouchPoint = [[touches anyObject] locationInView:self];
 }
 
-- (void)observeTouch:(UITouch *)touch {
-    switch(touch.phase) {
-        case UITouchPhaseBegan:
-            [self touchBegan:touch];
-            break;
-        case UITouchPhaseMoved: 
-            [self touchMoved:touch];
-            break;
-        case UITouchPhaseEnded:
-            [self touchEnded:touch];
-            break;
-        default:
-            break;
-    }
-}
-
-- (void)touchBegan:(UITouch *)touch {
-    startTouchPoint = [touch locationInView:self];
-}
-
-- (void)touchMoved:(UITouch *)touch {
+- (void)touchesMoved:(NSSet *)toucheds withEvent:(UIEvent *)event {
     startTouchPoint = CGPointMake(-1, -1);
 }
 
-- (void)touchEnded:(UITouch *)touch {
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     BlioLayoutHyperlink *touchedHyperlink = nil;
     
-    if ([self.delegate toolbarsVisible]) {
-        return;
-    }
+    // For consistency leave this out as flow view doesn't do this
+    //if ([self.delegate toolbarsVisible]) {
+    //    return;
+    //}
     
-    CGPoint point = [touch locationInView:self];
+    CGPoint point = [[touches anyObject] locationInView:self];
     if (CGPointEqualToPoint(point, startTouchPoint)) {
         if (self.pageTurningView.fitTwoPages) {
             NSInteger leftPageIndex = [self leftPageIndex];
@@ -1032,7 +1008,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Hyperlinks
 
 - (BOOL)toolbarShowShouldBeSuppressed {
-    if (hyperlinkTapped) {
+    if (hyperlinkTapped || pageViewIsTurning || self.selector.tracking) {
         hyperlinkTapped = NO;
         return YES;
     } else {
