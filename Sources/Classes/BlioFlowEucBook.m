@@ -272,16 +272,18 @@
         eucIndexPoint.source--;
     }
     
-    NSUInteger indexes[2] = { eucIndexPoint.source , [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
-    NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
-    BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
-    [indexPath release];
-    
-    if(bookmarkPoint) {
-        ret.layoutPage = bookmarkPoint.layoutPage;
-        ret.blockOffset = bookmarkPoint.blockOffset;
-        ret.wordOffset = bookmarkPoint.wordOffset;
-        ret.elementOffset = eucIndexPoint.element;
+    if(!ret) {
+        NSUInteger indexes[2] = { eucIndexPoint.source , [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
+        NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
+        BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
+        [indexPath release];
+        
+        if(bookmarkPoint) {
+            ret.layoutPage = bookmarkPoint.layoutPage;
+            ret.blockOffset = bookmarkPoint.blockOffset;
+            ret.wordOffset = bookmarkPoint.wordOffset;
+            ret.elementOffset = eucIndexPoint.element;
+        }
     }
 
     [eucIndexPoint release];
