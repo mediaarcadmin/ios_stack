@@ -1260,9 +1260,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     // main, non-zoomed, texture.
     _pageContentsInformation[2].currentTextureGenerationOperation = nil;
     _pageContentsInformation[2].currentZoomedTextureGenerationOperation = nil;
+    _pageContentsInformation[2].zoomedTexture = 0;
     _pageContentsInformation[3].currentTextureGenerationOperation = nil;
     _pageContentsInformation[3].currentZoomedTextureGenerationOperation = nil;
-    
+    _pageContentsInformation[3].zoomedTexture = 0;
+
     // Now cycle the pages.
     if(forwards) {
         EucPageTurningPageContentsInformation *tempView0 = _pageContentsInformation[0];
@@ -2779,9 +2781,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                                          (bounds.size.height * contentScaleFactor) * 0.5f);
             
             CGRect centeredTextureRect;
-            centeredTextureRect.origin = CGPointMake(center.x - 1024, center.y - 1024);
-            centeredTextureRect.size = CGSizeMake(center.x + 1024 - centeredTextureRect.origin.x, 
-                                                  center.y + 1024 - centeredTextureRect.origin.y);
+            centeredTextureRect.origin = CGPointMake(center.x - 1024.0f, center.y - 1024.0f);
+            centeredTextureRect.size = CGSizeMake(center.x + 1024.0f - centeredTextureRect.origin.x, 
+                                                  center.y + 1024.0f - centeredTextureRect.origin.y);
             
             CGRect intersect = CGRectIntersection(scaledPageFrame, centeredTextureRect);
             
@@ -2796,6 +2798,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             textureGenerationOperation.contextLock = _backgroundThreadEAGLContextLock;
             textureGenerationOperation.pageIndex = pageIndex;
             textureGenerationOperation.textureRect = scaledIntersection;
+            textureGenerationOperation.isZoomed = YES;
             
             CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
                                            contentRectForPageAtIndex:pageIndex];

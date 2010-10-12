@@ -23,6 +23,7 @@
     
     // Override point for customization after app launch    
 	
+    [window setFrame:[[UIScreen mainScreen] bounds]];
 	[window addSubview:[navigationController view]];
     [window makeKeyAndVisible];
 }

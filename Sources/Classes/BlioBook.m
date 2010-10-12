@@ -831,21 +831,6 @@ static void sortedHighlightRangePredicateInit() {
 	return nil;
 }
 
-+(NSString*)standardNameFromCanonicalName:(NSString*)aName {
-	if (!aName) return nil;
-	//Find last comma in name string (assumes that there are no commas in correctly formatted first or middle names)
-	NSRange lastCommaLocation = [aName rangeOfString:@", " options:NSBackwardsSearch];
-	
-	//Check to see if it is a single name like Plato
-	if (lastCommaLocation.location == NSNotFound)
-		return aName;
-	
-	//Get first and last Name strings and put them in the correct order
-	return [NSString stringWithFormat:@"%@ %@",
-			[aName substringFromIndex:lastCommaLocation.location+lastCommaLocation.length ],
-			[aName substringToIndex:lastCommaLocation.location]];
-	
-}
 +(NSString*)standardNamesFromCanonicalNameArray:(NSArray*)aNameArray {
 	if (aNameArray) {
 		NSString * authorsString = @"";
@@ -862,7 +847,7 @@ static void sortedHighlightRangePredicateInit() {
 	}
 	return nil;
 }
-
+/*
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName {
 	if (!aName) return nil;
 	//list of common suffixes.  Add more here if special case arises.
@@ -893,7 +878,164 @@ static void sortedHighlightRangePredicateInit() {
 	//flatten arrays into strings separated by original spaces and add in comma
 	return [[lastNamePieces componentsJoinedByString:@" "] stringByAppendingFormat:@", %@",[namePieces componentsJoinedByString:@" "]];	
 }
++(NSString*)standardNameFromCanonicalName:(NSString*)aName {
+	if (!aName) return nil;
+	//Find last comma in name string (assumes that there are no commas in correctly formatted first or middle names)
+	NSRange lastCommaLocation = [aName rangeOfString:@", " options:NSBackwardsSearch];
+	
+	//Check to see if it is a single name like Plato
+	if (lastCommaLocation.location == NSNotFound)
+		return aName;
+	
+	//Get first and last Name strings and put them in the correct order
+	return [NSString stringWithFormat:@"%@ %@",
+			[aName substringFromIndex:lastCommaLocation.location+lastCommaLocation.length ],
+			[aName substringToIndex:lastCommaLocation.location]];
+	
+}
+*/
++(NSArray*) suffixes{
+	return [NSArray arrayWithObjects:@"Ph.D.",@"PhD",@"M.D.",@"M.d.",@"MD",nil];
+}
 
++(NSArray*) suffixesWithoutCommas{
+	return [NSArray arrayWithObjects:@"Jr.",@"Sr.",@"Jr",@"Sr",@"Esq.",@"II",@"III",@"IV",@"V",nil];
+}
+
++(NSArray*) prefixes{
+	return [NSArray arrayWithObjects:@"Saint",@"Sir",@"Viscount",@"Baron",@"Brother",nil];
+}
+
++(NSString*)standardNameFromCanonicalName:(NSString*)name {
+	//get a mutable copy so we can delete unneeded parts of the string
+	NSMutableString* aName = [name mutableCopy];
+	
+	//This is to check and handle the case where there are Contributors to the book. This is resolved at the end of this function with adding back the contributor tag
+	BOOL needContributorTag = NO;
+	NSRange contributorRange = [aName rangeOfString:@" (CON)"];
+	if (contributorRange.location != NSNotFound){
+		[aName deleteCharactersInRange:contributorRange];
+		needContributorTag = YES;
+	}
+	
+	//Split by commas
+	NSMutableArray* namePieces = [[aName componentsSeparatedByString:@", "]mutableCopy];
+	
+	//If 1 Piece, Plato Case (only one name) return piece
+	if ([namePieces count] == 1)
+		return aName;
+	
+	//If 2 Pieces, no suffix, so return 2nd piece first Piece
+	if ([namePieces count] == 2){
+		NSString* result = [NSString stringWithFormat:@"%@ %@",[namePieces objectAtIndex:1],[namePieces objectAtIndex:0]];
+		if (needContributorTag){
+			result = [result stringByAppendingString:@" (CON)"];
+		}
+		return result;
+	}
+	
+	//if 3 pieces, there are suffixes/prefixes, so return 2nd Piece 1st Piece, 3rd Piece
+	//determine the suffixes, prefixes and suffixes that don't require commas
+	NSMutableArray* suffixPrefixPieces = [[[namePieces objectAtIndex:2]componentsSeparatedByString:@" "]mutableCopy];
+	NSMutableArray* suffixes = [NSMutableArray array];
+	NSMutableArray* suffixesWithoutCommas = [NSMutableArray array];
+	NSMutableArray* prefixes = [NSMutableArray array];
+	
+	//for each suffix/prefix piece, see if it is in one of the predefined subsets and add to arrays of objects for reinsertion to main string later
+	for (NSString* suffixPrefixPiece in suffixPrefixPieces){
+		if ([[BlioBook suffixes]containsObject:suffixPrefixPiece]){
+			[suffixes addObject:suffixPrefixPiece];
+		} else if ([[BlioBook suffixesWithoutCommas]containsObject:suffixPrefixPiece]){
+			[suffixesWithoutCommas addObject:suffixPrefixPiece];
+		} else if ([[BlioBook prefixes]containsObject:suffixPrefixPiece]){
+			[prefixes addObject:suffixPrefixPiece];
+		} else NSLog(@"potential suffix of %@ found, not recognized and ignoring",suffixPrefixPiece);
+	}
+	
+	//Build string by handling prefixes first, then add in the main pieces of the name, then tacking on suffixes
+	NSString* standardName = @"";
+	if ([prefixes count]>0){
+		standardName = [NSString stringWithFormat:@"%@ %@",[prefixes componentsJoinedByString:@" "],[namePieces objectAtIndex:1]];
+	} else {
+		standardName = [namePieces objectAtIndex:1];
+	}
+	
+	standardName = [standardName stringByAppendingFormat:@" %@",[namePieces objectAtIndex:0]];
+	
+	if ([suffixesWithoutCommas count]>0)
+		standardName = [standardName stringByAppendingFormat:@" %@",[suffixesWithoutCommas componentsJoinedByString:@" "]];
+	
+	if ([suffixes count]>0)
+		standardName = [standardName stringByAppendingFormat:@", %@",[suffixes componentsJoinedByString:@" "]];
+	
+	if (needContributorTag){
+		standardName = [standardName stringByAppendingString:@" (CON)"];
+	}
+	
+	return standardName;
+}
+
++(NSString*)canonicalNameFromStandardName:(NSString*)name {
+	//get a mutable copy so we can delete unneeded parts of the string
+	NSMutableString* aName = [name mutableCopy];
+	
+	//This is to check and handle the case where there are Contributors to the book. This is resolved at the end of this function with adding back the contributor tag
+	BOOL needContributorTag = NO;
+	NSRange contributorRange = [aName rangeOfString:@" (CON)"];
+	if (contributorRange.location != NSNotFound){
+		[aName deleteCharactersInRange:contributorRange];
+		needContributorTag = YES;
+	}
+	
+	//split name string into pieces by spaces.  Array is mutable so it can be changed later in function
+	NSMutableArray* namePieces = [[aName componentsSeparatedByString:@" "]mutableCopy];
+	
+	//Check Plato case: if single name, return single name unchanged
+	if ([namePieces count] == 1)
+		return aName;
+	
+	//lastNamePieces holds all the pieces in the last name (including suffixes)
+	NSMutableArray* suffixesPrefixes = [NSMutableArray array];
+	NSString* piece;
+	BOOL finished = NO;
+	
+	//find all the prefixes and add in to array
+	do {
+		piece = [namePieces objectAtIndex:0];
+		if ([[BlioBook prefixes]containsObject:piece]){
+			[suffixesPrefixes addObject:piece];
+			[namePieces removeObjectAtIndex:0];
+		} else finished = YES;
+	} while (!finished);
+	
+	finished = NO;
+	
+	//remove the last object in the namePieces array and add to the suffixesPrefixes array while we have a suffix
+	do {
+		//get last piece and then remove it from the namePieces array
+		piece = [namePieces lastObject];
+		[namePieces removeLastObject];
+		if ([[BlioBook suffixes]containsObject:piece] || [[BlioBook suffixesWithoutCommas]containsObject:piece]){
+			[suffixesPrefixes addObject:piece];
+		} else finished = YES;
+		//NOTE: if this comparison becomes more complicated than simply looking at a list of suffixes, you could use a regular expression to check each piece
+	} while (!finished);
+	
+	if ([piece hasSuffix:@","])
+		piece = [piece stringByReplacingOccurrencesOfString:@"," withString:@""];
+	
+	//the last name is now stored in the piece value as the first piece before the suffixes
+	NSString* finalString;
+	if ([suffixesPrefixes count] == 0)
+		finalString = [NSString stringWithFormat:@"%@, %@",piece,[namePieces componentsJoinedByString:@" "]];
+	else finalString = [NSString stringWithFormat:@"%@, %@, %@",piece,[namePieces componentsJoinedByString:@" "],[suffixesPrefixes componentsJoinedByString:@" "]];
+	if (needContributorTag){
+		finalString = [finalString stringByAppendingString:@" (CON)"];
+	}
+	
+	//flatten arrays into strings separated by original spaces and add in comma
+	return finalString;
+}
 
 @end
 
