@@ -99,9 +99,11 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     UITouch *_pinchTouches[2];
     CGPoint _pinchStartPoints[2];
     
-    
+    CGFloat _maxZoom;
     CGFloat _zoomFactor;
     CGPoint _scrollTranslation;
+    
+    NSUInteger _zoomedTextureWidth;
     
     CGFloat _pinchStartZoomFactor;
     CGPoint _scrollStartTranslation;
@@ -195,9 +197,13 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
+
+@property (nonatomic, assign) CGFloat maxZoomFactor; // default = 4.0f
 @property (nonatomic, assign, readonly) CGFloat zoomFactor;
 @property (nonatomic, assign, readonly) CGPoint translation;
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
+
+@property (nonatomic, assign) NSUInteger zoomedTextureWidth; // default = 1024
 
 
 #pragma mark View based page contents

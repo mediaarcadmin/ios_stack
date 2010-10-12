@@ -59,11 +59,13 @@
 @synthesize oddPagesOnRight = _oddPagesOnRight;
 @synthesize zoomHandlingKind = _zoomHandlingKind;
 
+@synthesize maxZoomFactor = _maxZoom;
 @synthesize zoomMatrix = _zoomMatrix;
 @synthesize rightPageFrame = _rightPageFrame;
 @synthesize leftPageFrame = _leftPageFrame;
 @synthesize unzoomedRightPageFrame = _unzoomedRightPageFrame;
 @synthesize unzoomedLeftPageFrame = _unzoomedLeftPageFrame;
+@synthesize zoomedTextureWidth = _zoomedTextureWidth;
 
 @synthesize shininess = _shininess;
 
@@ -150,8 +152,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 }
 
 - (void)_pageTurningViewInternalInit
-{               
+{       
+    _zoomedTextureWidth = 1024;
+    _maxZoom = 4.0f;
+    _zoomFactor = 1.0f;
     _zoomMatrix = CATransform3DIdentity;
+    
     
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
@@ -2624,14 +2630,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(zoomFactor < 1.0f) {
             zoomFactor = 1.0f;
         }
-        
-        // Temporary - constrain to 2048 sided textures.
-        /*CGFloat maxSide = MAX(pixelSize.width, pixelSize.height);
-        if(maxSide * zoomFactor > 2048.0f) {
-            zoomFactor = 2048.0f / maxSide;  
-            pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
-                                   _rightPageRect.size.height * pixelViewportDimension);
-        }*/
+        if(zoomFactor > _maxZoom) {
+            zoomFactor = _maxZoom;
+        }
         
         // Massage the zoom matrix to the nearest matrix that will scale the zoom 
         // rect edges to pixel boundaries, so that our page textures will look
@@ -2761,9 +2762,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                                                  (bounds.size.height * contentScaleFactor) * 0.5f);
                     
                     CGRect centeredTextureRect;
-                    centeredTextureRect.origin = CGPointMake(center.x - 1024.0f, center.y - 1024.0f);
-                    centeredTextureRect.size = CGSizeMake(center.x + 1024.0f - centeredTextureRect.origin.x, 
-                                                          center.y + 1024.0f - centeredTextureRect.origin.y);
+                    centeredTextureRect.origin = CGPointMake(center.x - (_zoomedTextureWidth * 0.5f), center.y - (_zoomedTextureWidth * 0.5f));
+                    centeredTextureRect.size = CGSizeMake(center.x + (_zoomedTextureWidth * 0.5f) - centeredTextureRect.origin.x, 
+                                                          center.y + (_zoomedTextureWidth * 0.5f) - centeredTextureRect.origin.y);
                     
                     CGRect intersect = CGRectIntersection(scaledPageFrame, centeredTextureRect);
                     
