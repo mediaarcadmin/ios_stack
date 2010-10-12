@@ -297,6 +297,12 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return YES;
 }
 
+- (BlioBookmarkPoint *)currentBookmarkPoint {
+    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    ret.layoutPage = self.pageNumber;
+    return [ret autorelease];
+}
+
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
     [self pushCurrentBookmarkPoint];
     [self goToPageNumber:[self.textFlow pageNumberForSectionUuid:uuid] animated:animated];
@@ -315,12 +321,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         [pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
         self.pageNumber = targetPage;
     }
-}
-
-- (BlioBookmarkPoint *)currentBookmarkPoint {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
-    ret.layoutPage = self.pageNumber;
-    return [ret autorelease];
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
