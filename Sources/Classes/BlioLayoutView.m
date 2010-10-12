@@ -988,6 +988,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)handleTapAtPoint:(CGPoint)point {
+    
+    if ([self toolbarShowShouldBeSuppressed]) {
+        return;
+    }
+    
     CGFloat screenWidth = CGRectGetWidth(self.bounds);
     CGFloat leftHandHotZone = screenWidth * BLIOLAYOUT_LHSHOTZONE;
     CGFloat rightHandHotZone = screenWidth * BLIOLAYOUT_RHSHOTZONE;
@@ -1008,7 +1013,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Hyperlinks
 
 - (BOOL)toolbarShowShouldBeSuppressed {
-    if (hyperlinkTapped || pageViewIsTurning || self.selector.tracking) {
+    if (hyperlinkTapped || pageViewIsTurning || self.selector.tracking || self.selector.selectedRange) {
         hyperlinkTapped = NO;
         return YES;
     } else {
