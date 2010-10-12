@@ -216,6 +216,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 - (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated;
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex;
+- (void)refreshHighlightsForPageAtIndex:(NSUInteger)index;
 
 #pragma mark Light-related properties.
 
@@ -277,6 +278,10 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                        fromRect:(CGRect)rect
                         minSize:(CGSize)rect
                      getContext:(id *)context;
+
+// Return THPairs of [ NSValue: Highlight Rect, UIColor: Highlight Color]
+- (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index;
+
 
 @end
 

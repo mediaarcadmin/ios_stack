@@ -348,7 +348,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     CGFloat pageZoomScaleWidth  = size.width / CGRectGetWidth(rect);
     CGFloat pageZoomScaleHeight = size.height / CGRectGetHeight(rect);
     
-    XPS_ctm render_ctm = { pageZoomScaleWidth, 0, 0, pageZoomScaleHeight, rect.origin.x, rect.origin.y };
+    XPS_ctm render_ctm = { pageZoomScaleWidth, 0, 0, pageZoomScaleHeight, -rect.origin.x * pageZoomScaleWidth, -rect.origin.y * pageZoomScaleHeight};
     format.xResolution = 96;			
     format.yResolution = 96;	
     format.colorDepth = 8;
