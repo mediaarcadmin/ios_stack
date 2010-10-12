@@ -281,6 +281,22 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return [self.dataSource thumbnailForPage:index + 1];
 }
 
+- (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index
+{
+    NSMutableArray *ret = nil;
+    int max = roundf((float)rand() / (float)RAND_MAX * 4);
+    if(max) {
+        ret = [NSMutableArray array];
+        int x = 20, y = 20; 
+        for(int i = 0; i < max; ++i) {
+            CGRect rect = CGRectMake(x, y, 100, 20);
+            [ret addPairWithFirst:[NSValue valueWithCGRect:rect]
+                           second:[[UIColor yellowColor] colorWithAlphaComponent:0.5f]];
+            x += 20, y += 20;
+        }
+    }
+    return ret;
+}
 
 #pragma mark -
 #pragma mark Visual Properties

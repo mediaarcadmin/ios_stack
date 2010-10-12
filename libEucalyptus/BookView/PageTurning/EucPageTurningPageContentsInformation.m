@@ -80,6 +80,22 @@
     }
 }
 
+- (GLuint)highlightTexture
+{
+    return _highlightTexture;
+}
+
+- (void)setHighlightTexture:(GLuint)texture
+{
+    if(texture != _highlightTexture) {
+        if(_highlightTexture) {
+            [_pageTurningView _recycleTexture:_highlightTexture];
+        }
+        _highlightTexture = texture;
+    }
+}
+
+
 - (void)setCurrentTextureGenerationOperation:(EucPageTurningTextureGenerationOperation *)textureGenerationOperation
 {
     if(textureGenerationOperation != _currentTextureGenerationOperation) {
