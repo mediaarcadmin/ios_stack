@@ -8,6 +8,7 @@ varying highp vec2 vZoomedContentsCoordinate;
 uniform lowp sampler2D sPaperTexture;
 uniform lowp sampler2D sContentsTexture;
 uniform lowp sampler2D sZoomedContentsTexture;
+uniform lowp sampler2D sHighlightTexture;
 uniform lowp float uContentsBleed;
 
 uniform bool uInvertContentsLuminance;
@@ -31,9 +32,11 @@ void main()
     lowp vec4 contentsColor = mix(texture2D(sContentsTexture, vContentsCoordinate), 
                                   zoomedContentsColor,
                                   zoomedContentsColor.a);
+                                      
+    lowp vec4 highlightColor = texture2D(sHighlightTexture, vContentsCoordinate);
+
+    contentsColor = mix(cWhite, mix(contentsColor, highlightColor, highlightColor.a), uContentsBleed);
     
-    contentsColor = mix(cWhite, contentsColor, uContentsBleed);
-                      
     if(uInvertContentsLuminance) {       
         gl_FragColor = vColor * invertLuminance(paperColor * contentsColor);
     } else {

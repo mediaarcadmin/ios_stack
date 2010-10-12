@@ -19,6 +19,7 @@
 #import "THBaseEAGLView.h"
 #import "THGeometryUtils.h"
 #import "THEmbeddedResourceManager.h"
+#import "THRoundRects.h"
 #import "THPair.h"
 #import "EucPageTurningPageContentsInformation.h"
 
@@ -1042,6 +1043,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         _pageContentsInformation[pageOffset].currentTextureGenerationOperation = textureGenerationOperation;
         
         [_textureGenerationOperationQueue addOperation:textureGenerationOperation];
+        [self refreshHighlightsForPageAtIndex:newPageIndex];
     }
 }
 
@@ -1387,11 +1389,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glUniform1i(glGetUniformLocation(_program, "sPaperTexture"), 0);
     glUniform1i(glGetUniformLocation(_program, "sContentsTexture"), 1);
     glUniform1i(glGetUniformLocation(_program, "sZoomedContentsTexture"), 2);
+    glUniform1i(glGetUniformLocation(_program, "sHighlightTexture"), 3);
 
     // 'disable' the zoomed texture
     CGRect invisibleZoomedTextureRect = { { -1.0f, -1.0f } , { -1.0f, -1.0f } };
     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
     glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
+    glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
 
     // Enable the array attributes - they'll be set later.    
@@ -1427,11 +1432,19 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                          (GLfloat *)&zoomedTextureRect);
         }
-        
+        if(_pageContentsInformation[_rightFlatPageIndex].highlightTexture) {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].highlightTexture); 
+        }
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         
+        if(_pageContentsInformation[_rightFlatPageIndex].highlightTexture) {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
+        }                
         if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
             glActiveTexture(GL_TEXTURE2);
@@ -1465,6 +1478,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                                  (GLfloat *)&zoomedTextureRect);
                 }
+                if(_pageContentsInformation[leftFlatPageIndex].highlightTexture) {
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].highlightTexture);    
+                }                
                 
                 glCullFace(GL_FRONT);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
@@ -1472,6 +1489,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                 glCullFace(GL_BACK);
 
+                
+                if(_pageContentsInformation[leftFlatPageIndex].highlightTexture) {
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
+                }                                
                 if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
                     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
                     glActiveTexture(GL_TEXTURE2);
@@ -1541,7 +1563,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                          (GLfloat *)&zoomedTextureRect);
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-2].zoomedTexture);
-        }                                                    
+        }           
+        if(_pageContentsInformation[_rightFlatPageIndex-2].highlightTexture) {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-2].highlightTexture);
+        }
         
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
@@ -1553,7 +1579,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-1].texture);
             if(_zoomFactor > 1.0f) {
                 if(_pageContentsInformation[_rightFlatPageIndex-1].zoomedTexture) {
-                    CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex - 1].zoomedTextureRect;
+                    CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex-1].zoomedTextureRect;
                     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                                  (GLfloat *)&zoomedTextureRect);
                     glActiveTexture(GL_TEXTURE2);
@@ -1564,6 +1590,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     glActiveTexture(GL_TEXTURE2);
                     glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);                    
                 }
+            }
+            if(_pageContentsInformation[_rightFlatPageIndex-1].highlightTexture) {
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-1].highlightTexture); 
             }
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 1);
         } else {
@@ -1584,6 +1614,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                      (GLfloat *)&invisibleZoomedTextureRect);
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
+        
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -2968,8 +3001,50 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 #pragma mark -
 #pragma mark Highlights
 
-- (void)refreshHighlightsForPageAtIndex:(NSUInteger)index
+- (void)refreshHighlightsForPageAtIndex:(NSUInteger)pageIndex
 {
+    NSUInteger index = NSUIntegerMax;
+
+    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
+        if(_pageContentsInformation[i] && _pageContentsInformation[i].pageIndex == pageIndex) {
+            index = i;
+            break;
+        }
+    }   
+    if(index != NSUIntegerMax) {
+        BOOL gotHighlights = NO;
+        if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:highlightsForPageAtIndex:)]) {
+            NSArray *highlights = [_bitmapDataSource pageTurningView:self highlightsForPageAtIndex:pageIndex];
+            CGSize minSize = _unzoomedRightPageFrame.size;
+            if(highlights && highlights.count) {                
+                size_t bufferLength = minSize.width * minSize.height * 4;
+                void *textureData = calloc(1, bufferLength);
+                
+                CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+                CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
+                                                                    colorSpace, kCGImageAlphaPremultipliedLast);
+                CGColorSpaceRelease(colorSpace);
+                CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
+                for(THPair *highlight in highlights) {
+                    CGRect highlightRect = [highlight.first CGRectValue];
+                    UIColor *highlightColor = highlight.second;
+                    CGContextSetFillColorWithColor(textureContext, highlightColor.CGColor);
+                    CGContextBeginPath(textureContext);
+                    THAddRoundedRectToPath(textureContext, highlightRect, 3.0f, 3.0f);
+                    CGContextFillPath(textureContext);
+                }
+                
+                _pageContentsInformation[index].highlightTexture = [self _createTextureFromRGBABitmapContext:textureContext];
+                gotHighlights = YES;
+                
+                CGContextRelease(textureContext);
+                free(textureData);
+            }
+        }
+        if(!gotHighlights) {
+            _pageContentsInformation[index].highlightTexture = 0;
+        }
+    }
 }
 
 @end

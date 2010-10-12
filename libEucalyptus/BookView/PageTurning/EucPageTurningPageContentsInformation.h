@@ -20,6 +20,8 @@
     GLuint _zoomedTexture;
     CGRect _zoomedTextureRect;
     
+    GLuint _highlightTexture;
+    
     EucPageTurningTextureGenerationOperation *_currentTextureGenerationOperation;
     EucPageTurningTextureGenerationOperation *_currentZoomedTextureGenerationOperation;
     CGRect _zoomedTextureGenerationRect;
@@ -31,6 +33,8 @@
 @property (nonatomic, assign) GLuint texture;
 @property (nonatomic, assign) GLuint zoomedTexture;
 @property (nonatomic, assign) CGRect zoomedTextureRect;
+
+@property (nonatomic, assign) GLuint highlightTexture;
 
 @property (nonatomic, retain) EucPageTurningTextureGenerationOperation *currentTextureGenerationOperation;
 @property (nonatomic, retain) EucPageTurningTextureGenerationOperation *currentZoomedTextureGenerationOperation;
