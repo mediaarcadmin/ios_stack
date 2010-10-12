@@ -249,7 +249,7 @@
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkPoint *ret = nil;
     
     EucBookPageIndexPoint *eucIndexPoint = [indexPoint copy];
     
@@ -263,6 +263,7 @@
     }
     
     if(eucIndexPoint.source == 0 && self.fakeCover) {
+        ret = [[BlioBookmarkPoint alloc] init];
         // This is the cover section.
         ret.layoutPage = 1;
         ret.blockOffset = 0;
@@ -273,6 +274,8 @@
     }
     
     if(!ret) {
+        ret = [[BlioBookmarkPoint alloc] init];
+        
         NSUInteger indexes[2] = { eucIndexPoint.source , [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
         NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
         BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
