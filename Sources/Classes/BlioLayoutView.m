@@ -274,6 +274,12 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                                           getContext:context];
 }
 
+- (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 
+   fastUIImageForPageAtIndex:(NSUInteger)index {
+    return [self.dataSource thumbnailForPage:index + 1];
+}
+
+
 #pragma mark -
 #pragma mark Visual Properties
 
