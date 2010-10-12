@@ -9,7 +9,8 @@
 #import "BlioAudioSettingsController.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookViewController.h"
-#import "BlioDownloadVoicesViewController.h"
+//#import "BlioDownloadVoicesViewController.h"
+#import "BlioPurchaseVoicesViewController.h"
 #import "BlioAcapelaAudioManager.h"
 #import "AcapelaSpeech.h"
 #import "BlioBookManager.h"
@@ -378,7 +379,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row == self.availableVoices.count) {
-		[self.navigationController pushViewController:[[[BlioDownloadVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
+//		[self.navigationController pushViewController:[[[BlioDownloadVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
+		[self.navigationController pushViewController:[[[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
 	}
 	else {
 		[tableView deselectRowAtIndexPath:indexPath animated:YES];

@@ -175,9 +175,12 @@
 				NSLog(@"Author: %@", author);
 				NSLog(@"Cover: %@", coverURL);
 				NSLog(@"URL: %@",[[self URLForBookWithID:[productItem ISBN]] absoluteString]);
-				NSArray * authors = [NSArray array];
+				NSMutableArray * authors = [NSMutableArray array];
 				if (author) {
-					authors = [author componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@";"]];
+					NSArray * preTrimmedAuthors = [author componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@";"]];
+					for (NSString * preTrimmedAuthor in preTrimmedAuthors) {
+						[authors addObject:[preTrimmedAuthor stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+					}
 				}
 				// TODO: need to discern patterns in how paid books store multiple authors in one string, then parse accordingly into an array.
 					[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
@@ -316,8 +319,12 @@
 	for(id bodyPart in responseBodyParts) {
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error for VaultContents: %s",err);
-			// TODO: Message
+			NSLog(@"SOAP error for VaultContents: %@",err);
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"Blio was not able to obtain the book; the server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
+										delegate:nil 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:@"OK", nil];
 			return nil;
 		}
 		else if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
@@ -326,9 +333,12 @@
 			return [NSURL URLWithString:url];
 		}
 		else {
-			NSLog(@"DownloadRequest error: %s",[bodyPart RequestDownloadWithTokenResult].Message);
-			// cancel download
-			// TODO: Message
+			NSLog(@"DownloadRequest error: %@",[bodyPart RequestDownloadWithTokenResult].Message);
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"Blio was not able to obtain the book; the server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
+										delegate:nil 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:@"OK", nil];
 			return nil;
 		}
 	}

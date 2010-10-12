@@ -161,8 +161,11 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 - (BOOL)manifestPreAvailabilityCompleteForKey:(NSString *)key;
 - (NSString *)authorsWithStandardFormat;
 
-+(NSString*)standardNameFromCanonicalName:(NSString*)aName;
 +(NSString*)standardNamesFromCanonicalNameArray:(NSArray*)aNameArray;
++(NSArray*) suffixes;
++(NSArray*) suffixesWithoutCommas;
++(NSArray*) prefixes;
++(NSString*)standardNameFromCanonicalName:(NSString*)aName;
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName;
 
 @end
