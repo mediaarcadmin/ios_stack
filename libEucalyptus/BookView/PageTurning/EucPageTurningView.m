@@ -978,6 +978,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGImageRelease(image);
         CGColorSpaceRelease(colorSpace);
 */
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextSetStrokeColorSpace(thisPageBitmap, colorSpace);
+    CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
+    CGContextSetStrokeColor(thisPageBitmap, whiteAlpha);
+    CGContextSetBlendMode(thisPageBitmap, kCGBlendModeCopy);
+    CGContextStrokeRectWithWidth(thisPageBitmap, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
         
     return [THPair pairWithFirst:[NSData dataWithBytesNoCopy:CGBitmapContextGetData(thisPageBitmap) 
                                                           length:4 * size.width * size.height
@@ -1026,7 +1032,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)_setupBitmapPage:(NSUInteger)newPageIndex 
    forInternalPageOffset:(NSUInteger)pageOffset
 {
-    CGSize minSize = _rightPageFrame.size;
+    CGSize minSize = _unzoomedRightPageFrame.size;
     if([self respondsToSelector:@selector(contentScaleFactor)]) {
         CGFloat scaleFactor = self.contentScaleFactor;
         minSize.width *= scaleFactor;
@@ -1125,6 +1131,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             
             [self setNeedsDraw];
         }
+        [self _retextureForPanAndZoom];
     }    
 }
 
@@ -1285,6 +1292,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         _pageContentsInformation[0] = tempView4;
         _pageContentsInformation[1] = tempView5;
     }
+    
+    [self _retextureForPanAndZoom];
 }
 
 - (void)drawView 
@@ -1395,9 +1404,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture);    
-        if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture) {
+        if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture); 
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].zoomedTexture); 
             CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex].zoomedTextureRect;
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                          (GLfloat *)&zoomedTextureRect);
@@ -1407,7 +1416,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         
-        if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture) {
+        if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
@@ -1433,7 +1442,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].texture);
-                if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture) {
+                if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
                     glActiveTexture(GL_TEXTURE2);
                     glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].texture);    
                     CGRect zoomedTextureRect = _pageContentsInformation[leftFlatPageIndex].zoomedTextureRect;
@@ -1447,7 +1456,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                 glCullFace(GL_BACK);
 
-                if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture) {
+                if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
                     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
                     glActiveTexture(GL_TEXTURE2);
                     glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
@@ -1510,7 +1519,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-2].texture);
-        if(_pageContentsInformation[_rightFlatPageIndex-2].zoomedTexture) {
+        if(_pageContentsInformation[_rightFlatPageIndex-2].zoomedTexture && _zoomFactor > 1.0f) {
             CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex - 2].zoomedTextureRect;
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                          (GLfloat *)&zoomedTextureRect);
@@ -1526,7 +1535,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_twoSidedPages) {
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-1].texture);
-            if(_pageContentsInformation[_rightFlatPageIndex-1].zoomedTexture) {
+            if(_pageContentsInformation[_rightFlatPageIndex-1].zoomedTexture && _zoomFactor > 1.0f) {
                 CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex - 1].zoomedTextureRect;
                 glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                              (GLfloat *)&zoomedTextureRect);
@@ -2757,6 +2766,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)_retextureForPanAndZoom
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_retextureForPanAndZoom) object:nil];
     if(_zoomFactor != 1.0f) {
         CGFloat contentScaleFactor;
         if([self respondsToSelector:@selector(contentScaleFactor)]) {
