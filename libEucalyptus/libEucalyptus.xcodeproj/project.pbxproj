@@ -1183,7 +1183,6 @@
 		7D6AAD681028E7BD006289E6 /* EucLocalBookReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLocalBookReference.h; sourceTree = "<group>"; };
 		7D6AAD6B1028E7EC006289E6 /* THNSFileManagerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSFileManagerAdditions.m; sourceTree = "<group>"; };
 		7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSFileManagerAdditions.h; sourceTree = "<group>"; };
-		7D6F60A81261D5BA000D4072 /* Readings-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Readings-Info.plist"; sourceTree = "<group>"; };
 		7D79D070117F75C90081F554 /* EucCSSLayoutRunExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutRunExtractor.h; sourceTree = "<group>"; };
 		7D79D071117F75C90081F554 /* EucCSSLayoutRunExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutRunExtractor.m; sourceTree = "<group>"; };
 		7D883F5D111C5862009669A8 /* EucMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucMenuItem.h; sourceTree = "<group>"; };
@@ -2561,7 +2560,6 @@
 				7D034F9610C2CD820085778B /* Other Sources */,
 				7D034F9810C2CD820085778B /* Resources */,
 				7D034F8B10C2CCBF0085778B /* TransitionTest-Info.plist */,
-				7D6F60A81261D5BA000D4072 /* Readings-Info.plist */,
 			);
 			path = TransitionTest;
 			sourceTree = "<group>";
