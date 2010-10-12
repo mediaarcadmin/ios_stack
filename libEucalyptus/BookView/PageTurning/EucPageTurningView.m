@@ -154,7 +154,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)_pageTurningViewInternalInit
 {       
     _zoomedTextureWidth = 1024;
-    _maxZoom = 4.0f;
+    _maxZoom = 14.0f;
     _zoomFactor = 1.0f;
     _zoomMatrix = CATransform3DIdentity;
     
@@ -250,14 +250,24 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    _alphaWhiteTexture = [self _unusedTexture];
-    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+    _alphaWhiteZoomedContent = [self _unusedTexture];
+    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
     uint32_t whiteSquare[4] = { 0x00ffffff, 0x00ffffff, 0x00ffffff, 0x00ffffff };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &whiteSquare);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
+    _grayThumbnail = [self _unusedTexture];
+    glBindTexture(GL_TEXTURE_2D, _grayThumbnail);
+    uint32_t graySquare[4] = { 0xff888888, 0xffffffff, 0xffffffff, 0xff888888 };
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &graySquare);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
         
     NSData *vertexShaderSource = [THEmbeddedResourceManager embeddedResourceWithName:@"euc_page_turning.vsh"];
     GLuint vertexShader = THGLLoadShader(GL_VERTEX_SHADER, vertexShaderSource.bytes, vertexShaderSource.length);
@@ -338,11 +348,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 }
 
 - (void)dealloc
-{
+{    
     [_textureGenerationOperationQueue cancelAllOperations];
     [_textureGenerationOperationQueue waitUntilAllOperationsAreFinished];
     [_textureGenerationOperationQueue release];
-    
+        
     [EAGLContext setCurrentContext:self.eaglContext];
     
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
@@ -362,8 +372,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_bookEdgeTexture) {
         glDeleteTextures(1, &_bookEdgeTexture);
     }
-    if(_alphaWhiteTexture) {
-        glDeleteTextures(1, &_alphaWhiteTexture);
+    if(_grayThumbnail) {
+        glDeleteTextures(1, &_grayThumbnail);
+    }
+    if(_alphaWhiteZoomedContent) {
+        glDeleteTextures(1, &_alphaWhiteZoomedContent);
     }
     if(_blankPageTexture) {
         glDeleteTextures(1, &_blankPageTexture);
@@ -625,8 +638,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     size_t contextWidth = CGBitmapContextGetWidth(context);
     size_t contextHeight = CGBitmapContextGetHeight(context);
     
-    [EAGLContext setCurrentContext:_backgroundThreadEAGLContext];
-    
     CGContextRef textureContext = NULL;
     void *textureData;
     BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(context) != contextWidth * 4;
@@ -645,6 +656,15 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGColorSpaceRelease(colorSpace);
     }
     
+    EAGLContext *beforeContext = [EAGLContext currentContext];
+    BOOL isMainThread = [NSThread isMainThread];
+    if(isMainThread) {
+        [EAGLContext setCurrentContext:self.eaglContext];
+    } else{
+        [_backgroundThreadEAGLContextLock lock];
+        [EAGLContext setCurrentContext:_backgroundThreadEAGLContext];
+    }
+    
     GLuint textureRef = [self _unusedTexture];
 
     glBindTexture(GL_TEXTURE_2D, textureRef); 
@@ -659,6 +679,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
     
+    if(!isMainThread) {
+        [_backgroundThreadEAGLContextLock unlock];
+    }    
+    [EAGLContext setCurrentContext:beforeContext];
+
     if(textureContext) {
         CGContextRelease(textureContext);
         free(textureData);
@@ -920,9 +945,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return _pageContentsInformation[3].pageIndex ?: NSUIntegerMax;
 }
 
-- (THPair *)_alphaBledBitmapDataAndSizeForPageAtIndex:(NSUInteger)index
-                                           inPageRect:(CGRect)pageRect
-                                               ofSize:(CGSize)size
+- (THPair *)_bitmapDataAndSizeForPageAtIndex:(NSUInteger)index
+                                  inPageRect:(CGRect)pageRect
+                                      ofSize:(CGSize)size
+                                   alphaBled:(BOOL)alphaBled
 {
     CGContextRef thisPageBitmap;
     
@@ -949,13 +975,15 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
     }
     
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextSetStrokeColorSpace(thisPageBitmap, colorSpace);
-    CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
-    CGContextSetStrokeColor(thisPageBitmap, whiteAlpha);
-    CGContextSetBlendMode(thisPageBitmap, kCGBlendModeCopy);
-    CGContextStrokeRectWithWidth(thisPageBitmap, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
-        
+    if(alphaBled) {
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        CGContextSetStrokeColorSpace(thisPageBitmap, colorSpace);
+        CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
+        CGContextSetStrokeColor(thisPageBitmap, whiteAlpha);
+        CGContextSetBlendMode(thisPageBitmap, kCGBlendModeCopy);
+        CGContextStrokeRectWithWidth(thisPageBitmap, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
+    }
+    
     return [THPair pairWithFirst:[NSData dataWithBytesNoCopy:CGBitmapContextGetData(thisPageBitmap) 
                                                           length:4 * size.width * size.height
                                                     freeWhenDone:NO]
@@ -966,35 +994,50 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
    forInternalPageOffset:(NSUInteger)pageOffset
                  minSize:(CGSize)minSize
 {
-    THLog(@"requesting Texture of size (%f, %f)", (long)minSize.width, (long)minSize.height);
-    
+    THLog(@"requesting Texture of size (%f, %f)", minSize.width,minSize.height);
+    [_pageContentsInformation[pageOffset] release];
+    _pageContentsInformation[pageOffset] = nil;
+
     CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
                                    contentRectForPageAtIndex:newPageIndex];
     if(!CGRectIsEmpty(thisPageRect)) {
-        CGContextRef thisPageBitmap;
-        if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
-            id bitmapcontext = nil;
-            thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                                RGBABitmapContextForPageAtIndex:newPageIndex
-                                                       fromRect:thisPageRect
-                                                        minSize:minSize
-                                                     getContext:&bitmapcontext];
-            [[bitmapcontext retain] autorelease];
-        } else {
-            thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                                RGBABitmapContextForPageAtIndex:newPageIndex
-                                                       fromRect:thisPageRect
-                                                        minSize:minSize];
+        UIImage *fastImage = nil;
+        if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:fastUIImageForPageAtIndex:)]) {
+            fastImage = [_bitmapDataSource pageTurningView:self fastUIImageForPageAtIndex:newPageIndex];
         }
-        
-        [_pageContentsInformation[pageOffset] release];
         _pageContentsInformation[pageOffset] = [[EucPageTurningPageContentsInformation alloc] initWithPageTurningView:self];
         _pageContentsInformation[pageOffset].pageIndex = newPageIndex;
-        _pageContentsInformation[pageOffset].texture = [self _createTextureFromRGBABitmapContext:thisPageBitmap];
-    } else {
-        [_pageContentsInformation[pageOffset] release];
-        _pageContentsInformation[pageOffset] = nil;
-    }    
+        
+        if(fastImage) {
+            _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage];
+        } else {
+            _pageContentsInformation[pageOffset].texture = _grayThumbnail;
+        }
+        
+        EucPageTurningTextureGenerationOperation *textureGenerationOperation = [[EucPageTurningTextureGenerationOperation alloc] init];
+        textureGenerationOperation.delegate = self;
+        textureGenerationOperation.eaglContext = _backgroundThreadEAGLContext;
+        textureGenerationOperation.contextLock = _backgroundThreadEAGLContextLock;
+        textureGenerationOperation.pageIndex = newPageIndex;
+        textureGenerationOperation.textureRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+        textureGenerationOperation.isZoomed = NO;
+
+        NSInvocation *textureUploadInvocation = [NSInvocation invocationWithMethodSignature:
+                                                 [self methodSignatureForSelector:@selector(_bitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:alphaBled:)]];
+        textureUploadInvocation.selector = @selector(_bitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:alphaBled:);
+        textureUploadInvocation.target = self;
+        [textureUploadInvocation setArgument:&newPageIndex atIndex:2];
+        [textureUploadInvocation setArgument:&thisPageRect atIndex:3];
+        [textureUploadInvocation setArgument:&minSize atIndex:4];
+        BOOL no = NO;
+        [textureUploadInvocation setArgument:&no atIndex:5];
+        
+        textureGenerationOperation.generationInvocation = textureUploadInvocation;
+        
+        _pageContentsInformation[pageOffset].currentTextureGenerationOperation = textureGenerationOperation;
+        
+        [_textureGenerationOperationQueue addOperation:textureGenerationOperation];
+    }
 }
 
 - (void)_setupBitmapPage:(NSUInteger)newPageIndex 
@@ -1344,7 +1387,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGRect invisibleZoomedTextureRect = { { -1.0f, -1.0f } , { -1.0f, -1.0f } };
     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
 
     // Enable the array attributes - they'll be set later.    
     
@@ -1387,7 +1430,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+            glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
         }        
     }
     
@@ -1427,7 +1470,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
                     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
                 }                                        
                 
                 if(_twoSidedPages) {
@@ -1514,7 +1557,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                                  (GLfloat *)&invisibleZoomedTextureRect);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);                    
+                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);                    
                 }
             }
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 1);
@@ -1535,7 +1578,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                      (GLfloat *)&invisibleZoomedTextureRect);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+        glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -2789,13 +2832,15 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                                                     scaledIntersection.size.height * thisPageRect.size.height);
                     
                     NSInvocation *textureUploadInvocation = [NSInvocation invocationWithMethodSignature:
-                                                               [self methodSignatureForSelector:@selector(_alphaBledBitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:)]];
-                    textureUploadInvocation.selector = @selector(_alphaBledBitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:);
+                                                             [self methodSignatureForSelector:@selector(_bitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:alphaBled:)]];
+                    textureUploadInvocation.selector = @selector(_bitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:alphaBled:);
                     textureUploadInvocation.target = self;
                     [textureUploadInvocation setArgument:&pageIndex atIndex:2];
                     [textureUploadInvocation setArgument:&textureFrom atIndex:3];
                     [textureUploadInvocation setArgument:&(intersect.size) atIndex:4];
-                    
+                    BOOL alphaBled = !CGRectEqualToRect(intersect, scaledPageFrame);
+                    [textureUploadInvocation setArgument:&alphaBled atIndex:5];
+
                     textureGenerationOperation.generationInvocation = textureUploadInvocation;
                     
                     _pageContentsInformation[i].currentZoomedTextureGenerationOperation = textureGenerationOperation;
@@ -2856,11 +2901,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)_recycleTexture:(GLuint)texture
 {
-    [_textureLock lock];
-    
-    [_recycledTextures addObject:[NSNumber numberWithInt:texture]];
-    
-    [_textureLock unlock];
+    if(texture != _alphaWhiteZoomedContent && texture != _grayThumbnail) {
+        [_textureLock lock];
+        
+        [_recycledTextures addObject:[NSNumber numberWithInt:texture]];
+        
+        [_textureLock unlock];
+    }
 }
      
 - (GLuint)textureGenerationOperationGetTextureId:(EucPageTurningTextureGenerationOperation *)operation

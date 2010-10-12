@@ -83,7 +83,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     GLuint _bookEdgeTexture;
     THVec2 _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
-    GLuint _alphaWhiteTexture;
+    GLuint _grayThumbnail;
+    GLuint _alphaWhiteZoomedContent;
     
     UITouch *_touch;
     NSTimeInterval _touchBeganTime;
@@ -198,7 +199,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
 
-@property (nonatomic, assign) CGFloat maxZoomFactor; // default = 4.0f
+@property (nonatomic, assign) CGFloat maxZoomFactor; // default = 14.0f
 @property (nonatomic, assign, readonly) CGFloat zoomFactor;
 @property (nonatomic, assign, readonly) CGPoint translation;
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
@@ -284,6 +285,9 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                        fromRect:(CGRect)rect
                         minSize:(CGSize)rect
                      getContext:(id *)context;
+
+- (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 
+   fastUIImageForPageAtIndex:(NSUInteger)index;
 
 // Return THPairs of [ NSValue: Highlight Rect, UIColor: Highlight Color]
 - (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index;

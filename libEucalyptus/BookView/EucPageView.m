@@ -354,12 +354,13 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 // Don't like all this messing with the scale factor below...
 // Doesn't seem like it should be necessary.
+// Amd now looking at the location in the window - urgh!
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if(!_touch) {
         UITouch *touch = [touches anyObject];
-        CGPoint location = [touch locationInView:self];
+        CGPoint location = [touch locationInView:touch.window];
         
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
@@ -382,7 +383,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 {
     if([touches containsObject:_touch]) {
         UITouch *touch = _touch;
-        CGPoint location = [touch locationInView:self];
+        CGPoint location = [touch locationInView:touch.window];
         
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
@@ -401,7 +402,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 {
     if([touches containsObject:_touch]) {
         UITouch *touch = _touch;
-        CGPoint location = [touch locationInView:self];
+        CGPoint location = [touch locationInView:touch.window];
         
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
@@ -423,7 +424,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         UITouch *touch = _touch;
         _touch = nil;
         
-        CGPoint location = [touch locationInView:self];
+        CGPoint location = [touch locationInView:touch.window];
         
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
