@@ -1030,6 +1030,17 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.delayedTouchesTimer invalidate];
+    self.delayedTouchesTimer = nil;
+    
+    CGPoint point = [[touches anyObject] locationInView:self];
+    
+    if (!CGPointEqualToPoint(point, startTouchPoint)) {
+        [self.pageTurningView touchesCancelled:touches withEvent:event];
+    }
+}
+
 - (void)handleTapAtPoint:(CGPoint)point {
     
     CGFloat screenWidth = CGRectGetWidth(self.bounds);
