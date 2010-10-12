@@ -311,6 +311,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     self.multipleTouchEnabled = YES;
     //self.exclusiveTouch = YES;
     self.opaque = YES;
+    self.userInteractionEnabled = YES;
     //tempFile = fopen("/tmp/vertexdata", "w");    
 }
 
@@ -1873,11 +1874,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if(_touch && [touches containsObject:_touch]) {
-        if(!_dragUnderway) {
-            _dragUnderway = YES;
-            [_pageContentsInformation[3].view touchesCancelled:[NSSet setWithObjects:&_touch count:1] withEvent:event];
-        }            
-        [self _setTouchLocationFromTouch:_touch firstTouch:NO];
+        if(self.userInteractionEnabled) {
+            if(!_dragUnderway) {
+                _dragUnderway = YES;
+                [_pageContentsInformation[3].view touchesCancelled:[NSSet setWithObjects:&_touch count:1] withEvent:event];
+            }            
+            [self _setTouchLocationFromTouch:_touch firstTouch:NO];
+        }
     } else if(_pinchTouches[0] && _pinchTouches[1] &&
               ([touches containsObject:_pinchTouches[0]] || [touches containsObject:_pinchTouches[1]])) {
         if(!_pinchUnderway) {
@@ -2119,6 +2122,16 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [unusedTouches release];
     [self _touchesEndedOrCancelled:touches withEvent:event];
 }
+
+- (void)setUserInteractionEnabled:(BOOL)enabled
+{
+    if(!enabled && _touch) {
+        [self _touchesEndedOrCancelled:[NSSet setWithObject:_touch] withEvent:nil];
+    }
+    [super setUserInteractionEnabled:enabled];
+}
+
+
 
 - (CGFloat)_tapTurnMarginForView:(UIView *)view
 {
