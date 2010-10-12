@@ -16,7 +16,7 @@
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucPageTurningView.h>
 
-@interface BlioLayoutView : BlioSelectableBookView <THEventCaptureObserver, EucPageTurningViewDelegate, EucPageTurningViewBitmapDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
+@interface BlioLayoutView : BlioSelectableBookView <EucPageTurningViewDelegate, EucPageTurningViewBitmapDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
     NSManagedObjectID *bookID;
     EucPageTurningView *pageTurningView;
     UIImage *pageTexture;
@@ -40,7 +40,9 @@
     NSLock *layoutCacheLock;
     NSLock *hyperlinksCacheLock;
     CGPoint startTouchPoint;
+    NSTimer *delayedTouchesTimer;
     BOOL hyperlinkTapped;
+    BOOL pageViewIsTurning;
     
     BlioTextFlowBlock *lastBlock;
     NSUInteger blockRecursionDepth;
