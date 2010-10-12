@@ -35,9 +35,7 @@ void main()
                                       
     lowp vec4 highlightColor = texture2D(sHighlightTexture, vContentsCoordinate);
 
-
-
-    contentsColor = mix(cWhite, contentsColor * (cFOne - highlightColor.a) + highlightColor, uContentsBleed);
+    contentsColor = mix(cWhite, mix(contentsColor, highlightColor, highlightColor.a), uContentsBleed);
     
     if(uInvertContentsLuminance) {       
         gl_FragColor = vColor * invertLuminance(paperColor * contentsColor);

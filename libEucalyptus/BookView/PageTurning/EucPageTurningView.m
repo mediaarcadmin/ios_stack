@@ -25,7 +25,6 @@
 
 #define FOV_ANGLE ((GLfloat)10.0f)
 
-
 @interface EucPageTurningView ()
 
 @property (nonatomic, assign, readonly) CATransform3D zoomMatrix;
@@ -41,6 +40,7 @@
 - (CGFloat)_tapTurnMarginForView:(UIView *)view;
 - (void)_setNeedsAccessibilityElementsRebuild;
 - (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
+- (void)_prepareForTurnForwards:(BOOL)forwards;
 
 - (void)_retextureForPanAndZoom;
 - (void)_scheduleRetextureForPanAndZoom;
@@ -318,18 +318,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _textureLock = [[NSLock alloc] init];
     _recycledTextures = [[NSMutableArray alloc] init];
 
-    
-    _animatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"animatedBookTurnVertices" ofType:@"vertexData"]];
-    _animatedTurnFrameCount = _animatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THVec3) * 2);
-    
-    _reverseAnimatedTurnData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"reverseAnimatedBookTurnVertices" ofType:@"vertexData"]];
-    _reverseAnimatedTurnFrameCount = _reverseAnimatedTurnData.length / (X_VERTEX_COUNT * Y_VERTEX_COUNT * sizeof(THVec3) * 2);
-
     self.multipleTouchEnabled = YES;
     //self.exclusiveTouch = YES;
     self.opaque = YES;
     self.userInteractionEnabled = YES;
-    //tempFile = fopen("/tmp/vertexdata", "w");    
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -397,9 +389,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         glDeleteProgram(_program);
     }
     
-    [_animatedTurnData release];
-    [_reverseAnimatedTurnData release];
-
     [_accessibilityElements release];
     [_nextPageTapZone release];
     
@@ -901,15 +890,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             }
         }
         
+        [self _prepareForTurnForwards:forwards];
         _isTurningAutomatically = YES;
-        _automaticTurnIsForwards = forwards;
-        if(forwards) {
-            _rightFlatPageIndex = 5;
-            _automaticTurnFrame = 0;
-        } else {
-            _rightFlatPageIndex = 3;
-            _automaticTurnFrame = 0;
-        }
+
+        _viewportTouchPoint = CGPointMake(forwards ? _viewportLogicalSize.width : 0.0f, _viewportLogicalSize.height * 0.5f);
+        _touchVelocity = forwards ? -0.4f : 0.4f;
         
         CGFloat percentage = (CGFloat)pageCount / 512.0f;
         if(pageCount == 1) {
@@ -1089,15 +1074,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             [self _setupBitmapPage:rightPageIndex forInternalPageOffset:forwards ? 5 : 1];
             [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
             
+            [self _prepareForTurnForwards:forwards];
             _isTurningAutomatically = YES;
-            _automaticTurnIsForwards = forwards;
-            if(forwards) {
-                _rightFlatPageIndex = 5;
-                _automaticTurnFrame = 0;
-            } else {
-                _rightFlatPageIndex = 3;
-                _automaticTurnFrame = 0;
-            }
+
+            _viewportTouchPoint = CGPointMake(forwards ? _viewportLogicalSize.width : 0.0f, _viewportLogicalSize.height * 0.5f);
+            _touchVelocity = forwards ? -0.4f : 0.4f;
             
             NSUInteger pageCount;
             if(forwards) {
@@ -1131,6 +1112,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             }                
             
             _automaticTurnPercentage = percentage;
+            
+            [self waitForAllPageImagesToBeAvailable];
             
             self.animating = YES;
         } else {
@@ -1323,7 +1306,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     BOOL animating = self.isAnimating;
     
     BOOL shouldStopAnimating = !animating;
-    if(animating && !_isTurningAutomatically) {
+    if(animating) {
         //[self _accumulateForces]; // Not used - see comments around implementation.
         [self _verlet];
         shouldStopAnimating = [self _satisfyConstraints];
@@ -1524,38 +1507,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         glClear(GL_DEPTH_BUFFER_BIT);
                         
         const THVec3 *pageVertices, *pageVertexNormals;        
-        if(!_isTurningAutomatically) {
-            pageVertices = (THVec3 *)_pageVertices;
-            pageVertexNormals = (THVec3 *)_pageVertexNormals;
-            
-            //fwrite(pageVertices, sizeof(GLfloatTriplet), X_VERTEX_COUNT * Y_VERTEX_COUNT, tempFile);
-            //fwrite(pageVertexNormals, sizeof(GLfloatTriplet), X_VERTEX_COUNT * Y_VERTEX_COUNT, tempFile);
-            //fflush(tempFile);
-        } else {
-            if(!_automaticTurnIsForwards && _automaticTurnFrame == _reverseAnimatedTurnFrameCount) {
-                pageVertices = (const THVec3 *)_stablePageVertices;
-                pageVertexNormals = (const THVec3 *)_stablePageVertexNormals;
-            } else {
-                pageVertices = (const THVec3 *)[_automaticTurnIsForwards ? _animatedTurnData : _reverseAnimatedTurnData bytes] + (X_VERTEX_COUNT * Y_VERTEX_COUNT * 2) * _automaticTurnFrame;
-                pageVertexNormals = pageVertices + (X_VERTEX_COUNT * Y_VERTEX_COUNT);
-            }
-        }
+        pageVertices = (THVec3 *)_pageVertices;
+        pageVertexNormals = (THVec3 *)_pageVertexNormals;
         
         glVertexAttribPointer(glGetAttribLocation(_program, "aPosition"), 3, GL_FLOAT, GL_FALSE, 0, pageVertices);
-        if(!_isTurningAutomatically && pageVertexNormals != (const THVec3 *)_stablePageVertexNormals) {
-            glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, pageVertexNormals);
-        } else {
-            // The normals in the automatic turn files are acidentally facing
-            // backwards.  I should really re-record them.
-            // Instead, for the moment, we invert the here.     
-            THVec3 invertedPageVertexNormals[X_VERTEX_COUNT * Y_VERTEX_COUNT];
-            for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
-                invertedPageVertexNormals[i].x = -(pageVertexNormals)[i].x;
-                invertedPageVertexNormals[i].y = -(pageVertexNormals)[i].y;
-                invertedPageVertexNormals[i].z = -(pageVertexNormals)[i].z;
-            }
-            glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, invertedPageVertexNormals);
-        }
+        glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, pageVertexNormals);
         
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-2].texture);
@@ -1680,26 +1636,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, Y_VERTEX_COUNT * 2);
                 
                 glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
-            }
-            
-            if(++_automaticTurnFrame >= (_automaticTurnIsForwards ? _animatedTurnFrameCount : (_reverseAnimatedTurnFrameCount + 1))) {
-                shouldStopAnimating = YES;
-                
-                _isTurningAutomatically = NO;
-                
-                [self _cyclePageContentsInformationForTurnForwards:_automaticTurnIsForwards];
-                _rightFlatPageIndex = 3;
-                
-                _recacheFlags[1] = YES;
-                _recacheFlags[5] = YES; 
-                if(_twoSidedPages) {
-                    _recacheFlags[0] = YES;
-                    _recacheFlags[4] = YES; 
-                }
-                _viewsNeedRecache = YES;
-                
-                [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-            }     
+            }            
         }
     }        
     
@@ -1717,6 +1654,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     
     if(shouldStopAnimating) {
+        if(_isTurningAutomatically) {
+            _isTurningAutomatically = NO;
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        }
         self.animating = NO;
     }
 }
@@ -1734,6 +1675,53 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     _pageTouchPoint.y = ((GLfloat)_touchRow / (Y_VERTEX_COUNT - 1)) * touchablePageRect.size.height;
     _pageTouchPoint.z = -touchablePageRect.size.width * sqrtf(-(powf(((pageX)/touchablePageRect.size.width), 2) - 1));
     //_pageTouchPoint.z = -sqrtf(touchablePageRect.size.width * touchablePageRect.size.width - pageX * pageX);    
+}
+
+- (void)_prepareForTurnForwards:(BOOL)forwards
+{
+    if(forwards) {
+        memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+        memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+        if(_pageContentsInformation[4] ||
+           _pageContentsInformation[5]) {
+            _rightFlatPageIndex = 5;
+            _isTurning = 1;
+        } else {
+            if(!_vibrated) {
+                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                _vibrated = YES;
+            }                
+        }
+    } else {
+        if(_pageContentsInformation[1] ||
+           _pageContentsInformation[2]) {
+            if(_rightPageRect.origin.x == 0.0f) {
+                // Position the page floating just outside the field of view.
+                for(int column = 1; column < X_VERTEX_COUNT; ++column) {
+                    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
+                        GLfloat radius = _pageVertices[row][column].x;                            
+                        _pageVertices[row][column].z = -radius * sinf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
+                        _pageVertices[row][column].x = radius * cosf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
+                    }
+                }   
+            } else {
+                // Position the page flat on the left.
+                for(int column = 1; column < X_VERTEX_COUNT; ++column) {
+                    for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
+                        _pageVertices[row][column].x = -_pageVertices[row][column].x;
+                    }
+                }                               
+            }
+            memcpy(_oldPageVertices, _pageVertices, sizeof(_oldPageVertices));
+            _rightFlatPageIndex = 3;
+            _isTurning = -1;
+        } else {
+            if(!_vibrated) {
+                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                _vibrated = YES;
+            }
+        }
+    }
 }
 
 - (void)_setTouchLocationFromTouch:(UITouch *)touch firstTouch:(BOOL)first;
@@ -1810,18 +1798,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         pageTouchPoint = CGPointMake(_rightPageRect.size.width + translationAfterScroll.x,
                                      translationAfterScroll.y);
         if(_isTurning != 1) {
-            memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-            memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-            if(_pageContentsInformation[4] ||
-               _pageContentsInformation[5]) {
-                _rightFlatPageIndex = 5;
-                _isTurning = 1;
-            } else {
-                if(!_vibrated) {
-                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
-                    _vibrated = YES;
-                }                
-            }
+            [self _prepareForTurnForwards:YES];
             oldViewportTouchX = pageTouchPoint.x;
         }
         if(_isTurning != 0 && !self.isAnimating) {
@@ -1831,34 +1808,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? (-_rightPageRect.size.width + translationAfterScroll.x) : translationAfterScroll.x,
                                      translationAfterScroll.y);
         if(_isTurning != -1) {
-            if(_pageContentsInformation[1] ||
-               _pageContentsInformation[2]) {
-                if(_rightPageRect.origin.x == 0.0f) {
-                    // Position the page floating just outside the field of view.
-                    for(int column = 1; column < X_VERTEX_COUNT; ++column) {
-                        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
-                            GLfloat radius = _pageVertices[row][column].x;                            
-                            _pageVertices[row][column].z = -radius * sinf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
-                            _pageVertices[row][column].x = radius * cosf(((GLfloat)M_PI - (FOV_ANGLE / (360.0f * (GLfloat)M_2_PI))) / 2.0f);
-                        }
-                    }   
-                } else {
-                    // Position the page flat on the left.
-                    for(int column = 1; column < X_VERTEX_COUNT; ++column) {
-                        for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
-                            _pageVertices[row][column].x = -_pageVertices[row][column].x;
-                        }
-                    }                               
-                }
-                memcpy(_oldPageVertices, _pageVertices, sizeof(_oldPageVertices));
-                _rightFlatPageIndex = 3;
-                _isTurning = -1;
-            } else {
-                if(!_vibrated) {
-                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
-                    _vibrated = YES;
-                }
-            }
+            [self _prepareForTurnForwards:NO];
             oldViewportTouchX = pageTouchPoint.x;
         }
         if(_isTurning != 0 && !self.isAnimating) {
@@ -2331,16 +2281,15 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (void)_verlet
 {    
     if(!_touch && _touchVelocity) {
-        GLfloat newX = _viewportTouchPoint.x + _touchVelocity /** difference*/;
-        _viewportTouchPoint.x = newX;
-        [self _setPageTouchPointForPageX:newX];
-    }
+        _viewportTouchPoint.x = _viewportTouchPoint.x + _touchVelocity /** difference*/;
+        [self _setPageTouchPointForPageX:_viewportTouchPoint.x ];
+    } 
     
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
     THVec3 *flatOldPageVertices = (THVec3 *)_oldPageVertices;
     //GLfloatTriplet *flatForceAccumulators = (GLfloatTriplet *)_forceAccumulators;
     GLfloat gravity = (_touch || _touchVelocity) ? 0.002 : 0.01;
-    
+    GLfloat toAdd = (_touch || _touchVelocity) ? 0.6f : 0.99f;
     for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
         THVec3 x = flatPageVertices[i];
         THVec3 temp = x;
@@ -2355,7 +2304,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         // The above, commented out line is correct, but for optimization, 
         // we just manually add gravity instead of using the forces from 
         // -_accumulateForces since it's the only force.
-        flatPageVertices[i] = THVec3Add(x, THVec3Multiply(THVec3Subtract(x, oldx), (_touch || _touchVelocity) ? 0.6f : 0.99f)); 
+        flatPageVertices[i] = THVec3Add(x, THVec3Multiply(THVec3Subtract(x, oldx), toAdd)); 
         flatPageVertices[i].z += gravity;
         
         flatOldPageVertices[i] = temp;
@@ -2369,7 +2318,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     BOOL shouldStopAnimating = NO;
     
     BOOL pageHasRigidEdge;
-    if([_delegate respondsToSelector:@selector(pageTurningView:viewEdgeIsRigid:)]) {
+    if(_isTurningAutomatically) {
+        pageHasRigidEdge = YES;
+    } else if([_delegate respondsToSelector:@selector(pageTurningView:viewEdgeIsRigid:)]) {
         pageHasRigidEdge = [_delegate pageTurningView:self viewEdgeIsRigid:_pageContentsInformation[_rightFlatPageIndex-2].view];
     } else {
         pageHasRigidEdge = NO;

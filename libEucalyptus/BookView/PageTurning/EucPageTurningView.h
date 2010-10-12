@@ -139,15 +139,9 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     GLvoid *_atRenderScreenshotBuffer;
     
     GLfloat _dimQuotient;
-    
-    NSData *_animatedTurnData;
-    NSInteger _animatedTurnFrameCount;
-    NSData *_reverseAnimatedTurnData;
     NSInteger _reverseAnimatedTurnFrameCount;
     
     BOOL _isTurningAutomatically;
-    BOOL _automaticTurnIsForwards;
-    NSInteger _automaticTurnFrame;
     CGFloat _automaticTurnPercentage;
     
     //FILE *tempFile;
