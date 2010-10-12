@@ -67,7 +67,9 @@
 - (void)zoomToPage:(NSInteger)targetPageNumber;
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context;
 - (void)zoomOut;
-- (void)zoomOutsideBlockAtPoint:(CGPoint)point ;
+- (void)zoomOutsideBlockAtPoint:(CGPoint)point;
+
+//- (void)displayHighlightsExcluding:(BlioBookmarkRange *)excludedBookmark;
 
 @end
 
@@ -279,7 +281,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return [self.dataSource thumbnailForPage:index + 1];
 }
 
-- (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index
+- (NSArray *)pageTurningView1:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index
 {
     NSMutableArray *ret = nil;
     int max = roundf((float)rand() / (float)RAND_MAX * 4);
@@ -336,6 +338,9 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     if(self.pageTurningView) {
         [pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
         self.pageNumber = targetPage;
+        if (!animated) {
+            [self refreshHighlights];
+        }
     }
 }
 
@@ -530,6 +535,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if(self.pageNumber != pageIndex + 1) {
         self.pageNumber = pageIndex + 1;
         self.selector.selectedRange = nil;
+        [self refreshHighlights];
     }
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
@@ -770,8 +776,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
 {    
 
+    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
+        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
+        if ([selectedRange isEqual:range]) {
+            [self refreshHighlights];
+            //[self displayHighlightsExcluding:highlightRange];
+            return [highlightRange.color colorWithAlphaComponent:0.3f];
+        }
+    }
+    
+    return nil;
+    
+#if 0
     UIColor *ret = nil;
-    #if 0
+
     for(EucHighlightRange *highlightRange in [_pageTurningView.currentPageView.layer valueForKey:@"EucBookViewHighlightRanges"]) {
         if([[highlightRange selectorRange] isEqual:selectedRange]) {
             NSParameterAssert(!_rangeBeingEdited);
@@ -783,8 +801,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
     [self refreshHighlights];
 #endif
-    
-    return ret;
 }
 
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange
@@ -818,9 +834,68 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #endif
 }
 
+- (NSArray *)highlightRectsForPageAtIndex:(NSInteger)pageIndex excluding:(BlioBookmarkRange *)excludedBookmark {
+    
+    NSMutableArray *allHighlights = [NSMutableArray array];
+    NSArray *highlightRanges = nil;
+    if (self.delegate) {
+        highlightRanges = [self.delegate rangesToHighlightForLayoutPage:pageIndex + 1];
+    }
+
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
+    
+    for (BlioBookmarkRange *highlightRange in highlightRanges) {
+        
+        if (![highlightRange isEqual:excludedBookmark]) {
+            NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
+            
+            for (BlioTextFlowBlock *block in pageBlocks) {                
+                for (BlioTextFlowPositionedWord *word in [block words]) {
+                    // If the range starts before this word:
+                    if ( highlightRange.startPoint.layoutPage < (pageIndex + 1) ||
+                        ((highlightRange.startPoint.layoutPage == (pageIndex + 1)) && (highlightRange.startPoint.blockOffset < block.blockIndex)) ||
+                        ((highlightRange.startPoint.layoutPage == (pageIndex + 1)) && (highlightRange.startPoint.blockOffset == block.blockIndex) && (highlightRange.startPoint.wordOffset <= word.wordIndex)) ) {
+                        // If the range ends after this word:
+                        if ( highlightRange.endPoint.layoutPage > (pageIndex +1 ) ||
+                            ((highlightRange.endPoint.layoutPage == (pageIndex + 1)) && (highlightRange.endPoint.blockOffset > block.blockIndex)) ||
+                            ((highlightRange.endPoint.layoutPage == (pageIndex + 1)) && (highlightRange.endPoint.blockOffset == block.blockIndex) && (highlightRange.endPoint.wordOffset >= word.wordIndex)) ) {
+                            // This word is in the range.
+                            CGRect pageRect = CGRectApplyAffineTransform([word rect], pageTransform);
+                            [highlightRects addObject:[NSValue valueWithCGRect:pageRect]];
+                        }                            
+                    }
+                }
+            }
+            
+            NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
+            
+            for (NSValue *rectValue in coalescedRects) {
+                THPair *highlightPair = [[THPair alloc] initWithFirst:(id)rectValue second:(id)[highlightRange.color colorWithAlphaComponent:0.5f]];
+                [allHighlights addObject:highlightPair];
+                [highlightPair release];
+            }
+            
+            [highlightRects release];
+        }
+        
+    }
+    
+    return allHighlights;
+}
+
+- (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index {
+    EucSelectorRange *selectedRange = [self.selector selectedRange];
+    BlioBookmarkRange *excludedRange = [self bookmarkRangeFromSelectorRange:selectedRange];
+    
+    return [self highlightRectsForPageAtIndex:self.pageTurningView.rightPageIndex excluding:excludedRange];
+}
+
 
 - (void)refreshHighlights
-{
+{    
+    [self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
+
 #if 0
     EucPageView *currentPageView = (EucPageView *)(_pageTurningView.currentPageView);
     
