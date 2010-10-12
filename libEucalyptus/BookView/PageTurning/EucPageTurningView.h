@@ -225,6 +225,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex;
 - (void)refreshHighlightsForPageAtIndex:(NSUInteger)index;
 
+- (void)waitForAllPageImagesToBeAvailable;
+
 #pragma mark Light-related properties.
 
 @property (nonatomic, copy) UIColor *specularColor;

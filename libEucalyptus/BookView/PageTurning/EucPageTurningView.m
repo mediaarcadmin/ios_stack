@@ -567,6 +567,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
 }    
 
+- (void)waitForAllPageImagesToBeAvailable
+{
+    [_textureGenerationOperationQueue waitUntilAllOperationsAreFinished];
+}
+
 - (void)didMoveToSuperview
 {
     [super didMoveToSuperview];
