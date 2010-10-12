@@ -24,6 +24,14 @@
 #define BLIOLAYOUT_LHSHOTZONE (1.0f/3*1)
 #define BLIOLAYOUT_RHSHOTZONE (1.0f/3*2)
 
+@interface BlioPageTurningAnimator : CALayer {
+    CGFloat zoomFactor;
+}
+
+@property (nonatomic, assign) CGFloat zoomFactor;
+
+@end
+
 @interface BlioLayoutView()
 
 @property (nonatomic, assign) NSInteger pageNumber;
@@ -1171,7 +1179,50 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [self zoomToNextBlockReversed:YES];
 }
 
+- (void)incrementProperty:(NSTimer *)timer {
+   // NSDictionary *animationDictionary = [timer userInfo];
+    //id target           = [animationDictionary valueForKey:@"target"];
+   // NSString *keyPath   = [animationDictionary valueForKey:@"keyPath"];
+//    NSNumber *stop      = [animationDictionary valueForKey:@"stop"];
+//    NSNumber *increment = [animationDictionary valueForKey:@"increment"];
+
+    //NSNumber *currentKeyPathValue = [target valueForKeyPath:keyPath];
+    //NSNumber *newKeyPathValue = [NSNumber numberWithFloat:[currentKeyPathValue floatValue] + [increment floatValue]];
+    
+    //if ([newKeyPathValue floatValue] > [stop floatValue]) {
+//        newKeyPathValue = stop;
+//        [timer invalidate];
+//    }
+    
+    CGPoint currentTranslation = [self.pageTurningView translation];
+    if (currentTranslation.x >= 100) {
+        [timer invalidate];
+    } else {
+    
+    //[target setValue:newKeyPathValue forKeyPath:keyPath];
+    [self.pageTurningView setTranslation:CGPointMake(currentTranslation.x + 10, currentTranslation.y + 10) zoomFactor:1.2];
+        currentTranslation = [self.pageTurningView translation];
+        [self.pageTurningView drawView];
+    }
+
+}
+
 - (void)zoomToNextBlock {
+    return;
+    [self.pageTurningView setTranslation:CGPointZero zoomFactor:1];
+    CGFloat newZoom = 2;
+    CGFloat distance = fabs(newZoom - 1);
+    CGFloat duration = 0.25f;
+    CGFloat increment = (distance / 30.0f) / duration;
+    
+    NSDictionary *animationDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         self.pageTurningView, @"target",
+                                         @"zoomFactor", @"keyPath",
+                                         [NSNumber numberWithFloat:newZoom], @"stop",
+                                         [NSNumber numberWithFloat:increment], @"increment", nil];
+    
+    NSTimer *zoomAnimTimer = [NSTimer timerWithTimeInterval:(1/30.0f) target:self selector:@selector(incrementProperty:) userInfo:animationDictionary repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:zoomAnimTimer forMode:NSDefaultRunLoopMode];
     return;
     blockRecursionDepth = 0;
     [self zoomToNextBlockReversed:NO];
@@ -1592,3 +1643,35 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 @end
+
+@implementation BlioPageTurningAnimator
+
+@synthesize zoomFactor;
+
+- (void)setValue:(id)value forKey:(NSString *)key {
+    NSString *animationKeyPath = [self valueForKey:@"animationKeyPath"];
+    if ([key isEqualToString:animationKeyPath]) {
+        id animationTarget = [self valueForKey:@"animationTarget"];
+        [animationTarget setValue:value forKeyPath:animationKeyPath];
+    } else {
+        [super setValue:value forKey:key];
+    }
+}
+
+- (void)setZoomFactor:(CGFloat)newZoom {
+    id animationTarget = [self valueForKey:@"animationTarget"];
+    [animationTarget setValue:[NSNumber numberWithFloat:newZoom] forKeyPath:@"zoomFactor"];
+}
+
+- (void)setValue:(id)value forKeyPath:(NSString *)keyPath {
+    NSString *animationKeyPath = [self valueForKey:@"animationKeyPath"];
+    if ([keyPath isEqualToString:animationKeyPath]) {
+        id animationTarget = [self valueForKey:@"animationTarget"];
+        [animationTarget setValue:value forKeyPath:animationKeyPath];
+    } else {
+        [super setValue:value forKeyPath:keyPath];
+    }
+}
+
+@end
+
