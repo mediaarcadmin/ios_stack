@@ -31,6 +31,11 @@
     [super dealloc];
 }
 
+- (void)mainThreadNotify
+{
+    [self.delegate textureGenerationOperationGeneratedTexture:self];
+}
+
 - (void)main
 {
     NSInvocation *generationInvocation = self.generationInvocation;
@@ -61,9 +66,9 @@
         [contextLock unlock];
         
         self.generatedTextureID = textureID;
-        [((NSObject *)self.delegate) performSelectorOnMainThread:@selector(textureGenerationOperationGeneratedTexture:) 
-                                                      withObject:self 
-                                                   waitUntilDone:NO];
+        [self  performSelectorOnMainThread:@selector(mainThreadNotify) 
+                                withObject:nil 
+                             waitUntilDone:NO];
     }
     self.generationInvocation = nil;
 }

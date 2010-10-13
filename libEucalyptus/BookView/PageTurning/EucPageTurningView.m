@@ -345,7 +345,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [_textureGenerationOperationQueue cancelAllOperations];
     [_textureGenerationOperationQueue waitUntilAllOperationsAreFinished];
     [_textureGenerationOperationQueue release];
-        
+    
+    [_bitmapDataSourceLock release];
+    
     [EAGLContext setCurrentContext:self.eaglContext];
     
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
@@ -938,6 +940,16 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return _pageContentsInformation[3].pageIndex ?: NSUIntegerMax;
 }
 
+- (void)setBitmapDataSource:(id <EucPageTurningViewBitmapDataSource>)bitmapDataSource
+{
+    if(!_bitmapDataSourceLock) {
+        _bitmapDataSourceLock = [[NSLock alloc] init];
+    }
+    [_bitmapDataSourceLock lock];
+    _bitmapDataSource = bitmapDataSource;
+    [_bitmapDataSourceLock unlock];
+}
+
 - (THPair *)_bitmapDataAndSizeForPageAtIndex:(NSUInteger)index
                                   inPageRect:(CGRect)pageRect
                                       ofSize:(CGSize)size
@@ -945,21 +957,25 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 {
     CGContextRef thisPageBitmap;
     
-    if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
-        id context = nil;
-        thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                            RGBABitmapContextForPageAtIndex:index
-                                                   fromRect:pageRect
-                                                    minSize:size
-                                                 getContext:&context];
-        [[context retain] autorelease];
-    } else {
-        thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                            RGBABitmapContextForPageAtIndex:index
-                                                   fromRect:pageRect
-                                                    minSize:size];
+    [_bitmapDataSourceLock lock];
+    if(_bitmapDataSource) {
+        if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
+            id context = nil;
+            thisPageBitmap = [_bitmapDataSource pageTurningView:self
+                                RGBABitmapContextForPageAtIndex:index
+                                                       fromRect:pageRect
+                                                        minSize:size
+                                                     getContext:&context];
+            [[context retain] autorelease];
+        } else {
+            thisPageBitmap = [_bitmapDataSource pageTurningView:self
+                                RGBABitmapContextForPageAtIndex:index
+                                                       fromRect:pageRect
+                                                        minSize:size];
+        }
     }
-  
+    [_bitmapDataSourceLock unlock];
+
     CGSize correctedSize = CGSizeMake(CGBitmapContextGetWidth(thisPageBitmap), CGBitmapContextGetHeight(thisPageBitmap));
     
     if(THWillLog()) {

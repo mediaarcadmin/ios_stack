@@ -218,6 +218,8 @@
     } else {
         EucPageTurningView *aPageTurningView = self.pageTurningView;
         if(aPageTurningView) {
+            aPageTurningView.bitmapDataSource = nil;
+            aPageTurningView.delegate = nil;
             [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
             [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];
             [aPageTurningView removeFromSuperview];

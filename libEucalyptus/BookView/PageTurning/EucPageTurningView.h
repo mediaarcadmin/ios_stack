@@ -120,6 +120,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     id<EucPageTurningViewDelegate> _delegate;
     id<EucPageTurningViewViewDataSource> _viewDataSource;
     id<EucPageTurningViewBitmapDataSource> _bitmapDataSource;
+    NSLock *_bitmapDataSourceLock;
     
     BOOL _oddPagesOnRight;
     BOOL _twoSidedPages;

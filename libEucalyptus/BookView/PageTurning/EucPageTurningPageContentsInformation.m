@@ -31,10 +31,12 @@
 {   
     if(_currentTextureGenerationOperation) {
         THLog(@"EucPageTurningPageContentsInformation deallocing with pending texture generation operation!");
+        _currentTextureGenerationOperation.delegate = nil;
         _currentTextureGenerationOperation = nil;
     }
     if(_currentZoomedTextureGenerationOperation) {
         THLog(@"EucPageTurningPageContentsInformation deallocing with pending zoomed texture generation operation!");
+        _currentZoomedTextureGenerationOperation.delegate = nil;
         _currentZoomedTextureGenerationOperation = nil;
     }
 
