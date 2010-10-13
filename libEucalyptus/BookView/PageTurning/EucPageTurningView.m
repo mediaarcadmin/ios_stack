@@ -1568,6 +1568,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             if(_pageContentsInformation[_rightFlatPageIndex-1].highlightTexture) {
                 glActiveTexture(GL_TEXTURE3);
                 glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-1].highlightTexture); 
+            } else {
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
             }
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 1);
         } else {

@@ -46,6 +46,7 @@
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
 
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)page;
+- (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex offsetOrigin:(BOOL)offset;
 
 - (NSArray *)bookmarkRangesForCurrentPage;
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
@@ -70,6 +71,7 @@
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point;
 
 //- (void)displayHighlightsExcluding:(BlioBookmarkRange *)excludedBookmark;
+- (void)refreshHighlightsForPageAtIndex:(NSUInteger)pageIndex;
 
 @end
 
@@ -260,6 +262,13 @@
     [self.selector setSelectedRange:nil];
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    // TODO: Fix pageTurningView to properly rotate the highlights during the rotation
+    [self refreshHighlightsForPageAtIndex:self.pageTurningView.leftPageIndex];
+    [self refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
+    [self.pageTurningView drawView];
+}
+
 #pragma mark -
 #pragma mark EucPageTurningViewBitmapDataSource
 
@@ -340,9 +349,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     if(self.pageTurningView) {
         [pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
         self.pageNumber = targetPage;
-        if (!animated) {
-            [self refreshHighlights];
-        }
     }
 }
 
@@ -488,7 +494,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return transform;
 }
 
-- (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex {
+- (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex offsetOrigin:(BOOL)offset {
     // TODO: Make sure this is cached in LayoutView or pageTurningView
     CGRect pageCrop = [self pageTurningView:self.pageTurningView contentRectForPageAtIndex:pageIndex];
     CGRect pageFrame;
@@ -497,6 +503,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         pageFrame = [self.pageTurningView leftPageFrame];
     } else {
         pageFrame = [self.pageTurningView rightPageFrame];
+    }
+    
+    if (!offset) {
+        pageFrame.origin = CGPointZero;
     }
 
     CGAffineTransform pageTransform = transformRectToFitRect(pageCrop, pageFrame, true);
@@ -514,6 +524,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
         
     return pageTransform;
+}
+
+- (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex {
+    return [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES];
 }
 
 #pragma mark -
@@ -537,7 +551,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if(self.pageNumber != pageIndex + 1) {
         self.pageNumber = pageIndex + 1;
         self.selector.selectedRange = nil;
-        [self refreshHighlights];
     }
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
@@ -781,7 +794,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
         if ([selectedRange isEqual:range]) {
-            [self refreshHighlights];
+            NSInteger startIndex = highlightRange.startPoint.layoutPage - 1;
+            NSInteger endIndex = highlightRange.endPoint.layoutPage - 1;
+            
+            for (int i = startIndex; i <= endIndex; i++) {
+                [self refreshHighlightsForPageAtIndex:i];
+            }
+            
             //[self displayHighlightsExcluding:highlightRange];
             return [highlightRange.color colorWithAlphaComponent:0.3f];
         }
@@ -836,6 +855,98 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #endif
 }
 
+- (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
+    return self;
+}
+
+- (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range {
+    
+    if (nil == range) return nil;
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    startPoint.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:range.startBlockId] + 1;
+    startPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:range.startBlockId];
+    startPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:range.startElementId];
+    
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+    endPoint.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:range.endBlockId] + 1;
+    endPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:range.endBlockId];
+    endPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:range.endElementId];
+    
+    BlioBookmarkRange *bookmarkRange = [[BlioBookmarkRange alloc] init];
+    bookmarkRange.startPoint = startPoint;
+    bookmarkRange.endPoint = endPoint;
+    
+    [startPoint release];
+    [endPoint release];
+    
+    return [bookmarkRange autorelease];
+}
+
+- (BlioBookmarkRange *)selectedRange {
+    EucSelectorRange *highlighterRange = [self.selector selectedRange];
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];;
+    
+    if (nil != highlighterRange) {        
+        NSInteger startPageIndex = [BlioTextFlowBlock pageIndexForBlockID:[highlighterRange startBlockId]];
+        NSInteger endPageIndex = [BlioTextFlowBlock pageIndexForBlockID:[highlighterRange endBlockId]];
+        NSInteger startBlockOffset = [BlioTextFlowBlock blockIndexForBlockID:[highlighterRange startBlockId]];
+        NSInteger endBlockOffset = [BlioTextFlowBlock blockIndexForBlockID:[highlighterRange endBlockId]];
+        NSInteger startWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange startElementId]];
+        NSInteger endWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange endElementId]];
+        
+        
+        [startPoint setLayoutPage:startPageIndex + 1];
+        [startPoint setBlockOffset:startBlockOffset];
+        [startPoint setWordOffset:startWordOffset];
+        
+        [endPoint setLayoutPage:endPageIndex + 1];
+        [endPoint setBlockOffset:endBlockOffset];
+        [endPoint setWordOffset:endWordOffset];
+    } else {
+        [startPoint setLayoutPage:self.pageNumber];
+        [endPoint setLayoutPage:self.pageNumber];
+    }
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    [range setStartPoint:startPoint];
+    [range setEndPoint:endPoint];
+    
+    [startPoint release];
+    [endPoint release];
+    
+    return [range autorelease];
+}
+
+#pragma mark -
+#pragma mark highlights
+
+- (void)addHighlightWithColor:(UIColor *)color {
+    BlioBookmarkRange *toBookmarkRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+
+    NSInteger startPage;
+    NSInteger endPage;
+    
+    if ([self.selector selectedRangeIsHighlight]) {
+        BlioBookmarkRange *fromBookmarkRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
+        startPage = MIN(fromBookmarkRange.startPoint.layoutPage, toBookmarkRange.startPoint.layoutPage) - 1;
+        endPage = MAX(fromBookmarkRange.endPoint.layoutPage, toBookmarkRange.endPoint.layoutPage) - 1;
+    } else {
+        startPage = toBookmarkRange.startPoint.layoutPage;
+        endPage = toBookmarkRange.endPoint.layoutPage;
+    }
+    
+    [super addHighlightWithColor:color];
+    
+    for (int i = startPage; i <= endPage; i++) {
+        [self refreshHighlightsForPageAtIndex:i - 1];
+    }
+    
+    [self.pageTurningView drawView];
+}
+
 - (NSArray *)highlightRectsForPageAtIndex:(NSInteger)pageIndex excluding:(BlioBookmarkRange *)excludedBookmark {
     
     NSMutableArray *allHighlights = [NSMutableArray array];
@@ -845,8 +956,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 
     NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
-    
+    CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO];
+
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         
         if (![highlightRange isEqual:excludedBookmark]) {
@@ -886,18 +997,23 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return allHighlights;
 }
 
-- (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index {
+- (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)pageIndex {
+
     EucSelectorRange *selectedRange = [self.selector selectedRange];
     BlioBookmarkRange *excludedRange = [self bookmarkRangeFromSelectorRange:selectedRange];
     
-    return [self highlightRectsForPageAtIndex:self.pageTurningView.rightPageIndex excluding:excludedRange];
+    //return [self highlightRectsForPageAtIndex:index excluding:excludedRange];
+    NSArray *array = [self highlightRectsForPageAtIndex:pageIndex excluding:excludedRange];
+    NSLog(@"highlightsForPageAtIndex %d (%d)", pageIndex, [array count]);
+    return array;
 }
 
 
-- (void)refreshHighlights
+- (void)refreshHighlightsForPageAtIndex:(NSUInteger)pageIndex;
 {    
-    [self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
-
+    NSLog(@"Rferesh highlights for page at index %d", pageIndex);
+    [self.pageTurningView refreshHighlightsForPageAtIndex:pageIndex];
+    
 #if 0
     EucPageView *currentPageView = (EucPageView *)(_pageTurningView.currentPageView);
     
@@ -930,78 +1046,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [_pageTurningView drawView];
 #endif
 }
-
-- (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
-    return self;
-}
-
-- (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range {
-    
-    if (nil == range) return nil;
-        
-    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-    startPoint.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:range.startBlockId] + 1;
-    startPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:range.startBlockId];
-    startPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:range.startElementId];
-    
-    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
-    endPoint.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:range.endBlockId] + 1;
-    endPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:range.endBlockId];
-    endPoint.wordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:range.endElementId];
-    
-    BlioBookmarkRange *bookmarkRange = [[BlioBookmarkRange alloc] init];
-    bookmarkRange.startPoint = startPoint;
-    bookmarkRange.endPoint = endPoint;
-        
-    [startPoint release];
-    [endPoint release];
-    
-    return [bookmarkRange autorelease];
-}
-
-- (BlioBookmarkRange *)selectedRange {
-    EucSelectorRange *highlighterRange = [self.selector selectedRange];
-    
-    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];;
-
-    if (nil != highlighterRange) {        
-        NSInteger startPageIndex = [BlioTextFlowBlock pageIndexForBlockID:[highlighterRange startBlockId]];
-        NSInteger endPageIndex = [BlioTextFlowBlock pageIndexForBlockID:[highlighterRange endBlockId]];
-        NSInteger startBlockOffset = [BlioTextFlowBlock blockIndexForBlockID:[highlighterRange startBlockId]];
-        NSInteger endBlockOffset = [BlioTextFlowBlock blockIndexForBlockID:[highlighterRange endBlockId]];
-        NSInteger startWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange startElementId]];
-        NSInteger endWordOffset = [BlioTextFlowPositionedWord wordIndexForWordID:[highlighterRange endElementId]];
-        
-        
-        [startPoint setLayoutPage:startPageIndex + 1];
-        [startPoint setBlockOffset:startBlockOffset];
-        [startPoint setWordOffset:startWordOffset];
-        
-        [endPoint setLayoutPage:endPageIndex + 1];
-        [endPoint setBlockOffset:endBlockOffset];
-        [endPoint setWordOffset:endWordOffset];
-    } else {
-        [startPoint setLayoutPage:self.pageNumber];
-        [endPoint setLayoutPage:self.pageNumber];
-    }
-    
-    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
-    [range setStartPoint:startPoint];
-    [range setEndPoint:endPoint];
-    
-    [startPoint release];
-    [endPoint release];
-    
-    return [range autorelease];
-}
-
-#pragma mark -
-#pragma mark Selector Menu Responder Actions 
-
-- (void)addHighlightWithColor:(UIColor *)color {
-}
-
 
 #pragma mark -
 #pragma mark TTS
