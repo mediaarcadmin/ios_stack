@@ -149,27 +149,19 @@ tryAgain:
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [[paths objectAtIndex:0] stringByAppendingString:@"/"];
 	
-	NSString* wmModelKeyFilename = @"priv.dat";
 	NSString* wmModelCertFilename = @"devcerttemplate.dat";
-	NSString* prModelKeyFilename = @"iphonezgpriv.dat";
 	NSString* prModelCertFilename = @"iphonecert.dat";
 	
 	NSString* sourceDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/"];
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) 
 		sourceDir = [sourceDir stringByAppendingString:@"DRM/"];
 	
-	NSString* rsrcWmModelKey = [sourceDir stringByAppendingString:wmModelKeyFilename]; 
-	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:wmModelKeyFilename];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelKey toPath:docsWmModelKey error:&err];
 	NSString* rsrcWmModelCert = [sourceDir stringByAppendingString:wmModelCertFilename]; 
 	NSString* docsWmModelCert = [documentsDirectory stringByAppendingString:wmModelCertFilename];
 	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
 	NSString* rsrcPRModelCert = [sourceDir stringByAppendingString:prModelCertFilename]; 
 	NSString* docsPRModelCert = [documentsDirectory stringByAppendingString:prModelCertFilename];
 	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];
-	NSString* rsrcPRModelKey = [sourceDir stringByAppendingString:prModelKeyFilename]; 
-	NSString* docsPRModelKey = [documentsDirectory stringByAppendingString:prModelKeyFilename];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelKey toPath:docsPRModelKey error:&err];
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
     
