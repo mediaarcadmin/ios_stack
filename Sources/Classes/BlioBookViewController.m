@@ -800,7 +800,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     //UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
 
     [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    [backArrow setAccessibilityLabel:NSLocalizedString(@"Library", @"Accessibility label for Book View Controller Back button")];
+    [backArrow setAccessibilityLabel:NSLocalizedString(@"Library Back", @"Accessibility label for Book View Controller Library Back button")];
 
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
     self.navigationItem.leftBarButtonItem = backItem;
@@ -2160,7 +2160,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			}
 			else {
 				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Settings section of this app first and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Library Settings section and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
 											delegate:nil 
 								   cancelButtonTitle:@"OK"
 								   otherButtonTitles: nil];
