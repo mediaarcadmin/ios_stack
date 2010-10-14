@@ -13,7 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
+@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
 struct THBreak;
 
 typedef struct EucCSSLayoutDocumentRunPoint {
@@ -24,6 +24,7 @@ typedef struct EucCSSLayoutDocumentRunPoint {
 typedef enum EucCSSLayoutDocumentRunComponentKind {
     EucCSSLayoutDocumentRunComponentKindNone = 0,
     EucCSSLayoutDocumentRunComponentKindSpace,
+    EucCSSLayoutDocumentRunComponentKindNonbreakingSpace,
     EucCSSLayoutDocumentRunComponentKindHardBreak,
     EucCSSLayoutDocumentRunComponentKindOpenNode,
     EucCSSLayoutDocumentRunComponentKindCloseNode,
@@ -50,6 +51,8 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 
 @interface EucCSSLayoutDocumentRun : NSObject {
     uint32_t _id;
+    
+    EucCSSIntermediateDocument *_document;
     
     EucCSSIntermediateDocumentNode *_startNode;
     EucCSSIntermediateDocumentNode *_underNode;
@@ -109,5 +112,6 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 - (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
 
 - (NSArray *)words;
+- (NSArray *)attributeValuesForWordsForAttributeName:(NSString *)attribute;
 
 @end

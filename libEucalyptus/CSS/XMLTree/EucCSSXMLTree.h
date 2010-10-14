@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <expat/expat.h>
+
 #import "EucCSSDocumentTree.h"
 
 @class EucCSSXMLTreeNode;
@@ -17,9 +19,12 @@
     NSDictionary *_idToNode;
 }
 
-@property (nonatomic, readonly) NSDictionary *idToNode;
+@property (nonatomic, retain, readonly) NSArray *nodes;
+@property (nonatomic, retain, readonly) NSDictionary *idToNode;
 
 - (id)initWithData:(NSData *)xmlData;
 - (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass;
+
+- (NSString *)idForNodeAttribute:(const XML_Char *)name value:(const XML_Char *)value;
 
 @end

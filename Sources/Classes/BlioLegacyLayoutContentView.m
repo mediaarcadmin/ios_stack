@@ -1,5 +1,5 @@
 //
-//  BlioLayoutContentView.m
+//  BlioLegacyLayoutContentView.m
 //  BlioApp
 //
 //  Created by matt on 03/03/2010.
@@ -7,82 +7,82 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
-#import "BlioLayoutContentView.h"
+#import "BlioLegacyLayoutContentView.h"
 #import "UIDevice+BlioAdditions.h"
 
-@interface BlioLayoutForceCacheOperation : NSOperation {
-    BlioLayoutTiledLayer *tiledLayer;
+@interface BlioLegacyLayoutForceCacheOperation : NSOperation {
+    BlioLegacyLayoutTiledLayer *tiledLayer;
 }
 
-- (id)initWithTiledLayer:(BlioLayoutTiledLayer *)aTiledLayer;
+- (id)initWithTiledLayer:(BlioLegacyLayoutTiledLayer *)aTiledLayer;
 
-@property (nonatomic, retain) BlioLayoutTiledLayer *tiledLayer;
+@property (nonatomic, retain) BlioLegacyLayoutTiledLayer *tiledLayer;
 
 @end
 
-@interface BlioLayoutTiledLayer : CATiledLayer {
-//@interface BlioLayoutTiledLayer : CALayer {
+@interface BlioLegacyLayoutTiledLayer : CATiledLayer {
+//@interface BlioLegacyLayoutTiledLayer : CALayer {
     NSInteger pageNumber;
-    id <BlioLayoutRenderingDelegate> renderingDelegate;
+    id <BlioLegacyLayoutRenderingDelegate> renderingDelegate;
     BOOL cached;
     id thumbLayer;
     BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
+@property (nonatomic, assign) id <BlioLegacyLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic) BOOL cached;
 @property (nonatomic, assign) id thumbLayer;
 @property (nonatomic, assign) BOOL isCancelled;
 
 @end
 
-@interface BlioLayoutThumbLayer : CALayer {
+@interface BlioLegacyLayoutThumbLayer : CALayer {
     NSInteger pageNumber;
-    id <BlioLayoutRenderingDelegate> renderingDelegate;
+    id <BlioLegacyLayoutRenderingDelegate> renderingDelegate;
     CGLayerRef cacheLayer;
     BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
+@property (nonatomic, assign) id <BlioLegacyLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic) CGLayerRef cacheLayer;
 @property (nonatomic, assign) BOOL isCancelled;
 
 @end
 
-@interface BlioLayoutShadowLayer : CALayer {
+@interface BlioLegacyLayoutShadowLayer : CALayer {
     NSInteger pageNumber;
-    id <BlioLayoutRenderingDelegate> renderingDelegate;
+    id <BlioLegacyLayoutRenderingDelegate> renderingDelegate;
     BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
+@property (nonatomic, assign) id <BlioLegacyLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic, assign) BOOL isCancelled;
 
 @end
 
-@interface BlioLayoutHighlightsLayer : CATiledLayer {
+@interface BlioLegacyLayoutHighlightsLayer : CATiledLayer {
     NSInteger pageNumber;
-    id <BlioLayoutRenderingDelegate> renderingDelegate;
+    id <BlioLegacyLayoutRenderingDelegate> renderingDelegate;
     BlioBookmarkRange *excludedHighlight;
     BOOL isCancelled;
 }
 
 @property (nonatomic) NSInteger pageNumber;
-@property (nonatomic, assign) id <BlioLayoutRenderingDelegate> renderingDelegate;
+@property (nonatomic, assign) id <BlioLegacyLayoutRenderingDelegate> renderingDelegate;
 @property (nonatomic, retain) BlioBookmarkRange *excludedHighlight;
 @property (nonatomic, assign) BOOL isCancelled;
 
 @end
 
-@interface BlioLayoutPageLayer()
-@property (nonatomic, assign) BlioLayoutThumbLayer *thumbLayer;
+@interface BlioLegacyLayoutPageLayer()
+@property (nonatomic, assign) BlioLegacyLayoutThumbLayer *thumbLayer;
 - (void)layoutSublayersAfterBoundsChange;
 @end
 
-@implementation BlioLayoutContentView
+@implementation BlioLegacyLayoutContentView
 
 @synthesize renderingDelegate, pageLayers;
 
@@ -103,7 +103,7 @@
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         // Initialization code
-        self.pageLayers = [NSMutableSet setWithCapacity:kBlioLayoutMaxPages];
+        self.pageLayers = [NSMutableSet setWithCapacity:kBlioLegacyLayoutMaxPages];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         maxTileSize = [[UIDevice currentDevice] blioDeviceMaximumTileSize];
     }
@@ -123,12 +123,12 @@
     NSInteger furthestPageDifference = -1;
     NSInteger layerCacheCount = [self.pageLayers count];
     
-    BlioLayoutPageLayer *pageLayer = nil;
+    BlioLegacyLayoutPageLayer *pageLayer = nil;
     NSArray *cachedLayers = [self.pageLayers allObjects];
     
     // First, see if we have it cached and determine the furthest away page
     for(NSInteger i = 0; i < layerCacheCount; ++i) {
-        BlioLayoutPageLayer *cachedLayer = [cachedLayers objectAtIndex:i];
+        BlioLegacyLayoutPageLayer *cachedLayer = [cachedLayers objectAtIndex:i];
         NSInteger cachedPageNumber = cachedLayer.pageNumber;
         if(cachedPageNumber == aPageNumber) {
             //NSLog(@"Cache hit for page %d", aPageNumber);
@@ -147,13 +147,13 @@
     
     if(nil == pageLayer) {
          //NSLog(@"Add page no cached version");
-        if (layerCacheCount < kBlioLayoutMaxPages) {
+        if (layerCacheCount < kBlioLegacyLayoutMaxPages) {
             //NSLog(@"Add new layer to cache");
-            pageLayer = [BlioLayoutPageLayer layer];
+            pageLayer = [BlioLegacyLayoutPageLayer layer];
             //[pageLayer setNeedsDisplayOnBoundsChange:YES];
             
             
-            BlioLayoutShadowLayer *shadowLayer = [BlioLayoutShadowLayer layer];
+            BlioLegacyLayoutShadowLayer *shadowLayer = [BlioLegacyLayoutShadowLayer layer];
             shadowLayer.renderingDelegate = self.renderingDelegate;
             shadowLayer.frame = self.bounds;
             shadowLayer.geometryFlipped = YES;
@@ -162,7 +162,7 @@
             [pageLayer addSublayer:shadowLayer];
             [pageLayer setShadowLayer:shadowLayer];
             
-            BlioLayoutThumbLayer *thumbLayer = [BlioLayoutThumbLayer layer];
+            BlioLegacyLayoutThumbLayer *thumbLayer = [BlioLegacyLayoutThumbLayer layer];
             thumbLayer.renderingDelegate = self.renderingDelegate;
             thumbLayer.frame = self.bounds;
             thumbLayer.geometryFlipped = YES;
@@ -170,7 +170,7 @@
             [pageLayer addSublayer:thumbLayer];
             [pageLayer setThumbLayer:thumbLayer];
             
-            BlioLayoutTiledLayer *tiledLayer = [BlioLayoutTiledLayer layer];
+            BlioLegacyLayoutTiledLayer *tiledLayer = [BlioLegacyLayoutTiledLayer layer];
             tiledLayer.renderingDelegate = self.renderingDelegate;
             tiledLayer.frame = self.bounds;
             tiledLayer.geometryFlipped = YES;
@@ -186,7 +186,7 @@
             [pageLayer addSublayer:tiledLayer];
             [pageLayer setTiledLayer:tiledLayer];
             
-            BlioLayoutHighlightsLayer *highlightsLayer = [BlioLayoutHighlightsLayer layer];
+            BlioLegacyLayoutHighlightsLayer *highlightsLayer = [BlioLegacyLayoutHighlightsLayer layer];
             highlightsLayer.renderingDelegate = self.renderingDelegate;
             highlightsLayer.frame = self.bounds;
             highlightsLayer.levelsOfDetail = 1;
@@ -232,7 +232,7 @@
     [CATransaction begin];
     [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
     
-    for (BlioLayoutPageLayer *pageLayer in self.pageLayers) {
+    for (BlioLegacyLayoutPageLayer *pageLayer in self.pageLayers) {
         newFrame.origin.x = newFrame.size.width * ([pageLayer pageNumber] - 1);
         [pageLayer setFrame:newFrame];
         [pageLayer layoutSublayersAfterBoundsChange];
@@ -248,12 +248,12 @@
 
 @end
 
-@implementation BlioLayoutPageLayer
+@implementation BlioLegacyLayoutPageLayer
 
 @synthesize pageNumber, tiledLayer, thumbLayer, shadowLayer, highlightsLayer, cacheQueue;
 
 - (void)dealloc {
-    //NSLog(@"Dealloc BlioLayoutPageLayer for page %d", self.pageNumber);
+    //NSLog(@"Dealloc BlioLegacyLayoutPageLayer for page %d", self.pageNumber);
     [self abortRendering];
     //NSLog(@"cancelPreviousPerformRequestsWithTarget during dealloc");
     
@@ -262,7 +262,7 @@
     self.shadowLayer = nil;
     self.highlightsLayer = nil;
     [super dealloc];
-    //NSLog(@"Dealloc BlioLayoutPageLayer for page %d complete", self.pageNumber);
+    //NSLog(@"Dealloc BlioLegacyLayoutPageLayer for page %d complete", self.pageNumber);
 }
 
 - (void)abortRendering {
@@ -301,7 +301,7 @@
     //[self.shadowLayer setNeedsDisplay];
     
     // NEW
-    BlioLayoutTiledLayer *aTiledLayer = [BlioLayoutTiledLayer layer];
+    BlioLegacyLayoutTiledLayer *aTiledLayer = [BlioLegacyLayoutTiledLayer layer];
     aTiledLayer.renderingDelegate = self.tiledLayer.renderingDelegate;
     aTiledLayer.frame = self.tiledLayer.bounds;
     aTiledLayer.geometryFlipped = YES;
@@ -321,7 +321,7 @@
     [self.tiledLayer setNeedsDisplay];
     
     // NEW
-    BlioLayoutHighlightsLayer *aHighlightsLayer = [BlioLayoutHighlightsLayer layer];
+    BlioLegacyLayoutHighlightsLayer *aHighlightsLayer = [BlioLegacyLayoutHighlightsLayer layer];
     aHighlightsLayer.renderingDelegate = self.highlightsLayer.renderingDelegate;
     aHighlightsLayer.frame = self.highlightsLayer.bounds;
     aHighlightsLayer.levelsOfDetail = self.highlightsLayer.levelsOfDetail;
@@ -350,7 +350,7 @@
     pageNumber = newPageNumber;
     
     // NEW
-    //BlioLayoutThumbLayer *aThumbLayer = [BlioLayoutThumbLayer layer];
+    //BlioLegacyLayoutThumbLayer *aThumbLayer = [BlioLegacyLayoutThumbLayer layer];
 //    aThumbLayer.renderingDelegate = self.thumbLayer.renderingDelegate;
 //    aThumbLayer.frame = self.thumbLayer.bounds;
 //    aThumbLayer.geometryFlipped = YES;
@@ -365,7 +365,7 @@
     [self.thumbLayer setNeedsDisplay];
     
     // NEW
-    BlioLayoutTiledLayer *aTiledLayer = [BlioLayoutTiledLayer layer];
+    BlioLegacyLayoutTiledLayer *aTiledLayer = [BlioLegacyLayoutTiledLayer layer];
     aTiledLayer.renderingDelegate = self.tiledLayer.renderingDelegate;
     aTiledLayer.frame = self.tiledLayer.bounds;
     aTiledLayer.geometryFlipped = YES;
@@ -390,7 +390,7 @@
     // To minimise load, Highlights are not fetched & rendered until the page becomes current
     
     // NEW
-    BlioLayoutHighlightsLayer *aHighlightsLayer = [BlioLayoutHighlightsLayer layer];
+    BlioLegacyLayoutHighlightsLayer *aHighlightsLayer = [BlioLegacyLayoutHighlightsLayer layer];
     aHighlightsLayer.renderingDelegate = self.highlightsLayer.renderingDelegate;
     aHighlightsLayer.frame = self.highlightsLayer.bounds;
     aHighlightsLayer.levelsOfDetail = self.highlightsLayer.levelsOfDetail;
@@ -448,7 +448,7 @@
             [aQueue release];
         }
         
-        BlioLayoutForceCacheOperation *cacheOp = [[BlioLayoutForceCacheOperation alloc] initWithTiledLayer:self.tiledLayer];
+        BlioLegacyLayoutForceCacheOperation *cacheOp = [[BlioLegacyLayoutForceCacheOperation alloc] initWithTiledLayer:self.tiledLayer];
         [self.cacheQueue addOperation:cacheOp];
         [cacheOp release];
     } //else {
@@ -494,7 +494,7 @@
 
 @end
 
-@implementation BlioLayoutTiledLayer
+@implementation BlioLegacyLayoutTiledLayer
 
 @synthesize pageNumber, renderingDelegate, cached, thumbLayer, isCancelled;
 
@@ -563,7 +563,7 @@
 
 @end
 
-@implementation BlioLayoutThumbLayer
+@implementation BlioLegacyLayoutThumbLayer
 
 @synthesize pageNumber, renderingDelegate, cacheLayer, isCancelled;
 
@@ -612,7 +612,7 @@
 
 @end
 
-@implementation BlioLayoutShadowLayer
+@implementation BlioLegacyLayoutShadowLayer
 
 @synthesize pageNumber, renderingDelegate, isCancelled;
 
@@ -640,12 +640,12 @@
 
 @end
 
-@implementation BlioLayoutHighlightsLayer
+@implementation BlioLegacyLayoutHighlightsLayer
 
 @synthesize pageNumber, renderingDelegate, excludedHighlight, isCancelled;
 
 - (void)dealloc {
-    //NSLog(@"BlioLayoutHighlightsLayer dealloc for page %d", pageNumber);
+    //NSLog(@"BlioLegacyLayoutHighlightsLayer dealloc for page %d", pageNumber);
     self.isCancelled = YES;
     self.renderingDelegate = nil;
     self.excludedHighlight = nil;
@@ -679,11 +679,11 @@
 
 @end
 
-@implementation BlioLayoutForceCacheOperation
+@implementation BlioLegacyLayoutForceCacheOperation
 
 @synthesize tiledLayer;
 
-- (id)initWithTiledLayer:(BlioLayoutTiledLayer *)aTiledLayer {
+- (id)initWithTiledLayer:(BlioLegacyLayoutTiledLayer *)aTiledLayer {
     if(aTiledLayer == nil) return nil;
     
     if((self = [super init])) {

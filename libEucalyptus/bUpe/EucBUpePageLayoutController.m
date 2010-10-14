@@ -233,7 +233,7 @@
 
 - (BOOL)viewShouldBeRigid:(UIView *)view
 {
-    return [(EucPageView *)view pageNumberString] != nil;
+    return [(EucPageView *)view pageNumberString] == nil;
 }
 
 @end

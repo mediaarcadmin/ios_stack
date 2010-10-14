@@ -50,7 +50,8 @@ typedef enum BlioFontSize {
 @protocol BlioViewSettingsDelegate <NSObject>
 @required
 - (void)changePageLayout:(id)sender;
-- (BOOL)shouldShowPageAttributeSettings;
+- (BOOL)shouldShowFontSizeSettings;
+- (BOOL)shouldShowPageColorSettings;
 - (void)dismissViewSettings:(id)sender;
 - (BOOL)isRotationLocked;
 - (void)changeLockRotation;
@@ -61,7 +62,7 @@ typedef enum BlioFontSize {
 - (BOOL)fixedViewEnabled;
 @end
 
-@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton;
+@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton, BlioModalPopoverController;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -131,6 +132,17 @@ typedef enum {
     BOOL coverReady;
     BOOL firstPageReady;
     BOOL coverOpened;
+    
+    UIActionSheet *viewSettingsSheet;
+    BlioModalPopoverController *viewSettingsPopover;
+    BlioModalPopoverController *contentsPopover;
+    BlioModalPopoverController *searchPopover;
+    UIBarButtonItem* contentsButton;
+    UIBarButtonItem* viewSettingsButton;
+    UIBarButtonItem* searchButton;
+    BOOL shouldDisplaySearchAfterRotation;
+    
+    NSMutableArray *historyStack;
 }
 
 // Designated initializers.

@@ -18,6 +18,7 @@
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutPositionedLine.h"
+#import "EucCSSLayoutRunExtractor.h"
 
 #import "THStringRenderer.h"
 #import "THLog.h"
@@ -285,49 +286,19 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 - (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node
 {
     EucCSSLayoutPoint ret = {0};
-    EucCSSIntermediateDocumentNode *currentNode = node;
-    EucCSSLayoutDocumentRun *documentRun = nil;
     
-    css_computed_style *nodeStyle = node.computedStyle;
-    if(nodeStyle && (css_computed_display(nodeStyle, false) & CSS_DISPLAY_BLOCK) == CSS_DISPLAY_BLOCK) {
-        ret.nodeKey = node.key;
-        ret.word = 0;
-        ret.element = 0;
-    } else {    
-        while(currentNode && !documentRun) {
-            EucCSSIntermediateDocumentNode *previousSiblingNode = currentNode.previousDisplayableSibling;
-            if(previousSiblingNode) {
-                css_computed_style *previousSiblingStyle = previousSiblingNode.computedStyle;
-                if(previousSiblingStyle && (css_computed_display(previousSiblingStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                    documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
-                                                                underLimitNode:currentNode.blockLevelParent
-                                                                         forId:currentNode.key
-                                                                   scaleFactor:_scaleFactor];
-                } else {
-                    currentNode = previousSiblingNode;
-                }
-            } else {
-                EucCSSIntermediateDocumentNode *parentNode = currentNode.parent;
-                css_computed_style *parentStyle = parentNode.computedStyle;
-                if(parentStyle && (css_computed_display(parentStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
-                    documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentNode
-                                                                underLimitNode:parentNode
-                                                                         forId:parentNode.key
-                                                                   scaleFactor:_scaleFactor];
-                } else {
-                    currentNode = parentNode;
-                }
-            }
-        }
+    EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:node.document];
+    EucCSSLayoutDocumentRun *documentRun = [extractor documentRunForNodeWithKey:node.key];
         
-        if(documentRun) {
-            EucCSSLayoutDocumentRunPoint documentRunPoint = [documentRun pointForNode:node];
-            ret.nodeKey = documentRun.id;
-            ret.word = documentRunPoint.word;
-            ret.element = documentRunPoint.element;
-        }   
-    }
-
+    if(documentRun) {
+        EucCSSLayoutDocumentRunPoint documentRunPoint = [documentRun pointForNode:node];
+        ret.nodeKey = documentRun.id;
+        ret.word = documentRunPoint.word;
+        ret.element = documentRunPoint.element;
+    }   
+    
+    [extractor release];
+    
     return ret;
 }
 

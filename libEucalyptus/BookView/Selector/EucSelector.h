@@ -15,6 +15,7 @@
 
 typedef enum EucSelectorTrackingStage {
     EucSelectorTrackingStageNone,
+    EucSelectorTrackingStageDelay,
     EucSelectorTrackingStageFirstSelection,
     EucSelectorTrackingStageSelectedAndWaiting,
     EucSelectorTrackingStageChangingSelection,
@@ -58,7 +59,7 @@ typedef enum EucSelectorTrackingStage {
     CGFloat _draggingKnobVerticalOffset;
     
     EucMenuController *_menuController;
-    BOOL _shouldHideMenu;
+    NSInteger _shouldHideMenuCount;
     BOOL _menuShouldBeAvailable;
     
     NSArray *_cachedBlockIdentifiers;
@@ -139,9 +140,6 @@ typedef enum EucSelectorTrackingStage {
 // Optionally return a UIColor to use for the selection highlight (nil = default blue color).
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange;
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)selectedRange movedToRange:(EucSelectorRange *)selectedRange;
-
-- (void)eucSelectorWillBeginModalAccessibility:(EucSelector *)selector ;
-- (void)eucSelectorDidEndModalAccessibility:(EucSelector *)selector ;
 
 @end
 

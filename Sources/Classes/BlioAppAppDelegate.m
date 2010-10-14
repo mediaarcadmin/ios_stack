@@ -149,27 +149,19 @@ tryAgain:
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [[paths objectAtIndex:0] stringByAppendingString:@"/"];
 	
-	NSString* wmModelKeyFilename = @"priv.dat";
 	NSString* wmModelCertFilename = @"devcerttemplate.dat";
-	NSString* prModelKeyFilename = @"iphonezgpriv.dat";
 	NSString* prModelCertFilename = @"iphonecert.dat";
 	
 	NSString* sourceDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/"];
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) 
 		sourceDir = [sourceDir stringByAppendingString:@"DRM/"];
 	
-	NSString* rsrcWmModelKey = [sourceDir stringByAppendingString:wmModelKeyFilename]; 
-	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:wmModelKeyFilename];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelKey toPath:docsWmModelKey error:&err];
 	NSString* rsrcWmModelCert = [sourceDir stringByAppendingString:wmModelCertFilename]; 
 	NSString* docsWmModelCert = [documentsDirectory stringByAppendingString:wmModelCertFilename];
 	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
 	NSString* rsrcPRModelCert = [sourceDir stringByAppendingString:prModelCertFilename]; 
 	NSString* docsPRModelCert = [documentsDirectory stringByAppendingString:prModelCertFilename];
 	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];
-	NSString* rsrcPRModelKey = [sourceDir stringByAppendingString:prModelKeyFilename]; 
-	NSString* docsPRModelKey = [documentsDirectory stringByAppendingString:prModelKeyFilename];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelKey toPath:docsPRModelKey error:&err];
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
     
@@ -181,7 +173,8 @@ tryAgain:
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+            // TODO: Re-instate this (removed to speed up launch whilst testing
+			//[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
 		else {
 			//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
@@ -316,7 +309,8 @@ static void *background_init_thread(void * arg) {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);	
+        NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	NSLog(@"%@", NSStringFromSelector(_cmd));	

@@ -947,8 +947,13 @@
 					// feature is optional
 				}
 			}
-		}
-	}
+        } else if ( [elementName isEqualToString:@"PageLayout"] ) {
+            NSString * firstPageSide = [attributeDict objectForKey:@"FirstPageSide"];
+            if(firstPageSide && [firstPageSide isEqualToString:@"Left"]) {
+                [self setBookManifestValue:[NSNumber numberWithBool:YES] forKey:BlioManifestFirstLayoutPageOnLeftKey];
+            }
+        }
+    }
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 	//	NSLog(@"found characters: %@",string);

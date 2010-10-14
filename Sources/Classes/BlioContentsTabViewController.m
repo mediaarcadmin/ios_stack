@@ -10,6 +10,10 @@
 
 #define MAINLABEL_TAG 1
 #define SECONDLABEL_TAG 2
+#define MINPOPOVERHEIGHT 88
+#define MAXPOPOVERHEIGHT 585
+#define POPOVERSURROUNDHEIGHT 75
+#define POPOVERRESIZEDELAY 0.1f
 
 typedef enum {
     kBlioContentsTabViewTabContents = 0,
@@ -48,6 +52,7 @@ typedef enum {
 @implementation BlioContentsTabViewController
 
 @synthesize contentsController, bookmarksController, notesController, bookView, book, delegate, doneButton, tabSegment;
+@synthesize popoverController;
 
 - (void)dealloc {
     self.contentsController = nil;
@@ -58,30 +63,34 @@ typedef enum {
     self.delegate = nil;
     self.doneButton = nil;
     self.tabSegment = nil;
+    self.popoverController = nil;
     [super dealloc];
 }
 
 - (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook {
         
     UIViewController *aRootVC = [[UIViewController alloc] init];
-    
+
     BlioContentsTabContentsViewController *aContentsController = [[BlioContentsTabContentsViewController alloc] init];
     aContentsController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     aContentsController.dataSource = aBookView.contentsDataSource;
     aContentsController.currentSectionUuid = [aBookView.contentsDataSource sectionUuidForPageNumber:aBookView.pageNumber];
+    aContentsController.contentSizeForViewInPopover = CGSizeMake(320, MINPOPOVERHEIGHT);
     
     BlioContentsTabBookmarksViewController *aBookmarksController = [[BlioContentsTabBookmarksViewController alloc] initWithStyle:UITableViewStylePlain];
     aBookmarksController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
+    aBookmarksController.contentSizeForViewInPopover = CGSizeMake(320, MINPOPOVERHEIGHT);
+    
     BlioContentsTabNotesViewController *aNotesController = [[BlioContentsTabNotesViewController alloc] initWithStyle:UITableViewStylePlain];
     aNotesController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    
+    aNotesController.contentSizeForViewInPopover = CGSizeMake(320, MINPOPOVERHEIGHT);
+
 	if ((self = [super initWithRootViewController:aRootVC])) {
         self.bookView = aBookView;
         self.book = aBook;
         self.contentsController = aContentsController;
-        [self.contentsController setDelegate:self];
         [self pushViewController:self.contentsController animated:NO];
+        [self.contentsController setDelegate:self];
         
         [aBookmarksController setBook:aBook];
         [aBookmarksController setBookView:aBookView]; // Needed to get display page number
@@ -105,7 +114,9 @@ typedef enum {
         NSArray *tabTitles = [NSArray arrayWithObjects: NSLocalizedString(@"Contents",@"\"Contents\" segmented control title for BlioContentsTabViewController"), NSLocalizedString(@"Bookmarks",@"\"Bookmarks\" segmented control title for BlioContentsTabViewController"), NSLocalizedString(@"Notes",@"\"Notes\" segmented control title for BlioContentsTabViewController"), nil];
         UISegmentedControl *aTabSegmentedControl = [[UISegmentedControl alloc] initWithItems:tabTitles];
         aTabSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aTabSegmentedControl.tintColor = tintColor;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            aTabSegmentedControl.tintColor = tintColor;
+        }
         aTabSegmentedControl.selectedSegmentIndex = 0;
         [aTabSegmentedControl addTarget:self action:@selector(changeTab:) forControlEvents:UIControlEventValueChanged];
         item = [[UIBarButtonItem alloc] initWithCustomView:aTabSegmentedControl];
@@ -119,14 +130,21 @@ typedef enum {
         [item release];
         
         [self setToolbarHidden:NO];
-        [self.toolbar setTintColor:tintColor];
-        [self.navigationBar setTintColor:tintColor];
         
-        [self.contentsController.navigationItem setLeftBarButtonItem:self.doneButton];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [self.toolbar setTintColor:tintColor];
+            [self.navigationBar setTintColor:tintColor];
+            [self.contentsController.navigationItem setLeftBarButtonItem:self.doneButton];
+            [self.bookmarksController.navigationItem setLeftBarButtonItem:self.doneButton];
+            [self.notesController.navigationItem setLeftBarButtonItem:self.doneButton];
+        } else {
+            [self.contentsController.navigationItem setHidesBackButton:YES];
+            [self.bookmarksController.navigationItem setHidesBackButton:YES];
+            [self.notesController.navigationItem setHidesBackButton:YES];
+        }
+        
         [self.contentsController setToolbarItems:[NSArray arrayWithArray:tabItems]];
-        [self.bookmarksController.navigationItem setLeftBarButtonItem:self.doneButton];
         [self.bookmarksController setToolbarItems:[NSArray arrayWithArray:tabItems]];
-        [self.notesController.navigationItem setLeftBarButtonItem:self.doneButton];
         [self.notesController setToolbarItems:[NSArray arrayWithArray:tabItems]];
     }
     
@@ -140,6 +158,7 @@ typedef enum {
 
 - (void)changeTab:(id)sender {  
     [self popToRootViewControllerAnimated:NO];
+    
 
     BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[sender selectedSegmentIndex];
     switch (selectedTab) {
@@ -236,74 +255,40 @@ typedef enum {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-
 }
-
-/*
-- (void)viewWillAppear:(BOOL)animated {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-}
-*/
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[self.tabSegment selectedSegmentIndex];
-    switch (selectedTab) {
-        case kBlioContentsTabViewTabContents: {
-            NSString *selectedUuid = [self.contentsController selectedUuid];
-            if (nil != selectedUuid) {
-                if ([self.delegate respondsToSelector:@selector(goToContentsUuid:animated:)])
-                    [self.delegate goToContentsUuid:selectedUuid animated:YES];
-            }
-        }  break;
-        case kBlioContentsTabViewTabBookmarks: {
-            if (nil != self.bookmarksController.selectedBookmark) {
-                BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[self.bookmarksController.selectedBookmark valueForKey:@"range"]];
-                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)])
-                    [self.delegate goToContentsBookmarkRange:aBookmarkRange animated:NO];
-            }
-        }  break;
-        case kBlioContentsTabViewTabNotes: {
-            NSManagedObject *note = self.notesController.selectedNote;
-            if (nil != note) {
-                BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[note valueForKey:@"range"]];
-                if ([self.delegate respondsToSelector:@selector(goToContentsBookmarkRange:animated:)])
-                    [self.delegate goToContentsBookmarkRange:range animated:NO];
-                
-                if ([self.delegate respondsToSelector:@selector(displayNote:atRange:animated:)])
-                    [self.delegate displayNote:note atRange:range animated:YES];
-            }
-                     
-        }   break;
-    }   
-}
-*/
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
 {
-    if ([self.delegate isRotationLocked])
+    if ([self.delegate isRotationLocked]) {
         return NO;
-    else
+    } else {
         return YES;
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    if (duration) {
-        if ([self.delegate respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
-            [self.delegate willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if (duration) {
+            if ([self.delegate respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
+                [self.delegate willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+        }
     }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    if ([self.delegate respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
-        [self.delegate didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if ([self.delegate respondsToSelector:@selector(didRotateFromInterfaceOrientation:)])
+            [self.delegate didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    } else {
+        // Need to hide and show nav bar to workaround bug when rotating which hides the nav bar and toolbar
+        [self setNavigationBarHidden:YES];
+        [self setNavigationBarHidden:NO];
+    }
 }
 
 
@@ -314,9 +299,47 @@ typedef enum {
 	// Release any cached data, images, etc that aren't in use.
 }
 
+#pragma mark Popover Delegate methods
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    if ([self.delegate respondsToSelector:@selector(dismissContentsTabView:)])
+        [self.delegate performSelector:@selector(dismissContentsTabView:) withObject:self];
+}
+
 @end
 
 @implementation BlioContentsTabContentsViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+        
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.navigationItem setTitle:NSLocalizedString(@"Jump to\u2026", "Title for Contents Popover")];
+        [self.tableView setShowsVerticalScrollIndicator:NO];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [self performSelector:@selector(adjustPopoverContentSize) withObject:nil afterDelay:POPOVERRESIZEDELAY];
+    [super viewDidAppear:animated];
+}
+
+- (void)adjustPopoverContentSize {
+    CGSize contentSize = self.tableView.contentSize;
+    contentSize.height = MIN(MAX(contentSize.height, MINPOPOVERHEIGHT), MAXPOPOVERHEIGHT);
+    contentSize.height += POPOVERSURROUNDHEIGHT; // Accomodates the toolbar and navbar
+
+    [[(BlioContentsTabViewController *)self.navigationController popoverController] setPopoverContentSize:contentSize];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
 @end
 
 
@@ -343,22 +366,27 @@ typedef enum {
 
  - (void)viewDidLoad {
      [super viewDidLoad];
- 
      // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
      self.navigationItem.rightBarButtonItem = self.editButtonItem;
+     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+         [self.navigationItem setTitle:NSLocalizedString(@"Jump to\u2026", "Title for Contents Popover")];
+         [self.tableView setShowsVerticalScrollIndicator:NO];
+     }
  }
- 
 
-/*
- - (void)viewWillAppear:(BOOL)animated {
- [super viewWillAppear:animated];
- }
- */
-/*
- - (void)viewDidAppear:(BOOL)animated {
- [super viewDidAppear:animated];
- }
- */
+- (void)viewDidAppear:(BOOL)animated {
+    [self performSelector:@selector(adjustPopoverContentSize) withObject:nil afterDelay:POPOVERRESIZEDELAY];
+    [super viewDidAppear:animated];
+}
+
+- (void)adjustPopoverContentSize {
+    CGSize contentSize = self.tableView.contentSize;
+    contentSize.height = MIN(MAX(contentSize.height, MINPOPOVERHEIGHT), MAXPOPOVERHEIGHT);
+    contentSize.height += POPOVERSURROUNDHEIGHT; // Accomodates the toolbar and navbar
+    
+
+    [[(BlioContentsTabViewController *)self.navigationController popoverController] setPopoverContentSize:contentSize];
+}
 /*
  - (void)viewWillDisappear:(BOOL)animated {
  [super viewWillDisappear:animated];
@@ -370,13 +398,13 @@ typedef enum {
  }
  */
 
-/*
- // Override to allow orientations other than the default portrait orientation.
- - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
- // Return YES for supported orientations
- return (interfaceOrientation == UIInterfaceOrientationPortrait);
- }
- */
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -415,7 +443,10 @@ typedef enum {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
         
         mainLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10.0, 0.0, 65.0, 44.0)] autorelease];
         mainLabel.tag = MAINLABEL_TAG;
@@ -485,7 +516,6 @@ typedef enum {
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
     }   
 }
- 
 
 @end
 
@@ -511,24 +541,28 @@ typedef enum {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.navigationItem setTitle:NSLocalizedString(@"Jump to\u2026", "Title for Contents Popover")];
+        [self.tableView setShowsVerticalScrollIndicator:NO];
+    }
 }
 
 
-/*
- - (void)viewWillAppear:(BOOL)animated {
- [super viewWillAppear:animated];
- }
- */
+- (void)viewDidAppear:(BOOL)animated {
+    [self performSelector:@selector(adjustPopoverContentSize) withObject:nil afterDelay:POPOVERRESIZEDELAY];
+    [super viewDidAppear:animated];
+}
 
-/*
- - (void)viewDidAppear:(BOOL)animated {
- [super viewDidAppear:animated];
- }
- */
+- (void)adjustPopoverContentSize {
+    CGSize contentSize = self.tableView.contentSize;
+    contentSize.height = MIN(MAX(contentSize.height, MINPOPOVERHEIGHT), MAXPOPOVERHEIGHT);
+    contentSize.height += POPOVERSURROUNDHEIGHT; // Accomodates the toolbar and navbar
+    
+    
+    [[(BlioContentsTabViewController *)self.navigationController popoverController] setPopoverContentSize:contentSize];
+}
+ 
 /*
  - (void)viewWillDisappear:(BOOL)animated {
  [super viewWillDisappear:animated];
@@ -540,13 +574,13 @@ typedef enum {
  }
  */
 
-/*
- // Override to allow orientations other than the default portrait orientation.
- - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
- // Return YES for supported orientations
- return (interfaceOrientation == UIInterfaceOrientationPortrait);
- }
- */
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -585,7 +619,10 @@ typedef enum {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
         
         mainLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10.0, 0.0, 65.0, 44.0)] autorelease];
         mainLabel.tag = MAINLABEL_TAG;

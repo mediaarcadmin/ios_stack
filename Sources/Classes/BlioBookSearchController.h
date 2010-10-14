@@ -43,7 +43,7 @@
 @property (nonatomic, readonly) BOOL hasWrapped;
 
 - (id)initWithParagraphSource:(id<BlioParagraphSource>)aParagraphSource;
-- (void)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint;
+- (BOOL)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint;
 - (void)findNextOccurrence;
 - (void)cancel;
 

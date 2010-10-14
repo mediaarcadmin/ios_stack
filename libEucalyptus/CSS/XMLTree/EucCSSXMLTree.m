@@ -9,10 +9,9 @@
 #import "EucCSSXMLTree.h"
 #import "EucCSSXMLTreeNode.h"
 
-#import <expat/expat.h>
-
 @implementation EucCSSXMLTree
 
+@synthesize nodes = _nodes;
 @synthesize idToNode = _idToNode;
 
 typedef struct EucCSSXMLTreeContext
@@ -21,6 +20,8 @@ typedef struct EucCSSXMLTreeContext
     NSMutableArray *nodes;
     NSMutableDictionary *idToNode;
     EucCSSXMLTreeNode *currentNode;
+    IMP idForNodeAttributeAndValue;
+    EucCSSXMLTree *self;
 } EucCSSXMLTreeContext;
 
 static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) 
@@ -37,12 +38,14 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
     if(*atts) {
         NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
         for(int i = 0; atts[i]; i+=2) {
-            NSString *name = [NSString stringWithUTF8String:atts[i]];
-            NSString *value = [NSString stringWithUTF8String:atts[i+1]];
-            [attributes setObject:value
-                           forKey:name];
-            if(strcasecmp("id", atts[i]) == 0) {
-                [context->idToNode setValue:newNode forKey:value];
+            if(atts[i+1]) {
+                NSString *name = [NSString stringWithUTF8String:atts[i]];
+                NSString *value = [NSString stringWithUTF8String:atts[i+1]];
+                [attributes setObject:value forKey:name];
+                NSString *idForNode = context->idForNodeAttributeAndValue(context->self, @selector(idForNodeAttribute:value:), atts[i], atts[i+1]);
+                if(idForNode) {
+                    [context->idToNode setValue:newNode forKey:idForNode];
+                }
             }
         }
         newNode.attributes = attributes;
@@ -55,6 +58,15 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
     context->currentNode = newNode;
          
     [newNode release];
+}
+
+- (NSString *)idForNodeAttribute:(const XML_Char *)name value:(const XML_Char *)value
+{
+    if(strcasecmp("id", name) == 0) {
+        return [NSString stringWithUTF8String:value];
+    } else {
+        return nil;
+    }
 }
 
 static void EucCSSXMLTreeEndElementHandler(void *ctx, const XML_Char *name) 
@@ -97,7 +109,8 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
         if(xmlLength) {
             NSMutableArray *buildNodes = [[NSMutableArray alloc] init];
             NSMutableDictionary *buildIdToNodes = [[NSMutableDictionary alloc] init];
-            EucCSSXMLTreeContext context = { _xmlTreeNodeClass, buildNodes, buildIdToNodes, NULL };
+            IMP idForNodeAttributeAndValue = [self methodForSelector:@selector(idForNodeAttribute:value:)];
+            EucCSSXMLTreeContext context = { _xmlTreeNodeClass, buildNodes, buildIdToNodes, NULL, idForNodeAttributeAndValue, self };
             
             XML_Parser parser = XML_ParserCreate("UTF-8");
             XML_SetUserData(parser, &context);    

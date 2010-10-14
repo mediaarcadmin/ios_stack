@@ -141,6 +141,7 @@
     if(!self.window) {
         _pageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
         _pageTurningView.delegate = self;
+        _pageTurningView.viewDataSource = self;
         _pageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         UIImage *pageTexture = self.pageTexture;
         if(!pageTexture) {
@@ -392,7 +393,7 @@
             if(count < 0) {
                 count = -count;
             }
-            [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count];
+            [_pageTurningView turnToPageView:newPageView forwards:oldPageNumber < pageNumber pageCount:count onLeft:NO];
         } else {
             _pageTurningView.currentPageView = newPageView;
             [_pageTurningView setNeedsDraw];
@@ -597,7 +598,7 @@
                          
         EucBookPageIndexPoint *endPoint = highlightRange.endPoint;
         EucBookPageIndexPoint *pageEndPoint = pageIndexPointRange.second;
-        if([pageEndPoint compare:endPoint] != NSOrderedDescending) {
+        if([endPoint compare:pageEndPoint] != NSOrderedAscending) {
             endBlockId = [blockIds lastObject];
             endElementId = [[pageTextView identifiersForElementsOfBlockWithIdentifier:endBlockId] lastObject];
         } else {
@@ -632,20 +633,24 @@
             
             id elementId;
             if(isFirstBlock) {
-                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
-                    ++elementIdIndex;
+                if(elementIdCount) {
+                    while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                        ++elementIdIndex;
+                    }
                 }
                 isFirstBlock = NO;
             }
             
-            do {
-                elementId = [elementIds objectAtIndex:elementIdIndex];
-                [nonCoalescedRects addObjectsFromArray:[pageTextView rectsForElementWithIdentifier:elementId
-                                                                             ofBlockWithIdentifier:blockId]];
-                ++elementIdIndex;
-            } while (isLastBlock ? 
-                     ([elementId compare:endElementId] < NSOrderedSame) : 
-                     elementIdIndex < elementIdCount);
+            if(elementIdCount) {
+                do {
+                    elementId = [elementIds objectAtIndex:elementIdIndex];
+                    [nonCoalescedRects addObjectsFromArray:[pageTextView rectsForElementWithIdentifier:elementId
+                                                                                 ofBlockWithIdentifier:blockId]];
+                    ++elementIdIndex;
+                } while (isLastBlock ? 
+                         ([elementId compare:endElementId] < NSOrderedSame) : 
+                         elementIdIndex < elementIdCount);
+            }
             ++blockIdIndex;
         }
         
@@ -771,10 +776,7 @@ typedef enum {
 {
     if(buttonIndex != alertView.cancelButtonIndex) {
         UIApplication *application = [UIApplication sharedApplication];
-        
-        // Looks nice if we leave time for the sheet's fading to fade out.
-        [application beginIgnoringInteractionEvents];
-        [application performSelector:@selector(openURL:) withObject:((THAlertViewWithUserInfo *)alertView).userInfo afterDelay:0];
+        [application performSelector:@selector(openURL:) withObject:((THAlertViewWithUserInfo *)alertView).userInfo afterDelay:0.5];
     }
 }
 
@@ -1003,10 +1005,12 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
 
     NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
     
-    self.pageNumber = pageNumber;  
+    self.pageNumber = pageNumber; 
+    
+    self.selector.selectedRange = nil;
     
     [_pageSlider setScaledValue:[self _pageToSliderByte:pageNumber] animated:NO];
-    [self _updatePageNumberLabel];    
+    [self _updatePageNumberLabel];  
 }
 
 - (void)pageTurningView:(EucPageTurningView *)pageTurningView didScaleToView:(UIView *)view
@@ -1028,20 +1032,23 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [self _updatePageNumberLabel];
 }
 
-- (void)pageTurningViewAnimationWillBegin:(EucPageTurningView *)pageTurningView
+- (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)pageTurningView
 {
     if([_delegate respondsToSelector:@selector(bookViewPageTurnWillBegin:)]) {
         [_delegate bookViewPageTurnWillBegin:self];
     }
     
     _selector.selectionDisabled = YES;
+    
     _temporaryHighlightingDisabled = YES;
+    
     [self _removeTemporaryHighlights];    
 }
 
-- (void)pageTurningViewAnimationDidEnd:(EucPageTurningView *)pageTurningView
+- (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)pageTurningView
 {
     _selector.selectionDisabled = NO;
+    
     _temporaryHighlightingDisabled = NO;
     
     if(_temporaryHighlightRange) {
@@ -1204,7 +1211,6 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [_rangeBeingEdited release];
     _rangeBeingEdited = nil;
 
-    self.selector.selectedRange = nil;
     [self refreshHighlights];
 }
 
@@ -1352,8 +1358,8 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     [_pageSlider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
     
     UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
-    if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-        // Work around a bug in 4.0 (+?) where the cap is used as a right cap in
+    if([[UIDevice currentDevice] compareSystemVersion:@"3.2"] >= NSOrderedSame) {
+        // Work around a bug in 3.2 (+?) where the cap is used as a right cap in
         // the image when it's used in a slider.
         rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:rightCapImage.size.width - 1 topCapHeight:0];
     } else {

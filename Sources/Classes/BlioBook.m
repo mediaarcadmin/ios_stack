@@ -52,12 +52,15 @@
 
 - (BlioBookmarkPoint *)implicitBookmarkPoint
 {
-    BlioBookmarkPoint *ret;
+    BlioBookmarkPoint *ret = nil;
     
     NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
     if(placeInBook) {
         ret = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[[placeInBook valueForKey:@"range"] valueForKey:@"startPoint"]];
-    } else {
+    } 
+    
+    if(!ret || 
+       ret.layoutPage == 0) {  // layoutPage should never be zero, but some old versions of the app did save it that way.
         ret = [[[BlioBookmarkPoint alloc] init] autorelease];
         ret.layoutPage = 1;
     }
@@ -66,6 +69,14 @@
 
 - (void)setImplicitBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
+    if(bookmarkPoint.layoutPage == 0) {
+        NSParameterAssert(bookmarkPoint.blockOffset == 0 && bookmarkPoint.wordOffset == 0 && bookmarkPoint.elementOffset == 0);
+        // This is a result of saving a nil bookmark point.  Shouldn't really 
+        // happen, but it's easy to guard against here anyway.
+        bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+        bookmarkPoint.layoutPage = 1;
+    }
+    
     NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
     if(placeInBook) {
         NSManagedObject *persistentBookmarkRange = [placeInBook valueForKey:@"range"];
@@ -159,7 +170,7 @@
 }
 
 - (BOOL)audioRights {
-    return [[self valueForKey:@"hasAudiobookRights"] boolValue];
+    return NO;//[[self valueForKey:@"hasAudiobookRights"] boolValue];
 }
 - (BOOL)reflowEnabled {
     return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
@@ -199,6 +210,11 @@
 - (BOOL)isEncrypted {
     return [self hasManifestValueForKey:BlioManifestDrmHeaderKey];
 }
+
+- (BOOL)firstLayoutPageOnLeft {
+    return [self hasManifestValueForKey:BlioManifestFirstLayoutPageOnLeftKey];
+}
+
 
 - (UIImage *)missingCoverImageOfSize:(CGSize)size {
     if(UIGraphicsBeginImageContextWithOptions != nil) {

@@ -12,6 +12,7 @@
 #import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import "BlioParagraphSource.h"
+#import "levenshtein_distance.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucHighlightRange.h>
@@ -19,6 +20,7 @@
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/THPair.h>
+#import "NSArray+BlioAdditions.h"
 
 @interface BlioFlowView ()
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
@@ -141,8 +143,16 @@
     return [self bookmarkPointFromBookPageIndexPoint:[_eucBookView.book currentPageIndexPoint]];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
 {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
+    
     EucBookPageIndexPoint *eucIndexPoint;
     if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
        _textFlowFlowTreeKind == BlioTextFlowFlowTreeKindFlow &&
@@ -165,12 +175,14 @@
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
 {
-    return [_eucBookView goToUuid:uuid animated:animated];
+    [self pushCurrentBookmarkPoint];
+    [_eucBookView goToUuid:uuid animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 {
-    return [_eucBookView goToPageNumber:pageNumber animated:animated];
+    [self pushCurrentBookmarkPoint];
+    [_eucBookView goToPageNumber:pageNumber animated:animated];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
@@ -217,13 +229,27 @@
     return _pageViewIsTurning || self.selector.tracking;
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
+}
+
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save;
 {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
 }
 
-- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated {
+    [self highlightWordsInBookmarkRange:blioRange animated:animated saveToHistory:NO];
+}
+
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated saveToHistory:(BOOL)save
 {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     EucHighlightRange *eucRange = [[EucHighlightRange alloc] init];
     eucRange.startPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.startPoint];
     eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
@@ -232,10 +258,22 @@
 }
 
 #pragma mark -
+#pragma mark Back Button History
+
+- (void)pushCurrentBookmarkPoint {
+    BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
+    if (bookmarkPoint) {
+        [self.delegate pushBookmarkPoint:bookmarkPoint];
+    }
+}
+
+#pragma mark -
 #pragma mark EucBookView delegate methods
 
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
 {
+    [_delegate cancelPendingToolbarShow];
+
     _pageViewIsTurning = YES;
 }
 
@@ -281,6 +319,53 @@
     return ret;
 }
 
+- (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link
+{
+    [_delegate cancelPendingToolbarShow];
+
+    BOOL handled = NO;
+    if([link.scheme isEqualToString:@"textflow"]) {
+        NSString *internalURI = link.relativeString;
+        
+        if([_eucBook isKindOfClass:[BlioFlowEucBook class]]) {
+            BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+            BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:self.bookID];
+            BlioTextFlowReference *reference = [textFlow referenceForReferenceId:internalURI];
+            [bookManager checkInTextFlowForBookWithID:self.bookID];
+            
+            if (reference) {
+                BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+                bookmarkPoint.layoutPage = reference.pageIndex + 1;
+
+                NSDictionary *idToIndexPoint = [(EucBUpeBook *)_eucBook idToIndexPoint];
+                
+                NSArray *longKeys = [idToIndexPoint allKeys];
+                NSMutableArray *shortKeys = [NSMutableArray arrayWithCapacity:[longKeys count]];
+                for (NSString *longKey in longKeys) {
+                    NSRange firstHash = [longKey rangeOfString:@"#"];
+                    NSString *shortKey = longKey;
+                    if ((firstHash.location != NSNotFound) && (firstHash.location < ([longKey length] - 1))) {
+                        shortKey = [longKey substringFromIndex:firstHash.location + 1];
+                    }
+                    [shortKeys addObject:shortKey];
+                }
+                
+                NSString *matchKey = [shortKeys longestComponentizedMatch:[reference referenceId] componentsSeperatedByString:@"/" forKeyPath:@"self"];
+          
+                if (matchKey) {
+                    NSUInteger keyIndex = [shortKeys indexOfObject:matchKey];
+                    [self goToUuid:[longKeys objectAtIndex:keyIndex] animated:YES];
+                    return !handled;
+                } else {
+                    // Handle failure cases by going straight to the page
+                    [self goToBookmarkPoint:bookmarkPoint animated:YES];
+                }
+            }
+        }
+    }
+        
+    return handled;
+}
 
 #pragma mark -
 #pragma mark BlioSelectableBookView overrides

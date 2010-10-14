@@ -118,18 +118,21 @@
 }
 
 - (void)launchWebsite:(id)sender {	
+	// Open question whether we will go to a single top-level URL here for both iphone and ipad.
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		UIButton* ctl = (UIButton*)sender;
+		if ( ctl == launchButton ) {
+			NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
+			[[UIApplication sharedApplication] openURL:url];			  
+		}
+	}
 	// TODO: take out this beta alert below!
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+	else {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
 								 message:NSLocalizedStringWithDefaultValue(@"BETA_MOBILE_STORE_NOT_AVAILABLE",nil,[NSBundle mainBundle],@"The Blio Book Store cannot be accessed through this link during the beta testing period.",@"Alert Text informing the end-user that the Blio Book Store is not available for this beta release.")
 								delegate:nil 
 					   cancelButtonTitle:@"OK"
 					   otherButtonTitles:nil];
-	return;
-	
-	UIButton* ctl = (UIButton*)sender;
-	if ( ctl == launchButton ) {
-		NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
-		[[UIApplication sharedApplication] openURL:url];			  
 	}
 }
 

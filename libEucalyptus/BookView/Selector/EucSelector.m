@@ -117,7 +117,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 @synthesize draggingKnobVerticalOffset = _draggingKnobVerticalOffset;
 
 @synthesize menuController = _menuController;
-@synthesize shouldHideMenu = _shouldHideMenu;
 @synthesize menuShouldBeAvailable = _menuShouldBeAvailable;
 
 @synthesize accessibilityMask = _accessibilityMask;
@@ -728,9 +727,13 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             self.menuShouldBeAvailable = NO;
             [self.menuController setMenuVisible:NO animated:YES];
         }
+        
+        if(previousStage == EucSelectorTrackingStageDelay) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+        }
 
         if(previousStage != EucSelectorTrackingStageFirstSelection && 
-           (stage == EucSelectorTrackingStageNone || stage == EucSelectorTrackingStageFirstSelection)) {
+           (stage < EucSelectorTrackingStageDelay || stage == EucSelectorTrackingStageFirstSelection)) {
             if(self.selectedRangeIsHighlight &&
                [self.delegate respondsToSelector:@selector(eucSelector:didEndEditingHighlightWithRange:movedToRange:)]) {
                 [self.delegate eucSelector:self 
@@ -741,7 +744,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [_cachedHighlightRanges release];
                 _cachedHighlightRanges = nil;                
             }
-            self.selectedRangeOriginalHighlightRange = nil;
+            //self.selectedRangeOriginalHighlightRange = nil;
             self.selectionColor = nil;
         }
         
@@ -765,7 +768,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [snapshotLayer removeFromSuperlayer];
                 self.snapshotLayer = nil;
                 
-                    [CATransaction commit];
+                [CATransaction commit];
             }
         }
         
@@ -803,6 +806,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             case EucSelectorTrackingStageNone:
             {
                 self.selectedRangeIsHighlight = NO;
+                [_selectedRange release];
+                _selectedRange = nil;
                 [self _removeAllHighlightLayers];
                 [self _clearSelectionCaches];
                 EucSelectorAccessibilityMask *mask = self.accessibilityMask;
@@ -815,13 +820,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 self.tracking = NO;
                 break;
             } 
+            case EucSelectorTrackingStageDelay:
+            {
+                [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
+                break;
+            }
             case EucSelectorTrackingStageFirstSelection:
             {
-                if(previousStage == EucSelectorTrackingStageNone) {
-                    self.tracking = YES;
-                } else {
-                    [self _removeAllHighlightLayers];
-                }
+                self.tracking = YES;
+                [self _removeAllHighlightLayers];
                 [self _setupLoupe:@"Magnification"];
                 [self _trackTouch:self.trackingTouch];
                 
@@ -845,6 +852,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             } 
             case EucSelectorTrackingStageSelectedAndWaiting:
             {
+                self.tracking = NO;
                 if(previousStage == EucSelectorTrackingStageFirstSelection && self.selectedRangeIsHighlight) {
                     self.selectedRangeOriginalHighlightRange = self.selectedRange;
                     if([self.delegate respondsToSelector:@selector(eucSelector:willBeginEditingHighlightWithRange:)]) {
@@ -884,6 +892,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             }
             case EucSelectorTrackingStageChangingSelection:
             {         
+                self.tracking = YES;
                 [self _setupLoupe:@"Line"];
                 break;
             } 
@@ -1226,6 +1235,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
+        if(_cachedBlockAndElementIdentifierToRects) {
+            CFRelease(_cachedBlockAndElementIdentifierToRects);
+            _cachedBlockAndElementIdentifierToRects = NULL;
+        }
+        
         // Work out he rects to highlight
         NSArray *highlightRects = [self _highlightRectsForRange:selectedRange];
         
@@ -1289,6 +1303,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     }
 }
 
+
 - (void)setSelectedRange:(EucSelectorRange *)newRange
 {
     if(newRange != _selectedRange &&
@@ -1312,6 +1327,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         } 
     }
 }
+
 
 - (void)_moveSelectionBoundaryToBlockAndElement:(THPair *)closestBlockAndElement 
                                  isLeftBoundary:(BOOL)isLeftBoundary  
@@ -1359,9 +1375,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             break;
         }
     }
-    
-    if(newSelectedRange) {
-        if(![newSelectedRange isEqual:self.selectedRange]) {
+
+    if(newSelectedRange && ![newSelectedRange isEqual:self.selectedRange]) {
+        if(&UIAccessibilityAnnouncementNotification != NULL) {
             NSString *newSelectedWord;
             if(isLeftBoundary) {
                 newSelectedWord = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:newSelectedRange.startElementId 
@@ -1382,12 +1398,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             }
             
             [self.accessibilityMask setSelectionString:entireSelection];
-        }                
-        
+        }       
         self.selectedRange = newSelectedRange;
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
-    
-    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 
 
@@ -1420,26 +1434,28 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 }
             }
             
-            if(![newSelectedRange isEqual:self.selectedRange]) {
-                NSString *labelFormat = @"%@";
-                if(!self.accessibilityAnnouncedSelecting) {
-                    labelFormat = NSLocalizedString(@"Selecting: %@", @"Accessibility announcement when selector is first used.  Arg = word hovered over");
-                    self.accessibilityAnnouncedSelecting = YES;
+            if(&UIAccessibilityAnnouncementNotification != NULL) {
+                if(![newSelectedRange isEqual:self.selectedRange]) {
+                    NSString *labelFormat = @"%@";
+                    if(!self.accessibilityAnnouncedSelecting) {
+                        labelFormat = NSLocalizedString(@"Selecting: %@", @"Accessibility announcement when selector is first used.  Arg = word hovered over");
+                        self.accessibilityAnnouncedSelecting = YES;
+                    }
+                    NSString *labelString;
+                    if(newSelectedRangeIsHighlight) {
+                        NSString *highlightString = [self _accessibilityLabelForRange:newSelectedRange];
+                        NSString *labelStringFormat = NSLocalizedString(@"Highlight: %@", @"Accessibility announcement when selector is first used and the user is hovering over an existing highlight.  Arg = highlighted text hovered over");
+                        labelString = [NSString stringWithFormat:labelStringFormat, highlightString ?: @""];
+                    } else {
+                        labelString = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:elementId 
+                                         ofBlockWithIdentifier:blockId];
+                    }
+                    NSString *label = [NSString stringWithFormat:labelFormat, labelString ?: @""];
+                    if(label) {
+                        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
+                    }
+                    [self.accessibilityMask setSelectionString:labelString];
                 }
-                NSString *labelString;
-                if(newSelectedRangeIsHighlight) {
-                    NSString *highlightString = [self _accessibilityLabelForRange:newSelectedRange];
-                    NSString *labelStringFormat = NSLocalizedString(@"Highlight: %@", @"Accessibility announcement when selector is first used and the user is hovering over an existing highlight.  Arg = highlighted text hovered over");
-                    labelString = [NSString stringWithFormat:labelStringFormat, highlightString ?: @""];
-                } else {
-                    labelString = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:elementId 
-                                     ofBlockWithIdentifier:blockId];
-                }
-                NSString *label = [NSString stringWithFormat:labelFormat, labelString ?: @""];
-                if(label) {
-                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
-                }
-                [self.accessibilityMask setSelectionString:labelString];
             }
         }
         
@@ -1609,35 +1625,56 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)setSelectionDisabled:(BOOL)selectionDisabled
 {
-    _selectionDisabled = selectionDisabled;
-    if(_selectionDisabled) {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
-        self.trackingStage = EucSelectorTrackingStageNone;
-        self.trackingTouch = nil;
+    if(selectionDisabled != _selectionDisabled) {
+        if(selectionDisabled) {
+            self.shouldHideMenu = YES;
+            if(self.trackingTouch) {
+                NSSet *touchSet = [[NSSet alloc] initWithObjects:&_trackingTouch count:1];
+                [self touchesCancelled:touchSet];
+                [touchSet release];
+            }
+            if(self.trackingStage <= EucSelectorTrackingStageDelay) {
+                self.trackingStage = EucSelectorTrackingStageNone;
+            }
+            [self _removeAllHighlightLayers];
+        } else {
+            if(self.trackingStage > EucSelectorTrackingStageDelay) {
+                [self redisplaySelectedRange];
+            }
+            self.shouldHideMenu = NO;
+        }
+        _selectionDisabled = selectionDisabled;
     }
 }
 
 - (void)touchesBegan:(NSSet *)touches
 {
-    if(!self.selectionDisabled && !self.trackingTouch) {
-        UITouch *touch = [touches anyObject];
-        BOOL currentlyTracking = self.isTracking;
+    // We don't want to start tracking a pinch.
+    // In the other touches...: methods, we /do/ track even if there is more
+    // than one touch, because the touch we started tracking herre could be
+    // in the set.
+    if(touches.count == 1) { 
+        if(!self.selectionDisabled && !self.trackingTouch) {
+            UITouch *touch = [touches anyObject];
 
-        self.trackingTouch = touch;
-        self.trackingTouchHasMoved = NO;
-        if(currentlyTracking) {
-            [self _setDraggingKnobFromTouch:touch];
+            EucSelectorTrackingStage currentStage = self.trackingStage;
+            
+            self.trackingTouch = touch;
+            self.trackingTouchHasMoved = NO;
+            if(currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
+                [self _setDraggingKnobFromTouch:touch];
+                if(self.draggingKnob) {
+                    self.trackingStage = EucSelectorTrackingStageChangingSelection;
+                    [self _trackTouch:touch];
+                }             
+            }
+            
+            currentStage = self.trackingStage;
+            if(currentStage == EucSelectorTrackingStageNone || 
+               currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
+                self.trackingStage = EucSelectorTrackingStageDelay;
+            }
         }
-        if(!currentlyTracking || 
-           !self.draggingKnob) {
-            [self performSelector:@selector(_startSelection) withObject:nil afterDelay:0.5f];
-        } else {
-            if(self.draggingKnob) {
-                self.trackingStage = EucSelectorTrackingStageChangingSelection;
-                [self _trackTouch:touch];
-            } 
-        }
-        
     }
 }
 
@@ -1645,9 +1682,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     UITouch *trackingTouch = self.trackingTouch;
     if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
-        if(!self.isTracking || 
-           (self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+        EucSelectorTrackingStage currentStage = self.trackingStage;
+        if(currentStage == EucSelectorTrackingStageDelay) {
             self.trackingTouch = nil;
             self.trackingStage = EucSelectorTrackingStageNone;
         } else {
@@ -1661,9 +1697,8 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     UITouch *trackingTouch = self.trackingTouch;
     if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
-        if(!self.isTracking || 
-           (self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting && !self.draggingKnob)) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
+        EucSelectorTrackingStage currentStage = self.trackingStage;
+        if(currentStage == EucSelectorTrackingStageDelay) {
             self.trackingTouch = nil;
             self.trackingStage = EucSelectorTrackingStageNone;
         } else {
@@ -1682,11 +1717,14 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (void)touchesCancelled:(NSSet *)touches
 {
     if([touches containsObject:self.trackingTouch]) {
-        if(self.trackingStage == EucSelectorTrackingStageSelectedAndWaiting  && !self.draggingKnob) {
+        EucSelectorTrackingStage currentStage = self.trackingStage;
+        if(currentStage == EucSelectorTrackingStageDelay) {
             // This was a touch outside the selection.
             // Since it was cancelled, treat it as if it never existed.
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startSelection) object:nil];
             self.trackingTouch = nil;
+            if(self.selectedRange != nil) {
+                self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
+            }
         } else {
             [self touchesEnded:touches];
         }
@@ -1696,7 +1734,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 - (void)observeTouch:(UITouch *)touch
 {
     if(!self.selectionDisabled) {
-        NSSet *touchSet = [NSSet setWithObject:touch];
+        NSSet *touchSet = [[NSSet  alloc] initWithObjects:&touch count:1];
         switch(touch.phase) {
             case UITouchPhaseBegan:
                 [self touchesBegan:touchSet];
@@ -1708,27 +1746,44 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 [self touchesEnded:touchSet];
                 break;
             case UITouchPhaseCancelled:
-            default:
                 [self touchesCancelled:touchSet];
                 break;
+            default:
+                break;
         }
+        [touchSet release];
     }
 }
 
 - (void)setShouldHideMenu:(BOOL)shouldHideMenu
 {
-    if(shouldHideMenu != _shouldHideMenu) {
-        _shouldHideMenu = shouldHideMenu;
-        EucMenuController *menuController = self.menuController;
-        if(menuController && self.menuShouldBeAvailable) {
-            if(menuController.menuVisible && shouldHideMenu) {
+    EucMenuController *menuController = self.menuController;
+    if(shouldHideMenu) {
+        if(_shouldHideMenuCount == 0) {
+            if(menuController && menuController.menuVisible) {
                 [menuController setMenuVisible:NO animated:YES];
-            } else if(!menuController.menuVisible && !shouldHideMenu) {
+            }
+        }
+        ++_shouldHideMenuCount;
+    } else {
+        --_shouldHideMenuCount;
+        if(_shouldHideMenuCount == 0) {
+            if(menuController && self.menuShouldBeAvailable &&
+               !menuController.menuVisible) {
                 [self _positionMenu];
                 [menuController setMenuVisible:YES animated:YES];
             }
         }
     }
+    if(_shouldHideMenuCount < 0) {
+        THWarn(@"Selector menu set to visible more times than it has been hidden");
+        _shouldHideMenuCount = 0;
+    }
+}
+
+- (BOOL)shouldHideMenu
+{
+    return _shouldHideMenuCount != 0;
 }
 
 @end

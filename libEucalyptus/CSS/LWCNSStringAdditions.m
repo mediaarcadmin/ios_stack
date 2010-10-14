@@ -17,6 +17,13 @@
                                    encoding:NSUTF8StringEncoding] autorelease];
 }
 
+- (id)initWithLWCString:(lwc_string *)lwcString
+{
+    return [[NSString alloc] initWithBytes:lwc_string_data(lwcString) 
+                                    length:lwc_string_length(lwcString) 
+                                  encoding:NSUTF8StringEncoding];
+}
+
 - (lwc_string *)lwcStringInContext:(lwc_context *)context
 {
     lwc_string *ret;

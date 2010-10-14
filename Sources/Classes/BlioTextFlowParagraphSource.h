@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 #import "BlioParagraphSource.h"
 
-@class BlioTextFlow, BlioTextFlowFlowTree;
+@class BlioTextFlow, BlioTextFlowFlowTree, BlioFlowEucBook;
 
 @interface BlioTextFlowParagraphSource : NSObject <BlioParagraphSource> {
     BlioTextFlow *textFlow;

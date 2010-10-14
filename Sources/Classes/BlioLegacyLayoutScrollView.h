@@ -1,5 +1,5 @@
 //
-//  BlioLayoutScrollView.h
+//  BlioLegacyLayoutScrollView.h
 //  BlioApp
 //
 //  Created by matt on 03/03/2010.
@@ -8,23 +8,23 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioBookView.h"
-#import "BlioLayoutView.h"
+#import "BlioLegacyLayoutView.h"
 #import <libEucalyptus/EucSelector.h>
 
-typedef enum BlioLayoutTouchForwardingState {
-    BlioLayoutTouchForwardingStateNone,
-    BlioLayoutTouchForwardingStateForwardedBegin,
-    BlioLayoutTouchForwardingStateForwardedBeginTimerExpired,
-    BlioLayoutTouchForwardingStateMultiTouchBegin,
-    BlioLayoutTouchForwardingStateCancelled
-} BlioLayoutTouchForwardingState;
+typedef enum BlioLegacyLayoutTouchForwardingState {
+    BlioLegacyLayoutTouchForwardingStateNone,
+    BlioLegacyLayoutTouchForwardingStateForwardedBegin,
+    BlioLegacyLayoutTouchForwardingStateForwardedBeginTimerExpired,
+    BlioLegacyLayoutTouchForwardingStateMultiTouchBegin,
+    BlioLegacyLayoutTouchForwardingStateCancelled
+} BlioLegacyLayoutTouchForwardingState;
 
-@interface BlioLayoutScrollView : UIScrollView {
+@interface BlioLegacyLayoutScrollView : UIScrollView {
     EucSelector *selector;
     NSTimer *doubleTapBeginTimer;
     NSTimer *doubleTapEndTimer;
     id<BlioBookViewDelegate> bookViewDelegate;
-    BlioLayoutTouchForwardingState forwardingState;
+    BlioLegacyLayoutTouchForwardingState forwardingState;
     CGPoint touchesBeginPoint;
 }
 

@@ -21,4 +21,29 @@
     return [NSArray arrayWithObjects:objects count:count];
 }   
 
+- (id)longestComponentizedMatch:(NSString *)match componentsSeperatedByString:(NSString *)separator forKeyPath:(NSString *)keyPath {
+    id matchedObject = nil;
+    NSUInteger matchLength = 0;
+    
+    NSArray *matchComponents = [match componentsSeparatedByString:separator];
+    
+    for (int i = 1; i <= [matchComponents count]; i++) {
+        NSRange componentsRange = NSMakeRange([matchComponents count] - i, i);
+        NSArray *subComponents = [matchComponents subarrayWithRange:componentsRange];
+        NSString *partMatch = [subComponents componentsJoinedByString:separator];
+        NSUInteger partMatchLength = [partMatch length];
+        
+        for (id candidate in [self objectEnumerator]) {
+            if ([[candidate valueForKeyPath:keyPath] hasSuffix:partMatch]) {
+                if (partMatchLength > matchLength) {
+                    matchedObject = candidate;
+                    matchLength = partMatchLength;
+                }
+            }
+        }
+    }
+    
+    return matchedObject;
+}
+
 @end

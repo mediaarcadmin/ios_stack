@@ -24,6 +24,9 @@
 #import "BlioAlertManager.h"
 #import "BlioBookManager.h"
 #import "BlioBeveledView.h"
+#import "BlioViewSettingsPopover.h"
+#import "BlioModalPopoverController.h"
+#import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
@@ -55,6 +58,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @interface BlioBookViewController ()
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
+@property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
+@property (nonatomic, retain) BlioModalPopoverController *viewSettingsPopover;
+@property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
+@property (nonatomic, retain) BlioModalPopoverController *searchPopover;
+@property (nonatomic, retain) UIBarButtonItem *contentsButton;
+@property (nonatomic, retain) UIBarButtonItem *viewSettingsButton;
+@property (nonatomic, retain) UIBarButtonItem *searchButton;
+@property (nonatomic, retain) NSMutableArray *historyStack;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
@@ -107,6 +118,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize searchViewController;
 @synthesize delegate;
 @synthesize coverView;
+@synthesize historyStack;
+@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, viewSettingsButton, searchButton;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
@@ -148,7 +161,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (id)initWithBook:(BlioBook *)newBook delegate:(id <BlioCoverViewDelegate>)aDelegate {
-    NSLog(@"BlioBookViewController inited");
     if (!(newBook || aDelegate)) {
         [self release];
         return nil;
@@ -160,6 +172,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.delegate = aDelegate;
         self.wantsFullScreenLayout = YES;
         [self initialiseControls];
+        self.historyStack = [NSMutableArray array];
         
         self.coverView = [self.delegate coverViewViewForOpening];
         
@@ -171,7 +184,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self initialiseBookView];
             [self setToolbarsVisibleAfterAppearance:YES];
             BlioBookmarkPoint *implicitPoint = [newBook implicitBookmarkPoint];
-            [self.bookView goToBookmarkPoint:implicitPoint animated:NO];
+            [self.bookView goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
+            [self.bookView pushCurrentBookmarkPoint];
         }
         
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
@@ -236,21 +250,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         lastLayout = kBlioPageLayoutPlainText;
     } else if (((![self.book hasEPub] && ![self.book hasTextFlow]) || ![self.book reflowEnabled]) && (lastLayout == kBlioPageLayoutPlainText)) {
         lastLayout = kBlioPageLayoutPageLayout;
-    } 
-    
-    // TODO: Remove this forced option for iPad
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        if ([self.book hasPdf] || [self.book hasXps]) {
-            lastLayout = kBlioPageLayoutPageLayout;
-        }
     }
-    
+
     switch (lastLayout) {
         case kBlioPageLayoutSpeedRead: {
             if ([self.book hasEPub] || [self.book hasTextFlow]) {
                 BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds 
                                                                                  bookID:self.book.objectID
                                                                                animated:YES];
+                aBookView.delegate = self;
                 self.bookView = aBookView; 
                 [aBookView release];
             }   
@@ -274,18 +282,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                                      animated:YES];
                 aBookView.delegate = self;
                 self.bookView = aBookView;
-                self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
                 [aBookView release];
             }
         } 
             break;
     }
     
+    self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+    
     bookReady = YES;
     
-    if (![self.bookView isKindOfClass:[BlioLayoutView class]]) {
+    //if (![self.bookView isKindOfClass:[BlioLayoutView class]]) {
         firstPageReady = YES;
-    }
+    //}
+    
 }
 
 - (void)firstPageDidRender {
@@ -526,10 +536,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:nil];
+                                           action:@selector(goBackInHistory)];
     
     [item setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
-    [item setEnabled:NO];
 	
     [readingItems addObject:item];
     [item release]; 
@@ -544,7 +553,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            action:@selector(showContents:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Contents", @"Accessibility label for Book View Controller Contents button")];
     [item setAccessibilityHint:NSLocalizedString(@"Shows table of contents, bookmarks and notes.", @"Accessibility label for Book View Controller Contents hint")];
-
+    self.contentsButton = item;
     [readingItems addObject:item];
     [item release];
 	
@@ -573,7 +582,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            target:self 
                                            action:@selector(search:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Search", @"Accessibility label for Book View Controller Search button")];
-    
+    self.searchButton = item;
     [readingItems addObject:item];
     [item release];
     
@@ -627,7 +636,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            action:@selector(showViewSettings:)];
     
     [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Book View Controller Settings button")];
-
+    self.viewSettingsButton = item;
     [readingItems addObject:item];
     [item release];
     
@@ -792,7 +801,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     //UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
 
     [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    [backArrow setAccessibilityLabel:NSLocalizedString(@"Library", @"Accessibility label for Book View Controller Back button")];
+    [backArrow setAccessibilityLabel:NSLocalizedString(@"Library Back", @"Accessibility label for Book View Controller Library Back button")];
 
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
     self.navigationItem.leftBarButtonItem = backItem;
@@ -902,7 +911,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [titleView setAuthor:[self.book authorsWithStandardFormat]];
         
         [self setNavigationBarButtons];
-        [self layoutPauseButton];        
+        [self layoutPauseButton];     
+        
+        if(animated) {
+            CATransition *animation = [CATransition animation];
+            animation.type = kCATransitionPush;
+            animation.subtype = kCATransitionFromRight;
+            animation.duration = 1.0/3.0;
+            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            
+            [animation setValue:_bookView forKey:@"THView"];                
+            [[toolbar layer] addAnimation:animation forKey:@"PageViewTransitionIn"];
+        } 
     }
 }
 
@@ -1093,7 +1113,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.managedObjectContext = nil;
     self.delegate = nil;
     self.coverView = nil;
-    
+    self.viewSettingsSheet = nil;
+    self.viewSettingsPopover = nil;
+    self.contentsPopover = nil;
+    self.searchPopover = nil;
+    self.contentsButton = nil;
+    self.viewSettingsButton = nil;
+    self.searchButton = nil;
+    self.historyStack = nil;
 	[super dealloc];
 }
 
@@ -1136,8 +1163,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return ([[self.navigationController navigationBar] isHidden] == NO);
 }
 
-- (void)toggleToolbars:(BlioLibraryToolbarsState)toolbarState
+- (void)delayedToggleToolbars:(NSNumber *)toolbarStateNumber
 {
+    BlioLibraryToolbarsState toolbarState = [toolbarStateNumber integerValue];
+    
     if(_fadeState != BookViewControlleUIFadeStateNone) return;
     
     // Set the fade state
@@ -1241,6 +1270,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [UIView commitAnimations];   
         
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+}
+
+- (void)toggleToolbars:(BlioLibraryToolbarsState)toolbarState
+{
+    // We do this with performSelector afterDelay 0 so that if something else
+    // happens later in this event loop cycle (i.e. a tap-turn starts), the 
+    // toggle can be cancelled.
+    [self performSelector:@selector(delayedToggleToolbars:) withObject:[NSNumber numberWithInteger:toolbarState] afterDelay:0];
+}
+
+- (void)cancelPendingToolbarShow
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedToggleToolbars:) object:[NSNumber numberWithInteger:kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible]];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedToggleToolbars:) object:[NSNumber numberWithInteger:kBlioLibraryToolbarsStateNoneVisible]];
 }
 
 - (void)updatePauseButton {
@@ -1596,7 +1639,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
             self.bookView = ePubView;
-            self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
@@ -1607,21 +1649,34 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
+            speedReadView.delegate = self;
             self.bookView = speedReadView;     
             [speedReadView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
         }
         
+        self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+        
         // Reset the search resultsi
         self.searchViewController = nil;
+        self.searchPopover = nil;
     }
 }
 
-- (BOOL)shouldShowPageAttributeSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead)
+- (BOOL)shouldShowFontSizeSettings {
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead) {
         return NO;
-    else
+    } else {
         return YES;
+    }
+}
+
+- (BOOL)shouldShowPageColorSettings {
+    if ([self currentPageLayout] == kBlioPageLayoutSpeedRead) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 - (BlioFontSize)currentFontSize {
@@ -1667,9 +1722,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     UIView<BlioBookView> *bookView = self.bookView;
     if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
-        NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
+        UIImage *pageTexture = nil;
+        if ((newColor == kBlioPageColorWhite) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+            pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"paper-white-ipad" ofType:@"png"]]];
+        } else {
+            NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
                                                               ofType:@""];
-        UIImage *pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+            pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+        }
         [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
     }  
     _currentPageColor = newColor;
@@ -1731,10 +1791,26 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)showContents:(id)sender {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
-    BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
-    aContentsTabView.delegate = self;
-    [self presentModalViewController:aContentsTabView animated:YES];
-    [aContentsTabView release];    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (![self.contentsPopover isPopoverVisible]) {
+            BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
+            aContentsTabView.delegate = self;
+            BlioModalPopoverController *aContentsPopover = [[BlioModalPopoverController alloc] initWithContentViewController:aContentsTabView];
+            aContentsPopover.delegate = aContentsTabView;
+            aContentsTabView.popoverController = aContentsPopover;
+            [aContentsTabView release];
+            [aContentsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+            self.contentsPopover = aContentsPopover;
+            [aContentsPopover release];
+        } else {
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        }
+    } else {
+        BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
+        aContentsTabView.delegate = self;
+        [self presentModalViewController:aContentsTabView animated:YES];
+        [aContentsTabView release];  
+    }
 }
 
 - (void)showAddMenu:(id)sender {
@@ -1748,21 +1824,34 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aActionSheet release];
 }
 
-- (void)showViewSettings:(id)sender {
-    if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-        // Hide toolbars so the view settings don't overlap them
-        [self setToolbarsForModalOverlayActive:YES];
+- (void)showViewSettings:(id)sender {    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (![self.viewSettingsPopover isPopoverVisible]) {
+            BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
+            [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+            self.viewSettingsPopover = aSettingsPopover;
+            [aSettingsPopover release];
+        }
+    } else {
+        if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+            // Hide toolbars so the view settings don't overlap them
+            [self setToolbarsForModalOverlayActive:YES];
+        }
+        BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
+        [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
+        self.viewSettingsSheet = aSettingsSheet;
+        [aSettingsSheet release];
     }
     
-    BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
-    UIToolbar *toolbar = self.navigationController.toolbar;
-    [aSettingsSheet showFromToolbar:toolbar];
-    [aSettingsSheet release];
 }
 
 - (void)dismissViewSettings:(id)sender {
-    [(BlioViewSettingsSheet *)sender dismissWithClickedButtonIndex:0 animated:YES];
-    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        self.viewSettingsPopover = nil;
+    } else {
+        [self.viewSettingsSheet dismissWithClickedButtonIndex:0 animated:YES];
+        self.viewSettingsSheet = nil;
+    }
     [self setToolbarsForModalOverlayActive:NO];
 }
 
@@ -2075,7 +2164,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			}
 			else {
 				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Settings section of this app first and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Library Settings section and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
 											delegate:nil 
 								   cancelButtonTitle:@"OK"
 								   otherButtonTitles: nil];
@@ -2135,25 +2224,41 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)search:(id)sender {
-    if (!self.searchViewController) {
-        BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
-        [aBookSearchController setMaxPrefixAndMatchLength:20];
-        [aBookSearchController setMaxSuffixLength:100];
-        
-        BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
-        [aSearchViewController setTintColor:_returnToNavigationBarTint];
-        [aSearchViewController setBookView:self.bookView];
-        [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
-        [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
-        self.searchViewController = aSearchViewController;
-        
-        [aSearchViewController release];
-        [aBookSearchController release];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if (!self.searchViewController) {
+            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+            [aBookSearchController setMaxPrefixAndMatchLength:20];
+            [aBookSearchController setMaxSuffixLength:100];
+            
+            BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
+            [aSearchViewController setTintColor:_returnToNavigationBarTint];
+            [aSearchViewController setBookView:self.bookView];
+            [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
+            [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
+            self.searchViewController = aSearchViewController;
+            
+            [aSearchViewController release];
+            [aBookSearchController release];
+        }
+        [self.searchViewController showInController:self.navigationController animated:YES];
+    } else {
+        if (!self.searchPopover) {
+            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+            [aBookSearchController setMaxPrefixAndMatchLength:20];
+            [aBookSearchController setMaxSuffixLength:100];
+            
+            BlioBookSearchPopoverController *aSearchPopover = [[BlioBookSearchPopoverController alloc] init];
+            [aSearchPopover setBookView:self.bookView];
+            [aSearchPopover setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
+            [aBookSearchController setDelegate:aSearchPopover]; // this delegate is assigned to avoid a retain loop
+            self.searchPopover = aSearchPopover;
+            [aSearchPopover release];
+            [aBookSearchController release];
+        }
+        if (![self.searchPopover isPopoverVisible]) {
+            [self.searchPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        }
     }
-    
-
-    [self.searchViewController showInController:self.navigationController animated:YES];
-    
 }
     
 #pragma mark -
@@ -2301,7 +2406,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
         [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
+    if ([self.searchPopover isPopoverVisible]) {
+        shouldDisplaySearchAfterRotation = YES;
+    }
+    
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.contentsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.viewSettingsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {    
@@ -2309,19 +2420,70 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
     [self.searchViewController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+
+    [self.contentsPopover presentPopoverFromBarButtonItem:self.contentsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.contentsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self.viewSettingsPopover presentPopoverFromBarButtonItem:self.viewSettingsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.viewSettingsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    if (shouldDisplaySearchAfterRotation) {
+        shouldDisplaySearchAfterRotation = NO;
+        [self.searchPopover presentPopoverFromBarButtonItem:self.searchButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        [self.searchPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    }
+}
+
+#pragma mark -
+#pragma mark Back button history
+
+- (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    [self.historyStack addObject:bookmarkPoint];
+}
+
+- (BlioBookmarkPoint *)popBookmarkPoint {
+    BlioBookmarkPoint *bookmarkPoint = [[[self.historyStack lastObject] retain] autorelease];
+    if (bookmarkPoint) {
+        [self.historyStack removeLastObject];
+    }
+    return bookmarkPoint;
+}
+
+- (void)goBackInHistory {
+    BlioBookmarkPoint *targetPoint = nil;
+    BlioBookmarkPoint *savedPoint = nil;
+    
+    while (((savedPoint = [self popBookmarkPoint])) != nil) {
+        NSInteger currentPage = [self.bookView pageNumber];
+        NSInteger bookmarkedPage = [self.bookView pageNumberForBookmarkPoint:savedPoint];
+        if (currentPage != bookmarkedPage) {
+            targetPoint = savedPoint;
+            break;
+        }
+    }
+    
+    if (targetPoint != nil) {
+        [self.bookView goToBookmarkPoint:targetPoint animated:YES saveToHistory:NO];
+    }
+ 
 }
 
 #pragma mark -
 #pragma mark BlioContentsTabViewControllerDelegate
 
 - (void)dismissContentsTabView:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if (self.contentsPopover) {
+            [self.contentsPopover dismissPopoverAnimated:YES];
+            self.contentsPopover = nil;
+        }
+    } else {
+        [self dismissModalViewControllerAnimated:YES];
+    }
 }
 
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated {
-    //if (_pageJumpView && ![_pageJumpView isHidden]) [self performSelector:@selector(togglePageJumpPanel)];
     [self setToolbarsForModalOverlayActive:YES];
-    //UIView *container = self.navigationController.visibleViewController.view;
     UIView *container = self.view;
     
     BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithRange:range note:note];
@@ -2342,7 +2504,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self updatePageJumpPanelForPage:pageNum animated:animated];
     [self updatePieButtonForPage:pageNum animated:animated];
     
-    if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
+    if ([self.bookView respondsToSelector:@selector(goToBookmarkRange:animated:)]) {
         [self.bookView goToBookmarkRange:bookmarkRange animated:animated];
     } else {
         BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;

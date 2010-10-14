@@ -29,6 +29,7 @@
 @implementation BlioSpeedReadView
 
 @synthesize pageNumber, currentWordOffset, currentParagraphID, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame
              bookID:(NSManagedObjectID *)bookID 
@@ -367,8 +368,16 @@
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
 {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
+ 
     id paragraphId = nil;
     uint32_t wordOffset = 0;
     [paragraphSource bookmarkPoint:bookmarkPoint toParagraphID:&paragraphId wordOffset:&wordOffset];
@@ -378,6 +387,16 @@
     
     [self fillArrayWithCurrentBlock];
     [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
+}
+
+#pragma mark -
+#pragma mark Back Button History
+
+- (void)pushCurrentBookmarkPoint {
+    BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
+    if (bookmarkPoint) {
+        [self.delegate pushBookmarkPoint:bookmarkPoint];
+    }
 }
 
 - (NSString *)pageLabelForPageNumber:(NSInteger)page {
@@ -427,6 +446,7 @@
     [backgroundImage release];
     [currentParagraphID release];
     [paragraphSource release];
+    [delegate release];
     [super dealloc];
 }
 

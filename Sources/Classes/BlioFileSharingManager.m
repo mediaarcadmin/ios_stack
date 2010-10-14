@@ -667,9 +667,11 @@
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [[[note userInfo] objectForKey:@"sourceID"] intValue] == BlioBookSourceFileSharing) {
 		NSString * filePath = [[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:[[note userInfo] objectForKey:@"sourceSpecificID"]];
 		pthread_mutex_lock( &importableBooksMutex );
+		BlioImportableBook * importableBookToBeDeleted = nil;
 		for (BlioImportableBook * importableBook in self.importableBooks) {
-			if ([importableBook.fileName isEqualToString:[[note userInfo] objectForKey:@"sourceSpecificID"]]) [self.importableBooks removeObject:importableBook];
+			if ([importableBook.fileName isEqualToString:[[note userInfo] objectForKey:@"sourceSpecificID"]]) importableBookToBeDeleted = importableBook;
 		}
+		if (importableBookToBeDeleted) [self.importableBooks removeObject:importableBookToBeDeleted];
 		NSError *anError;
 		if (![[NSFileManager defaultManager] removeItemAtPath:filePath error:&anError]) {
 			NSLog(@"Failed to delete imported file %@ in the Documents Directory with error: %@", [[note userInfo] objectForKey:@"sourceSpecificID"], [anError localizedDescription]);

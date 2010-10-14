@@ -539,6 +539,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
         
+        [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands Fixed" 
+                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Virgin Islands Links Fixed.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceOnlineStore
+									 sourceSpecificID:@"VirginIslandsFixed" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+										   fromBundle:YES
+		 ];
+        
         [self.processingDelegate enqueueBookWithTitle:@"Woodstock - Peace, Music, and Memories" 
                                               authors:[NSArray arrayWithObjects:@"Littleproud, Brad", @"Hague, Joanne", nil]
 											coverPath:nil
@@ -1529,7 +1543,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [libraryBookView setHidden:YES];
         
     BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:[libraryBookView book] delegate:self];
-    self.openBookViewController = aBookViewController;
     
     if (nil != aBookViewController) {
         [aBookViewController setManagedObjectContext:self.managedObjectContext];
@@ -1538,13 +1551,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     } else {
         [libraryBookView displayError];
         self.selectedLibraryBookView = nil;
-        self.openBookViewController = nil;
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        return;
     }
     
-    [aBookViewController release];
-    
-    return;
 #if 0    
     [UIView beginAnimations:@"popBook" context:coverView];
     [UIView setAnimationDuration:0.65f];
@@ -1578,11 +1588,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [aTextureView release];
     [poppedImageView release];
     
+    self.openBookViewController = aBookViewController;
     self.currentBookView = bookView;
     self.currentPoppedBookCover = aCoverImageView;
     self.bookCoverPopped = NO;
     self.firstPageRendered = NO;
 #endif
+    
+    [aBookViewController release];
+    
+    return;    
 }
 
 - (UIView *)coverViewViewForOpening {

@@ -74,15 +74,13 @@
     EucBookPageIndexPoint *ret = nil;
     int fd = open([path fileSystemRepresentation], O_RDONLY);
     if(fd > 0) {
-        struct stat statResult;
-        if(fstat(fd, &statResult) != -1) {
-            off_t pointSize = [self sizeOnDisk];
-            off_t seekTo = statResult.st_size / pointSize;
-            seekTo *= pointSize;
-            seekTo -= pointSize;
-            lseek(fd, seekTo, SEEK_SET);
-            ret = [EucBookPageIndexPoint bookPageIndexPointFromOpenFD:fd];
-        }
+        off_t pointSize = [self sizeOnDisk];
+        off_t size = lseek(fd, 0, SEEK_END);
+        off_t seekTo = size / pointSize;
+        seekTo *= pointSize;
+        seekTo -= pointSize;
+        lseek(fd, seekTo, SEEK_SET);
+        ret = [EucBookPageIndexPoint bookPageIndexPointFromOpenFD:fd];
         close(fd);
     }
     return ret;

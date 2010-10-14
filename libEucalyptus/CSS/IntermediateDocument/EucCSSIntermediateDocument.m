@@ -441,6 +441,9 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 {        
     [_keyToExtantNode release];
 
+    [_documentTree release];    
+    [_url release];
+
     css_select_ctx_destroy(_selectCtx);
 
     for(NSUInteger i = 0; i < _stylesheetsCount; ++i) {
@@ -452,9 +455,6 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     if(_lwcContext) {
         lwc_context_unref(_lwcContext);
     }
-    
-    [_documentTree release];    
-    [_url release];
 
     [super dealloc];
 }

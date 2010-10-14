@@ -50,6 +50,7 @@ struct css_stylesheet;
 + (uint32_t)keyForDocumentTreeNodeKey:(uint32_t)key;
 - (float)estimatedPercentageForNodeWithKey:(uint32_t)key;
 
+@property (nonatomic, retain, readonly) id<EucCSSDocumentTree> documentTree;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *rootNode;
 @property (nonatomic, retain, readonly) NSURL *url;
 @property (nonatomic, assign, readonly) id<EucCSSIntermediateDocumentDataSource> dataSource;

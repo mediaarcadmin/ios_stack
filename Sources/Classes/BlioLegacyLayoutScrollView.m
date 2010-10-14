@@ -1,33 +1,33 @@
 //
-//  BlioLayoutScrollView.m
+//  BlioLegacyLayoutScrollView.m
 //  BlioApp
 //
 //  Created by matt on 03/03/2010.
 //  Copyright 2010 BitWink. All rights reserved.
 //
 
-#import "BlioLayoutScrollView.h"
+#import "BlioLegacyLayoutScrollView.h"
 
-@interface BlioLayoutScrollView()
+@interface BlioLegacyLayoutScrollView()
 
 @property (nonatomic, retain) NSTimer *doubleTapBeginTimer;
 @property (nonatomic, retain) NSTimer *doubleTapEndTimer;
-@property (nonatomic) BlioLayoutTouchForwardingState forwardingState;
+@property (nonatomic) BlioLegacyLayoutTouchForwardingState forwardingState;
 
 - (void)handleSingleTouch;
 
 @end
 
-static const CGFloat kBlioLayoutLHSHotZone = 1.0f / 3 * 1;
-static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
+static const CGFloat kBlioLegacyLayoutLHSHotZone = 1.0f / 3 * 1;
+static const CGFloat kBlioLegacyLayoutRHSHotZone = 1.0f / 3 * 2;
 
-@implementation BlioLayoutScrollView
+@implementation BlioLegacyLayoutScrollView
 
 @synthesize selector, doubleTapBeginTimer, doubleTapEndTimer, bookViewDelegate, forwardingState, touchesBeginPoint;
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-        self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        self.forwardingState = BlioLegacyLayoutTouchForwardingStateNone;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.autoresizesSubviews = YES;
     }
@@ -50,9 +50,9 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     self.doubleTapBeginTimer = nil;
     
     if (nil != self.doubleTapEndTimer) {
-//        self.forwardingState = BlioLayoutTouchForwardingStateCancelled;
+//        self.forwardingState = BlioLegacyLayoutTouchForwardingStateCancelled;
 //        [self.doubleTapEndTimer fire];
-        self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        self.forwardingState = BlioLegacyLayoutTouchForwardingStateNone;
         [self.doubleTapEndTimer invalidate];
         self.doubleTapEndTimer = nil;
     }
@@ -60,11 +60,11 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     NSSet *allTouches = [event touchesForView:self];
     if ([allTouches count] > 1) {
         
-        if (self.forwardingState != BlioLayoutTouchForwardingStateNone) {
+        if (self.forwardingState != BlioLegacyLayoutTouchForwardingStateNone) {
             [self.selector touchesCancelled:allTouches];
         }
         
-        self.forwardingState = BlioLayoutTouchForwardingStateMultiTouchBegin;
+        self.forwardingState = BlioLegacyLayoutTouchForwardingStateMultiTouchBegin;
         return;
     }
     
@@ -78,19 +78,19 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
         [self.bookViewDelegate hideToolbars];
     } else {
         [self.selector touchesBegan:touches];
-        self.forwardingState = BlioLayoutTouchForwardingStateForwardedBegin;
+        self.forwardingState = BlioLegacyLayoutTouchForwardingStateForwardedBegin;
         self.doubleTapBeginTimer = [NSTimer scheduledTimerWithTimeInterval:0.25f target:self selector:@selector(delayedTouchesBegan:) userInfo:nil repeats:NO];
     }
 }
 
 - (void)delayedTouchesBegan:(NSTimer *)timer {
-    self.forwardingState = BlioLayoutTouchForwardingStateForwardedBeginTimerExpired;
+    self.forwardingState = BlioLegacyLayoutTouchForwardingStateForwardedBeginTimerExpired;
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.forwardingState == BlioLayoutTouchForwardingStateMultiTouchBegin) return;
+    if (self.forwardingState == BlioLegacyLayoutTouchForwardingStateMultiTouchBegin) return;
     
     if (nil != self.doubleTapBeginTimer) {
         [self.doubleTapBeginTimer invalidate];
@@ -100,7 +100,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
     
-    self.forwardingState = BlioLayoutTouchForwardingStateForwardedBeginTimerExpired;
+    self.forwardingState = BlioLegacyLayoutTouchForwardingStateForwardedBeginTimerExpired;
     
     if ([self.selector isTracking]) {
         switch ([self.selector trackingStage]) {
@@ -115,9 +115,9 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.forwardingState == BlioLayoutTouchForwardingStateMultiTouchBegin) {
+    if (self.forwardingState == BlioLegacyLayoutTouchForwardingStateMultiTouchBegin) {
         NSSet *allTouches = [event touchesForView:self];
-        if ([allTouches count] <= 1) self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        if ([allTouches count] <= 1) self.forwardingState = BlioLegacyLayoutTouchForwardingStateNone;
         return;
     }
     
@@ -127,17 +127,17 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     self.doubleTapBeginTimer = nil;
     
     switch (self.forwardingState) {
-        case BlioLayoutTouchForwardingStateCancelled:
+        case BlioLegacyLayoutTouchForwardingStateCancelled:
             [self.selector touchesCancelled:touches];
-            self.forwardingState = BlioLayoutTouchForwardingStateNone;
+            self.forwardingState = BlioLegacyLayoutTouchForwardingStateNone;
             break;
-        case BlioLayoutTouchForwardingStateForwardedBegin:
+        case BlioLegacyLayoutTouchForwardingStateForwardedBegin:
             self.doubleTapEndTimer = [NSTimer scheduledTimerWithTimeInterval:0.35f target:self selector:@selector(delayedTouchesEnded:) userInfo:touches repeats:NO];
             //[self.selector touchesEnded:touches];
             [self.selector touchesCancelled:touches];
             break;
-        case BlioLayoutTouchForwardingStateForwardedBeginTimerExpired:
-            self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        case BlioLegacyLayoutTouchForwardingStateForwardedBeginTimerExpired:
+            self.forwardingState = BlioLegacyLayoutTouchForwardingStateNone;
 //            if (![self.selector isTracking]) {
 //                [self.selector touchesEnded:touches];
 //                [self handleSingleTouch];
@@ -153,7 +153,7 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
 - (void)delayedTouchesEnded:(NSTimer *)timer {
     NSSet *touches = (NSSet *)[timer userInfo];
     
-    //if (self.forwardingState == BlioLayoutTouchForwardingStateCancelled) {
+    //if (self.forwardingState == BlioLegacyLayoutTouchForwardingStateCancelled) {
 //        [self.selector touchesCancelled:touches];
 //    } else {
         UITouch * t = [touches anyObject];
@@ -168,15 +168,15 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
         }
     //}
     
-    self.forwardingState = BlioLayoutTouchForwardingStateNone;
+    self.forwardingState = BlioLegacyLayoutTouchForwardingStateNone;
     [self.doubleTapEndTimer invalidate];
     self.doubleTapEndTimer = nil;
 }
 
 - (void)handleSingleTouch {
     CGFloat screenWidth = CGRectGetWidth(self.bounds);
-    CGFloat leftHandHotZone = screenWidth * kBlioLayoutLHSHotZone;
-    CGFloat rightHandHotZone = screenWidth * kBlioLayoutRHSHotZone;
+    CGFloat leftHandHotZone = screenWidth * kBlioLegacyLayoutLHSHotZone;
+    CGFloat rightHandHotZone = screenWidth * kBlioLegacyLayoutRHSHotZone;
     
     if (touchesBeginPoint.x <= leftHandHotZone) {
         if ([(NSObject *)self.delegate respondsToSelector:@selector(zoomToPreviousBlock)])
@@ -199,12 +199,12 @@ static const CGFloat kBlioLayoutRHSHotZone = 1.0f / 3 * 2;
     [self.doubleTapBeginTimer invalidate];
     self.doubleTapBeginTimer = nil;
     
-    if (self.forwardingState == BlioLayoutTouchForwardingStateMultiTouchBegin) {
+    if (self.forwardingState == BlioLegacyLayoutTouchForwardingStateMultiTouchBegin) {
         NSSet *allTouches = [event touchesForView:self];
-        if ([allTouches count] <= 1) self.forwardingState = BlioLayoutTouchForwardingStateNone;
+        if ([allTouches count] <= 1) self.forwardingState = BlioLegacyLayoutTouchForwardingStateNone;
         return;
-    } else if (self.forwardingState != BlioLayoutTouchForwardingStateNone) {
-        self.forwardingState = BlioLayoutTouchForwardingStateNone;
+    } else if (self.forwardingState != BlioLegacyLayoutTouchForwardingStateNone) {
+        self.forwardingState = BlioLegacyLayoutTouchForwardingStateNone;
         [self.selector touchesCancelled:touches];
     }
 }
