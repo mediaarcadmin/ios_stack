@@ -287,7 +287,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Fables: Legends In Exile"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
 
         [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
@@ -301,7 +300,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Essentials Of Discrete Mathematics"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
@@ -315,7 +313,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Exiles In The Garden"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
@@ -329,7 +326,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Dead Is So Last Year"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
@@ -343,7 +339,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Jamberry"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
@@ -357,7 +352,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"The Pet Dragon"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
@@ -371,7 +365,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"The Graveyard Book"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
@@ -385,7 +378,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Martha Stewart's Cookies"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
@@ -399,7 +391,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Baby Mouse"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
@@ -413,7 +404,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Persepolis 2"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"The Art of the Band T-Shirt" 
@@ -427,7 +417,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"The Art of the Band T-Shirt"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Sylvester and the Magic Pebble" 
@@ -441,7 +430,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Sylvester and the Magic Pebble"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"You On A Diet" 
@@ -455,7 +443,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"You On A Diet"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
@@ -469,7 +456,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"BakeWise"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
@@ -483,7 +469,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Chick Chicka Boom Boom"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
@@ -497,7 +482,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Five Greatest Warriors"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
@@ -511,7 +495,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Spinster Goose"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
@@ -525,7 +508,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Three Little Pigs"
 									  placeholderOnly:NO
-										   fromBundle:YES		 
 		 ];
 		
 #endif // DEMO_MODE
@@ -542,7 +524,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"The Tale of Peter Rabbit" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
     
         [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
@@ -556,7 +537,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Woodstock - Peace, Music, and Memories" 
@@ -570,7 +550,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"Woodstock - Peace, Music, and Memories" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
@@ -584,7 +563,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
 
         [self.processingDelegate enqueueBookWithTitle:@"Liberty And Tyranny" 
@@ -598,7 +576,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"LibertyTyranny" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Uncle John's Triumphant 20th Anniversary Bathroom Reader" 
@@ -612,7 +589,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"UJBR Triumphant 20th" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Facebook for Dummies" 
@@ -626,7 +602,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"Facebook For Dummies" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
 		
 #endif // DEV_MODE
@@ -1998,7 +1973,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
 		}
-		else if (![self.book audioRights]) {
+		else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-tts.png"];
 		}
 		
@@ -2262,7 +2237,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
 		}
-		else if (![self.book audioRights]) {
+		else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-tts.png"];
 		}
 	}

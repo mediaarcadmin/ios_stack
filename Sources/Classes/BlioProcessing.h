@@ -15,10 +15,11 @@
 
 typedef enum {
 	BlioBookSourceNotSpecified = 0,
-	BlioBookSourceLocalBundle = 1,
-	BlioBookSourceOnlineStore = 2,
-	BlioBookSourceFeedbooks = 3,
-	BlioBookSourceGoogleBooks = 4
+	BlioBookSourceFileSharing = 1,
+	BlioBookSourceLocalBundle = 2,
+	BlioBookSourceOnlineStore = 3,
+	BlioBookSourceFeedbooks = 4,
+	BlioBookSourceGoogleBooks = 5
 } BlioBookSourceID;
 
 static NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
@@ -69,18 +70,15 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 
 @protocol BlioProcessingDelegate
 @required
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath;
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+//			   audiobookPath:(NSString *)audiobookPath;
+//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+//			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly fromBundle:(BOOL)fromBundle;	
 -(void) enqueueBook:(BlioBook*)aBook;
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
 - (void) resumeProcessing;

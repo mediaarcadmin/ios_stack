@@ -31,14 +31,17 @@
 		return;
 	}
 	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
-	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
-	[userInfo setObject:self.bookID forKey:@"bookID"];
+//	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+//	[userInfo setObject:self.bookID forKey:@"bookID"];
+//	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
+//	[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"BlioProcessingCompleteOperation: failed dependency found! Operation: %@ Sending Failed Notification...",blioOp);
-			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
 			if (currentProcessingState != kBlioBookProcessingStateNotSupported && currentProcessingState != kBlioBookProcessingStatePaused && currentProcessingState != kBlioBookProcessingStateSuspended) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
+//			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
 			[self cancel];
+			self.operationSuccess = NO;
 			return;
 		}
 //		NSLog(@"completed operation: %@ percentageComplete: %u",blioOp,blioOp.percentageComplete);
@@ -68,7 +71,8 @@
 	}
 #endif
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
+//	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
+	self.operationSuccess = YES;
 }
 - (void)addDependency:(NSOperation *)operation {
 	[super addDependency:operation];
@@ -604,8 +608,10 @@
 
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
 //	if (success) NSLog(@"Download finished successfully"); 
-	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
 	[userInfo setObject:self.bookID forKey:@"bookID"];
+	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
+	[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];
 	if (!success) {
 		NSLog(@"BlioProcessingDownloadOperation: Download did not finish successfully");
 		NSLog(@"for url: %@",[self.url absoluteString]);
@@ -1031,8 +1037,10 @@
 }
 
 - (void)unzipDidFinishSuccessfully:(BOOL)success {
-	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
 	[userInfo setObject:self.bookID forKey:@"bookID"];
+	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
+	[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];
     if (success) {
 		NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
 		NSString *targetFilename = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];

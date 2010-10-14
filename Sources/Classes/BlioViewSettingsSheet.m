@@ -122,6 +122,12 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 		if (![self.viewSettingsDelegate reflowEnabled]) {
 			[aLayoutSegmentedControl setEnabled:NO forSegmentAtIndex:0];
 			[[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:[NSString stringWithFormat:@"%@ (%@)",[aLayoutSegmentedControl imageForSegmentAtIndex:0].accessibilityLabel,NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")]];
+			[aLayoutSegmentedControl setEnabled:NO forSegmentAtIndex:2];
+			[[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:[NSString stringWithFormat:@"%@ (%@)",[aLayoutSegmentedControl imageForSegmentAtIndex:2].accessibilityLabel,NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")]];
+		}		
+		if (![self.viewSettingsDelegate fixedViewEnabled]) {
+			[aLayoutSegmentedControl setEnabled:NO forSegmentAtIndex:1];
+			[[aLayoutSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:[NSString stringWithFormat:@"%@ (%@)",[aLayoutSegmentedControl imageForSegmentAtIndex:1].accessibilityLabel,NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")]];
 		}		
         [self addSubview:aLayoutSegmentedControl];
         self.pageLayoutSegment = aLayoutSegmentedControl;

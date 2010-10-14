@@ -58,5 +58,7 @@
 	<array>
 		<string>opengles-2</string>
 	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 </dict>
 </plist>

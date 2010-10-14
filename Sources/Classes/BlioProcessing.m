@@ -197,8 +197,12 @@ static int mutationCount = 0;
 
 -(void) setOperationSuccess:(BOOL)operationOutcome {
 	operationSuccess = operationOutcome;
-	if (operationOutcome) [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self];
-	else [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self];
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+	[userInfo setObject:self.bookID forKey:@"bookID"];
+	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
+	[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];	
+	if (operationOutcome) [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
+	else [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
 }
 
 -(BOOL) operationSuccess {
@@ -207,8 +211,10 @@ static int mutationCount = 0;
 
 -(void) setPercentageComplete:(NSUInteger)percentage {
 	percentageComplete = percentage;
-	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
-	[userInfo setObject:self.bookID forKey:@"bookID"];	
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+	[userInfo setObject:self.bookID forKey:@"bookID"];
+	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
+	[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];	
     [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self userInfo:userInfo];
 }
 

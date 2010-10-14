@@ -162,7 +162,10 @@
     return [[self valueForKey:@"hasAudiobookRights"] boolValue];
 }
 - (BOOL)reflowEnabled {
-    return [[self valueForKey:@"reflowRight"] boolValue];
+    return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
+}
+-(BOOL)fixedViewEnabled {
+	return ([self hasPdf] || [self hasXps]);
 }
 
 - (NSString *)ePubPath {

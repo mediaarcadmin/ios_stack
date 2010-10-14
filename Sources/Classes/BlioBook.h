@@ -35,6 +35,7 @@ static NSString * const BlioManifestEntryLocationXPS = @"xps";
 static NSString * const BlioManifestEntryLocationTextflow = @"textflow";
 static NSString * const BlioManifestEntryLocationWeb = @"web";
 static NSString * const BlioManifestEntryLocationBundle = @"bundle";
+static NSString * const BlioManifestEntryLocationDocumentsDirectory = @"DocumentsDirectory";
 
 static NSString * const BlioXPSEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMap.xml";
 static NSString * const BlioXPSEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages";
@@ -102,9 +103,9 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 
-// Legacy core data attribute-backed convenience accessors TODO: remove these
 @property (nonatomic, assign, readonly) BOOL audioRights;
 @property (nonatomic, assign, readonly) BOOL reflowEnabled;
+@property (nonatomic, assign, readonly) BOOL fixedViewEnabled;
 
 // Lazily convenience accessors
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;

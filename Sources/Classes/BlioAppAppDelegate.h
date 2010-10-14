@@ -11,6 +11,8 @@
 #import "BlioBook.h"
 #import "Reachability.h"
 
+static NSString * const BlioApplicationDidBecomeActiveNotification = @"BlioApplicationDidBecomeActiveNotification";
+
 #undef BLIO_NSXMLPARSER_DELEGATE
 #if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 40000)
  #define BLIO_NSXMLPARSER_DELEGATE <NSXMLParserDelegate>

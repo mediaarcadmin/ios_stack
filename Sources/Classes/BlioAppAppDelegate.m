@@ -313,9 +313,20 @@ static void *background_init_thread(void * arg) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 
 -(void)applicationDidEnterBackground:(UIApplication *)application {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
     NSError *error;
     if (![[self managedObjectContext] save:&error])
         NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);	
+}
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+	NSLog(@"%@", NSStringFromSelector(_cmd));	
+}
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
+	[[NSNotificationCenter defaultCenter] postNotificationName:BlioApplicationDidBecomeActiveNotification object:self];
+}
+- (void)applicationWillResignActive:(UIApplication *)application {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 }
 
 #endif

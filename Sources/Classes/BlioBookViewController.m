@@ -200,9 +200,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if (_TTSEnabled) {
         
-        if ([self.book audioRights] && ![self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+        if ((![self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) && ([self.book audioRights] || !self.book.paragraphSource)) {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
-        } else {
+        }
+		else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
             if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
@@ -1591,20 +1592,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             // current SpeedRead paragraph starts on.
             self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
         }
-        if (newLayout == kBlioPageLayoutPlainText && ([self.book hasEPub] || [self.book hasTextFlow]) && [self.book reflowEnabled]) {
+        if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
             self.bookView = ePubView;
             self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
-        } else if (newLayout == kBlioPageLayoutPageLayout && ([self.book hasPdf] || [self.book hasXps])) {
+        } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
-        } else if (newLayout == kBlioPageLayoutSpeedRead && ([self.book hasEPub] || [self.book hasTextFlow])) {
+        } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
@@ -1646,6 +1647,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (BOOL)reflowEnabled {
 	return [self.book reflowEnabled];
+}
+-(BOOL)fixedViewEnabled {
+	return [self.book fixedViewEnabled];
 }
 - (void)changeFontSize:(id)sender {
     BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];

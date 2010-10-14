@@ -956,6 +956,9 @@
 		DC5FCDDD1227640D003C57CA /* badge-audiobook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDD11227640D003C57CA /* badge-audiobook@2x.png */; };
 		DC795B2F11E7E21B000DA04D /* button-buybooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DC795B2D11E7E21B000DA04D /* button-buybooks.png */; };
 		DC795B3011E7E21B000DA04D /* store-screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = DC795B2E11E7E21B000DA04D /* store-screenshot.png */; };
+		DC84EDF81261267400BC6514 /* BlioFileSharingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioFileSharingManager.m */; };
+		DC84EDF91261267400BC6514 /* BlioFileSharingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioFileSharingManager.m */; };
+		DC84EDFA1261267400BC6514 /* BlioFileSharingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioFileSharingManager.m */; };
 		DC8CADA5124877DA00C1EED9 /* table-headerbar-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8CADA3124877DA00C1EED9 /* table-headerbar-background.png */; };
 		DC8CADA6124877DA00C1EED9 /* table-headerbar-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8CADA4124877DA00C1EED9 /* table-headerbar-background@2x.png */; };
 		DC8CADA7124877DA00C1EED9 /* table-headerbar-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8CADA3124877DA00C1EED9 /* table-headerbar-background.png */; };
@@ -1002,6 +1005,9 @@
 		DCEB07741242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
 		DCEB07751242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
 		DCEB07761242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
+		DCF6E1FB125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
+		DCF6E1FC125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
+		DCF6E1FD125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
 		DCFF6192117F6F4E00463427 /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
 		DCFF6193117F6F4E00463427 /* button-delete-black.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6191117F6F4E00463427 /* button-delete-black.png */; };
 		DCFF6198117F703A00463427 /* library-resumebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6196117F703A00463427 /* library-resumebutton.png */; };
@@ -1738,6 +1744,8 @@
 		DC5FCDD11227640D003C57CA /* badge-audiobook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-audiobook@2x.png"; sourceTree = "<group>"; };
 		DC795B2D11E7E21B000DA04D /* button-buybooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-buybooks.png"; sourceTree = "<group>"; };
 		DC795B2E11E7E21B000DA04D /* store-screenshot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "store-screenshot.png"; sourceTree = "<group>"; };
+		DC84EDF61261267400BC6514 /* BlioFileSharingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFileSharingManager.h; sourceTree = "<group>"; };
+		DC84EDF71261267400BC6514 /* BlioFileSharingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioFileSharingManager.m; sourceTree = "<group>"; };
 		DC8CADA3124877DA00C1EED9 /* table-headerbar-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table-headerbar-background.png"; sourceTree = "<group>"; };
 		DC8CADA4124877DA00C1EED9 /* table-headerbar-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table-headerbar-background@2x.png"; sourceTree = "<group>"; };
 		DC8CB3231249298400C1EED9 /* BlioRoundedRectActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioRoundedRectActivityView.h; sourceTree = "<group>"; };
@@ -1773,6 +1781,8 @@
 		DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioCreateAccountViewController.m; sourceTree = "<group>"; };
 		DCEB07721242AFEF0073881D /* DigitalLockerGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DigitalLockerGateway.h; sourceTree = "<group>"; };
 		DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DigitalLockerGateway.m; sourceTree = "<group>"; };
+		DCF6E1F9125E6F8C00CAC22B /* BlioGetBooksImportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioGetBooksImportViewController.h; sourceTree = "<group>"; };
+		DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioGetBooksImportViewController.m; sourceTree = "<group>"; };
 		DCFF6190117F6F4E00463427 /* button-delete-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-red.png"; sourceTree = "<group>"; };
 		DCFF6191117F6F4E00463427 /* button-delete-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-black.png"; sourceTree = "<group>"; };
 		DCFF6196117F703A00463427 /* library-resumebutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "library-resumebutton.png"; sourceTree = "<group>"; };
@@ -1928,6 +1938,8 @@
 				A3892C1D1164331A006D8DF4 /* BookVault */,
 				C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */,
 				C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */,
+				DC84EDF61261267400BC6514 /* BlioFileSharingManager.h */,
+				DC84EDF71261267400BC6514 /* BlioFileSharingManager.m */,
 				DCC9B5B0125535A800B17FBB /* CCInAppPurchaseService.h */,
 				DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */,
 				DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */,
@@ -1935,7 +1947,7 @@
 				7D9147C31151494A00BCBB23 /* FlowView */,
 				C9985BF8113E8286009E5263 /* LayoutView */,
 				C9F936EB113530020047B985 /* Processing */,
-				C972639A111C6063001BCC0B /* Store */,
+				C972639A111C6063001BCC0B /* GetBooks */,
 				7DA5664F11529F74000A849D /* TextFlow */,
 				A37FC33210EA783700F3DC5A /* TTS */,
 				C921763E1176FF67009AC670 /* BookViewController */,
@@ -2613,7 +2625,7 @@
 			name = XPS;
 			sourceTree = "<group>";
 		};
-		C972639A111C6063001BCC0B /* Store */ = {
+		C972639A111C6063001BCC0B /* GetBooks */ = {
 			isa = PBXGroup;
 			children = (
 				C9867F6A112964A70070A03E /* BlioStoreFeed.h */,
@@ -2644,8 +2656,10 @@
 				C9867BA0112582BB0070A03E /* BlioStoreGoogleBooksParser.m */,
 				A3689AF2116E3D1A0039FD35 /* BlioStoreWebsiteViewController.h */,
 				A3689AF3116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m */,
+				DCF6E1F9125E6F8C00CAC22B /* BlioGetBooksImportViewController.h */,
+				DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */,
 			);
-			name = Store;
+			name = GetBooks;
 			sourceTree = "<group>";
 		};
 		C9867653112411060070A03E /* Products */ = {
@@ -3688,6 +3702,8 @@
 				DCC9B5B2125535A800B17FBB /* CCInAppPurchaseService.m in Sources */,
 				DCC9B64D1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */,
 				C9F484BD1254913600083923 /* NSArray+BlioAdditions.m in Sources */,
+				DCF6E1FD125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */,
+				DC84EDF81261267400BC6514 /* BlioFileSharingManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3807,6 +3823,8 @@
 				DCC9B4EE1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */,
 				DCC9B5B3125535A800B17FBB /* CCInAppPurchaseService.m in Sources */,
 				DCC9B64E1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */,
+				DCF6E1FC125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */,
+				DC84EDFA1261267400BC6514 /* BlioFileSharingManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3926,6 +3944,8 @@
 				DCC9B5B4125535A800B17FBB /* CCInAppPurchaseService.m in Sources */,
 				DCC9B64C1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */,
 				C9F484BC1254913500083923 /* NSArray+BlioAdditions.m in Sources */,
+				DCF6E1FB125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */,
+				DC84EDF91261267400BC6514 /* BlioFileSharingManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

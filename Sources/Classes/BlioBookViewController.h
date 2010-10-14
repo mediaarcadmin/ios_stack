@@ -58,6 +58,7 @@ typedef enum BlioFontSize {
 - (BlioPageColor)currentPageColor;
 - (BlioFontSize)currentFontSize;
 - (BOOL)reflowEnabled;
+- (BOOL)fixedViewEnabled;
 @end
 
 @class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton;

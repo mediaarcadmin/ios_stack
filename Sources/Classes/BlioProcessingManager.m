@@ -13,6 +13,7 @@
 #import "BlioStoreManager.h"
 #import "BlioAlertManager.h"
 #import "NSString+BlioAdditions.h"
+#import "BlioFileSharingManager.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -51,33 +52,25 @@
 
 #pragma mark -
 #pragma mark BlioProcessingDelegate
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath {
-	// for legacy compatibility (pre-sourceID and sourceSpecificID)
-	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
-					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:(NSString *)xpsPath textFlowPath:textFlowPath 
-				 audiobookPath:audiobookPath sourceID:BlioBookSourceLocalBundle sourceSpecificID:title placeholderOnly:NO];
-}
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
-	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
-					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
-				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO];    
-}
+//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+//			   audiobookPath:(NSString *)audiobookPath {
+//	// for legacy compatibility (pre-sourceID and sourceSpecificID)
+//	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
+//					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:(NSString *)xpsPath textFlowPath:textFlowPath 
+//				 audiobookPath:audiobookPath sourceID:BlioBookSourceLocalBundle sourceSpecificID:title placeholderOnly:NO];
+//}
+//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+//			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+//	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
+//					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
+//				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO];    
+//}
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
-	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
-					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
-				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:placeholderOnly fromBundle:NO];    
-	
-}
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly fromBundle:(BOOL)fromBundle {    
-	
+
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (nil != moc) {
         
@@ -146,7 +139,8 @@
         else [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
         
 		NSString * locationValue = nil;
-		if (fromBundle) locationValue = BlioManifestEntryLocationBundle;
+		if (sourceID == BlioBookSourceLocalBundle) locationValue = BlioManifestEntryLocationBundle;
+		else if (sourceID == BlioBookSourceFileSharing) locationValue = BlioManifestEntryLocationDocumentsDirectory;
 		else locationValue = BlioManifestEntryLocationWeb;
         if (coverPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
@@ -316,6 +310,9 @@
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
 					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+						url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}
 					else url = [NSURL URLWithString:stringURL];				
 					ePubOp = [[[BlioProcessingDownloadEPubOperation alloc] initWithUrl:url] autorelease];
 					ePubOp.bookID = bookID;
@@ -397,6 +394,9 @@
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
 					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+						url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
 					else url = [NSURL URLWithString:stringURL];				
 					pdfOp = [[[BlioProcessingDownloadPdfOperation alloc] initWithUrl:url] autorelease];
 					pdfOp.bookID = bookID;
@@ -445,6 +445,9 @@
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
 					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+						url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
 					else url = [NSURL URLWithString:stringURL];								
 					audiobookOp = [[[BlioProcessingDownloadAudiobookOperation alloc] initWithUrl:url] autorelease];
 					audiobookOp.bookID = bookID;
@@ -484,6 +487,9 @@
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
 					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+						url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
 					else url = [NSURL URLWithString:stringURL];	
 					NSLog(@"creating new BlioProcessingDownloadXPSOperation...");
 					xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
@@ -507,7 +513,7 @@
     
 	// paid books only.
 	manifestLocation = [aBook manifestLocationForKey:BlioManifestXPSKey];
-	if (manifestLocation || (sourceID == BlioBookSourceOnlineStore)) {
+	if (manifestLocation && (sourceID == BlioBookSourceOnlineStore)) {
 		
 		BOOL usedPreExistingOperation = NO;
 		BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
@@ -657,6 +663,9 @@
         if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
             url = [NSURL fileURLWithPath:stringURL];
         }
+		else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+			url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+		}					
         else url = [NSURL URLWithString:stringURL];
         coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:url];
         coverOp.bookID = bookID;
