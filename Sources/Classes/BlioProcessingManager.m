@@ -513,7 +513,7 @@
     
 	// paid books only.
 	manifestLocation = [aBook manifestLocationForKey:BlioManifestXPSKey];
-	if (manifestLocation && (sourceID == BlioBookSourceOnlineStore)) {
+    if ((manifestLocation && sourceID == BlioBookSourceLocalBundle) || sourceID == BlioBookSourceOnlineStore) { 
 		
 		BOOL usedPreExistingOperation = NO;
 		BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
@@ -1039,8 +1039,23 @@
 				NSLog(@"ERROR: could not get directory content listing for paid book. %@, %@", directoryContentError, [directoryContentError userInfo]);
 			}
 		}
-		
-		
+		// delete bookmarks and notes
+		if ([aBook valueForKey:@"bookmarks"]) {
+			for (NSManagedObject * obj in [aBook valueForKey:@"bookmarks"]) {	
+				[moc deleteObject:obj];
+			}
+		}
+		if ([aBook valueForKey:@"highlights"]) {
+			for (NSManagedObject * obj in [aBook valueForKey:@"highlights"]) {	
+				[moc deleteObject:obj];
+			}
+		}
+		if ([aBook valueForKey:@"notes"]) {
+			for (NSManagedObject * obj in [aBook valueForKey:@"notes"]) {	
+				[moc deleteObject:obj];
+			}
+		}
+		if ([aBook valueForKey:@"placeInBook"]) [moc deleteObject:[aBook valueForKey:@"placeInBook"]];		
 	}
 	else {
 		// delete permanent files
