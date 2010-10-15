@@ -1055,7 +1055,8 @@
 				[moc deleteObject:obj];
 			}
 		}
-		if ([aBook valueForKey:@"placeInBook"]) [moc deleteObject:[aBook valueForKey:@"placeInBook"]];		
+		if ([aBook valueForKey:@"placeInBook"]) [moc deleteObject:[aBook valueForKey:@"placeInBook"]];
+		[aBook setValue:[NSNumber numberWithFloat:0] forKey:@"progress"];
 	}
 	else {
 		// delete permanent files

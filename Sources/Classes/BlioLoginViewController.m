@@ -85,7 +85,8 @@
 }
 - (void) dismissLoginView: (id) sender {
 	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
-	[self dismissModalViewControllerAnimated:YES];
+//	[self dismissModalViewControllerAnimated:YES];
+	[[BlioStoreManager sharedInstance] dismissLoginView];
 }
 
 - (UITextField *)createEmailTextField {

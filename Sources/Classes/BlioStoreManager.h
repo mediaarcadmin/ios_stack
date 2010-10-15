@@ -25,6 +25,9 @@ typedef enum  {
 } BlioDeviceRegisteredStatus;
 
 static NSString * const BlioLoginFinished = @"BlioLoginFinished";
+static NSString * const BlioStoreRetrieveBooksStarted = @"BlioStoreRetrieveBooksStarted";
+static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBooksFinished";
+
 
 @interface BlioStoreManager : NSObject<BlioStoreHelperDelegate> {
 	BOOL isShowingLoginView;
@@ -114,6 +117,7 @@ static NSString * const BlioLoginFinished = @"BlioLoginFinished";
 	@param sourceSpecificID The source-specific ID of the book.
 	@returns An NSURL pointing to the book asset.
  */
+-(void)dismissLoginView;
 -(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 -(BlioDeviceRegisteredStatus)deviceRegisteredForSourceID:(BlioBookSourceID)sourceID;
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID;

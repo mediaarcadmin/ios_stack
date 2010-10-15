@@ -8,10 +8,7 @@
 
 #import "BlioGetBooksImportViewController.h"
 #import "BlioFileSharingManager.h"
-#import "BlioBook.h"
 #import "BlioProcessingStandardOperations.h"
-#import "BlioFileSharingManager.h"
-#import "BlioStoreCategoriesController.h"
 
 @implementation BlioGetBooksImportViewController
 
@@ -99,7 +96,6 @@
 */
 
 - (void)viewDidAppear:(BOOL)animated {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
     [super viewDidAppear:animated];
 }
 /*
@@ -137,7 +133,8 @@
 		}
 		if (row != -1) {
 			[self.importableBooks removeObjectAtIndex:row];
-			[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:row inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+			if ([self.importableBooks count] == 0) [self.tableView reloadData];
+			else [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:row inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
 		}
 	}
 }
@@ -242,11 +239,11 @@
 		
 		// add activity indicator
 		UIActivityIndicatorView * cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-		cellActivityIndicatorView.frame = CGRectMake(-kBlioMoreResultsCellActivityIndicatorViewWidth/3,-kBlioMoreResultsCellActivityIndicatorViewWidth/2,kBlioMoreResultsCellActivityIndicatorViewWidth,kBlioMoreResultsCellActivityIndicatorViewWidth);
+		cellActivityIndicatorView.frame = CGRectMake(-kBlioImportBookCellActivityIndicatorViewWidth/3,-kBlioImportBookCellActivityIndicatorViewWidth/2,kBlioImportBookCellActivityIndicatorViewWidth,kBlioImportBookCellActivityIndicatorViewWidth);
 		cellActivityIndicatorView.hidden = YES;
 		
 		cellActivityIndicatorView.hidesWhenStopped = YES;
-		cellActivityIndicatorView.tag = kBlioMoreResultsCellActivityIndicatorViewTag;
+		cellActivityIndicatorView.tag = kBlioImportBookCellActivityIndicatorViewTag;
 		[cell.imageView addSubview:cellActivityIndicatorView];
 		[cellActivityIndicatorView release];		
     }
@@ -266,19 +263,19 @@
 //	NSLog(@"completeOp: %@",completeOp);
 	if (completeOp && ![completeOp isCancelled]) {
 //		NSLog(@"showing activity indicator...");
-		UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag];
+		UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioImportBookCellActivityIndicatorViewTag];
 //		NSLog(@"cellActivityIndicatorView: %@",cellActivityIndicatorView);
 		cellActivityIndicatorView.hidden = NO;
 		[cellActivityIndicatorView startAnimating];			
 		UIImage * emptyImage = [[UIImage alloc] init];
 		cell.imageView.image = emptyImage;  // setting a UIImage object allows the view (and activity indicator subview) to show up
-		cell.imageView.frame = CGRectMake(0, 0, kBlioMoreResultsCellActivityIndicatorViewWidth * 1.5, kBlioMoreResultsCellActivityIndicatorViewWidth);
+		cell.imageView.frame = CGRectMake(0, 0, kBlioImportBookCellActivityIndicatorViewWidth * 1.5, kBlioImportBookCellActivityIndicatorViewWidth);
 		[emptyImage release];	
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
 	else {
 //		NSLog(@"hiding activity indicator...");
-		[(UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag] stopAnimating];
+		[(UIActivityIndicatorView *)[cell.imageView viewWithTag:kBlioImportBookCellActivityIndicatorViewTag] stopAnimating];
 		cell.imageView.image = nil;		
 		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 	}
@@ -338,12 +335,12 @@
 		[[BlioFileSharingManager sharedFileSharingManager] importBook:importableBook];
 		[tableView deselectRowAtIndexPath:indexPath animated:YES];
 		
-		UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].imageView viewWithTag:kBlioMoreResultsCellActivityIndicatorViewTag];
+		UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].imageView viewWithTag:kBlioImportBookCellActivityIndicatorViewTag];
 		cellActivityIndicatorView.hidden = NO;
 		[cellActivityIndicatorView startAnimating];	
 		UIImage * emptyImage = [[UIImage alloc] init];
 		[tableView cellForRowAtIndexPath:indexPath].imageView.image = emptyImage;  // setting a UIImage object allows the view (and activity indicator subview) to show up
-		[tableView cellForRowAtIndexPath:indexPath].imageView.frame = CGRectMake(0, 0, kBlioMoreResultsCellActivityIndicatorViewWidth * 1.5, kBlioMoreResultsCellActivityIndicatorViewWidth);
+		[tableView cellForRowAtIndexPath:indexPath].imageView.frame = CGRectMake(0, 0, kBlioImportBookCellActivityIndicatorViewWidth * 1.5, kBlioImportBookCellActivityIndicatorViewWidth);
 		[emptyImage release];	
 	}
 }

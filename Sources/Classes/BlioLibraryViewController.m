@@ -550,7 +550,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceOnlineStore
 									 sourceSpecificID:@"VirginIslandsFixed" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
         
         [self.processingDelegate enqueueBookWithTitle:@"Woodstock - Peace, Music, and Memories" 
@@ -1093,7 +1092,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 	}
 	
-	BlioLibraryListCell *cell;
+	BlioLibraryListCell * cell = nil;
 	
 	cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 	if (cell == nil) {

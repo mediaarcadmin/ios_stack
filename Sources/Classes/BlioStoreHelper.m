@@ -11,7 +11,7 @@
 
 @implementation BlioStoreHelper
 
-@synthesize delegate, timeout, username, token, sourceID, storeTitle;
+@synthesize delegate, timeout, username, token, sourceID, storeTitle,isRetrievingBooks;
 
 -(void) dealloc {
 	self.token = nil;

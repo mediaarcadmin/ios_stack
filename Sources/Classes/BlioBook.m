@@ -850,53 +850,6 @@ static void sortedHighlightRangePredicateInit() {
 	}
 	return nil;
 }
-/*
-+(NSString*)canonicalNameFromStandardName:(NSString*)aName {
-	if (!aName) return nil;
-	//list of common suffixes.  Add more here if special case arises.
-	NSArray* suffixes = [NSArray arrayWithObjects:@"Jr.",@"Sr.",@"Jr",@"Sr",@"Esq.",@"Ph.D.",@"PhD",@"M.D.",@"MD",@"II",@"III",@"IV",@"V",nil];
-	
-	//split name string into pieces by spaces.  Array is mutable so it can be changed later in function
-	NSMutableArray* namePieces = [NSMutableArray arrayWithArray:[aName componentsSeparatedByString:@" "]];
-	
-	//Check Plato case: if single name, return single name unchanged
-	if ([namePieces count] == 1)
-		return aName;
-	
-	//lastNamePieces holds all the pieces in the last name (including suffixes)
-	NSMutableArray* lastNamePieces = [NSMutableArray array];
-	NSString* lastPiece;
-	
-	//remove the last object in the namePieces array and add to the lastNamePieces array while we have a suffix
-	do {
-		//get last piece and then remove it from the namePieces array
-		lastPiece = [namePieces lastObject];
-		[namePieces removeLastObject];
-		
-		//insert at beginning of lastNamePieces array to preserve order
-		[lastNamePieces insertObject:lastPiece atIndex:0];
-		//NOTE: if this comparison becomes more complicated than simply looking at a list of suffixes, you could use a regular expression to check each piece
-	} while ([suffixes containsObject:lastPiece]);
-	
-	//flatten arrays into strings separated by original spaces and add in comma
-	return [[lastNamePieces componentsJoinedByString:@" "] stringByAppendingFormat:@", %@",[namePieces componentsJoinedByString:@" "]];	
-}
-+(NSString*)standardNameFromCanonicalName:(NSString*)aName {
-	if (!aName) return nil;
-	//Find last comma in name string (assumes that there are no commas in correctly formatted first or middle names)
-	NSRange lastCommaLocation = [aName rangeOfString:@", " options:NSBackwardsSearch];
-	
-	//Check to see if it is a single name like Plato
-	if (lastCommaLocation.location == NSNotFound)
-		return aName;
-	
-	//Get first and last Name strings and put them in the correct order
-	return [NSString stringWithFormat:@"%@ %@",
-			[aName substringFromIndex:lastCommaLocation.location+lastCommaLocation.length ],
-			[aName substringToIndex:lastCommaLocation.location]];
-	
-}
-*/
 +(NSArray*) suffixes{
 	return [NSArray arrayWithObjects:@"Ph.D.",@"PhD",@"M.D.",@"M.d.",@"MD",nil];
 }

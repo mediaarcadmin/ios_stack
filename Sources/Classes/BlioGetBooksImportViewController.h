@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "BlioRoundedRectActivityView.h"
 
+static const NSInteger kBlioImportBookCellActivityIndicatorViewTag = 99;
+static const NSInteger kBlioImportBookCellActivityIndicatorViewWidth = 16;
+
 @protocol BlioProcessingDelegate;
 
 static const NSInteger kBlioGetBooksImportTag = 4;

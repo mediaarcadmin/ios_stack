@@ -30,6 +30,7 @@
 		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
 	}
+	NSLog(@"CompleteOperation dependencies: %@",[self dependencies]);
 	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
 //	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
 //	[userInfo setObject:self.bookID forKey:@"bookID"];

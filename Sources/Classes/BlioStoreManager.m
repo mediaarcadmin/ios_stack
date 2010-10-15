@@ -87,6 +87,9 @@
 	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
 	isShowingLoginView = YES;	
 }
+-(void)dismissLoginView {
+	[((UINavigationController*)rootViewController).visibleViewController dismissModalViewControllerAnimated:YES];
+}
 -(void)loginFinishedForSourceID:(BlioBookSourceID)sourceID {
 	isShowingLoginView = NO;
 	self.loginViewController = nil;
