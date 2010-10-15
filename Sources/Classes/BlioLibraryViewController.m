@@ -1905,7 +1905,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)setBook:(BlioBook *)newBook {
 	[self stopListeningToProcessingNotifications];
 	self.bookView.delegate = self.delegate;
-    [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:0];
+    [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutGrid];
     self.titleLabel.text = [newBook title];
 	self.cellContentDescription = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
