@@ -357,14 +357,6 @@
 	cachePath = [cachePath stringByAppendingPathComponent:aFile];
 	
 	if ([aFile.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-		if ([[NSFileManager defaultManager] fileExistsAtPath:[cachePath stringByAppendingPathComponent:@"rights.xml"]]) {
-			NSLog(@"Rights file exists for epub file, %@; cannot import!",aFile);
-			[pool drain];
-			return nil;
-		}
-		NSString * containerPath = [cachePath stringByAppendingPathComponent:@"META-INF/container.xml"];
-		
-		NSLog(@"containerPath: %@",containerPath);
 		
 		BOOL unzipSuccess = NO;
 		ZipArchive* aZipArchive = [[ZipArchive alloc] init];
@@ -379,6 +371,14 @@
 			NSLog(@"Failed to open zipfile at path: %@", importableBook.filePath);
 		}
 		[aZipArchive release];
+
+		if ([[NSFileManager defaultManager] fileExistsAtPath:[cachePath stringByAppendingPathComponent:@"rights.xml"]]) {
+			NSLog(@"Rights file exists for epub file, %@; cannot import!",aFile);
+			[pool drain];
+			return nil;
+		}
+		NSString * containerPath = [cachePath stringByAppendingPathComponent:@"META-INF/container.xml"];
+		NSLog(@"containerPath: %@",containerPath);		
 		
 		if (![[NSFileManager defaultManager] fileExistsAtPath:containerPath]) {
 			NSLog(@"WARNING: containerPath: %@ for file, %@ was not found!",containerPath,aFile);
@@ -427,12 +427,8 @@
 		}
 	}
 	else if ([aFile.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-		if ([[NSFileManager defaultManager] fileExistsAtPath:[cachePath stringByAppendingPathComponent:BlioXPSKNFBDRMHeaderFile]]) {
-			NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",aFile);
-			[pool drain];
-			return nil;
-		}
-						
+		NSLog(@"checking for XPS DRM: %@",[cachePath stringByAppendingPathComponent:BlioXPSKNFBDRMHeaderFile]);
+								
 		BOOL unzipSuccess = NO;
 		ZipArchive* aZipArchive = [[ZipArchive alloc] init];
 		if([aZipArchive UnzipOpenFile:importableBook.filePath] ) {
@@ -446,6 +442,12 @@
 			NSLog(@"Failed to open zipfile at path: %@", importableBook.filePath);
 		}
 		[aZipArchive release];
+				
+		if ([[NSFileManager defaultManager] fileExistsAtPath:[cachePath stringByAppendingPathComponent:BlioXPSKNFBDRMHeaderFile]]) {
+			NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",aFile);
+			[pool drain];
+			return nil;
+		}		
 		
 		// check if KNFB XPS File (though not unlikely, as most KNFB XPS files would be DRMed)
 		NSString * KNFBMetadataPath = [cachePath stringByAppendingPathComponent:BlioXPSKNFBMetadataFile];

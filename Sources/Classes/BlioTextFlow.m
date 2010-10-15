@@ -1175,12 +1175,21 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 		return;
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	if (![self hasBookManifestValueForKey:BlioManifestTextFlowKey]) {
+		// no value means this is probably a free XPS; no need to continue, but no need to send a fail signal to dependent operations either.
+		self.operationSuccess = YES;
+		self.percentageComplete = 100;
+		[pool drain];
+		return;
+	}
 	
     NSData *data = [self getBookManifestDataForKey:BlioManifestTextFlowKey];
     
     if (nil == data) {
         //NSLog(@"Could not create TextFlow data file.");
         NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist at path: %@.", [self getBookManifestPathForKey:BlioManifestTextFlowKey]);
+		self.operationSuccess = NO;
         [pool drain];
         return;
     }
@@ -1221,6 +1230,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         
         if (!data) {
             NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist with name: %@.", [pageRange fileName]);
+			self.operationSuccess = NO;
             [pool drain];
             return;
         }

@@ -470,6 +470,7 @@
     // non-encrypted XPS books
     manifestLocation = [aBook manifestLocationForKey:BlioManifestXPSKey];
 	if (manifestLocation && (sourceID != BlioBookSourceOnlineStore)) {
+		BlioProcessingDownloadXPSOperation * xpsOp = nil;
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
@@ -477,7 +478,6 @@
 		else {
 			stringURL = [aBook manifestPathForKey:BlioManifestXPSKey];
 			BOOL usedPreExistingOperation = NO;
-			BlioProcessingDownloadXPSOperation * xpsOp = nil;
 			
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
@@ -507,7 +507,63 @@
 				}
 				[bookOps addObject:xpsOp];
 			}
-		}	
+		}
+		////////////
+		if (![aBook manifestPreAvailabilityCompleteForKey:BlioManifestXPSKey] && !placeholderOnly) {
+			
+			NSMutableArray * xpsOps = [NSMutableArray array];
+			
+			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			if (!manifestOp || manifestOp.isCancelled) {
+				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
+				manifestOp.bookID = bookID;
+				manifestOp.sourceID = sourceID;
+				manifestOp.sourceSpecificID = sourceSpecificID;
+				manifestOp.cacheDirectory = cacheDir;
+				manifestOp.tempDirectory = tempDir;
+				if (xpsOp) [manifestOp addDependency:xpsOp];
+				[self.preAvailabilityQueue addOperation:manifestOp];
+			} else {
+				if (xpsOp) [manifestOp addDependency:xpsOp];
+            }
+			[xpsOps addObject:manifestOp];
+			[bookOps addObject:manifestOp];
+			
+			
+			if ([[aBook manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+				alreadyCompletedOperations++;
+				url = nil;
+			} else {
+				[self addCoverOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];
+			}
+			
+			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+				alreadyCompletedOperations++;
+				url = nil;
+			} else {
+				[self addTextFlowOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];                  			
+			}
+			
+			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
+			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+			preAvailabilityCompleteOp.filenameKey = BlioManifestXPSKey;
+			preAvailabilityCompleteOp.bookID = bookID;
+			preAvailabilityCompleteOp.sourceID = sourceID;
+			preAvailabilityCompleteOp.sourceSpecificID = sourceSpecificID;
+			preAvailabilityCompleteOp.cacheDirectory = cacheDir;
+			preAvailabilityCompleteOp.tempDirectory = tempDir;
+			
+			for (BlioProcessingOperation * op in xpsOps) {
+				[preAvailabilityCompleteOp addDependency:op];
+			}
+			[bookOps addObject:preAvailabilityCompleteOp];
+			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];
+			[preAvailabilityCompleteOp release];
+			
+		}
+		
+		
+		///////////
 	}
     
     
@@ -1087,7 +1143,6 @@
 			newPosition--;
 			[book setValue:[NSNumber numberWithInt:newPosition] forKey:@"libraryPosition"];
 		}
-		// TODO: make sure all the relationships in the object graph have the appropriate delete rules set.
 		
 		// delete record. N.B.: this needs to happen after the re-ordering, as the update changeObject events for the re-ordering to the fetchedController delegate should happen after the delete event.
 		[moc deleteObject:aBook];

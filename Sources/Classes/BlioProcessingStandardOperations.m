@@ -810,8 +810,8 @@
 	if (hasAudiobook) {
 		NSLog(@"setting Audiobook values in manifest...");
 		
-		// TODO: this is temporary! we're setting hasAudiobookRights to true unconditionally when an audiobook is found so that the audiobook in "There Was An Old Lady" can be used (the book is currently not encrypted).
-		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobookRights"]; 
+		// TODO: the following line is temporary! we're setting hasAudiobookRights to true unconditionally when an audiobook is found so that the audiobook in "There Was An Old Lady" can be used (the book is currently not encrypted).
+		// [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobookRights"]; 
 		
 		manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
