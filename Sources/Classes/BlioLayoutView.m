@@ -189,6 +189,17 @@
         aPageTurningView.bitmapDataSource = self;
         aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
+        
+        // Must do this here so that teh page aspect ration takes account of the fitTwoPages property
+        CGRect myBounds = self.bounds;
+        if(myBounds.size.width > myBounds.size.height) {
+            aPageTurningView.fitTwoPages = YES;
+            aPageTurningView.twoSidedPages = YES;
+        } else {
+            aPageTurningView.fitTwoPages = NO;
+            aPageTurningView.twoSidedPages = NO;
+        } 
+        
         if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
             [aPageTurningView setPageAspectRatio:0];
         } else {
@@ -263,6 +274,8 @@
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self layoutSubviews];
+    
     // TODO: Fix pageTurningView to properly rotate the highlights during the rotation
     [self refreshHighlightsForPageAtIndex:self.pageTurningView.leftPageIndex];
     [self refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
@@ -948,7 +961,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (NSArray *)highlightRectsForPageAtIndex:(NSInteger)pageIndex excluding:(BlioBookmarkRange *)excludedBookmark {
-    
     NSMutableArray *allHighlights = [NSMutableArray array];
     NSArray *highlightRanges = nil;
     if (self.delegate) {
@@ -1002,10 +1014,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     EucSelectorRange *selectedRange = [self.selector selectedRange];
     BlioBookmarkRange *excludedRange = [self bookmarkRangeFromSelectorRange:selectedRange];
     
-    //return [self highlightRectsForPageAtIndex:index excluding:excludedRange];
-    NSArray *array = [self highlightRectsForPageAtIndex:pageIndex excluding:excludedRange];
-    NSLog(@"highlightsForPageAtIndex %d (%d)", pageIndex, [array count]);
-    return array;
+    return [self highlightRectsForPageAtIndex:pageIndex excluding:excludedRange];
 }
 
 
