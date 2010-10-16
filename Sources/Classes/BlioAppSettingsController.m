@@ -123,13 +123,14 @@
 			break;
 		case 4:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-				cell.textLabel.text = [NSString stringWithFormat:@"Account: %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
+				cell.textLabel.text = [NSString stringWithFormat:@"My Account: %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
 				//			 cell.textLabel.text = [NSString stringWithFormat:@"Logged in as %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
 			}
 			else {
-				cell.textLabel.textAlignment = UITextAlignmentCenter;
-				cell.accessoryType = UITableViewCellAccessoryNone;
-				cell.textLabel.text = @"Login";
+//				cell.textLabel.textAlignment = UITextAlignmentCenter;
+//				cell.accessoryType = UITableViewCellAccessoryNone;
+//				cell.textLabel.text = @"Login";
+				cell.textLabel.text = @"My Account";
 			}
 			break;
 		default:
