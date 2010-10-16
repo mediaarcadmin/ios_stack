@@ -16,9 +16,6 @@
 #import "BlioLoginViewController.h"
 #import "BlioProcessingStandardOperations.h"
 #import "BlioAccessibilitySegmentedControl.h"
-// TEMPORARY
-#import "BlioDrmManager.h"
-#import "BlioXpsClient.h"
 #import "BlioStoreArchiveViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
@@ -2049,14 +2046,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryListCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider,proportionalProgressView, delegate,progressView,pauseButton,resumeButton,statusBadge;
+@synthesize bookView, titleLabel, authorLabel, /*progressSlider,proportionalProgressView,*/ delegate,progressView,pauseButton,resumeButton,statusBadge;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.bookView = nil;
     self.titleLabel = nil;
     self.authorLabel = nil;
-    self.progressSlider = nil;
+    //self.progressSlider = nil;
     self.progressView = nil;
 	self.pauseButton = nil;
 	self.resumeButton = nil;
@@ -2104,6 +2101,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.authorLabel = aAuthorLabel;
         [aAuthorLabel release];
         
+		/*
         BlioProgressView *aSlider = [[BlioProgressView alloc] init];
         [aSlider setIsAccessibilityElement:NO];
         aSlider.userInteractionEnabled = NO;
@@ -2113,6 +2111,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.contentView addSubview:aSlider];
         self.progressSlider = aSlider;
         [aSlider release];
+		*/
 		
 		self.progressView = [[[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault] autorelease];
 		progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
@@ -2143,7 +2142,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[super prepareForReuse];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.accessoryView = nil;
-	progressSlider.hidden = YES;
+	//progressSlider.hidden = YES;
 	self.statusBadge.image = nil;
 }
 -(void)onPauseButtonPressed:(id)sender {
@@ -2173,15 +2172,15 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
 	layoutPageEquivalentCount = [self.book.layoutPageEquivalentCount unsignedIntValue];
-    self.progressSlider.value = [[newBook progress] floatValue];
+    //self.progressSlider.value = [[newBook progress] floatValue];
 	
-	[self resetProgressSlider];
+	//[self resetProgressSlider];
 	
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
 		[self.progressView removeFromSuperview];
 		self.accessoryView = resumeButton;
 		[self resetAuthorText];
-		self.progressSlider.hidden = YES;
+		//self.progressSlider.hidden = YES;
 	}			
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
 		[self listenToProcessingNotifications];
@@ -2192,7 +2191,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			[self.contentView addSubview:self.progressView];
 			progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
 			progressView.hidden = NO;
-			self.progressSlider.hidden = YES;
+			//self.progressSlider.hidden = YES;
 			BlioProcessingCompleteOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 			if (completeOp) {
 				[completeOp calculateProgress];
@@ -2213,37 +2212,37 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			self.accessoryView = nil;
 			self.authorLabel.text = NSLocalizedString(@"Retrieving Information...","\"Retrieving Information...\" status indicator in BlioLibraryListCell");
 			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			//self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
 			self.accessoryView = resumeButton;
 			self.authorLabel.text = NSLocalizedString(@"Paused...","\"Paused...\" status indicator in BlioLibraryListCell");
 			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			//self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateFailed) {
 			self.accessoryView = resumeButton;
 			self.authorLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryListCell");
 			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			//self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
 			self.accessoryView = resumeButton;
 			self.authorLabel.text = NSLocalizedString(@"App Update Required","\"App Update Required\" status indicator in BlioLibraryListCell");
 			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			//self.progressSlider.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
 			self.accessoryView = nil;
 			self.authorLabel.text = NSLocalizedString(@"Suspended","\"Suspended\" status indicator in BlioLibraryListCell");
 			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			//self.progressSlider.hidden = YES;
 //			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
 	}
 	else {
-		self.progressSlider.hidden = NO;
+		//self.progressSlider.hidden = NO;
 		[self.progressView removeFromSuperview];
 		[self resetAuthorText];
 		self.accessoryView = nil;
@@ -2271,6 +2270,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationCompleteNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationFailedNotification object:nil];
 }
+/*
 -(void) resetProgressSlider {
     CGRect progressFrame = self.progressSlider.frame;
 	CGFloat targetProgressWidth = 0;
@@ -2296,6 +2296,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //	}
 	
 }
+*/
 -(void) resetAuthorText {
     self.authorLabel.text = [[self.book authorsWithStandardFormat] uppercaseString];
 //    if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
@@ -2314,7 +2315,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 -(void) onBlioMaxLayoutPageEquivalentCountChanged:(NSNotification*)note {
 	NSLog(@"onBlioMaxLayoutPageEquivalentCountChanged entered");
-	if (delegate == [note object]) [self resetProgressSlider];
+	// TODO: might this function be needed for anything else?
+	//if (delegate == [note object]) [self resetProgressSlider];
 }
 - (void)onProcessingProgressNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {

@@ -99,17 +99,25 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
 	if ((self = [super initWithFrame:CGRectZero])) {
         self.viewSettingsDelegate = newDelegate;
+		
         UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
         UIColor *white = [UIColor whiteColor];
         UIEdgeInsets inset = UIEdgeInsetsMake(0, 2, 2, 2);
         UIImage *plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:white textInset:inset];
         UIImage *layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:white textInset:inset];
-        UIImage *speedImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:white textInset:inset];
-        
-        NSArray *segmentImages = [NSArray arrayWithObjects:
+		NSArray *segmentImages;
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+			UIImage *speedImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:white textInset:inset];
+			segmentImages = [NSArray arrayWithObjects:
+						 plainImage,
+						 layoutImage,
+						 speedImage,
+						 nil];
+		}
+		else 
+			segmentImages = [NSArray arrayWithObjects:
                                   plainImage,
                                   layoutImage,
-                                  speedImage,
                                   nil];
         
         BlioAccessibilitySegmentedControl *aLayoutSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
@@ -124,15 +132,19 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityHint:NSLocalizedString(@"Switches to the flowed text view.", @"Accessibility hint for View Settings Flowed Layout button")];
         [[aLayoutSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Fixed layout", @"Accessibility label for View Settings Fixed Layout button")];
         [[aLayoutSegmentedControl imageForSegmentAtIndex:1] setAccessibilityHint:NSLocalizedString(@"Switches to the fixed layout view.", @"Accessibility hint for View Settings Fixed Layout button")];
-        [[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Fast layout", @"Accessibility label for View Settings Fast Layout button")];
-        [[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityHint:NSLocalizedString(@"Switches to the fast reading view.", @"Accessibility hint for View Settings Fast Layout button")];
-        
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+			[[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Fast layout", @"Accessibility label for View Settings Fast Layout button")];
+			[[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityHint:NSLocalizedString(@"Switches to the fast reading view.", @"Accessibility hint for View Settings Fast Layout button")];
+        }
+		
 		if (![self.viewSettingsDelegate reflowEnabled]) {
 			[aLayoutSegmentedControl setEnabled:NO forSegmentAtIndex:0];
 			[[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:[NSString stringWithFormat:@"%@ (%@)",[aLayoutSegmentedControl imageForSegmentAtIndex:0].accessibilityLabel,NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")]];
-			[aLayoutSegmentedControl setEnabled:NO forSegmentAtIndex:2];
-			[[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:[NSString stringWithFormat:@"%@ (%@)",[aLayoutSegmentedControl imageForSegmentAtIndex:2].accessibilityLabel,NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")]];
-		}		
+			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+				[aLayoutSegmentedControl setEnabled:NO forSegmentAtIndex:2];
+				[[aLayoutSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:[NSString stringWithFormat:@"%@ (%@)",[aLayoutSegmentedControl imageForSegmentAtIndex:2].accessibilityLabel,NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")]];
+			}
+		}
 		if (![self.viewSettingsDelegate fixedViewEnabled]) {
 			[aLayoutSegmentedControl setEnabled:NO forSegmentAtIndex:1];
 			[[aLayoutSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:[NSString stringWithFormat:@"%@ (%@)",[aLayoutSegmentedControl imageForSegmentAtIndex:1].accessibilityLabel,NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")]];
