@@ -11,12 +11,12 @@
 
 @implementation BlioStoreHelper
 
-@synthesize delegate, timeout, username, token, sourceID, storeTitle,isRetrievingBooks;
+@synthesize delegate, timeout, token, sourceID, storeTitle,isRetrievingBooks;
 
 -(void) dealloc {
+	if (username) [username release];
 	self.token = nil;
 	self.timeout = nil;
-	self.username = nil;
 	self.storeTitle = nil;
 	[super dealloc];
 }
@@ -35,6 +35,10 @@
 }
 -(BOOL)isLoggedIn {
 	return [self hasValidToken];
+}
+-(NSString*)username {
+	if ([self isLoggedIn]) return username;
+	else return nil;
 }
 -(BlioDeviceRegisteredStatus)deviceRegistered {
 	// abstract method	

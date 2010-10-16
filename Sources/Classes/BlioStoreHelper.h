@@ -22,7 +22,7 @@
 	
 }
 @property (nonatomic, retain) NSDate* timeout;
-@property (nonatomic, copy) NSString *username;
+@property (nonatomic, readonly) NSString *username;
 @property (nonatomic, copy) NSString *token;
 @property (nonatomic, copy) NSString *storeTitle;
 @property (nonatomic, assign) id<BlioStoreHelperDelegate> delegate;

@@ -1012,6 +1012,9 @@
 		DCA65A3A11503A4D006534F4 /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
 		DCA65A4711503CF6006534F4 /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
 		DCA65A4811503CF6006534F4 /* icon-vault.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4611503CF6006534F4 /* icon-vault.png */; };
+		DCAC9611126918C200C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
+		DCAC9612126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
+		DCAC9613126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
 		DCB0364011BDC43300B341D4 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */; };
 		DCC447E211ADBAB700CBD491 /* BlioVoiceData.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */; };
 		DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
@@ -1813,6 +1816,8 @@
 		DCA65A3911503A4D006534F4 /* SearchCellDivider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SearchCellDivider.png; sourceTree = "<group>"; };
 		DCA65A4511503CF6006534F4 /* icon-categories.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-categories.png"; sourceTree = "<group>"; };
 		DCA65A4611503CF6006534F4 /* icon-vault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-vault.png"; sourceTree = "<group>"; };
+		DCAC960F126918C200C24BF7 /* BlioMyAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMyAccountViewController.h; sourceTree = "<group>"; };
+		DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMyAccountViewController.m; sourceTree = "<group>"; };
 		DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioVoiceData.plist; sourceTree = "<group>"; };
 		DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDownloadVoicesViewController.h; sourceTree = "<group>"; };
@@ -2043,6 +2048,8 @@
 				A3169288111488C9005AAE5E /* BlioAudioManager.m */,
 				A3A672B511304D7700138097 /* BlioAppSettingsController.m */,
 				A3A672B411304D7700138097 /* BlioAppSettingsController.h */,
+				DCAC960F126918C200C24BF7 /* BlioMyAccountViewController.h */,
+				DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */,
 				A3A67374113078E300138097 /* BlioAudioSettingsController.h */,
 				A3A67375113078E300138097 /* BlioAudioSettingsController.m */,
 				DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */,
@@ -2768,7 +2775,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -3073,7 +3080,7 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = GDataTouchUnitTests.octest;
@@ -3815,6 +3822,7 @@
 				7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */,
 				C90DAE8D125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
 				C90DAEBD125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
+				DCAC9612126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3946,6 +3954,7 @@
 				7D9A6885125ABC7200130A53 /* levenshtein_distance.c in Sources */,
 				C90DAE8E125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
 				C90DAEBE125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
+				DCAC9611126918C200C24BF7 /* BlioMyAccountViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4077,6 +4086,7 @@
 				7D9A6886125ABC7200130A53 /* levenshtein_distance.c in Sources */,
 				C90DAE8F125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
 				C90DAEBF125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
+				DCAC9613126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

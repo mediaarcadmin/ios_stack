@@ -62,7 +62,7 @@
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
-	self.username = user;
+	username = [user retain];
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
 	loginRequest.username = user;	
 	loginRequest.password = password; 
@@ -293,7 +293,10 @@
 }
 - (void)logout {
 	self.token = nil;
-	self.username = nil;
+	if (username) {
+		[username release];
+		username = nil;
+	}
 	self.timeout = [NSDate distantPast];
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:BlioBookSourceOnlineStore]];
 }

@@ -83,6 +83,7 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 	Asynchronously retrieves books (by source-specific ID/ISBN) from the appropriate store helper associated with the given sourceID.
 	@param sourceID The BlioBookSourceID for which books should be retrieved.
  */
+-(NSString*)usernameForSourceID:(BlioBookSourceID)sourceID;
 -(void)retrieveBooksForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Returns a valid token for a given sourceID. If no valid token is available, then nil is returned.
