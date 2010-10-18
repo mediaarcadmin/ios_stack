@@ -996,7 +996,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
             
             for (NSValue *rectValue in coalescedRects) {
-                THPair *highlightPair = [[THPair alloc] initWithFirst:(id)rectValue second:(id)[highlightRange.color colorWithAlphaComponent:0.5f]];
+                THPair *highlightPair = [[THPair alloc] initWithFirst:(id)rectValue second:(id)[highlightRange.color colorWithAlphaComponent:0.3f]];
                 [allHighlights addObject:highlightPair];
                 [highlightPair release];
             }

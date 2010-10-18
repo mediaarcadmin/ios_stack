@@ -2990,7 +2990,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             CGSize minSize = _unzoomedRightPageFrame.size;
             if(highlights && highlights.count) {                
                 size_t bufferLength = minSize.width * minSize.height * 4;
-                void *textureData = malloc(bufferLength);
+                unsigned char *textureData = malloc(bufferLength);
                 uint32_t pattern = 0x00000000;
                 memset_pattern4(textureData, &pattern, bufferLength);
 
@@ -3000,6 +3000,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 CGColorSpaceRelease(colorSpace);
                 CGContextScaleCTM(textureContext, 1.0f, -1.0f);
                 CGContextTranslateCTM(textureContext, 0, -minSize.height);
+
                 CGContextSetBlendMode(textureContext, kCGBlendModeMultiply);
                 for(THPair *highlight in highlights) {
                     CGRect highlightRect = [highlight.first CGRectValue];
@@ -3009,6 +3010,24 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     THAddRoundedRectToPath(textureContext, highlightRect, 3.0f, 3.0f);
                     CGContextFillPath(textureContext);
                 }
+				
+				// Remove the prmultiplied alpha
+				// TODO: Make this more efficient...
+				for (int i = 0; i < minSize.height; i++) {
+					for (int j = 0; j < minSize.width; j++) {
+						int index = 4 * ((i * minSize.width) + j);
+						int red = textureData[index];
+						int green = textureData[index+1];
+						int blue = textureData[index+2];
+						int alpha =  textureData[index+3];
+						if (alpha > 0) {
+							CGFloat premult = (alpha / 256.0f);
+							textureData[index] = MIN(red / premult, 255);
+							textureData[index+1] = MIN(green / premult, 255);
+							textureData[index+2] = MIN(blue / premult, 255);
+						}
+					}
+				}
                 
                 _pageContentsInformation[index].highlightTexture = [self _createTextureFromRGBABitmapContext:textureContext];
                 gotHighlights = YES;
