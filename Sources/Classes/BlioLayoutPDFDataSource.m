@@ -8,6 +8,7 @@
 
 #import "BlioLayoutPDFDataSource.h"
 #import "BlioLayoutGeometry.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 @implementation BlioLayoutPDFDataSource
 
@@ -91,6 +92,8 @@
                                 fromRect:(CGRect)rect
                                  minSize:(CGSize)size 
                               getContext:(id *)context {
+	
+	[self openDocumentIfRequired];
     
     if (nil == pdf) return nil;
     
@@ -128,6 +131,8 @@
     CGContextDrawPDFPage(bitmapContext, aPage);
     [pdfLock unlock];
     
+	[self closeDocumentIfRequired];
+
     *context = [bitmapData autorelease];
     
     return (CGContextRef)[(id)bitmapContext autorelease];
@@ -172,7 +177,10 @@
 }
 
 - (void)closeDocumentIfRequired {
-    [self closeDocument];
+	// Apple fixed PDF bitmap graphics footprint on 4.0+
+	if (!([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame)) {
+		[self closeDocument];
+	}
 }
 
 @end
