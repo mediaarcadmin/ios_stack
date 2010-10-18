@@ -258,8 +258,7 @@
     if(!CGSizeEqualToSize(newSize, self.pageSize)) {
         if(self.selector.tracking) {
             [self.selector setSelectedRange:nil];
-        }        
-        self.pageSize = newSize;
+        }
     }
 }
 
@@ -268,12 +267,11 @@
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [self layoutSubviews];
-    
-    // TODO: Fix pageTurningView to properly rotate the highlights during the rotation
-    [self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.leftPageIndex];
-    [self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
-    [self.pageTurningView drawView];
+	// TODO: Get Jamie to provide an asynchronous update mechanism for this so we don't see a checkerboard flash
+	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex];
+	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex - 1];
+	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex - 2];
+	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex + 1];
 }
 
 #pragma mark -
