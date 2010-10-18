@@ -46,14 +46,11 @@
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
 
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)page;
-- (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex offsetOrigin:(BOOL)offset;
+- (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex offsetOrigin:(BOOL)offset applyZoom:(BOOL)zoom;
 
 - (NSArray *)bookmarkRangesForCurrentPage;
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
-
-- (NSInteger)leftPageIndex;
-- (NSInteger)rightPageIndex;
 
 - (BOOL)touchesShouldBeSuppressed;
 - (void)handleTapAtPoint:(CGPoint)point;
@@ -69,9 +66,6 @@
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context;
 - (void)zoomOut;
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point;
-
-//- (void)displayHighlightsExcluding:(BlioBookmarkRange *)excludedBookmark;
-- (void)refreshHighlightsForPageAtIndex:(NSUInteger)pageIndex;
 
 @end
 
@@ -277,8 +271,8 @@
     [self layoutSubviews];
     
     // TODO: Fix pageTurningView to properly rotate the highlights during the rotation
-    [self refreshHighlightsForPageAtIndex:self.pageTurningView.leftPageIndex];
-    [self refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
+    [self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.leftPageIndex];
+    [self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
     [self.pageTurningView drawView];
 }
 
@@ -303,23 +297,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 - (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 
    fastUIImageForPageAtIndex:(NSUInteger)index {
     return [self.dataSource thumbnailForPage:index + 1];
-}
-
-- (NSArray *)pageTurningView1:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index
-{
-    NSMutableArray *ret = nil;
-    int max = roundf((float)rand() / (float)RAND_MAX * 4);
-    if(max) {
-        ret = [NSMutableArray array];
-        int x = 20, y = 20; 
-        for(int i = 0; i < max; ++i) {
-            CGRect rect = CGRectMake(x, y, 100, 20);
-            [ret addPairWithFirst:[NSValue valueWithCGRect:rect]
-                           second:[[UIColor yellowColor] colorWithAlphaComponent:0.5f]];
-            x += 20, y += 20;
-        }
-    }
-    return ret;
 }
 
 #pragma mark -
@@ -507,15 +484,23 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return transform;
 }
 
-- (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex offsetOrigin:(BOOL)offset {
+- (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex offsetOrigin:(BOOL)offset applyZoom:(BOOL)applyZoom {
     // TODO: Make sure this is cached in LayoutView or pageTurningView
     CGRect pageCrop = [self pageTurningView:self.pageTurningView contentRectForPageAtIndex:pageIndex];
     CGRect pageFrame;
     
-    if (pageIndex == [self leftPageIndex]) {
-        pageFrame = [self.pageTurningView leftPageFrame];
+    if (pageIndex == [self.pageTurningView leftPageIndex]) {
+		if (applyZoom) {
+			pageFrame = [self.pageTurningView leftPageFrame];
+		} else {
+			pageFrame = [self.pageTurningView unzoomedLeftPageFrame];
+		}
     } else {
-        pageFrame = [self.pageTurningView rightPageFrame];
+		if (applyZoom) {
+			pageFrame = [self.pageTurningView rightPageFrame];
+		} else {
+			pageFrame = [self.pageTurningView unzoomedRightPageFrame];
+		}
     }
     
     if (!offset) {
@@ -540,7 +525,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex {
-    return [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES];
+    return [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
 }
 
 #pragma mark -
@@ -613,25 +598,17 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return [self.pageTurningView screenshot];
 }
 
-- (NSInteger)leftPageIndex {
-    return [self.pageTurningView leftPageIndex];
-}
-
-- (NSInteger)rightPageIndex {
-    return [self.pageTurningView rightPageIndex];
-}
-
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
     NSMutableArray *pagesBlocks = [NSMutableArray array];
     
     if (self.pageTurningView.fitTwoPages) {
-        NSInteger leftPageIndex = [self leftPageIndex];
+        NSInteger leftPageIndex = [self.pageTurningView leftPageIndex];
         if (leftPageIndex >= 0) {
             [pagesBlocks addObjectsFromArray:[self.textFlow blocksForPageAtIndex:leftPageIndex includingFolioBlocks:NO]];
         }
     }
     
-    NSInteger rightPageIndex = [self rightPageIndex];
+    NSInteger rightPageIndex = [self.pageTurningView rightPageIndex];
     if (rightPageIndex < pageCount) {
         [pagesBlocks addObjectsFromArray:[self.textFlow blocksForPageAtIndex:rightPageIndex includingFolioBlocks:NO]];
     }
@@ -732,16 +709,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (NSArray *)bookmarkRangesForCurrentPage {
-    NSInteger pageIndex = self.pageNumber - 1;
-    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    NSUInteger maxOffset = [pageBlocks count];
-    
-    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-    startPoint.layoutPage = self.pageNumber;
-    startPoint.blockOffset = 0;
+	BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+	startPoint.blockOffset = 0;
+	
+	if (self.pageTurningView.fitTwoPages) {
+		startPoint.layoutPage = [self.pageTurningView leftPageIndex] + 1;
+	} else {
+		startPoint.layoutPage = [self.pageTurningView rightPageIndex] + 1;
+	}
+	
+    NSArray *rightPageBlocks = [self.textFlow blocksForPageAtIndex:[self.pageTurningView rightPageIndex] includingFolioBlocks:NO];
+    NSUInteger maxOffset = [rightPageBlocks count];
     
     BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
-    endPoint.layoutPage = self.pageNumber;
+    endPoint.layoutPage = [self.pageTurningView rightPageIndex] + 1;
     endPoint.blockOffset = maxOffset;
     
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
@@ -811,61 +792,41 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             NSInteger endIndex = highlightRange.endPoint.layoutPage - 1;
             
             for (int i = startIndex; i <= endIndex; i++) {
-                [self refreshHighlightsForPageAtIndex:i];
+                [self.pageTurningView refreshHighlightsForPageAtIndex:i];
             }
             
-            //[self displayHighlightsExcluding:highlightRange];
+			[self.pageTurningView drawView];
             return [highlightRange.color colorWithAlphaComponent:0.3f];
         }
     }
     
     return nil;
-    
-#if 0
-    UIColor *ret = nil;
-
-    for(EucHighlightRange *highlightRange in [_pageTurningView.currentPageView.layer valueForKey:@"EucBookViewHighlightRanges"]) {
-        if([[highlightRange selectorRange] isEqual:selectedRange]) {
-            NSParameterAssert(!_rangeBeingEdited);
-            ret = [highlightRange.color colorWithAlphaComponent:0.3f];
-            _rangeBeingEdited = [highlightRange copy];
-            break;
-        }
-    }
-    
-    [self refreshHighlights];
-#endif
 }
 
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange
 {
-#if 0
-    if(toRange && ![fromRange isEqual:toRange]) {
-        NSParameterAssert([[_rangeBeingEdited selectorRange] isEqual:fromRange]);
-        EucHighlightRange *fromHighlightRange = _rangeBeingEdited;
-        EucHighlightRange *toHighlightRange = [_rangeBeingEdited copy];
+	
+	BlioBookmarkRange *fromBookmarkRange = [self bookmarkRangeFromSelectorRange:fromRange];
+	BlioBookmarkRange *toBookmarkRange = [self bookmarkRangeFromSelectorRange:toRange ? : fromRange];
+	
+	if ((nil != toRange) && ![fromRange isEqual:toRange]) {
+		
+        if ([self.delegate respondsToSelector:@selector(updateHighlightAtRange:toRange:withColor:)])
+            [self.delegate updateHighlightAtRange:fromBookmarkRange toRange:toBookmarkRange withColor:nil];
         
-        toHighlightRange.startPoint.block = [toRange.startBlockId integerValue];
-        toHighlightRange.startPoint.word = [toRange.startElementId integerValue];
-        toHighlightRange.startPoint.element = 0;
-        
-        toHighlightRange.endPoint.block = [toRange.endBlockId integerValue];
-        toHighlightRange.endPoint.word = [toRange.endElementId integerValue];
-        toHighlightRange.endPoint.element = 0;
-        
-        if([self.delegate respondsToSelector:@selector(bookView:didUpdateHighlightAtRange:toRange:)]) {
-            [self.delegate bookView:self didUpdateHighlightAtRange:fromHighlightRange toRange:toHighlightRange];
-        }
-        
-        [toHighlightRange release];
     }
-    
-    [_rangeBeingEdited release];
-    _rangeBeingEdited = nil;
-    
-    self.selector.selectedRange = nil;
-    [self refreshHighlights];
-#endif
+	
+	NSInteger startIndex = MIN(fromBookmarkRange.startPoint.layoutPage, toBookmarkRange.startPoint.layoutPage) - 1;
+	NSInteger endIndex = MAX(fromBookmarkRange.endPoint.layoutPage, toBookmarkRange.endPoint.layoutPage) - 1;
+	
+	// Set this to nil now because the refresh depends on it
+    [self.selector setSelectedRange:nil];
+	
+	for (int i = startIndex; i <= endIndex; i++) {
+		[self.pageTurningView refreshHighlightsForPageAtIndex:i];
+	}
+	
+	[self.pageTurningView drawView];
 }
 
 - (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
@@ -954,7 +915,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [super addHighlightWithColor:color];
     
     for (int i = startPage; i <= endPage; i++) {
-        [self refreshHighlightsForPageAtIndex:i - 1];
+        [self.pageTurningView refreshHighlightsForPageAtIndex:i - 1];
     }
     
     [self.pageTurningView drawView];
@@ -968,7 +929,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 
     NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO];
+    CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
 
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         
@@ -1017,44 +978,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return [self highlightRectsForPageAtIndex:pageIndex excluding:excludedRange];
 }
 
-
-- (void)refreshHighlightsForPageAtIndex:(NSUInteger)pageIndex;
-{    
-    NSLog(@"Rferesh highlights for page at index %d", pageIndex);
-    [self.pageTurningView refreshHighlightsForPageAtIndex:pageIndex];
-    
-#if 0
-    EucPageView *currentPageView = (EucPageView *)(_pageTurningView.currentPageView);
-    
-    if(_rangeBeingEdited) {  
-        // We know that only the current page can be viewed, so only update it.
-        [self _applyHighlightLayersToPageView:currentPageView refreshingFromBook:NO];
-        [_pageTurningView refreshView:currentPageView];
-    } else {
-        EucBookViewHighlightSurroundingPageFlags surroundingPageFlags = [self _applyHighlightLayersToPageView:currentPageView refreshingFromBook:YES];
-        [_pageTurningView refreshView:currentPageView];
-        
-        if(surroundingPageFlags != EucBookViewHighlightSurroundingPageFlagsNone) {
-            NSArray *pageViews = _pageTurningView.pageViews;
-            NSUInteger indexOfCurrentPage = [pageViews indexOfObject:currentPageView];
-            
-            if((surroundingPageFlags & EucBookViewHighlightSurroundingPageFlagsPrevious) == EucBookViewHighlightSurroundingPageFlagsPrevious &&
-               indexOfCurrentPage >= 1) {
-                EucPageView *pageView = [pageViews objectAtIndex:indexOfCurrentPage-1];
-                [self _applyHighlightLayersToPageView:pageView refreshingFromBook:YES];
-                [_pageTurningView refreshView:pageView];
-            }
-            if((surroundingPageFlags & EucBookViewHighlightSurroundingPageFlagsNext) == EucBookViewHighlightSurroundingPageFlagsNext &&
-               indexOfCurrentPage < (pageViews.count - 1)) {
-                EucPageView *pageView = [pageViews objectAtIndex:indexOfCurrentPage+1];
-                [self _applyHighlightLayersToPageView:pageView refreshingFromBook:YES];
-                [_pageTurningView refreshView:pageView];
-            }
-        }
-    }
-    [_pageTurningView drawView];
-#endif
-}
 
 #pragma mark -
 #pragma mark TTS
@@ -1165,14 +1088,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
     if (CGPointEqualToPoint(point, startTouchPoint)) {
         if (self.pageTurningView.fitTwoPages) {
-            NSInteger leftPageIndex = [self leftPageIndex];
+            NSInteger leftPageIndex = [self.pageTurningView leftPageIndex];
             if (leftPageIndex >= 0) {
                 touchedHyperlink = [self hyperlinkForPage:leftPageIndex + 1 atPoint:point];
             }
         }
         
         if (nil == touchedHyperlink) {
-            NSInteger rightPageIndex = [self rightPageIndex];
+            NSInteger rightPageIndex = [self.pageTurningView rightPageIndex];
             if (rightPageIndex < pageCount) {
                 touchedHyperlink = [self hyperlinkForPage:rightPageIndex + 1 atPoint:point];
             }
