@@ -26,11 +26,11 @@
 	if (self)
 	{
 		self.title = NSLocalizedString(@"Device Registration",@"\"Device Registration\" view controller title.");
-//#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-//		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-//			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
-//		}
-//#endif
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
+		}
+#endif
 	}
 	return self;
 }

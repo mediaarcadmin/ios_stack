@@ -9,9 +9,9 @@
 #import "BlioAppSettingsController.h"
 #import "BlioAudioSettingsController.h"
 #import "BlioWebToolSettingsController.h"
-#import "BlioPaidBooksSettingsController.h"
 #import "BlioAboutSettingsController.h"
 #import "BlioHelpSettingsController.h"
+#import "BlioMyAccountViewController.h"
 #import "BlioStoreManager.h"
 
 @implementation BlioAppSettingsController
@@ -27,6 +27,14 @@
 #endif
     }
     return self;
+}
+
+-(void)loginDismissed:(NSNotification*)note {
+	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+		[self.tableView reloadData];
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]];
+	}
 }
 
 - (void)loadView {
@@ -61,6 +69,11 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+	[self.tableView reloadData];
+}
+
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
@@ -72,8 +85,7 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 6
-	;
+    return 5;
 }
 
 
@@ -104,19 +116,22 @@
 			[cell.textLabel setText:@"Web Tools"];
 			break;
 		case 2:
-			[cell.textLabel setText:@"Device Registration"];
-			break;
-		case 3:
 			[cell.textLabel setText:@"Help"];
 			break;
-		case 4:
+		case 3:
 			[cell.textLabel setText:@"About"];
 			break;
-		case 5:
-			cell.textLabel.textAlignment = UITextAlignmentCenter;
-			cell.accessoryType = UITableViewCellAccessoryNone;
-			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) cell.textLabel.text = @"Logout";
-			else cell.textLabel.text = @"Login";
+		case 4:
+			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+				cell.textLabel.text = [NSString stringWithFormat:@"My Account: %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
+				//			 cell.textLabel.text = [NSString stringWithFormat:@"Logged in as %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
+			}
+			else {
+//				cell.textLabel.textAlignment = UITextAlignmentCenter;
+//				cell.accessoryType = UITableViewCellAccessoryNone;
+//				cell.textLabel.text = @"Login";
+				cell.textLabel.text = @"My Account";
+			}
 			break;
 		default:
 			break;
@@ -129,9 +144,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	BlioAudioSettingsController *audioController;
 	BlioWebToolSettingsController *webToolController;
-	BlioPaidBooksSettingsController *paidBooksController;
 	BlioHelpSettingsController *helpController;
 	BlioAboutSettingsController *aboutController;
+	BlioMyAccountViewController *myAccountController;
 	switch ( [indexPath section] ) {
 		case 0:
 			audioController = [[BlioAudioSettingsController alloc] initWithStyle:UITableViewStyleGrouped];
@@ -144,39 +159,29 @@
 			[webToolController release];
 			break;
 		case 2:
-			paidBooksController = [[BlioPaidBooksSettingsController alloc] init];
-			[self.navigationController pushViewController:paidBooksController animated:YES];
-			[paidBooksController release];
-			break;
-		case 3:
 			helpController = [[BlioHelpSettingsController alloc] init];
 			[self.navigationController pushViewController:helpController animated:YES];
 			[helpController release];
 			break;
-		case 4:
+		case 3:
 			aboutController = [[BlioAboutSettingsController alloc] init];
 			[self.navigationController pushViewController:aboutController animated:YES];
 			[aboutController release];
 			break;
-		case 5:
+		case 4:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-				[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
-				[tableView cellForRowAtIndexPath:indexPath].textLabel.text = @"Login";
+				myAccountController = [[BlioMyAccountViewController alloc] init];
+				[self.navigationController pushViewController:myAccountController animated:YES];
+				[myAccountController release];
 			}
 			else {
 				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			}
-			[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			break;
 		default:
 			break;
-	}
-}
--(void)loginDismissed:(NSNotification*)note {
-	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-		[self.tableView reloadData];
 	}
 }
 - (void)dealloc {
