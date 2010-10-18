@@ -140,6 +140,7 @@ typedef enum {
     UIBarButtonItem* contentsButton;
     UIBarButtonItem* viewSettingsButton;
     UIBarButtonItem* searchButton;
+	UIBarButtonItem* backButton;
     BOOL shouldDisplaySearchAfterRotation;
     
     NSMutableArray *historyStack;

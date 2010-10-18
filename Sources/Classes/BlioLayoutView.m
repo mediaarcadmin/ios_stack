@@ -335,7 +335,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     }
     
     if(self.pageTurningView) {
-        [pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
+        [self.pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
         self.pageNumber = targetPage;
     }
 }
@@ -545,6 +545,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         pageIndex = aPageTurningView.leftPageIndex;
     }
     if(self.pageNumber != pageIndex + 1) {
+		[self pushCurrentBookmarkPoint];
         self.pageNumber = pageIndex + 1;
         self.selector.selectedRange = nil;
     }
