@@ -816,6 +816,8 @@
 		A3A672B611304D7700138097 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
 		A3A67376113078E300138097 /* BlioAudioSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioAudioSettingsController.m */; };
 		A3AF018E11C26974004DAB03 /* BlioXpsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A3AF018D11C26974004DAB03 /* BlioXpsClient.m */; };
+		A3B0B2B1126E088500FC3D18 /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
+		A3B0B2B2126E088500FC3D18 /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
 		A3B6F6F4120C5E2E00D48E04 /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
 		A3B6F88B120CB11900D48E04 /* BlioCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = C96785EF120C0AAC008669BA /* BlioCoverView.m */; };
 		A3B6F8A1120CB45300D48E04 /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
@@ -1593,6 +1595,8 @@
 		A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppSettingsConstants.h; sourceTree = "<group>"; };
 		A3AF018C11C26974004DAB03 /* BlioXpsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioXpsClient.h; sourceTree = "<group>"; };
 		A3AF018D11C26974004DAB03 /* BlioXpsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioXpsClient.m; sourceTree = "<group>"; };
+		A3B0B2AF126E088400FC3D18 /* icon-import.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-import.png"; sourceTree = "<group>"; };
+		A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-import@2x.png"; sourceTree = "<group>"; };
 		A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticFat.a; path = Libraries/TTS/libMobilityStaticFat.a; sourceTree = "<group>"; };
 		A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsSheet.m; sourceTree = "<group>"; };
 		A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-freebooks@2x.png"; sourceTree = "<group>"; };
@@ -2131,6 +2135,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3B0B2AF126E088400FC3D18 /* icon-import.png */,
+				A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */,
 				A3E6419712397C0400D2B85A /* icon-back.png */,
 				A3E6419812397C0400D2B85A /* icon-back@2x.png */,
 				C9CEBD751211959B0040CEFF /* booktexture-nocover.png */,
@@ -3313,6 +3319,8 @@
 				C99239DE126CCD9200BA364A /* searchBarBorder@2x.png in Resources */,
 				C9923A12126CCF2D00BA364A /* searchFieldIcon.png in Resources */,
 				C9923A13126CCF2D00BA364A /* searchFieldIcon@2x.png in Resources */,
+				A3B0B2B1126E088500FC3D18 /* icon-import.png in Resources */,
+				A3B0B2B2126E088500FC3D18 /* icon-import@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
