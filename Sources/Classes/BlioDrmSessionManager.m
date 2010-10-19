@@ -487,7 +487,7 @@ ErrorExit:
 	rgchURL[cchUrl] = '\0';
 	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #endif
-	NSLog(@"DRM license response: %s",[[[NSString alloc] initWithBytes:pbResponse length:cbResponse encoding:NSASCIIStringEncoding] autorelease]);
+	NSLog(@"DRM license response: %@",[[[NSString alloc] initWithBytes:pbResponse length:cbResponse encoding:NSASCIIStringEncoding] autorelease]);
 @synchronized (self) {
     ChkDR( Drm_LicenseAcq_ProcessResponse( drmIVars->drmAppContext,
 										  NULL,

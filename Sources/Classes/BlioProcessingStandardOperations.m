@@ -119,6 +119,7 @@
 - (void)main {
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingPreAvailabilityCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
+		[self cancel];
 		return;
 	}
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
@@ -180,6 +181,7 @@
 	if (!isEncrypted) {
         self.operationSuccess = YES;
 		self.percentageComplete = 100;
+		NSLog(@"book not encrypted! aborting License operation...");
 		return;
 	} else {
         NSMutableDictionary *manifestEntry = [NSMutableDictionary dictionary];
@@ -200,7 +202,7 @@
     
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
 		NSLog(@"Internet connection is dead, will prematurely abort main");
-        return;
+		[self cancel];
     }
 	
 	if ([[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] == nil) {
@@ -240,7 +242,7 @@
 		}
 	}
 */
-	
+	NSLog(@"sourceSpecificID: %@ licenseOp: %@ getting DRMSessionManager",self.sourceSpecificID,self);
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:self.bookID]; 
 	//NSInteger cooldownTime = [drmSessionManager licenseCooldownTime];
 	//if (cooldownTime > 0) {
@@ -248,18 +250,17 @@
 	//	[self cancel];		
 	//	return;
 	//}
-	
-	while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
+	BOOL acquisitionSuccess = NO;
+	while (attemptsMade < attemptsMaximum && acquisitionSuccess == NO) {
 		NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
-		self.operationSuccess = [drmSessionManager getLicense:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]];
+		acquisitionSuccess = [drmSessionManager getLicense:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]];
 		attemptsMade++;
 	}
-	
 	[drmSessionManager release];
 	//if (!self.operationSuccess) {
 	//	[drmSessionManager resetLicenseCooldownTimer];
 	//} 
-	
+	self.operationSuccess = acquisitionSuccess;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
@@ -267,6 +268,7 @@
 #endif
 	
 	if (self.operationSuccess) self.percentageComplete = 100;
+	NSLog(@"sourceSpecificID: %@ licenseOp: %@ reached end of main...",self.sourceSpecificID,self);
 /* RESTORE FOR OLD DRM INTERFACE
 	else {
 		[[BlioDrmManager getDrmManager] startLicenseCooldownTimer];				
@@ -512,13 +514,12 @@
 		}
 		else {
 			
-			NSLog(@"inspecting header fields...");
+//			NSLog(@"inspecting header fields...");
 			NSString * acceptRanges = nil;
 			for (id key in httpResponse.allHeaderFields)
 			{
 				NSString * keyString = (NSString*)key;
-				// TODO: check this code to make sure it is working properly when internet access is available.
-				NSLog(@"keyString: %@",keyString);
+//				NSLog(@"keyString: %@",keyString);
 				if ([[keyString lowercaseString] isEqualToString:[@"Accept-Ranges" lowercaseString]]) {
 					acceptRanges = [httpResponse.allHeaderFields objectForKey:keyString];
 					break;

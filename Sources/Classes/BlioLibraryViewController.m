@@ -719,7 +719,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 }
 -(void) needsAccessibilityLayoutChanged {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
 	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 -(void) calculateMaxLayoutPageEquivalentCount {
@@ -1282,13 +1282,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										atIndex:indexPath.row];
 						break;
 					case kBlioLibraryLayoutList:
-						if (self.tableView.isEditing) {
+//						if (self.tableView.isEditing) {
 						[self configureTableCell:(BlioLibraryListCell*)[self.tableView cellForRowAtIndexPath:indexPath]
 									 atIndexPath:indexPath];
-						}
-						else {
-							[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-						}
+//						}
+//						else {
+//							[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//						}
 						break;
                     default:
                         break;
@@ -1886,9 +1886,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 			audioString = @", text-to-speech enabled.";
 		}
-		
 		if (![[[self.bookView book] authorsWithStandardFormat] isEqualToString:@""]) authorString = [NSString stringWithFormat:@" by %@",[[self.bookView book] authorsWithStandardFormat]];
-        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@%@%@%@", @"Accessibility label for Library View cell book description"), 
+        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@%@%@", @"Accessibility label for Library View cell book description"), 
 											[[self.bookView book] title], authorString,audioString]];
 		
         [bookElement setAccessibilityTraits:UIAccessibilityTraitButton];
@@ -2058,7 +2057,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 			//	NSLog(@"BlioLibraryGridViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
 			BlioProcessingCompleteOperation * completeOp = [note object];
-			NSLog(@"gridcell progress mainthread: %i, completeOp.percentageComplete: %u",[NSThread isMainThread],completeOp.percentageComplete);
 			progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 		}
 	}
@@ -2172,7 +2170,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		statusBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:statusBadge];
 		[self listenToProcessingNotifications];
-		NSLog(@"list cell subscribing to notifications on main thread: %i",[NSThread isMainThread]);
 	}
     return self;
 }
@@ -2272,20 +2269,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     //self.progressSlider.value = [[newBook progress] floatValue];
 	
 	//[self resetProgressSlider];
-	
+	[self resetPauseResumeButton];
+
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
 		progressView.isAccessibilityElement = NO;
 		[self.progressView removeFromSuperview];
 		progressView.hidden = YES;
 		self.accessoryView = pauseResumeButton;
-		[self resetPauseResumeButton];
 		[self resetAuthorText];
 		//self.progressSlider.hidden = YES;
 	}			
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		self.accessoryView = pauseResumeButton;
-		[self resetPauseResumeButton];
 		// set appearance to reflect incomplete state
 		// self.bookView.alpha = 0.35f;
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
@@ -2427,7 +2423,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 		if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 			BlioProcessingCompleteOperation * completeOp = [note object];
-			NSLog(@"list cell progress mainthread: %i, completeOp.percentageComplete: %u",[NSThread isMainThread],completeOp.percentageComplete);
 			//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
 			progressView.isAccessibilityElement = YES;
 			progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);

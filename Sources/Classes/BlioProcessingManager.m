@@ -70,7 +70,6 @@
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
-	NSLog(@"new enqueue mainthread: %i",[NSThread isMainThread]);
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (nil != moc) {
         
@@ -525,7 +524,7 @@
 				if (xpsOp) [manifestOp addDependency:xpsOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
-				if (xpsOp) [manifestOp addDependency:xpsOp];
+				if (xpsOp && ![[manifestOp dependencies] containsObject:xpsOp]) [manifestOp addDependency:xpsOp];
             }
 			[xpsOps addObject:manifestOp];
 			[bookOps addObject:manifestOp];
@@ -626,7 +625,8 @@
                 if (paidBookOp) [licenseOp addDependency:paidBookOp];
 				[self.preAvailabilityQueue addOperation:licenseOp];
 			} else {
-                if (paidBookOp) [licenseOp addDependency:paidBookOp];
+				if (paidBookOp && ![[licenseOp dependencies] containsObject:paidBookOp]) [licenseOp addDependency:paidBookOp];
+
             }
 			[xpsOps addObject:licenseOp];
 			[bookOps addObject:licenseOp];
@@ -642,7 +642,7 @@
                 [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
-                [manifestOp addDependency:licenseOp];
+				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
             }
 			[xpsOps addObject:manifestOp];
 			[bookOps addObject:manifestOp];
@@ -1048,11 +1048,17 @@
 //	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
 	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
-	NSLog(@"Stopping %i operations...",[relatedOperations count]);
+	NSLog(@"Stopping %i operations for sourceSpecificID: %@",[relatedOperations count],aBook.sourceSpecificID);
 	for (BlioProcessingOperation * op in relatedOperations) {
 		NSLog(@"Stopping Operation (%u complete): %@",op.percentageComplete,op);
 		[op cancel];
 	}
+	/*
+	NSLog(@"remaining operations:");
+	for (BlioProcessingOperation * op in [self.preAvailabilityQueue operations]) {
+		NSLog(@"sourceSpecificID: %@ operation: %@",op.sourceSpecificID,op);
+	}
+	*/
 }
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave {
 	// if book is processing, stop all associated operations
