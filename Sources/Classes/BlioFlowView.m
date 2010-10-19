@@ -111,8 +111,8 @@
                         change:(NSDictionary *)change context:(void *)context
 {
     if([keyPath isEqualToString:@"pageNumber"]) {
-		[self pushCurrentBookmarkPoint];
         self.pageNumber = _eucBookView.pageNumber;
+		[self pushCurrentBookmarkPoint];
     } else { //if([keyPath isEqualToString:@"pageCount"] ) {
         self.pageCount = _eucBookView.pageCount;
     }
@@ -180,10 +180,17 @@
     [_eucBookView goToUuid:uuid animated:animated];
 }
 
+- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated saveToHistory:(BOOL)save;
+{
+	if (save) {
+		[self pushCurrentBookmarkPoint];
+	}
+    [_eucBookView goToPageNumber:pageNumber animated:animated];
+}
+
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 {
-    [self pushCurrentBookmarkPoint];
-    [_eucBookView goToPageNumber:pageNumber animated:animated];
+    [self goToPageNumber:pageNumber animated:animated saveToHistory:YES];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
