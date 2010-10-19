@@ -203,6 +203,9 @@
 - (BOOL)hasXps {
     return [self hasManifestValueForKey:BlioManifestXPSKey];
 }
+- (BOOL)hasCoverImage {
+    return [self hasManifestValueForKey:BlioManifestCoverKey];
+}
 
 - (BOOL)hasTextFlow {
     return [self hasManifestValueForKey:BlioManifestTextFlowKey];
@@ -285,7 +288,6 @@
         return [self missingCoverImageOfSize:CGSizeMake(screenSize.width, screenSize.height)];
     }
 }
-
 - (BOOL)hasAppropriateCoverThumbForGrid {
     CGFloat scaleFactor = 1;
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {

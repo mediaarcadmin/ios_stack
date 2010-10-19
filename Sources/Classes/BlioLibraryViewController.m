@@ -1708,7 +1708,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         newImage = [newBook coverThumbForGrid];
     }    
     [self.imageView setImage:newImage];
-	if (!hasAppropriateCoverThumb && [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+	if (newBook.hasCoverImage && !hasAppropriateCoverThumb && [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		NSLog(@"Does not have appropriate cover thumb for book: %@, reprocessing cover thumbnails...",[newBook title]);
 		[self.delegate reprocessCoverThumbnailsForBook:newBook];
 	}

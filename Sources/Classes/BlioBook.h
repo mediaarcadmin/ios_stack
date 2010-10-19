@@ -130,6 +130,7 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 @property (nonatomic, assign, readonly) BOOL hasEPub;
 @property (nonatomic, assign, readonly) BOOL hasPdf;
 @property (nonatomic, assign, readonly) BOOL hasXps;
+@property (nonatomic, assign, readonly) BOOL hasCoverImage;
 @property (nonatomic, assign, readonly) BOOL hasTextFlow;
 @property (nonatomic, assign, readonly) BOOL isEncrypted;
 @property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForList;
