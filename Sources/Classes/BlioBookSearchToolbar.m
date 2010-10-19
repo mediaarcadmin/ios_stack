@@ -277,6 +277,7 @@
         aSearchField.delegate = self;
         aSearchField.returnKeyType = UIReturnKeySearch;
         aSearchField.autocorrectionType = UITextAutocorrectionTypeNo; // Matches a searchBar
+		aSearchField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         [self addSubview:aSearchField];
         self.searchField = aSearchField;
         [aSearchField release];
