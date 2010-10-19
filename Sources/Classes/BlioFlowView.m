@@ -111,6 +111,7 @@
                         change:(NSDictionary *)change context:(void *)context
 {
     if([keyPath isEqualToString:@"pageNumber"]) {
+		[self pushCurrentBookmarkPoint];
         self.pageNumber = _eucBookView.pageNumber;
     } else { //if([keyPath isEqualToString:@"pageCount"] ) {
         self.pageCount = _eucBookView.pageCount;

@@ -523,7 +523,7 @@
 		}
 	}
 	else if ([aFile.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        NSData *aData = [[NSData alloc] initWithContentsOfFile:importableBook.filePath];
+        NSData *aData = [[NSData alloc] initWithContentsOfMappedFile:importableBook.filePath];
         CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)aData);
         CGPDFDocumentRef pdfRef = CGPDFDocumentCreateWithProvider(dataProvider);
 		CGPDFDictionaryRef pdfInfo = CGPDFDocumentGetInfo(pdfRef);
