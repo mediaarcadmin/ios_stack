@@ -566,7 +566,7 @@
 	else {
 		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 		[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@", importableBook.fileName,[NSNumber numberWithInt:BlioBookSourceFileSharing]]];
+		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@ && processingState == %@", importableBook.fileName,[NSNumber numberWithInt:BlioBookSourceFileSharing],[NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
 		
 		NSError *errorExecute = nil; 
 		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -577,7 +577,7 @@
 			return;
 		}
 		if ([results count] >= 1) {
-			NSLog(@"Found FileSharing Book in context already- will not add to library. aborting..."); 
+			NSLog(@"Found completed FileSharing Book in context already- will not add to library. aborting..."); 
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title")
 										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOK_ALREADY_FOUND_IN_LIBRARY",nil,[NSBundle mainBundle],@"This book will not be imported because your library already has a book imported from the same file name: %@.",@"Alert message informing the end-user that importing of selected book will not occur because the library already has a book imported from the same file name."),importableBook.fileName]
 										delegate:nil 

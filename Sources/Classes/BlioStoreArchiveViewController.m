@@ -79,7 +79,6 @@
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-//			[self fetchResults];
 		}
 		else {
 //			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
@@ -105,7 +104,8 @@
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+//	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState != %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request
@@ -150,14 +150,15 @@
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			NSLog(@"logged in");
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
-				[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertArchive"];
-				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Retrieving Your Books",@"\"Retrieving Your Books\" alert message title") 
-											 message:NSLocalizedStringWithDefaultValue(@"INTRO_ARCHIVE_ALERT",nil,[NSBundle mainBundle],@"The Archive is where you'll find your recently purchased books; although these books have been purchased, they still need to be downloaded to your device. Tap on the \"load\" button to the right of a book's title to start downloading, then tap on the \"Done\" button to see your book's progress in the Library!",@"Alert Text encouraging the end-user to go to start downloading paid books in the archive.")
-											delegate:nil
-								   cancelButtonTitle:@"OK"
-								   otherButtonTitles:nil];		
-			}
+			// The following is an instructional alert view that only shows once; we've decided to disable it for now, since the Archive view is not as prominent with paid books automatically downloading.
+//			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
+//				[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertArchive"];
+//				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Retrieving Your Books",@"\"Retrieving Your Books\" alert message title") 
+//											 message:NSLocalizedStringWithDefaultValue(@"INTRO_ARCHIVE_ALERT",nil,[NSBundle mainBundle],@"The Archive is where you'll find your recently purchased books; although these books have been purchased, they still need to be downloaded to your device. Tap on the \"load\" button to the right of a book's title to start downloading, then tap on the \"Done\" button to see your book's progress in the Library!",@"Alert Text encouraging the end-user to go to start downloading paid books in the archive.")
+//											delegate:nil
+//								   cancelButtonTitle:@"OK"
+//								   otherButtonTitles:nil];		
+//			}
 			
 		}
 		else {
@@ -356,7 +357,7 @@
 	
 	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
 	
-	BlioLibraryListCell *cell;
+	BlioLibraryListCell * cell = nil;
 	
 	cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 	if (cell == nil) {

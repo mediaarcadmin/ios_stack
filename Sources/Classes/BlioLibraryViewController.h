@@ -105,6 +105,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     BlioLibraryBookView *selectedLibraryBookView;
     BlioBookViewController *openBookViewController;
 	UIButton * libraryVaultButton;
+	BOOL showArchiveCell;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
 #endif
@@ -124,6 +125,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 @property (nonatomic, assign) BlioLibrarySortType librarySortType;
 @property (nonatomic, retain) UIButton * libraryVaultButton;
+@property (nonatomic, assign) BOOL showArchiveCell;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @property (nonatomic, retain) UIPopoverController * settingsPopoverController;
@@ -210,7 +212,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 -(void)listenToProcessingNotifications;
 -(void)stopListeningToProcessingNotifications;
-
+-(NSString*)stateBasedAccessibilityHint;
 @end
 
 @interface BlioLibraryListCell : UITableViewCell {
@@ -220,8 +222,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	//BlioProgressView *progressSlider;
 	//BlioProportionalProgressView *proportionalProgressView;
     UIProgressView *progressView;
-    UIButton * pauseButton;
-    UIButton * resumeButton;
+	UIButton * pauseResumeButton;
     id delegate;
 	NSUInteger layoutPageEquivalentCount;
 	UIImageView * statusBadge;
@@ -233,8 +234,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 //@property (nonatomic, retain) BlioProgressView *progressSlider;
 //@property (nonatomic, retain) BlioProportionalProgressView *proportionalProgressView;
 @property (nonatomic, retain) UIProgressView *progressView;
-@property (nonatomic, retain) UIButton *pauseButton;
-@property (nonatomic, retain) UIButton *resumeButton;
+@property (nonatomic, retain) UIButton *pauseResumeButton;
 @property (nonatomic, assign) BlioBook *book;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) UIImageView *statusBadge;

@@ -20,6 +20,9 @@
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		self.title = @"My Account";
+		UIBarButtonItem * aButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStyleBordered target:self action:@selector(logoutButtonPressed:)];
+		self.navigationItem.rightBarButtonItem = aButton;
+		[aButton release];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
@@ -28,7 +31,10 @@
     }
     return self;
 }
-
+-(void)logoutButtonPressed:(id)sender {
+	[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+	[self.navigationController popViewControllerAnimated:YES];	
+}
 -(void)loginDismissed:(NSNotification*)note {
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
@@ -83,7 +89,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return 2;
+    return 1	;
 }
 
 
@@ -110,6 +116,7 @@
 		case 0:
 			[cell.textLabel setText:@"Device Registration"];
 			break;
+			/*
 		case 1:
 			cell.textLabel.textAlignment = UITextAlignmentCenter;
 			cell.accessoryType = UITableViewCellAccessoryNone;
@@ -117,6 +124,7 @@
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) cell.textLabel.text = @"Logout";
 			else cell.textLabel.text = @"Login";
 			break;
+			 */
 		default:
 			break;
 	}
@@ -176,6 +184,7 @@
 			[self.navigationController pushViewController:paidBooksController animated:YES];
 			[paidBooksController release];
 			break;
+			/*
 		case 1:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 				[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
@@ -188,6 +197,7 @@
 			}
 			[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			break;
+			 */
 		default:
 			break;
 	}

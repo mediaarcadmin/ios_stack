@@ -229,16 +229,22 @@
 {
     NSDictionary *userInfo = [notification userInfo];
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
-    self.percentageComplete = roundf(percentagePaginated);
-//	NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
-
+    if (self.percentageComplete != roundf(percentagePaginated)) {
+		self.percentageComplete = roundf(percentagePaginated);
+//		NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
+	}
 }
 -(void)cancel {
 	[super cancel];
 	NSLog(@"Cancelling pagination...");
-//	[paginator stop];
-	[paginator performSelectorInBackground:@selector(stop) withObject:nil];
+	[paginator stop];
+//	[self performSelectorInBackground:@selector(stopPaginator) withObject:nil];
 	[self finish];	
+}
+-(void)stopPaginator {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	[paginator stop];
+	[pool drain];
 }
 -(void) dealloc {
     self.bookTitle = nil;

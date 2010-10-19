@@ -51,6 +51,7 @@
 		bookVaultDelegate.delegate = self;
 		contentCafeDelegate = [[BlioOnlineStoreHelperContentCafeDelegate alloc] init];
 		contentCafeDelegate.delegate = self;
+		downloadNewBooks = YES;
 	}
 	return self;
 }
@@ -197,7 +198,7 @@
 																				 audiobookPath:nil 
 																					  sourceID:BlioBookSourceOnlineStore 
 																			  sourceSpecificID:[productItem ISBN]
-																			   placeholderOnly:YES
+																			   placeholderOnly:(!downloadNewBooks)
 					 ];
 			}
 			else {

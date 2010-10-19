@@ -70,7 +70,6 @@
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
-
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (nil != moc) {
         
@@ -123,6 +122,7 @@
 			// create a new book in context from scratch
 //			NSLog(@"Processing Manager: Creating new book"); 
             aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioBook" inManagedObjectContext:moc];
+			[aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
 		}
 		
         [aBook setValue:title forKey:@"title"];
@@ -134,7 +134,6 @@
 			authorsValue = [authorsValue stringByAppendingString:[authors objectAtIndex:i]];
 		}
 		[aBook setValue:authorsValue forKey:@"author"];
-        [aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
         if (placeholderOnly) [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed] forKey:@"processingState"];
         else [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
         
@@ -188,6 +187,7 @@
         if (![moc save:&error]) {
             NSLog(@"[BlioProcessingManager enqueueBookWithTitle:] (saving UUID) Save failed with error: %@, %@", error, [error userInfo]);
         }
+	
 		[self enqueueBook:aBook placeholderOnly:placeholderOnly];
 	}
 }
@@ -524,7 +524,7 @@
 				if (xpsOp) [manifestOp addDependency:xpsOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
-				if (xpsOp) [manifestOp addDependency:xpsOp];
+				if (xpsOp && ![[manifestOp dependencies] containsObject:xpsOp]) [manifestOp addDependency:xpsOp];
             }
 			[xpsOps addObject:manifestOp];
 			[bookOps addObject:manifestOp];
@@ -625,7 +625,8 @@
                 if (paidBookOp) [licenseOp addDependency:paidBookOp];
 				[self.preAvailabilityQueue addOperation:licenseOp];
 			} else {
-                if (paidBookOp) [licenseOp addDependency:paidBookOp];
+				if (paidBookOp && ![[licenseOp dependencies] containsObject:paidBookOp]) [licenseOp addDependency:paidBookOp];
+
             }
 			[xpsOps addObject:licenseOp];
 			[bookOps addObject:licenseOp];
@@ -641,7 +642,7 @@
                 [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
-                [manifestOp addDependency:licenseOp];
+				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
             }
 			[xpsOps addObject:manifestOp];
 			[bookOps addObject:manifestOp];
@@ -672,6 +673,7 @@
 			
 			for (BlioProcessingOperation * op in xpsOps) {
 				[preAvailabilityCompleteOp addDependency:op];
+				[bookOps addObject:op];
 			}
 			[bookOps addObject:preAvailabilityCompleteOp];
 			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];
@@ -843,7 +845,7 @@
 	
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@ || processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete], [NSNumber numberWithInt:kBlioBookProcessingStateFailed]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@ || processingState == %@ || processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed],[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete], [NSNumber numberWithInt:kBlioBookProcessingStateFailed]]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -1046,11 +1048,17 @@
 //	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
 	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
-	NSLog(@"Stopping %i operations...",[relatedOperations count]);
+	NSLog(@"Stopping %i operations for sourceSpecificID: %@",[relatedOperations count],aBook.sourceSpecificID);
 	for (BlioProcessingOperation * op in relatedOperations) {
 		NSLog(@"Stopping Operation (%u complete): %@",op.percentageComplete,op);
 		[op cancel];
 	}
+	/*
+	NSLog(@"remaining operations:");
+	for (BlioProcessingOperation * op in [self.preAvailabilityQueue operations]) {
+		NSLog(@"sourceSpecificID: %@ operation: %@",op.sourceSpecificID,op);
+	}
+	*/
 }
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave {
 	// if book is processing, stop all associated operations
