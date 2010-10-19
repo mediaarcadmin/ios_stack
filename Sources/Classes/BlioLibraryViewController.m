@@ -519,7 +519,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/The Tale of Peter Rabbit.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"The Tale of Peter Rabbit" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
@@ -532,7 +532,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/Virgin Islands.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
@@ -545,7 +545,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/Virgin Islands Links Fixed.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"VirginIslandsFixed" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
@@ -558,7 +558,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/Woodstock - Peace, Music, and Memories.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Woodstock - Peace, Music, and Memories" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
@@ -571,7 +571,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/OldLady.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
@@ -584,7 +584,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/LibertyTyranny.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"LibertyTyranny" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
@@ -597,7 +597,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/UJBR Triumphant 20th.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"UJBR Triumphant 20th" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
@@ -610,7 +610,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/Facebook For Dummies.drm.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Facebook For Dummies" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
