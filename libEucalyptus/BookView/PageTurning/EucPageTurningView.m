@@ -1066,9 +1066,20 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated
 {
-    if((!_pageContentsInformation[2] || _pageContentsInformation[2].pageIndex != newPageIndex) &&
-       (!_pageContentsInformation[3] || _pageContentsInformation[3].pageIndex != newPageIndex)) {
+	BOOL doTurn = NO;
+	
+	if (_twoSidedPages) {
+		if((!_pageContentsInformation[2] || _pageContentsInformation[2].pageIndex != newPageIndex) &&
+		   (!_pageContentsInformation[3] || _pageContentsInformation[3].pageIndex != newPageIndex)) {
+			doTurn = YES;
+		}
+	} else {
+		if (!_pageContentsInformation[3] || _pageContentsInformation[3].pageIndex != newPageIndex) {
+			doTurn = YES;
+		}
+	}
         
+	if (doTurn) {
         BOOL forwards = newPageIndex > _pageContentsInformation[3].pageIndex;
         
         NSUInteger rightPageIndex = newPageIndex;
