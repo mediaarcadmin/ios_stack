@@ -178,6 +178,18 @@
     }
 }
 
+- (void)showKeyboardIfEmpty {
+	if ([[self.searchBar text] length] == 0) {
+		[self.searchBar becomeFirstResponder];
+	}
+}
+
+- (void)didMoveToWindow {
+	if (!self.inlineMode) {
+		[self.searchBar becomeFirstResponder];
+	}
+}
+
 - (void)setInlineMode:(BOOL)newInlineMode {
     inlineMode = newInlineMode;
     [self layoutSubviews];
@@ -351,6 +363,10 @@
     return [super resignFirstResponder];
 }
 
+- (BOOL)becomeFirstResponder {
+	return [self.searchField becomeFirstResponder];
+}
+
 @end
 
 static const CGFloat kBlioBookSearchCustomSearchFieldTextInset = 5;
@@ -403,6 +419,7 @@ static const CGFloat kBlioBookSearchCustomSearchBarHeight = 31;
     rect.origin.y -= kBlioBookSearchCustomSearchFieldClearButtonYInset;
     return rect;
 }
+
 
 @end
 
