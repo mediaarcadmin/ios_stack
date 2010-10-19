@@ -28,8 +28,21 @@
 
 @implementation BlioSpeedReadView
 
-@synthesize pageNumber, currentWordOffset, currentParagraphID, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize pageNumber, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 @synthesize delegate;
+
+- (void)dealloc {
+    [textArray release]; textArray = nil;
+    [sampleTextLabel release]; sampleTextLabel = nil;
+    [bigTextLabel release]; bigTextLabel = nil;
+    [fingerImageHolder release]; fingerImageHolder = nil;
+    [currentParagraphID release]; currentParagraphID = nil;
+    [paragraphSource release]; paragraphSource = nil;
+    
+	// Don't release as was not retained
+	delegate = nil;
+    [super dealloc];
+}
 
 - (id)initWithFrame:(CGRect)frame
              bookID:(NSManagedObjectID *)bookID 
@@ -42,28 +55,26 @@
         [self setBackgroundColor:[UIColor whiteColor]];
         
         fingerImageHolder = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 93, 93)];
-        fingerImage = [[CALayer alloc] init];
+        fingerImage = [CALayer layer];
         [fingerImage setContents:(id)[[UIImage imageNamed:@"speedread-thumb.png"] CGImage]];
         [fingerImage setFrame:CGRectMake(0, 0, 93, 93)];
         [fingerImageHolder.layer addSublayer:fingerImage];
         
-        backgroundImage = [[CALayer alloc] init];
+        backgroundImage = [CALayer layer];
         [backgroundImage setFrame:CGRectMake(0, 0, 320, 480)];
         [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedread-background-light-portrait.png"] CGImage]];
         [self.layer addSublayer:backgroundImage];
         
-        CALayer *roundedCorners = [[CALayer alloc] init];
+        CALayer *roundedCorners = [CALayer layer];
         [roundedCorners setFrame:CGRectMake(0, 0, 320, 480)];
         [roundedCorners setContents:(id)[[UIImage imageNamed:@"roundedcorners.png"] CGImage]];
         [self.layer addSublayer:roundedCorners];
-        [roundedCorners release];
         
         bigTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 100, 290, 240)];
         [bigTextLabel setTextColor:[UIColor blackColor]];
         [bigTextLabel setBackgroundColor:[UIColor clearColor]];
         [bigTextLabel setNumberOfLines:1];
         [bigTextLabel setAdjustsFontSizeToFitWidth:YES];
-        
         
         [self addSubview:bigTextLabel];
         
@@ -434,20 +445,6 @@
 
 - (void)drawRect:(CGRect)rect {
     // Drawing code
-}
-
-
-- (void)dealloc {
-    [textArray release];
-    [sampleTextLabel release];
-    [bigTextLabel release];
-    [fingerImage release];
-    [fingerImageHolder release];
-    [backgroundImage release];
-    [currentParagraphID release];
-    [paragraphSource release];
-    [delegate release];
-    [super dealloc];
 }
 
 #pragma mark -

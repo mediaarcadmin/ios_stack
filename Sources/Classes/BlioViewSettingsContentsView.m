@@ -321,12 +321,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 }
 
 - (void)changePageLayout:(id)sender {
-    
     [self.viewSettingsDelegate changePageLayout:sender];
-    
     [self displayPageAttributes];
     
 }
+
 
 - (void)changeLockRotation:(id)sender {
     [self.viewSettingsDelegate changeLockRotation];

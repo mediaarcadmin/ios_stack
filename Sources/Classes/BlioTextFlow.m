@@ -423,7 +423,6 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         NSUInteger dataLength = [data length];
         NSUInteger offset = (NSUInteger)[targetMarker byteIndex];
         if (offset >= dataLength) {
-            [data release];
             return nil;
         }
         

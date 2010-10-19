@@ -13,14 +13,7 @@
 @protocol BlioParagraphSource;
 
 
-@interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {
-    CGPDFDocumentRef pdf;
-    UIScrollView *scrollView;
-    UIView *containerView;
-    NSMutableArray *pageViews;
-    id navigationController;
-    NSInteger visiblePageIndex;
-    
+@interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {    
     NSInteger pageNumber;
     NSInteger pageCount;
     
@@ -62,10 +55,6 @@
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 @property (nonatomic, readonly) CGRect firstPageRect;
-
-@property (nonatomic, retain) UIView *fingerImageHolder;
-@property (nonatomic, retain) CALayer *fingerImage;
-@property (nonatomic, retain) CALayer *backgroundImage;
 
 - (float)speedForYValue:(float)y;
 - (float)calculateFingerXValueFromY:(float)y;
