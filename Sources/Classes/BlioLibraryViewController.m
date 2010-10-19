@@ -1879,9 +1879,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
 //											[[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]]];
 		NSString * authorString = @"";
+		NSString * audioString = @"";
+		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+			audioString = @", audiobook enabled.";
+		}
+		else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
+			audioString = @", text-to-speech enabled.";
+		}
+		
 		if (![[[self.bookView book] authorsWithStandardFormat] isEqualToString:@""]) authorString = [NSString stringWithFormat:@" by %@",[[self.bookView book] authorsWithStandardFormat]];
-        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@%@", @"Accessibility label for Library View cell book description"), 
-											[[self.bookView book] title], authorString]];
+        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@%@%@%@", @"Accessibility label for Library View cell book description"), 
+											[[self.bookView book] title], authorString,audioString]];
 		
         [bookElement setAccessibilityTraits:UIAccessibilityTraitButton];
         [bookElement setVisibleRect:[self.delegate visibleRect]];
@@ -2201,15 +2209,23 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 - (NSString *)accessibilityLabel {
 	NSString * authorString = @"";
+	NSString * audioString = @"";
+	if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		audioString = @", audiobook enabled.";
+	}
+	else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
+		audioString = @", text-to-speech enabled.";
+	}
+	
 	if (![[[self.bookView book] authorsWithStandardFormat] isEqualToString:@""]) authorString = [NSString stringWithFormat:@" by %@",[[self.bookView book] authorsWithStandardFormat]];
 
 	if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed) {
-		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, retrieving information.", @"Accessibility label for not-processed Library View cell book description"), 
-				[[self.bookView book] title], authorString];
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, retrieving information.", @"Accessibility label for not-processed Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
 	}
 	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
-		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, not yet downloaded.", @"Accessibility label for placeholder-only Library View cell book description"), 
-				[[self.bookView book] title], authorString];
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, not yet downloaded.", @"Accessibility label for placeholder-only Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
 	}
 	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 //		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, %.0f%% complete", @"Accessibility label for incomplete Library View cell book description"), 
@@ -2217,27 +2233,27 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		NSString * incompleteTextLabel = @"processing";
 		if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) incompleteTextLabel = @"downloading";
 
-		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, %@.", @"Accessibility label for incomplete Library View cell book description"), 
-				[[self.bookView book] title], authorString,incompleteTextLabel];
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, %@.", @"Accessibility label for incomplete Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString,incompleteTextLabel];
 	}
 	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateFailed) {
-		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, failed to download.", @"Accessibility label for failed Library View cell book description"), 
-				[[self.bookView book] title], authorString];
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, failed to download.", @"Accessibility label for failed Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
 	}
 	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
-		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, requires app update to be read.", @"Accessibility label for not supported Library View cell book description"), 
-				[[self.bookView book] title], authorString];
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, requires app update to be read.", @"Accessibility label for not supported Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
 	}
 	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
-		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, paused", @"Accessibility label for paused Library View cell book description"), 
-				[[self.bookView book] title], authorString];
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, paused", @"Accessibility label for paused Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
 	}
 	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
-		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, suspended", @"Accessibility label for suspended Library View cell book description"), 
-				[[self.bookView book] title], authorString];
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, suspended", @"Accessibility label for suspended Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
 	}
-	else return [NSString stringWithFormat:NSLocalizedString(@"%@%@", @"Accessibility label for complete Library View cell book description"), 
-						[[self.bookView book] title], authorString];
+	else return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@", @"Accessibility label for complete Library View cell book description"), 
+						[[self.bookView book] title], authorString,audioString];
 }
 
 - (NSString *)accessibilityHint {
