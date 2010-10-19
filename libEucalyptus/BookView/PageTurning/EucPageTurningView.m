@@ -1130,7 +1130,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             _automaticTurnPercentage = percentage;
             
             [self waitForAllPageImagesToBeAvailable];
-            
+		
             self.animating = YES;
         } else {
             [self _setupBitmapPage:rightPageIndex forInternalPageOffset:3];
@@ -2457,8 +2457,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _cyclePageContentsInformationForTurnForwards:YES];
                     if(_twoSidedPages) {
                         _recacheFlags[4] = YES;
+						_recacheFlags[0] = YES;
                     }
-                    _recacheFlags[5] = YES;
+					_recacheFlags[1] = YES;
+					_recacheFlags[5] = YES; 
+
                     _viewsNeedRecache = YES;
                 } 
                 _rightFlatPageIndex = 3;
@@ -2466,9 +2469,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 if(!hasFlipped) {
                     [self _cyclePageContentsInformationForTurnForwards:NO];
                     if(_twoSidedPages) {
+						_recacheFlags[4] = YES;
                         _recacheFlags[0] = YES;
                     }                    
                     _recacheFlags[1] = YES;
+					_recacheFlags[5] = YES;
+					
                     _viewsNeedRecache = YES;
                 }
             }  
