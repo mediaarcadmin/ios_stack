@@ -93,7 +93,7 @@
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
 	if (!self.emailField) self.emailField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
-	emailField.keyboardType = UIKeyboardTypeAlphabet;
+	emailField.keyboardType = UIKeyboardTypeEmailAddress;
 	emailField.keyboardAppearance = UIKeyboardAppearanceDefault;
 	emailField.returnKeyType = UIReturnKeyNext;
 	emailField.autocapitalizationType = UITextAutocapitalizationTypeNone;

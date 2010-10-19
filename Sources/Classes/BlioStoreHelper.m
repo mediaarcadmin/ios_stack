@@ -11,7 +11,7 @@
 
 @implementation BlioStoreHelper
 
-@synthesize delegate, timeout, token, sourceID, storeTitle,isRetrievingBooks;
+@synthesize delegate, timeout, token, sourceID, storeTitle,isRetrievingBooks,downloadNewBooks;
 
 -(void) dealloc {
 	if (username) [username release];

@@ -237,8 +237,13 @@
 	[super cancel];
 	NSLog(@"Cancelling pagination...");
 //	[paginator stop];
-	[paginator performSelectorInBackground:@selector(stop) withObject:nil];
+	[self performSelectorInBackground:@selector(stopPaginator) withObject:nil];
 	[self finish];	
+}
+-(void)stopPaginator {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	[paginator stop];
+	[pool drain];
 }
 -(void) dealloc {
     self.bookTitle = nil;

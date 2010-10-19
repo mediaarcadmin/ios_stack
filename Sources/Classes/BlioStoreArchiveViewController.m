@@ -16,6 +16,22 @@
 #import "Reachability.h"
 #import "BlioStoreHelper.h"
 
+@interface BlioArchiveListCell : BlioLibraryListCell
+
+@end 
+
+@implementation BlioArchiveListCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+		[resumeButton setAccessibilityLabel:NSLocalizedString(@"Download", @"Accessibility label for Archive View cell book download button.")];
+		[resumeButton setAccessibilityHint:NSLocalizedString(@"Downloads book.", @"Accessibility hint for Library View cell book download button.")];
+	}
+	return self;
+}
+
+@end
+
 @interface BlioStoreArchiveViewController()
 @property (nonatomic, retain) BlioBook* currBook;
 @end
@@ -150,14 +166,15 @@
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			NSLog(@"logged in");
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
-				[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertArchive"];
-				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Retrieving Your Books",@"\"Retrieving Your Books\" alert message title") 
-											 message:NSLocalizedStringWithDefaultValue(@"INTRO_ARCHIVE_ALERT",nil,[NSBundle mainBundle],@"The Archive is where you'll find your recently purchased books; although these books have been purchased, they still need to be downloaded to your device. Tap on the \"load\" button to the right of a book's title to start downloading, then tap on the \"Done\" button to see your book's progress in the Library!",@"Alert Text encouraging the end-user to go to start downloading paid books in the archive.")
-											delegate:nil
-								   cancelButtonTitle:@"OK"
-								   otherButtonTitles:nil];		
-			}
+			// The following is an instructional alert view that only shows once; we've decided to disable it for now, since the Archive view is not as prominent with paid books automatically downloading.
+//			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
+//				[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertArchive"];
+//				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Retrieving Your Books",@"\"Retrieving Your Books\" alert message title") 
+//											 message:NSLocalizedStringWithDefaultValue(@"INTRO_ARCHIVE_ALERT",nil,[NSBundle mainBundle],@"The Archive is where you'll find your recently purchased books; although these books have been purchased, they still need to be downloaded to your device. Tap on the \"load\" button to the right of a book's title to start downloading, then tap on the \"Done\" button to see your book's progress in the Library!",@"Alert Text encouraging the end-user to go to start downloading paid books in the archive.")
+//											delegate:nil
+//								   cancelButtonTitle:@"OK"
+//								   otherButtonTitles:nil];		
+//			}
 			
 		}
 		else {
@@ -354,13 +371,13 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	
-	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
+	static NSString *ListCellIdentifier = @"BlioArchiveListCellIdentifier";
 	
-	BlioLibraryListCell *cell;
+	BlioArchiveListCell *cell;
 	
-	cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+	cell = (BlioArchiveListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 	if (cell == nil) {
-		cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+		cell = [[[BlioArchiveListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
 	} 
 	
 	[self configureTableCell:cell atIndexPath:indexPath];

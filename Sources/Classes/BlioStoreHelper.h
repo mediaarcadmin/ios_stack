@@ -19,6 +19,7 @@
 	BlioBookSourceID sourceID;
 	id<BlioStoreHelperDelegate> delegate;
 	BOOL isRetrievingBooks;
+	BOOL downloadNewBooks;
 	
 }
 @property (nonatomic, retain) NSDate* timeout;
@@ -28,6 +29,7 @@
 @property (nonatomic, assign) id<BlioStoreHelperDelegate> delegate;
 @property (nonatomic) BlioBookSourceID sourceID;
 @property (nonatomic, readonly) BOOL isRetrievingBooks;
+@property (nonatomic, assign) BOOL downloadNewBooks;
 
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password;
 - (void)logout;

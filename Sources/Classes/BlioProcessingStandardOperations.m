@@ -995,8 +995,6 @@
 @implementation BlioProcessingDownloadAndUnzipOperation
 
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
-	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
-	[userInfo setObject:self.bookID forKey:@"bookID"];
     if ([self isCancelled]) return;
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
