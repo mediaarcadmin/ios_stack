@@ -316,7 +316,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 - (BlioBookmarkPoint *)currentBookmarkPoint {
     BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
-    ret.layoutPage = self.pageNumber;
+    ret.layoutPage = MAX(self.pageNumber, 1);
     return [ret autorelease];
 }
 

@@ -2466,10 +2466,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)goBackInHistory {
     BlioBookmarkPoint *targetPoint = nil;
     BlioBookmarkPoint *savedPoint = nil;
-    
+    NSInteger bookmarkedPage;
+	
     while (((savedPoint = [self popBookmarkPoint])) != nil) {
         NSInteger currentPage = [self.bookView pageNumber];
-        NSInteger bookmarkedPage = [self.bookView pageNumberForBookmarkPoint:savedPoint];
+        bookmarkedPage = [self.bookView pageNumberForBookmarkPoint:savedPoint];
         if (currentPage != bookmarkedPage) {
             targetPoint = savedPoint;
             break;
@@ -2477,7 +2478,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     if (targetPoint != nil) {
-        [self.bookView goToBookmarkPoint:targetPoint animated:YES saveToHistory:NO];
+		if ([self.bookView respondsToSelector:@selector(goToPageNumber:animated:saveToHistory:)]) {
+			[self.bookView goToPageNumber:bookmarkedPage animated:YES saveToHistory:NO];
+		} else {
+			[self.bookView goToBookmarkPoint:targetPoint animated:YES saveToHistory:NO];
+		}
     }
  
 }

@@ -354,8 +354,15 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     [self goToPageNumber:[self.textFlow pageNumberForSectionUuid:uuid] animated:animated];
 }
 
-- (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
+- (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated saveToHistory:(BOOL)save {
+	if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
     [self goToPageNumber:targetPage animated:animated shouldZoomOut:YES targetZoomScale:kBlioPDFGoToZoomTargetScale targetContentOffset:CGPointZero];
+}
+
+- (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
+	[self goToPageNumber:targetPage animated:animated saveToHistory:YES];
 }
 
 - (BlioBookmarkPoint *)currentBookmarkPoint {
