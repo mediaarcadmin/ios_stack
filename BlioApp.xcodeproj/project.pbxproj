@@ -3083,7 +3083,7 @@
 		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

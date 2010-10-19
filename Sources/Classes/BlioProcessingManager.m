@@ -70,7 +70,7 @@
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
-
+	NSLog(@"new enqueue mainthread: %i",[NSThread isMainThread]);
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (nil != moc) {
         
@@ -123,6 +123,7 @@
 			// create a new book in context from scratch
 //			NSLog(@"Processing Manager: Creating new book"); 
             aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioBook" inManagedObjectContext:moc];
+			[aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
 		}
 		
         [aBook setValue:title forKey:@"title"];
@@ -134,7 +135,6 @@
 			authorsValue = [authorsValue stringByAppendingString:[authors objectAtIndex:i]];
 		}
 		[aBook setValue:authorsValue forKey:@"author"];
-        [aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
         if (placeholderOnly) [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed] forKey:@"processingState"];
         else [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
         
@@ -188,6 +188,7 @@
         if (![moc save:&error]) {
             NSLog(@"[BlioProcessingManager enqueueBookWithTitle:] (saving UUID) Save failed with error: %@, %@", error, [error userInfo]);
         }
+	
 		[self enqueueBook:aBook placeholderOnly:placeholderOnly];
 	}
 }
@@ -672,6 +673,7 @@
 			
 			for (BlioProcessingOperation * op in xpsOps) {
 				[preAvailabilityCompleteOp addDependency:op];
+				[bookOps addObject:op];
 			}
 			[bookOps addObject:preAvailabilityCompleteOp];
 			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];

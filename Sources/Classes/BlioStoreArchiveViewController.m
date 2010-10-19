@@ -16,22 +16,6 @@
 #import "Reachability.h"
 #import "BlioStoreHelper.h"
 
-@interface BlioArchiveListCell : BlioLibraryListCell
-
-@end 
-
-@implementation BlioArchiveListCell
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-		[resumeButton setAccessibilityLabel:NSLocalizedString(@"Download", @"Accessibility label for Archive View cell book download button.")];
-		[resumeButton setAccessibilityHint:NSLocalizedString(@"Downloads book.", @"Accessibility hint for Library View cell book download button.")];
-	}
-	return self;
-}
-
-@end
-
 @interface BlioStoreArchiveViewController()
 @property (nonatomic, retain) BlioBook* currBook;
 @end
@@ -95,7 +79,6 @@
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-//			[self fetchResults];
 		}
 		else {
 //			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
@@ -121,7 +104,8 @@
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+//	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState != %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request
@@ -371,13 +355,13 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	
-	static NSString *ListCellIdentifier = @"BlioArchiveListCellIdentifier";
+	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
 	
-	BlioArchiveListCell *cell;
+	BlioLibraryListCell * cell = nil;
 	
-	cell = (BlioArchiveListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+	cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 	if (cell == nil) {
-		cell = [[[BlioArchiveListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+		cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
 	} 
 	
 	[self configureTableCell:cell atIndexPath:indexPath];

@@ -89,6 +89,7 @@
 - (void)calculateProgress {
 //	NSLog(@"alreadyCompletedOperations: %u",alreadyCompletedOperations);
 	float collectiveProgress = 0.0f;
+//	NSLog(@"self.dependencies: %@",self.dependencies);
 	for (NSOperation* op in self.dependencies) {
 		if ([op isKindOfClass:[BlioProcessingOperation class]]) {
 			collectiveProgress = collectiveProgress + ((BlioProcessingOperation*)op).percentageComplete;
@@ -99,10 +100,14 @@
 			else if (op.isCancelled) NSLog(@"NSOperation of class %@ cancelled.",[[op class] description]);
 		}
 	}
-	self.percentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
+	NSUInteger newPercentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
+	if (newPercentageComplete != self.percentageComplete) {
+		self.percentageComplete = newPercentageComplete;
+	}
 }
 - (void) dealloc {
 //	NSLog(@"BlioProcessingCompleteOperation dealloc entered");
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
 @end

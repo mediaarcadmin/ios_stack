@@ -229,15 +229,17 @@
 {
     NSDictionary *userInfo = [notification userInfo];
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
-    self.percentageComplete = roundf(percentagePaginated);
-//	NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
-
+    if (self.percentageComplete != roundf(percentagePaginated)) {
+		NSLog(@"[NSThread isMainThread]: %i",[NSThread isMainThread]);
+		self.percentageComplete = roundf(percentagePaginated);
+		NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
+	}
 }
 -(void)cancel {
 	[super cancel];
 	NSLog(@"Cancelling pagination...");
-//	[paginator stop];
-	[self performSelectorInBackground:@selector(stopPaginator) withObject:nil];
+	[paginator stop];
+//	[self performSelectorInBackground:@selector(stopPaginator) withObject:nil];
 	[self finish];	
 }
 -(void)stopPaginator {
