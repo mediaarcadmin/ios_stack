@@ -561,7 +561,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)_loupeToPoint:(CGPoint)point yOffset:(CGFloat)yOffset;
 {
-    NSParameterAssert(self.loupeLayer);
+	// Temporarily remove to stop crashing
+	//NSParameterAssert(self.loupeLayer);
+	if (!self.loupeLayer || !self.loupeContentsLayer || !self.loupeContentsImageFactory) {
+		return;
+	}
     
     CALayer *loupeLayer = self.loupeLayer;
     CALayer *loupeContentsLayer = self.loupeContentsLayer;
