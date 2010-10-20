@@ -274,227 +274,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		
 #ifdef DEMO_MODE
 		
-        [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
-                                              authors:[NSArray arrayWithObject:@"Willingham, Bill"]
-											coverPath:@"MockCovers/FablesLegendsInExile.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Legends.pdf"
-											  xpsPath:nil
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Fables: Legends In Exile"
-									  placeholderOnly:NO
-		 ];
-
-        [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
-                                              authors:[NSArray arrayWithObject:@"Hunter, David J."]
-											coverPath:@"MockCovers/Essentials_of_Discrete_Mathematics.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Essentials_of_Discrete_Mathematics.pdf"
-											  xpsPath:nil
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Essentials Of Discrete Mathematics"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
-                                              authors:[NSArray arrayWithObject:@"Just, Ward"]
-											coverPath:@"MockCovers/Exiles In The Garden.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Exiles In The Garden.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Exiles In The Garden.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Exiles In The Garden"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
-                                              authors:[NSArray arrayWithObject:@"Perez, Marlene"]
-											coverPath:@"MockCovers/Dead Is So Last Year.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Dead Is So Last Year.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Dead Is So Last Year.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Dead Is So Last Year"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
-                                              authors:[NSArray arrayWithObject:@"Degen, Bruce"]
-											coverPath:@"MockCovers/Jamberry.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Jamberry.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Jamberry.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Jamberry"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
-                                              authors:[NSArray arrayWithObject:@"Niemann, Christoph"]
-											coverPath:@"MockCovers/ChristophNiemann.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Pet Dragon.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Pet Dragon.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"The Pet Dragon"
-									  placeholderOnly:NO
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
-                                              authors:[NSArray arrayWithObject:@"Gaiman, Neil"]
-											coverPath:@"MockCovers/NeilGaiman.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Graveyard Book.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Graveyard Book.zip"
-										audiobookPath:@"AudioBooks/Graveyard Book.zip"
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"The Graveyard Book"
-									  placeholderOnly:NO
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
-                                              authors:[NSArray arrayWithObject:@"Stewart, Martha"]
-											coverPath:@"MockCovers/Martha Stewart Cookies.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Martha Stewart Cookies.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Martha Stewart Cookies.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Martha Stewart's Cookies"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
-                                              authors:[NSArray arrayWithObjects:@"Holme, Jennifer L.", @"Holme, Matthew", nil]
-											coverPath:@"MockCovers/Baby Mouse.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Baby Mouse.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Baby Mouse.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Baby Mouse"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
-                                              authors:[NSArray arrayWithObject:@"Satrapi, Marjane"]
-											coverPath:@"MockCovers/Persepolis 2.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Persepolis 2.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Persepolis 2.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Persepolis 2"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"The Art of the Band T-Shirt" 
-                                              authors:[NSArray arrayWithObjects:@"Easby, Amber", @"Oliver, Henry", nil]
-											coverPath:@"MockCovers/Art of the Band T-Shirt.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Art of the Band T-Shirt.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Art of the Band T-Shirt.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"The Art of the Band T-Shirt"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Sylvester and the Magic Pebble" 
-                                              authors:[NSArray arrayWithObject:@"Steig, William"]
-											coverPath:@"MockCovers/Sylvester and the Magic Pebble.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Sylvester and the Magic Pebble.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Sylvester and the Magic Pebble.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Sylvester and the Magic Pebble"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"You On A Diet" 
-                                              authors:[NSArray arrayWithObjects:@"Roizen, M.D., Michael F.", @"Oz, M.D., Mehmet C.", nil]
-											coverPath:@"MockCovers/You On A Diet.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/You On A Diet.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/You On A Diet.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"You On A Diet"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
-                                              authors:[NSArray arrayWithObjects:@"Corriher, Shirley O.", nil]
-											coverPath:@"MockCovers/Bakewise.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Bakewise.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Bakewise.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"BakeWise"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
-                                              authors:[NSArray arrayWithObjects:@"Martin Jr, Bill", @"Archambault, Joan", nil]
-											coverPath:@"MockCovers/Chicka Chicka Boom Boom.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Chicka Chicka Boom Boom.pdf"
-											  xpsPath:nil
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Chick Chicka Boom Boom"
-									  placeholderOnly:NO
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
-                                              authors:[NSArray arrayWithObjects:@"Reilly, Matthew", nil]
-											coverPath:@"MockCovers/Five Greatest Warriors.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Five Greatest Warriors.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Five Greatest Warriors.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Five Greatest Warriors"
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
-                                              authors:[NSArray arrayWithObjects:@"Wheeler, Lisa", @"Blackall, Sophie", nil]
-											coverPath:@"MockCovers/Spinster Goose.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Spinster Goose.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Spinster Goose.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Spinster Goose"
-									  placeholderOnly:NO
-		 ];
-		
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
                                               authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
@@ -510,59 +289,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		
 #endif // DEMO_MODE
 #ifdef DEV_MODE
-
-        [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
-                                              authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/The Tale of Peter Rabbit.drm.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"The Tale of Peter Rabbit" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
     
         [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
                                               authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Virgin Islands.drm.xps"
+											  xpsPath:@"XPS/Virgin Islands.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands Fixed" 
-                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Virgin Islands Links Fixed.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"VirginIslandsFixed" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Woodstock - Peace, Music, and Memories" 
-                                              authors:[NSArray arrayWithObjects:@"Littleproud, Brad", @"Hague, Joanne", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Woodstock - Peace, Music, and Memories.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Woodstock - Peace, Music, and Memories" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-        
+
+/* 
+		      
         [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
                                               authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
 											coverPath:nil
@@ -575,45 +317,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-
-        [self.processingDelegate enqueueBookWithTitle:@"Liberty And Tyranny" 
-                                              authors:[NSArray arrayWithObjects:@"Levin, Mark R.", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/LibertyTyranny.drm.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"LibertyTyranny" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Uncle John's Triumphant 20th Anniversary Bathroom Reader" 
-                                              authors:[NSArray arrayWithObjects:@"Bathroom Reader's Institute", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/UJBR Triumphant 20th.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"UJBR Triumphant 20th" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Facebook for Dummies" 
-                                              authors:[NSArray arrayWithObjects:@"Pearlman, Lynne", @"Abram, Carolyn", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Facebook For Dummies.drm.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Facebook For Dummies" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
+	*/
 		
 #endif // DEV_MODE
         

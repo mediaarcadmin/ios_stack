@@ -1392,7 +1392,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
     // Clear the buffer, ready to draw.
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(0.8, 0.8, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Perform zooming, and finally actually set the model view matrix.
@@ -2659,7 +2659,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return translation;
 }
 
-- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor 
+- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
     translation.x /= _viewportToBoundsPointsTransform.a;
     translation.y /= _viewportToBoundsPointsTransform.d;
