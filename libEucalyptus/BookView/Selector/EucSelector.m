@@ -563,7 +563,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
 	// Temporarily remove to stop crashing
 	//NSParameterAssert(self.loupeLayer);
-	if (!self.loupeLayer || !self.loupeContentsLayer || !self.loupeContentsImageFactory) {
+	if (![self.loupeLayer isKindOfClass:[CALayer class]] || ![self.loupeContentsLayer isKindOfClass:[CALayer class]] || ![self.loupeContentsImageFactory isKindOfClass:[THImageFactory class]]) {
 		return;
 	}
     
