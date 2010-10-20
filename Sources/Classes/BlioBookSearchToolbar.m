@@ -121,7 +121,7 @@
         
         UIView <BlioBookSearchBar> *aSearchBar;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            aSearchBar = [[UISearchBar alloc] init];            
+            aSearchBar = [[UISearchBar alloc] init]; 
         } else {
             aSearchBar = [[BlioBookSearchCustomSearchBar alloc] init];
         }
@@ -266,6 +266,13 @@
         
         UIImageView *aSearchView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"searchFieldIcon.png"]];
         
+		BOOL showSearchButton = NO;
+		if (UIAccessibilityIsVoiceOverRunning != nil) {
+            if (UIAccessibilityIsVoiceOverRunning()) {
+				showSearchButton = YES;
+			}
+		}
+		
         BlioBookSearchCustomSearchField *aSearchField = [[BlioBookSearchCustomSearchField alloc] init];
         aSearchField.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         aSearchField.background = [UIImage stretchableImageNamed:@"searchBarBorder.png" leftCapWidth:17 topCapHeight:16];
@@ -275,7 +282,7 @@
         aSearchField.textColor = [UIColor darkTextColor];
         aSearchField.font = [UIFont systemFontOfSize:14];
         aSearchField.delegate = self;
-        aSearchField.returnKeyType = UIReturnKeySearch;
+        aSearchField.returnKeyType = showSearchButton ? UIReturnKeySearch : UIReturnKeyDone;
         aSearchField.autocorrectionType = UITextAutocorrectionTypeNo; // Matches a searchBar
 		aSearchField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         [self addSubview:aSearchField];
@@ -359,9 +366,9 @@
 }
 
 - (BOOL)resignFirstResponder {
-    NSLog(@"Can resign %d isfirst %d", [self canResignFirstResponder], [self isFirstResponder]);
-    NSLog(@"nextResponder: %@", [self nextResponder]);
-    return [super resignFirstResponder];
+	[self.searchField endEditing:YES];
+	
+	return YES;
 }
 
 - (BOOL)becomeFirstResponder {

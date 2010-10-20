@@ -172,7 +172,7 @@
 #pragma mark Results Controller delegate
 
 - (void)resultsController:(BlioBookSearchResultsTableViewController *)resultsController didSelectResultAtIndex:(NSUInteger)index {
-    [self.toolbar.searchBar endEditing:YES];
+    [self.toolbar.searchBar resignFirstResponder];
     currentSearchResult = index;
     [self highlightCurrentSearchResult];
     self.popoverContentSize = CGSizeMake(320, SEARCHCOLLAPSEDPOPOVERHEIGHT);
@@ -234,6 +234,18 @@
             }
         }
     }
+	
+	BOOL popDown = YES;
+	
+	if (UIAccessibilityIsVoiceOverRunning != nil) {
+		if (UIAccessibilityIsVoiceOverRunning()) {
+			popDown = NO;
+		}
+	}
+	
+	if (popDown) {
+		[self.toolbar.searchBar resignFirstResponder];
+	}
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
