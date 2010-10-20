@@ -1832,7 +1832,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.contentView addSubview:statusBadge];		
 		
         [aBookView release];
-		NSLog(@"grid cell subscribing to notifications on main thread: %i",[NSThread isMainThread]);
 		[self listenToProcessingNotifications];
 	}
     return self;
