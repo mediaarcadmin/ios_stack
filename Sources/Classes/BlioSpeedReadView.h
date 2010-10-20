@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <libEucalyptus/EucBookView.h>
 #import "BlioBookView.h"
+#import "BlioBookViewController.h"
 
 @protocol BlioParagraphSource;
 
@@ -21,10 +22,15 @@
     id<BlioBookViewDelegate> delegate;
     id currentParagraphID;
 	uint32_t currentWordOffset;
-        
+    
     UIView *fingerImageHolder;
     CALayer *fingerImage;
+    
+    CALayer *backgroundImageLandscape;    
     CALayer *backgroundImage;
+    CALayer *roundCornersLandscape;    
+    CALayer *roundCorners;
+    
     float initialTouchDifference;
     
     float initialFontSize;
@@ -60,6 +66,8 @@
 - (float)calculateFingerXValueFromY:(float)y;
 - (BOOL)fillArrayWithNextBlock;
 - (BOOL)fillArrayWithCurrentBlock;
+
+- (void)setColor:(BlioPageColor)newColor;
 
 @property (nonatomic) float speed;
 
