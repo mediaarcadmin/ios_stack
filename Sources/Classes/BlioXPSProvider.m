@@ -259,11 +259,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     CGAffineTransform ctm = CGContextGetCTM(ctx);
     CGRect insetBounds = CGRectInset(bounds, inset, inset);
     
-    [renderingLock lock];
-        memset(&properties,0,sizeof(properties));
-        XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
-        CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
-    [renderingLock unlock];
+	CGRect pageCropRect = [self cropRectForPage:page];
     
     CGFloat widthScale = (CGRectGetWidth(insetBounds) / CGRectGetWidth(pageCropRect)) * ctm.a;
     CGFloat heightScale = (CGRectGetHeight(insetBounds) / CGRectGetHeight(pageCropRect)) * ctm.d;
@@ -333,11 +329,8 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
                                 fromRect:(CGRect)rect
                                  minSize:(CGSize)size 
                               getContext:(id *)context {
-    [renderingLock lock];
-    memset(&properties,0,sizeof(properties));
-    XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
-    CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
-    [renderingLock unlock];
+	
+	CGRect pageCropRect = [self cropRectForPage:page];
     
     OutputFormat format;
     memset(&format,0,sizeof(format));

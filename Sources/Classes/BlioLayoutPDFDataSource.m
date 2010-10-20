@@ -93,6 +93,8 @@
                                  minSize:(CGSize)size 
                               getContext:(id *)context {
 	
+//	NSLog(@"Requested rect %@ of size %@", NSStringFromCGRect(rect), NSStringFromCGSize(size));
+	
 	[self openDocumentIfRequired];
     
     if (nil == pdf) return nil;
@@ -111,20 +113,22 @@
     
     CGContextRef bitmapContext = CGBitmapContextCreate([bitmapData mutableBytes], width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
     CGColorSpaceRelease(colorSpace);
-    
-    CGFloat widthScale  = size.width / CGRectGetWidth(rect);
-    CGFloat heightScale = size.height / CGRectGetHeight(rect);
-    heightScale = heightScale;widthScale = widthScale;
-    
-    CGContextSetFillColorWithColor(bitmapContext, [UIColor whiteColor].CGColor);
-    
-    CGRect pageRect = CGRectMake(0, 0, width, height);
-    CGContextFillRect(bitmapContext, pageRect);
-    CGContextClipToRect(bitmapContext, pageRect);
-    
-    CGRect cropRect = [self cropRectForPage:page];
-    CGAffineTransform fitTransform = transformRectToFitRect(cropRect, pageRect, YES);
+	
+	
+	CGRect pageCropRect = [self cropRectForPage:page];
+	
+    CGFloat pageZoomScaleWidth  = size.width / CGRectGetWidth(rect);
+    CGFloat pageZoomScaleHeight = size.height / CGRectGetHeight(rect);
+	
+	CGRect pageRect = CGRectMake(0, 0, pageCropRect.size.width * pageZoomScaleWidth, pageCropRect.size.height * pageZoomScaleHeight);
+   	
+    CGAffineTransform fitTransform = transformRectToFitRect(pageCropRect, pageRect, YES);
     CGContextConcatCTM(bitmapContext, fitTransform);
+	CGContextTranslateCTM(bitmapContext, -(rect.origin.x - pageCropRect.origin.x) , (rect.origin.y - pageCropRect.origin.y) - (CGRectGetHeight(pageCropRect) - CGRectGetHeight(rect)));
+	
+	CGContextSetFillColorWithColor(bitmapContext, [UIColor whiteColor].CGColor);
+	CGContextFillRect(bitmapContext, pageCropRect);
+	CGContextClipToRect(bitmapContext, pageCropRect);
     
     [pdfLock lock];
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
