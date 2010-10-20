@@ -877,7 +877,6 @@
 		C9406B3111C64A580072CE23 /* BlioBookSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9406B2F11C64A580072CE23 /* BlioBookSearchViewController.m */; };
 		C944EC0211C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
 		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
-		C94D27B910DBCF4C00F30AFE /* PDFs in Resources */ = {isa = PBXBuildFile; fileRef = C94D27B510DBCF4C00F30AFE /* PDFs */; };
 		C95FC84B123A3D1100859B92 /* BlioBookSearchPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FC84A123A3D1100859B92 /* BlioBookSearchPopoverController.m */; };
 		C95FCD00123BCED600859B92 /* BlioBookSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCCFF123BCED600859B92 /* BlioBookSearchResultsTableViewController.m */; };
 		C95FCD0E123BDB1300859B92 /* BlioBookSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCD0D123BDB1300859B92 /* BlioBookSearchResult.m */; };
@@ -3132,7 +3131,6 @@
 				7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */,
 				7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */,
 				7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */,
-				C94D27B910DBCF4C00F30AFE /* PDFs in Resources */,
 				C9775EA510DFE1C3005E0E2B /* MockCovers in Resources */,
 				C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */,
 				C977649B10E0E413005E0E2B /* row-dark.png in Resources */,

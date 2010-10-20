@@ -700,11 +700,11 @@
 				NSLog(@"new XPS URL: %@",[newXPSURL absoluteString]);
 				self.url = newXPSURL;
 				
-				// set manifest location for record-keeping purposes (though the app will likely request a new URL at a later time should this one fail now.)
-				NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:BlioManifestEntryLocationKey];
-				[manifestEntry setValue:[newXPSURL absoluteString] forKey:BlioManifestEntryPathKey];
-				[self setBookManifestValue:manifestEntry forKey:BlioManifestXPSKey];		
+//				// set manifest location for record-keeping purposes (though the app will likely request a new URL at a later time should this one fail now.)
+//				NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+//				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:BlioManifestEntryLocationKey];
+//				[manifestEntry setValue:[newXPSURL absoluteString] forKey:BlioManifestEntryPathKey];
+//				[self setBookManifestValue:manifestEntry forKey:BlioManifestXPSKey];		
 			}
 			else {
 				NSLog(@"new XPS URL was not able to be obtained from server! Cancelling BlioProcessingDownloadPaidBookOperation...");
@@ -747,7 +747,7 @@
 -(void)main {
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
-			NSLog(@"failed dependency found: %@",blioOp);
+			NSLog(@"BlioProcessingXPSManifestOperation: %@ failed dependency found: %@",self,blioOp);
 			[self cancel];
 			break;
 		}

@@ -568,8 +568,7 @@
     
     
 	// paid books only.
-	manifestLocation = [aBook manifestLocationForKey:BlioManifestXPSKey];
-    if ((manifestLocation && sourceID == BlioBookSourceLocalBundle) || sourceID == BlioBookSourceOnlineStore) { 
+    else if (sourceID == BlioBookSourceOnlineStore) { 
 		
 		BOOL usedPreExistingOperation = NO;
 		BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
@@ -630,8 +629,8 @@
             }
 			[xpsOps addObject:licenseOp];
 			[bookOps addObject:licenseOp];
-			
 			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			NSLog(@"manifestOp.isCancelled: %i",manifestOp.isCancelled);
 			if (!manifestOp || manifestOp.isCancelled) {
 				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
 				manifestOp.bookID = bookID;
