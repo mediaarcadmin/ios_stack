@@ -1580,6 +1580,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)zoomAtPoint:(CGPoint)point {
 
     self.lastBlock = nil;
+	
+	if (self.pageTurningView.zoomFactor > 1) {
+		[self zoomOut];
+		return;
+	}
     	
 	NSInteger pageIndex;
 	
@@ -1608,8 +1613,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if (nil != targetBlock) {
         self.lastBlock = targetBlock;
         [self zoomToBlock:targetBlock visibleRect:[self visibleRectForPageAtIndex:pageIndex] reversed:NO context:nil center:point];
-    } else if (self.pageTurningView.zoomFactor > 1) {
-		[self zoomOut];
 	} else {
 		[self zoomOutsideBlockAtPoint:point];
     }    
