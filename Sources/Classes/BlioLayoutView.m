@@ -1620,7 +1620,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (CGRect)expandRectToMinimumWidth:(CGRect)aRect {
     CGRect viewBounds = self.pageTurningView.bounds;
-    CGFloat blockMinimumWidth = CGRectGetWidth(viewBounds) / 8;
+    CGFloat blockMinimumWidth = CGRectGetWidth(viewBounds) / 3;
     
     if (CGRectGetWidth(aRect) < blockMinimumWidth) {
         aRect.origin.x -= ((blockMinimumWidth - CGRectGetWidth(aRect)))/2.0f;
@@ -1662,10 +1662,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	CGFloat scaledOffsetY;
 	
 	if (!reversed) {
-		rectEdgeOffset = topOfPageOffset - CGRectGetMinY(targetRect);
+		rectEdgeOffset = topOfPageOffset - (CGRectGetMinY(targetRect) - pageRect.origin.y);
 		scaledOffsetY = roundf(rectEdgeOffset * zoomScale - CGRectGetMidY(self.pageTurningView.bounds));
 	} else {
-		rectEdgeOffset = bottomOfPageOffset + (CGRectGetHeight(pageRect) - CGRectGetMaxY(targetRect));
+		rectEdgeOffset = bottomOfPageOffset + (CGRectGetHeight(pageRect) - (CGRectGetMaxY(targetRect) - pageRect.origin.y));
 		scaledOffsetY = roundf(rectEdgeOffset * zoomScale + CGRectGetMidY(self.pageTurningView.bounds));
 	}
 	
