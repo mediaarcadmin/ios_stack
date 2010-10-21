@@ -37,9 +37,13 @@
 		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButtonPressed.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateHighlighted];
 		[aButton addTarget:self action:@selector(forgotPassword:) forControlEvents:UIControlEventTouchUpInside];
 		aButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
-		aButton.frame = CGRectMake(30, 20,150, 30);
+		CGFloat leftMargin = kCellTopOffset;
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			leftMargin = kCellLeftOffsetPad;
+		}
+		aButton.frame = CGRectMake(leftMargin, 20,150, 30);
 		[aButton setAccessibilityLabel:NSLocalizedString(@"Forgot Password?", @"Accessibility label for Forgot Password button.")];
-		[aButton setAccessibilityHint:NSLocalizedString(@"Sends your password to your email address.", @"Accessibility hint for Forgot Password button.")];
+		[aButton setAccessibilityHint:	NSLocalizedString(@"Sends your password to your email address.", @"Accessibility hint for Forgot Password button.")];
 		self.loginFooterView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
 		[self.loginFooterView addSubview:aButton];
 
@@ -96,13 +100,14 @@
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
 	CGFloat activityIndicatorDiameter = 50.0f;
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
-	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 }
 -(void)viewDidUnload {
-//	self.loginButton = nil;
+	[activityIndicatorView removeFromSuperview];
+	self.activityIndicatorView = nil;
 }
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertWelcome"];
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Welcome To Blio",@"\"Welcome To Blio\" alert message title") 
@@ -112,6 +117,9 @@
 						   otherButtonTitles:nil];		
 	}
 
+}
+- (void)viewDidDisappear:(BOOL)animated {
+	[activityIndicatorView removeFromSuperview];
 }
 -(void)loginButtonPressed:(id)sender {
 	if (!emailField.text || [emailField.text isEqualToString:@""]) {
