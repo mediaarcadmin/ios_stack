@@ -273,7 +273,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         NSLog(@"Creating Mock Books");
 		
 #ifdef DEMO_MODE
-		
+		/*
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
                                               authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
@@ -286,8 +286,63 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"Three Little Pigs"
 									  placeholderOnly:NO
 		 ];
+		*/
 		
+        [self.processingDelegate enqueueBookWithTitle:@"Toy Story" 
+                                              authors:[NSArray arrayWithObject:@"Disney"]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Toy Story.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Toy Story"
+									  placeholderOnly:NO
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
+                                              authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/OldLady.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
+		return;
 #endif // DEMO_MODE
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Peter Rabbit" 
+                                              authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Peter Rabbit.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"PeterRabbit" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"The Legend of Sleepy Hollow" 
+                                              authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/The Legend of Sleepy Hollow.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
 #ifdef DEV_MODE
     
         [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
@@ -302,22 +357,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-
-/* 
-		      
-        [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
-                                              authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/OldLady.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-	*/
 		
 #endif // DEV_MODE
         
