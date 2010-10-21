@@ -21,7 +21,8 @@
 #define kLabelHeight			20.0
 #define kTextFieldHeight		24.0
 #define kSliderHeight			7.0
-#define kCellLeftOffset			8.0
+#define kCellLeftOffset			10.0
+#define kCellLeftOffsetPad		30.0
 #define kCellTopOffset			10.0
 #define kCellHeight				44.0
 

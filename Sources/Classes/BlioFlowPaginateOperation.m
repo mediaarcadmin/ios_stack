@@ -237,8 +237,8 @@
 -(void)cancel {
 	[super cancel];
 	NSLog(@"Cancelling pagination...");
-	[paginator stop];
-//	[self performSelectorInBackground:@selector(stopPaginator) withObject:nil];
+//	[paginator stop];
+	[self performSelectorInBackground:@selector(stopPaginator) withObject:nil];
 	[self finish];	
 }
 -(void)stopPaginator {

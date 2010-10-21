@@ -1667,19 +1667,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)shouldShowFontSizeSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout || [self currentPageLayout] == kBlioPageLayoutSpeedRead) {
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
         return NO;
     } else {
         return YES;
     }
 }
 
-- (BOOL)shouldShowPageColorSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutSpeedRead) {
-        return NO;
-    } else {
-        return YES;
-    }
+- (BOOL)shouldShowPageColorSettings {        
+    return YES;
 }
 
 - (BlioFontSize)currentFontSize {
@@ -1724,17 +1720,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)setCurrentPageColor:(BlioPageColor)newColor
 {
     UIView<BlioBookView> *bookView = self.bookView;
-    if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
-        UIImage *pageTexture = nil;
-        if ((newColor == kBlioPageColorWhite) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
-            pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"paper-white-ipad" ofType:@"png"]]];
-        } else {
-            NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
-                                                              ofType:@""];
-            pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+    if([bookView isKindOfClass:[BlioSpeedReadView class]]) {
+        [(BlioSpeedReadView*)bookView setColor:newColor];
+    } else {
+        if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
+            UIImage *pageTexture = nil;
+            if ((newColor == kBlioPageColorWhite) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+                pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"paper-white-ipad" ofType:@"png"]]];
+            } else {
+                NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
+                                                                  ofType:@""];
+                pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+            }
+            [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
         }
-        [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
-    }  
+    }
     _currentPageColor = newColor;
 }
 
