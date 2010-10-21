@@ -40,7 +40,8 @@
 @property (nonatomic, retain) UIImage *pageTexture;
 @property (nonatomic, assign) BOOL pageTextureIsDark;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
-@property (nonatomic, retain) NSTimer *delayedTouchesTimer;
+@property (nonatomic, retain) NSTimer *delayedTouchesBeganTimer;
+@property (nonatomic, retain) NSTimer *delayedTouchesEndedTimer;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -53,17 +54,19 @@
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
 
 - (BOOL)touchesShouldBeSuppressed;
-- (void)handleTapAtPoint:(CGPoint)point;
+- (void)handleSingleTapAtPoint:(CGPoint)point;
+- (void)handleDoubleTapAtPoint:(CGPoint)point;
 
 - (NSArray *)hyperlinksForPage:(NSInteger)page;
 - (BlioLayoutHyperlink *)hyperlinkForPage:(NSInteger)page atPoint:(CGPoint)point;
 - (void)hyperlinkTapped:(NSString *)link;
 
+- (void)zoomAtPoint:(CGPoint)point;
 - (void)zoomToPreviousBlock;
 - (void)zoomToNextBlock;
 - (void)zoomToNextBlockReversed:(BOOL)reversed;
-- (void)zoomToPage:(NSInteger)targetPageNumber;
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context;
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context center:(CGPoint)centerPoint;
 - (void)zoomOut;
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point;
 
@@ -76,11 +79,14 @@
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
 @synthesize lastBlock;
-@synthesize delayedTouchesTimer;
+@synthesize delayedTouchesBeganTimer, delayedTouchesEndedTimer;
 
 - (void)dealloc {
-    [self.delayedTouchesTimer invalidate];
-    self.delayedTouchesTimer = nil;
+    [self.delayedTouchesBeganTimer invalidate];
+    self.delayedTouchesBeganTimer = nil;
+	
+	[self.delayedTouchesEndedTimer invalidate];
+	self.delayedTouchesEndedTimer = nil;
     
     self.textFlow = nil;
     self.pageCropsCache = nil;
@@ -503,6 +509,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
     if (!offset) {
         pageFrame.origin = CGPointZero;
+		if (self.pageTurningView.twoSidedPages && (pageIndex == [self.pageTurningView rightPageIndex])) {
+			if (applyZoom) {
+				pageFrame.origin = CGPointMake(CGRectGetMidX(self.pageTurningView.bounds) * self.pageTurningView.zoomFactor, 0);
+			} else {
+				pageFrame.origin = CGPointMake(CGRectGetMidX(self.pageTurningView.bounds), 0);
+			}
+		} else {
+			pageFrame.origin = CGPointZero;
+		}
     }
 
     CGAffineTransform pageTransform = transformRectToFitRect(pageCrop, pageFrame, true);
@@ -1018,7 +1033,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Goto Animations
 
 - (CGRect)firstPageRect {
-    return [[UIScreen mainScreen] bounds];
+    return [self.pageTurningView rightPageFrame];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
@@ -1037,12 +1052,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (BOOL)touchesShouldBeSuppressed {
-    if (hyperlinkTapped || pageViewIsTurning || self.selector.tracking || self.selector.selectedRange) {
-        hyperlinkTapped = NO;
-        return YES;
-    } else {
-        return NO;
-    }
+	return YES;
+    //if (hyperlinkTapped || pageViewIsTurning || self.selector.tracking || self.selector.selectedRange) {
+//        hyperlinkTapped = NO;
+//        return YES;
+//    } else {
+//        return NO;
+    //}
 }
 
 - (void)delayedTouchesBegan:(NSTimer *)timer {
@@ -1050,42 +1066,77 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
     NSDictionary *touchesAndEvent = [timer userInfo];
     [self.pageTurningView touchesBegan:[touchesAndEvent valueForKey:@"touches"] withEvent:[touchesAndEvent valueForKey:@"event"]];
-    self.delayedTouchesTimer = nil;
+    self.delayedTouchesBeganTimer = nil;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {    
-    if ([[event touchesForView:self] count] > 1) {
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {   	
+	if (([touches count] == 1) && ([[touches anyObject] tapCount] > 1)) {
+		// Double-tap
+		if (self.delayedTouchesBeganTimer != nil) {
+			[self.delayedTouchesBeganTimer invalidate];
+			self.delayedTouchesBeganTimer = nil;
+		} else {
+			if (!CGPointEqualToPoint(startTouchPoint, CGPointMake(-1, -1))) {
+				[self.pageTurningView touchesCancelled:touches withEvent:event];
+			}
+		}
+		
+		startTouchPoint = [[touches anyObject] locationInView:self];
+		
+    } else if ([[event touchesForView:self] count] > 1) {
         startTouchPoint = CGPointMake(-1, -1);
-        [self.delayedTouchesTimer fire];
-        self.delayedTouchesTimer = nil;
+        [self.delayedTouchesBeganTimer fire];
+        self.delayedTouchesBeganTimer = nil;
+		NSLog(@"touchesBegan pinch to page tunring view");
         [self.pageTurningView touchesBegan:touches withEvent:event];
     } else {
-        [self.delayedTouchesTimer invalidate];
-        self.delayedTouchesTimer = nil;
+        [self.delayedTouchesBeganTimer invalidate];
+        self.delayedTouchesBeganTimer = nil;
         
         startTouchPoint = [[touches anyObject] locationInView:self];
         NSDictionary *touchesAndEvent = [NSDictionary dictionaryWithObjectsAndKeys:touches, @"touches", event, @"event", nil];
-        self.delayedTouchesTimer = [NSTimer scheduledTimerWithTimeInterval:0.2f target:self selector:@selector(delayedTouchesBegan:) userInfo:touchesAndEvent repeats:NO];
+        self.delayedTouchesBeganTimer = [NSTimer scheduledTimerWithTimeInterval:0.31f target:self selector:@selector(delayedTouchesBegan:) userInfo:touchesAndEvent repeats:NO];
     }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     startTouchPoint = CGPointMake(-1, -1);
     
-    [self.delayedTouchesTimer fire];
-    self.delayedTouchesTimer = nil;
+    [self.delayedTouchesBeganTimer fire];
+    self.delayedTouchesBeganTimer = nil;
 
     [self.pageTurningView touchesMoved:touches withEvent:event];
 }
 
+- (void)delayedTouchesEnded:(NSTimer *)timer {
+
+    startTouchPoint = CGPointMake(-1, -1);
+	
+    NSDictionary *touchesEventAndLink = [timer userInfo];
+	NSString *link = [touchesEventAndLink valueForKey:@"link"];
+		
+	if (link) {
+		[self hyperlinkTapped:link];
+	} else {
+		[self handleSingleTapAtPoint:[[[touchesEventAndLink valueForKey:@"touches"] anyObject] locationInView:self]];
+	}
+	
+	self.delayedTouchesEndedTimer = nil;
+}
+
+
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self.delayedTouchesTimer invalidate];
-    self.delayedTouchesTimer = nil;
+
+	[self.delayedTouchesEndedTimer invalidate];
+    self.delayedTouchesEndedTimer = nil;
+	
+    [self.delayedTouchesBeganTimer invalidate];
+    self.delayedTouchesBeganTimer = nil;
     
     BlioLayoutHyperlink *touchedHyperlink = nil;
     CGPoint point = [[touches anyObject] locationInView:self];
     
-    if (CGPointEqualToPoint(point, startTouchPoint)) {
+    if (!CGPointEqualToPoint(startTouchPoint, CGPointMake(-1, -1))) {
         if (self.pageTurningView.fitTwoPages) {
             NSInteger leftPageIndex = [self.pageTurningView leftPageIndex];
             if (leftPageIndex >= 0) {
@@ -1099,22 +1150,26 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 touchedHyperlink = [self hyperlinkForPage:rightPageIndex + 1 atPoint:point];
             }
         }
-        
-        if ([self touchesShouldBeSuppressed]) {
+		
+		if (([touches count] == 1) && ([[touches anyObject] tapCount] == 2)) {
+			// Double-tap			
+			[self handleDoubleTapAtPoint:startTouchPoint];
+			return;
+        } else if (self.selector.tracking || self.selector.selectedRange) {
             return;
-        } else if ([touchedHyperlink link]) {
-            [self hyperlinkTapped:[touchedHyperlink link]];
-        } else {
-            [self handleTapAtPoint:point];
         }
+		
+		NSDictionary *touchesEventAndLink = [NSDictionary dictionaryWithObjectsAndKeys:touches, @"touches", event, @"event", [touchedHyperlink link], @"link", nil];
+        self.delayedTouchesEndedTimer = [NSTimer scheduledTimerWithTimeInterval:0.3f target:self selector:@selector(delayedTouchesEnded:) userInfo:touchesEventAndLink repeats:NO];
+		
     } else {
         [self.pageTurningView touchesEnded:touches withEvent:event];
     }
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self.delayedTouchesTimer invalidate];
-    self.delayedTouchesTimer = nil;
+    [self.delayedTouchesBeganTimer invalidate];
+    self.delayedTouchesBeganTimer = nil;
     
     CGPoint point = [[touches anyObject] locationInView:self];
     
@@ -1123,7 +1178,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
-- (void)handleTapAtPoint:(CGPoint)point {
+- (void)handleSingleTapAtPoint:(CGPoint)point {
     
     CGFloat screenWidth = CGRectGetWidth(self.bounds);
     CGFloat leftHandHotZone = screenWidth * BLIOLAYOUT_LHSHOTZONE;
@@ -1139,6 +1194,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         [self.delegate toggleToolbars]; 
     }    
     
+}
+
+- (void)handleDoubleTapAtPoint:(CGPoint)point {
+	[self zoomAtPoint:point];
 }
         
 #pragma mark -
@@ -1274,7 +1333,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     } else {
     
     //[target setValue:newKeyPathValue forKeyPath:keyPath];
-    [self.pageTurningView setTranslation:CGPointMake(currentTranslation.x + 10, currentTranslation.y + 10) zoomFactor:1.2];
+		[self.pageTurningView setTranslation:CGPointMake(currentTranslation.x + 10, currentTranslation.y + 10) zoomFactor:1.2 animated:YES];
         currentTranslation = [self.pageTurningView translation];
         [self.pageTurningView drawView];
     }
@@ -1283,7 +1342,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)zoomToNextBlock {
     return;
-    [self.pageTurningView setTranslation:CGPointZero zoomFactor:1];
+    [self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
     CGFloat newZoom = 2;
     CGFloat distance = fabs(newZoom - 1);
     CGFloat duration = 0.25f;
@@ -1311,7 +1370,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         return;
     }
     
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    //[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
     NSInteger targetPage = [self pageNumber];
     NSInteger pageIndex = targetPage - 1;
@@ -1443,16 +1502,19 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         if (!reversed) {
             if (pageIndex >= ([self pageCount] - 1)) {
                 // If we are already at the last page, zoom to page
-                [self zoomToPage:targetPage];
+                //[self zoomToPageIndex:targetPage - 1];
+				[self goToPageNumber:targetPage animated:YES];
                 return;
             }
             
             // Always zoom to the next page (rather than to the first block on it)
-            [self zoomToPage:targetPage + 1];
+            //[self zoomToPageIndex:targetPage - 1 + 1];
+			[self goToPageNumber:targetPage + 1 animated:YES];
         } else {
             if (pageIndex <= 0) {
                 // If we are already at the first page, zoom to page
-                [self zoomToPage:targetPage];
+                //[self zoomToPageIndex:targetPage - 1];
+				//[self goToPageNumber:targetPage animated:YES];
                 return;
             }
             
@@ -1468,7 +1530,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
             } else {
                 // If the previous page has no blocks, zoom to page
-                [self zoomToPage:targetPage - 1];
+                //[self zoomToPageIndex:targetPage - 1 - 1];
+				[self goToPageNumber:targetPage -1 animated:YES];
                 return;
             }
         }
@@ -1490,107 +1553,98 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
-- (void)zoomAtPoint:(NSString *)pointString {
-#if 0
-    self.lastBlock = nil;
-    
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    CGPoint point = CGPointFromString(pointString);
-    
-    BlioLegacyLayoutPageLayer *targetLayer = nil;
-    CGPoint pointInTargetPage;
-    
-    NSArray *orderedLayers = [[self.contentView layer] sublayers];
-    for (int i = [orderedLayers count]; i > 0; i--) {
-        CALayer *pageLayer = [orderedLayers objectAtIndex:(i - 1)];
-        pointInTargetPage = [pageLayer convertPoint:point fromLayer:self.layer];
-        if ([pageLayer containsPoint:pointInTargetPage]) {
-            targetLayer = (BlioLegacyLayoutPageLayer *)pageLayer;
-            break;
-        }
-    }
-    
-    if (nil == targetLayer) {
-        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        return;
-    }
-    
-    NSInteger targetPage = [targetLayer pageNumber];
-    NSInteger pageIndex = targetPage - 1;
-    
-    self.scrollingAnimationInProgress = YES;
-    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    
-    [self.scrollView setPagingEnabled:NO];
-    [self.scrollView setBounces:NO];
-    
+- (CGRect)visibleRectForPageAtIndex:(NSInteger)pageIndex {
+	CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
+	return CGRectApplyAffineTransform(self.pageTurningView.bounds, CGAffineTransformInvert(viewTransform));
+
+}
+
+- (void)zoomAtPoint:(CGPoint)point {
+
+    //self.lastBlock = nil;
+    	
+	NSInteger pageIndex;
+	
+	CGRect rightPageFrame = [self.pageTurningView rightPageFrame];
+	
+	if (CGRectContainsPoint(rightPageFrame, point)) {
+		pageIndex = self.pageTurningView.rightPageIndex;
+	} else{
+		pageIndex = self.pageTurningView.leftPageIndex;
+	}
+	
+	NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+	
     BlioTextFlowBlock *targetBlock = nil;
-    CGAffineTransform viewTransform = [self blockTransformForPage:targetPage];
+	CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
     
-    NSUInteger count = [pageBlocks count];
-    
-    if (count > 0) { 
-        for (NSUInteger index = 0; index < count; index++) {
-            BlioTextFlowBlock *block = [pageBlocks objectAtIndex:index];
-            CGRect blockRect = [block rect];
-            CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
-            if (CGRectContainsPoint(pageRect, pointInTargetPage)) {
-                targetBlock = block;
-                break;
-            }
-        }
-    }
+	for (BlioTextFlowBlock *block in pageBlocks) {
+		CGRect blockRect = [block rect];
+		CGRect pageRect = CGRectApplyAffineTransform(blockRect, viewTransform);
+		if (CGRectContainsPoint(pageRect, point)) {
+			targetBlock = block;
+			break;
+		}		
+	}
     
     if (nil != targetBlock) {
-        self.lastBlock = targetBlock;
-        [self zoomToBlock:targetBlock visibleRect:CGRectNull reversed:NO context:nil];
-    } else if (self.scrollView.zoomScale > 1) {
-        [self zoomOut];
-    } else {
-        [self zoomToPage:targetPage];
+//        self.lastBlock = targetBlock;
+        [self zoomToBlock:targetBlock visibleRect:[self visibleRectForPageAtIndex:pageIndex] reversed:NO context:nil center:point];
+    } else if (self.pageTurningView.zoomFactor > 1) {
+		[self zoomOut];
+	} else {
+		CGFloat zoomFactor = 2;
+		CGPoint offset = CGPointMake((CGRectGetMidX(self.pageTurningView.bounds) - point.x) * zoomFactor, (CGRectGetMidY(self.pageTurningView.bounds) - point.y) * zoomFactor); 
+		[self.pageTurningView setTranslation:offset zoomFactor:zoomFactor animated:YES];
     }    
-#endif
 }
 
-- (void)zoomToPage:(NSInteger)targetPageNumber {
-#if 0
-    self.lastBlock = nil;
+- (CGRect)expandRectToMinimumWidth:(CGRect)aRect {
+    CGRect viewBounds = self.pageTurningView.bounds;
+    CGFloat blockMinimumWidth = CGRectGetWidth(viewBounds) / 8;
     
-    CGFloat zoomScale;
-    CGPoint newContentOffset = [self contentOffsetToFillPage:targetPageNumber zoomScale:&zoomScale];
-    CGPoint currentContentOffset = [self.scrollView contentOffset];
-    
-    if (!CGPointEqualToPoint(newContentOffset, currentContentOffset)) {
-        if (targetPageNumber != self.pageNumber) {
-            [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        } else {
-            self.scrollingAnimationInProgress = YES;
-            [self.scrollView setPagingEnabled:NO];
-            [self.scrollView setBounces:NO];
-            
-            [UIView beginAnimations:@"BlioZoomPage" context:nil];
-            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-            [UIView setAnimationBeginsFromCurrentState:YES];
-            [UIView setAnimationDuration:0.35f];
-            [UIView setAnimationDelegate:self];
-            [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-            
-            [self.scrollView setZoomScale:zoomScale];
-            CGSize newContentSize = [self currentContentSize];
-            [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
-            [self.scrollView setContentSize:newContentSize];
-            [self.scrollView setContentOffset:newContentOffset];
-            self.lastZoomScale = self.scrollView.zoomScale;
-            [UIView commitAnimations];
+    if (CGRectGetWidth(aRect) < blockMinimumWidth) {
+        aRect.origin.x -= ((blockMinimumWidth - CGRectGetWidth(aRect)))/2.0f;
+        aRect.size.width += (blockMinimumWidth - CGRectGetWidth(aRect));
+        
+        if (aRect.origin.x < 0) {
+            aRect.origin.x = 0;
+            aRect.size.width += (blockMinimumWidth - CGRectGetWidth(aRect));
         }
-    } else {
-        [self zoomOut];
+        
+        if (CGRectGetMaxX(aRect) > CGRectGetWidth(viewBounds)) {
+            aRect.origin.x = CGRectGetWidth(viewBounds) - CGRectGetWidth(aRect);
+        }
     }
-#endif
+    
+    return aRect;
 }
 
-- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context {
+- (CGPoint)translationToFitRect:(CGRect)aRect onPage:(NSInteger)aPageNumber zoomScale:(CGFloat *)scale reversed:(BOOL)reversed {
+	CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:aPageNumber - 1 offsetOrigin:YES applyZoom:NO];
+	
+    CGRect targetRect = CGRectApplyAffineTransform(aRect, viewTransform);
+    CGRect viewBounds = self.pageTurningView.bounds;
+    CGFloat zoomScale = CGRectGetWidth(viewBounds) / CGRectGetWidth(targetRect);
+    targetRect = CGRectInset(targetRect, -6 / zoomScale, -10 / zoomScale);
+    targetRect = [self expandRectToMinimumWidth:targetRect];
+	
+    zoomScale = CGRectGetWidth(viewBounds) / CGRectGetWidth(targetRect);
+    *scale = zoomScale;
+    
+    CGRect cropRect = [self cropForPage:aPageNumber];
+    CGRect pageRect = CGRectApplyAffineTransform(cropRect, viewTransform);
+    CGFloat contentOffsetX = roundf( CGRectGetMidX(self.pageTurningView.bounds) - CGRectGetMidX(targetRect));
+	CGFloat scaledOffsetX = contentOffsetX * zoomScale;
+	
+	CGFloat topOfPageOffset = CGRectGetHeight(pageRect)/2.0f;
+	CGFloat topOfRectOffset = topOfPageOffset - CGRectGetMinY(targetRect);
+	CGFloat scaledOffsetY = roundf(topOfRectOffset * zoomScale - CGRectGetMidY(self.pageTurningView.bounds));
+	
+	return CGPointMake(scaledOffsetX, scaledOffsetY);
+}
+
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context center:(CGPoint)centerPoint {
     
     NSInteger pageIndex = [targetBlock pageIndex];
     
@@ -1599,91 +1653,70 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     blockCombiner.verticalSpacing = [self verticalSpacingForPage:pageIndex + 1];
     
     CGRect combined = [blockCombiner combinedRectForBlock:targetBlock];
-    CGRect nonVisibleBlockRect = combined;
+	CGRect nonVisibleBlockRect = combined;
+	
+	//NSLog(@"zoom to block (%@) with rect %@ in combined block with rect %@", [NSString stringWithFormat:@"%@ %@...", [(id)[[targetBlock words] objectAtIndex:0] string], [(id)[[targetBlock words] objectAtIndex:1] string]], NSStringFromCGRect([targetBlock rect]), NSStringFromCGRect(combined));
     
-    // Determine if the combined block is currently partially visible (i.e. it's full width is visible and
-    // At least part of it's height is visible - so there is an intersection)
-    if ([self blockRect:combined isPartiallyVisibleInRect:visibleRect]) {
-        CGRect intersection = CGRectIntersection(visibleRect, combined);
-        if (!CGRectIsNull(intersection)) {
-            if (!reversed) {
-                nonVisibleBlockRect.origin.x = CGRectGetMinX(combined);
-                nonVisibleBlockRect.origin.y = MAX(CGRectGetMinY(combined), CGRectGetMaxY(intersection));
-                nonVisibleBlockRect.size.width = CGRectGetWidth(combined);
-                nonVisibleBlockRect.size.height = CGRectGetMaxY(combined) - nonVisibleBlockRect.origin.y;
-            } else {
-                nonVisibleBlockRect.origin.x = CGRectGetMinX(combined);
-                nonVisibleBlockRect.origin.y = MIN(CGRectGetMinY(combined), CGRectGetMinY(intersection));
-                nonVisibleBlockRect.size.width = CGRectGetWidth(combined);
-                nonVisibleBlockRect.size.height = MIN(CGRectGetMaxY(combined), CGRectGetMinY(intersection)) - nonVisibleBlockRect.origin.y;
-            }
-        }
+	if (self.pageTurningView.zoomFactor > 1) {
+		// Determine if the combined block is currently partially visible (i.e. it's full width is visible and
+		// At least part of it's height is visible - so there is an intersection)
+		if ([self blockRect:combined isPartiallyVisibleInRect:visibleRect]) {
+			CGRect intersection = CGRectIntersection(visibleRect, combined);
+			if (!CGRectIsNull(intersection)) {
+				if (!reversed) {
+					nonVisibleBlockRect.origin.x = CGRectGetMinX(combined);
+					nonVisibleBlockRect.origin.y = MAX(CGRectGetMinY(combined), CGRectGetMaxY(intersection));
+					nonVisibleBlockRect.size.width = CGRectGetWidth(combined);
+					nonVisibleBlockRect.size.height = CGRectGetMaxY(combined) - nonVisibleBlockRect.origin.y;
+				} else {
+					nonVisibleBlockRect.origin.x = CGRectGetMinX(combined);
+					nonVisibleBlockRect.origin.y = MIN(CGRectGetMinY(combined), CGRectGetMinY(intersection));
+					nonVisibleBlockRect.size.width = CGRectGetWidth(combined);
+					nonVisibleBlockRect.size.height = MIN(CGRectGetMaxY(combined), CGRectGetMinY(intersection)) - nonVisibleBlockRect.origin.y;
+				}
+			}
+		}
     }
-    
     //NSInteger targetPageNumber = pageIndex + 1;
-#if 0
+
     CGFloat zoomScale;
-    CGPoint newContentOffset = [self contentOffsetToFitRect:nonVisibleBlockRect onPage:targetPageNumber zoomScale:&zoomScale reversed:reversed];
-    newContentOffset = CGPointMake(roundf(newContentOffset.x), roundf(newContentOffset.y));
-    CGPoint currentContentOffset = [self.scrollView contentOffset];
+    CGPoint translation = [self translationToFitRect:nonVisibleBlockRect onPage:pageIndex + 1 zoomScale:&zoomScale reversed:reversed];
+    //newContentOffset = CGPointMake(roundf(newContentOffset.x), roundf(newContentOffset.y));
+    //CGPoint currentContentOffset = [self.scrollView contentOffset];
+	
+	CGPoint currentTranslation = [self.pageTurningView translation];
+	CGFloat currentZoom = [self.pageTurningView zoomFactor];
+	NSInteger currentPage = self.pageNumber;
+	
+	if (!CGPointEqualToPoint(centerPoint, CGPointZero)) {
+		CGFloat pointOffset = CGRectGetMidY(self.pageTurningView.bounds) - centerPoint.y;
+		translation.y = roundf((pointOffset + currentTranslation.y) * zoomScale);		
+	}
+
     
-    if (!CGPointEqualToPoint(newContentOffset, currentContentOffset)) {
-        if (targetPageNumber != self.pageNumber) {
-            [self goToPageNumber:targetPageNumber animated:YES shouldZoomOut:NO targetZoomScale:zoomScale targetContentOffset:newContentOffset];
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        } else {
-            self.scrollingAnimationInProgress = YES;
-            [self.scrollView setPagingEnabled:NO];
-            [self.scrollView setBounces:NO];
-            
-            [UIView beginAnimations:@"BlioZoomToBlock" context:nil];
-            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-            [UIView setAnimationBeginsFromCurrentState:YES];
-            [UIView setAnimationDuration:0.35f];
-            [UIView setAnimationDelegate:self];
-            [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-            
-            [self.scrollView setZoomScale:zoomScale];
-            CGSize newContentSize = [self currentContentSize];
-            [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
-            [self.scrollView setContentSize:newContentSize];
-            [self.scrollView setContentOffset:newContentOffset];
-            self.lastZoomScale = self.scrollView.zoomScale;
-            [UIView commitAnimations];
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        }
-    } else {
-        
-        if (nil != context) {
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-            NSInvocation *nextInvocation = (NSInvocation *)context;
-            [nextInvocation invoke];
-        } else {
-            [self zoomOut];
-            return;
-        }
-    }
-#endif
+        if ((pageIndex + 1) != currentPage) {
+			[self goToPageNumber:(pageIndex + 1) animated:YES];
+		}
+	
+	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+	[self.pageTurningView drawView]; // needed because the translation isn't set immediately
+	
+	if ((roundf(self.pageTurningView.translation.x) == roundf(currentTranslation.x)) && (roundf(self.pageTurningView.translation.y) == roundf(currentTranslation.y))) {
+		if (self.pageTurningView.zoomFactor == currentZoom) {
+			if (self.pageNumber == currentPage) {
+				[self zoomOut];
+			}
+		} 
+	}
+}
+
+- (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context {
+	[self zoomToBlock:targetBlock visibleRect:visibleRect reversed:reversed context:context center:CGPointZero];
 }
 
 - (void)zoomOut {
-#if 0
     self.lastBlock = nil;
-    
-    [UIView beginAnimations:@"BlioZoomPage" context:nil];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:0.35f];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-    [self.scrollView setZoomScale:1];
-    CGSize newContentSize = [self currentContentSize];
-    [self.containerView setFrame:CGRectMake(0,0, ceilf(newContentSize.width), ceilf(newContentSize.height))];
-    [self.scrollView setContentSize:newContentSize];
-    [self.scrollView setContentOffset:[self contentOffsetToCenterPage:self.pageNumber zoomScale:1]]; 
-    self.lastZoomScale = 1;
-    [UIView commitAnimations];
-#endif
+    [self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
 }
 
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point {
