@@ -496,7 +496,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     CGRect pageCrop = [self pageTurningView:self.pageTurningView contentRectForPageAtIndex:pageIndex];
     CGRect pageFrame;
     
-    if (pageIndex == [self.pageTurningView leftPageIndex]) {
+    if (self.pageTurningView.twoSidedPages && (pageIndex == [self.pageTurningView leftPageIndex])) {
 		if (applyZoom) {
 			pageFrame = [self.pageTurningView leftPageFrame];
 		} else {
@@ -512,7 +512,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
     if (!offset) {
         pageFrame.origin = CGPointZero;
-		if (self.pageTurningView.twoSidedPages && (pageIndex == [self.pageTurningView rightPageIndex])) {
+		if (self.pageTurningView.twoSidedPages && (pageIndex != [self.pageTurningView leftPageIndex])) {
 			if (applyZoom) {
 				pageFrame.origin = CGPointMake(CGRectGetMidX(self.pageTurningView.bounds) * self.pageTurningView.zoomFactor, 0);
 			} else {
@@ -1654,13 +1654,17 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	CGFloat scaledOffsetX = contentOffsetX * zoomScale;
 	
 	CGFloat topOfPageOffset = CGRectGetHeight(pageRect)/2.0f;
+	CGFloat bottomOfPageOffset = -topOfPageOffset;
 	CGFloat rectEdgeOffset;
+	CGFloat scaledOffsetY;
+	
 	if (!reversed) {
 		rectEdgeOffset = topOfPageOffset - CGRectGetMinY(targetRect);
+		scaledOffsetY = roundf(rectEdgeOffset * zoomScale - CGRectGetMidY(self.pageTurningView.bounds));
 	} else {
-		rectEdgeOffset = topOfPageOffset - CGRectGetMaxY(targetRect);
+		rectEdgeOffset = bottomOfPageOffset + (CGRectGetHeight(pageRect) - CGRectGetMaxY(targetRect));
+		scaledOffsetY = roundf(rectEdgeOffset * zoomScale + CGRectGetMidY(self.pageTurningView.bounds));
 	}
-	CGFloat scaledOffsetY = roundf(rectEdgeOffset * zoomScale - CGRectGetMidY(self.pageTurningView.bounds));
 	
 	return CGPointMake(scaledOffsetX, scaledOffsetY);
 }
@@ -1713,12 +1717,25 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
     
         if ((pageIndex + 1) != currentPage) {
-			[self goToPageNumber:(pageIndex + 1) animated:YES];
+			if (self.pageTurningView.twoSidedPages) {
+				if ((self.pageTurningView.leftPageIndex != pageIndex) && (self.pageTurningView.rightPageIndex != pageIndex)) {
+					// TODO: Add a way for these to be combined
+					[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+					[self goToPageNumber:(pageIndex + 1) animated:YES];
+					return;
+				}
+			} else {
+				if (self.pageTurningView.rightPageIndex != pageIndex) {
+					// TODO: Add a way for these to be combined
+					[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+					[self goToPageNumber:(pageIndex + 1) animated:YES];
+					return;
+				}
+			}
 		}
 	
 	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
-	//[self.pageTurningView drawView]; // needed because the translation isn't set immediately
-	
+
 	if ((roundf(self.pageTurningView.translation.x) == roundf(currentTranslation.x)) && (roundf(self.pageTurningView.translation.y) == roundf(currentTranslation.y))) {
 		if (self.pageTurningView.zoomFactor == currentZoom) {
 			if (self.pageNumber == currentPage) {
