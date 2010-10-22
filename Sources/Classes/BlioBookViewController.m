@@ -214,13 +214,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if (_TTSEnabled) {
         
-        if ((![self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) && (![self.book hasTTSRights] || !self.book.paragraphSource)) {
+        if ((![self.book hasAudiobook]) && (![self.book hasTTSRights] || !self.book.paragraphSource)) {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
         }
 		else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
-            if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+            if ([self.book hasAudiobook]) {
 //                _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
                 _audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
             } else {
@@ -608,6 +608,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             } else {
                 [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
             }
+			if ( ([self currentPageLayout] == kBlioPageLayoutPlainText) && [self.book hasAudiobook] )
+				[item setEnabled:NO];
             
         } else {
             audioImage = [UIImage imageNamed:@"icon-noTTS.png"];
@@ -1373,7 +1375,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 							  (![self.bookView respondsToSelector:@selector(toolbarHideShouldBeSuppressed)] ||
 							   ![self.bookView toolbarHideShouldBeSuppressed])) {
 								  [self toggleToolbars];
-							 }
+							  }
             }
             _touch = nil;
         } else if(phase == UITouchPhaseCancelled) {
@@ -1647,13 +1649,22 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             ePubView.delegate = self;
             self.bookView = ePubView;
             [ePubView release];
-            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];  
+			if ( [self.book hasAudiobook] ) {
+				for (UIBarButtonItem * item in self.toolbarItems)
+					if ( item.action == @selector(toggleAudio:) )
+						 [item setEnabled:NO];
+			}
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
-            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; if ( [self.book hasAudiobook] ) {
+			for (UIBarButtonItem * item in self.toolbarItems)
+				if ( item.action == @selector(toggleAudio:) )
+					[item setEnabled:YES];
+			}   
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             speedReadView.delegate = self;
