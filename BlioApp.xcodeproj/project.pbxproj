@@ -940,6 +940,8 @@
 		C9D8A57A10F2289D00FD5F22 /* icon-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57810F2289D00FD5F22 /* icon-lock.png */; };
 		C9D8A57B10F2289D00FD5F22 /* icon-finger.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57910F2289D00FD5F22 /* icon-finger.png */; };
 		C9DA72B911E60C9400F584A1 /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
+		C9E04BA51271946400A307C4 /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
+		C9E04BA61271946600A307C4 /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
 		C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E1FA24110EE4D500999587 /* BlioTextFlow.m */; };
 		C9E1FAAA110F26DB00999587 /* TextFlows in Resources */ = {isa = PBXBuildFile; fileRef = C9E1FAA7110F26DB00999587 /* TextFlows */; };
 		C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
@@ -3565,6 +3567,7 @@
 				DCD4A4E9126F7F8E00A131B7 /* icon-bookmarked@2x.png in Resources */,
 				DCD4A4EA126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4EB126F7F8E00A131B7 /* icon-add.png in Resources */,
+				C9E04BA61271946600A307C4 /* icon-import.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3773,6 +3776,7 @@
 				DCD4A4F1126F7F8E00A131B7 /* icon-bookmarked@2x.png in Resources */,
 				DCD4A4F2126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4F3126F7F8E00A131B7 /* icon-add.png in Resources */,
+				C9E04BA51271946400A307C4 /* icon-import.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
