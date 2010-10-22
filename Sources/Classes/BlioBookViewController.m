@@ -1660,10 +1660,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
-            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; if ( [self.book hasAudiobook] ) {
-			for (UIBarButtonItem * item in self.toolbarItems)
-				if ( item.action == @selector(toggleAudio:) )
-					[item setEnabled:YES];
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; 
+			if ( [self.book hasAudiobook] ) {
+				for (UIBarButtonItem * item in self.toolbarItems)
+					if ( item.action == @selector(toggleAudio:) )
+						[item setEnabled:YES];
 			}   
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];

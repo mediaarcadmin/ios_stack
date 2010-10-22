@@ -807,7 +807,7 @@
 		}
 	}
 	else {
-		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasTTSRightsNum"]; 
+		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"ttsRight"]; 
 		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"]; 
 	}
 	
@@ -815,6 +815,8 @@
 	NSLog(@"self.cacheDirectory %@ hasAudiobook: %i,",self.cacheDirectory, hasAudiobook);
 	if (hasAudiobook) {
 		NSLog(@"setting Audiobook values in manifest...");
+		
+		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"audiobook"]; 
 		
 		manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
@@ -902,10 +904,10 @@
 		if ( [elementName isEqualToString:@"Audio"] ) {
 			NSString * attributeStringValue = [attributeDict objectForKey:@"TTSRead"];
 			if (attributeStringValue && [attributeStringValue isEqualToString:@"True"]) {
-				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasTTSRightsNum"]; 
+				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"ttsRight"]; 
 			}
 			else {
-				[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"hasTTSRightsNum"]; 
+				[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"ttsRight"]; 
 			}
 		}
 		else if ( [elementName isEqualToString:@"Reflow"] ) {
