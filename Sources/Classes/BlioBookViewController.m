@@ -1365,11 +1365,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
         } else if(phase == UITouchPhaseEnded) {
             if(!_touchMoved) {
-                if([self toolbarsVisible] ||
-                   ![self.bookView respondsToSelector:@selector(toolbarShowShouldBeSuppressed)] ||
-                   ![self.bookView toolbarShowShouldBeSuppressed]) {
-                    [self toggleToolbars];
-                }
+                if([self toolbarsVisible] &&
+                   (![self.bookView respondsToSelector:@selector(toolbarShowShouldBeSuppressed)] ||
+					![self.bookView toolbarShowShouldBeSuppressed])) {
+					   [self toggleToolbars];
+				   } else if (![self toolbarsVisible] &&
+							  (![self.bookView respondsToSelector:@selector(toolbarHideShouldBeSuppressed)] ||
+							   ![self.bookView toolbarHideShouldBeSuppressed])) {
+								  [self toggleToolbars];
+							 }
             }
             _touch = nil;
         } else if(phase == UITouchPhaseCancelled) {

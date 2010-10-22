@@ -47,6 +47,11 @@
     
     BlioTextFlowBlock *lastBlock;
     NSUInteger blockRecursionDepth;
+	
+	NSMutableArray *accessibilityElements;
+	UIAccessibilityElement *prevZone;
+	UIAccessibilityElement *nextZone;
+	UIAccessibilityElement *pageZone;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;

@@ -109,5 +109,6 @@
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save;
 
 - (BOOL)toolbarShowShouldBeSuppressed; 
+- (BOOL)toolbarHideShouldBeSuppressed; 
 
 @end
