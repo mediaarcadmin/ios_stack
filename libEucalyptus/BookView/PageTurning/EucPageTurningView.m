@@ -2659,7 +2659,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return translation;
 }
 
-- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
+- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated
 {
     translation.x /= _viewportToBoundsPointsTransform.a;
     translation.y /= _viewportToBoundsPointsTransform.d;

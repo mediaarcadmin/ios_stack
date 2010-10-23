@@ -215,13 +215,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if (_TTSEnabled) {
         
-        if ((![self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) && ([self.book audioRights] || !self.book.paragraphSource)) {
+        if ((![self.book hasAudiobook]) && (![self.book hasTTSRights] || !self.book.paragraphSource)) {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
         }
 		else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
-            if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+            if ([self.book hasAudiobook]) {
 //                _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
                 _audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
             } else {
@@ -625,6 +625,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             } else {
                 [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
             }
+			if ( ([self currentPageLayout] == kBlioPageLayoutPlainText) && [self.book hasAudiobook] )
+				[item setEnabled:NO];
             
         } else {
             audioImage = [UIImage imageNamed:@"icon-noTTS.png"];
@@ -1417,11 +1419,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
         } else if(phase == UITouchPhaseEnded) {
             if(!_touchMoved) {
-                if([self toolbarsVisible] ||
-                   ![self.bookView respondsToSelector:@selector(toolbarShowShouldBeSuppressed)] ||
-                   ![self.bookView toolbarShowShouldBeSuppressed]) {
-                    [self toggleToolbars];
-                }
+                if([self toolbarsVisible] &&
+                   (![self.bookView respondsToSelector:@selector(toolbarShowShouldBeSuppressed)] ||
+					![self.bookView toolbarShowShouldBeSuppressed])) {
+					   [self toggleToolbars];
+				   } else if (![self toolbarsVisible] &&
+							  (![self.bookView respondsToSelector:@selector(toolbarHideShouldBeSuppressed)] ||
+							   ![self.bookView toolbarHideShouldBeSuppressed])) {
+								  [self toggleToolbars];
+							  }
             }
             _touch = nil;
         } else if(phase == UITouchPhaseCancelled) {
@@ -1695,13 +1701,23 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             ePubView.delegate = self;
             self.bookView = ePubView;
             [ePubView release];
-            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];    
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];  
+			if ( [self.book hasAudiobook] ) {
+				for (UIBarButtonItem * item in self.toolbarItems)
+					if ( item.action == @selector(toggleAudio:) )
+						 [item setEnabled:NO];
+			}
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
-            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey];    
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; 
+			if ( [self.book hasAudiobook] ) {
+				for (UIBarButtonItem * item in self.toolbarItems)
+					if ( item.action == @selector(toggleAudio:) )
+						[item setEnabled:YES];
+			}   
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             speedReadView.delegate = self;
@@ -2181,21 +2197,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}    
 }
 
-- (void)stopAudio {			
-    if (![self.book audioRights]) 
+- (void)stopAudio {		
+	if ([self.book hasAudiobook]) 
+        [_audioBookManager stopAudio];	
+    else if ([self.book hasTTSRights]) 
         [_acapelaAudioManager stopSpeaking];
-    else if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) 
-        [_audioBookManager stopAudio];
 }
 
-- (void)pauseAudio {			
-	if (![self.book audioRights]) {
-		[_acapelaAudioManager pauseSpeaking];
-		[_acapelaAudioManager setPageChanged:NO]; // In case speaking continued through a page turn.
-	}
-	else if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+- (void)pauseAudio {		
+	if ([self.book hasAudiobook]) {
 		[_audioBookManager pauseAudio];
 		[_audioBookManager setPageChanged:NO];
+	}	
+	else if ([self.book hasTTSRights]) {
+		[_acapelaAudioManager pauseSpeaking];
+		[_acapelaAudioManager setPageChanged:NO]; // In case speaking continued through a page turn.
 	}
 }
 
@@ -2209,26 +2225,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
         self.audioPlaying = NO;  
     } else { 
-		NSLog(@"[self.book audioRights]: %i",[self.book audioRights]);
-		NSLog(@"[self.book hasManifestValueForKey:audiobookMetadataFilename]: %i",[self.book hasManifestValueForKey:@"audiobookMetadataFilename"]);
+		NSLog(@"[self.book hasTTSRights]: %i",[self.book hasTTSRights]);
+		NSLog(@"[self.book hasAudiobook]: %i",[self.book hasAudiobook]);
 		
-        if (![self.book audioRights]) {
-			if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse] count] > 0) {
-				[self prepareTTSEngine];
-				[_acapelaAudioManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
-				[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:NO];
-				self.audioPlaying = _acapelaAudioManager.startedPlaying;
-			}
-			else {
-				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Library Settings section and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
-											delegate:nil 
-								   cancelButtonTitle:@"OK"
-								   otherButtonTitles: nil];
-				return;
-			}
-        }
-        else if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+        if ([self.book hasAudiobook]) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
                 // So far this only would work for fixed view.
                 if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
@@ -2255,6 +2255,22 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
             [_audioBookManager playAudio];
             self.audioPlaying = _audioBookManager.startedPlaying;  
+        }
+        else if ([self.book hasTTSRights]) {
+			if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse] count] > 0) {
+				[self prepareTTSEngine];
+				[_acapelaAudioManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
+				[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:NO];
+				self.audioPlaying = _acapelaAudioManager.startedPlaying;
+			}
+			else {
+				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Library Settings section and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+											delegate:nil 
+								   cancelButtonTitle:@"OK"
+								   otherButtonTitles: nil];
+				return;
+			}
         }
         else {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")

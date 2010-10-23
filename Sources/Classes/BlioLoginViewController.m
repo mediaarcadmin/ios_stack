@@ -111,7 +111,7 @@
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertWelcome"];
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Welcome To Blio",@"\"Welcome To Blio\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"INTRO_WELCOME_ALERT",nil,[NSBundle mainBundle],@"Welcome to Blio. If you have an account, please enter your user email address and password. Otherwise please create an account.",@"Alert Text encouraging the end-user to either login or create a new account.")
+									 message:NSLocalizedStringWithDefaultValue(@"INTRO_WELCOME_ALERT",nil,[NSBundle mainBundle],@"If you have an account, you can log in to download books that you've purchased. Otherwise you can create an account.",@"Alert Text encouraging the end-user to either login or create a new account.")
 									delegate:nil
 						   cancelButtonTitle:@"OK"
 						   otherButtonTitles:nil];		

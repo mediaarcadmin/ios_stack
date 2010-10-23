@@ -40,12 +40,18 @@
     NSLock *layoutCacheLock;
     NSLock *hyperlinksCacheLock;
     CGPoint startTouchPoint;
-    NSTimer *delayedTouchesTimer;
+    NSTimer *delayedTouchesBeganTimer;
+	NSTimer *delayedTouchesEndedTimer;
     BOOL hyperlinkTapped;
     BOOL pageViewIsTurning;
     
     BlioTextFlowBlock *lastBlock;
     NSUInteger blockRecursionDepth;
+	
+	NSMutableArray *accessibilityElements;
+	UIAccessibilityElement *prevZone;
+	UIAccessibilityElement *nextZone;
+	UIAccessibilityElement *pageZone;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;

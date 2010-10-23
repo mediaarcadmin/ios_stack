@@ -807,7 +807,7 @@
 		}
 	}
 	else {
-		[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"hasAudiobookRights"]; 
+		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"ttsRight"]; 
 		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"]; 
 	}
 	
@@ -816,8 +816,7 @@
 	if (hasAudiobook) {
 		NSLog(@"setting Audiobook values in manifest...");
 		
-		// TODO: the following line is temporary! we're setting hasAudiobookRights to true unconditionally when an audiobook is found so that the audiobook in "There Was An Old Lady" can be used (the book is currently not encrypted).
-		// [self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobookRights"]; 
+		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"audiobook"]; 
 		
 		manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
@@ -844,7 +843,7 @@
 			[audiobookReferencesParser setDelegate:self];
 			[audiobookReferencesParser parse];
 		}
-		//			NSLog(@"[book audioRights]: %i",[book audioRights]);
+		//			NSLog(@"[book hasTTSRights]: %i",[book hasTTSRights]);
 		//			NSLog(@"[book hasManifestValueForKey:@audiobookMetadataFilename]: %i",[book hasManifestValueForKey:@"audiobookMetadataFilename"]);
 	}
 	
@@ -905,10 +904,10 @@
 		if ( [elementName isEqualToString:@"Audio"] ) {
 			NSString * attributeStringValue = [attributeDict objectForKey:@"TTSRead"];
 			if (attributeStringValue && [attributeStringValue isEqualToString:@"True"]) {
-				[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"hasAudiobookRights"]; 
+				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"ttsRight"]; 
 			}
 			else {
-				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobookRights"]; 
+				[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"ttsRight"]; 
 			}
 		}
 		else if ( [elementName isEqualToString:@"Reflow"] ) {
@@ -1543,8 +1542,6 @@
         NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
         NSString *targetFilename = [[self.cacheDirectory stringByAppendingPathComponent:@"Audiobook"] stringByStandardizingPath];
                 
-        // Identify Audiobook root files        
-        // TODO These checks (especially for the root rtx file) are not robust
         NSArray *audioFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:temporaryPath error:&anError];
         if (nil == audioFiles)
             NSLog(@"Error whilst enumerating Audiobook directory %@: %@, %@", temporaryPath, anError, [anError userInfo]);
@@ -1583,8 +1580,7 @@
 			}
 			else {
 				[self setBookValue:audioMetadataFilename forKey:self.filenameKey];
-				[self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"];
-				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobookRights"]; 
+				[self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"]; 
 				self.operationSuccess = YES;
 				self.percentageComplete = 100;
 			}

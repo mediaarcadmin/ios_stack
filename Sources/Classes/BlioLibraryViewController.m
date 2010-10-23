@@ -270,10 +270,37 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self fetchResults];
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
-        NSLog(@"Creating Mock Books");
+		
+        NSLog(@"Creating Books");  
+		
+		[self.processingDelegate enqueueBookWithTitle:@"Peter Rabbit" 
+											  authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Peter Rabbit.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"PeterRabbit" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"The Legend of Sleepy Hollow" 
+                                              authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/The Legend of Sleepy Hollow.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
 		
 #ifdef DEMO_MODE
-		
+		/*
         [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
                                               authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
 											coverPath:@"MockCovers/Three_Little_Pigs.png"
@@ -286,8 +313,36 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"Three Little Pigs"
 									  placeholderOnly:NO
 		 ];
+		*/
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Toy Story" 
+                                              authors:[NSArray arrayWithObject:@"Disney"]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Toy Story.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Toy Story"
+									  placeholderOnly:NO
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
+                                              authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/OldLady.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
 		
 #endif // DEMO_MODE
+		
 #ifdef DEV_MODE
     
         [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
@@ -302,22 +357,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-
-/* 
-		      
-        [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
-                                              authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/OldLady.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-	*/
 		
 #endif // DEV_MODE
         
@@ -1543,10 +1582,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //											[[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]]];
 		NSString * authorString = @"";
 		NSString * audioString = @"";
-		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
 			audioString = @", audiobook enabled.";
 		}
-		else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
+		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 			audioString = @", text-to-speech enabled.";
 		}
 		if (![[[self.bookView book] authorsWithStandardFormat] isEqualToString:@""]) authorString = [NSString stringWithFormat:@" by %@",[[self.bookView book] authorsWithStandardFormat]];
@@ -1613,7 +1652,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.titleLabel.text = [newBook title];
 	self.cellContentDescription = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
-//    if ([newBook audioRights]) {
+//    if (![newBook hasTTSRights]) {
 //        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
 //    }
     self.progressSlider.value = [[newBook progress] floatValue];
@@ -1687,10 +1726,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.pauseButton.hidden = YES;
 		self.progressBackgroundView.hidden = YES;
 		bookView.alpha = 1;
-		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
 		}
-		else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
+		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-tts.png"];
 		}
 		
@@ -1870,10 +1909,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (NSString *)accessibilityLabel {
 	NSString * authorString = @"";
 	NSString * audioString = @"";
-	if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+	if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
 		audioString = @", audiobook enabled.";
 	}
-	else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
+	else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 		audioString = @", text-to-speech enabled.";
 	}
 	
@@ -2014,10 +2053,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		progressView.hidden = YES;
 		[self resetAuthorText];
 		self.selectionStyle = UITableViewCellSelectionStyleGray;
-		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
 		}
-		else if (![self.book audioRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
+		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-tts.png"];
 		}
 	}
@@ -2063,7 +2102,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 */
 -(void) resetAuthorText {
     self.authorLabel.text = [[self.book authorsWithStandardFormat] uppercaseString];
-//    if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+//    if (![self.book hasTTSRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
 //        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
 //    }	
 }
