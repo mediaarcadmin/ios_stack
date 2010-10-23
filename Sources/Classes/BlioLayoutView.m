@@ -1955,15 +1955,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			if (self.pageTurningView.twoSidedPages) {
 				if ((self.pageTurningView.leftPageIndex != pageIndex) && (self.pageTurningView.rightPageIndex != pageIndex)) {
 					// TODO: Add a way for these to be combined
-					[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
 					[self goToPageNumber:(pageIndex + 1) animated:YES];
+					[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
 					return;
 				}
 			} else {
 				if (self.pageTurningView.rightPageIndex != pageIndex) {
 					// TODO: Add a way for these to be combined
-					[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
 					[self goToPageNumber:(pageIndex + 1) animated:YES];
+					[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
 					return;
 				}
 			}
@@ -1971,8 +1971,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	
 	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
 
-	if ((roundf(self.pageTurningView.translation.x) == roundf(currentTranslation.x)) && (roundf(self.pageTurningView.translation.y) == roundf(currentTranslation.y))) {
-		if (self.pageTurningView.zoomFactor == currentZoom) {
+	if ((roundf(self.pageTurningView.animatedTranslation.x) == roundf(currentTranslation.x)) && (roundf(self.pageTurningView.animatedTranslation.y) == roundf(currentTranslation.y))) {
+		if (self.pageTurningView.animatedZoomFactor == currentZoom) {
 			if (self.pageNumber == currentPage) {
 				if (nil != context) {
 					NSInvocation *nextInvocation = (NSInvocation *)context;
