@@ -19,6 +19,9 @@
 	if (self)
 	{
 		self.title = NSLocalizedString(@"Web Tools",@"\"Web Tools\" view controller title.");
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			self.contentSizeForViewInPopover = CGSizeMake(320, 200);
+		}		
 	}
 	return self;
 }

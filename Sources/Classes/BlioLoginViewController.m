@@ -244,11 +244,14 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
-	
+	NSLog(@"emailField isFirstResponder: %i",[emailField isFirstResponder]);
+	NSLog(@"passwordField isFirstResponder: %i",[passwordField isFirstResponder]);
 	if (textField == emailField) 
 		[passwordField becomeFirstResponder];
 	else { 
+		NSLog(@"isFirstResponder: %i",[textField isFirstResponder]);
 		[textField resignFirstResponder];
+		NSLog(@"isFirstResponder: %i",[textField isFirstResponder]);
 		[self loginButtonPressed:textField];
 	}
 	return NO;

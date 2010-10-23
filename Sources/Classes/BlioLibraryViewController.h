@@ -83,7 +83,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @end
 
-@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, BlioCoverViewDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
+@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, BlioCoverViewDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
     BlioLibraryBookView *_currentBookView;
     UIImageView *_currentPoppedBookCover;
     BOOL _bookCoverPopped;

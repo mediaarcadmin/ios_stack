@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BlioDrmSessionManager.h"
 
-@interface BlioPaidBooksSettingsController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface BlioPaidBooksSettingsController : UITableViewController <UITableViewDelegate, UITableViewDataSource> {
 	UITableView *pbTableView;
 	UIActivityIndicatorView *activityIndicator;
 	BOOL registrationOn;

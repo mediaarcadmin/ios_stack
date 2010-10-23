@@ -20,11 +20,9 @@
 - (BlioAppSettingsController*)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		self.title = @"Settings";
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
-#endif
     }
     return self;
 }
@@ -33,14 +31,13 @@
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		[self.tableView reloadData];
-		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:4]];
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
 	}
 }
 
 - (void)loadView {
 	[super loadView];
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
 		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
 												   initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
@@ -49,15 +46,6 @@
 												   action:@selector(dismissSettingsView:)]
 												  autorelease];		
 	}
-#else
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
-											   initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
-											   style:UIBarButtonItemStyleDone 
-											   target:self
-											   action:@selector(dismissSettingsView:)]
-											  autorelease];
-#endif
-	
 }
 
 - (void) dismissSettingsView: (id) sender {
@@ -72,6 +60,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	[self.tableView reloadData];
+	
+	CGFloat viewHeight = self.tableView.contentSize.height;
+	NSLog(@"viewHeight: %f",viewHeight);
+	if (viewHeight > 600) viewHeight = 600;
+	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);
+	
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -116,12 +110,6 @@
 			[cell.textLabel setText:@"Web Tools"];
 			break;
 		case 2:
-			[cell.textLabel setText:@"Help"];
-			break;
-		case 3:
-			[cell.textLabel setText:@"About"];
-			break;
-		case 4:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 				cell.textLabel.text = [NSString stringWithFormat:@"My Account: %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
 				//			 cell.textLabel.text = [NSString stringWithFormat:@"Logged in as %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
@@ -132,6 +120,12 @@
 //				cell.textLabel.text = @"Login";
 				cell.textLabel.text = @"My Account";
 			}
+			break;
+		case 3:
+			[cell.textLabel setText:@"Help"];
+			break;
+		case 4:
+			[cell.textLabel setText:@"About"];
 			break;
 		default:
 			break;
@@ -159,16 +153,6 @@
 			[webToolController release];
 			break;
 		case 2:
-			helpController = [[BlioHelpSettingsController alloc] init];
-			[self.navigationController pushViewController:helpController animated:YES];
-			[helpController release];
-			break;
-		case 3:
-			aboutController = [[BlioAboutSettingsController alloc] init];
-			[self.navigationController pushViewController:aboutController animated:YES];
-			[aboutController release];
-			break;
-		case 4:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 				myAccountController = [[BlioMyAccountViewController alloc] init];
 				[self.navigationController pushViewController:myAccountController animated:YES];
@@ -179,6 +163,16 @@
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			}
+			break;
+		case 3:
+			helpController = [[BlioHelpSettingsController alloc] init];
+			[self.navigationController pushViewController:helpController animated:YES];
+			[helpController release];
+			break;
+		case 4:
+			aboutController = [[BlioAboutSettingsController alloc] init];
+			[self.navigationController pushViewController:aboutController animated:YES];
+			[aboutController release];
 			break;
 		default:
 			break;

@@ -54,6 +54,16 @@
 	[activityIndicator setCenter:CGPointMake(300.0f, 20.0f)];
 	[self.navigationController.navigationBar addSubview:activityIndicator];
 }
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+	[self.tableView reloadData];
+	
+	CGFloat viewHeight = self.tableView.contentSize.height;
+	NSLog(@"viewHeight: %f",viewHeight);
+	if (viewHeight > 600) viewHeight = 600;
+	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);	
+	
+}
 
 /*
 - (void)viewWillDisappear:(BOOL)animated {

@@ -483,10 +483,15 @@ typedef enum {
         BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
         pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
     }
-    
+    NSLog(@"pageNum: %i",pageNum);
     NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
-    
-    mainLabel.text = [NSString stringWithFormat:@"p.%@", displayPage];
+    NSLog(@"[self.bookView contentsDataSource]: %@",[self.bookView contentsDataSource]);
+	NSLog(@"displayPage: %@",displayPage);
+	if (displayPage) {
+		mainLabel.text = [NSString stringWithFormat:@"p.%@", displayPage];
+	}
+	else if (pageNum <= 1) mainLabel.text = @"Cover";
+	else mainLabel.text = @"Undefined Bookmark";
     secondLabel.text = [currentBookmark valueForKey:@"bookmarkText"];
 	
     return cell;
