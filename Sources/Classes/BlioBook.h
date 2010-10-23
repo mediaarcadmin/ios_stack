@@ -98,13 +98,14 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 @property (nonatomic, retain) NSNumber *reflowRight;
 
 // the following two attributes are used to quickly calculate the number of TTS-compatible books
-@property (nonatomic, retain) NSNumber *hasAudiobook;
-@property (nonatomic, retain) NSNumber *hasTTSRightsNum;
+@property (nonatomic, retain) NSNumber *audiobook;
+@property (nonatomic, retain) NSNumber *ttsRight;
 
 // Legacy core data attribute-backed dynamic properties TODO: remove these
 @property (nonatomic, retain) NSString *audiobookFilename;
 @property (nonatomic, retain) NSString *timingIndicesFilename;
 
+@property (nonatomic, assign, readonly) BOOL hasAudiobook;
 @property (nonatomic, assign, readonly) BOOL hasTTSRights;
 @property (nonatomic, assign, readonly) BOOL reflowEnabled;
 @property (nonatomic, assign, readonly) BOOL fixedViewEnabled;

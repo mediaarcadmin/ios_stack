@@ -30,11 +30,9 @@
 	if (self)
 	{
 		self.title = NSLocalizedString(@"Reading Voice",@"\"Reading Voice\" view controller title.");
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
-#endif
 	}
 	return self;
 }
@@ -70,7 +68,7 @@
 	
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
- 	[request setPredicate:[NSPredicate predicateWithFormat:@"hasAudiobook == %@ && hasTTSRightsNum == %@ && processingState == %@", [NSNumber numberWithBool:NO], [NSNumber numberWithBool:YES], [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"audiobook == %@ && ttsRight == %@ && processingState == %@", [NSNumber numberWithBool:NO], [NSNumber numberWithBool:YES], [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
 	[request setSortDescriptors:sorters];
  
 	 self.ttsFetchedResultsController = [[[NSFetchedResultsController alloc]
@@ -119,7 +117,14 @@
 -(void)viewDidUnload {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioVoiceListRefreshedNotification object:nil];
 }
-
+-(void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	[self.tableView reloadData];
+	CGFloat viewHeight = self.tableView.contentSize.height;
+	NSLog(@"viewHeight: %f",viewHeight);
+	if (viewHeight > 600) viewHeight = 600;
+	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);	
+}
 - (void)viewWillDisappear:(BOOL)animated {
 	BlioAcapelaAudioManager * tts = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
 	if (tts != nil && [tts isSpeaking] )
@@ -402,7 +407,7 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
 	if (section == 0) return ([[self ttsBooksInLibraryDisclosure] sizeWithFont:[UIFont boldSystemFontOfSize:13] constrainedToSize:CGSizeMake(self.view.bounds.size.width - kLeftMargin - kRightMargin, self.view.bounds.size.height) lineBreakMode:UILineBreakModeWordWrap]).height + 15;
-	if (section == 1) return self.footerHeight;
+	if (section == 1) return self.footerHeight + 10;
 	return 0;
 }
 

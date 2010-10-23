@@ -171,12 +171,13 @@
             [manifestEntry setValue:textFlowPath forKey:BlioManifestEntryPathKey];
             [aBook setManifestValue:manifestEntry forKey:BlioManifestTextFlowKey];
         }
-        if (audiobookPath != nil) {
+		// Obsolete: audiobooks are inside the book.
+		if (audiobookPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
             [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
             [manifestEntry setValue:audiobookPath forKey:BlioManifestEntryPathKey];
             [aBook setManifestValue:manifestEntry forKey:BlioManifestAudiobookKey];
-			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobook"];
+			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"audiobook"];
         }
 		
 		if ([aBook valueForKey:@"uuid"] == nil)

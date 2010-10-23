@@ -270,7 +270,34 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self fetchResults];
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
-        NSLog(@"Creating Mock Books");
+		
+        NSLog(@"Creating Books");  
+		
+		[self.processingDelegate enqueueBookWithTitle:@"Peter Rabbit" 
+											  authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Peter Rabbit.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"PeterRabbit" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"The Legend of Sleepy Hollow" 
+                                              authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/The Legend of Sleepy Hollow.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
 		
 #ifdef DEMO_MODE
 		/*
@@ -314,34 +341,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-		return;
 #endif // DEMO_MODE
-		
-        [self.processingDelegate enqueueBookWithTitle:@"Peter Rabbit" 
-                                              authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Peter Rabbit.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"PeterRabbit" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"The Legend of Sleepy Hollow" 
-                                              authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/The Legend of Sleepy Hollow.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
 		
 #ifdef DEV_MODE
     
@@ -1130,59 +1130,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)showSettings:(id)sender {    
     BlioAppSettingsController *appSettingsController = [[BlioAppSettingsController alloc] init];
+	[appSettingsController.tableView reloadData];
 	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:appSettingsController];
-    [appSettingsController release];
+    settingsController.delegate = self;
+	[appSettingsController release];
     
-	// TEMPORARY: test code, will be moved
-    /*
-    // Fetch all paid books
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-    [request setEntity:entityDescription];
-    
-    NSError *error;
-    NSArray *paidBooks = [self.managedObjectContext executeFetchRequest:request error:&error];
-    NSManagedObjectID *virginID = nil;
-    NSManagedObjectID *rabbitID = nil;
 
-    // Iterate through the paid books getting their ids
-    for (NSManagedObject *book in paidBooks) {
-        if ([[book valueForKey:@"title"] isEqualToString:@"Virgin Islands"])
-            virginID = book.objectID;
-        else if ([[book valueForKey:@"title"] isEqualToString:@"The Tale of Peter Rabbit"])
-            rabbitID = book.objectID;
-    }
-    
-    BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
-    NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
-    success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
-    NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
-    
-    BlioXPSProvider *virginXPS = [[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:virginID];
-//    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
-
-    NSData *decryptedData;
-
-
-    // Decrypt a textflow file for Virgin Islands.
-    decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
-    NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-    
-    // Decrypt a fixed page for Virgin Islands.
-    decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
-    NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-	
-    // Decrypt a fixed page for Virgin Islands by requesting the dummy page
-    decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
-    NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-    
-    [[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:virginID];
-    //[[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:rabbitID];
-    
-	//	
-	// END temporary code
-	*/
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		if (self.settingsPopoverController && self.settingsPopoverController.popoverVisible == YES) {
 			[self.settingsPopoverController dismissPopoverAnimated:YES];
@@ -1190,30 +1143,37 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 		else {
 			self.settingsPopoverController = [[[NSClassFromString(@"UIPopoverController") alloc] initWithContentViewController:settingsController] autorelease];
-			self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 600);
+//			self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 600);
 			self.settingsPopoverController.delegate = self;
 			[self.settingsPopoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 		}
 	}
 	else {
 		[self presentModalViewController:settingsController animated:YES];
-	}	
-#else
-	[self presentModalViewController:settingsController animated:YES];
-#endif
-	
+	}		
     [settingsController release];    
+}
+#pragma mark - UINavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
+	CGSize viewSize = viewController.contentSizeForViewInPopover;
+	if ([viewController.view isKindOfClass:[UIScrollView class]]) {
+		[((UITableViewController*)viewController).tableView reloadData];
+		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
+		viewSize.height = [(UIScrollView*)viewController.view contentSize].height;
+		if (viewSize.height > 600) viewSize.height = 600;
+	}
+	self.settingsPopoverController.popoverContentSize = viewSize;
 }
 
 #pragma mark - UIPopoverControllerDelegate
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	// N.B. - from Apple's documentation: The popover controller does not call this method in response to programmatic calls to the dismissPopoverAnimated: method.
 	self.settingsPopoverController = nil;
 }
 
-#endif
 
 #pragma mark - UIActionSheetDelegate
 

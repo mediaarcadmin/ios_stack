@@ -35,8 +35,8 @@
 @dynamic sourceSpecificID;
 @dynamic layoutPageEquivalentCount;
 @dynamic libraryPosition;
-@dynamic hasAudiobook;
-@dynamic hasTTSRightsNum;
+@dynamic audiobook;
+@dynamic ttsRight;
 @dynamic reflowRight;
 @dynamic audiobookFilename;
 @dynamic timingIndicesFilename;
@@ -169,9 +169,12 @@
     return bookPath;
 }
 
+- (BOOL)hasAudiobook {
+    return [[self valueForKey:@"audiobook"] boolValue];
+}
 - (BOOL)hasTTSRights {
 //    return NO;//[[self valueForKey:@"hasTTSRightsNum"] boolValue];
-    return [[self valueForKey:@"hasTTSRightsNum"] boolValue];
+    return [[self valueForKey:@"ttsRight"] boolValue];
 }
 - (BOOL)reflowEnabled {
     return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
