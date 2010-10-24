@@ -9,6 +9,7 @@
 #import "BlioAppSettingsController.h"
 #import "BlioAudioSettingsController.h"
 #import "BlioWebToolSettingsController.h"
+#import "BlioReadingNavigationSettingsController.h"
 #import "BlioAboutSettingsController.h"
 #import "BlioHelpSettingsController.h"
 #import "BlioMyAccountViewController.h"
@@ -79,15 +80,30 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 5;
+    return 4;
 }
 
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+	if (section == 0) 
+		return 3;
+	return 1;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+	NSString *title = nil;
+	switch (section)
+	{
+		case 0:
+		{
+			title = NSLocalizedString(@"Reading",@"\"Reading settings\" table header in Application Settings View");
+			break;
+		}
+	}
+	return title;
+}
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -101,15 +117,23 @@
     
 	cell.textLabel.textAlignment = UITextAlignmentLeft;
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
+				
 	switch ( [indexPath section] ) {
 		case 0:
-			[cell.textLabel setText:@"Reading Voice"];
+			switch ([indexPath row])
+			{
+				case 0:
+					[cell.textLabel setText:@"Voice"];
+					break;
+				case 1:
+					[cell.textLabel setText:@"Navigation"];
+					break;
+				case 2:
+					[cell.textLabel setText:@"Web Tools"];
+					break;
+			}
 			break;
 		case 1:
-			[cell.textLabel setText:@"Web Tools"];
-			break;
-		case 2:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 				cell.textLabel.text = [NSString stringWithFormat:@"My Account: %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
 				//			 cell.textLabel.text = [NSString stringWithFormat:@"Logged in as %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
@@ -121,10 +145,10 @@
 				cell.textLabel.text = @"My Account";
 			}
 			break;
-		case 3:
+		case 2:
 			[cell.textLabel setText:@"Help"];
 			break;
-		case 4:
+		case 3:
 			[cell.textLabel setText:@"About"];
 			break;
 		default:
@@ -138,21 +162,32 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	BlioAudioSettingsController *audioController;
 	BlioWebToolSettingsController *webToolController;
+	BlioReadingNavigationSettingsController *readingnavController;
 	BlioHelpSettingsController *helpController;
 	BlioAboutSettingsController *aboutController;
 	BlioMyAccountViewController *myAccountController;
 	switch ( [indexPath section] ) {
 		case 0:
-			audioController = [[BlioAudioSettingsController alloc] initWithStyle:UITableViewStyleGrouped];
-			[self.navigationController pushViewController:audioController animated:YES];
-			[audioController release];
+			switch (indexPath.row)
+			{
+				case 0:
+					audioController = [[BlioAudioSettingsController alloc] initWithStyle:UITableViewStyleGrouped];
+					[self.navigationController pushViewController:audioController animated:YES];
+					[audioController release];
+					break;
+				case 1:
+					readingnavController = [[BlioReadingNavigationSettingsController alloc] init];
+					[self.navigationController pushViewController:readingnavController animated:YES];
+					[readingnavController release];
+					break;
+				case 2:
+					webToolController = [[BlioWebToolSettingsController alloc] init];
+					[self.navigationController pushViewController:webToolController animated:YES];
+					[webToolController release];
+					break;
+			}
 			break;
 		case 1:
-			webToolController = [[BlioWebToolSettingsController alloc] init];
-			[self.navigationController pushViewController:webToolController animated:YES];
-			[webToolController release];
-			break;
-		case 2:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 				myAccountController = [[BlioMyAccountViewController alloc] init];
 				[self.navigationController pushViewController:myAccountController animated:YES];
@@ -164,12 +199,12 @@
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			}
 			break;
-		case 3:
+		case 2:
 			helpController = [[BlioHelpSettingsController alloc] init];
 			[self.navigationController pushViewController:helpController animated:YES];
 			[helpController release];
 			break;
-		case 4:
+		case 3:
 			aboutController = [[BlioAboutSettingsController alloc] init];
 			[self.navigationController pushViewController:aboutController animated:YES];
 			[aboutController release];
