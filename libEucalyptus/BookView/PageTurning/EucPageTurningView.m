@@ -30,11 +30,14 @@
 @property (nonatomic, assign, readonly) CATransform3D zoomMatrix;
 @property (nonatomic, assign) CGRect leftPageFrame;
 @property (nonatomic, assign) CGRect rightPageFrame;
+@property (nonatomic, assign, getter=isAnimatingPosition) BOOL animatingPosition;
+@property (nonatomic, assign, getter=isAnimatingTurn) BOOL animatingTurn;
 
 - (void)_calculateVertexNormals;    
 //- (void)_accumulateForces;  // Not used - see comments around implementation.
 - (void)_verlet;
 - (BOOL)_satisfyConstraints;
+- (BOOL)_satisfyPositioningConstraints;
 - (void)_setupConstraints;
 - (void)_cacheNonVisiblePages;
 - (CGFloat)_tapTurnMarginForView:(UIView *)view;
@@ -45,6 +48,8 @@
 - (void)_retextureForPanAndZoom;
 - (void)_scheduleRetextureForPanAndZoom;
 - (void)_cancelRetextureForPanAndZoom;
+
+- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
 
 @end
 
@@ -76,7 +81,10 @@
 @synthesize lightPosition = _lightPosition;
 
 @synthesize pageAspectRatio = _pageAspectRatio;
-
+@synthesize animatedZoomFactor = _modelZoomFactor;
+@synthesize animatedTranslation = _modelTranslation;
+@synthesize animatingPosition = _animatingPosition;
+@synthesize animatingTurn = _animatingTurn;
 
 - (UIColor *)specularColor
 {
@@ -114,10 +122,10 @@
     [self setNeedsLayout];
 }
 
-- (void)setAnimating:(BOOL)animating
-{
+- (void)setAnimatingTurn:(BOOL)animating
+{	
     if(animating) {
-        if(!self.isAnimating) {
+        if(!self.isAnimatingTurn) {
             // Curtail background tasks to allow smooth animation.
             if([_delegate respondsToSelector:@selector(pageTurningViewWillBeginAnimating:)]) {
                 [_delegate pageTurningViewWillBeginAnimating:self];   
@@ -126,7 +134,7 @@
             super.animating = YES;
         }
     } else {
-        if(self.isAnimating) {
+        if(self.isAnimatingTurn) {
             // Allow background tasks again.
             [THBackgroundProcessingMediator allowBackgroundProcessing];
             super.animating = NO;
@@ -135,6 +143,32 @@
             }        
         }
     }
+		_animatingTurn = animating;
+}
+
+- (void)setAnimatingPosition:(BOOL)animating
+{
+	
+    if(animating) {
+        if(!self.isAnimatingPosition) {
+            // Curtail background tasks to allow smooth animation.
+            if([_delegate respondsToSelector:@selector(pageTurningViewWillBeginAnimating:)]) {
+                [_delegate pageTurningViewWillBeginAnimating:self];   
+            }
+            [THBackgroundProcessingMediator curtailBackgroundProcessing];
+			super.animating = YES;
+        }
+    } else {
+        if(self.isAnimatingPosition) {
+            // Allow background tasks again.
+            [THBackgroundProcessingMediator allowBackgroundProcessing];
+			super.animating = NO;
+            if([_delegate respondsToSelector:@selector(pageTurningViewDidEndAnimation:)]) {
+                [_delegate pageTurningViewDidEndAnimation:self];   
+            }        
+        }
+    }
+	_animatingPosition = animating;
 }
 
 static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsizei length, const void *pvrtcData)
@@ -158,6 +192,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _maxZoom = 14.0f;
     _zoomFactor = 1.0f;
     _zoomMatrix = CATransform3DIdentity;
+	_animationIndex = -1;
     
     
     EAGLContext *eaglContext = self.eaglContext;
@@ -916,7 +951,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         _automaticTurnPercentage = percentage;
         
-        self.animating = YES;
+        self.animatingTurn = YES;
     }
 }
 
@@ -1148,7 +1183,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             
             [self waitForAllPageImagesToBeAvailable];
 		
-            self.animating = YES;
+            self.animatingTurn = YES;
         } else {
             [self _setupBitmapPage:rightPageIndex forInternalPageOffset:3];
             if(_twoSidedPages) {
@@ -1335,16 +1370,26 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (void)drawView 
 {        
     [super drawView];
-        
-    BOOL animating = self.isAnimating;
-    
-    BOOL shouldStopAnimating = !animating;
-    if(animating) {
+	        
+    BOOL animatingTurn = self.isAnimatingTurn;
+    BOOL animatingPosition = self.isAnimatingPosition;
+	
+    BOOL shouldStopAnimating = !(animatingTurn || animatingPosition);
+	BOOL shouldStopAnimatingPosition = !animatingPosition;
+	BOOL shouldStopAnimatingTurn = !animatingTurn;
+	
+    if(animatingTurn) {
         //[self _accumulateForces]; // Not used - see comments around implementation.
         [self _verlet];
-        shouldStopAnimating = [self _satisfyConstraints];
+        shouldStopAnimatingTurn = [self _satisfyConstraints];
         [self _calculateVertexNormals];
-    } 
+    }
+	
+	if(animatingPosition) {
+		shouldStopAnimatingPosition = [self _satisfyPositioningConstraints];
+    }
+	
+	shouldStopAnimating = (shouldStopAnimatingPosition && shouldStopAnimatingTurn);
     
     EAGLContext *eaglContext = self.eaglContext;
     [EAGLContext setCurrentContext:eaglContext];
@@ -1471,7 +1516,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     
     if(_leftPageVisible) {
-        NSInteger leftFlatPageIndex = _rightFlatPageIndex - (shouldStopAnimating ? 1 : 3);
+        NSInteger leftFlatPageIndex = _rightFlatPageIndex - (shouldStopAnimatingTurn ? 1 : 3);
         if(leftFlatPageIndex >= 0 && _twoSidedPages) {
             if(_pageContentsInformation[leftFlatPageIndex].texture) {
                 CATransform3D oldModelViewMatrix = modelViewMatrix;
@@ -1532,13 +1577,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
     }
     
-    if(!shouldStopAnimating) {
+    if(!shouldStopAnimatingTurn) {
         // If we're animating, we have a curved page to draw on top.
         
         // Clear the depth buffer so that this page wins if it has coordinates 
         // that conincide with the flat page.
         glClear(GL_DEPTH_BUFFER_BIT);
-                        
+		                        
         const THVec3 *pageVertices, *pageVertexNormals;        
         pageVertices = (THVec3 *)_pageVertices;
         pageVertexNormals = (THVec3 *)_pageVertexNormals;
@@ -1694,7 +1739,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _isTurningAutomatically = NO;
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }
-        self.animating = NO;
+        self.animatingTurn = NO;
+		self.animatingPosition = NO;
     }
 }
 
@@ -1803,7 +1849,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     if(first) {
         _scrollStartTranslation = _scrollTranslation;
-        if(!self.isAnimating) {
+        if(!self.isAnimatingTurn) {
             _touchStartPoint = pageTouchPoint;
             _isTurning = 0; 
         } else {
@@ -1837,8 +1883,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             [self _prepareForTurnForwards:YES];
             oldViewportTouchX = pageTouchPoint.x;
         }
-        if(_isTurning != 0 && !self.isAnimating) {
-            self.animating = YES;
+        if(_isTurning != 0 && !self.isAnimatingTurn) {
+            self.animatingTurn = YES;
         }
     } else if(translationAfterScroll.x > 0.000001f && _isTurning <= 0) {
         pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? (-_rightPageRect.size.width + translationAfterScroll.x) : translationAfterScroll.x,
@@ -1847,11 +1893,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             [self _prepareForTurnForwards:NO];
             oldViewportTouchX = pageTouchPoint.x;
         }
-        if(_isTurning != 0 && !self.isAnimating) {
-            self.animating = YES;
+        if(_isTurning != 0 && !self.isAnimatingTurn) {
+            self.animatingTurn = YES;
         }        
     } else {
-        if(_isTurning == 1 && self.isAnimating) {
+        if(_isTurning == 1 && self.isAnimatingTurn) {
             pageTouchPoint = CGPointMake(_stablePageVertices[_touchRow][X_VERTEX_COUNT - 1].x,
                                          translationAfterScroll.y);
         } else {
@@ -2099,7 +2145,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
 
     if(!_dragUnderway && _touch && [touches containsObject:_touch]) {
-        if(!self.animating) {
+        if(!self.animatingTurn) {
             BOOL turning = NO;
             
             CGPoint point = [_touch locationInView:self];
@@ -2348,6 +2394,24 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 }
 
 #define NUM_ITERATIONS 40
+
+- (BOOL)_satisfyPositioningConstraints
+{
+    BOOL shouldStopAnimating = YES;
+	
+	if (_animationIndex >= 0) {
+		[self setTranslation:CGPointMake(_presentationTranslationX[_animationIndex], _presentationTranslationY[_animationIndex]) zoomFactor:_presentationZoomFactor[_animationIndex]];
+		_animationIndex++;
+		shouldStopAnimating = NO;
+	}
+	
+	if (_animationIndex >= POSITIONING_ANIMATION_ITERATIONS) {
+		_animationIndex = -1;
+		shouldStopAnimating = YES;
+	}
+	
+	return shouldStopAnimating;	
+}
 
 - (BOOL)_satisfyConstraints
 {
@@ -2659,11 +2723,39 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return translation;
 }
 
-- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated
+- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
-    translation.x /= _viewportToBoundsPointsTransform.a;
-    translation.y /= _viewportToBoundsPointsTransform.d;
-    [self _setZoomMatrixFromTranslation:translation zoomFactor:zoomFactor];
+	translation.x /= _viewportToBoundsPointsTransform.a;
+	translation.y /= _viewportToBoundsPointsTransform.d;
+	[self _setZoomMatrixFromTranslation:translation zoomFactor:zoomFactor];
+}
+
+- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated
+{	
+	CGFloat currentZoom = _zoomFactor;
+	CGPoint currentTranslation = self.translation;
+	
+	// Setting the translation so we can check what the final positions will be (by interrogating the _animatedZoomFactor and _animatedTranslation)
+	[self setTranslation:translation zoomFactor:zoomFactor];
+	_modelZoomFactor = _zoomFactor;
+	_modelTranslation = self.translation;
+	[self setTranslation:currentTranslation zoomFactor:currentZoom];
+		
+	CGFloat zoomDelta = (_modelZoomFactor - _zoomFactor) / POSITIONING_ANIMATION_ITERATIONS;
+	CGFloat translationXDelta = (_modelTranslation.x - currentTranslation.x) / POSITIONING_ANIMATION_ITERATIONS; 
+	CGFloat translationYDelta = (_modelTranslation.y - currentTranslation.y) / POSITIONING_ANIMATION_ITERATIONS; 
+
+	for (int i = 0; i < POSITIONING_ANIMATION_ITERATIONS; i++) {
+		_presentationZoomFactor[i] = currentZoom + (zoomDelta * (i+1));
+		_presentationTranslationX[i] = currentTranslation.x + (translationXDelta * (i+1));
+		_presentationTranslationY[i] = currentTranslation.y + (translationYDelta * (i+1));
+	}
+
+	_animationIndex = 0;
+		
+	self.animatingPosition = YES;
+	
+	[self setNeedsDraw];
 }
 
 - (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor

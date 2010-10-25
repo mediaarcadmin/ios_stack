@@ -23,6 +23,7 @@
 #define Y_VERTEX_COUNT 16
 #define TRIANGLE_STRIP_COUNT ((Y_VERTEX_COUNT - 1) * (X_VERTEX_COUNT * 2 + 3))
 #define CONSTRAINT_COUNT (((X_VERTEX_COUNT * 2 - 1) + (X_VERTEX_COUNT - 1)) * (Y_VERTEX_COUNT - 1) + (X_VERTEX_COUNT - 1)  + X_VERTEX_COUNT + Y_VERTEX_COUNT)
+#define POSITIONING_ANIMATION_ITERATIONS 6
 
 typedef struct {
     GLubyte particleAIndex;
@@ -112,7 +113,17 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     
     CATransform3D _zoomMatrix;
     CATransform3D _scrollStartZoomMatrix;
-    
+	
+	NSInteger _animationIndex;
+	CGFloat _presentationZoomFactor[POSITIONING_ANIMATION_ITERATIONS];
+	CGFloat _presentationTranslationX[POSITIONING_ANIMATION_ITERATIONS];
+	CGFloat _presentationTranslationY[POSITIONING_ANIMATION_ITERATIONS];
+	CGFloat _modelZoomFactor;
+	CGPoint _modelTranslation;
+	
+	BOOL _animatingPosition;
+    BOOL _animatingTurn;
+	
     NSInteger _isTurning;
     
     BOOL _vibrated;
@@ -197,6 +208,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 @property (nonatomic, assign) CGFloat maxZoomFactor; // default = 14.0f
 @property (nonatomic, assign, readonly) CGFloat zoomFactor;
 @property (nonatomic, assign, readonly) CGPoint translation;
+@property (nonatomic, assign, readonly) CGFloat animatedZoomFactor;
+@property (nonatomic, assign, readonly) CGPoint animatedTranslation;
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated;
 
 @property (nonatomic, assign) NSUInteger zoomedTextureWidth; // default = 1024
