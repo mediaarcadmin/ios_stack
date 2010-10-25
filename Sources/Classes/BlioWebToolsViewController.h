@@ -31,6 +31,7 @@ typedef enum  {
 @interface BlioWebToolsViewController : UINavigationController<UIWebViewDelegate> {
     BOOL statusBarHiddenOnEntry;
 	NSArray* urls;
+	UIActivityIndicatorView * activityIndicatorView;
 }
 
 - (id)initWithURL:(NSURL *)url;
