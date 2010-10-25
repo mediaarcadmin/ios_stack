@@ -30,8 +30,8 @@
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
-@property (nonatomic, retain) UIImage *pageTexture;
-@property (nonatomic, assign) BOOL pageTextureIsDark;
+//@property (nonatomic, retain) UIImage *pageTexture;
+//@property (nonatomic, assign) BOOL pageTextureIsDark;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) BlioBookmarkRange *temporaryHighlightRange;
 @property (nonatomic, retain) NSTimer *delayedTouchesBeganTimer;
@@ -97,7 +97,7 @@
 	self.temporaryHighlightRange = nil;
     
     self.pageTurningView = nil;
-    self.pageTexture = nil;
+    //self.pageTexture = nil;
         
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
@@ -218,10 +218,11 @@
         [self addSubview:aPageTurningView];
         
         self.pageTurningView = aPageTurningView;
+		//[aPageTurningView addObserver:self forKeyPath:@"retainCount" options:0 context:NULL];
         [aPageTurningView release];
         
-        [aPageTurningView addObserver:self forKeyPath:@"leftPageFrame" options:0 context:NULL];
-        [aPageTurningView addObserver:self forKeyPath:@"rightPageFrame" options:0 context:NULL];        
+        //[aPageTurningView addObserver:self forKeyPath:@"leftPageFrame" options:0 context:NULL];
+        //[aPageTurningView addObserver:self forKeyPath:@"rightPageFrame" options:0 context:NULL];        
         
         [aPageTurningView turnToPageAtIndex:self.pageNumber - 1 animated:NO];
     }
@@ -243,9 +244,10 @@
         if(aPageTurningView) {
             aPageTurningView.bitmapDataSource = nil;
             aPageTurningView.delegate = nil;
-            [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
-            [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];
+           // [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
+           // [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];
             [aPageTurningView removeFromSuperview];
+			[aPageTurningView teardown];
             self.pageTurningView = nil;
         }
     }
@@ -334,12 +336,13 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDark
 {    
-    if (self.pageTexture != aPageTexture || self.pageTextureIsDark != isDark) {
-        self.pageTexture = aPageTexture;
-        self.pageTextureIsDark = isDark;
+    //if (self.pageTexture != aPageTexture || self.pageTextureIsDark != isDark) {
+        //self.pageTexture = aPageTexture;
+        //self.pageTextureIsDark = isDark;
         [self.pageTurningView setPageTexture:aPageTexture isDark:isDark];
         [self.pageTurningView setNeedsDraw];
-    }
+		//self.pageTexture = nil;
+    //}
 }
 
 - (BOOL)wantsTouchesSniffed {
@@ -817,18 +820,18 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if(object == self.selector &&
        [keyPath isEqualToString:@"tracking"]) {
         self.pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
-    } else if(object == self.pageTurningView) {
-        if([keyPath isEqualToString:@"leftPageFrame"]) {
-            //CGRect frame = ((EucPageTurningView *)object).leftPageFrame;
-            //NSLog(@"Left page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
-        } else if([keyPath isEqualToString:@"rightPageFrame"]) {
-            //CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
-            //NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
-            
-            // Would be nice, but it's /really/ slow.
-            //[self.selector redisplaySelectedRange];
-        }
-    }
+    } //else if(object == self.pageTurningView) {
+//        if([keyPath isEqualToString:@"leftPageFrame"]) {
+//            //CGRect frame = ((EucPageTurningView *)object).leftPageFrame;
+//            //NSLog(@"Left page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+//        } else if([keyPath isEqualToString:@"rightPageFrame"]) {
+//            //CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
+//            //NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
+//            
+//            // Would be nice, but it's /really/ slow.
+//            //[self.selector redisplaySelectedRange];
+//        }
+//    }
 }
 
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
