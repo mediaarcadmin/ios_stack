@@ -15,8 +15,6 @@
 
 @interface THBaseEAGLView ()
 
-@property (nonatomic, assign) id animationTimer;
-
 - (BOOL)_createFramebuffer;
 - (void)_destroyFramebuffer;
 

@@ -33,6 +33,7 @@
 
 @property (nonatomic, assign, getter=isAnimating) BOOL animating;
 @property (nonatomic, assign) NSTimeInterval animationInterval;
+@property (nonatomic, assign) id animationTimer;
 
 - (void)setNeedsDraw;
 - (void)drawView;

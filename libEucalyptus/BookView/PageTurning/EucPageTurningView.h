@@ -234,6 +234,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 - (void)refreshHighlightsForPageAtIndex:(NSUInteger)index;
 
 - (void)waitForAllPageImagesToBeAvailable;
+- (void)teardown;
 
 #pragma mark Light-related properties.
 

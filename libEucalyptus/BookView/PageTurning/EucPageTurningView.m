@@ -375,6 +375,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return self;
 }
 
+- (void)teardown {
+	// Needed to do this explicitly because the CADisplayLink was causing a retain cycle on EucPageTurningView
+	// Accept that this probably isn't the correct way to do this
+	[self.animationTimer invalidate];
+	self.animationTimer = nil;
+}
+
 - (void)dealloc
 {    
     [_textureGenerationOperationQueue cancelAllOperations];
