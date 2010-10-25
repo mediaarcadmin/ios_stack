@@ -44,6 +44,7 @@
 	NSTimer *delayedTouchesEndedTimer;
     BOOL hyperlinkTapped;
     BOOL pageViewIsTurning;
+	BlioBookmarkRange *temporaryHighlightRange;
     
     BlioTextFlowBlock *lastBlock;
     NSUInteger blockRecursionDepth;

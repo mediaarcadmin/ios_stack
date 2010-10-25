@@ -33,6 +33,7 @@
 @property (nonatomic, retain) UIImage *pageTexture;
 @property (nonatomic, assign) BOOL pageTextureIsDark;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
+@property (nonatomic, retain) BlioBookmarkRange *temporaryHighlightRange;
 @property (nonatomic, retain) NSTimer *delayedTouchesBeganTimer;
 @property (nonatomic, retain) NSTimer *delayedTouchesEndedTimer;
 @property (nonatomic, retain) NSArray *accessibilityElements;
@@ -79,6 +80,7 @@
 @synthesize lastBlock;
 @synthesize delayedTouchesBeganTimer, delayedTouchesEndedTimer;
 @synthesize accessibilityElements, prevZone, nextZone, pageZone;
+@synthesize temporaryHighlightRange;
 
 - (void)dealloc {
     [self.delayedTouchesBeganTimer invalidate];
@@ -92,6 +94,7 @@
     self.hyperlinksCache = nil;
     self.viewTransformsCache = nil;
     self.lastBlock = nil;
+	self.temporaryHighlightRange = nil;
     
     self.pageTurningView = nil;
     self.pageTexture = nil;
@@ -193,15 +196,18 @@
         aPageTurningView.bitmapDataSource = self;
         aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
-        
+        aPageTurningView.maxZoomFactor = 8;
+		
         // Must do this here so that teh page aspect ration takes account of the fitTwoPages property
         CGRect myBounds = self.bounds;
         if(myBounds.size.width > myBounds.size.height) {
             aPageTurningView.fitTwoPages = YES;
             aPageTurningView.twoSidedPages = YES;
+			aPageTurningView.zoomedTextureWidth = 768;
         } else {
             aPageTurningView.fitTwoPages = NO;
             aPageTurningView.twoSidedPages = NO;
+			aPageTurningView.zoomedTextureWidth = 1024;
         } 
         
         if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
@@ -274,6 +280,7 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [self.selector setSelectedRange:nil];
+	self.temporaryHighlightRange = nil;
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -285,6 +292,12 @@
 	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex - 1];
 	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex - 2];
 	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex + 1];
+	
+	if(self.pageTurningView.twoSidedPages) {
+		self.pageTurningView.zoomedTextureWidth = 1024;
+	} else {
+		self.pageTurningView.zoomedTextureWidth = 768;
+	} 
 }
 
 #pragma mark -
@@ -345,22 +358,22 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
-	if ((targetPage <= self.pageCount) && (targetPage >=1)) {
-		[self goToPageNumber:targetPage animated:animated saveToHistory:YES];
-	}
+	[self goToPageNumber:targetPage animated:animated saveToHistory:YES];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated saveToHistory:(BOOL)save {
-    if (save) {
-        [self pushCurrentBookmarkPoint];
-    }
-    
-    if(self.pageTurningView) {
-        [self.pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
-        if (!animated) {
-			self.pageNumber = targetPage;
+	if ((targetPage <= self.pageCount) && (targetPage >=1)) {
+		if (save) {
+			[self pushCurrentBookmarkPoint];
 		}
-    }
+		
+		if(self.pageTurningView) {
+			[self.pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
+			if (!animated) {
+				self.pageNumber = targetPage;
+			}
+		}
+	}
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
@@ -565,9 +578,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
     self.selector.selectionDisabled = YES;
     [self.delegate cancelPendingToolbarShow];
-    pageViewIsTurning = YES;
-    //self.temporaryHighlightingDisabled = YES;
-    //[self _removeTemporaryHighlights];    
+	[self.selector removeTemporaryHighlight];
+	pageViewIsTurning = YES;
 }
 
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
@@ -580,28 +592,33 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		[self pushCurrentBookmarkPoint];
         self.pageNumber = pageIndex + 1;
     }
+	
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
-    //_temporaryHighlightingDisabled = NO;
-#if 0
-    if(_temporaryHighlightRange) {
-        EucPageView *currentPageView = (EucPageView *)(_pageTurningView.currentPageView);
-        CALayer *pageLayer = currentPageView.layer;
-        THPair *indexPointRange = [pageLayer valueForKey:@"EucBookViewIndexPointRange"];
-        EucHighlightRange *pageRange = [[EucHighlightRange alloc] init];
-        pageRange.startPoint = indexPointRange.first;
-        pageRange.endPoint = indexPointRange.second;
-        
-        if([pageRange intersects:_temporaryHighlightRange] && 
-           ![pageRange.endPoint isEqual:_temporaryHighlightRange.startPoint]) { 
-            // And clause because highlight ranges are inclusive, but the
-            // ranges stored in EucBookViewIndexPointRange are exclusive
-            // of the end point...
-            [self _displayTemporaryHighlightsAnimated:YES];
+
+    if(self.temporaryHighlightRange) {
+		BOOL pageIsVisible = YES;
+		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
+		
+		if (self.pageTurningView.twoSidedPages) {
+			if ((self.pageTurningView.leftPageIndex != targetIndex) && (self.pageTurningView.rightPageIndex != targetIndex)) {
+				pageIsVisible = NO;
+			}
+		} else {
+			if (self.pageTurningView.rightPageIndex  != targetIndex) {
+				pageIsVisible = NO;
+			}
+		}
+		
+        if (pageIsVisible) {
+            EucSelectorRange *range = [self selectorRangeFromBookmarkRange:self.temporaryHighlightRange];
+			[self.selector temporarilyHighlightSelectorRange:range animated:YES];
         }
-        [pageRange release];
+		
+		self.temporaryHighlightRange = nil;
+  
     }
-#endif
+
 }
 
 - (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView 
@@ -611,6 +628,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     // zooming is going on.
     //[self.selector setShouldHideMenu:YES];
     [self.selector setSelectionDisabled:YES];
+	[self.selector removeTemporaryHighlight];
+	self.temporaryHighlightRange = nil;
+	
 }
 
 - (void)pageTurningViewDidEndZooming:(EucPageTurningView *)scrollView 
@@ -1017,11 +1037,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save {
-    if (save) {
-        [self pushCurrentBookmarkPoint];
-    }
     BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
-    [self highlightWordsInBookmarkRange:range animated:YES];
+    [self highlightWordsInBookmarkRange:range animated:YES saveToHistory:save];
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
@@ -1029,17 +1046,30 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save {
-    
-    if (save) {
-        [self pushCurrentBookmarkPoint];
-    }
-    
-    if (bookmarkRange) {
-        if (self.pageNumber != bookmarkRange.startPoint.layoutPage) {
-            [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
-        }
-        EucSelectorRange *range = [self selectorRangeFromBookmarkRange:bookmarkRange];
-        [self.selector temporarilyHighlightSelectorRange:range animated:animated];
+
+	self.temporaryHighlightRange = bookmarkRange;
+	
+    if (bookmarkRange && !pageViewIsTurning) {
+		BOOL pageIsVisible = YES;
+		NSInteger targetIndex = bookmarkRange.startPoint.layoutPage - 1;
+		
+		if (self.pageTurningView.twoSidedPages) {
+			if ((self.pageTurningView.leftPageIndex != targetIndex) && (self.pageTurningView.rightPageIndex != targetIndex)) {
+				pageIsVisible = NO;
+			}
+		} else {
+			if (self.pageTurningView.rightPageIndex  != targetIndex) {
+				pageIsVisible = NO;
+			}
+		}
+				
+        if (!pageIsVisible) {
+			[self.selector removeTemporaryHighlight];
+            [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated saveToHistory:save];
+        } else {
+			EucSelectorRange *range = [self selectorRangeFromBookmarkRange:bookmarkRange];
+			[self.selector temporarilyHighlightSelectorRange:range animated:animated];
+		}
     } else {
         [self.selector removeTemporaryHighlight];
     }
