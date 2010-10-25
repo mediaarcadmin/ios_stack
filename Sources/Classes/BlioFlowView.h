@@ -23,7 +23,10 @@
     EucBUpeBook<BlioBUpeBook> *_eucBook;
     id<BlioParagraphSource> _paragraphSource;
     BOOL _pageViewIsTurning;
-    
+    BOOL _suppressHistory;
+	
+	BlioBookmarkPoint *_lastSavedPoint;
+	
     id<BlioBookViewDelegate> _delegate;
     
     NSInteger _pageCount;
