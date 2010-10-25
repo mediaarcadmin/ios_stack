@@ -1078,7 +1078,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         textureGenerationOperation.pageIndex = newPageIndex;
         textureGenerationOperation.textureRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
         textureGenerationOperation.isZoomed = NO;
-
+		
         NSInvocation *textureUploadInvocation = [NSInvocation invocationWithMethodSignature:
                                                  [self methodSignatureForSelector:@selector(_bitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:alphaBled:)]];
         textureUploadInvocation.selector = @selector(_bitmapDataAndSizeForPageAtIndex:inPageRect:ofSize:alphaBled:);
@@ -1088,12 +1088,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [textureUploadInvocation setArgument:&minSize atIndex:4];
         BOOL no = NO;
         [textureUploadInvocation setArgument:&no atIndex:5];
-        
+		
         textureGenerationOperation.generationInvocation = textureUploadInvocation;
         
         _pageContentsInformation[pageOffset].currentTextureGenerationOperation = textureGenerationOperation;
         
         [_textureGenerationOperationQueue addOperation:textureGenerationOperation];
+		[textureGenerationOperation release];
         [self refreshHighlightsForPageAtIndex:newPageIndex];
     }
 }
@@ -2947,7 +2948,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                                                            (intersect.origin.y  - scaledPageFrame.origin.y) / scaledPageFrame.size.height,
                                                            intersect.size.width / scaledPageFrame.size.width, 
                                                            intersect.size.height / scaledPageFrame.size.height);
-                    
                     EucPageTurningTextureGenerationOperation *textureGenerationOperation = [[EucPageTurningTextureGenerationOperation alloc] init];
                     textureGenerationOperation.delegate = self;
                     textureGenerationOperation.eaglContext = _backgroundThreadEAGLContext;
@@ -2955,7 +2955,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     textureGenerationOperation.pageIndex = pageIndex;
                     textureGenerationOperation.textureRect = scaledIntersection;
                     textureGenerationOperation.isZoomed = YES;
-                    
+
                     CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
                                                    contentRectForPageAtIndex:pageIndex];
                     CGRect textureFrom = CGRectMake(thisPageRect.origin.x + scaledIntersection.origin.x * thisPageRect.size.width,
@@ -2978,6 +2978,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     _pageContentsInformation[i].currentZoomedTextureGenerationOperation = textureGenerationOperation;
                     
                     [_textureGenerationOperationQueue addOperation:textureGenerationOperation];
+					[textureGenerationOperation release];
                 }
             }
         }
