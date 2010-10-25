@@ -621,7 +621,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             } else {
                 [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
             }
-			if ( ([self currentPageLayout] == kBlioPageLayoutPlainText) && [self.book hasAudiobook] )
+			
+			if ( ([[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey] == kBlioPageLayoutPlainText) && [self.book hasAudiobook] )
+				// Audiobook is for fixed view only.
 				[item setEnabled:NO];
             
         } else {
