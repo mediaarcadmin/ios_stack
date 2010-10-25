@@ -1258,7 +1258,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		}
 	}
 	if (performZoom) {
-		[self zoomAtPoint:point];
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+			[self zoomAtPoint:point];
+		} else {
+			if (self.pageTurningView.zoomFactor > 1) {
+				[self zoomOut];
+			} else {
+				[self zoomOutsideBlockAtPoint:point];
+			}
+		}
 		[self.delegate hideToolbars];
 	} else {
         [self.delegate toggleToolbars]; 
