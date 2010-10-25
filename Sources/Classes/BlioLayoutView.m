@@ -173,9 +173,9 @@
         // Cache the first page crop to allow fast estimating of crops
         firstPageCrop = [self.dataSource cropRectForPage:1];
 
-        NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
-        if (page > self.pageCount) page = self.pageCount;
-        self.pageNumber = page;
+        //NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
+//        if (page > self.pageCount) page = self.pageCount;
+        self.pageNumber = 1;
         
     }
 
@@ -353,27 +353,13 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    [self pushCurrentBookmarkPoint];
     [self goToPageNumber:[self.textFlow pageNumberForSectionUuid:uuid] animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
-	[self goToPageNumber:targetPage animated:animated saveToHistory:YES];
-}
-
-- (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated saveToHistory:(BOOL)save {
-	if ((targetPage <= self.pageCount) && (targetPage >=1)) {
-		if (save) {
-			[self pushCurrentBookmarkPoint];
-		}
-		
-		if(self.pageTurningView) {
-			[self.pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
-			if (!animated) {
-				self.pageNumber = targetPage;
-			}
-		}
-	}
+	BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+    bookmarkPoint.layoutPage = targetPage;
+    [self goToBookmarkPoint:bookmarkPoint animated:animated];
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
@@ -382,23 +368,33 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
 {
-    if (save) {
-        [self pushCurrentBookmarkPoint];
-        [self goToPageNumber:bookmarkPoint.layoutPage animated:animated saveToHistory:YES];
-    } else {
-        [self goToPageNumber:bookmarkPoint.layoutPage animated:animated saveToHistory:NO];
-    }
+	
+	suppressHistoryAfterTurn = NO;
+	
+	NSInteger targetPage = bookmarkPoint.layoutPage;
+	
+	if ((targetPage <= self.pageCount) && (targetPage >=1)) {
+		
+		if (save && !animated) {
+			[self pushCurrentBookmarkPoint];
+		} else {
+			if (!save && animated) {
+				suppressHistoryAfterTurn = YES;
+			}
+		}
+	
+		if (self.pageTurningView) {
+			[self.pageTurningView turnToPageAtIndex:targetPage - 1 animated:animated];      
+			if (!animated) {
+				self.pageNumber = targetPage;
+			}
+		}
+	}
+	
 }
 
 - (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
-    [self goToBookmarkRange:bookmarkRange animated:animated saveToHistory:YES];
-}
-
-- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save {
-    if (save) {
-        [self pushCurrentBookmarkPoint];
-    }
-    [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
+    [self goToBookmarkPoint:bookmarkRange.startPoint animated:animated];
 }
 
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
@@ -589,13 +585,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         pageIndex = aPageTurningView.leftPageIndex;
     }
     if(self.pageNumber != pageIndex + 1) {
-		[self pushCurrentBookmarkPoint];
+		if (!suppressHistoryAfterTurn) {
+			[self pushCurrentBookmarkPoint];
+		}
         self.pageNumber = pageIndex + 1;
     }
 	
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
-
+	suppressHistoryAfterTurn = NO;
+	
     if(self.temporaryHighlightRange) {
 		BOOL pageIsVisible = YES;
 		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
@@ -1033,7 +1032,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark TTS
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
+    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:YES];
 }
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save {
@@ -1042,7 +1041,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
-    [self highlightWordsInBookmarkRange:bookmarkRange animated:animated saveToHistory:NO];
+    [self highlightWordsInBookmarkRange:bookmarkRange animated:animated saveToHistory:!animated];
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save {
@@ -1063,10 +1062,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			}
 		}
 				
+		BOOL showHighlight = YES;
+		
         if (!pageIsVisible) {
 			[self.selector removeTemporaryHighlight];
-            [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated saveToHistory:save];
-        } else {
+            [self goToBookmarkPoint:bookmarkRange.startPoint animated:animated saveToHistory:save];
+			if (animated) {
+				showHighlight = NO;
+			}
+        } 
+		if (showHighlight) {
 			EucSelectorRange *range = [self selectorRangeFromBookmarkRange:bookmarkRange];
 			[self.selector temporarilyHighlightSelectorRange:range animated:animated];
 		}
@@ -1079,7 +1084,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Goto Animations
 
 - (CGRect)firstPageRect {
-    return [self.pageTurningView rightPageFrame];
+	CGRect coverRect = self.pageTurningView.rightPageFrame;	
+	return coverRect;
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {

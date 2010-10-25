@@ -384,13 +384,6 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 }
 
 - (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
-    [self goToBookmarkRange:bookmarkRange animated:animated saveToHistory:YES];
-}
-
-- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save {
-    if (save) {
-        [self pushCurrentBookmarkPoint];
-    }
     [self goToPageNumber:bookmarkRange.startPoint.layoutPage animated:animated];
 }
 
