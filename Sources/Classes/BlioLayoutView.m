@@ -19,18 +19,11 @@
 #import "BlioLayoutPDFDataSource.h"
 #import "BlioLayoutGeometry.h"
 #import "BlioLayoutHyperlink.h"
+#import "BlioAppSettingsConstants.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 #define BLIOLAYOUT_LHSHOTZONE (1.0f/3*1)
 #define BLIOLAYOUT_RHSHOTZONE (1.0f/3*2)
-
-@interface BlioPageTurningAnimator : CALayer {
-    CGFloat zoomFactor;
-}
-
-@property (nonatomic, assign) CGFloat zoomFactor;
-
-@end
 
 @interface BlioLayoutView()
 
@@ -352,7 +345,9 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
-    [self goToPageNumber:targetPage animated:animated saveToHistory:YES];
+	if ((targetPage <= self.pageCount) && (targetPage >=1)) {
+		[self goToPageNumber:targetPage animated:animated saveToHistory:YES];
+	}
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated saveToHistory:(BOOL)save {
@@ -1545,41 +1540,25 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)zoomToPreviousBlock {
-    blockRecursionDepth = 0;
-    [self zoomToNextBlockReversed:YES];
-}
-
-- (void)incrementProperty:(NSTimer *)timer {
-   // NSDictionary *animationDictionary = [timer userInfo];
-    //id target           = [animationDictionary valueForKey:@"target"];
-   // NSString *keyPath   = [animationDictionary valueForKey:@"keyPath"];
-//    NSNumber *stop      = [animationDictionary valueForKey:@"stop"];
-//    NSNumber *increment = [animationDictionary valueForKey:@"increment"];
-
-    //NSNumber *currentKeyPathValue = [target valueForKeyPath:keyPath];
-    //NSNumber *newKeyPathValue = [NSNumber numberWithFloat:[currentKeyPathValue floatValue] + [increment floatValue]];
-    
-    //if ([newKeyPathValue floatValue] > [stop floatValue]) {
-//        newKeyPathValue = stop;
-//        [timer invalidate];
-//    }
-    
-    CGPoint currentTranslation = [self.pageTurningView translation];
-    if (currentTranslation.x >= 100) {
-        [timer invalidate];
-    } else {
-    
-    //[target setValue:newKeyPathValue forKeyPath:keyPath];
-		[self.pageTurningView setTranslation:CGPointMake(currentTranslation.x + 10, currentTranslation.y + 10) zoomFactor:1.2 animated:YES];
-        currentTranslation = [self.pageTurningView translation];
-        [self.pageTurningView drawView];
-    }
-
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+		blockRecursionDepth = 0;
+		[self zoomToNextBlockReversed:YES];
+	} else {
+		NSInteger pageIndex = (self.pageTurningView.twoSidedPages) ? self.pageTurningView.leftPageIndex : self.pageTurningView.rightPageIndex;
+		[self goToPageNumber:(pageIndex - 1) + 1 animated:YES];
+		[self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
+	}
 }
 
 - (void)zoomToNextBlock {
-    blockRecursionDepth = 0;
-    [self zoomToNextBlockReversed:NO];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+		blockRecursionDepth = 0;
+		[self zoomToNextBlockReversed:NO];
+	} else {
+		NSInteger pageIndex = self.pageTurningView.rightPageIndex;
+		[self goToPageNumber:(pageIndex + 1) + 1 animated:YES];
+		[self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
+	}
 }
 
 - (void)zoomToNextBlockReversed:(BOOL)reversed {
@@ -2001,37 +1980,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	CGFloat zoomFactor = 2;
 	CGPoint offset = CGPointMake((CGRectGetMidX(self.pageTurningView.bounds) - point.x) * zoomFactor, (CGRectGetMidY(self.pageTurningView.bounds) - point.y) * zoomFactor); 
 	[self.pageTurningView setTranslation:offset zoomFactor:zoomFactor animated:YES];
-}
-
-@end
-
-@implementation BlioPageTurningAnimator
-
-@synthesize zoomFactor;
-
-- (void)setValue:(id)value forKey:(NSString *)key {
-    NSString *animationKeyPath = [self valueForKey:@"animationKeyPath"];
-    if ([key isEqualToString:animationKeyPath]) {
-        id animationTarget = [self valueForKey:@"animationTarget"];
-        [animationTarget setValue:value forKeyPath:animationKeyPath];
-    } else {
-        [super setValue:value forKey:key];
-    }
-}
-
-- (void)setZoomFactor:(CGFloat)newZoom {
-    id animationTarget = [self valueForKey:@"animationTarget"];
-    [animationTarget setValue:[NSNumber numberWithFloat:newZoom] forKeyPath:@"zoomFactor"];
-}
-
-- (void)setValue:(id)value forKeyPath:(NSString *)keyPath {
-    NSString *animationKeyPath = [self valueForKey:@"animationKeyPath"];
-    if ([keyPath isEqualToString:animationKeyPath]) {
-        id animationTarget = [self valueForKey:@"animationTarget"];
-        [animationTarget setValue:value forKeyPath:animationKeyPath];
-    } else {
-        [super setValue:value forKeyPath:keyPath];
-    }
 }
 
 @end
