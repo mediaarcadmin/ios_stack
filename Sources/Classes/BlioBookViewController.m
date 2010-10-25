@@ -444,26 +444,32 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     CGRect coverRect = [[self bookView] firstPageRect];
     CGFloat coverRectXScale = CGRectGetWidth(coverRect) / CGRectGetWidth(self.coverView.frame);
     CGFloat coverRectYScale = CGRectGetHeight(coverRect) / CGRectGetHeight(self.coverView.frame);
+	CGPoint center = CGPointMake(CGRectGetMidX(coverRect), CGRectGetMidY(coverRect));
     
     CABasicAnimation *shrinkAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
-    [shrinkAnimation setToValue:[NSValue valueWithCATransform3D:CATransform3DMakeScale(coverRectXScale, coverRectYScale, 1)]];
+	CATransform3D scaleTransform = CATransform3DMakeScale(coverRectXScale, coverRectYScale, 1);
+    [shrinkAnimation setToValue:[NSValue valueWithCATransform3D:scaleTransform]];
+	CABasicAnimation *offsetAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+    [offsetAnimation setToValue:[NSValue valueWithCGPoint:center]];
+	CAAnimationGroup *coverAnim = [CAAnimationGroup animation];
+	coverAnim.animations = [NSArray arrayWithObjects:shrinkAnimation, offsetAnimation, nil];
+	
     if (CGRectEqualToRect(coverRect, self.coverView.frame)) {
-        [shrinkAnimation setDuration:0];
+        [coverAnim setDuration:0];
     } else {
-        [shrinkAnimation setDuration:0.5f];
+        [coverAnim setDuration:0.5f];
     }
-    [shrinkAnimation setRemovedOnCompletion:NO];
-    [shrinkAnimation setFillMode:kCAFillModeForwards];
-    [shrinkAnimation setDelegate:self];
-    [shrinkAnimation setValue:kBlioBookViewControllerCoverShrinkAnimation forKey:@"name"];    
+    [coverAnim setRemovedOnCompletion:NO];
+    [coverAnim setFillMode:kCAFillModeForwards];
+    [coverAnim setDelegate:self];
+    [coverAnim setValue:kBlioBookViewControllerCoverShrinkAnimation forKey:@"name"];    
  
     [self.coverView.layer setPosition:[(CALayer *)[self.coverView.layer presentationLayer] position]];
     [self.coverView.layer setTransform:[(CALayer *)[self.coverView.layer presentationLayer] transform]];
-    //[self.coverView.layer setZPosition:[(CALayer *)[self.coverView.layer presentationLayer] zPosition]];
     
     [self.coverView.layer removeAllAnimations];
     
-    [self.coverView.layer addAnimation:shrinkAnimation forKey:kBlioBookViewControllerCoverShrinkAnimation];        
+    [self.coverView.layer addAnimation:coverAnim forKey:kBlioBookViewControllerCoverShrinkAnimation];        
 }
 
 - (void)animateCoverFade {   
@@ -481,7 +487,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [fadeAnimation setFillMode:kCAFillModeForwards];
     
     [self.coverView.layer setTransform:[(CALayer *)[self.coverView.layer presentationLayer] transform]];
-    
+    [self.coverView.layer setPosition:[(CALayer *)[self.coverView.layer presentationLayer] position]];
+	
     [self.coverView.layer removeAllAnimations];
     [self.coverView.layer addAnimation:fadeAnimation forKey:kBlioBookViewControllerCoverFadeAnimation]; 
 }
@@ -518,9 +525,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.coverView removeFromSuperview];
         self.coverView = nil;
         
-        //[self.bookView goToPageNumber:10 animated:YES];
         BlioBookmarkPoint *implicitPoint = [self.book implicitBookmarkPoint];
-        [self.bookView goToBookmarkPoint:implicitPoint animated:YES];
+        [self.bookView goToBookmarkPoint:implicitPoint animated:YES saveToHistory:NO];
         coverOpened = YES;
     }
 }
