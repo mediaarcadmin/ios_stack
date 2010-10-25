@@ -122,7 +122,9 @@
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		UIButton* ctl = (UIButton*)sender;
 		if ( ctl == launchButton ) {
-			NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
+//			NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
+			NSURL* url = [[NSURL alloc] initWithString:@"http://bliodemo.crosscomm.net"];
+			
 			[[UIApplication sharedApplication] openURL:url];			  
 		}
 	}

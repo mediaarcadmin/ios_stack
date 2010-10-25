@@ -168,6 +168,11 @@ tryAgain:
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
+-(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+	NSLog(@"opened app with URL: %@",[url absoluteString]);
+	return YES;
+}
+
 -(void)loginDismissed:(NSNotification*)note {
 	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
