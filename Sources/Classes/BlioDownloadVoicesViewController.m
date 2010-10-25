@@ -291,7 +291,6 @@
 -(void)prepareForReuse {
 	[super prepareForReuse];
 	[self setDownloadButtonState:BlioVoiceDownloadButtonStateDownload];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 -(void)setDownloadButtonState:(BlioVoiceDownloadButtonState)buttonState {
 	switch (buttonState) {

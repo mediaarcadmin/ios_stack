@@ -90,7 +90,7 @@
         return;
     }
     
-	if (![self hasBookManifestValueForKey:BlioManifestTextFlowKey]) {
+	if (![self hasBookManifestValueForKey:BlioManifestTextFlowKey] && ![self hasBookManifestValueForKey:BlioManifestEPubKey]) {
 		// no value means this is probably a free XPS; no need to continue, but no need to send a fail signal to dependent operations either.
 		self.operationSuccess = YES;
 		self.percentageComplete = 100;

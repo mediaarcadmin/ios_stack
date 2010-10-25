@@ -753,7 +753,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 -(void)updateBookmarkButton {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
 //	BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
 //	BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
 	
@@ -1828,7 +1828,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     NSParameterAssert([NSThread isMainThread]);
     
     if ([keyPath isEqual:@"pageNumber"] && coverOpened) {
-		NSLog(@"self.bookView.pageNumber: %i",self.bookView.pageNumber);
+//		NSLog(@"self.bookView.pageNumber: %i",self.bookView.pageNumber);
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
         [self updateBookmarkButton];
