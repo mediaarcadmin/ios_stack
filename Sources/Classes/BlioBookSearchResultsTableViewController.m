@@ -84,6 +84,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
+	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         UIView *aDimmingView = [[UIView alloc] initWithFrame:self.tableView.bounds];
