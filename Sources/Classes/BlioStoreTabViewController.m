@@ -170,7 +170,8 @@
         [importViewController release];
 		
 		
-        NSArray* controllers = [NSArray arrayWithObjects:nc5, freeBooksViewController, nc4, wrappedImportViewController, nil];
+//        NSArray* controllers = [NSArray arrayWithObjects:nc5, freeBooksViewController, nc4, wrappedImportViewController, nil];
+        NSArray* controllers = [NSArray arrayWithObjects:nc5, nc4, wrappedImportViewController, nil];
         self.viewControllers = controllers;
         
         [nc1 release];
