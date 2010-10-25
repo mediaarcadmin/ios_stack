@@ -388,7 +388,7 @@
         return;
     }
 
-	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable && ![self.url isFileURL]) {
         [self willChangeValueForKey:@"isFinished"];
 		NSLog(@"Internet connection is dead, will prematurely abort start");
         finished = YES;
@@ -684,7 +684,7 @@
         return;
     }
 	
-	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable && self.url && ![self.url isFileURL]) {
         [self willChangeValueForKey:@"isFinished"];
 		NSLog(@"Internet connection is dead, will prematurely abort start");
         finished = YES;
