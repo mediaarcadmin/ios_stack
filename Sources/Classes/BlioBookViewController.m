@@ -722,7 +722,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     [_bookView performSelector:@selector(didFinishReading)];
                 }
                 
-				NSLog(@"ABOUT TO REMOVE BOOKVIEW FROM SUPERVIEW");
                 [_bookView removeFromSuperview];
             }
         }

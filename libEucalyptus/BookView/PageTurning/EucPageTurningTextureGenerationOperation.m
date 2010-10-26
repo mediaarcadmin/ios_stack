@@ -60,7 +60,6 @@
 		
 		if (self.isCancelled) {
 			[[data retain] autorelease];
-			NSLog(@"---- LETTING MEMORY RELEASE DUE TO CANCELLED OP %p", data, data);
 
 			self.generationInvocation = nil;
 			return;
@@ -87,7 +86,6 @@
 		
 		if (self.isCancelled) {
 			if (glIsTexture(textureID)) {
-				NSLog(@"---- FORCE DELETE OF TEXTURE DUE TO CANCELLED OP %d", textureID);
 
 				glDeleteTextures(1, &textureID);
 			}
