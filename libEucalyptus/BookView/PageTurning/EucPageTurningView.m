@@ -2555,9 +2555,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _cyclePageContentsInformationForTurnForwards:YES];
                     if(_twoSidedPages) {
                         _recacheFlags[4] = YES;
-						//_recacheFlags[0] = YES;
+						_recacheFlags[0] = YES;
                     }
-					//_recacheFlags[1] = YES;
+					_recacheFlags[1] = YES;
 					_recacheFlags[5] = YES; 
 
                     _viewsNeedRecache = YES;
@@ -2567,11 +2567,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 if(!hasFlipped) {
                     [self _cyclePageContentsInformationForTurnForwards:NO];
                     if(_twoSidedPages) {
-						//_recacheFlags[4] = YES;
+						_recacheFlags[4] = YES;
                         _recacheFlags[0] = YES;
                     }                    
                     _recacheFlags[1] = YES;
-					//_recacheFlags[5] = YES;
+					_recacheFlags[5] = YES;
 					
                     _viewsNeedRecache = YES;
                 }
