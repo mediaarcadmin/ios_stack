@@ -378,6 +378,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	
+	/* Not needed if starter books are bundled rather than downloaded through the bookvault.
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertLibrary"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertLibrary"];
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Introducing Your Library",@"\"Introducing Your Library\" alert message title") 
@@ -386,6 +387,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 						   cancelButtonTitle:@"OK"
 						   otherButtonTitles:nil];		
 	}
+	 */
 	
 	// resume suspended operations related to paid books.
 //	[self.processingDelegate resumeSuspendedProcessingForSourceID:BlioBookSourceOnlineStore];
