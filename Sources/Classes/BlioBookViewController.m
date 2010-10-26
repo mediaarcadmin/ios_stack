@@ -432,7 +432,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)setStatusBarTranslucent {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+	} else {
+		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
+	}
 }
 
 - (void)animateCoverShrink {
@@ -953,7 +957,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         /*}*/
         
         if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
-            [application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+				[application setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+			} else {
+				[application setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
+			}
         }
         // Hide the navigation bar if appropriate.
         // We'll take care of the status bar in -viewDidAppear: (if we do it
@@ -1265,7 +1273,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 			else 
                 [(id)[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // typecast as id to mask deprecation warnings.							
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+				[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+			} else {
+				[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
+			}
             break;
         default:
             break;

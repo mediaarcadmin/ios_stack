@@ -452,7 +452,16 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 - (void)displayStatusBarWithStyle:(UIStatusBarStyle)barStyle animated:(BOOL)animated {
     UIApplication *application = [UIApplication sharedApplication];
     
-    [application setStatusBarStyle:barStyle animated:animated];
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+		[application setStatusBarStyle:barStyle animated:animated];
+	} else {
+		if (barStyle == UIStatusBarStyleBlackTranslucent) {
+			[application setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:animated];
+		} else {
+			[application setStatusBarStyle:barStyle animated:animated];
+		}
+	}
+    
     
     if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
         [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
