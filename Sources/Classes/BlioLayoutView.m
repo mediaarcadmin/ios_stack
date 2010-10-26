@@ -22,8 +22,8 @@
 #import "BlioAppSettingsConstants.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
-#define BLIOLAYOUT_LHSHOTZONE (1.0f/3*1)
-#define BLIOLAYOUT_RHSHOTZONE (1.0f/3*2)
+#define BLIOLAYOUT_LHSHOTZONE (1.0f/10*1)
+#define BLIOLAYOUT_RHSHOTZONE (1.0f/10*9)
 
 @interface BlioLayoutView()
 
