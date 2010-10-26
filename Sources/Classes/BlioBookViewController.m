@@ -445,7 +445,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return;
     }
     
-    CGRect coverRect = [[self bookView] firstPageRect];
+	if (![self bookView]) {
+		[self.coverView removeFromSuperview];
+		self.coverView = nil;
+		_viewIsDisappearing = YES;
+		[self.searchViewController removeFromControllerAnimated:YES];
+		[self.navigationController popViewControllerAnimated:YES];
+		
+		if ([[UIApplication sharedApplication] isIgnoringInteractionEvents]) {
+			[[UIApplication sharedApplication] endIgnoringInteractionEvents];
+		}
+			
+		return;
+	}
+			
+	CGRect coverRect = [[self bookView] firstPageRect];
     CGFloat coverRectXScale = CGRectGetWidth(coverRect) / CGRectGetWidth(self.coverView.frame);
     CGFloat coverRectYScale = CGRectGetHeight(coverRect) / CGRectGetHeight(self.coverView.frame);
 	CGPoint center = CGPointMake(CGRectGetMidX(coverRect), CGRectGetMidY(coverRect));
