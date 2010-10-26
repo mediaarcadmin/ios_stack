@@ -89,7 +89,6 @@
 	[self.delayedTouchesEndedTimer invalidate];
 	self.delayedTouchesEndedTimer = nil;
     
-    self.textFlow = nil;
     self.pageCropsCache = nil;
     self.hyperlinksCache = nil;
     self.viewTransformsCache = nil;
