@@ -722,6 +722,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     [_bookView performSelector:@selector(didFinishReading)];
                 }
                 
+				NSLog(@"ABOUT TO REMOVE BOOKVIEW FROM SUPERVIEW");
                 [_bookView removeFromSuperview];
             }
         }
@@ -1175,7 +1176,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     [self.book reportReadingIfRequired];
     [self.book flushCaches];
-	[super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
+	// Disabled this super call because was removing our BookViews (even when it had a superview)
+	// TODO: Investigate why this was happening
+	//[super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
