@@ -41,6 +41,7 @@
     BlioBook *book;
     UISegmentedControl *tabSegment;
     UIPopoverController *popoverController;
+	BOOL isTOCActive;
 }
 
 @property (nonatomic, retain) BlioContentsTabContentsViewController *contentsController;

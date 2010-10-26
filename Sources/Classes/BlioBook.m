@@ -213,6 +213,12 @@
 - (BOOL)hasTextFlow {
     return [self hasManifestValueForKey:BlioManifestTextFlowKey];
 }
+- (BOOL)hasSearch {
+    return ([self hasEPub] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
+}
+- (BOOL)hasTOC {
+    return ([self hasEPub] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
+}
 
 - (BOOL)isEncrypted {
     return [self hasManifestValueForKey:BlioManifestDrmHeaderKey];

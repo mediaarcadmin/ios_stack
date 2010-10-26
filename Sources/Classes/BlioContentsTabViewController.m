@@ -68,9 +68,12 @@ typedef enum {
 }
 
 - (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook {
-        
+    
+    isTOCActive = [aBook hasTOC];
+
     UIViewController *aRootVC = [[UIViewController alloc] init];
 
+	// TODO: do not instantiate TOC view if isTOCActive is false to conserve memory
     BlioContentsTabContentsViewController *aContentsController = [[BlioContentsTabContentsViewController alloc] init];
     aContentsController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     aContentsController.dataSource = aBookView.contentsDataSource;
@@ -89,12 +92,13 @@ typedef enum {
         self.bookView = aBookView;
         self.book = aBook;
         self.contentsController = aContentsController;
-        [self pushViewController:self.contentsController animated:NO];
+        if (isTOCActive) [self pushViewController:self.contentsController animated:NO];
         [self.contentsController setDelegate:self];
         
         [aBookmarksController setBook:aBook];
         [aBookmarksController setBookView:aBookView]; // Needed to get display page number
         self.bookmarksController = aBookmarksController;
+        if (!isTOCActive) [self pushViewController:self.bookmarksController animated:NO];
         
         [aNotesController setBook:aBook];
         [aNotesController setBookView:aBookView]; // Needed to get display page number
@@ -117,7 +121,11 @@ typedef enum {
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             aTabSegmentedControl.tintColor = tintColor;
         }
-        aTabSegmentedControl.selectedSegmentIndex = 0;
+        if (isTOCActive) aTabSegmentedControl.selectedSegmentIndex = 0;
+		else {
+			aTabSegmentedControl.selectedSegmentIndex = 1;
+			[aTabSegmentedControl setEnabled:NO forSegmentAtIndex:0];
+		}
         [aTabSegmentedControl addTarget:self action:@selector(changeTab:) forControlEvents:UIControlEventValueChanged];
         item = [[UIBarButtonItem alloc] initWithCustomView:aTabSegmentedControl];
         self.tabSegment = aTabSegmentedControl;
