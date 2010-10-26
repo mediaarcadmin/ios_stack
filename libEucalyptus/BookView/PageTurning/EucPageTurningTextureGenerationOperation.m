@@ -33,18 +33,38 @@
 
 - (void)mainThreadNotify
 {
-    [self.delegate textureGenerationOperationGeneratedTexture:self];
+	if (self.isCancelled) {
+		GLuint texID = self.generatedTextureID;
+		glDeleteTextures(1, &texID);
+		self.generationInvocation = nil;
+	} else {
+		[self.delegate textureGenerationOperationGeneratedTexture:self];
+	}
 }
 
 - (void)main
 {
+	if (self.isCancelled) {
+		self.generationInvocation = nil;
+		return;
+	}
+	
     NSInvocation *generationInvocation = self.generationInvocation;
     [generationInvocation invoke];
     THPair *generatedRGBAContentsAndSize = nil;
     [generationInvocation getReturnValue:&generatedRGBAContentsAndSize];
+	
     if(generatedRGBAContentsAndSize) {
         NSData *data = generatedRGBAContentsAndSize.first;
         CGSize size = [(NSValue *)generatedRGBAContentsAndSize.second CGSizeValue];
+		
+		if (self.isCancelled) {
+			[[data retain] autorelease];
+			NSLog(@"---- LETTING MEMORY RELEASE DUE TO CANCELLED OP %p", data, data);
+
+			self.generationInvocation = nil;
+			return;
+		}
         
         NSLock *contextLock = self.contextLock;
         [contextLock lock];
@@ -64,6 +84,16 @@
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
         
         [contextLock unlock];
+		
+		if (self.isCancelled) {
+			if (glIsTexture(textureID)) {
+				NSLog(@"---- FORCE DELETE OF TEXTURE DUE TO CANCELLED OP %d", textureID);
+
+				glDeleteTextures(1, &textureID);
+			}
+			self.generationInvocation = nil;
+			return;
+		}
         
         self.generatedTextureID = textureID;
         [self  performSelectorOnMainThread:@selector(mainThreadNotify) 
