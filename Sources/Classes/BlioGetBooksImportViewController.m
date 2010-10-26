@@ -224,7 +224,7 @@
 		return NSLocalizedStringWithDefaultValue(@"NO_IMPORTABLE_BOOKS_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"No files within your Documents folder can be imported. You can add files to your Documents folder by selecting your iOS device within iTunes, selecting the \"Apps\" tab at the top of your content area, then scrolling down to the \"File Sharing\" section.",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, informing the user that there are no importable files available.");
 	}
 	if ([BlioFileSharingManager sharedFileSharingManager].isScanningFileSharingDirectory) return NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOKS_FOUND_STILL_SCANNING_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Blio is still scanning your Documents folder for importable files. In the meantime, you may select a file above to move the file into your Blio Library.",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, informing the user that the Documents folder is still being scanned, and providing brief instruction on how to import the displayed files in the meantime.");
-	return NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOKS_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"The above files can be imported by Blio. Select a file above to move the file into your Blio Library.",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, providing brief instruction on how to import the displayed files.");
+	return NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOKS_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Select a file to import it to your library.",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, providing brief instruction on how to import the displayed files.");
 }
 
 
@@ -239,7 +239,8 @@
 		
 		// add activity indicator
 		UIActivityIndicatorView * cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-		cellActivityIndicatorView.frame = CGRectMake(-kBlioImportBookCellActivityIndicatorViewWidth/3,-kBlioImportBookCellActivityIndicatorViewWidth/2,kBlioImportBookCellActivityIndicatorViewWidth,kBlioImportBookCellActivityIndicatorViewWidth);
+		cellActivityIndicatorView.frame = CGRectMake(2*cell.frame.size.width,-kBlioImportBookCellActivityIndicatorViewWidth/2,kBlioImportBookCellActivityIndicatorViewWidth,kBlioImportBookCellActivityIndicatorViewWidth);
+		//cellActivityIndicatorView.frame = CGRectMake(-kBlioImportBookCellActivityIndicatorViewWidth/3,-kBlioImportBookCellActivityIndicatorViewWidth/2,kBlioImportBookCellActivityIndicatorViewWidth,kBlioImportBookCellActivityIndicatorViewWidth);
 		cellActivityIndicatorView.hidden = YES;
 		
 		cellActivityIndicatorView.hidesWhenStopped = YES;
