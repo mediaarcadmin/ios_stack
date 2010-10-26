@@ -277,6 +277,7 @@
         if(self.selector.tracking) {
             [self.selector setSelectedRange:nil];
         }
+		self.pageSize = newSize;
     }
 }
 
@@ -696,7 +697,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             break;
         }
     }
-    
+
     if (block) {
         NSArray *words = [block words];
         if (words.count) {
