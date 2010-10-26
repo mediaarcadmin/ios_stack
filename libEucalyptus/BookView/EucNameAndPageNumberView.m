@@ -23,6 +23,7 @@
         self.opaque = YES;
         self.clearsContextBeforeDrawing = YES;
         self.backgroundColor = [UIColor whiteColor];
+		self.contentMode = UIViewContentModeRedraw;
     }
     return self;
 }

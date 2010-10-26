@@ -180,7 +180,7 @@
 				NSLog(@"Title: %@", title);
 				NSLog(@"Author: %@", author);
 				NSLog(@"Cover: %@", coverURL);
-				NSLog(@"URL: %@",[[self URLForBookWithID:[productItem ISBN]] absoluteString]);
+//				NSLog(@"URL: %@",[[self URLForBookWithID:[productItem ISBN]] absoluteString]);
 				NSMutableArray * authors = [NSMutableArray array];
 				if (author) {
 					NSArray * preTrimmedAuthors = [author componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@";"]];
@@ -188,18 +188,23 @@
 						[authors addObject:[preTrimmedAuthor stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
 					}
 				}
-					[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
-																					   authors:authors   
-																					 coverPath:coverURL
-																					  ePubPath:nil 
-																					   pdfPath:nil 
-																					   xpsPath:nil
-																				  textFlowPath:nil 
-																				 audiobookPath:nil 
-																					  sourceID:BlioBookSourceOnlineStore 
-																			  sourceSpecificID:[productItem ISBN]
-																			   placeholderOnly:(!downloadNewBooks)
-					 ];
+				if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
+					downloadNewBooks = YES;
+				}
+				else downloadNewBooks = NO;
+				
+				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
+																				   authors:authors   
+																				 coverPath:coverURL
+																				  ePubPath:nil 
+																				   pdfPath:nil 
+																				   xpsPath:nil
+																			  textFlowPath:nil 
+																			 audiobookPath:nil 
+																				  sourceID:BlioBookSourceOnlineStore 
+																		  sourceSpecificID:[productItem ISBN]
+																		   placeholderOnly:(!downloadNewBooks)
+				 ];
 			}
 			else {
 				NSLog(@"ERROR: productItem is nil!");
@@ -336,7 +341,7 @@
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 			NSLog(@"SOAP error for VaultContents: %@",err);
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"Blio was not able to obtain the book; the server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
+										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"Blio was not able to obtain the purchased book; the server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
 										delegate:nil 
 							   cancelButtonTitle:nil
 							   otherButtonTitles:@"OK", nil];
@@ -358,7 +363,7 @@
 			}
 			else {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"Blio was not able to obtain the book; the server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
+										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"Blio was not able to obtain the purchased book; the server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
 										delegate:nil 
 							   cancelButtonTitle:nil
 							   otherButtonTitles:@"OK", nil];

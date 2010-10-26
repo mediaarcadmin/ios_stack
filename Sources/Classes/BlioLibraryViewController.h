@@ -16,8 +16,8 @@
 
 typedef enum {
     kBlioLibraryLayoutUndefined = -1,
-    kBlioLibraryLayoutList = 0,
-	kBlioLibraryLayoutGrid = 1,
+    kBlioLibraryLayoutGrid = 0,
+	kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
 typedef enum {
@@ -106,6 +106,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     BlioBookViewController *openBookViewController;
 	UIButton * libraryVaultButton;
 	BOOL showArchiveCell;
+	NSInteger selectedGridIndex;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
 #endif
