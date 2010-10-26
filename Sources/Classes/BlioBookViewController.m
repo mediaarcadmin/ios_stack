@@ -582,10 +582,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [readingItems addObject:item];
     [item release];
  */
-
-	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];
 	/*
 	item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-add.png"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleBookmark:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Bookmark", @"Accessibility label for Book View Controller Bookmark button")];
@@ -598,15 +594,33 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [readingItems addObject:item];
     [item release];  
     */
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
-                                            style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:@selector(search:)];
-    [item setAccessibilityLabel:NSLocalizedString(@"Search", @"Accessibility label for Book View Controller Search button")];
+	
+	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
+	
+	if ([self.book hasSearch]) {
+		item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
+												style:UIBarButtonItemStylePlain
+											   target:self 
+											   action:@selector(search:)];
+		[item setAccessibilityLabel:NSLocalizedString(@"Search", @"Accessibility label for Book View Controller Search button")];
+		[item setAccessibilityTraits:UIAccessibilityTraitButton];
+	}
+	else {
+		item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-search.png"]
+												style:UIBarButtonItemStylePlain
+											   target:nil 
+											   action:nil];
+		[item setEnabled:NO];
+		[item setAccessibilityLabel:NSLocalizedString(@"Search", @"Accessibility label for Book View Controller Search button")];
+		[item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitNotEnabled];
+	}
     self.searchButton = item;
     [readingItems addObject:item];
     [item release];
     
+		
     if (installed) {
         item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         [readingItems addObject:item];

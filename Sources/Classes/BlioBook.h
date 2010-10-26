@@ -137,6 +137,8 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 @property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForList;
 @property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForGrid;
 @property (nonatomic, assign, readonly) BOOL firstLayoutPageOnLeft;
+@property (nonatomic, assign, readonly) BOOL hasSearch;
+@property (nonatomic, assign, readonly) BOOL hasTOC;
 
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
