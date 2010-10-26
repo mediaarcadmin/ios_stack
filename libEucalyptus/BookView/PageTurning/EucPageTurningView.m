@@ -3108,7 +3108,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)refreshHighlightsForPageAtIndex:(NSUInteger)pageIndex
 {
-    NSUInteger index = NSUIntegerMax;
+	NSUInteger index = NSUIntegerMax;
 
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
         if(_pageContentsInformation[i] && _pageContentsInformation[i].pageIndex == pageIndex) {
@@ -3121,6 +3121,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:highlightsForPageAtIndex:)]) {
             NSArray *highlights = [_bitmapDataSource pageTurningView:self highlightsForPageAtIndex:pageIndex];
             CGSize minSize = _unzoomedRightPageFrame.size;
+			minSize.width = floor(minSize.width / 4);
+			minSize.height = floor(minSize.height / 4);
+			
             if(highlights && highlights.count) {                
                 size_t bufferLength = minSize.width * minSize.height * 4;
                 unsigned char *textureData = malloc(bufferLength);
@@ -3131,8 +3134,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
                                                                     colorSpace, kCGImageAlphaPremultipliedLast);
                 CGColorSpaceRelease(colorSpace);
-                CGContextScaleCTM(textureContext, 1.0f, -1.0f);
-                CGContextTranslateCTM(textureContext, 0, -minSize.height);
+                //CGContextScaleCTM(textureContext, 1.0f, -1.0f);
+				//CGContextTranslateCTM(textureContext, 0, -minSize.height);
+                CGContextTranslateCTM(textureContext, 0, minSize.height);
+				CGContextScaleCTM(textureContext, 0.25f, -0.25f);
 
                 CGContextSetBlendMode(textureContext, kCGBlendModeMultiply);
                 for(THPair *highlight in highlights) {
