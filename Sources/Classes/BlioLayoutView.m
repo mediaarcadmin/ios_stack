@@ -216,7 +216,6 @@
             [aPageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
         }        
         [self addSubview:aPageTurningView];
-        
         self.pageTurningView = aPageTurningView;
 		//[aPageTurningView addObserver:self forKeyPath:@"retainCount" options:0 context:NULL];
         [aPageTurningView release];
@@ -225,6 +224,7 @@
         //[aPageTurningView addObserver:self forKeyPath:@"rightPageFrame" options:0 context:NULL];        
         
         [aPageTurningView turnToPageAtIndex:self.pageNumber - 1 animated:NO];
+		[aPageTurningView waitForAllPageImagesToBeAvailable];
     }
 }
 
@@ -1145,7 +1145,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         startTouchPoint = CGPointMake(-1, -1);
         [self.delayedTouchesBeganTimer fire];
         self.delayedTouchesBeganTimer = nil;
-		NSLog(@"touchesBegan pinch to page tunring view");
         [self.pageTurningView touchesBegan:touches withEvent:event];
     } else {
         [self.delayedTouchesBeganTimer invalidate];
