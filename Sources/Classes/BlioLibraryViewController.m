@@ -701,7 +701,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //			// cancel all other operations related to paid books.
 //			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
 //		}
-		
+		cell.statusBadge.hidden = YES;
+		selectedGridIndex = index;
 		[self bookSelected:cell.bookView];
 	}
 }
@@ -1323,6 +1324,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)coverViewDidAnimatePop {
     [self.selectedLibraryBookView setHidden:NO];
+	BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:selectedGridIndex];
+	if (cell) cell.statusBadge.hidden = NO;
 }
 
 - (void)coverViewDidAnimateFade {
