@@ -110,7 +110,7 @@
 	return 1;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
 	NSString *title = nil;
 	switch (section)
@@ -147,39 +147,40 @@
 	cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 	if (cell == nil) {
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+		switch (indexPath.section)
+		{
+			case 0:
+			{
+				cell.textLabel.text = NSLocalizedString(@"Registration","\"Registration\" cell label");
+				UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(cell.contentView.bounds.size.width - 80.0f - 35.0f, 9.0f, 80.0f, 28.0f)];
+				switchView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+				[switchView setTag:997];
+				[cell addSubview:switchView];
+				if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] == BlioDeviceRegisteredStatusRegistered ) {
+					[switchView setOn:YES animated:NO];
+					self.registrationOn = YES;
+				}
+				else {
+					[switchView setOn:NO animated:NO];
+					self.registrationOn = NO;
+				}
+				[switchView addTarget:self action:@selector(changeRegistration:) forControlEvents:UIControlEventValueChanged];
+				[switchView release];
+				break;
+			}
+				//case 1:
+				//{
+				//	cell.textLabel.text = NSLocalizedString(@"Register Textbook-Reading Device","\"Register Textbook Device\" cell label");
+				//if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioTextbookDeviceRegisteredDefaultsKey] == 1 )
+				//	[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+				//else 
+				//	[cell setAccessoryType:UITableViewCellAccessoryNone];
+				//	break;
+				//}
+		}
 	}
 
-	switch (indexPath.section)
-	{
-		case 0:
-		{
-			cell.textLabel.text = NSLocalizedString(@"Registration","\"Registration\" cell label");
-			UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(200.0f, 9.0f, 80.0f, 28.0f)];
-			[switchView setTag:997];
-			[cell addSubview:switchView];
-			if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] == BlioDeviceRegisteredStatusRegistered ) {
-				[switchView setOn:YES animated:NO];
-				self.registrationOn = YES;
-			}
-			else {
-				[switchView setOn:NO animated:NO];
-				self.registrationOn = NO;
-			}
-			[switchView addTarget:self action:@selector(changeRegistration:) forControlEvents:UIControlEventValueChanged];
-			[switchView release];
-			break;
-		}
-		//case 1:
-		//{
-			//	cell.textLabel.text = NSLocalizedString(@"Register Textbook-Reading Device","\"Register Textbook Device\" cell label");
-			//if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioTextbookDeviceRegisteredDefaultsKey] == 1 )
-			//	[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-			//else 
-			//	[cell setAccessoryType:UITableViewCellAccessoryNone];
-			//	break;
-		//}
-	}
-	
+	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
 }
 

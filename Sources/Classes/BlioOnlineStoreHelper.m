@@ -188,18 +188,23 @@
 						[authors addObject:[preTrimmedAuthor stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
 					}
 				}
-					[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
-																					   authors:authors   
-																					 coverPath:coverURL
-																					  ePubPath:nil 
-																					   pdfPath:nil 
-																					   xpsPath:nil
-																				  textFlowPath:nil 
-																				 audiobookPath:nil 
-																					  sourceID:BlioBookSourceOnlineStore 
-																			  sourceSpecificID:[productItem ISBN]
-																			   placeholderOnly:(!downloadNewBooks)
-					 ];
+				if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
+					downloadNewBooks = YES;
+				}
+				else downloadNewBooks = NO;
+				
+				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
+																				   authors:authors   
+																				 coverPath:coverURL
+																				  ePubPath:nil 
+																				   pdfPath:nil 
+																				   xpsPath:nil
+																			  textFlowPath:nil 
+																			 audiobookPath:nil 
+																				  sourceID:BlioBookSourceOnlineStore 
+																		  sourceSpecificID:[productItem ISBN]
+																		   placeholderOnly:(!downloadNewBooks)
+				 ];
 			}
 			else {
 				NSLog(@"ERROR: productItem is nil!");

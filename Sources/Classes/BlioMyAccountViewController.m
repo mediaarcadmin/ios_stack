@@ -9,7 +9,7 @@
 #import "BlioMyAccountViewController.h"
 #import "BlioStoreManager.h"
 #import "BlioPaidBooksSettingsController.h"
-
+#import "BlioArchiveSettingsViewController.h"
 
 @implementation BlioMyAccountViewController
 
@@ -80,13 +80,12 @@
     [super viewDidDisappear:animated];
 }
 */
-/*
+
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	return YES;
 }
-*/
 
 
 #pragma mark -
@@ -94,7 +93,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return 1	;
+    return 2;
 }
 
 
@@ -120,6 +119,9 @@
 	switch ( [indexPath section] ) {
 		case 0:
 			[cell.textLabel setText:@"Device Registration"];
+			break;
+		case 1:
+			[cell.textLabel setText:@"Archive Settings"];
 			break;
 			/*
 		case 1:
@@ -183,11 +185,17 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	BlioPaidBooksSettingsController * paidBooksController = nil;
+	BlioArchiveSettingsViewController * archiveSettingsViewController = nil;
 	switch ( [indexPath section] ) {
 		case 0:
 			paidBooksController = [[BlioPaidBooksSettingsController alloc] init];
 			[self.navigationController pushViewController:paidBooksController animated:YES];
 			[paidBooksController release];
+			break;
+		case 1:
+			archiveSettingsViewController = [[BlioArchiveSettingsViewController alloc] init];
+			[self.navigationController pushViewController:archiveSettingsViewController animated:YES];
+			[archiveSettingsViewController release];
 			break;
 			/*
 		case 1:

@@ -16,8 +16,8 @@
 
 typedef enum {
     kBlioLibraryLayoutUndefined = -1,
-    kBlioLibraryLayoutList = 0,
-	kBlioLibraryLayoutGrid = 1,
+    kBlioLibraryLayoutGrid = 0,
+	kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
 typedef enum {

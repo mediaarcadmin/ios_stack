@@ -14,6 +14,7 @@
 #import "BlioAlertManager.h"
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
+#import "BlioStoreHelper.h"
 #import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookManager.h"
@@ -267,12 +268,15 @@ static void *background_init_thread(void * arg) {
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 
 	if (self.networkStatus != NotReachable) {
-		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-		}
-		else {
+		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-		}		
+		}
+//		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+//			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+//		}
+//		else {
+//			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+//		}		
 		[self.processingManager resumeProcessing];
 	}	
 	
@@ -322,6 +326,11 @@ static void *background_init_thread(void * arg) {
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioApplicationDidBecomeActiveNotification object:self];
+	if (self.networkStatus != NotReachable) {
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && ![[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
+			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		}
+	}		
 }
 - (void)applicationWillResignActive:(UIApplication *)application {
 	NSLog(@"%@", NSStringFromSelector(_cmd));

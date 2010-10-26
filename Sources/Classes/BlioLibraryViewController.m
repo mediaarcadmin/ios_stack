@@ -190,8 +190,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
                               [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
+                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
                               nil];
     BlioAccessibilitySegmentedControl *segmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
     
@@ -204,8 +204,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
     [segmentedControl setIsAccessibilityElement:NO];
 	
-	[[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
-    [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
+    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
+    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+	[[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
     [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
     
     self.libraryLayout = kBlioLibraryLayoutUndefined;
@@ -2053,6 +2054,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		progressView.isAccessibilityElement = NO;
 		[progressView removeFromSuperview];
 		progressView.hidden = YES;
+		self.accessoryView = nil;
 		[self resetAuthorText];
 		self.selectionStyle = UITableViewCellSelectionStyleGray;
 		if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
