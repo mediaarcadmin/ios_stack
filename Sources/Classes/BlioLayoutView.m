@@ -522,31 +522,31 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     CGRect pageCrop = [self pageTurningView:self.pageTurningView contentRectForPageAtIndex:pageIndex];
     CGRect pageFrame;
     
-    if (self.pageTurningView.twoSidedPages && (pageIndex == [self.pageTurningView leftPageIndex])) {
-		if (applyZoom) {
-			pageFrame = [self.pageTurningView leftPageFrame];
-		} else {
-			pageFrame = [self.pageTurningView unzoomedLeftPageFrame];
+	BOOL isOnRight = YES;
+	if (self.pageTurningView.twoSidedPages) {
+		BOOL rightIsEven = (self.pageTurningView.rightPageIndex % 2 == 0);
+		BOOL indexIsEven = (pageIndex % 2 == 0);
+		if (rightIsEven != indexIsEven) {
+			isOnRight = NO;
 		}
-    } else {
+	}
+	
+	if (isOnRight) {
 		if (applyZoom) {
 			pageFrame = [self.pageTurningView rightPageFrame];
 		} else {
 			pageFrame = [self.pageTurningView unzoomedRightPageFrame];
 		}
+	} else {
+		if (applyZoom) {
+			pageFrame = [self.pageTurningView leftPageFrame];
+		} else {
+			pageFrame = [self.pageTurningView unzoomedLeftPageFrame];
+		}
     }
     
     if (!offset) {
         pageFrame.origin = CGPointZero;
-		if (self.pageTurningView.twoSidedPages && (pageIndex != [self.pageTurningView leftPageIndex])) {
-			if (applyZoom) {
-				pageFrame.origin = CGPointMake(CGRectGetMidX(self.pageTurningView.bounds) * self.pageTurningView.zoomFactor, 0);
-			} else {
-				pageFrame.origin = CGPointMake(CGRectGetMidX(self.pageTurningView.bounds), 0);
-			}
-		} else {
-			pageFrame.origin = CGPointZero;
-		}
     }
 
     CGAffineTransform pageTransform = transformRectToFitRect(pageCrop, pageFrame, true);
