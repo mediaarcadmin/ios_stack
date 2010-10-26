@@ -48,6 +48,10 @@
     if(_zoomedTexture) {
         [_pageTurningView _recycleTexture:_zoomedTexture];
     }
+	
+	if(_highlightTexture) {
+        [_pageTurningView _recycleTexture:_highlightTexture];
+    }
         
     [super dealloc];
 }

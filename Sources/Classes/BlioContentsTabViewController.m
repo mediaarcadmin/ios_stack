@@ -244,7 +244,11 @@ typedef enum {
     if ([self.delegate respondsToSelector:@selector(dismissContentsTabView:)])
         [self.delegate performSelector:@selector(dismissContentsTabView:) withObject:self];
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+	} else {
+		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
+	}
 }
 
 - (void)deleteBookmark:(NSManagedObject *)bookmark {

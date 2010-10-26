@@ -22,8 +22,8 @@
 #import "BlioAppSettingsConstants.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
-#define BLIOLAYOUT_LHSHOTZONE (1.0f/3*1)
-#define BLIOLAYOUT_RHSHOTZONE (1.0f/3*2)
+#define BLIOLAYOUT_LHSHOTZONE (1.0f/10*1)
+#define BLIOLAYOUT_RHSHOTZONE (1.0f/10*9)
 
 @interface BlioLayoutView()
 
@@ -216,7 +216,6 @@
             [aPageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
         }        
         [self addSubview:aPageTurningView];
-        
         self.pageTurningView = aPageTurningView;
 		//[aPageTurningView addObserver:self forKeyPath:@"retainCount" options:0 context:NULL];
         [aPageTurningView release];
@@ -225,6 +224,7 @@
         //[aPageTurningView addObserver:self forKeyPath:@"rightPageFrame" options:0 context:NULL];        
         
         [aPageTurningView turnToPageAtIndex:self.pageNumber - 1 animated:NO];
+		[aPageTurningView waitForAllPageImagesToBeAvailable];
     }
 }
 
@@ -277,6 +277,7 @@
         if(self.selector.tracking) {
             [self.selector setSelectedRange:nil];
         }
+		self.pageSize = newSize;
     }
 }
 
@@ -696,7 +697,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             break;
         }
     }
-    
+
     if (block) {
         NSArray *words = [block words];
         if (words.count) {
@@ -1144,7 +1145,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         startTouchPoint = CGPointMake(-1, -1);
         [self.delayedTouchesBeganTimer fire];
         self.delayedTouchesBeganTimer = nil;
-		NSLog(@"touchesBegan pinch to page tunring view");
         [self.pageTurningView touchesBegan:touches withEvent:event];
     } else {
         [self.delayedTouchesBeganTimer invalidate];

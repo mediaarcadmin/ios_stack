@@ -343,6 +343,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glEnable(GL_CULL_FACE);
     
     _textureGenerationOperationQueue = [[NSOperationQueue alloc] init];
+	[_textureGenerationOperationQueue setMaxConcurrentOperationCount:1];
     if([_textureGenerationOperationQueue respondsToSelector:@selector(setName:)]) {
         _textureGenerationOperationQueue.name = @"Texture Generation Queue";
     }
@@ -423,6 +424,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         GLuint texture = [textureNumber intValue];
         glDeleteTextures(1, &texture);
     }
+	
+	// Forced cleanup of missed textures. This is an error condition.
+	for (GLuint i = 1; i <= _maxTex; i++) {
+		if (glIsTexture(i)) {
+			glDeleteTextures(1, &i);
+		}
+	}
+	
     [_recycledTextures release];    
     [_textureLock release];
 
@@ -2546,9 +2555,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _cyclePageContentsInformationForTurnForwards:YES];
                     if(_twoSidedPages) {
                         _recacheFlags[4] = YES;
-						//_recacheFlags[0] = YES;
+						_recacheFlags[0] = YES;
                     }
-					//_recacheFlags[1] = YES;
+					_recacheFlags[1] = YES;
 					_recacheFlags[5] = YES; 
 
                     _viewsNeedRecache = YES;
@@ -2558,11 +2567,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 if(!hasFlipped) {
                     [self _cyclePageContentsInformationForTurnForwards:NO];
                     if(_twoSidedPages) {
-						//_recacheFlags[4] = YES;
+						_recacheFlags[4] = YES;
                         _recacheFlags[0] = YES;
                     }                    
                     _recacheFlags[1] = YES;
-					//_recacheFlags[5] = YES;
+					_recacheFlags[5] = YES;
 					
                     _viewsNeedRecache = YES;
                 }
@@ -3019,6 +3028,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
         
         glGenTextures(1, &ret);
+		_maxTex = ret;
         
         if(!isMainThread) {
             [_backgroundThreadEAGLContextLock unlock];

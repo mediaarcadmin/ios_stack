@@ -176,6 +176,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     NSMutableArray *_recycledTextures;
     
     NSOperationQueue *_textureGenerationOperationQueue;
+	
+	GLuint _maxTex;
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
