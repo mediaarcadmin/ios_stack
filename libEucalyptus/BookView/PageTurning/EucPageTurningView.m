@@ -1013,10 +1013,33 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                    alphaBled:(BOOL)alphaBled
 {
     CGContextRef thisPageBitmap;
-    
+	THPair *bitmapPair;
+
     [_bitmapDataSourceLock lock];
     if(_bitmapDataSource) {
-        if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
+		if ([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapDataForPageAtIndex:fromRect:minSize:)]) {
+			bitmapPair = [_bitmapDataSource pageTurningView:self RGBABitmapDataForPageAtIndex:index fromRect:pageRect minSize:size];
+			
+			if(alphaBled) {
+				// Need to create a context to handle the alphaBled		
+				NSData *bitmapData = bitmapPair.first;
+				CGSize bitmapSize = [bitmapPair.second CGSizeValue];
+				size_t bytesPerRow = [bitmapData length] / bitmapSize.height;
+				
+				CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+				thisPageBitmap = CGBitmapContextCreate((void *)[bitmapData bytes], bitmapSize.width, bitmapSize.height, 8, bytesPerRow , colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
+				CGContextSetStrokeColorSpace(thisPageBitmap, colorSpace);
+				CGColorSpaceRelease(colorSpace);
+				CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
+				CGContextSetStrokeColor(thisPageBitmap, whiteAlpha);
+				CGContextSetBlendMode(thisPageBitmap, kCGBlendModeCopy);
+				CGContextStrokeRectWithWidth(thisPageBitmap, CGRectMake(0.5f, 0.5f, bitmapSize.width - 1.0f, bitmapSize.height - 1.0f), 1.0f);
+				CGContextRelease(thisPageBitmap);
+			}
+			
+        } else {
+			
+			if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
             id context = nil;
             thisPageBitmap = [_bitmapDataSource pageTurningView:self
                                 RGBABitmapContextForPageAtIndex:index
@@ -1024,36 +1047,40 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                                         minSize:size
                                                      getContext:&context];
             [[context retain] autorelease];
-        } else {
+			} else {
             thisPageBitmap = [_bitmapDataSource pageTurningView:self
                                 RGBABitmapContextForPageAtIndex:index
                                                        fromRect:pageRect
                                                         minSize:size];
-        }
+
+			}
+			CGSize correctedSize = CGSizeMake(CGBitmapContextGetWidth(thisPageBitmap), CGBitmapContextGetHeight(thisPageBitmap));
+			if(THWillLog()) {
+				if(!CGSizeEqualToSize(correctedSize, size)) {
+					NSLog(@"Generated zoomed texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
+				}
+			}
+			
+			if(alphaBled) {
+				CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+				CGContextSetStrokeColorSpace(thisPageBitmap, colorSpace);
+				CGColorSpaceRelease(colorSpace);
+				CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
+				CGContextSetStrokeColor(thisPageBitmap, whiteAlpha);
+				CGContextSetBlendMode(thisPageBitmap, kCGBlendModeCopy);
+				CGContextStrokeRectWithWidth(thisPageBitmap, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
+			}
+			
+			bitmapPair = [THPair pairWithFirst:[NSData dataWithBytesNoCopy:CGBitmapContextGetData(thisPageBitmap) 
+																	length:4 * size.width * size.height
+															  freeWhenDone:NO]
+										second:[NSValue valueWithCGSize:correctedSize]];
+		}
     }
     [_bitmapDataSourceLock unlock];
 
-    CGSize correctedSize = CGSizeMake(CGBitmapContextGetWidth(thisPageBitmap), CGBitmapContextGetHeight(thisPageBitmap));
     
-    if(THWillLog()) {
-        if(!CGSizeEqualToSize(correctedSize, size)) {
-            NSLog(@"Generated zoomed texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
-        }
-    }
-    
-    if(alphaBled) {
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CGContextSetStrokeColorSpace(thisPageBitmap, colorSpace);
-        CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
-        CGContextSetStrokeColor(thisPageBitmap, whiteAlpha);
-        CGContextSetBlendMode(thisPageBitmap, kCGBlendModeCopy);
-        CGContextStrokeRectWithWidth(thisPageBitmap, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
-    }
-    
-    return [THPair pairWithFirst:[NSData dataWithBytesNoCopy:CGBitmapContextGetData(thisPageBitmap) 
-                                                          length:4 * size.width * size.height
-                                                    freeWhenDone:NO]
-                              second:[NSValue valueWithCGSize:correctedSize]];
+    return bitmapPair;
 }
 
 - (void)_setupBitmapPage:(NSUInteger)newPageIndex 
