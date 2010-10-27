@@ -1056,6 +1056,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return [self highlightRectsForPageAtIndex:pageIndex excluding:excludedRange];
 }
 
+- (void)refreshHighlights {
+	if (self.pageTurningView.twoSidedPages) {
+		[self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.leftPageIndex];
+	}
+	[self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
+	[self.pageTurningView drawView];
+}
 
 #pragma mark -
 #pragma mark TTS
