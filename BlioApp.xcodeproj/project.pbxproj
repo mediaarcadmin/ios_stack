@@ -2036,9 +2036,6 @@
 				DC8BB58F1278E87A0044580E /* Audio */,
 				28C286DF0D94DF7D0034E888 /* BlioLibraryViewController.h */,
 				28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */,
-				7DB9F57C10F345450010DF0B /* BlioBookView.h */,
-				7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */,
-				7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */,
 				553E98FF1107B8F200FB309D /* BlioSpeedReadView.h */,
 				553E99001107B8F200FB309D /* BlioSpeedReadView.m */,
 				7DCD8E5211E32EFF00BA3255 /* BlioBookManager.h */,
@@ -2674,6 +2671,9 @@
 		C921763E1176FF67009AC670 /* BookViewController */ = {
 			isa = PBXGroup;
 			children = (
+				7DB9F57C10F345450010DF0B /* BlioBookView.h */,
+				7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */,
+				7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */,
 				C95FCD02123BCEE400859B92 /* BookSearch */,
 				7D8A801D121A99FB00A54E16 /* BlioBeveledView.h */,
 				7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */,
