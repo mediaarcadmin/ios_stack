@@ -554,7 +554,8 @@
 }
 -(void)importBook:(BlioImportableBook*)importableBook {
 	NSString * title = nil;
-	if (importableBook.title) title = importableBook.title;
+//	if (importableBook.title) title = importableBook.title;
+	if (importableBook.title && [importableBook.title length] > 0 && [importableBook.title compare:@"untitled" options:NSCaseInsensitiveSearch] != NSOrderedSame) title = importableBook.title;
 	else title = importableBook.fileName;
 	
 	// check for duplicates
