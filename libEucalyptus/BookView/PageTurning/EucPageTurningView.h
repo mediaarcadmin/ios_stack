@@ -11,6 +11,7 @@
 #import "THBaseEAGLView.h"
 #import "THAccessibilityElement.h"
 #import "EucPageTurningTextureGenerationOperation.h"
+#import "THPair.h"
 
 @class EucPageTurningPageContentsInformation;
 @protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource, EucPageTurningViewBitmapDataSource;
@@ -298,6 +299,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                        fromRect:(CGRect)rect
                         minSize:(CGSize)rect
                      getContext:(id *)context;
+
+-  (THPair *)pageTurningView:(EucPageTurningView *)pageTurningView
+RGBABitmapDataForPageAtIndex:(NSUInteger)index
+				   fromRect:(CGRect)rect
+					minSize:(CGSize)size;
 
 - (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 
    fastUIImageForPageAtIndex:(NSUInteger)index;

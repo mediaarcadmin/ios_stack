@@ -337,6 +337,15 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                                           getContext:context];
 }
 
+- (THPair *)pageTurningView:(EucPageTurningView *)aPageTurningView 
+   RGBABitmapDataForPageAtIndex:(NSUInteger)index
+                       fromRect:(CGRect)rect 
+                        minSize:(CGSize)size {
+    return [self.dataSource RGBABitmapDataForPage:index + 1
+                                            fromRect:rect 
+                                             minSize:size];
+}
+
 - (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 
    fastUIImageForPageAtIndex:(NSUInteger)index {
     return [self.dataSource thumbnailForPage:index + 1];

@@ -9,6 +9,7 @@
 #import "BlioLayoutPDFDataSource.h"
 #import "BlioLayoutGeometry.h"
 #import <libEucalyptus/THUIDeviceAdditions.h>
+#import <libEucalyptus/THPair.h>
 
 @implementation BlioLayoutPDFDataSource
 
@@ -140,6 +141,53 @@
     *context = [bitmapData autorelease];
     
     return (CGContextRef)[(id)bitmapContext autorelease];
+}
+
+- (THPair *)RGBABitmapDataForPage:(NSUInteger)page fromRect:(CGRect)rect minSize:(CGSize)size {
+	[self openDocumentIfRequired];
+    
+    if (nil == pdf) return nil;
+    
+    size_t width  = size.width;
+    size_t height = size.height;
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    //CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceCMYK();
+    
+    size_t bytesPerRow = 4 * width;
+    size_t totalBytes = bytesPerRow * height;
+    
+    NSMutableData *bitmapData = [[NSMutableData alloc] initWithCapacity:totalBytes];
+    [bitmapData setLength:totalBytes];
+    
+    CGContextRef bitmapContext = CGBitmapContextCreate([bitmapData mutableBytes], width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
+    CGColorSpaceRelease(colorSpace);
+	
+	
+	CGRect pageCropRect = [self cropRectForPage:page];
+	
+    CGFloat pageZoomScaleWidth  = size.width / CGRectGetWidth(rect);
+    CGFloat pageZoomScaleHeight = size.height / CGRectGetHeight(rect);
+	
+	CGRect pageRect = CGRectMake(0, 0, pageCropRect.size.width * pageZoomScaleWidth, pageCropRect.size.height * pageZoomScaleHeight);
+   	
+    CGAffineTransform fitTransform = transformRectToFitRect(pageCropRect, pageRect, YES);
+    CGContextConcatCTM(bitmapContext, fitTransform);
+	CGContextTranslateCTM(bitmapContext, -(rect.origin.x - pageCropRect.origin.x) , (rect.origin.y - pageCropRect.origin.y) - (CGRectGetHeight(pageCropRect) - CGRectGetHeight(rect)));
+	
+	CGContextSetFillColorWithColor(bitmapContext, [UIColor whiteColor].CGColor);
+	CGContextFillRect(bitmapContext, pageCropRect);
+	CGContextClipToRect(bitmapContext, pageCropRect);
+    
+    [pdfLock lock];
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
+    CGContextDrawPDFPage(bitmapContext, aPage);
+    [pdfLock unlock];
+    
+	[self closeDocumentIfRequired];
+    
+    return [THPair pairWithFirst:[bitmapData autorelease]
+						  second:[NSValue valueWithCGSize:CGSizeMake(width, height)]];
 }
 
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
