@@ -172,9 +172,13 @@
         // Cache the first page crop to allow fast estimating of crops
         firstPageCrop = [self.dataSource cropRectForPage:1];
 
-        //NSInteger page = aBook.implicitBookmarkPoint.layoutPage;
-//        if (page > self.pageCount) page = self.pageCount;
-        self.pageNumber = 1;
+        
+		if (animated) {
+			self.pageNumber = 1;
+		} else {
+			NSInteger page = MAX(MIN(aBook.implicitBookmarkPoint.layoutPage, self.pageCount), 1);
+			self.pageNumber = page;
+		}
         
     }
 
