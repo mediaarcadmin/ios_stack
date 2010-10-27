@@ -254,7 +254,7 @@
 	cell.textLabel.textAlignment = UITextAlignmentLeft;
 	cell.textLabel.text = importableBook.fileName;
 	cell.detailTextLabel.textAlignment = UITextAlignmentLeft;
-	if (!importableBook.title || [importableBook.title length] == 0) {
+	if (!importableBook.title || [importableBook.title length] == 0 || [importableBook.title compare:@"untitled" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 		cell.detailTextLabel.text = @"";
 	}
 	else {

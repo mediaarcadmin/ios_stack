@@ -1013,7 +1013,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                    alphaBled:(BOOL)alphaBled
 {
     CGContextRef thisPageBitmap;
-	THPair *bitmapPair;
+	THPair *bitmapPair = nil;
 
     [_bitmapDataSourceLock lock];
     if(_bitmapDataSource) {
