@@ -285,13 +285,26 @@
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    [self.selector setSelectedRange:nil];
+    if(self.selector) {
+        [self.selector removeObserver:self forKeyPath:@"tracking"];
+        [self.selector detatch];
+        self.selector = nil;
+    }
 	self.temporaryHighlightRange = nil;
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	self.lastBlock = nil;
 	self.accessibilityElements = nil;
+	
+	EucSelector *aSelector = [[EucSelector alloc] init];
+	aSelector.shouldSniffTouches = YES;
+	aSelector.dataSource = self;
+	aSelector.delegate =  self;
+	[aSelector attachToView:self];
+	[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
+	self.selector = aSelector;
+	[aSelector release];
 	
 	// TODO: Get Jamie to provide an asynchronous update mechanism for this so we don't see a checkerboard flash
 	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex];
