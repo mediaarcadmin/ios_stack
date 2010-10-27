@@ -2021,68 +2021,19 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				A3FE55A812074EBD0038DA0C /* BlioAboutSettingsController.h */,
-				DC8CB3231249298400C1EED9 /* BlioRoundedRectActivityView.h */,
-				DC8CB3241249298400C1EED9 /* BlioRoundedRectActivityView.m */,
-				A3FE55A912074EBD0038DA0C /* BlioAboutSettingsController.m */,
-				A3FE55AA12074EBD0038DA0C /* BlioEULATextController.h */,
-				A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */,
-				A3FE55AC12074EBD0038DA0C /* BlioHelpSettingsController.h */,
-				A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */,
-				A3FE55AE12074EBD0038DA0C /* BlioVersionController.h */,
-				A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */,
-				A38CDD6F11E60F9500C5C3D2 /* BlioPaidBooksSettingsController.h */,
-				A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */,
-				DC8BB2451277316A0044580E /* BlioArchiveSettingsViewController.h */,
-				DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */,
+				DC8BB54C1278E1670044580E /* App Settings Screens */,
+				DC8BB54F1278E2B60044580E /* In-App Purchase */,
 				A37DADCD11B1E4DC005F949A /* DRM */,
 				C98CCAA9119D8343002E9A8E /* XPS */,
-				A3F9387D116BD63500E53BD3 /* CellTextField.h */,
-				A3F9387E116BD63500E53BD3 /* CellTextField.m */,
-				A3F9387F116BD63500E53BD3 /* EditableTableViewCell.h */,
-				A3F93880116BD63500E53BD3 /* EditableTableViewCell.m */,
-				DC0B99361194E9190040CEFB /* BlioStoreManager.h */,
-				DC0B99371194E9190040CEFB /* BlioStoreManager.m */,
-				DC0B99421194F2210040CEFB /* BlioStoreHelperDelegate.h */,
-				DC0B993C1194F03B0040CEFB /* BlioStoreHelper.h */,
-				DC0B993D1194F03B0040CEFB /* BlioStoreHelper.m */,
-				A368C69C116A3A52008653CF /* BlioOnlineStoreHelper.h */,
-				A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */,
-				DCC9B4EB1254E84600B17FBB /* BlioInAppPurchaseManager.h */,
-				DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */,
-				DCEB075D1242A2A10073881D /* Digital Locker Gateway */,
-				A3892C1D1164331A006D8DF4 /* BookVault */,
-				C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */,
-				C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */,
-				DC84EDF61261267400BC6514 /* BlioFileSharingManager.h */,
-				DC84EDF71261267400BC6514 /* BlioFileSharingManager.m */,
-				DCC9B5B0125535A800B17FBB /* CCInAppPurchaseService.h */,
-				DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */,
-				DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */,
-				DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */,
+				DCEB075D1242A2A10073881D /* Store and Account Services */,
 				7D9147C31151494A00BCBB23 /* FlowView */,
 				C9985BF8113E8286009E5263 /* LayoutView */,
 				C9F936EB113530020047B985 /* Processing */,
 				C972639A111C6063001BCC0B /* GetBooks */,
 				7DA5664F11529F74000A849D /* TextFlow */,
-				A37FC33210EA783700F3DC5A /* TTS */,
 				C921763E1176FF67009AC670 /* BookViewController */,
-				C93E825B1134241D000117C6 /* BlioWebToolsViewController.h */,
-				C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */,
-				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
-				1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */,
-				DC2A3E5C116C5DF80049A97E /* MRGridView.h */,
-				DC2A3E5D116C5DF80049A97E /* MRGridView.m */,
-				DC2A3E5E116C5DF80049A97E /* MRGridViewCell.h */,
-				DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */,
-				DC2A3E60116C5DF80049A97E /* MRGridViewController.h */,
-				DC2A3E61116C5DF80049A97E /* MRGridViewController.m */,
-				DC2A3E62116C5DF80049A97E /* MRGridViewDataSource.h */,
-				DC2A3E63116C5DF80049A97E /* MRGridViewDelegate.h */,
-				DC48C98C11D54A0100C5D186 /* BlioSplitViewController.h */,
-				DC48C98D11D54A0100C5D186 /* BlioSplitViewController.m */,
-				DC48C98E11D54A0100C5D186 /* BlioSplitView.h */,
-				DC48C98F11D54A0100C5D186 /* BlioSplitView.m */,
+				DC8BB5511278E4AA0044580E /* Shared UI Components */,
+				DC8BB58F1278E87A0044580E /* Audio */,
 				28C286DF0D94DF7D0034E888 /* BlioLibraryViewController.h */,
 				28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */,
 				7DB9F57C10F345450010DF0B /* BlioBookView.h */,
@@ -2096,43 +2047,16 @@
 				C9775AF510DFD728005E0E2B /* BlioBook.m */,
 				7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */,
 				7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */,
-				C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */,
-				C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */,
 				7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */,
 				7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */,
-				A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */,
-				A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */,
-				A3169287111488C9005AAE5E /* BlioAudioManager.h */,
-				A3169288111488C9005AAE5E /* BlioAudioManager.m */,
-				A3A672B511304D7700138097 /* BlioAppSettingsController.m */,
-				A3A672B411304D7700138097 /* BlioAppSettingsController.h */,
-				DCAC960F126918C200C24BF7 /* BlioMyAccountViewController.h */,
-				DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */,
-				A3A67374113078E300138097 /* BlioAudioSettingsController.h */,
-				A3A67375113078E300138097 /* BlioAudioSettingsController.m */,
-				DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */,
-				DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */,
-				DCC9B64A1255BFA000B17FBB /* BlioPurchaseVoicesViewController.h */,
-				DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */,
+				DC84EDF61261267400BC6514 /* BlioFileSharingManager.h */,
+				DC84EDF71261267400BC6514 /* BlioFileSharingManager.m */,
+				DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */,
+				DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */,
+				DC8BB5881278E7060044580E /* Additions */,
+				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
+				1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */,
 				A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */,
-				A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */,
-				A371FDCC113AF77200E1A51C /* BlioWebToolSettingsController.h */,
-				A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */,
-				A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */,
-				DCE78E3A123CB9960038970C /* BlioCreateAccountViewController.h */,
-				DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */,
-				C9336E7A1180854800D29256 /* BlioAccessibilitySegmentedControl.h */,
-				C9336E7B1180854800D29256 /* BlioAccessibilitySegmentedControl.m */,
-				DC50779F116A3F2800CD40B3 /* Reachability.h */,
-				DC5077A0116A3F2800CD40B3 /* Reachability.m */,
-				7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */,
-				7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */,
-				7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */,
-				7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */,
-				7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */,
-				7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */,
-				A37966CF127397930077D95A /* BlioReadingNavigationSettingsController.h */,
-				A37966D0127397930077D95A /* BlioReadingNavigationSettingsController.m */,
 			);
 			name = Classes;
 			path = Sources/Classes;
@@ -2771,6 +2695,8 @@
 				C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */,
 				C932B03910ECBC6000B8286A /* BlioNotesView.h */,
 				C932B03A10ECBC6000B8286A /* BlioNotesView.m */,
+				C93E825B1134241D000117C6 /* BlioWebToolsViewController.h */,
+				C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */,
 			);
 			name = BookViewController;
 			sourceTree = "<group>";
@@ -2846,7 +2772,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2885,6 +2811,9 @@
 		C9B620BD1137BDB10012CE7E /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				DC50779F116A3F2800CD40B3 /* Reachability.h */,
+				DC5077A0116A3F2800CD40B3 /* Reachability.m */,
+				DC8BB5501278E4340044580E /* MRGridView */,
 				7D9A6881125ABC7200130A53 /* LevenshteinDistance */,
 				A37DADE311B211DA005F949A /* DRM */,
 				C9B620BF1137BE170012CE7E /* ZipArchive */,
@@ -2932,6 +2861,113 @@
 			name = Processing;
 			sourceTree = "<group>";
 		};
+		DC8BB54C1278E1670044580E /* App Settings Screens */ = {
+			isa = PBXGroup;
+			children = (
+				A37966CF127397930077D95A /* BlioReadingNavigationSettingsController.h */,
+				A37966D0127397930077D95A /* BlioReadingNavigationSettingsController.m */,
+				A3A672B511304D7700138097 /* BlioAppSettingsController.m */,
+				A3A672B411304D7700138097 /* BlioAppSettingsController.h */,
+				DCAC960F126918C200C24BF7 /* BlioMyAccountViewController.h */,
+				DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */,
+				A3A67374113078E300138097 /* BlioAudioSettingsController.h */,
+				A3A67375113078E300138097 /* BlioAudioSettingsController.m */,
+				DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */,
+				DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */,
+				DCC9B64A1255BFA000B17FBB /* BlioPurchaseVoicesViewController.h */,
+				DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */,
+				A3FE55A812074EBD0038DA0C /* BlioAboutSettingsController.h */,
+				A3FE55A912074EBD0038DA0C /* BlioAboutSettingsController.m */,
+				A3FE55AA12074EBD0038DA0C /* BlioEULATextController.h */,
+				A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */,
+				A3FE55AC12074EBD0038DA0C /* BlioHelpSettingsController.h */,
+				A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */,
+				A3FE55AE12074EBD0038DA0C /* BlioVersionController.h */,
+				A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */,
+				A38CDD6F11E60F9500C5C3D2 /* BlioPaidBooksSettingsController.h */,
+				A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */,
+				DC8BB2451277316A0044580E /* BlioArchiveSettingsViewController.h */,
+				DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */,
+				A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */,
+				A371FDCC113AF77200E1A51C /* BlioWebToolSettingsController.h */,
+			);
+			name = "App Settings Screens";
+			sourceTree = "<group>";
+		};
+		DC8BB54F1278E2B60044580E /* In-App Purchase */ = {
+			isa = PBXGroup;
+			children = (
+				DCC9B4EB1254E84600B17FBB /* BlioInAppPurchaseManager.h */,
+				DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */,
+				DCC9B5B0125535A800B17FBB /* CCInAppPurchaseService.h */,
+				DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */,
+			);
+			name = "In-App Purchase";
+			sourceTree = "<group>";
+		};
+		DC8BB5501278E4340044580E /* MRGridView */ = {
+			isa = PBXGroup;
+			children = (
+				DC2A3E5C116C5DF80049A97E /* MRGridView.h */,
+				DC2A3E5D116C5DF80049A97E /* MRGridView.m */,
+				DC2A3E5E116C5DF80049A97E /* MRGridViewCell.h */,
+				DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */,
+				DC2A3E60116C5DF80049A97E /* MRGridViewController.h */,
+				DC2A3E61116C5DF80049A97E /* MRGridViewController.m */,
+				DC2A3E62116C5DF80049A97E /* MRGridViewDataSource.h */,
+				DC2A3E63116C5DF80049A97E /* MRGridViewDelegate.h */,
+			);
+			name = MRGridView;
+			sourceTree = "<group>";
+		};
+		DC8BB5511278E4AA0044580E /* Shared UI Components */ = {
+			isa = PBXGroup;
+			children = (
+				DC8CB3231249298400C1EED9 /* BlioRoundedRectActivityView.h */,
+				DC8CB3241249298400C1EED9 /* BlioRoundedRectActivityView.m */,
+				C9336E7A1180854800D29256 /* BlioAccessibilitySegmentedControl.h */,
+				C9336E7B1180854800D29256 /* BlioAccessibilitySegmentedControl.m */,
+				A3F9387D116BD63500E53BD3 /* CellTextField.h */,
+				A3F9387E116BD63500E53BD3 /* CellTextField.m */,
+				A3F9387F116BD63500E53BD3 /* EditableTableViewCell.h */,
+				A3F93880116BD63500E53BD3 /* EditableTableViewCell.m */,
+				DC48C98C11D54A0100C5D186 /* BlioSplitViewController.h */,
+				DC48C98D11D54A0100C5D186 /* BlioSplitViewController.m */,
+				DC48C98E11D54A0100C5D186 /* BlioSplitView.h */,
+				DC48C98F11D54A0100C5D186 /* BlioSplitView.m */,
+			);
+			name = "Shared UI Components";
+			sourceTree = "<group>";
+		};
+		DC8BB5881278E7060044580E /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */,
+				7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */,
+				7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */,
+				7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */,
+				7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */,
+				7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */,
+				C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */,
+				C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */,
+				C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */,
+				C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */,
+			);
+			name = Additions;
+			sourceTree = "<group>";
+		};
+		DC8BB58F1278E87A0044580E /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				A37FC33210EA783700F3DC5A /* TTS */,
+				A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */,
+				A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */,
+				A3169287111488C9005AAE5E /* BlioAudioManager.h */,
+				A3169288111488C9005AAE5E /* BlioAudioManager.m */,
+			);
+			name = Audio;
+			sourceTree = "<group>";
+		};
 		DCB0363E11BDC42C00B341D4 /* Resources-iPad */ = {
 			isa = PBXGroup;
 			children = (
@@ -2946,13 +2982,25 @@
 			path = "Resources-iPad";
 			sourceTree = "<group>";
 		};
-		DCEB075D1242A2A10073881D /* Digital Locker Gateway */ = {
+		DCEB075D1242A2A10073881D /* Store and Account Services */ = {
 			isa = PBXGroup;
 			children = (
+				A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */,
+				A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */,
+				DCE78E3A123CB9960038970C /* BlioCreateAccountViewController.h */,
+				DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */,
+				DC0B99361194E9190040CEFB /* BlioStoreManager.h */,
+				DC0B99371194E9190040CEFB /* BlioStoreManager.m */,
+				DC0B99421194F2210040CEFB /* BlioStoreHelperDelegate.h */,
+				DC0B993C1194F03B0040CEFB /* BlioStoreHelper.h */,
+				DC0B993D1194F03B0040CEFB /* BlioStoreHelper.m */,
+				A368C69C116A3A52008653CF /* BlioOnlineStoreHelper.h */,
+				A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */,
 				DCEB07721242AFEF0073881D /* DigitalLockerGateway.h */,
 				DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */,
+				A3892C1D1164331A006D8DF4 /* BookVault */,
 			);
-			name = "Digital Locker Gateway";
+			name = "Store and Account Services";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -3151,10 +3199,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -4472,7 +4520,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: CrossComm, Inc.";
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
@@ -4482,7 +4530,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "906AF447-5F1C-4A13-9A64-ABA631581901";
 				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
