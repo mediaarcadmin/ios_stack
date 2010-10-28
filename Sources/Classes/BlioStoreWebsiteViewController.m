@@ -50,7 +50,7 @@
 		// Display instructions for website.
 		CGFloat yPlacement = kTopMargin;
 		CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
-		[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Vault for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.")]];
+		[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Archive for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.")]];
 		
 		// blioreader.com button.
 		yPlacement += kTweenMargin + 5*kLabelHeight;

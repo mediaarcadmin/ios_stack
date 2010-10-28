@@ -183,7 +183,7 @@ tryAgain:
 		}
 		else {
 			//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-			//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Vault. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Vault. In the meantime, previously synced books will display.")]
+			//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Archive. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Archive. In the meantime, previously synced books will display.")]
 			//										delegate:self
 			//							   cancelButtonTitle:@"OK"
 			//							   otherButtonTitles:nil];			
