@@ -300,21 +300,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-#ifdef DEMO_MODE
-		/*
-        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
-                                              authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
-											coverPath:@"MockCovers/Three_Little_Pigs.png"
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Three Little Pigs.xps"
-										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
-										audiobookPath:@"AudioBooks/Three Little Pigs.zip"
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Three Little Pigs"
-									  placeholderOnly:NO
-		 ];
-		*/
+#ifdef DEMO_MODE		
 		
         [self.processingDelegate enqueueBookWithTitle:@"Toy Story" 
                                               authors:[NSArray arrayWithObject:@"Disney"]
@@ -341,6 +327,33 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Cars" 
+                                              authors:[NSArray arrayWithObjects:@"Disney", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Cars.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Cars" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
+                                              authors:[NSArray arrayWithObjects:@"Blackstone, Stella", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Three Little Pigs.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Three Little Pigs" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
 		
 #endif // DEMO_MODE
 		
