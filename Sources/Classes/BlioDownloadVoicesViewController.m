@@ -270,10 +270,11 @@
 		[self.contentView addSubview:progressView];
 		[self.contentView bringSubviewToFront:progressView];
 		
-		self.progressLabel = [[UILabel alloc] initWithFrame:self.progressView.frame];
+		self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.progressView.frame.origin.x, self.progressView.frame.origin.y + self.progressView.frame.size.height, self.progressView.frame.size.width, 15.0f)];
 		self.progressLabel.center = CGPointMake(self.progressView.center.x, self.progressView.center.y + self.progressView.bounds.size.height);
 		self.progressLabel.font = [UIFont boldSystemFontOfSize:11];
 		self.progressLabel.textAlignment = UITextAlignmentCenter;
+		self.progressLabel.backgroundColor = [UIColor clearColor];
 		self.progressLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		[self.contentView addSubview:progressLabel];
 		[self.contentView bringSubviewToFront:progressLabel];
@@ -325,7 +326,7 @@
 	}
 }
 -(NSString*)progressLabelFormattedText {
-	return NSLocalizedStringWithDefaultValue(@"I_OF_I_MB_DOWNLOAD_PROGRESS",nil,[NSBundle mainBundle],@"%i of %i MB",@"\"%i of %i MB\" download voice progress label text");
+	return NSLocalizedStringWithDefaultValue(@"F_OF_F_MB_DOWNLOAD_PROGRESS",nil,[NSBundle mainBundle],@"%.1f of %.1f MB",@"\"%.1f of %.1f MB\" download voice progress label text");
 }
 -(void)configureWithVoice:(NSString*)aVoice {
 	self.voice = aVoice;
@@ -336,8 +337,8 @@
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
 		self.progressView.progress = voiceOp.percentageComplete/100.0f;
 		if (voiceOp.expectedContentLength != NSURLResponseUnknownLength) {
-			NSInteger totalMB = voiceOp.expectedContentLength/1000000;
-			NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
+			CGFloat totalMB = voiceOp.expectedContentLength/1000000;
+			CGFloat progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
 			self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];
 		}
 	}
@@ -363,8 +364,8 @@
 			[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
 			if (voiceOp.percentageComplete != 100) {
 				self.progressView.progress = voiceOp.percentageComplete/100.0f;
-				NSInteger totalMB = voiceOp.expectedContentLength/1000000;
-				NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
+				CGFloat totalMB = voiceOp.expectedContentLength/1000000.0f;
+				CGFloat progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000.0f;
 				self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];		
 			}
 			else {
