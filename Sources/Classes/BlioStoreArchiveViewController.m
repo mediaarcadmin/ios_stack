@@ -142,7 +142,7 @@
 		[self.activityIndicatorView startAnimating];
 	}		
 	
-	if (userDismissedLogin) {
+	if (userDismissedLogin && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
 		userDismissedLogin = NO;
 		return;
 	}

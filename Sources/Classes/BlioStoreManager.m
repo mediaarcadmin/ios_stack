@@ -99,10 +99,14 @@
 
 }
 -(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {	
+	NSLog(@"beginIgnoringInteractionEvents");
+	[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginWithUsername:user password:password];
 }
 -(void)storeHelper:(BlioStoreHelper*)storeHelper receivedLoginResult:(NSInteger)loginResult {
 	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
+	NSLog(@"endIgnoringInteractionEvents");
+	[[UIApplication sharedApplication] endIgnoringInteractionEvents];
 	if (loginResult == BlioLoginResultInvalidPassword && isShowingLoginView == NO) {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
 	}
