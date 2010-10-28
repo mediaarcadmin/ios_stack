@@ -338,6 +338,7 @@
 		UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:kBlioImportBookCellActivityIndicatorViewTag];
 		cellActivityIndicatorView.hidden = NO;
 		[cellActivityIndicatorView startAnimating];	
+		[cellActivityIndicatorView.superview bringSubviewToFront:cellActivityIndicatorView];
 //		UIImage * emptyImage = [[UIImage alloc] init];
 //		[tableView cellForRowAtIndexPath:indexPath].imageView.image = emptyImage;  // setting a UIImage object allows the view (and activity indicator subview) to show up
 //		[tableView cellForRowAtIndexPath:indexPath].imageView.frame = CGRectMake(0, 0, kBlioImportBookCellActivityIndicatorViewWidth * 1.5, kBlioImportBookCellActivityIndicatorViewWidth);
