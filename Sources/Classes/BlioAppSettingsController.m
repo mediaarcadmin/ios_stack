@@ -7,7 +7,7 @@
 //
 
 #import "BlioAppSettingsController.h"
-#import "BlioAudioSettingsController.h"
+#import "BlioReadingVoiceSettingsViewController.h"
 #import "BlioWebToolSettingsController.h"
 #import "BlioReadingNavigationSettingsController.h"
 #import "BlioAboutSettingsController.h"
@@ -90,7 +90,7 @@
 		return 3;
 	return 1;
 }
-
+/*
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
 	NSString *title = nil;
@@ -104,7 +104,7 @@
 	}
 	return title;
 }
-
+*/
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -160,7 +160,7 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	BlioAudioSettingsController *audioController;
+	BlioReadingVoiceSettingsViewController *audioController;
 	BlioWebToolSettingsController *webToolController;
 	BlioReadingNavigationSettingsController *readingnavController;
 	BlioHelpSettingsController *helpController;
@@ -171,7 +171,7 @@
 			switch (indexPath.row)
 			{
 				case 0:
-					audioController = [[BlioAudioSettingsController alloc] initWithStyle:UITableViewStyleGrouped];
+					audioController = [[BlioReadingVoiceSettingsViewController alloc] init];
 					[self.navigationController pushViewController:audioController animated:YES];
 					[audioController release];
 					break;

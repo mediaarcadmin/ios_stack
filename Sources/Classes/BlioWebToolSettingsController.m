@@ -90,7 +90,11 @@
 {	
 	// create a gradient-based content view	
 	UIView *contentView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-	contentView.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		contentView.backgroundColor = [UIColor colorWithRed:224.0f/255.0f green:227.0f/255.0f blue:232.0f/255.0f alpha:1];
+	}
+	else contentView.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
+
 	contentView.autoresizesSubviews = YES;
 	self.view = contentView;
 	[contentView release];
