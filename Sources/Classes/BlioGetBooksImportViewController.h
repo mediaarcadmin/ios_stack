@@ -10,7 +10,7 @@
 #import "BlioRoundedRectActivityView.h"
 
 static const NSInteger kBlioImportBookCellActivityIndicatorViewTag = 99;
-static const NSInteger kBlioImportBookCellActivityIndicatorViewWidth = 16;
+static const NSInteger kBlioImportBookCellActivityIndicatorViewWidth = 20;
 
 @protocol BlioProcessingDelegate;
 
