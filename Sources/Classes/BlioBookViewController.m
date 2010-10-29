@@ -73,7 +73,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
-- (void)layoutPauseButton;
 @end
 
 @interface BlioBookSlider : UISlider {
@@ -855,7 +854,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     UIImage *pauseImage = [UIImage imageNamed:@"button-tts-pause.png"];
     [aPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
     [aPauseButton addTarget:self action:@selector(toggleAudio:) forControlEvents:UIControlEventTouchUpInside];
-    [aPauseButton setFrame:CGRectMake(0, 0, pauseImage.size.width, pauseImage.size.height)];
+	CGRect buttonFrame = CGRectMake(3, CGRectGetHeight(root.frame) - pauseImage.size.height - 3, pauseImage.size.width, pauseImage.size.height);
+    [aPauseButton setFrame:buttonFrame];
+	[aPauseButton setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin];
     [aPauseButton setShowsTouchWhenHighlighted:YES];
     [aPauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
     [aPauseButton setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
@@ -868,13 +869,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     CGRect navFrame = self.navigationController.navigationBar.frame;
     navFrame.origin.y = 20;
     [self.navigationController.navigationBar setFrame:navFrame];
-}
-
-- (void)layoutPauseButton {
-    CGRect buttonFrame = self.pauseButton.frame;
-    buttonFrame.origin.y = CGRectGetHeight(self.bookView.frame) - CGRectGetHeight(buttonFrame) - 3;
-    buttonFrame.origin.x = 3;
-    [self.pauseButton setFrame:buttonFrame];
 }
 
 - (void)setNavigationBarButtons {
@@ -1006,7 +1000,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [titleView setAuthor:[self.book authorsWithStandardFormat]];
         
         [self setNavigationBarButtons];
-        [self layoutPauseButton];     
         
         if(animated) {
             CATransition *animation = [CATransition animation];
@@ -2500,7 +2493,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     // Doing this here instead of in the 'didRotate' callback results in smoother
     // animation that happens simultaneously with the rotate.
     [self layoutNavigationToolbar];
-    [self layoutPauseButton];
     [self setNavigationBarButtons];
     if (_pageJumpView) {
         [self layoutPageJumpView];
