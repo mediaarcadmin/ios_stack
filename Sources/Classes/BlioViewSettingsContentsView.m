@@ -9,6 +9,7 @@
 #import "BlioViewSettingsContentsView.h"
 #import <libEucalyptus/THUIImageAdditions.h>
 #import "BlioUIImageAdditions.h"
+#import "BlioAppSettingsConstants.h"
 
 #define kBlioViewSettingsGreenButton [UIColor colorWithRed:0.053 green:0.613 blue:0.000 alpha:1.000]//[UIColor colorWithRed:0.302 green:0.613 blue:0.289 alpha:1.000]
 #define kBlioViewSettingsPopverBlueButton [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000]
@@ -32,9 +33,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 
 @synthesize fontSizeLabel;
 @synthesize pageColorLabel;
+@synthesize tapZoomsToBlockLabel;
 @synthesize pageLayoutSegment;
 @synthesize fontSizeSegment;
 @synthesize pageColorSegment;
+@synthesize tapZoomsToBlockSwitch;
 @synthesize lockButtonSegment;
 @synthesize doneButton;
 @synthesize tapTurnOnImage, tapTurnOffImage, lockRotationImage, unlockRotationImage;
@@ -43,9 +46,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 - (void)dealloc {
     self.fontSizeLabel = nil;
     self.pageColorLabel = nil;
+	self.tapZoomsToBlockLabel = nil;
     self.pageLayoutSegment = nil;
     self.fontSizeSegment = nil;
     self.pageColorSegment = nil;
+	self.tapZoomsToBlockSwitch = nil;
     self.lockButtonSegment = nil;
     self.doneButton = nil;
     self.tapTurnOnImage = nil;
@@ -59,6 +64,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 - (void)displayPageAttributes {
     BOOL showFontSize = NO;
     BOOL showPageColor = NO;
+    BOOL showTapZoomsToBlock = NO;
     
     if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowFontSizeSettings)]) {
         showFontSize = [self.viewSettingsDelegate shouldShowFontSizeSettings];
@@ -67,7 +73,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowPageColorSettings)]) {
         showPageColor = [self.viewSettingsDelegate shouldShowPageColorSettings];
     }
-    
+
+	if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowTapZoomsToBlockSettings)]) {
+        showTapZoomsToBlock = [self.viewSettingsDelegate shouldShowTapZoomsToBlockSettings];
+    }
+	
     if (showFontSize) {
         self.fontSizeLabel.enabled = YES;
         self.fontSizeSegment.enabled = YES;
@@ -92,6 +102,18 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 		self.pageColorLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.pageColorLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];
 	} 
     
+	if (showTapZoomsToBlock) {
+		self.tapZoomsToBlockLabel.enabled = YES;
+		self.tapZoomsToBlockSwitch.enabled = YES;
+        self.tapZoomsToBlockSwitch.alpha = 1.0f;
+		self.tapZoomsToBlockLabel.accessibilityLabel = self.tapZoomsToBlockLabel.text;
+	} else {
+		self.tapZoomsToBlockLabel.enabled = NO;
+		self.tapZoomsToBlockSwitch.enabled = NO;
+        self.tapZoomsToBlockSwitch.alpha = 0.35f;
+		self.tapZoomsToBlockLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.tapZoomsToBlockLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];;
+	}
+
 	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 
@@ -99,6 +121,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
 	if ((self = [super initWithFrame:CGRectZero])) {
         self.viewSettingsDelegate = newDelegate;
+		
+		//////// PAGE LAYOUT
 		
         UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
         UIColor *white = [UIColor whiteColor];
@@ -157,11 +181,13 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         [self.pageLayoutSegment addTarget:self action:@selector(changePageLayout:) forControlEvents:UIControlEventValueChanged];
         
+		//////// FONT SIZE
+
         UILabel *aFontSizeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aFontSizeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         aFontSizeLabel.textColor = [UIColor whiteColor];
         aFontSizeLabel.backgroundColor = [UIColor clearColor];
-        aFontSizeLabel.text = @"Font Size";
+        aFontSizeLabel.text = NSLocalizedString(@"Font Size",@"Settings Label for Font Size segmented control.");
         [self addSubview:aFontSizeLabel];
         self.fontSizeLabel = aFontSizeLabel;
         [aFontSizeLabel release];
@@ -205,19 +231,21 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         [self.fontSizeSegment addTarget:self.viewSettingsDelegate action:@selector(changeFontSize:) forControlEvents:UIControlEventValueChanged];
         
+		//////// PAGE COLOR
+		
         UILabel *aPageColorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aPageColorLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         aPageColorLabel.textColor = [UIColor whiteColor];
         aPageColorLabel.backgroundColor = [UIColor clearColor];
-        aPageColorLabel.text = @"Page Color";
+        aPageColorLabel.text = NSLocalizedString(@"Page Color",@"Settings Label for Page Color segmented control.");
         [self addSubview:aPageColorLabel];
         self.pageColorLabel = aPageColorLabel;
         [aPageColorLabel release];
         
         NSArray *pageColorTitles = [NSArray arrayWithObjects:
-                                    @"White",
-                                    @"Black",
-                                    @"Neutral",
+                                    NSLocalizedString(@"White",@"\"White\" segment label (for Page Color SegmentedControl)"),
+                                    NSLocalizedString(@"Black",@"\"Black\" segment label (for Page Color SegmentedControl)"),
+                                    NSLocalizedString(@"Neutral",@"\"Neutral\" segment label (for Page Color SegmentedControl)"),
                                     nil];
         
         BlioAccessibilitySegmentedControl *aPageColorSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:pageColorTitles];
@@ -240,6 +268,31 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         [self.pageColorSegment addTarget:self.viewSettingsDelegate action:@selector(changePageColor:) forControlEvents:UIControlEventValueChanged];
         
+		//////// TAP ZOOMS TO BLOCK
+		
+		UILabel *aTabZoomsToBlockLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        aTabZoomsToBlockLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        aTabZoomsToBlockLabel.textColor = [UIColor whiteColor];
+        aTabZoomsToBlockLabel.backgroundColor = [UIColor clearColor];
+        aTabZoomsToBlockLabel.text = NSLocalizedString(@"Tap Zooms To Block",@"Settings Label for Tap Zooms To Block switch.");
+        [self addSubview:aTabZoomsToBlockLabel];
+        self.tapZoomsToBlockLabel = aTabZoomsToBlockLabel;
+        [aTabZoomsToBlockLabel release];
+		
+		UISwitch * aTabZoomsToBlockSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+		[self addSubview:aTabZoomsToBlockSwitch];
+		self.tapZoomsToBlockSwitch = aTabZoomsToBlockSwitch;
+		[aTabZoomsToBlockSwitch addTarget:self.viewSettingsDelegate action:@selector(changeTapZooms:) forControlEvents:UIControlEventValueChanged];
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey] == YES ) 
+			[aTabZoomsToBlockSwitch setOn:YES animated:NO];
+		else 
+			// This is the initial value.
+			[aTabZoomsToBlockSwitch setOn:NO animated:NO];
+		
+		[aTabZoomsToBlockSwitch release];
+		
+		//////// ORIENTATION LOCK
+
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             
             BlioAccessibilitySegmentedControl *aLockButtonSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] init];
@@ -281,8 +334,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             [aDoneButton.titleLabel setShadowOffset:CGSizeMake(0.0f, 1.0f)];
             [aDoneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [aDoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-            [aDoneButton setBackgroundImage:[UIImage imageNamed:@"done-button-up.png"] forState:UIControlStateNormal];
-            [aDoneButton setBackgroundImage:[UIImage imageNamed:@"done-button-down.png"] forState:UIControlStateHighlighted];
+            [aDoneButton setBackgroundImage:[[UIImage imageNamed:@"done-button-up.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateNormal];
+            [aDoneButton setBackgroundImage:[[UIImage imageNamed:@"done-button-down.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateHighlighted];
             [aDoneButton addTarget:self action:@selector(dismissSheet:) forControlEvents:UIControlEventTouchUpInside];
             [self addSubview:aDoneButton];
             self.doneButton = aDoneButton;
@@ -295,9 +348,9 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 
 - (CGFloat)contentsHeight {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        return kBlioViewSettingsYInset * 1 + kBlioViewSettingsRowSpacing*4 + kBlioViewSettingsSegmentButtonHeight*4 + kBlioViewSettingsDoneButtonHeight;
+        return kBlioViewSettingsYInset * 1 + kBlioViewSettingsRowSpacing*5 + kBlioViewSettingsSegmentButtonHeight*5 + kBlioViewSettingsDoneButtonHeight;
     } else {
-        return kBlioViewSettingsYInset * 2 + kBlioViewSettingsRowSpacing*3 + kBlioViewSettingsSegmentButtonHeight*3;
+        return kBlioViewSettingsYInset * 2 + kBlioViewSettingsRowSpacing*4 + kBlioViewSettingsSegmentButtonHeight*4;
     }
 }
 
@@ -314,7 +367,9 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     [self.fontSizeSegment setFrame:CGRectMake(CGRectGetMaxX([self.fontSizeLabel frame]), CGRectGetMinY([self.fontSizeLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.fontSizeLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
     [self.pageColorLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.fontSizeSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
     [self.pageColorSegment setFrame:CGRectMake(CGRectGetMaxX([self.pageColorLabel frame]), CGRectGetMinY([self.pageColorLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.pageColorLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-    [self.lockButtonSegment setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageColorSegment frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - kBlioViewSettingsRowSpacing)/2.0f, kBlioViewSettingsSegmentButtonHeight)];
+    [self.tapZoomsToBlockLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageColorSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2*kBlioViewSettingsXInset - CGRectGetWidth(self.tapZoomsToBlockSwitch.bounds), kBlioViewSettingsSegmentButtonHeight)];
+    [self.tapZoomsToBlockSwitch setFrame:CGRectMake(CGRectGetWidth(self.bounds) - kBlioViewSettingsXInset - CGRectGetWidth(self.tapZoomsToBlockSwitch.bounds), CGRectGetMinY([self.tapZoomsToBlockLabel frame]) + (kBlioViewSettingsSegmentButtonHeight-CGRectGetHeight(self.tapZoomsToBlockSwitch.bounds))/2, CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
+    [self.lockButtonSegment setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.tapZoomsToBlockLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - kBlioViewSettingsRowSpacing)/2.0f, kBlioViewSettingsSegmentButtonHeight)];
     [self.doneButton setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.lockButtonSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset, kBlioViewSettingsDoneButtonHeight)];
 
     [super layoutSubviews];

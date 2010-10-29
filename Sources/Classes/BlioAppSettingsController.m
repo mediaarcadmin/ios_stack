@@ -87,7 +87,7 @@
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if (section == 0) 
-		return 3;
+		return 2;
 	return 1;
 }
 /*
@@ -125,10 +125,10 @@
 				case 0:
 					[cell.textLabel setText:@"Voice"];
 					break;
+//				case 1:
+//					[cell.textLabel setText:@"Navigation"];
+//					break;
 				case 1:
-					[cell.textLabel setText:@"Navigation"];
-					break;
-				case 2:
 					[cell.textLabel setText:@"Web Tools"];
 					break;
 			}
@@ -162,7 +162,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	BlioReadingVoiceSettingsViewController *audioController;
 	BlioWebToolSettingsController *webToolController;
-	BlioReadingNavigationSettingsController *readingnavController;
+//	BlioReadingNavigationSettingsController *readingnavController;
 	BlioHelpSettingsController *helpController;
 	BlioAboutSettingsController *aboutController;
 	BlioMyAccountViewController *myAccountController;
@@ -175,12 +175,12 @@
 					[self.navigationController pushViewController:audioController animated:YES];
 					[audioController release];
 					break;
+//				case 1:
+//					readingnavController = [[BlioReadingNavigationSettingsController alloc] init];
+//					[self.navigationController pushViewController:readingnavController animated:YES];
+//					[readingnavController release];
+//					break;
 				case 1:
-					readingnavController = [[BlioReadingNavigationSettingsController alloc] init];
-					[self.navigationController pushViewController:readingnavController animated:YES];
-					[readingnavController release];
-					break;
-				case 2:
 					webToolController = [[BlioWebToolSettingsController alloc] init];
 					[self.navigationController pushViewController:webToolController animated:YES];
 					[webToolController release];
