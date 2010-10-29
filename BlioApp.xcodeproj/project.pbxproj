@@ -383,7 +383,7 @@
 		A30E0FD9123EA5B400D31157 /* BlioStoreLocalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867C451125A54C0070A03E /* BlioStoreLocalParser.m */; };
 		A30E0FDA123EA5B400D31157 /* BlioStoreFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867F6B112964A70070A03E /* BlioStoreFeed.m */; };
 		A30E0FDB123EA5B400D31157 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
-		A30E0FDC123EA5B400D31157 /* BlioAudioSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioAudioSettingsController.m */; };
+		A30E0FDC123EA5B400D31157 /* BlioReadingVoiceSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioReadingVoiceSettingsViewController.m */; };
 		A30E0FDD123EA5B400D31157 /* BlioWebToolsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */; };
 		A30E0FDE123EA5B400D31157 /* BlioProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F936EF113530260047B985 /* BlioProcessingManager.m */; };
 		A30E0FDF123EA5B400D31157 /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
@@ -690,7 +690,7 @@
 		A36D3591120B136700E1A035 /* BlioStoreLocalParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867C451125A54C0070A03E /* BlioStoreLocalParser.m */; };
 		A36D3592120B136700E1A035 /* BlioStoreFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C9867F6B112964A70070A03E /* BlioStoreFeed.m */; };
 		A36D3593120B136700E1A035 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
-		A36D3594120B136700E1A035 /* BlioAudioSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioAudioSettingsController.m */; };
+		A36D3594120B136700E1A035 /* BlioReadingVoiceSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioReadingVoiceSettingsViewController.m */; };
 		A36D3595120B136700E1A035 /* BlioWebToolsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */; };
 		A36D3596120B136700E1A035 /* BlioProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F936EF113530260047B985 /* BlioProcessingManager.m */; };
 		A36D3597120B136700E1A035 /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
@@ -812,7 +812,7 @@
 		A38CDD7111E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */; };
 		A39A8C8F11B97C0F00182D7E /* BlioLicenseClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */; };
 		A3A672B611304D7700138097 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
-		A3A67376113078E300138097 /* BlioAudioSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioAudioSettingsController.m */; };
+		A3A67376113078E300138097 /* BlioReadingVoiceSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioReadingVoiceSettingsViewController.m */; };
 		A3AF018E11C26974004DAB03 /* BlioXpsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A3AF018D11C26974004DAB03 /* BlioXpsClient.m */; };
 		A3B0B2B1126E088500FC3D18 /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
 		A3B0B2B2126E088500FC3D18 /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
@@ -1618,8 +1618,8 @@
 		A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLicenseClient.m; sourceTree = "<group>"; };
 		A3A672B411304D7700138097 /* BlioAppSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppSettingsController.h; sourceTree = "<group>"; };
 		A3A672B511304D7700138097 /* BlioAppSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAppSettingsController.m; sourceTree = "<group>"; };
-		A3A67374113078E300138097 /* BlioAudioSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioSettingsController.h; sourceTree = "<group>"; };
-		A3A67375113078E300138097 /* BlioAudioSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioSettingsController.m; sourceTree = "<group>"; };
+		A3A67374113078E300138097 /* BlioReadingVoiceSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioReadingVoiceSettingsViewController.h; sourceTree = "<group>"; };
+		A3A67375113078E300138097 /* BlioReadingVoiceSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioReadingVoiceSettingsViewController.m; sourceTree = "<group>"; };
 		A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppSettingsConstants.h; sourceTree = "<group>"; };
 		A3AF018C11C26974004DAB03 /* BlioXpsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioXpsClient.h; sourceTree = "<group>"; };
 		A3AF018D11C26974004DAB03 /* BlioXpsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioXpsClient.m; sourceTree = "<group>"; };
@@ -2870,8 +2870,8 @@
 				A3A672B411304D7700138097 /* BlioAppSettingsController.h */,
 				DCAC960F126918C200C24BF7 /* BlioMyAccountViewController.h */,
 				DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */,
-				A3A67374113078E300138097 /* BlioAudioSettingsController.h */,
-				A3A67375113078E300138097 /* BlioAudioSettingsController.m */,
+				A3A67374113078E300138097 /* BlioReadingVoiceSettingsViewController.h */,
+				A3A67375113078E300138097 /* BlioReadingVoiceSettingsViewController.m */,
 				DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */,
 				DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */,
 				DCC9B64A1255BFA000B17FBB /* BlioPurchaseVoicesViewController.h */,
@@ -3892,7 +3892,7 @@
 				C9867C461125A54C0070A03E /* BlioStoreLocalParser.m in Sources */,
 				C9867F6C112964A70070A03E /* BlioStoreFeed.m in Sources */,
 				A3A672B611304D7700138097 /* BlioAppSettingsController.m in Sources */,
-				A3A67376113078E300138097 /* BlioAudioSettingsController.m in Sources */,
+				A3A67376113078E300138097 /* BlioReadingVoiceSettingsViewController.m in Sources */,
 				C93E825D1134241D000117C6 /* BlioWebToolsViewController.m in Sources */,
 				C9F936F0113530260047B985 /* BlioProcessingManager.m in Sources */,
 				C9B61CC21136BA620012CE7E /* BlioProcessingStandardOperations.m in Sources */,
@@ -4027,7 +4027,7 @@
 				A30E0FD9123EA5B400D31157 /* BlioStoreLocalParser.m in Sources */,
 				A30E0FDA123EA5B400D31157 /* BlioStoreFeed.m in Sources */,
 				A30E0FDB123EA5B400D31157 /* BlioAppSettingsController.m in Sources */,
-				A30E0FDC123EA5B400D31157 /* BlioAudioSettingsController.m in Sources */,
+				A30E0FDC123EA5B400D31157 /* BlioReadingVoiceSettingsViewController.m in Sources */,
 				A30E0FDD123EA5B400D31157 /* BlioWebToolsViewController.m in Sources */,
 				A30E0FDE123EA5B400D31157 /* BlioProcessingManager.m in Sources */,
 				A30E0FDF123EA5B400D31157 /* BlioProcessingStandardOperations.m in Sources */,
@@ -4154,7 +4154,7 @@
 				A36D3591120B136700E1A035 /* BlioStoreLocalParser.m in Sources */,
 				A36D3592120B136700E1A035 /* BlioStoreFeed.m in Sources */,
 				A36D3593120B136700E1A035 /* BlioAppSettingsController.m in Sources */,
-				A36D3594120B136700E1A035 /* BlioAudioSettingsController.m in Sources */,
+				A36D3594120B136700E1A035 /* BlioReadingVoiceSettingsViewController.m in Sources */,
 				A36D3595120B136700E1A035 /* BlioWebToolsViewController.m in Sources */,
 				A36D3596120B136700E1A035 /* BlioProcessingManager.m in Sources */,
 				A36D3597120B136700E1A035 /* BlioProcessingStandardOperations.m in Sources */,

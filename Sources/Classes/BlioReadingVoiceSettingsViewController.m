@@ -1,12 +1,12 @@
 //
-//  BlioAudioSettingsController.m
+//  BlioReadingVoiceSettingsViewController.m
 //  BlioApp
 //
 //  Created by Arnold Chien on 2/20/10.
 //  Copyright 2010 Kurzweil Technologies Inc.. All rights reserved.
 //
 
-#import "BlioAudioSettingsController.h"
+#import "BlioReadingVoiceSettingsViewController.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookViewController.h"
 #import "BlioDownloadVoicesViewController.h"
@@ -15,18 +15,18 @@
 #import "AcapelaSpeech.h"
 #import "BlioBookManager.h"
 
-@interface BlioAudioSettingsController(PRIVATE)
+@interface BlioReadingVoiceSettingsViewController(PRIVATE)
 - (void)layoutControlsForOrientation:(UIInterfaceOrientation)orientation;
 - (NSString *)ttsBooksInLibraryDisclosure;
 @end
 
-@implementation BlioAudioSettingsController
+@implementation BlioReadingVoiceSettingsViewController
 
 @synthesize voiceControl, speedControl, volumeControl, playButton, voiceLabel, speedLabel, volumeLabel, availableVoices, contentView, footerHeight,ttsFetchedResultsController,totalFetchedResultsController;
 
 - (id)init
 {
-	self = [super init];
+	self = [super initWithStyle:UITableViewStyleGrouped];
 	if (self)
 	{
 		self.title = NSLocalizedString(@"Reading Voice",@"\"Reading Voice\" view controller title.");
@@ -163,7 +163,7 @@
 	
 	// Speed control
 	
-    self.speedLabel = [BlioAudioSettingsController labelWithFrame:CGRectZero title:NSLocalizedString(@"Speed",@"\"Speed\" audio setting label.")];
+    self.speedLabel = [BlioReadingVoiceSettingsViewController labelWithFrame:CGRectZero title:NSLocalizedString(@"Speed",@"\"Speed\" audio setting label.")];
 	[self.contentView addSubview:speedLabel];
 	
 	
@@ -184,7 +184,7 @@
 	[self.contentView addSubview:speedControl];
 	
 	// Volume control
-    self.volumeLabel = [BlioAudioSettingsController labelWithFrame:CGRectZero title:NSLocalizedString(@"Volume",@"\"Volume\" audio setting label.")];
+    self.volumeLabel = [BlioReadingVoiceSettingsViewController labelWithFrame:CGRectZero title:NSLocalizedString(@"Volume",@"\"Volume\" audio setting label.")];
 	[self.contentView addSubview:volumeLabel];
 
 	self.volumeControl = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];

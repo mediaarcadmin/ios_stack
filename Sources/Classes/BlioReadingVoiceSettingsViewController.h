@@ -1,5 +1,5 @@
 //
-//  BlioAudioSettingsController.h
+//  BlioReadingVoiceSettingsViewController.h
 //  BlioApp
 //
 //  Created by Arnold Chien on 2/20/10.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BlioAcapelaAudioManager.h"
 
-@interface BlioAudioSettingsController : UITableViewController <NSFetchedResultsControllerDelegate> {
+@interface BlioReadingVoiceSettingsViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
 	UISegmentedControl* voiceControl;
 	UISlider* speedControl;
 	UISlider* volumeControl;

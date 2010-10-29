@@ -32,7 +32,7 @@
     contentController.contentSizeForViewInPopover = CGSizeMake(320, [aContentsView contentsHeight]);
     contentController.view = aContentsView;
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
-    contentController.navigationItem.title = NSLocalizedString(@"Visual Options", "Title for View Settings Popover");
+    contentController.navigationItem.title = NSLocalizedString(@"Visual Settings", "Title for Visual Settings Popover");
     
     if ((self = [super initWithContentViewController:navController])) {
         // Custom initialization

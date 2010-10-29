@@ -368,6 +368,7 @@ ErrorExit:
 		[[NSUserDefaults standardUserDefaults] setObject:sid forKey:kBlioServiceIDDefaultsKey];
 		NSString* aid = @"{";
 		aid = [[aid stringByAppendingString:[self getTagValue:responseStr xmlTag:@"accountid"]] stringByAppendingString:@"}"];
+		NSLog(@"aid: %@",aid);
 		[[NSUserDefaults standardUserDefaults] setObject:aid forKey:kBlioAccountIDDefaultsKey];
 		return YES;
 	}

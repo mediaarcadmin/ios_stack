@@ -1792,6 +1792,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return YES;
 }
 
+- (BOOL)shouldShowTapZoomsToBlockSettings {
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 - (BlioFontSize)currentFontSize {
     BlioFontSize fontSize = kBlioFontSizeMedium;
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
@@ -1856,7 +1864,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.currentPageColor = (BlioPageColor)[sender selectedSegmentIndex];
     [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
-
+- (void)changeTapZooms:(UIControl*)sender {
+	if ( ((UISwitch*)sender).on )
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTapZoomsDefaultsKey];
+	else
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioTapZoomsDefaultsKey];	
+}
 - (void)changeLockRotation {
     [self setRotationLocked:![self isRotationLocked]];
     [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];
