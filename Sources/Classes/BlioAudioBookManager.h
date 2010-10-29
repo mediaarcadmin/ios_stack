@@ -55,6 +55,7 @@ typedef enum {
 - (BOOL)loadWordTimesWithIndex:(NSInteger)index;
 //- (BOOL)initAudioWithBook:(NSString*)audioBookPath;
 - (BOOL)initAudioWithIndex:(NSInteger)index;
+- (void)disableAudio;
 - (void)playAudio;
 - (void)stopAudio;
 - (void)pauseAudio;

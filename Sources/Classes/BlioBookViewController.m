@@ -220,10 +220,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
-            if ([self.book hasAudiobook]) {
-//                _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
-                _audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
-            } else {
+            if ([self.book hasAudiobook]) 
+				_audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
+			// This is not an "else" because the above initialization could have discovered
+			// a corrupt audiobook, in which case hasAudiobook would now be false.
+			if ( ![self.book hasAudiobook] ) {			
                 _acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
                 if ( _acapelaAudioManager != nil )  {
                     [_acapelaAudioManager setPageChanged:YES];

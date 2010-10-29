@@ -142,7 +142,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.libraryVaultButton.titleLabel.font = [UIFont boldSystemFontOfSize: 16];
 	self.libraryVaultButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
 	[self.libraryVaultButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-	[self.libraryVaultButton setTitle:NSLocalizedString(@"View Your Archive",@"Label for button in library that shows Book Vault.") forState:UIControlStateNormal];
+	[self.libraryVaultButton setTitle:NSLocalizedString(@"View Your Archive",@"Label for button in library that shows the Archive.") forState:UIControlStateNormal];
 	[self.libraryVaultButton setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.75f] forState:UIControlStateNormal];
 	[self.libraryVaultButton setBackgroundImage:[UIImage imageNamed:@"table-headerbar-background.png"] forState:UIControlStateNormal];
 	[self.libraryVaultButton addTarget:self action:@selector(showStore:) forControlEvents:UIControlEventTouchUpInside];
