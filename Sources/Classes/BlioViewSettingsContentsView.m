@@ -37,7 +37,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 @synthesize pageLayoutSegment;
 @synthesize fontSizeSegment;
 @synthesize pageColorSegment;
-@synthesize tapZoomsToBlockSwitch;
+@synthesize tapZoomsToBlockSegment;
+//@synthesize tapZoomsToBlockSwitch;
 @synthesize lockButtonSegment;
 @synthesize doneButton;
 @synthesize tapTurnOnImage, tapTurnOffImage, lockRotationImage, unlockRotationImage;
@@ -50,7 +51,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     self.pageLayoutSegment = nil;
     self.fontSizeSegment = nil;
     self.pageColorSegment = nil;
-	self.tapZoomsToBlockSwitch = nil;
+	self.tapZoomsToBlockSegment = nil;
+//	self.tapZoomsToBlockSwitch = nil;
     self.lockButtonSegment = nil;
     self.doneButton = nil;
     self.tapTurnOnImage = nil;
@@ -104,13 +106,17 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     
 	if (showTapZoomsToBlock) {
 		self.tapZoomsToBlockLabel.enabled = YES;
-		self.tapZoomsToBlockSwitch.enabled = YES;
-        self.tapZoomsToBlockSwitch.alpha = 1.0f;
+//		self.tapZoomsToBlockSwitch.enabled = YES;
+//        self.tapZoomsToBlockSwitch.alpha = 1.0f;
+        self.tapZoomsToBlockSegment.enabled = YES;
+        self.tapZoomsToBlockSegment.alpha = 1.0f;
 		self.tapZoomsToBlockLabel.accessibilityLabel = self.tapZoomsToBlockLabel.text;
 	} else {
 		self.tapZoomsToBlockLabel.enabled = NO;
-		self.tapZoomsToBlockSwitch.enabled = NO;
-        self.tapZoomsToBlockSwitch.alpha = 0.35f;
+//		self.tapZoomsToBlockSwitch.enabled = NO;
+//        self.tapZoomsToBlockSwitch.alpha = 0.35f;
+		self.tapZoomsToBlockSegment.enabled = NO;
+        self.tapZoomsToBlockSegment.alpha = 0.35f;
 		self.tapZoomsToBlockLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.tapZoomsToBlockLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];;
 	}
 
@@ -274,22 +280,48 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         aTabZoomsToBlockLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         aTabZoomsToBlockLabel.textColor = [UIColor whiteColor];
         aTabZoomsToBlockLabel.backgroundColor = [UIColor clearColor];
-        aTabZoomsToBlockLabel.text = NSLocalizedString(@"Tap Zooms To Block",@"Settings Label for Tap Zooms To Block switch.");
+        aTabZoomsToBlockLabel.text = NSLocalizedString(@"Tap Advance",@"Settings Label for Tap Advance Segmented Control.");
         [self addSubview:aTabZoomsToBlockLabel];
         self.tapZoomsToBlockLabel = aTabZoomsToBlockLabel;
         [aTabZoomsToBlockLabel release];
 		
-		UISwitch * aTabZoomsToBlockSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-		[self addSubview:aTabZoomsToBlockSwitch];
-		self.tapZoomsToBlockSwitch = aTabZoomsToBlockSwitch;
-		[aTabZoomsToBlockSwitch addTarget:self.viewSettingsDelegate action:@selector(changeTapZooms:) forControlEvents:UIControlEventValueChanged];
-		if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey] == YES ) 
-			[aTabZoomsToBlockSwitch setOn:YES animated:NO];
-		else 
-			// This is the initial value.
-			[aTabZoomsToBlockSwitch setOn:NO animated:NO];
+		NSArray *tapAdvanceTitles = [NSArray arrayWithObjects:
+                                    NSLocalizedString(@"Page",@"\"Page\" segment label (for Tap Advance SegmentedControl)"),
+                                    NSLocalizedString(@"Block",@"\"Block\" segment label (for Tap Advance SegmentedControl)"),
+                                    nil];
 		
-		[aTabZoomsToBlockSwitch release];
+		BlioAccessibilitySegmentedControl *aTapZoomsToBlockSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
+        aTapZoomsToBlockSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            aTapZoomsToBlockSegment.tintColor = [UIColor darkGrayColor];
+        } else {
+            aTapZoomsToBlockSegment.tintColor = kBlioViewSettingsPopverBlueButton;
+        }
+        
+        [[aTapZoomsToBlockSegment imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Advances By Page", @"Accessibility label for View Settings White Page Color button")];
+        [[aTapZoomsToBlockSegment imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Advances By Block", @"Accessibility label for View Settings Black Page Color button")];
+        
+        [self addSubview:aTapZoomsToBlockSegment];
+        self.tapZoomsToBlockSegment = aTapZoomsToBlockSegment;
+        [aTapZoomsToBlockSegment release];
+        
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey] == YES ) {
+			[self.tapZoomsToBlockSegment setSelectedSegmentIndex:1];
+		}
+		else [self.tapZoomsToBlockSegment setSelectedSegmentIndex:0];
+        
+        [self.tapZoomsToBlockSegment addTarget:self.viewSettingsDelegate action:@selector(changeTapZooms:) forControlEvents:UIControlEventValueChanged];
+		
+//		UISwitch * aTabZoomsToBlockSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+//		[self addSubview:aTabZoomsToBlockSwitch];
+//		self.tapZoomsToBlockSwitch = aTabZoomsToBlockSwitch;
+//		[aTabZoomsToBlockSwitch addTarget:self.viewSettingsDelegate action:@selector(changeTapZooms:) forControlEvents:UIControlEventValueChanged];
+//		if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey] == YES ) 
+//			[aTabZoomsToBlockSwitch setOn:YES animated:NO];
+//		else 
+//			// This is the initial value.
+//			[aTabZoomsToBlockSwitch setOn:NO animated:NO];		
+//		[aTabZoomsToBlockSwitch release];
 		
 		//////// ORIENTATION LOCK
 
@@ -367,8 +399,10 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     [self.fontSizeSegment setFrame:CGRectMake(CGRectGetMaxX([self.fontSizeLabel frame]), CGRectGetMinY([self.fontSizeLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.fontSizeLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
     [self.pageColorLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.fontSizeSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
     [self.pageColorSegment setFrame:CGRectMake(CGRectGetMaxX([self.pageColorLabel frame]), CGRectGetMinY([self.pageColorLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.pageColorLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-    [self.tapZoomsToBlockLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageColorSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2*kBlioViewSettingsXInset - CGRectGetWidth(self.tapZoomsToBlockSwitch.bounds), kBlioViewSettingsSegmentButtonHeight)];
-    [self.tapZoomsToBlockSwitch setFrame:CGRectMake(CGRectGetWidth(self.bounds) - kBlioViewSettingsXInset - CGRectGetWidth(self.tapZoomsToBlockSwitch.bounds), CGRectGetMinY([self.tapZoomsToBlockLabel frame]) + (kBlioViewSettingsSegmentButtonHeight-CGRectGetHeight(self.tapZoomsToBlockSwitch.bounds))/2, CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
+//    [self.tapZoomsToBlockLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageColorSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2*kBlioViewSettingsXInset - CGRectGetWidth(self.tapZoomsToBlockSwitch.bounds), kBlioViewSettingsSegmentButtonHeight)];
+//    [self.tapZoomsToBlockSwitch setFrame:CGRectMake(CGRectGetWidth(self.bounds) - kBlioViewSettingsXInset - CGRectGetWidth(self.tapZoomsToBlockSwitch.bounds), CGRectGetMinY([self.tapZoomsToBlockLabel frame]) + (kBlioViewSettingsSegmentButtonHeight-CGRectGetHeight(self.tapZoomsToBlockSwitch.bounds))/2, CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
+    [self.tapZoomsToBlockLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageColorSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
+    [self.tapZoomsToBlockSegment setFrame:CGRectMake(CGRectGetMaxX([self.tapZoomsToBlockLabel frame]), CGRectGetMinY([self.tapZoomsToBlockLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
     [self.lockButtonSegment setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.tapZoomsToBlockLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - kBlioViewSettingsRowSpacing)/2.0f, kBlioViewSettingsSegmentButtonHeight)];
     [self.doneButton setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.lockButtonSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset, kBlioViewSettingsDoneButtonHeight)];
 

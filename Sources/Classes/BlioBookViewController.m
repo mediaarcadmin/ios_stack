@@ -691,7 +691,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            target:self 
                                            action:@selector(showViewSettings:)];
     
-    [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Book View Controller Settings button")];
+    [item setAccessibilityLabel:NSLocalizedString(@"Visual Settings", @"Accessibility label for Book View Controller Visual Settings button")];
     self.viewSettingsButton = item;
     [readingItems addObject:item];
     [item release];
@@ -1858,7 +1858,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
 - (void)changeTapZooms:(UIControl*)sender {
-	if ( ((UISwitch*)sender).on )
+//	if ( ((UISwitch*)sender).on )
+	if ( ((UISegmentedControl*)sender).selectedSegmentIndex == 1 )
 		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTapZoomsDefaultsKey];
 	else
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioTapZoomsDefaultsKey];	
