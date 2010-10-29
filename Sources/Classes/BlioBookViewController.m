@@ -73,7 +73,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
-- (void)layoutPauseButton;
 @end
 
 @interface BlioBookSlider : UISlider {
@@ -855,7 +854,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     UIImage *pauseImage = [UIImage imageNamed:@"button-tts-pause.png"];
     [aPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
     [aPauseButton addTarget:self action:@selector(toggleAudio:) forControlEvents:UIControlEventTouchUpInside];
-    [aPauseButton setFrame:CGRectMake(0, 0, pauseImage.size.width, pauseImage.size.height)];
+	CGRect buttonFrame = CGRectMake(3, CGRectGetHeight(root.frame) - pauseImage.size.height - 3, pauseImage.size.width, pauseImage.size.height);
+    [aPauseButton setFrame:buttonFrame];
+	[aPauseButton setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin];
     [aPauseButton setShowsTouchWhenHighlighted:YES];
     [aPauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
     [aPauseButton setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
@@ -868,13 +869,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     CGRect navFrame = self.navigationController.navigationBar.frame;
     navFrame.origin.y = 20;
     [self.navigationController.navigationBar setFrame:navFrame];
-}
-
-- (void)layoutPauseButton {
-    CGRect buttonFrame = self.pauseButton.frame;
-    buttonFrame.origin.y = CGRectGetHeight(self.bookView.frame) - CGRectGetHeight(buttonFrame) - 3;
-    buttonFrame.origin.x = 3;
-    [self.pauseButton setFrame:buttonFrame];
 }
 
 - (void)setNavigationBarButtons {
@@ -1006,7 +1000,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [titleView setAuthor:[self.book authorsWithStandardFormat]];
         
         [self setNavigationBarButtons];
-        [self layoutPauseButton];     
         
         if(animated) {
             CATransition *animation = [CATransition animation];
@@ -2006,6 +1999,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     id<BlioParagraphSource> paragraphSource = self.book.paragraphSource;
     
     id newBlock  = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
+
     if(newBlock) {
         audioMgr.currentBlock = newBlock;
         audioMgr.currentWordOffset = 0;
@@ -2023,8 +2017,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
-- (void) prepareTextToSpeakWithAudioManager:(BlioAudioManager*)audioMgr continuingSpeech:(BOOL)continuingSpeech {
-	if ( continuingSpeech ) {
+- (void) prepareTextToSpeakWithAudioManager:(BlioAudioManager*)audioMgr fromBookmarkPoint:(BlioBookmarkPoint *)point {
+	if ( !point ) {
 		// Continuing to speak, we just need more text.
 		[self getNextBlockForAudioManager:audioMgr];
 	}
@@ -2033,7 +2027,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         id<BlioParagraphSource> paragraphSource = self.book.paragraphSource;
         id blockId = nil;
         uint32_t wordOffset = 0;
-		[paragraphSource bookmarkPoint:self.bookView.currentBookmarkPoint toParagraphID:&blockId wordOffset:&wordOffset]; 
+		[paragraphSource bookmarkPoint:point toParagraphID:&blockId wordOffset:&wordOffset]; 
+		
+		NSLog(@"prepareTextToSpeakWithAudioManager. CurrentBookmarkPoint is on page %d. blockId: %@ wordOffset: %d)", self.bookView.currentBookmarkPoint.layoutPage, blockId, wordOffset);
+
         if ( blockId ) {
             if ( audioMgr.pageChanged ) {  
                 // Page has changed since the stop button was last pushed (and pageChanged is initialized to true).
@@ -2060,6 +2057,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [audioMgr setStartedPlaying:YES];
         [audioMgr setTextToSpeakChanged:YES];
     }
+}
+
+- (void) prepareTextToSpeakWithAudioManager:(BlioAudioManager*)audioMgr {
+	[self prepareTextToSpeakWithAudioManager:audioMgr fromBookmarkPoint:nil];
 }
 
 - (BOOL)loadAudioFiles:(NSInteger)layoutPage segmentIndex:(NSInteger)segmentIx {
@@ -2097,7 +2098,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
 	if (finishedSpeaking) {
 		// Reached end of block.  Start on the next.
-		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:YES]; 
+		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager]; 
 	}
 	//else stop button pushed before end of block.
 }
@@ -2140,6 +2141,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
 	[_audioBookManager.speakingTimer invalidate];
 	NSInteger layoutPage = [self.bookView.currentBookmarkPoint layoutPage];
+	NSLog(@"audioPlayerDidFinishPlaying layoutPage: %d", layoutPage);
+
 	// Subtract 1 to match Blio layout page number.  
 	NSMutableArray* pageSegments = (NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]];
 	if ([pageSegments count] == 1 ) {
@@ -2162,7 +2165,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self updatePauseButton];
 		}
 		else {
-			[self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:YES];
+			[self prepareTextToSpeakWithAudioManager:_audioBookManager];
 			[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 			[_audioBookManager playAudio];
 		}
@@ -2171,7 +2174,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		// Stopped in the middle of the page.
 		// Kluge: assume there won't be more than two segments on a page.
 		if ( [self loadAudioFiles:layoutPage segmentIndex:1] ) {
-			[self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:YES];
+			[self prepareTextToSpeakWithAudioManager:_audioBookManager];
 			[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 			[_audioBookManager playAudio];
 		}
@@ -2251,8 +2254,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
     if ( _audioBookManager.currentWordOffset == [_audioBookManager.blockWords count] ) {
 		// Last word of block, get more words.  
-		NSLog(@"Reached end of block, getting more words.");
-		[self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:YES];
+		//NSLog(@"Reached end of block, getting more words.");
+		[self prepareTextToSpeakWithAudioManager:_audioBookManager];
 	}    
 }
 
@@ -2287,6 +2290,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		NSLog(@"[self.book hasTTSRights]: %i",[self.book hasTTSRights]);
 		NSLog(@"[self.book hasAudiobook]: %i",[self.book hasAudiobook]);
 		
+		BlioBookmarkPoint *startPoint = nil;
+		
         if ([self.book hasAudiobook]) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
                 // So far this only would work for fixed view.
@@ -2302,6 +2307,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 								if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) animatedPageChange = NO;
 							}							
                             [self.bookView goToPageNumber:i animated:animatedPageChange];
+							startPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+							startPoint.layoutPage = i;
                             break;
                         }
                     }
@@ -2309,7 +2316,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                         return;
                 }
                 
-                [self prepareTextToSpeakWithAudioManager:_audioBookManager continuingSpeech:NO];
+				if (startPoint) {
+					[self prepareTextToSpeakWithAudioManager:_audioBookManager fromBookmarkPoint:startPoint];
+				} else {
+					[self prepareTextToSpeakWithAudioManager:_audioBookManager fromBookmarkPoint:self.bookView.currentBookmarkPoint];
+				}
             }
             [_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
             [_audioBookManager playAudio];
@@ -2319,7 +2330,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse] count] > 0) {
 				[self prepareTTSEngine];
 				[_acapelaAudioManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(speakNextBlock:) userInfo:nil repeats:YES]];				
-				[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager continuingSpeech:NO];
+				[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager fromBookmarkPoint:self.bookView.currentBookmarkPoint];
 				self.audioPlaying = _acapelaAudioManager.startedPlaying;
 			}
 			else {
@@ -2482,7 +2493,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     // Doing this here instead of in the 'didRotate' callback results in smoother
     // animation that happens simultaneously with the rotate.
     [self layoutNavigationToolbar];
-    [self layoutPauseButton];
     [self setNavigationBarButtons];
     if (_pageJumpView) {
         [self layoutPageJumpView];

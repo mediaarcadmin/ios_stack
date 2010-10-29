@@ -283,6 +283,7 @@
     [renderer release];
     
     UIImage *aCoverImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
     
     return aCoverImage;
 }
