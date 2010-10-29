@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 
 static NSString * const DigitalLockerBlioAppID = @"APPID-OEM-HP-001-";
-static NSString * const DigitalLockerBlioIOSSiteKey = @"B7DFE07B232B97FC282A1774AC662E79A3BBD61A";
+// static NSString * const DigitalLockerBlioIOSSiteKey = @"B7DFE07B232B97FC282A1774AC662E79A3BBD61A"; // HP
+static NSString * const DigitalLockerBlioIOSSiteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
 
 static NSString * const DigitalLockerGatewayURLTest = @"https://gw.bliodigitallocker.net/nww/gateway/request";
 static NSString * const DigitalLockerGatewayURLProduction = @"https://gw.bliodigitallocker.com/nww/gateway/request";
