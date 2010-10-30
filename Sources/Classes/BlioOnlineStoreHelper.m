@@ -18,6 +18,7 @@
 #define HP_STORE 12308
 #define TOSHIBA_STORE 12309
 #define DELL_STORE 12327
+#define BLIO_IPHONE_VERSION 12555
 
 @interface BlioOnlineStoreHelper (PRIVATE)
 - (void) bookVaultSoapOperation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response;
@@ -67,7 +68,7 @@
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
 	loginRequest.username = user;	
 	loginRequest.password = password; 
-	loginRequest.siteId =  [NSNumber numberWithInt:HP_STORE];
+	loginRequest.siteId =  [NSNumber numberWithInt:BLIO_IPHONE_VERSION];
 	[vaultBinding LoginAsyncUsingParameters:loginRequest delegate:bookVaultDelegate];
 	[vaultBinding release];
 }
