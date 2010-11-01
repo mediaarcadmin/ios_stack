@@ -13,7 +13,7 @@
 #import "BlioStoreManager.h"
 #import "BlioAlertManager.h"
 #import "NSString+BlioAdditions.h"
-#import "BlioFileSharingManager.h"
+#import "BlioImportManager.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -140,6 +140,7 @@
 		NSString * locationValue = nil;
 		if (sourceID == BlioBookSourceLocalBundle) locationValue = BlioManifestEntryLocationBundle;
 		else if (sourceID == BlioBookSourceFileSharing) locationValue = BlioManifestEntryLocationDocumentsDirectory;
+		else if (sourceID == BlioBookSourceOtherApplications) locationValue = BlioManifestEntryLocationFileSystemOther;
 		else locationValue = BlioManifestEntryLocationWeb;
         if (coverPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
@@ -312,7 +313,10 @@
 						url = [NSURL fileURLWithPath:stringURL];
 					}
 					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
-						url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+						url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+						url = [NSURL fileURLWithPath:stringURL];
 					}
 					else url = [NSURL URLWithString:stringURL];				
 					ePubOp = [[[BlioProcessingDownloadEPubOperation alloc] initWithUrl:url] autorelease];
@@ -396,7 +400,10 @@
 						url = [NSURL fileURLWithPath:stringURL];
 					}
 					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
-						url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+						url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+						url = [NSURL fileURLWithPath:stringURL];
 					}					
 					else url = [NSURL URLWithString:stringURL];				
 					pdfOp = [[[BlioProcessingDownloadPdfOperation alloc] initWithUrl:url] autorelease];
@@ -447,7 +454,10 @@
 						url = [NSURL fileURLWithPath:stringURL];
 					}
 					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
-						url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+						url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+						url = [NSURL fileURLWithPath:stringURL];
 					}					
 					else url = [NSURL URLWithString:stringURL];								
 					audiobookOp = [[[BlioProcessingDownloadAudiobookOperation alloc] initWithUrl:url] autorelease];
@@ -489,7 +499,10 @@
 						url = [NSURL fileURLWithPath:stringURL];
 					}
 					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
-						url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+						url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+						url = [NSURL fileURLWithPath:stringURL];
 					}					
 					else url = [NSURL URLWithString:stringURL];	
 					NSLog(@"creating new BlioProcessingDownloadXPSOperation...");
@@ -722,8 +735,11 @@
             url = [NSURL fileURLWithPath:stringURL];
         }
 		else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
-			url = [NSURL fileURLWithPath:[[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+			url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
 		}					
+		else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+			url = [NSURL fileURLWithPath:stringURL];
+		}		
         else url = [NSURL URLWithString:stringURL];
         coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:url];
         coverOp.bookID = bookID;

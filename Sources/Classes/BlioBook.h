@@ -36,6 +36,7 @@ static NSString * const BlioManifestEntryLocationTextflow = @"textflow";
 static NSString * const BlioManifestEntryLocationWeb = @"web";
 static NSString * const BlioManifestEntryLocationBundle = @"bundle";
 static NSString * const BlioManifestEntryLocationDocumentsDirectory = @"DocumentsDirectory";
+static NSString * const BlioManifestEntryLocationFileSystemOther = @"BlioManifestEntryLocationFileSystemOther";
 
 static NSString * const BlioXPSEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMap.xml";
 static NSString * const BlioXPSEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages";

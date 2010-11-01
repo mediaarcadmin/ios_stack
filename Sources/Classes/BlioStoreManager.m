@@ -72,6 +72,18 @@
 	}
 	return nil;
 }
+-(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID {
+	for (id key in self.storeHelpers) {
+		if ([key intValue] == sourceID) return ((BlioStoreHelper*)[self.storeHelpers objectForKey:key]).siteKey; 
+	}
+	return nil;
+}
+-(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID {
+	for (id key in self.storeHelpers) {
+		if ([key intValue] == sourceID) return ((BlioStoreHelper*)[self.storeHelpers objectForKey:key]).siteID; 
+	}
+	return -1;
+}
 -(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID {
 	self.loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
 	

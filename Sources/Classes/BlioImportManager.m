@@ -1,12 +1,12 @@
 //
-//  BlioFileSharingManager.m
+//  BlioImportManager.m
 //  BlioApp
 //
 //  Created by Don Shin on 10/9/10.
 //  Copyright 2010 CrossComm, Inc. All rights reserved.
 //
 
-#import "BlioFileSharingManager.h"
+#import "BlioImportManager.h"
 #import "BlioBook.h"
 #import "ZipArchive.h"
 #import "BlioStoreManager.h"
@@ -222,7 +222,7 @@
 
 
 @implementation BlioImportableBook
-@synthesize fileName,filePath,title,authors,sourceSpecificID;
+@synthesize fileName,filePath,title,authors,sourceID,sourceSpecificID,isDRM;
 -(void)dealloc {
 	self.fileName = nil;
 	self.filePath = nil;
@@ -233,25 +233,27 @@
 }
 @end
 
-@interface BlioFileSharingManager (PRIVATE) 
-+(BlioImportableBook*)importableBookFromFile:(NSString*)aFile;
+@interface BlioImportManager (PRIVATE) 
++(BlioImportableBook*)importableBookFromSharedFile:(NSString*)aFile;
++(BlioImportableBook*)importableBookFromFilePath:(NSString*)aFilePath;
++(BlioImportableBook*)analyzeImportableBook:(BlioImportableBook*)importableBook;
 -(void)scanFileSharingDirectoryInBackground;
 @end
 
-@implementation BlioFileSharingManager
+@implementation BlioImportManager
 
 @synthesize processingDelegate = _processingDelegate;
 @synthesize importableBooks = _importableBooks;
 @synthesize isScanningFileSharingDirectory;
 
-+(BlioFileSharingManager*)sharedFileSharingManager
++(BlioImportManager*)sharedImportManager
 {
-	static BlioFileSharingManager * sharedFileSharingManager = nil;
-	if (sharedFileSharingManager == nil) {
-		sharedFileSharingManager = [[BlioFileSharingManager alloc] init];
+	static BlioImportManager * sharedImportManager = nil;
+	if (sharedImportManager == nil) {
+		sharedImportManager = [[BlioImportManager alloc] init];
 	}
 	
-	return sharedFileSharingManager;
+	return sharedImportManager;
 }
 - (id)init {
 	self = [super init];
@@ -260,7 +262,7 @@
 		pthread_mutex_init( &scanningMutex, NULL );
 		pthread_mutex_init( &importableBooksMutex, NULL );
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationDidBecomeActiveNotification:) name:BlioApplicationDidBecomeActiveNotification object:nil];		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];		
 	}
 	
 	return self;
@@ -269,7 +271,7 @@
 
 -(void) dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationCompleteNotification object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioApplicationDidBecomeActiveNotification object:nil];	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];	
 	self.importableBooks = nil;
 	pthread_mutex_destroy(&scanningMutex);
 	pthread_mutex_destroy(&importableBooksMutex);
@@ -278,6 +280,11 @@
 +(NSString*)fileSharingDirectory {
     NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     if (paths && [paths count] > 0) return [paths objectAtIndex:0];	
+	return nil;
+}
++(NSString*)inboxDirectory {
+    NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    if (paths && [paths count] > 0) return [[paths objectAtIndex:0] stringByAppendingPathComponent:@"Inbox"];	
 	return nil;
 }
 -(void)scanFileSharingDirectory {
@@ -299,7 +306,7 @@
 		self.isScanningFileSharingDirectory = YES;
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioFileSharingScanStarted object:self];
 		scanningThread = [NSThread currentThread];
-		NSString * fileSharingDirectoryPath = [BlioFileSharingManager fileSharingDirectory];   
+		NSString * fileSharingDirectoryPath = [BlioImportManager fileSharingDirectory];   
 		
 		NSError * error;
 		NSArray * files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:fileSharingDirectoryPath error:&error];
@@ -318,7 +325,7 @@
 	self.importableBooks = [NSMutableArray array];
 		for (NSString * file in files) {
 			if ([file.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-				BlioImportableBook * importableBook = [BlioFileSharingManager importableBookFromFile:file];
+				BlioImportableBook * importableBook = [BlioImportManager importableBookFromSharedFile:file];
 				pthread_mutex_lock( &importableBooksMutex );
 					if ([scanningThread isCancelled]) {
 						self.isScanningFileSharingDirectory = NO;
@@ -329,7 +336,7 @@
 						pthread_mutex_unlock( &scanningMutex );
 						[NSThread exit];
 					}
-					if (importableBook && [[NSFileManager defaultManager] fileExistsAtPath:importableBook.filePath]) {
+					if (importableBook && !importableBook.isDRM && [[NSFileManager defaultManager] fileExistsAtPath:importableBook.filePath]) {
 						NSLog(@"adding importableBook: %@ to array...",importableBook.fileName);
 						[self.importableBooks addObject:importableBook];
 						[[NSNotificationCenter defaultCenter] postNotificationName:BlioFileSharingScanUpdate object:self];
@@ -343,20 +350,33 @@
 		scanningThread = nil;
 	pthread_mutex_unlock( &scanningMutex );
 }
-+(BlioImportableBook*)importableBookFromFile:(NSString*)aFile {
++(BlioImportableBook*)importableBookFromFilePath:(NSString*)aFilePath {
 	BlioImportableBook * importableBook = [[[BlioImportableBook alloc] init] autorelease];
-	
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	
+		
+	importableBook.fileName = [aFilePath lastPathComponent];
+	importableBook.sourceID = BlioBookSourceOtherApplications;
+	importableBook.sourceSpecificID = importableBook.fileName;
+	importableBook.filePath = aFilePath;
+	return [BlioImportManager analyzeImportableBook:importableBook];
+}
+
++(BlioImportableBook*)importableBookFromSharedFile:(NSString*)aFile {
+	BlioImportableBook * importableBook = [[[BlioImportableBook alloc] init] autorelease];
+		
 	importableBook.fileName = aFile;
+	importableBook.sourceID = BlioBookSourceFileSharing;
 	importableBook.sourceSpecificID = aFile;
-	importableBook.filePath = [[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:aFile];
+	importableBook.filePath = [[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:aFile];
+	return [BlioImportManager analyzeImportableBook:importableBook];
+}	
++(BlioImportableBook*)analyzeImportableBook:(BlioImportableBook*)importableBook {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	NSString *cachePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-	cachePath = [cachePath stringByAppendingPathComponent:aFile];
+	cachePath = [cachePath stringByAppendingPathComponent:importableBook.fileName];
 	
-	if ([aFile.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+	if ([importableBook.fileName.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 		
 		BOOL unzipSuccess = NO;
 		ZipArchive* aZipArchive = [[ZipArchive alloc] init];
@@ -373,15 +393,16 @@
 		[aZipArchive release];
 
 		if ([[NSFileManager defaultManager] fileExistsAtPath:[cachePath stringByAppendingPathComponent:@"rights.xml"]]) {
-			NSLog(@"Rights file exists for epub file, %@; cannot import!",aFile);
+			NSLog(@"Rights file exists for epub file, %@; cannot import!",importableBook.fileName);
+			importableBook.isDRM = YES;
 			[pool drain];
-			return nil;
+			return importableBook;
 		}
 		NSString * containerPath = [cachePath stringByAppendingPathComponent:@"META-INF/container.xml"];
 		NSLog(@"containerPath: %@",containerPath);		
 		
 		if (![[NSFileManager defaultManager] fileExistsAtPath:containerPath]) {
-			NSLog(@"WARNING: containerPath: %@ for file, %@ was not found!",containerPath,aFile);
+			NSLog(@"WARNING: containerPath: %@ for file, %@ was not found!",containerPath,importableBook.fileName);
 		}
 		else {
 			NSURL * containerURL = [NSURL fileURLWithPath:containerPath];
@@ -426,7 +447,7 @@
 			NSLog(@"Failed to delete unzipped directory at path %@ with error: %@", cachePath, [anError localizedDescription]);
 		}
 	}
-	else if ([aFile.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+	else if ([importableBook.fileName.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 		NSLog(@"checking for XPS DRM: %@",[cachePath stringByAppendingPathComponent:BlioXPSKNFBDRMHeaderFile]);
 								
 		BOOL unzipSuccess = NO;
@@ -444,15 +465,16 @@
 		[aZipArchive release];
 				
 		if ([[NSFileManager defaultManager] fileExistsAtPath:[cachePath stringByAppendingPathComponent:BlioXPSKNFBDRMHeaderFile]]) {
-			NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",aFile);
+			NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",importableBook.fileName);
+			importableBook.isDRM = YES;
 			[pool drain];
-			return nil;
+			return importableBook;
 		}		
 		
 		// check if KNFB XPS File (though not unlikely, as most KNFB XPS files would be DRMed)
 		NSString * KNFBMetadataPath = [cachePath stringByAppendingPathComponent:BlioXPSKNFBMetadataFile];
 		if (![[NSFileManager defaultManager] fileExistsAtPath:KNFBMetadataPath]) {
-			NSLog(@"NOTE: KNFBMetadataPath: %@ for file, %@ was not found. Will now check [Content_Types].xml for document properties...",KNFBMetadataPath,aFile);
+			NSLog(@"NOTE: KNFBMetadataPath: %@ for file, %@ was not found. Will now check [Content_Types].xml for document properties...",KNFBMetadataPath,importableBook.fileName);
 		}
 		else {
 			NSURL * KNFBMetadataURL = [NSURL fileURLWithPath:KNFBMetadataPath];
@@ -477,7 +499,7 @@
 		NSLog(@"contentTypesPath: %@",contentTypesPath);
 		
 		if (![[NSFileManager defaultManager] fileExistsAtPath:contentTypesPath]) {
-			NSLog(@"WARNING: contentTypesPath: %@ for file, %@ was not found!",contentTypesPath,aFile);
+			NSLog(@"WARNING: contentTypesPath: %@ for file, %@ was not found!",contentTypesPath,importableBook.fileName);
 		}
 		else {
 			NSURL * contentTypesURL = [NSURL fileURLWithPath:contentTypesPath];
@@ -522,7 +544,7 @@
 			NSLog(@"Failed to delete unzipped directory at path %@ with error: %@", cachePath, [anError localizedDescription]);
 		}
 	}
-	else if ([aFile.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+	else if ([importableBook.fileName.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
         NSData *aData = [[NSData alloc] initWithContentsOfMappedFile:importableBook.filePath];
         CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)aData);
         CGPDFDocumentRef pdfRef = CGPDFDocumentCreateWithProvider(dataProvider);
@@ -552,22 +574,42 @@
 	[pool drain];
 	return importableBook;
 }
+-(void)importBookFromFilePath:(NSString*)aFilePath {
+	if ([NSThread isMainThread]) {
+		[NSThread detachNewThreadSelector:@selector(importBookFromFilePath:) toTarget:self withObject:aFilePath];
+		return;
+	}
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	BlioImportableBook * importableBook = [BlioImportManager importableBookFromFilePath:aFilePath];
+	
+	if (importableBook.isDRM) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title")
+									 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOK_HAS_DRM",nil,[NSBundle mainBundle],@"The file %@ will not be imported because Digital Rights Management (DRM) was found.",@"Alert message informing the end-user that importing of book from another application will not occur because DRM was found."),importableBook.fileName]
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles: nil];
+		NSError *anError;
+		if (![[NSFileManager defaultManager] removeItemAtPath:importableBook.filePath error:&anError]) {
+			NSLog(@"Failed to delete DRM-ed file %@ in the Documents/Inbox Directory with error: %@", importableBook.fileName, [anError localizedDescription]);
+		}
+		else NSLog(@"Successfully deleted DRM-ed file %@ in the Documents/Inbox Directory.", importableBook.fileName);		
+		return;
+	}
+	[self performSelectorOnMainThread:@selector(importBook:) withObject:importableBook waitUntilDone:NO];
+	[pool drain];
+}
 -(void)importBook:(BlioImportableBook*)importableBook {
-	NSString * title = nil;
-//	if (importableBook.title) title = importableBook.title;
-	if (importableBook.title && [importableBook.title length] > 0 && [importableBook.title compare:@"untitled" options:NSCaseInsensitiveSearch] != NSOrderedSame) title = importableBook.title;
-	else title = importableBook.fileName;
-	
+	if (!importableBook) return;
 	// check for duplicates
-	
 	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
-    if (!moc) {
-        NSLog(@"WARNING: MOC was not able to be obtained from BlioBookManager by BlioFileSharingManager!");
+	if (!moc) {
+		NSLog(@"WARNING: MOC was not able to be obtained from BlioBookManager by BlioImportManager! Aborting import...");
+		return;
 	}
 	else {
 		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 		[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@ && processingState == %@", importableBook.fileName,[NSNumber numberWithInt:BlioBookSourceFileSharing],[NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
+		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@ && processingState == %@", importableBook.fileName,[NSNumber numberWithInt:importableBook.sourceID],[NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
 		
 		NSError *errorExecute = nil; 
 		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -578,7 +620,7 @@
 			return;
 		}
 		if ([results count] >= 1) {
-			NSLog(@"Found completed FileSharing Book in context already- will not add to library. aborting..."); 
+			NSLog(@"Found completed imported Book in context already- will not add to library. aborting..."); 
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title")
 										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOK_ALREADY_FOUND_IN_LIBRARY",nil,[NSBundle mainBundle],@"This book will not be imported because your library already has a book imported from the same file name: %@.",@"Alert message informing the end-user that importing of selected book will not occur because the library already has a book imported from the same file name."),importableBook.fileName]
 										delegate:nil 
@@ -588,16 +630,30 @@
 			return;
 		}
 	}
+	
+	NSString * finalFilePath = nil;
+
+	if (importableBook.sourceID == BlioBookSourceFileSharing) {
+		finalFilePath = importableBook.fileName;
+	}
+	else if (importableBook.sourceID == BlioBookSourceOtherApplications) {
+		finalFilePath = importableBook.filePath;
+	}
+	
+	NSString * title = nil;
+	if (importableBook.title && [importableBook.title length] > 0 && [importableBook.title compare:@"untitled" options:NSCaseInsensitiveSearch] != NSOrderedSame) title = importableBook.title;
+	else title = importableBook.fileName;
+	
 	if ([[importableBook.fileName pathExtension] compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 		[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
 																		   authors:importableBook.authors   
 																		 coverPath:nil
-																		  ePubPath:importableBook.fileName 
+																		  ePubPath:finalFilePath 
 																		   pdfPath:nil 
 																		   xpsPath:nil
 																	  textFlowPath:nil 
 																	 audiobookPath:nil 
-																		  sourceID:BlioBookSourceFileSharing 
+																		  sourceID:importableBook.sourceID 
 																  sourceSpecificID:importableBook.sourceSpecificID
 																   placeholderOnly:NO
 		 ];
@@ -608,11 +664,11 @@
 																		   authors:importableBook.authors   
 																		 coverPath:nil
 																		  ePubPath:nil 
-																		   pdfPath:importableBook.fileName 
+																		   pdfPath:finalFilePath 
 																		   xpsPath:nil
 																	  textFlowPath:nil 
 																	 audiobookPath:nil 
-																		  sourceID:BlioBookSourceFileSharing 
+																		  sourceID:importableBook.sourceID 
 																  sourceSpecificID:importableBook.sourceSpecificID
 																   placeholderOnly:NO
 		 ];
@@ -624,10 +680,10 @@
 																		 coverPath:nil
 																		  ePubPath:nil
 																		   pdfPath:nil 
-																		   xpsPath:importableBook.fileName 
+																		   xpsPath:finalFilePath 
 																	  textFlowPath:nil 
 																	 audiobookPath:nil 
-																		  sourceID:BlioBookSourceFileSharing 
+																		  sourceID:importableBook.sourceID 
 																  sourceSpecificID:importableBook.sourceSpecificID
 																   placeholderOnly:NO
 		 ];		
@@ -635,40 +691,11 @@
 	
 }
 
--(void)importAllBooks {
-	for (NSString * filePath in self.importableBooks) {
-//		NSString * title = [filePath lastPathComponent];
-//		NSString * authors = [NSMutableArray array];
-//		
-//		if ([file.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-//			
-//			[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
-//																			   authors:authors   
-//																			 coverPath:nil
-//																			  ePubPath:nil 
-//																			   pdfPath:nil 
-//																			   xpsPath:nil
-//																		  textFlowPath:nil 
-//																		 audiobookPath:nil 
-//																			  sourceID:BlioBookSourceUserFileSharing 
-//																	  sourceSpecificID:title
-//																	   placeholderOnly:YES
-//			 ];
-//			 
-//		}
-//		else if ([file.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-//			
-//		}
-//		else if ([file.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-//			
-//		}
-	}
-}
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
 	// delete file from public documents directory.
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [[[note userInfo] objectForKey:@"sourceID"] intValue] == BlioBookSourceFileSharing) {
-		NSString * filePath = [[BlioFileSharingManager fileSharingDirectory] stringByAppendingPathComponent:[[note userInfo] objectForKey:@"sourceSpecificID"]];
+		NSString * filePath = [[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:[[note userInfo] objectForKey:@"sourceSpecificID"]];
 		pthread_mutex_lock( &importableBooksMutex );
 		BlioImportableBook * importableBookToBeDeleted = nil;
 		for (BlioImportableBook * importableBook in self.importableBooks) {
@@ -681,6 +708,15 @@
 		}
 		else NSLog(@"Successfully deleted imported file %@ in the Documents Directory.", [[note userInfo] objectForKey:@"sourceSpecificID"]);
 		pthread_mutex_unlock( &importableBooksMutex );
+	}
+	// delete file from inbox directory.
+	else if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [[[note userInfo] objectForKey:@"sourceID"] intValue] == BlioBookSourceOtherApplications) {
+		NSString * filePath = [[BlioImportManager inboxDirectory] stringByAppendingPathComponent:[[note userInfo] objectForKey:@"sourceSpecificID"]];
+		NSError *anError;
+		if (![[NSFileManager defaultManager] removeItemAtPath:filePath error:&anError]) {
+			NSLog(@"Failed to delete imported file %@ in the Documents/Inbox Directory with error: %@", [[note userInfo] objectForKey:@"sourceSpecificID"], [anError localizedDescription]);
+		}
+		else NSLog(@"Successfully deleted imported file %@ in the Documents/Inbox Directory.", [[note userInfo] objectForKey:@"sourceSpecificID"]);
 	}
 }
 - (void)onApplicationDidBecomeActiveNotification:(NSNotification*)note {

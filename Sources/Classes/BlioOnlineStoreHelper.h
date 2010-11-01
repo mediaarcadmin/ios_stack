@@ -10,6 +10,9 @@
 #import "BlioStoreHelper.h"
 #import "BlioContentCafe.h"
 #import "BlioBookVault.h"
+#import "DigitalLockerGateway.h"
+
+static NSString * const BlioIOSStoreSiteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
 
 @class BlioOnlineStoreHelper;
 
@@ -27,7 +30,7 @@
 
 @end
 
-@interface BlioOnlineStoreHelper : BlioStoreHelper {
+@interface BlioOnlineStoreHelper : BlioStoreHelper <DigitalLockerConnectionDelegate> {
 	NSMutableArray* _isbns; // array of ISBN numbers
 	NSInteger newISBNs;
 	NSInteger responseCount;

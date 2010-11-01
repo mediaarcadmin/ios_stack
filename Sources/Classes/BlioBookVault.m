@@ -2840,8 +2840,10 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 + (BookVaultSoap *)BookVaultSoap
 {
 #ifdef TEST_MODE
+	NSLog(@"BookVaultSoap test mode: %@",testBookvaultUrl);
 	return [[[BookVaultSoap alloc] initWithAddress:testBookvaultUrl] autorelease];
 #else	
+	NSLog(@"BookVaultSoap production mode: %@",productionBookvaultUrl);
 	return [[[BookVaultSoap alloc] initWithAddress:productionBookvaultUrl] autorelease];
 #endif
 }
@@ -3619,7 +3621,7 @@ parameters:(BookVault_Login *)aParameters
 	if(parameters != nil) [bodyElements setObject:parameters forKey:@"Login"];
 	
 	NSString *operationXMLString = [envelope serializedFormUsingHeaderElements:headerElements bodyElements:bodyElements];
-	
+	NSLog(@"BookVault operationXMLString: %@",operationXMLString);
 	[binding sendHTTPCallUsingBody:operationXMLString soapAction:@"BlioBookVault/Login" forOperation:self];
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection

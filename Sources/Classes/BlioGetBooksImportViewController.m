@@ -7,7 +7,7 @@
 //
 
 #import "BlioGetBooksImportViewController.h"
-#import "BlioFileSharingManager.h"
+#import "BlioImportManager.h"
 #import "BlioProcessingStandardOperations.h"
 
 @implementation BlioGetBooksImportViewController
@@ -45,7 +45,7 @@
 		return;
 	}
 	NSLog(@"%@", NSStringFromSelector(_cmd));	
-	self.importableBooks = [[[BlioFileSharingManager sharedFileSharingManager] importableBooks] mutableCopy];
+	self.importableBooks = [[[BlioImportManager sharedImportManager] importableBooks] mutableCopy];
 	[self.tableView reloadData];
 }
 -(void)onBlioFileSharingScanFinished:(NSNotification*)note {
@@ -55,7 +55,7 @@
 	}
 	NSLog(@"%@", NSStringFromSelector(_cmd));	
 	[self.activityIndicatorView stopAnimating];
-	self.importableBooks = [[[BlioFileSharingManager sharedFileSharingManager] importableBooks] mutableCopy];
+	self.importableBooks = [[[BlioImportManager sharedImportManager] importableBooks] mutableCopy];
 	[self.tableView reloadData];
 }
 
@@ -65,7 +65,7 @@
 -(void)loadView {
 	[super loadView];
 
-	self.importableBooks = [[[BlioFileSharingManager sharedFileSharingManager] importableBooks] mutableCopy];
+	self.importableBooks = [[[BlioImportManager sharedImportManager] importableBooks] mutableCopy];
 }
 - (void)viewDidLoad {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
@@ -76,13 +76,13 @@
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingFailedNotification:) name:BlioProcessingOperationFailedNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingScanStarted:) name:BlioFileSharingScanStarted object:[BlioFileSharingManager sharedFileSharingManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingScanFinished:) name:BlioFileSharingScanFinished object:[BlioFileSharingManager sharedFileSharingManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingScanUpdate:) name:BlioFileSharingScanUpdate object:[BlioFileSharingManager sharedFileSharingManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingScanStarted:) name:BlioFileSharingScanStarted object:[BlioImportManager sharedImportManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingScanFinished:) name:BlioFileSharingScanFinished object:[BlioImportManager sharedImportManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingScanUpdate:) name:BlioFileSharingScanUpdate object:[BlioImportManager sharedImportManager]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingImportAborted:) name:BlioFileSharingImportAborted object:nil];
 
-	if (![BlioFileSharingManager sharedFileSharingManager].isScanningFileSharingDirectory) {
-		[[BlioFileSharingManager sharedFileSharingManager] scanFileSharingDirectory];
+	if (![BlioImportManager sharedImportManager].isScanningFileSharingDirectory) {
+		[[BlioImportManager sharedImportManager] scanFileSharingDirectory];
 	}
 	else {
 		[self.activityIndicatorView startAnimating];
@@ -220,10 +220,10 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
 	if ([self tableView:self.tableView numberOfRowsInSection:0] == 0) {
-		if ([BlioFileSharingManager sharedFileSharingManager].isScanningFileSharingDirectory) return NSLocalizedStringWithDefaultValue(@"SCANNING_IMPORTABLE_BOOKS_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Blio is scanning your Documents folder for importable files. Please wait a moment...",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, informing the user that Blio is scanning the Documents folder for importable files.");
+		if ([BlioImportManager sharedImportManager].isScanningFileSharingDirectory) return NSLocalizedStringWithDefaultValue(@"SCANNING_IMPORTABLE_BOOKS_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Blio is scanning your Documents folder for importable files. Please wait a moment...",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, informing the user that Blio is scanning the Documents folder for importable files.");
 		return NSLocalizedStringWithDefaultValue(@"NO_IMPORTABLE_BOOKS_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"No files within your Documents folder can be imported. You can add files to your Documents folder by selecting your iOS device within iTunes, selecting the Apps tab at the top of your content area, then scrolling down to the File Sharing section.",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, informing the user that there are no importable files available.");
 	}
-	if ([BlioFileSharingManager sharedFileSharingManager].isScanningFileSharingDirectory) return NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOKS_FOUND_STILL_SCANNING_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Blio is still scanning your Documents folder for importable files. In the meantime, you may select a file above to move the file into your Blio Library.",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, informing the user that the Documents folder is still being scanned, and providing brief instruction on how to import the displayed files in the meantime.");
+	if ([BlioImportManager sharedImportManager].isScanningFileSharingDirectory) return NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOKS_FOUND_STILL_SCANNING_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Blio is still scanning your Documents folder for importable files. In the meantime, you may select a file above to move the file into your Blio Library.",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, informing the user that the Documents folder is still being scanned, and providing brief instruction on how to import the displayed files in the meantime.");
 	return NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOKS_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Select a file to import it to your library.",@"Explanatory message that appears at the bottom of the Importable Books table within Import Books View, providing brief instruction on how to import the displayed files.");
 }
 
@@ -332,7 +332,7 @@
 	BlioProcessingCompleteOperation * completeOp = [self.processingDelegate processingCompleteOperationForSourceID:BlioBookSourceFileSharing sourceSpecificID:importableBook.fileName];
 	if (!completeOp) {
 		BlioImportableBook* importableBook = (BlioImportableBook*)[self.importableBooks objectAtIndex:indexPath.row];
-		[[BlioFileSharingManager sharedFileSharingManager] importBook:importableBook];
+		[[BlioImportManager sharedImportManager] importBook:importableBook];
 		[tableView deselectRowAtIndexPath:indexPath animated:YES];
 		
 		UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:kBlioImportBookCellActivityIndicatorViewTag];

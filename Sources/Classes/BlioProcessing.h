@@ -18,8 +18,9 @@ typedef enum {
 	BlioBookSourceFileSharing = 1,
 	BlioBookSourceLocalBundle = 2,
 	BlioBookSourceOnlineStore = 3,
-	BlioBookSourceFeedbooks = 4,
-	BlioBookSourceGoogleBooks = 5
+	BlioBookSourceOtherApplications = 4,
+	BlioBookSourceFeedbooks = 5,
+	BlioBookSourceGoogleBooks = 6
 } BlioBookSourceID;
 
 static NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";

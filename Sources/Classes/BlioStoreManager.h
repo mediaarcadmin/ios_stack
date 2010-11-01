@@ -112,14 +112,17 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 	@returns The title as an NSString object.
  */
 -(NSString*)storeTitleForSourceID:(BlioBookSourceID)sourceID;
+-(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID;
+-(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID;
+
 /**
 	Synchronously retrieves the URL for a book identified by a source-specific ID from the appropriate store helper.
 	@param sourceID The BlioBookSourceID of the book.
 	@param sourceSpecificID The source-specific ID of the book.
 	@returns An NSURL pointing to the book asset.
  */
--(void)dismissLoginView;
 -(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+-(void)dismissLoginView;
 -(BlioDeviceRegisteredStatus)deviceRegisteredForSourceID:(BlioBookSourceID)sourceID;
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID;
 @end

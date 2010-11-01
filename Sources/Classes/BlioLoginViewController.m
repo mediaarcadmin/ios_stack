@@ -244,14 +244,10 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
-	NSLog(@"emailField isFirstResponder: %i",[emailField isFirstResponder]);
-	NSLog(@"passwordField isFirstResponder: %i",[passwordField isFirstResponder]);
 	if (textField == emailField) 
 		[passwordField becomeFirstResponder];
 	else { 
-		NSLog(@"isFirstResponder: %i",[textField isFirstResponder]);
 		[textField resignFirstResponder];
-		NSLog(@"isFirstResponder: %i",[textField isFirstResponder]);
 		[self loginButtonPressed:textField];
 	}
 	return NO;
@@ -356,7 +352,7 @@
 	NSMutableDictionary * inputData = [NSMutableDictionary dictionaryWithCapacity:1];
 	[inputData setObject:[NSString stringWithString:self.emailField.text] forKey:DigitalLockerInputDataEmailKey];
 	request.InputData = inputData;
-	DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
+	DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request siteNum:[[BlioStoreManager sharedInstance] storeSiteIDForSourceID:sourceID] siteKey:[[BlioStoreManager sharedInstance] storeSiteKeyForSourceID:sourceID] delegate:self];
 	[connection start];
 	[request release];	
 }

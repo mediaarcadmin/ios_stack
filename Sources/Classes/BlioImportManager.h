@@ -1,5 +1,5 @@
 //
-//  BlioFileSharingManager.h
+//  BlioImportManager.h
 //  BlioApp
 //
 //  Created by Don Shin on 10/9/10.
@@ -20,16 +20,20 @@ static NSString * const BlioFileSharingImportAborted = @"BlioFileSharingImportAb
 	NSString * filePath;
 	NSString * title;
 	NSArray * authors;
+	BlioBookSourceID sourceID;
 	NSString * sourceSpecificID;
+	BOOL isDRM;
 }
 @property(nonatomic,retain) NSString * fileName;
 @property(nonatomic,retain) NSString * filePath;
 @property(nonatomic,retain) NSString * title;
 @property(nonatomic,retain) NSArray * authors;
+@property(nonatomic,assign) BlioBookSourceID sourceID;
 @property(nonatomic,retain) NSString * sourceSpecificID;
+@property(nonatomic,assign) BOOL isDRM;
 @end
 	
-@interface BlioFileSharingManager : NSObject {
+@interface BlioImportManager : NSObject {
 	NSMutableArray * _importableBooks;
 	id<BlioProcessingDelegate> _processingDelegate;
 	BOOL isScanningFileSharingDirectory;
@@ -41,10 +45,11 @@ static NSString * const BlioFileSharingImportAborted = @"BlioFileSharingImportAb
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, assign) BOOL isScanningFileSharingDirectory;
 
-+(BlioFileSharingManager*)sharedFileSharingManager;
++(BlioImportManager*)sharedImportManager;
 +(NSString*)fileSharingDirectory;
++(NSString*)inboxDirectory;
 -(void)scanFileSharingDirectory;
+-(void)importBookFromFilePath:(NSString*)aFilePath;
 -(void)importBook:(BlioImportableBook*)importableBook;
--(void)importAllBooks;
 
 @end

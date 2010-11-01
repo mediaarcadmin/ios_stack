@@ -262,6 +262,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             aPageColorSegmentedControl.tintColor = kBlioViewSettingsPopverBlueButton;
         }
         
+		// these lines don't seem to have effect because segmented control is not image-driven...
         [[aPageColorSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"White page color", @"Accessibility label for View Settings White Page Color button")];
         [[aPageColorSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Black page color", @"Accessibility label for View Settings Black Page Color button")];
         [[aPageColorSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Neutral page color", @"Accessibility label for View Settings Neutral Page Color button")];
@@ -298,8 +299,9 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             aTapZoomsToBlockSegment.tintColor = kBlioViewSettingsPopverBlueButton;
         }
         
-        [[aTapZoomsToBlockSegment imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Advances By Page", @"Accessibility label for View Settings White Page Color button")];
-        [[aTapZoomsToBlockSegment imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Advances By Block", @"Accessibility label for View Settings Black Page Color button")];
+		// these lines don't seem to have effect because segmented control is not image-driven...
+        [[aTapZoomsToBlockSegment imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Advance By Page", @"Accessibility label for View Settings Advance By Page button")];
+        [[aTapZoomsToBlockSegment imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Advance By Block", @"Accessibility label for View Settings Advance By Block button")];
         
         [self addSubview:aTapZoomsToBlockSegment];
         self.tapZoomsToBlockSegment = aTapZoomsToBlockSegment;

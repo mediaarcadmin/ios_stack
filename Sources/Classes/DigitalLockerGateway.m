@@ -106,14 +106,137 @@
 
 @end
 
+@implementation DigitalLockerResponseOutputData
+
+@synthesize OutputDataType;
+
+-(void)dealloc {
+	[super dealloc];
+}
+@end
+
+@implementation DigitalLockerResponseOutputDataRegistration
+
+@synthesize UserNum,UserName,UserEmail,FirstName,LastName,UserNewAccount,UserAuthenticated,EmailOption,AccountNum,BookVaultId;
+
+-(id)init {
+	self = [super init];
+	if (self) {
+		OutputDataType = DigitalLockerServiceRegistration;
+	}	
+	return self;	
+}
+
+-(void)dealloc {
+	self.UserName = nil;
+	self.UserEmail = nil;
+	self.FirstName = nil;
+	self.LastName = nil;
+	self.EmailOption = nil;
+	[super dealloc];
+}
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
+	//	NSLog(@"didStartElement: %@",elementName);
+}
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+	//	NSLog(@"found characters: %@",string);
+	if (!parserCharacters) parserCharacters = [[NSMutableString alloc] initWithCapacity:50];
+	[parserCharacters appendString:string];
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {    
+	//	NSLog(@"didEndElement: %@",elementName);
+
+	if ( [elementName isEqualToString:@"UserNum"] ) {
+		if (parserCharacters) {
+			self.UserNum = [parserCharacters intValue];
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"UserName"] ) {
+		if (parserCharacters) {
+			self.UserName = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"UserEmail"] ) {
+		if (parserCharacters) {
+			self.UserEmail = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"FirstName"] ) {
+		if (parserCharacters) {
+			self.FirstName = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"LastName"] ) {
+		if (parserCharacters) {
+			self.LastName = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"UserNewAccount"] ) {
+		if (parserCharacters) {
+			if ([parserCharacters compare:@"yes" options:NSCaseInsensitiveSearch] == NSOrderedSame)  self.UserNewAccount = YES;
+			else self.UserNewAccount = NO;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"UserAuthenticated"] ) {
+		if (parserCharacters) {
+			if ([parserCharacters compare:@"yes" options:NSCaseInsensitiveSearch] == NSOrderedSame)  self.UserAuthenticated = YES;
+			else self.UserAuthenticated = NO;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"EmailOption"] ) {
+		if (parserCharacters) {
+			self.EmailOption = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"AccountNum"] ) {
+		if (parserCharacters) {
+			self.AccountNum = [parserCharacters intValue];
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}	
+	else if ( [elementName isEqualToString:@"BookVaultId"] ) {
+		if (parserCharacters) {
+			self.BookVaultId = [parserCharacters intValue];
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}	
+	else if ( [elementName isEqualToString:OutputDataType] ){
+		[super parser:parser didEndElement:elementName namespaceURI:namespaceURI qualifiedName:qName];
+	}
+}
+
+
+@end 
+
 @implementation DigitalLockerResponse
 
-@synthesize ReturnCode, ReturnMessage, ResponseTime, Errors;
+@synthesize ReturnCode, ReturnMessage, ResponseTime, Errors, OutputData;
 
 -(void)dealloc {
 	self.ReturnMessage = nil;
 	self.ResponseTime = nil;
 	self.Errors = nil;
+	self.OutputData = nil;
 	[super dealloc];
 }
 #pragma mark -
@@ -130,6 +253,13 @@
 		[self.Errors addObject:error];
 		[error release];
 		parser.delegate = error;
+	}
+	else if ( [elementName isEqualToString:DigitalLockerServiceRegistration] ) {
+		DigitalLockerResponseOutputDataRegistration * OutputDataRegistration = [[DigitalLockerResponseOutputDataRegistration alloc] init];
+		OutputDataRegistration.parent = self;
+		self.OutputData = OutputDataRegistration;
+		[OutputDataRegistration release];
+		parser.delegate = OutputDataRegistration;
 	}
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
@@ -177,6 +307,7 @@
 @synthesize ClientUserAgent = _ClientUserAgent;
 @synthesize SiteKey = _SiteKey;
 @synthesize AppID = _AppID;
+@synthesize SiteNum = _SiteNum;
 
 static NSString * SessionId = nil;
 
@@ -193,8 +324,11 @@ static NSString * SessionId = nil;
 		[_ClientLocation retain];
 		_ClientUserAgent = [NSString stringWithFormat:@"Blio iPhone/%@",[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
 		[_ClientUserAgent retain];
-		_SiteKey = DigitalLockerBlioIOSSiteKey;
+		// default settings for SiteKey and SiteNum
+		_SiteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
 		[_SiteKey retain];
+		_SiteNum = @"12555";
+		[_SiteNum retain];
 		_AppID = DigitalLockerBlioAppID;
 		[_AppID retain];
 	}	
@@ -213,7 +347,7 @@ static NSString * SessionId = nil;
 }
 
 -(NSString *) serialize {
-	NSArray * keys = [NSArray arrayWithObjects:@"ClientIPAddress",@"ClientDomain",@"ClientLanguage",@"ClientLocation",@"SiteKey",nil];
+	NSArray * keys = [NSArray arrayWithObjects:@"ClientIPAddress",@"ClientDomain",@"ClientLanguage",@"ClientLocation",@"SiteNum",@"SiteKey",nil];
 	NSMutableString * serialization = [NSMutableString stringWithString:@"<State>"];
 	
 	for (NSString* key in keys) {
@@ -287,43 +421,54 @@ static NSString * SessionId = nil;
 
 #ifdef TEST_MODE
 		_gatewayURL = DigitalLockerGatewayURLTest;
+		NSLog(@"initializing DigitalLockerConnetion with test URL: %@",_gatewayURL);
 #else	
 		_gatewayURL = DigitalLockerGatewayURLProduction;
+		NSLog(@"initializing DigitalLockerConnetion with production URL: %@",_gatewayURL);
 #endif
 		
-		
-		//		CFStringRef urlString = CFURLCreateStringByAddingPercentEscapes(
-		//																		NULL,
-		//																		(CFStringRef)post,
-		//																		NULL,
-		//																		(CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
-		//																		kCFStringEncodingNonLossyASCII );
-		//		post = [(NSString *)urlString autorelease];
-		
-		NSString * requestString = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\">%@%@</Gateway>",[self.State serialize],[self.Request serialize]];
-		NSLog(@"requestString: %@",requestString);
-		NSData *postData = [requestString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
-		NSString *postLength = [NSString stringWithFormat:@"%d",[postData length]];
-		NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] init];
-		[urlRequest setURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://gw.bliodigitallocker.net/nww/gateway/request"]]];
-		[urlRequest setHTTPMethod:@"POST"];
-		//		[request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
-		[urlRequest setValue:postLength forHTTPHeaderField:@"Content-Length"];
-		//		[request setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];  
-		//		[request setValue:@"application/xml" forHTTPHeaderField:@"Content-Type"];  
-		[urlRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-		[urlRequest setHTTPBody:postData];
-		
-		_responseData = [[NSMutableData alloc] init];
-		
-		urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
 		self.parserDelegateStack = [NSMutableArray array];
 	}
 	
 	return self;	
 }
-
+-(id)initWithDigitalLockerRequest:(DigitalLockerRequest*)aRequest siteNum:(NSInteger)aNum siteKey:(NSString*)aKey delegate:(id)delegate {
+	self = [self initWithDigitalLockerRequest:aRequest delegate:delegate];
+	if (self)
+	{
+		_State.SiteNum = [NSString stringWithFormat:@"%i",aNum];
+		NSLog(@"setting siteKey for Request: %@",aKey);
+		_State.SiteKey = aKey;
+	}
+	return self;
+}
 -(void)start {
+	//		CFStringRef urlString = CFURLCreateStringByAddingPercentEscapes(
+	//																		NULL,
+	//																		(CFStringRef)post,
+	//																		NULL,
+	//																		(CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
+	//																		kCFStringEncodingNonLossyASCII );
+	//		post = [(NSString *)urlString autorelease];
+	
+	NSString * requestString = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\">%@%@</Gateway>",[self.State serialize],[self.Request serialize]];
+	NSLog(@"requestString: %@",requestString);
+	NSData *postData = [requestString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+	NSString *postLength = [NSString stringWithFormat:@"%d",[postData length]];
+	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] init];
+	[urlRequest setURL:[NSURL URLWithString:_gatewayURL]];
+	[urlRequest setHTTPMethod:@"POST"];
+	//		[request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+	[urlRequest setValue:postLength forHTTPHeaderField:@"Content-Length"];
+	//		[request setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];  
+	//		[request setValue:@"application/xml" forHTTPHeaderField:@"Content-Type"];  
+	[urlRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+	[urlRequest setHTTPBody:postData];
+	
+	_responseData = [[NSMutableData alloc] init];
+	
+	urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
+	
 	if (self.urlConnection) [self.urlConnection start];
 }
 
@@ -357,7 +502,7 @@ static NSString * SessionId = nil;
 }
 
 - (void)connection:(NSURLConnection *)aConnection didReceiveData:(NSData *)data {
-	NSLog(@"DigitalLockerConnection connection:%@ didReceiveData: %@",aConnection,data);
+//	NSLog(@"DigitalLockerConnection connection:%@ didReceiveData: %@",aConnection,data);
 	[_responseData appendData:data];
 }
 
