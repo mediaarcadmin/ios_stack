@@ -36,6 +36,7 @@ typedef enum {
     NSMutableDictionary *xpsData;
     NSMutableArray *uriMap;
     NSMutableString *currentUriString;
+	NSString *xpsPagesDirectory;
     
     BlioTimeOrderedCache *componentCache;
     NSNumber *bookIsEncrypted;
