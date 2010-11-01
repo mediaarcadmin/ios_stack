@@ -14,16 +14,19 @@
 #import	"Reachability.h"
 #import "BlioDrmSessionManager.h"
 
-#define KNFB_STORE 12151
-#define HP_STORE 12308
-#define TOSHIBA_STORE 12309
-#define DELL_STORE 12327
+// N.B. - For other stores besides the default, BlioOnlineStoreHelper should be subclassed and the init overridden.
+//#define KNFB_STORE 12151
+//#define HP_STORE 12308
+//#define TOSHIBA_STORE 12309
+//#define DELL_STORE 12327
+//#define BLIO_IPHONE_VERSION 12555
 
 @interface BlioOnlineStoreHelper (PRIVATE)
 - (void) bookVaultSoapOperation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response;
 - (void) contentCafeSoapOperation:(ContentCafeSoapOperation *)operation completedWithResponse:(ContentCafeSoapResponse *)response;
 - (void)getContentMetaDataFromISBN:(NSString*)isbn;
 -(void)assessRetrieveBooksProgress;
+-(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password;
 @end
 
 @implementation BlioOnlineStoreHelperBookVaultDelegate
@@ -47,6 +50,8 @@
 	if((self = [super init])) {
 		self.sourceID = BlioBookSourceOnlineStore;
 		self.storeTitle = @"Blio Online Store";
+		self.siteID = 12555;
+		self.siteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
 		bookVaultDelegate = [[BlioOnlineStoreHelperBookVaultDelegate alloc] init];
 		bookVaultDelegate.delegate = self;
 		contentCafeDelegate = [[BlioOnlineStoreHelperContentCafeDelegate alloc] init];
@@ -61,13 +66,29 @@
 	[super dealloc];
 }
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
+	currentUsername = [user retain];
+	currentPassword = [password retain];
+	if (!self.accountID) {
+		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
+		request.Service = DigitalLockerServiceRegistration;
+		request.Method = DigitalLockerMethodLogin;
+		NSMutableDictionary * inputData = [NSMutableDictionary dictionaryWithCapacity:2];
+		[inputData setObject:user forKey:DigitalLockerInputDataEmailKey];
+		[inputData setObject:password forKey:DigitalLockerInputDataPasswordKey];
+		request.InputData = inputData;
+		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request siteNum:self.siteID siteKey:self.siteKey delegate:self];
+		[connection start];
+		[request release];		
+	}
+	else [self retrieveTokenWithUsername:user password:password];
+}
+-(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password {
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
-	username = [user retain];
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
 	loginRequest.username = user;	
 	loginRequest.password = password; 
-	loginRequest.siteId =  [NSNumber numberWithInt:HP_STORE];
+	loginRequest.siteId =  [NSNumber numberWithInt:self.siteID];
 	[vaultBinding LoginAsyncUsingParameters:loginRequest delegate:bookVaultDelegate];
 	[vaultBinding release];
 }
@@ -299,9 +320,14 @@
 }
 - (void)logout {
 	self.token = nil;
-	if (username) {
-		[username release];
-		username = nil;
+	self.accountID = nil;
+	if (currentUsername) {
+		[currentUsername release];
+		currentUsername = nil;
+	}
+	if (currentPassword) {
+		[currentPassword release];
+		currentPassword = nil;
 	}
 	self.timeout = [NSDate distantPast];
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:BlioBookSourceOnlineStore]];
@@ -397,6 +423,30 @@
 	[xmlRequest.ContentCafe.RequestItems.RequestItem addObject:xmlRequestItem];
 	[cafeBinding XmlClassAsyncUsingParameters:xmlRequest delegate:contentCafeDelegate];
 	[cafeBinding release];
+}
+
+#pragma mark -
+#pragma mark DigitalLockerConnectionDelegate methods
+
+- (void)connectionDidFinishLoading:(DigitalLockerConnection *)aConnection {
+	NSLog(@"BlioOnlineStoreHelper connectionDidFinishLoading...");
+	if ([aConnection.Request.Method isEqualToString:DigitalLockerMethodLogin]) {
+		if (aConnection.digitalLockerResponse.ReturnCode == 0 || aConnection.digitalLockerResponse.ReturnCode == 301 ) {
+			DigitalLockerResponseOutputDataRegistration * OutputDataRegistration = (DigitalLockerResponseOutputDataRegistration*)(aConnection.digitalLockerResponse.OutputData);
+			self.accountID = [NSString stringWithFormat:@"%i",OutputDataRegistration.UserNum];
+			[self retrieveTokenWithUsername:currentUsername password:currentPassword];
+		}
+		else {
+			[delegate storeHelper:self receivedLoginResult:BlioLoginResultInvalidPassword];
+		}
+	}
+	
+	[aConnection release];
+}
+
+- (void)connection:(DigitalLockerConnection *)aConnection didFailWithError:(NSError *)error {
+	[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
+	[aConnection release];
 }
 
 

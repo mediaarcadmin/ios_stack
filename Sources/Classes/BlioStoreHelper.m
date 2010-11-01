@@ -11,13 +11,16 @@
 
 @implementation BlioStoreHelper
 
-@synthesize delegate, timeout, token, sourceID, storeTitle,isRetrievingBooks,downloadNewBooks;
+@synthesize delegate, timeout, token, sourceID, storeTitle, siteID, siteKey, accountID, isRetrievingBooks,downloadNewBooks;
 
 -(void) dealloc {
-	if (username) [username release];
+	if (currentUsername) [currentUsername release];
+	if (currentPassword) [currentPassword release];
 	self.token = nil;
 	self.timeout = nil;
 	self.storeTitle = nil;
+	self.accountID = nil;
+	self.siteKey = nil;
 	[super dealloc];
 }
 
@@ -37,7 +40,7 @@
 	return [self hasValidToken];
 }
 -(NSString*)username {
-	if ([self isLoggedIn]) return username;
+	if ([self isLoggedIn]) return currentUsername;
 	else return nil;
 }
 -(BlioDeviceRegisteredStatus)deviceRegistered {

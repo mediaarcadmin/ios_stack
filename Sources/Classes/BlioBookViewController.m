@@ -220,10 +220,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
-            if ([self.book hasAudiobook]) {
-//                _audioBookManager = [[BlioAudioBookManager alloc] initWithPath:[self.book timingIndicesPath] metadataPath:[self.book audiobookPath]];        
-                _audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
-            } else {
+            if ([self.book hasAudiobook]) 
+				_audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
+			// This is not an "else" because the above initialization could have discovered
+			// a corrupt audiobook, in which case hasAudiobook would now be false.
+			if ( ![self.book hasAudiobook] ) {			
                 _acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
                 if ( _acapelaAudioManager != nil )  {
                     [_acapelaAudioManager setPageChanged:YES];
@@ -691,7 +692,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            target:self 
                                            action:@selector(showViewSettings:)];
     
-    [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Book View Controller Settings button")];
+    [item setAccessibilityLabel:NSLocalizedString(@"Visual Settings", @"Accessibility label for Book View Controller Visual Settings button")];
     self.viewSettingsButton = item;
     [readingItems addObject:item];
     [item release];
@@ -1858,7 +1859,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
 - (void)changeTapZooms:(UIControl*)sender {
-	if ( ((UISwitch*)sender).on )
+//	if ( ((UISwitch*)sender).on )
+	if ( ((UISegmentedControl*)sender).selectedSegmentIndex == 1 )
 		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTapZoomsDefaultsKey];
 	else
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioTapZoomsDefaultsKey];	

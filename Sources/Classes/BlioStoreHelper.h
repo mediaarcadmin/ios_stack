@@ -12,7 +12,8 @@
 #import "BlioStoreManager.h"
 
 @interface BlioStoreHelper : NSObject {
-	NSString* username;
+	NSString* currentUsername;
+	NSString* currentPassword;
 	NSString* token;
 	NSDate* timeout;
 	NSString* storeTitle;
@@ -20,7 +21,9 @@
 	id<BlioStoreHelperDelegate> delegate;
 	BOOL isRetrievingBooks;
 	BOOL downloadNewBooks;
-	
+	NSInteger siteID;
+	NSString* siteKey;
+	NSString* accountID;
 }
 @property (nonatomic, retain) NSDate* timeout;
 @property (nonatomic, readonly) NSString *username;
@@ -30,6 +33,9 @@
 @property (nonatomic) BlioBookSourceID sourceID;
 @property (nonatomic, readonly) BOOL isRetrievingBooks;
 @property (nonatomic, assign) BOOL downloadNewBooks;
+@property (nonatomic, assign) NSInteger siteID;
+@property (nonatomic, retain) NSString *siteKey;
+@property (nonatomic, retain) NSString *accountID;
 
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password;
 - (void)logout;

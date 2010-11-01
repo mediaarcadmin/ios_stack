@@ -9,6 +9,7 @@
 #import "BlioAudioBookManager.h"
 #import "BlioBook.h"
 #import "BlioBookManager.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioAudioBookManager
 
@@ -28,12 +29,19 @@
 		if (referencesData) {
 			[self parseData:referencesData];
 		}
-		else NSLog(@"WARNING: Data could not be obtained from audiobook References XML file!");
+		else {
+			NSLog(@"WARNING: Data could not be obtained from audiobook References XML file!");
+			[self disableAudio];
+		}
 		NSData * audiobookMetadata = [book manifestDataForKey:@"audiobookMetadataFilename"];
 		if (audiobookMetadata) {
 			[self parseData:audiobookMetadata];
 		}
-		else NSLog(@"WARNING: Data could not be obtained from audiobook Metadata XML file!");
+		else {
+			NSLog(@"WARNING: Data could not be obtained from audiobook Metadata XML file!");
+			[self disableAudio];
+		}
+		
 		[self setStartedPlaying:NO]; 
 		[self setPausedAtTime:0]; 
 		[self setPageChanged:YES];
@@ -175,6 +183,18 @@
 }
  */
 
+- (void)disableAudio {
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+									 message:NSLocalizedStringWithDefaultValue(@"AUDIOBOOK_CANNOT_BE_READ",nil,[NSBundle mainBundle],@"The audiobook cannot be read. Please contact Blio technical support.",@"Alert message when audiobook cannot be read.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles: nil];
+	// This will cause audio to go over to TTS.
+	// Would it be better to just disable audio??
+	[[BlioBookManager sharedBookManager] bookWithID:self.bookID].audiobook = NO;
+	
+}
+
 - (void)playAudio {
 	[self setTimeStarted:[avPlayer currentTime]];
 	[avPlayer play];
@@ -233,8 +253,7 @@
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
 	if ( [elementName isEqualToString:@"AudioReferences"]  ) {
 		if ( [self.timeFiles count] != [self.audioFiles count] ) {
-			NSLog(@"Missing audio or timing file.");
-			// TODO: Disable audiobook playback.
+			[self disableAudio];
 		}
 	}
 	else if ( [elementName isEqualToString:@"Page"] ) {

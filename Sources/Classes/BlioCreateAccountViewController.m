@@ -402,7 +402,7 @@
 		[inputData setObject:[NSString stringWithString:self.passwordField.text] forKey:DigitalLockerInputDataPasswordKey];
 		[inputData setObject:@"N" forKey:DigitalLockerInputDataEmailOptionKey];
 		request.InputData = inputData;
-		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
+		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request siteNum:[[BlioStoreManager sharedInstance] storeSiteIDForSourceID:sourceID] siteKey:[[BlioStoreManager sharedInstance] storeSiteKeyForSourceID:sourceID] delegate:self];
 		[connection start];
 		[request release];
 	}

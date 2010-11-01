@@ -19,6 +19,7 @@
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookManager.h"
 #import <unistd.h>
+#import "BlioImportManager.h"
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -37,7 +38,8 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {  
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+	if (launchOptions) NSLog(@"launchOptions: %@",launchOptions);
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	NSError * audioError = nil;
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError];
@@ -167,11 +169,19 @@ tryAgain:
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
     
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+	return YES;
 }
 
 -(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
 	NSLog(@"opened app with URL: %@",[url absoluteString]);
-	return YES;
+	if ([url isFileURL]) {
+		NSString * file = [url path]; 
+		if ([file.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+			[[BlioImportManager sharedImportManager] importBookFromFilePath:file];
+			return YES;
+		}
+	}	
+	return NO;
 }
 
 -(void)loginDismissed:(NSNotification*)note {
@@ -325,7 +335,6 @@ static void *background_init_thread(void * arg) {
 }
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
-	[[NSNotificationCenter defaultCenter] postNotificationName:BlioApplicationDidBecomeActiveNotification object:self];
 	if (self.networkStatus != NotReachable) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && ![[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
