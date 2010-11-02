@@ -110,6 +110,15 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioLoginFinished object:self userInfo:userInfo];
 
 }
+-(void)saveUsername:(NSString*)username password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
+//	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"Users"] mutableCopy];
+//	if (!usersDictionary) usersDictionary = [NSMutableDictionary dictionary];
+//	NSMutableDictionary * currentUserDictionary = [[usersDictionary dictionaryForKey:[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] accountID]] mutableCopy];
+	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
+	if (username) [loginCredentials setObject:username forKey:@"username"];
+	if (password) [loginCredentials setObject:password forKey:@"password"];
+	[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];	
+}
 -(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {	
 	NSLog(@"beginIgnoringInteractionEvents");
 	[[UIApplication sharedApplication] beginIgnoringInteractionEvents];

@@ -30,12 +30,12 @@ static const NSInteger kBlioBookProcessingStatePaused = 5;
 static const NSInteger kBlioBookProcessingStateSuspended = 6;
 static const NSInteger kBlioBookProcessingStateComplete = 7;
 
-static NSString * const BlioManifestEntryLocationFileSystem = @"fileSystem";
-static NSString * const BlioManifestEntryLocationXPS = @"xps";
-static NSString * const BlioManifestEntryLocationTextflow = @"textflow";
-static NSString * const BlioManifestEntryLocationWeb = @"web";
-static NSString * const BlioManifestEntryLocationBundle = @"bundle";
-static NSString * const BlioManifestEntryLocationDocumentsDirectory = @"DocumentsDirectory";
+static NSString * const BlioManifestEntryLocationFileSystem = @"BlioManifestEntryLocationFileSystem";
+static NSString * const BlioManifestEntryLocationXPS = @"BlioManifestEntryLocationXPS";
+static NSString * const BlioManifestEntryLocationTextflow = @"BlioManifestEntryLocationTextflow";
+static NSString * const BlioManifestEntryLocationWeb = @"BlioManifestEntryLocationWeb";
+static NSString * const BlioManifestEntryLocationBundle = @"BlioManifestEntryLocationBundle";
+static NSString * const BlioManifestEntryLocationDocumentsDirectory = @"BlioManifestEntryLocationDocumentsDirectory";
 static NSString * const BlioManifestEntryLocationFileSystemOther = @"BlioManifestEntryLocationFileSystemOther";
 
 static NSString * const BlioXPSEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMap.xml";
@@ -43,8 +43,8 @@ static NSString * const BlioXPSEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epa
 static NSString * const BlioXPSEncryptedImagesDir = @"/Resources";
 static NSString * const BlioXPSEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/Flow";
 static NSString * const BlioXPSMetaDataDir = @"/Documents/1/Metadata";
-static NSString * const BlioXPSPagesDir = @"/Documents/1/Pages";
 static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.jpg";
+static NSString * const BlioXPSSequenceFile = @"/FixedDocumentSequence.fdseq";
 static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
 static NSString * const BlioXPSKNFBMetadataFile = @"/Documents/1/Other/KNFB/Metadata.xml";
 static NSString * const BlioXPSKNFBRightsFile = @"/Documents/1/Other/KNFB/Rights.xml";
@@ -57,23 +57,25 @@ static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
 static NSString * const BlioXPSComponentExtensionRels = @"rels";
 static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 
-static NSString * const BlioManifestAudiobookKey = @"audiobookFilename";
-static NSString * const BlioManifestEPubKey = @"epubFilename";
-static NSString * const BlioManifestPDFKey = @"pdfFilename";
-static NSString * const BlioManifestTextFlowKey = @"textFlowFilename";
-static NSString * const BlioManifestXPSKey = @"xpsFilename";
-static NSString * const BlioManifestCoverKey = @"coverFilename";
-static NSString * const BlioManifestThumbnailDirectoryKey = @"thumbnailDirectory";
-static NSString * const BlioManifestRightsKey = @"rightsFilename";
-static NSString * const BlioManifestAudiobookDataFilesKey = @"audiobookDataFiles";
-static NSString * const BlioManifestAudiobookTimingFilesKey = @"audiobookTimingFiles";
-static NSString * const BlioManifestKNFBMetadataKey = @"KNFBMetadataFilename";
-static NSString * const BlioManifestPreAvailabilityCompleteKey = @"preAvailabilityComplete";
-static NSString * const BlioManifestDrmHeaderKey = @"drmHeaderFilename";
-static NSString * const BlioManifestFirstLayoutPageOnLeftKey = @"firstLayoutPageOnLeft";
+static NSString * const BlioManifestAudiobookKey = @"BlioManifestAudiobookKey";
+static NSString * const BlioManifestEPubKey = @"BlioManifestEPubKey";
+static NSString * const BlioManifestPDFKey = @"BlioManifestPDFKey";
+static NSString * const BlioManifestTextFlowKey = @"BlioManifestTextFlowKey";
+static NSString * const BlioManifestXPSKey = @"BlioManifestXPSKey";
+static NSString * const BlioManifestCoverKey = @"BlioManifestCoverKey";
+static NSString * const BlioManifestThumbnailDirectoryKey = @"BlioManifestThumbnailDirectoryKey";
+static NSString * const BlioManifestRightsKey = @"BlioManifestRightsKey";
+static NSString * const BlioManifestAudiobookMetadataKey = @"BlioManifestAudiobookMetadataKey";
+static NSString * const BlioManifestAudiobookDataFilesKey = @"BlioManifestAudiobookDataFilesKey";
+static NSString * const BlioManifestAudiobookReferencesKey = @"BlioManifestAudiobookReferencesKey";
+static NSString * const BlioManifestAudiobookTimingFilesKey = @"BlioManifestAudiobookTimingFilesKey";
+static NSString * const BlioManifestKNFBMetadataKey = @"BlioManifestKNFBMetadataKey";
+static NSString * const BlioManifestPreAvailabilityCompleteKey = @"BlioManifestPreAvailabilityCompleteKey";
+static NSString * const BlioManifestDrmHeaderKey = @"BlioManifestDrmHeaderKey";
+static NSString * const BlioManifestFirstLayoutPageOnLeftKey = @"BlioManifestFirstLayoutPageOnLeftKey";
 
-static NSString * const BlioManifestEntryLocationKey = @"location";
-static NSString * const BlioManifestEntryPathKey = @"path";
+static NSString * const BlioManifestEntryLocationKey = @"BlioManifestEntryLocationKey";
+static NSString * const BlioManifestEntryPathKey = @"BlioManifestEntryPathKey";
 
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
@@ -101,12 +103,11 @@ static NSString * const BlioManifestEntryPathKey = @"path";
 // the following two attributes are used to quickly calculate the number of TTS-compatible books
 @property (nonatomic, retain) NSNumber *audiobook;
 @property (nonatomic, retain) NSNumber *ttsRight;
+@property (nonatomic, retain) NSNumber *ttsCapable;
 
-// Legacy core data attribute-backed dynamic properties TODO: remove these
-@property (nonatomic, retain) NSString *audiobookFilename;
-@property (nonatomic, retain) NSString *timingIndicesFilename;
 
 @property (nonatomic, assign, readonly) BOOL hasAudiobook;
+@property (nonatomic, assign, readonly) BOOL isTTSCapable;
 @property (nonatomic, assign, readonly) BOOL hasTTSRights;
 @property (nonatomic, assign, readonly) BOOL reflowEnabled;
 @property (nonatomic, assign, readonly) BOOL fixedViewEnabled;

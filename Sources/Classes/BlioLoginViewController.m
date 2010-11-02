@@ -142,11 +142,7 @@
 	}	
 	
 	[activityIndicatorView startAnimating];
-	
-	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-	[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
-	[loginCredentials setObject:[NSString stringWithString:passwordField.text] forKey:@"password"];
-	[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+	[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:passwordField.text sourceID:self.sourceID];	
 	[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];	
 }
 - (void)receivedLoginResult:(BlioLoginResult)loginResult {

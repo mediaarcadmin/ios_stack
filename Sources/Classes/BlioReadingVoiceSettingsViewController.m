@@ -68,7 +68,7 @@
 	
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
- 	[request setPredicate:[NSPredicate predicateWithFormat:@"audiobook == %@ && ttsRight == %@ && processingState == %@", [NSNumber numberWithBool:NO], [NSNumber numberWithBool:YES], [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"ttsCapable == %@ && processingState == %@",[NSNumber numberWithBool:YES], [NSNumber numberWithInt:kBlioBookProcessingStateComplete]]];
 	[request setSortDescriptors:sorters];
  
 	 self.ttsFetchedResultsController = [[[NSFetchedResultsController alloc]

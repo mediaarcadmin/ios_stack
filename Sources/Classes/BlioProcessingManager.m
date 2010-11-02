@@ -153,6 +153,8 @@
             [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
             [manifestEntry setValue:ePubPath forKey:BlioManifestEntryPathKey];
             [aBook setManifestValue:manifestEntry forKey:BlioManifestEPubKey];
+			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"ttsRight"]; 
+			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"ttsCapable"]; 
         }
         if (pdfPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
@@ -178,7 +180,6 @@
             [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
             [manifestEntry setValue:audiobookPath forKey:BlioManifestEntryPathKey];
             [aBook setManifestValue:manifestEntry forKey:BlioManifestAudiobookKey];
-			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"audiobook"];
         }
 		
 		if ([aBook valueForKey:@"uuid"] == nil)

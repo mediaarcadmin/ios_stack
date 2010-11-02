@@ -209,7 +209,9 @@
 	if (section == 0) return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CREATE_ACCOUNT_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Passwords must have a minimum of 8 characters, including at least one upper case and one digit. Characters %@ are not allowed.",@"Explanatory message that appears at the bottom of the Create Account fields."),BlioPasswordInvalidCharacters];
 	return nil;
 }
-
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+	return 100;
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -449,6 +451,7 @@
 #pragma mark UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+	[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
 	[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
 }
 

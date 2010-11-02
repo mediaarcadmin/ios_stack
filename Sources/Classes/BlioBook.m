@@ -37,9 +37,8 @@
 @dynamic libraryPosition;
 @dynamic audiobook;
 @dynamic ttsRight;
+@dynamic ttsCapable;
 @dynamic reflowRight;
-@dynamic audiobookFilename;
-@dynamic timingIndicesFilename;
 
 - (void)dealloc {    
     [self flushCaches];
@@ -170,11 +169,15 @@
 }
 
 - (BOOL)hasAudiobook {
-    return [[self valueForKey:@"audiobook"] boolValue];
+	return [[self valueForKey:@"audiobook"] boolValue];
+//	return [self hasManifestValueForKey:BlioManifestAudiobookMetadataKey];
 }
 - (BOOL)hasTTSRights {
-//    return NO;//[[self valueForKey:@"hasTTSRightsNum"] boolValue];
+	//    return NO;//[[self valueForKey:@"hasTTSRightsNum"] boolValue];
     return [[self valueForKey:@"ttsRight"] boolValue];
+}
+- (BOOL)isTTSCapable {
+    return [[self valueForKey:@"ttsCapable"] boolValue];
 }
 - (BOOL)reflowEnabled {
     return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));

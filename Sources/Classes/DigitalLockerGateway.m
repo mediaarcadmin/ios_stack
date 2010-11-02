@@ -316,7 +316,13 @@ static NSString * SessionId = nil;
 	if (self) {
 		_ClientIPAddress = [UIDevice IPAddress];
 		[_ClientIPAddress retain];
-		_ClientDomain = @"gw.bliodigitallocker.net";
+		
+#ifdef TEST_MODE
+		_ClientDomain = DigitalLockerGatewayClientDomainTest;
+#else	
+		_ClientDomain = DigitalLockerGatewayClientDomainProduction;
+#endif
+		
 		[_ClientDomain retain];
 		_ClientLanguage = @"en";
 		[_ClientLanguage retain];
