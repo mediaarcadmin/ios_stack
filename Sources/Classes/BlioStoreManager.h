@@ -50,11 +50,12 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
  @returns The shared BlioStoreManager instance.
  */
 +(BlioStoreManager*)sharedInstance;
+-(void)saveUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
 /**
-	Passes the request to login with the included credentials to the appropriate store helper.
-	@param user The username for the login request (usually the email address).
-	@param password The password for the login request.
-	@param sourceID The BlioBookSourceID for which login has been requested.
+ Passes the request to login with the included credentials to the appropriate store helper.
+ @param user The username for the login request (usually the email address).
+ @param password The password for the login request.
+ @param sourceID The BlioBookSourceID for which login has been requested.
  */
 -(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
 /**

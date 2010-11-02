@@ -25,7 +25,7 @@
 		[self setBookID:aBookID];
 		BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
 
-		NSData * referencesData = [book manifestDataForKey:@"audiobookReferencesFilename"];
+		NSData * referencesData = [book manifestDataForKey:BlioManifestAudiobookReferencesKey];
 		if (referencesData) {
 			[self parseData:referencesData];
 		}
@@ -33,7 +33,7 @@
 			NSLog(@"WARNING: Data could not be obtained from audiobook References XML file!");
 			[self disableAudio];
 		}
-		NSData * audiobookMetadata = [book manifestDataForKey:@"audiobookMetadataFilename"];
+		NSData * audiobookMetadata = [book manifestDataForKey:BlioManifestAudiobookMetadataKey];
 		if (audiobookMetadata) {
 			[self parseData:audiobookMetadata];
 		}

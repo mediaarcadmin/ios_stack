@@ -1601,7 +1601,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //											[[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]]];
 		NSString * authorString = @"";
 		NSString * audioString = @"";
-		if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
 			audioString = @", audiobook enabled.";
 		}
 		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
@@ -1745,7 +1745,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.pauseButton.hidden = YES;
 		self.progressBackgroundView.hidden = YES;
 		bookView.alpha = 1;
-		if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
 		}
 		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
@@ -1926,7 +1926,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (NSString *)accessibilityLabel {
 	NSString * authorString = @"";
 	NSString * audioString = @"";
-	if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+	if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
 		audioString = @", audiobook enabled.";
 	}
 	else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
@@ -2071,7 +2071,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.accessoryView = nil;
 		[self resetAuthorText];
 		self.selectionStyle = UITableViewCellSelectionStyleGray;
-		if ([self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
 		}
 		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
@@ -2120,7 +2120,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 */
 -(void) resetAuthorText {
     self.authorLabel.text = [[self.book authorsWithStandardFormat] uppercaseString];
-//    if (![self.book hasTTSRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+//    if (![self.book hasTTSRights] && [self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
 //        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
 //    }	
 }

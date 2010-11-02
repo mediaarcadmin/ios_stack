@@ -641,7 +641,7 @@
             [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
             [manifestEntry setValue:(NSString *)uniqueString forKey:BlioManifestEntryPathKey];
             
-            [self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+//          [self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
             [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
 			self.operationSuccess = YES;
 			self.percentageComplete = 100;
@@ -757,7 +757,7 @@
 		return;
 	}
 	
-	NSDictionary *manifestEntry;
+	NSDictionary *manifestEntry = nil;
 		
 	BOOL hasTextflowData = [self bookManifestPath:BlioXPSTextFlowSectionsFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasTextflowData) {
@@ -807,7 +807,7 @@
 		}
 	}
 	else {
-		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"ttsRight"]; 
+		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"ttsRight"];
 		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"]; 
 	}
 	
@@ -826,14 +826,14 @@
 		manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
 		[manifestEntry setValue:BlioXPSAudiobookMetadataFile forKey:BlioManifestEntryPathKey];
-		[self setBookManifestValue:manifestEntry forKey:@"audiobookMetadataFilename"];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestAudiobookMetadataKey];
 		
 		manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
 		[manifestEntry setValue:BlioXPSAudiobookReferencesFile forKey:BlioManifestEntryPathKey];
-		[self setBookManifestValue:manifestEntry forKey:@"audiobookReferencesFilename"];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestAudiobookReferencesKey];
 		
-		NSData * data = [self getBookManifestDataForKey:@"audiobookReferencesFilename"];
+		NSData * data = [self getBookManifestDataForKey:BlioManifestAudiobookReferencesKey];
 		if (data) {
 			// test to see if valid XML found
 //			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -844,7 +844,7 @@
 			[audiobookReferencesParser parse];
 		}
 		//			NSLog(@"[book hasTTSRights]: %i",[book hasTTSRights]);
-		//			NSLog(@"[book hasManifestValueForKey:@audiobookMetadataFilename]: %i",[book hasManifestValueForKey:@"audiobookMetadataFilename"]);
+		//			NSLog(@"[book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]: %i",[book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]);
 	}
 	
 	BOOL hasKNFBMetadata = [self bookManifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS];
@@ -868,6 +868,9 @@
 		}
 	}
 	
+	if (!hasAudiobook && hasTextflowData && [book hasTTSRights]) {
+		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"ttsCapable"]; 
+	}
 	if ([self isCancelled]) {
 		NSLog(@"BlioProcessingXPSManifestOperation cancelled at end - likely due to incompatible features encountered in the book Metadata.xml.");
 		self.operationSuccess = NO;
@@ -1579,8 +1582,7 @@
 				return;
 			}
 			else {
-				[self setBookValue:audioMetadataFilename forKey:self.filenameKey];
-				[self setBookValue:audioReferencesFilename forKey:@"timingIndicesFilename"]; 
+				// timing indices and audiobook metadata locations is now stored in manifest by BlioProcessingXPSManifestOperation... this operation would need significant refactoring if we were to re-support audiobooks outside of XPS in the future.
 				self.operationSuccess = YES;
 				self.percentageComplete = 100;
 			}

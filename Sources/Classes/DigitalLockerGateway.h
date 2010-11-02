@@ -10,6 +10,8 @@
 
 static NSString * const DigitalLockerBlioAppID = @"APPID-OEM-HP-001-";
 
+static NSString * const DigitalLockerGatewayClientDomainTest = @"gw.bliodigitallocker.net";
+static NSString * const DigitalLockerGatewayClientDomainProduction = @"gw.bliodigitallocker.com";
 static NSString * const DigitalLockerGatewayURLTest = @"https://gw.bliodigitallocker.net/nww/gateway/request";
 static NSString * const DigitalLockerGatewayURLProduction = @"https://gw.bliodigitallocker.com/nww/gateway/request";
 
