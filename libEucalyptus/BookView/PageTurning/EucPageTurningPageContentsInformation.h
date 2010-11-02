@@ -8,14 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "THOpenGLUtils.h"
+#import "THOpenGLTexturePool.h"
 
 @class EucPageTurningView, EucPageTurningTextureGenerationOperation;
 
 @interface EucPageTurningPageContentsInformation : NSObject {
-    EucPageTurningView *_pageTurningView;
+    THOpenGLTexturePool *_texturePool;
 
     NSUInteger _pageIndex;
     UIView *_view;
+
     GLuint _texture;
     GLuint _zoomedTexture;
     CGRect _zoomedTextureRect;
@@ -39,7 +41,7 @@
 @property (nonatomic, retain) EucPageTurningTextureGenerationOperation *currentTextureGenerationOperation;
 @property (nonatomic, retain) EucPageTurningTextureGenerationOperation *currentZoomedTextureGenerationOperation;
 
-- (id)initWithPageTurningView:(EucPageTurningView *)pageTurningView;
+- (id)initWithTexturePool:(THOpenGLTexturePool *)texturePool;
 
 @end
 

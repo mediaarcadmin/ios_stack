@@ -12,6 +12,8 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
 
+#import "THEAGLContextAdditions.h"
+
 #pragma mark -
 #pragma mark Sanity Checks
 

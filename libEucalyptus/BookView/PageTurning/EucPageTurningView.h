@@ -13,7 +13,7 @@
 #import "EucPageTurningTextureGenerationOperation.h"
 #import "THPair.h"
 
-@class EucPageTurningPageContentsInformation;
+@class EucPageTurningPageContentsInformation, THOpenGLTexturePool;
 @protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource, EucPageTurningViewBitmapDataSource;
 
 
@@ -141,8 +141,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     EucPageTurningViewZoomHandlingKind _zoomHandlingKind;
     BOOL _zoomingDelegateMessageSent;
     
-    EAGLContext *_backgroundThreadEAGLContext;
-    NSLock *_backgroundThreadEAGLContextLock;
+    THOpenGLTexturePool *_texturePool;
+    
     EucPageTurningPageContentsInformation *_pageContentsInformation[7];
     
     NSInteger _rightFlatPageIndex;
@@ -173,12 +173,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     NSArray *_accessibilityElements;
     THAccessibilityElement *_nextPageTapZone;
     
-    NSLock *_textureLock;
-    NSMutableArray *_recycledTextures;
-    
     NSOperationQueue *_textureGenerationOperationQueue;
-	
-	GLuint _maxTex;
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
@@ -237,7 +232,6 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 - (void)refreshHighlightsForPageAtIndex:(NSUInteger)index;
 
 - (void)waitForAllPageImagesToBeAvailable;
-- (void)teardown;
 
 #pragma mark Light-related properties.
 
@@ -251,11 +245,6 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 @property (nonatomic, copy) UIColor *diffuseLightColor;
 
 @property (nonatomic, assign) THVec3 lightPosition;
-
-#pragma mark Private
-
-- (GLuint)_unusedTexture;
-- (void)_recycleTexture:(GLuint)texture;
 
 @end
 
@@ -299,11 +288,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                        fromRect:(CGRect)rect
                         minSize:(CGSize)rect
                      getContext:(id *)context;
-
--  (THPair *)pageTurningView:(EucPageTurningView *)pageTurningView
-RGBABitmapDataForPageAtIndex:(NSUInteger)index
-				   fromRect:(CGRect)rect
-					minSize:(CGSize)size;
 
 - (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 
    fastUIImageForPageAtIndex:(NSUInteger)index;

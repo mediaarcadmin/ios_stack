@@ -8,12 +8,12 @@
 
 #import "EucPageTurningTextureGenerationOperation.h"
 #import "THPair.h"
+#import "THOpenGLTexturePool.h"
 
 @implementation EucPageTurningTextureGenerationOperation
 
 @synthesize delegate = _delegate;
-@synthesize eaglContext = _eaglContext;
-@synthesize contextLock = _contextLock;
+@synthesize texturePool = _texturePool;
 @synthesize generationInvocation = _generationInvocation;
 
 @synthesize pageIndex = _pageIndex;
@@ -25,30 +25,22 @@
 - (void)dealloc
 {
     [_generationInvocation release]; 
-    [_eaglContext release];
-    [_contextLock release];
+    [_texturePool release];
     
     [super dealloc];
 }
 
 - (void)mainThreadNotify
 {
-	if (self.isCancelled) {
-		GLuint texID = self.generatedTextureID;
-		glDeleteTextures(1, &texID);
-		self.generationInvocation = nil;
-	} else {
-		[self.delegate textureGenerationOperationGeneratedTexture:self];
-	}
+    if(self.delegate) {
+        [self.delegate textureGenerationOperationGeneratedTexture:self];
+    } else {
+        [self.texturePool recycleTexture:self.generatedTextureID];
+    }
 }
 
 - (void)main
 {
-	if (self.isCancelled) {
-		self.generationInvocation = nil;
-		return;
-	}
-	
     NSInvocation *generationInvocation = self.generationInvocation;
     [generationInvocation invoke];
     THPair *generatedRGBAContentsAndSize = nil;
@@ -57,18 +49,12 @@
     if(generatedRGBAContentsAndSize) {
         NSData *data = generatedRGBAContentsAndSize.first;
         CGSize size = [(NSValue *)generatedRGBAContentsAndSize.second CGSizeValue];
-		
-		if (self.isCancelled) {
-			[[data retain] autorelease];
-
-			self.generationInvocation = nil;
-			return;
-		}
         
-        NSLock *contextLock = self.contextLock;
-        [contextLock lock];
-        [EAGLContext setCurrentContext:self.eaglContext];
-        GLuint textureID = [self.delegate textureGenerationOperationGetTextureId:self];
+        THOpenGLTexturePool *texturePool = self.texturePool;
+        EAGLContext *context = [texturePool checkOutEAGLContext];
+        [context thPush];
+        
+        GLuint textureID = [texturePool unusedTexture];
         
         glBindTexture(GL_TEXTURE_2D, textureID); 
         
@@ -82,16 +68,8 @@
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
         
-        [contextLock unlock];
-		
-		if (self.isCancelled) {
-			if (glIsTexture(textureID)) {
-
-				glDeleteTextures(1, &textureID);
-			}
-			self.generationInvocation = nil;
-			return;
-		}
+        [context thPop];
+		[texturePool checkInEAGLContext];
         
         self.generatedTextureID = textureID;
         [self  performSelectorOnMainThread:@selector(mainThreadNotify) 

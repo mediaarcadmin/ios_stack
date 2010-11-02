@@ -10,11 +10,12 @@
 #import "THOpenGLUtils.h"
 
 @protocol EucPageTurningTextureGenerationOperationDelegate;
+@class THOpenGLTexturePool;
 
 @interface EucPageTurningTextureGenerationOperation : NSOperation {
     id<EucPageTurningTextureGenerationOperationDelegate> _delegate;
-    EAGLContext *_eaglContext;
-    NSLock *_contextLock;
+    THOpenGLTexturePool *_texturePool;
+
     NSInvocation *_generationInvocation;
     NSUInteger pageIndex;
     CGRect textureRect;
@@ -23,8 +24,8 @@
 }
 
 @property (nonatomic, assign) id<EucPageTurningTextureGenerationOperationDelegate> delegate;
-@property (nonatomic, retain) EAGLContext *eaglContext;
-@property (nonatomic, retain) NSLock *contextLock;
+@property (nonatomic, retain) THOpenGLTexturePool *texturePool;
+
 @property (nonatomic, retain) NSInvocation *generationInvocation;
 @property (nonatomic, assign) NSUInteger pageIndex;
 @property (nonatomic, assign) CGRect textureRect;
@@ -41,8 +42,5 @@
 
 // Called on the main thread.
 - (void)textureGenerationOperationGeneratedTexture:(EucPageTurningTextureGenerationOperation *)operation;
-
-// Called on background threads.
-- (GLuint)textureGenerationOperationGetTextureId:(EucPageTurningTextureGenerationOperation *)operation;
 
 @end
