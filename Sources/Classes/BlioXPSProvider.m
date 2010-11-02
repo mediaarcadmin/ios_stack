@@ -41,6 +41,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @property (nonatomic, retain) BlioTimeOrderedCache *componentCache;
 @property (nonatomic, assign, readonly) BOOL bookIsEncrypted;
 @property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
+@property (nonatomic, retain) NSString *xpsPagesDirectory;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -55,6 +56,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize tempDirectory, imageInfo, xpsData, uriMap;
 @synthesize componentCache;
 @synthesize drmSessionManager;
+@synthesize xpsPagesDirectory;
 
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
@@ -87,6 +89,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     self.bookID = nil;
     self.xpsData = nil;
     self.uriMap = nil;
+	self.xpsPagesDirectory = nil;
     
     if (currentUriString) {
         [currentUriString release];
@@ -353,6 +356,8 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     format.formatType = OutputFormat_RAW;
     imageInfo = NULL;
     
+	//NSLog(@"Page %d. Pages scale: %f x %f. CTM: { %f %f %f %f %f %f }", page, pageSizeScaleWidth, pageSizeScaleHeight, render_ctm.a, render_ctm.b, render_ctm.c, render_ctm.d, render_ctm.tx, render_ctm.ty);
+	
     [renderingLock lock];
     XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
     XPS_SetUserData(xpsHandle, self);
@@ -644,6 +649,82 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     return NO;
 }
 
+- (NSString *)extractFixedDocumentPath:(NSData *)data {
+	NSString *docRefString = nil;
+	
+	if (data) {
+		NSString *inputString = [[NSString alloc] initWithBytesNoCopy:(void *)[data bytes] length:[data length] encoding:NSUTF8StringEncoding freeWhenDone:NO];
+		
+		NSString *DOCREF = @"<DocumentReference";
+		NSString *QUOTE = @"\"";
+		
+		NSScanner *aScanner = [NSScanner scannerWithString:inputString];
+		
+		while ([aScanner isAtEnd] == NO)
+		{
+			
+			[aScanner scanUpToString:DOCREF intoString:NULL];
+			[aScanner scanString:DOCREF intoString:NULL];
+			[aScanner scanUpToString:QUOTE intoString:NULL];
+			[aScanner scanString:QUOTE intoString:NULL];
+			[aScanner scanUpToString:QUOTE intoString:&docRefString];
+			break;
+		}
+		[inputString release];
+	}
+	
+	return docRefString;
+}
+
+- (NSString *)extractFixedPagesPath:(NSData *)data {
+	NSString *pageContentString = nil;
+	NSString *fixedPagesString = nil;
+	
+	if (data) {
+		NSString *inputString = [[NSString alloc] initWithBytesNoCopy:(void *)[data bytes] length:[data length] encoding:NSUTF8StringEncoding freeWhenDone:NO];
+		
+		NSString *PAGECONTENT = @"<PageContent";
+		NSString *QUOTE = @"\"";
+		
+		NSScanner *aScanner = [NSScanner scannerWithString:inputString];
+		
+		while ([aScanner isAtEnd] == NO)
+		{
+			
+			[aScanner scanUpToString:PAGECONTENT intoString:NULL];
+			[aScanner scanString:PAGECONTENT intoString:NULL];
+			[aScanner scanUpToString:QUOTE intoString:NULL];
+			[aScanner scanString:QUOTE intoString:NULL];
+			[aScanner scanUpToString:QUOTE intoString:&pageContentString];
+			
+			if (pageContentString) {
+				fixedPagesString = [NSString stringWithString:[pageContentString stringByDeletingLastPathComponent]];
+				break;
+			}
+			
+		}
+		[inputString release];
+	}
+	
+	return fixedPagesString;
+}
+
+- (NSString *)xpsPagesDirectory {
+	if (!xpsPagesDirectory) {
+		NSData *sequenceData = [self dataForComponentAtPath:BlioXPSSequenceFile];
+		NSString *fixedDocumentPath = [self extractFixedDocumentPath:sequenceData];
+		
+		if (fixedDocumentPath) {
+			NSData *fixedDocumentData = [self dataForComponentAtPath:fixedDocumentPath];
+			xpsPagesDirectory = [self extractFixedPagesPath:fixedDocumentData];
+			[xpsPagesDirectory retain];
+		}
+										 
+	}
+	
+	return xpsPagesDirectory ? : @"";
+}
+
 - (NSData *)dataForComponentAtPath:(NSString *)path {
     NSString *componentPath = path;
     NSString *directory = [path stringByDeletingLastPathComponent];
@@ -667,7 +748,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
             gzipped = YES;
             componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
         } else {
-            componentPath = [BlioXPSPagesDir stringByAppendingPathComponent:path];
+            componentPath = [NSString stringWithFormat:@"/%@", [[self xpsPagesDirectory] stringByAppendingPathComponent:path]];
         }
         mapped = YES;
         cached = YES;
