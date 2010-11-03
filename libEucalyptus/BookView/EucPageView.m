@@ -10,6 +10,7 @@
 #import "EucConfiguration.h"
 #import "EucPageView.h"
 #import "EucPageTextView.h"
+#import "EucConfiguration.h"
 #import "THStringRenderer.h"
 #import "THUIDeviceAdditions.h"
 
@@ -26,12 +27,24 @@
 - (CGSize)_marginsForFrame:(CGRect)frame
                  pointSize:(CGFloat)pointSize
 {
-    if(frame.size.width > 768) {
-        return CGSizeMake(roundf(pointSize * 5.777778f), roundf(pointSize * 4));
-    } else if(frame.size.width > 480) {
-        return CGSizeMake(roundf(pointSize * 5.777778f), roundf(pointSize * 5.777778f));
-    } else {
+    // These margins were originally designed with an 18pt default font - 
+    // if that's changed, fudge things to keep the default margin size the same.
+    CGFloat fontScale = 18.0f / ((NSNumber *)[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey]).floatValue;
+    pointSize *= fontScale;
+    if(frame.size.width <= 480.0f) {
         return CGSizeMake(roundf(pointSize / 0.9f), roundf(pointSize / 1.2f));
+    } else {
+        if(pointSize > 18.0f) {
+            // Don't use margins /bigger/ than the default ones on large screens.
+            pointSize = 18.0f;
+        }
+        if(frame.size.width > 768.0f) {
+            // Landscape.
+            return CGSizeMake(roundf(pointSize * 5.777778f), roundf(pointSize * 4));
+        } else {
+            // Portrait.
+            return CGSizeMake(roundf(pointSize * 5.777778f), roundf(pointSize * 5.777778f));
+        } 
     }
 }
 
