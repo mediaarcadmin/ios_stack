@@ -13,6 +13,7 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucBookContentsTableViewController.h>
+#import <libEucalyptus/EucConfiguration.h>
 #import "BlioBookViewControllerProgressPieButton.h"
 #import "BlioFlowView.h"
 #import "BlioLayoutView.h"
@@ -49,8 +50,6 @@ typedef enum {
     kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible,
     kBlioLibraryToolbarsStatePauseButtonVisible,
 } BlioLibraryToolbarsState;
-
-static const CGFloat kBlioFontPointSizeArray[] = { 14.0f, 16.0f, 18.0f, 20.0f, 22.0f };
 
 static NSString *kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"paper-black.png", @"paper-neutral.png" };
 static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
@@ -1810,8 +1809,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         CGFloat actualFontSize = bookView.fontPointSize;
         CGFloat bestDifference = CGFLOAT_MAX;
         BlioFontSize bestFontSize = kBlioFontSizeMedium;
+        NSArray *eucFontSizeNumbers = [EucConfiguration objectForKey:EucConfigurationFontSizesKey];
         for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
-            CGFloat thisDifference = fabsf(kBlioFontPointSizeArray[i] - actualFontSize);
+            CGFloat thisDifference = fabsf(((NSNumber *)[eucFontSizeNumbers objectAtIndex:i]).floatValue - actualFontSize);
             if(thisDifference < bestDifference) {
                 bestDifference = thisDifference;
                 bestFontSize = i;
@@ -1834,7 +1834,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     id<BlioBookView> bookView = bookViewController.bookView;
     if([bookView respondsToSelector:(@selector(setFontPointSize:))]) {        
         if([self currentFontSize] != newSize) {
-            bookView.fontPointSize = kBlioFontPointSizeArray[newSize];
+            bookView.fontPointSize = ((NSNumber *)[[EucConfiguration objectForKey:EucConfigurationFontSizesKey] objectAtIndex:newSize]).integerValue;
             [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
         }
     }

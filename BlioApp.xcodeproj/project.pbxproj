@@ -155,6 +155,18 @@
 		7DCD8E5511E32EFF00BA3255 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
 		7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
 		7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */; };
+		7DE310381281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
+		7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
+		7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
+		7DE3103B1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
+		7DE3103C1281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
+		7DE3103D1281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
+		7DE3103E1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
+		7DE3103F1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
+		7DE310401281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
+		7DE310411281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
+		7DE310421281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
+		7DE310431281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
 		7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
@@ -1394,6 +1406,10 @@
 		7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioEPubBook.m; sourceTree = "<group>"; };
 		7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSelectableBookView.h; sourceTree = "<group>"; };
 		7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSelectableBookView.m; sourceTree = "<group>"; };
+		7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
+		7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
+		7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
+		7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DE7B5E21104B4FD0021F382 /* Lighting.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Lighting.xib; sourceTree = "<group>"; };
 		7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLightSettingsViewController.h; sourceTree = "<group>"; };
 		7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLightSettingsViewController.m; sourceTree = "<group>"; };
@@ -2301,6 +2317,10 @@
 				7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */,
 				7D381CE610D93023008D34E2 /* reverseAnimatedBookTurnVertices.vertexData */,
 				7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */,
+				7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */,
+				7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */,
+				7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */,
+				7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */,
 			);
 			name = "libEucalyptus Resources";
 			path = libEucalyptus/Resources;
@@ -3425,6 +3445,10 @@
 				DCD4A4EE126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4EF126F7F8E00A131B7 /* icon-add.png in Resources */,
 				A3CA7B221275F92900775EF4 /* icon-back.png in Resources */,
+				7DE3103C1281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
+				7DE3103D1281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
+				7DE3103E1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
+				7DE3103F1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3632,6 +3656,10 @@
 				DCD4A4EA126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4EB126F7F8E00A131B7 /* icon-add.png in Resources */,
 				C9E04BA61271946600A307C4 /* icon-import.png in Resources */,
+				7DE310401281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
+				7DE310411281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
+				7DE310421281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
+				7DE310431281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3841,6 +3869,10 @@
 				DCD4A4F2126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4F3126F7F8E00A131B7 /* icon-add.png in Resources */,
 				C9E04BA51271946400A307C4 /* icon-import.png in Resources */,
+				7DE310381281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
+				7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
+				7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
+				7DE3103B1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

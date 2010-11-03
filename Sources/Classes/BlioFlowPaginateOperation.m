@@ -231,7 +231,7 @@
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
     if (self.percentageComplete != roundf(percentagePaginated)) {
 		self.percentageComplete = roundf(percentagePaginated);
-//		NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
+		NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
 	}
 }
 -(void)cancel {
