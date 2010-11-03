@@ -546,15 +546,15 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         [self _setupConstraints];
                 
-        NSUInteger pageContentsInformationCount = sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *);
-        EucPageTurningPageContentsInformation *oldPageContentsInformation[pageContentsInformationCount];
-        
-        memcpy(oldPageContentsInformation, _pageContentsInformation, sizeof(_pageContentsInformation));
-        for(NSUInteger i = 0; i < pageContentsInformationCount; ++i) {
-            _pageContentsInformation[i] = nil;
-        }    
-        
         if(_bitmapDataSource) {
+            NSUInteger pageContentsInformationCount = sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *);
+            EucPageTurningPageContentsInformation *oldPageContentsInformation[pageContentsInformationCount];
+            
+            memcpy(oldPageContentsInformation, _pageContentsInformation, sizeof(_pageContentsInformation));
+            for(NSUInteger i = 0; i < pageContentsInformationCount; ++i) {
+                _pageContentsInformation[i] = nil;
+            }    
+            
             if(_twoUp) {
                 NSUInteger rightPageIndex = _focusedPageIndex;
                 if(_oddPagesOnRight) {
@@ -596,21 +596,20 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                     }
                 }
             }
-        } else {
-            _pageContentsInformation[3] = [oldPageContentsInformation[3] retain];
+
+            for(NSUInteger i = 0; i < pageContentsInformationCount; ++i) {
+                [oldPageContentsInformation[i] release];
+            }    
+                            
+            _recacheFlags[0] = YES;
+            _recacheFlags[1] = YES;
+            _recacheFlags[2] = YES; 
+            _recacheFlags[3] = YES;
+            _recacheFlags[4] = YES; 
+            _recacheFlags[5] = YES; 
+            [self _recachePages];
         }
-      
-        for(NSUInteger i = 0; i < pageContentsInformationCount; ++i) {
-            [oldPageContentsInformation[i] release];
-        }    
-                        
-        _recacheFlags[0] = YES;
-        _recacheFlags[1] = YES;
-        _recacheFlags[2] = YES; 
-        _recacheFlags[3] = YES;
-        _recacheFlags[4] = YES; 
-        _recacheFlags[5] = YES; 
-        [self _recachePages];
+        
         
         [self _setZoomMatrixFromTranslation:CGPointZero zoomFactor:1.0f];
         
