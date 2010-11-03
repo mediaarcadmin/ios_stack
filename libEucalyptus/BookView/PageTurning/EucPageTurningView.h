@@ -134,9 +134,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     id<EucPageTurningViewBitmapDataSource> _bitmapDataSource;
     NSLock *_bitmapDataSourceLock;
     
+    BOOL _twoUp;
     BOOL _oddPagesOnRight;
-    BOOL _twoSidedPages;
-    BOOL _fitTwoPages;
     BOOL _leftPageVisible;
     EucPageTurningViewZoomHandlingKind _zoomHandlingKind;
     BOOL _zoomingDelegateMessageSent;
@@ -144,8 +143,9 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     THOpenGLTexturePool *_texturePool;
     
     EucPageTurningPageContentsInformation *_pageContentsInformation[7];
+    NSUInteger _focusedPageIndex;
     
-    NSInteger _rightFlatPageIndex;
+    NSInteger _rightFlatPageContentsIndex;
     BOOL _viewsNeedRecache;
     BOOL _recacheFlags[6];
     
@@ -188,8 +188,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 // These must be set up before the view appears.
 @property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
-@property (nonatomic, assign) BOOL twoSidedPages;
-@property (nonatomic, assign) BOOL fitTwoPages;
+@property (nonatomic, assign, getter=isTwoUp) BOOL twoUp;
 @property (nonatomic, assign) BOOL oddPagesOnRight;
 
 @property (nonatomic, assign, readonly) CGRect leftPageFrame;
@@ -222,10 +221,11 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 
 #pragma mark Bitmap based page contents
-// In non-fitTwoPages mode, the right page index only is valid.
+// In non-twoUp mode, the right page index only is valid.
 // Will return NSUIntegerMax if a page is not visible on the specified side.
 @property (nonatomic, assign, readonly) NSUInteger rightPageIndex;
 @property (nonatomic, assign, readonly) NSUInteger leftPageIndex;
+@property (nonatomic, assign, readonly) NSUInteger focusedPageIndex;
 
 - (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated;
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex;

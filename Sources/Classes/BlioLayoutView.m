@@ -201,15 +201,15 @@
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
         aPageTurningView.maxZoomFactor = 8;
 		
-        // Must do this here so that teh page aspect ration takes account of the fitTwoPages property
+        // Must do this here so that teh page aspect ration takes account of the twoUp property
         CGRect myBounds = self.bounds;
         if(myBounds.size.width > myBounds.size.height) {
-            aPageTurningView.fitTwoPages = YES;
-            aPageTurningView.twoSidedPages = YES;
+            aPageTurningView.twoUp = YES;
+            aPageTurningView.twoUp = YES;
 			aPageTurningView.zoomedTextureWidth = 768;
         } else {
-            aPageTurningView.fitTwoPages = NO;
-            aPageTurningView.twoSidedPages = NO;
+            aPageTurningView.twoUp = NO;
+            aPageTurningView.twoUp = NO;
 			aPageTurningView.zoomedTextureWidth = 1024;
         } 
         
@@ -258,8 +258,8 @@
 - (void)layoutSubviews {
     CGRect myBounds = self.bounds;
     if(myBounds.size.width > myBounds.size.height) {
-        self.pageTurningView.fitTwoPages = YES;
-        self.pageTurningView.twoSidedPages = YES;
+        self.pageTurningView.twoUp = YES;
+        self.pageTurningView.twoUp = YES;
         // The first page is page 0 as far as the page turning view is concerned,
         // so it's an even page, so if it's mean to to be on the left, the odd 
         // pages should be on the right.
@@ -270,8 +270,8 @@
         // outside).
         //self.pageTurningView.oddPagesOnRight = [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
     } else {
-        self.pageTurningView.fitTwoPages = NO;
-        self.pageTurningView.twoSidedPages = NO;
+        self.pageTurningView.twoUp = NO;
+        self.pageTurningView.twoUp = NO;
     }    
     [super layoutSubviews];
     CGSize newSize = self.bounds.size;
@@ -311,7 +311,7 @@
 	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex - 2];
 	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex + 1];
 	
-	if(self.pageTurningView.twoSidedPages) {
+	if(self.pageTurningView.isTwoUp) {
 		self.pageTurningView.zoomedTextureWidth = 1024;
 	} else {
 		self.pageTurningView.zoomedTextureWidth = 768;
@@ -539,7 +539,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     CGRect pageFrame;
     
 	BOOL isOnRight = YES;
-	if (self.pageTurningView.twoSidedPages) {
+	if (self.pageTurningView.isTwoUp) {
 		BOOL rightIsEven = (self.pageTurningView.rightPageIndex % 2 == 0);
 		BOOL indexIsEven = (pageIndex % 2 == 0);
 		if (rightIsEven != indexIsEven) {
@@ -618,7 +618,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		BOOL pageIsVisible = YES;
 		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
 		
-		if (self.pageTurningView.twoSidedPages) {
+		if (self.pageTurningView.isTwoUp) {
 			if ((self.pageTurningView.leftPageIndex != targetIndex) && (self.pageTurningView.rightPageIndex != targetIndex)) {
 				pageIsVisible = NO;
 			}
@@ -669,7 +669,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
     NSMutableArray *pagesBlocks = [NSMutableArray array];
     
-    if (self.pageTurningView.fitTwoPages) {
+    if (self.pageTurningView.isTwoUp) {
         NSInteger leftPageIndex = [self.pageTurningView leftPageIndex];
         if (leftPageIndex >= 0) {
             [pagesBlocks addObjectsFromArray:[self.textFlow blocksForPageAtIndex:leftPageIndex includingFolioBlocks:NO]];
@@ -780,7 +780,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
 	startPoint.blockOffset = 0;
 	
-	if (self.pageTurningView.fitTwoPages) {
+	if (self.pageTurningView.isTwoUp) {
 		startPoint.layoutPage = [self.pageTurningView leftPageIndex] + 1;
 	} else {
 		startPoint.layoutPage = [self.pageTurningView rightPageIndex] + 1;
@@ -1047,7 +1047,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)refreshHighlights {
-	if (self.pageTurningView.twoSidedPages) {
+	if (self.pageTurningView.isTwoUp) {
 		[self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.leftPageIndex];
 	}
 	[self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
@@ -1078,7 +1078,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		BOOL pageIsVisible = YES;
 		NSInteger targetIndex = bookmarkRange.startPoint.layoutPage - 1;
 		
-		if (self.pageTurningView.twoSidedPages) {
+		if (self.pageTurningView.isTwoUp) {
 			if ((self.pageTurningView.leftPageIndex != targetIndex) && (self.pageTurningView.rightPageIndex != targetIndex)) {
 				pageIsVisible = NO;
 			}
@@ -1216,7 +1216,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     CGPoint point = [[touches anyObject] locationInView:self];
     
     if (!CGPointEqualToPoint(startTouchPoint, CGPointMake(-1, -1))) {
-        if (self.pageTurningView.fitTwoPages) {
+        if (self.pageTurningView.isTwoUp) {
             NSInteger leftPageIndex = [self.pageTurningView leftPageIndex];
             if (leftPageIndex >= 0) {
                 touchedHyperlink = [self hyperlinkForPage:leftPageIndex + 1 atPoint:point];
@@ -1279,7 +1279,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		}
 		
 		if (focusedElement == self.prevZone) {
-			if (self.pageTurningView.twoSidedPages) {
+			if (self.pageTurningView.isTwoUp) {
 				[self goToPageNumber:(self.pageTurningView.leftPageIndex - 1) + 1 animated:YES];
 				return;
 			} else {
@@ -1401,7 +1401,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (NSArray *)textBlockAccessibilityElements {
     NSMutableArray *elements = [NSMutableArray array];
 	
-	if (self.pageTurningView.twoSidedPages) {
+	if (self.pageTurningView.isTwoUp) {
 		NSInteger pageIndex = self.pageTurningView.leftPageIndex;
 		CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
 		NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
@@ -1462,7 +1462,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         {
             UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-			if (self.pageTurningView.twoSidedPages) {
+			if (self.pageTurningView.isTwoUp) {
 				if (self.pageTurningView.leftPageIndex <= 0)  {
 					previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
 				}
@@ -1613,7 +1613,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		blockRecursionDepth = 0;
 		[self zoomToNextBlockReversed:YES];
 	} else {
-		NSInteger pageIndex = (self.pageTurningView.twoSidedPages) ? self.pageTurningView.leftPageIndex : self.pageTurningView.rightPageIndex;
+		NSInteger pageIndex = (self.pageTurningView.isTwoUp) ? self.pageTurningView.leftPageIndex : self.pageTurningView.rightPageIndex;
 		[self goToPageNumber:(pageIndex - 1) + 1 animated:YES];
 		[self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
 	}
@@ -1641,9 +1641,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
     //[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
-    NSInteger pageIndex = (self.pageTurningView.twoSidedPages) ? self.pageTurningView.leftPageIndex : self.pageTurningView.rightPageIndex;
+    NSInteger pageIndex = (self.pageTurningView.isTwoUp) ? self.pageTurningView.leftPageIndex : self.pageTurningView.rightPageIndex;
 	
-	if (self.pageTurningView.twoSidedPages) {
+	if (self.pageTurningView.isTwoUp) {
 		if (([self.lastBlock pageIndex] != self.pageTurningView.leftPageIndex) &&
 			([self.lastBlock pageIndex] != self.pageTurningView.rightPageIndex)) {
 			self.lastBlock = nil;
@@ -1789,7 +1789,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             
             // Always zoom to the next page (rather than to the first block on it)
             //[self zoomToPageIndex:targetPage - 1 + 1];
-			if (self.pageTurningView.twoSidedPages && (pageIndex == self.pageTurningView.leftPageIndex)) {
+			if (self.pageTurningView.isTwoUp && (pageIndex == self.pageTurningView.leftPageIndex)) {
 				NSInteger newPageIndex = pageIndex + 1;
 				pageBlocks = [self.textFlow blocksForPageAtIndex:newPageIndex includingFolioBlocks:NO];
 				blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
@@ -2000,7 +2000,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
     
         if ((pageIndex + 1) != currentPage) {
-			if (self.pageTurningView.twoSidedPages) {
+			if (self.pageTurningView.isTwoUp) {
 				if ((self.pageTurningView.leftPageIndex != pageIndex) && (self.pageTurningView.rightPageIndex != pageIndex)) {
 					// TODO: Add a way for these to be combined
 					[self goToPageNumber:(pageIndex + 1) animated:YES];
