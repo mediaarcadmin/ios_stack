@@ -16,10 +16,12 @@
     UILabel *fontSizeLabel;
     UILabel *pageColorLabel;
 	UILabel *tapZoomsToBlockLabel;
+	UILabel *landscapePageLabel;
     BlioAccessibilitySegmentedControl *pageLayoutSegment;
     BlioAccessibilitySegmentedControl *fontSizeSegment;
     BlioAccessibilitySegmentedControl *pageColorSegment;
     BlioAccessibilitySegmentedControl *tapZoomsToBlockSegment;
+    BlioAccessibilitySegmentedControl *landscapePageSegment;
 //	UISwitch * tapZoomsToBlockSwitch;
     BlioAccessibilitySegmentedControl *lockButtonSegment;
     UIButton *doneButton;
@@ -33,10 +35,12 @@
 @property (nonatomic, retain) UILabel *fontSizeLabel;
 @property (nonatomic, retain) UILabel *pageColorLabel;
 @property (nonatomic, retain) UILabel *tapZoomsToBlockLabel;
+@property (nonatomic, retain) UILabel *landscapePageLabel;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *pageLayoutSegment;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *fontSizeSegment;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *pageColorSegment;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *tapZoomsToBlockSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *landscapePageSegment;
 //@property (nonatomic, retain) UISwitch * tapZoomsToBlockSwitch;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *lockButtonSegment;
 @property (nonatomic, retain) UIButton *doneButton;

@@ -1793,6 +1793,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return NO;
     }
 }
+- (BOOL)shouldShowLandscapePageSettings {
+    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
 
 - (BlioFontSize)currentFontSize {
     BlioFontSize fontSize = kBlioFontSizeMedium;
@@ -1859,11 +1866,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
 - (void)changeTapZooms:(UIControl*)sender {
-//	if ( ((UISwitch*)sender).on )
+	//	if ( ((UISwitch*)sender).on )
 	if ( ((UISegmentedControl*)sender).selectedSegmentIndex == 1 )
 		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTapZoomsDefaultsKey];
 	else
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioTapZoomsDefaultsKey];	
+}
+- (void)changeLandscapePage:(UIControl*)sender {
+	if ( ((UISegmentedControl*)sender).selectedSegmentIndex == 1 )
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioLandscapePageDefaultsKey];
+	else
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioLandscapePageDefaultsKey];	
 }
 - (void)changeLockRotation {
     [self setRotationLocked:![self isRotationLocked]];
