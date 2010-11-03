@@ -147,6 +147,8 @@ tryAgain:
     libraryController.managedObjectContext = moc;
     libraryController.processingDelegate = self.processingManager;
 
+	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
+
 	// Copy DRM resources to writeable directory.
 	NSError* err;	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
@@ -174,15 +176,23 @@ tryAgain:
 
 -(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
 	NSLog(@"opened app with URL: %@",[url absoluteString]);
+	
 	if ([url isFileURL]) {
 		NSString * file = [url path]; 
 		if ([file.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 			[[BlioImportManager sharedImportManager] importBookFromFilePath:file];
 			return YES;
 		}
-	}	
+	}
 	return NO;
 }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40200
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+	return [self application:application handleOpenURL:url];
+}
+
+#endif
 
 -(void)loginDismissed:(NSNotification*)note {
 	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
@@ -275,7 +285,6 @@ static void *background_init_thread(void * arg) {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
-	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 
 	if (self.networkStatus != NotReachable) {
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
@@ -321,8 +330,6 @@ static void *background_init_thread(void * arg) {
 #pragma mark -
 #pragma mark UIApplicationDelegate - Background Tasks
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-
 -(void)applicationDidEnterBackground:(UIApplication *)application {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
     NSError *error;
@@ -344,8 +351,6 @@ static void *background_init_thread(void * arg) {
 - (void)applicationWillResignActive:(UIApplication *)application {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
 }
-
-#endif
 
 #pragma mark -
 #pragma mark Network Reachability
