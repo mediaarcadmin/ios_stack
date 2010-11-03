@@ -4327,6 +4327,7 @@
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
 					"-DDEMO_MODE",
+					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -4368,6 +4369,7 @@
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
 					"-DDEMO_MODE",
+					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -4567,6 +4569,7 @@
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
 					"-DDEMO_MODE",
+					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
