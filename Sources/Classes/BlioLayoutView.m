@@ -250,7 +250,6 @@
            // [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
            // [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];
             [aPageTurningView removeFromSuperview];
-			[aPageTurningView teardown];
             self.pageTurningView = nil;
         }
     }
@@ -335,15 +334,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
                                             fromRect:rect 
                                              minSize:size
                                           getContext:context];
-}
-
-- (THPair *)pageTurningView:(EucPageTurningView *)aPageTurningView 
-   RGBABitmapDataForPageAtIndex:(NSUInteger)index
-                       fromRect:(CGRect)rect 
-                        minSize:(CGSize)size {
-    return [self.dataSource RGBABitmapDataForPage:index + 1
-                                            fromRect:rect 
-                                             minSize:size];
 }
 
 - (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 

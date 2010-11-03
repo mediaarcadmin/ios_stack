@@ -35,6 +35,7 @@
 
 #import <libcss/libcss.h>
 #import <pthread.h>
+#import <objc/runtime.h>
 
 typedef struct EucCSSLayoutDocumentRunBreakInfo {
     EucCSSLayoutDocumentRunPoint point;
@@ -63,17 +64,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 @synthesize nextNodeInDocument = _nextNodeInDocument;
 @synthesize scaleFactor = _scaleFactor;
 
-static pthread_mutex_t sCachedRunsMutex = PTHREAD_MUTEX_INITIALIZER;
-static NSInteger sCachedRunsCount = 0;
-static const NSInteger sCachedRunsCapacity = 48;
-static EucCSSLayoutDocumentRun **sCachedRuns = NULL;
-
-+ (void)initialize
-{
-    if(self == [EucCSSLayoutDocumentRun class]) {
-        sCachedRuns = (EucCSSLayoutDocumentRun **)malloc(sCachedRunsCapacity * sizeof(EucCSSLayoutDocumentRun *));
-    }
-}
+#define RUN_CACHE_CAPACITY 48
+static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey";
 
 + (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
            underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
@@ -82,43 +74,41 @@ static EucCSSLayoutDocumentRun **sCachedRuns = NULL;
 {
     EucCSSLayoutDocumentRun *ret = nil;
     
-    pthread_mutex_lock(&sCachedRunsMutex);
-    for(NSInteger i = sCachedRunsCount - 1; i >= 0; --i) {
-        EucCSSLayoutDocumentRun *cachedRun = sCachedRuns[i];
-        if(cachedRun->_scaleFactor == scaleFactor &&
-           cachedRun->_id == id &&
-           cachedRun->_startNode.key == inlineNode.key &&
-           cachedRun->_underNode.key == underNode.key &&
-           cachedRun->_document == inlineNode.document) {
-            ret = [cachedRun autorelease];
-            
-            size_t toMove = sCachedRunsCount - i - 1;
-            if(toMove) {
-                memmove(sCachedRuns + i, sCachedRuns + i + 1, toMove * sizeof(EucCSSLayoutDocumentRun *));
-            } 
-            sCachedRunsCount--;
+    EucCSSIntermediateDocument *document = inlineNode.document;
+    @synchronized(document) {
+        NSMutableArray *cachedRuns = objc_getAssociatedObject(document, EucCSSDocumentRunCacheKey);
+        if(!cachedRuns) {
+            cachedRuns = [[NSMutableArray alloc] initWithCapacity:RUN_CACHE_CAPACITY];
+            objc_setAssociatedObject(document, EucCSSDocumentRunCacheKey, cachedRuns, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            [cachedRuns release];
         }
-    }
-    
-    if(!ret) {
-        ret = [[[self class] alloc] initWithNode:inlineNode
-                                  underLimitNode:underNode 
-                                           forId:id 
-                                     scaleFactor:scaleFactor];
-        [ret autorelease];
-    }
-    
-    if(ret) {
-        if(sCachedRunsCount == sCachedRunsCapacity) {
-            [sCachedRuns[0] release];
-            memmove(sCachedRuns, sCachedRuns + 1, sizeof(EucCSSLayoutDocumentRun *) * (sCachedRunsCapacity - 1));
-            --sCachedRunsCount;
+        for(EucCSSLayoutDocumentRun *cachedRun in [cachedRuns reverseObjectEnumerator]) {
+            if(cachedRun->_scaleFactor == scaleFactor &&
+               cachedRun->_id == id &&
+               cachedRun->_startNode.key == inlineNode.key &&
+               cachedRun->_underNode.key == underNode.key) {
+                ret = cachedRun;
+                break;
+            }
         }
-        sCachedRuns[sCachedRunsCount++] = [ret retain];
+        if(ret) {
+            [ret retain];
+            [cachedRuns removeObject:ret];
+            // We'll add it again at the end to keep the last-used
+            // eviction working.
+        }
+        if(!ret) {
+            ret = [[[self class] alloc] initWithNode:inlineNode
+                                      underLimitNode:underNode 
+                                               forId:id 
+                                         scaleFactor:scaleFactor];
+        }
+        if(cachedRuns.count == RUN_CACHE_CAPACITY) {
+            [cachedRuns removeObjectAtIndex:0];
+        }
+        [cachedRuns addObject:ret];
+        [ret release];
     }
-    
-    pthread_mutex_unlock(&sCachedRunsMutex);
-    
     return ret;
 }
         

@@ -15,8 +15,10 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import <objc/runtime.h>
 #import <tgmath.h>
 #import "THBaseEAGLView.h"
+#import "THOpenGLTexturePool.h"
 #import "THGeometryUtils.h"
 #import "THEmbeddedResourceManager.h"
 #import "THRoundRects.h"
@@ -39,7 +41,7 @@
 - (BOOL)_satisfyConstraints;
 - (BOOL)_satisfyPositioningConstraints;
 - (void)_setupConstraints;
-- (void)_cacheNonVisiblePages;
+- (void)_recachePages;
 - (CGFloat)_tapTurnMarginForView:(UIView *)view;
 - (void)_setNeedsAccessibilityElementsRebuild;
 - (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
@@ -194,9 +196,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _zoomMatrix = CATransform3DIdentity;
 	_animationIndex = -1;
     
-    
     EAGLContext *eaglContext = self.eaglContext;
-    [EAGLContext setCurrentContext:eaglContext];
+    _texturePool = [[THOpenGLTexturePool alloc] initWithMainThreadContext:eaglContext];
+
+    [eaglContext thPush];
     
     GLfloat white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     memcpy(_specularColor, white, 4 * sizeof(GLfloat));
@@ -277,7 +280,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"BookEdge" ofType:@"pvrtc"];
     NSData *bookEdge = [[NSData alloc] initWithContentsOfMappedFile:path];
-    _bookEdgeTexture = [self _unusedTexture];
+    _bookEdgeTexture = [_texturePool unusedTexture];
     glBindTexture(GL_TEXTURE_2D, _bookEdgeTexture);
     texImage2DPVRTC(0, 4, 0, 512, [bookEdge bytes]);
     [bookEdge release];
@@ -286,7 +289,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    _alphaWhiteZoomedContent = [self _unusedTexture];
+    _alphaWhiteZoomedContent = [_texturePool unusedTexture];
     glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
     uint32_t whiteSquare[4] = { 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &whiteSquare);
@@ -295,7 +298,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     
-    _grayThumbnail = [self _unusedTexture];
+    _grayThumbnail = [_texturePool unusedTexture];
     glBindTexture(GL_TEXTURE_2D, _grayThumbnail);
     uint32_t graySquare[4] = { 0xff888888, 0xffffffff, 0xffffffff, 0xff888888 };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &graySquare);
@@ -303,7 +306,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    
         
     NSData *vertexShaderSource = [THEmbeddedResourceManager embeddedResourceWithName:@"euc_page_turning.vsh"];
     GLuint vertexShader = THGLLoadShader(GL_VERTEX_SHADER, vertexShaderSource.bytes, vertexShaderSource.length);
@@ -347,17 +349,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if([_textureGenerationOperationQueue respondsToSelector:@selector(setName:)]) {
         _textureGenerationOperationQueue.name = @"Texture Generation Queue";
     }
-    
-    _backgroundThreadEAGLContext = [[EAGLContext alloc] initWithAPI:[eaglContext API] sharegroup:[eaglContext sharegroup]];
-    _backgroundThreadEAGLContextLock = [[NSRecursiveLock alloc] init];
-    
-    _textureLock = [[NSLock alloc] init];
-    _recycledTextures = [[NSMutableArray alloc] init];
 
     self.multipleTouchEnabled = YES;
     //self.exclusiveTouch = YES;
     self.opaque = YES;
     self.userInteractionEnabled = YES;
+    
+    [eaglContext thPop];
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -376,13 +374,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return self;
 }
 
-- (void)teardown {
-	// Needed to do this explicitly because the CADisplayLink was causing a retain cycle on EucPageTurningView
-	// Accept that this probably isn't the correct way to do this
-	[self.animationTimer invalidate];
-	self.animationTimer = nil;
-}
-
 - (void)dealloc
 {    
     [_textureGenerationOperationQueue cancelAllOperations];
@@ -391,7 +382,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     [_bitmapDataSourceLock release];
     
-    [EAGLContext setCurrentContext:self.eaglContext];
+    [self.eaglContext thPush];
     
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
         EucPageTurningPageContentsInformation *information = _pageContentsInformation[i];
@@ -419,28 +410,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_blankPageTexture) {
         glDeleteTextures(1, &_blankPageTexture);
     }
-
-    for(NSNumber *textureNumber in _recycledTextures) {
-        GLuint texture = [textureNumber intValue];
-        glDeleteTextures(1, &texture);
-    }
 	
-	// Forced cleanup of missed textures. This is an error condition.
-	for (GLuint i = 1; i <= _maxTex; i++) {
-		if (glIsTexture(i)) {
-			glDeleteTextures(1, &i);
-		}
-	}
-	
-    [_recycledTextures release];    
-    [_textureLock release];
-
-    [_backgroundThreadEAGLContextLock release];
-    [_backgroundThreadEAGLContext release];
+    [_texturePool release];    
 
     if(_program) {
         glDeleteProgram(_program);
     }
+    
+    [self.eaglContext thPop];
     
     [_accessibilityElements release];
     [_nextPageTapZone release];
@@ -452,6 +429,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 {
     CGSize size = self.bounds.size;
     if(!CGSizeEqualToSize(size, _lastLayoutBoundsSize)) {
+        // Won't be needing any of these.
+        [_textureGenerationOperationQueue cancelAllOperations];
+
         [self willChangeValueForKey:@"zoomMatrix"];
         [self willChangeValueForKey:@"rightPageFrame"];
         [self willChangeValueForKey:@"leftPageFrame"];
@@ -564,34 +544,30 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         _leftPageVisible = _rightPageRect.origin.x > 0.0f;
         
         [self _setupConstraints];
+                
         
-        [super layoutSubviews];
-        
-        UIView *view = [_pageContentsInformation[3].view retain];
-        if(!view) {
-            [_pageContentsInformation[2].view retain];
-        }
-        NSUInteger pageIndex;
-        if(_pageContentsInformation[3]) {
-            pageIndex = _pageContentsInformation[3].pageIndex;
-        } else if(_pageContentsInformation[2]) {
-            pageIndex = _pageContentsInformation[2].pageIndex;
-        } else {
-            pageIndex = NSUIntegerMax;
-        }
-        
-        [EAGLContext setCurrentContext:self.eaglContext];
+        EucPageTurningPageContentsInformation *rightInformation = [_pageContentsInformation[3] retain];
+        EucPageTurningPageContentsInformation *leftInformation = [_pageContentsInformation[2] ?: _pageContentsInformation[1] retain];
+                
         for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
             [_pageContentsInformation[i] release];
             _pageContentsInformation[i] = nil;
         }    
         
-        if(view) {
-            [self setCurrentPageView:view];
-            [view release];
-        } else if(pageIndex != NSUIntegerMax) {
-            [self turnToPageAtIndex:pageIndex animated:NO];
+        if(!_twoSidedPages) {
+            _pageContentsInformation[1] = [leftInformation retain];
+            _pageContentsInformation[3] = [rightInformation retain];
+        } else {
+            _pageContentsInformation[2] = [leftInformation retain];
+            _pageContentsInformation[3] = [rightInformation retain];
         }
+                
+        _recacheFlags[1] = YES;
+        _recacheFlags[2] = YES; 
+        _recacheFlags[3] = YES;
+        _recacheFlags[4] = YES; 
+        _recacheFlags[5] = YES; 
+        [self _recachePages];
         
         [self _setZoomMatrixFromTranslation:CGPointZero zoomFactor:1.0f];
         
@@ -704,16 +680,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGColorSpaceRelease(colorSpace);
     }
     
-    EAGLContext *beforeContext = [EAGLContext currentContext];
-    BOOL isMainThread = [NSThread isMainThread];
-    if(isMainThread) {
-        [EAGLContext setCurrentContext:self.eaglContext];
-    } else{
-        [_backgroundThreadEAGLContextLock lock];
-        [EAGLContext setCurrentContext:_backgroundThreadEAGLContext];
-    }
+    EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
+    [eaglContext thPush];
     
-    GLuint textureRef = [self _unusedTexture];
+    GLuint textureRef = [_texturePool unusedTexture];
 
     glBindTexture(GL_TEXTURE_2D, textureRef); 
 
@@ -727,10 +697,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
     
-    if(!isMainThread) {
-        [_backgroundThreadEAGLContextLock unlock];
-    }    
-    [EAGLContext setCurrentContext:beforeContext];
+    [eaglContext thPop];
+    [_texturePool checkInEAGLContext];
 
     if(textureContext) {
         CGContextRelease(textureContext);
@@ -859,7 +827,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         UIView *oldView = [_pageContentsInformation[page].view retain]; // In case it's the same as the new view.
         [_pageContentsInformation[page] release];
         if(view) {
-            _pageContentsInformation[page] = [[EucPageTurningPageContentsInformation alloc] initWithPageTurningView:self];
+            _pageContentsInformation[page] = [[EucPageTurningPageContentsInformation alloc] initWithTexturePool:_texturePool];
             _pageContentsInformation[page].view = view;
             _pageContentsInformation[page].texture = [self _createTextureFrom:view];
         } else {
@@ -1012,74 +980,93 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                       ofSize:(CGSize)size
                                    alphaBled:(BOOL)alphaBled
 {
-    CGContextRef thisPageBitmap;
+    id memoryContext = nil;
+    
+    CGContextRef pageBitmapContext;
 	THPair *bitmapPair = nil;
-
+    
     [_bitmapDataSourceLock lock];
     if(_bitmapDataSource) {
-		if ([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapDataForPageAtIndex:fromRect:minSize:)]) {
-			bitmapPair = [_bitmapDataSource pageTurningView:self RGBABitmapDataForPageAtIndex:index fromRect:pageRect minSize:size];
-			
-			if(alphaBled) {
-				// Need to create a context to handle the alphaBled		
-				NSData *bitmapData = bitmapPair.first;
-				CGSize bitmapSize = [bitmapPair.second CGSizeValue];
-				size_t bytesPerRow = [bitmapData length] / bitmapSize.height;
-				
-				CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-				thisPageBitmap = CGBitmapContextCreate((void *)[bitmapData bytes], bitmapSize.width, bitmapSize.height, 8, bytesPerRow , colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
-				CGContextSetStrokeColorSpace(thisPageBitmap, colorSpace);
-				CGColorSpaceRelease(colorSpace);
-				CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
-				CGContextSetStrokeColor(thisPageBitmap, whiteAlpha);
-				CGContextSetBlendMode(thisPageBitmap, kCGBlendModeCopy);
-				CGContextStrokeRectWithWidth(thisPageBitmap, CGRectMake(0.5f, 0.5f, bitmapSize.width - 1.0f, bitmapSize.height - 1.0f), 1.0f);
-				CGContextRelease(thisPageBitmap);
-			}
-			
+		if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
+            pageBitmapContext = [_bitmapDataSource pageTurningView:self
+                                   RGBABitmapContextForPageAtIndex:index
+                                                          fromRect:pageRect
+                                                           minSize:size
+                                                        getContext:&memoryContext];
+            [memoryContext retain]; // We'll release it when we're done, below.
         } else {
-			
-			if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
-            id context = nil;
-            thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                                RGBABitmapContextForPageAtIndex:index
-                                                       fromRect:pageRect
-                                                        minSize:size
-                                                     getContext:&context];
-            [[context retain] autorelease];
-			} else {
-            thisPageBitmap = [_bitmapDataSource pageTurningView:self
-                                RGBABitmapContextForPageAtIndex:index
-                                                       fromRect:pageRect
-                                                        minSize:size];
-
-			}
-			CGSize correctedSize = CGSizeMake(CGBitmapContextGetWidth(thisPageBitmap), CGBitmapContextGetHeight(thisPageBitmap));
-			if(THWillLog()) {
-				if(!CGSizeEqualToSize(correctedSize, size)) {
-					NSLog(@"Generated zoomed texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
-				}
-			}
-			
-			if(alphaBled) {
-				CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-				CGContextSetStrokeColorSpace(thisPageBitmap, colorSpace);
-				CGColorSpaceRelease(colorSpace);
-				CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
-				CGContextSetStrokeColor(thisPageBitmap, whiteAlpha);
-				CGContextSetBlendMode(thisPageBitmap, kCGBlendModeCopy);
-				CGContextStrokeRectWithWidth(thisPageBitmap, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
-			}
-			
-			bitmapPair = [THPair pairWithFirst:[NSData dataWithBytesNoCopy:CGBitmapContextGetData(thisPageBitmap) 
-																	length:4 * size.width * size.height
-															  freeWhenDone:NO]
-										second:[NSValue valueWithCGSize:correctedSize]];
-		}
+            pageBitmapContext = [_bitmapDataSource pageTurningView:self
+                                   RGBABitmapContextForPageAtIndex:index
+                                                          fromRect:pageRect
+                                                           minSize:size];
+            
+        }
+        
+        size_t contextWidth = CGBitmapContextGetWidth(pageBitmapContext);
+        size_t contextHeight = CGBitmapContextGetHeight(pageBitmapContext);
+        CGSize correctedSize = CGSizeMake(CGBitmapContextGetWidth(pageBitmapContext), CGBitmapContextGetHeight(pageBitmapContext));
+        if(THWillLog()) {
+            if(!CGSizeEqualToSize(correctedSize, size)) {
+                NSLog(@"Generated zoomed texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
+            }
+        }
+        
+        if(alphaBled) {
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+            CGContextSetStrokeColorSpace(pageBitmapContext, colorSpace);
+            CGColorSpaceRelease(colorSpace);
+            CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
+            CGContextSetStrokeColor(pageBitmapContext, whiteAlpha);
+            CGContextSetBlendMode(pageBitmapContext, kCGBlendModeCopy);
+            CGContextStrokeRectWithWidth(pageBitmapContext, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
+        }
+        
+        CGContextRef textureContext = NULL;
+        void *textureData;
+        BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(pageBitmapContext) != contextWidth * 4;
+        if(dataIsNonContiguous || (textureData = CGBitmapContextGetData(pageBitmapContext)) == NULL) {
+            // We need to generate contiguous data to upload, and we need to be
+            // able to access the context's backing data.
+            
+            THLog(@"Inefficient bitmap handling - having to copy image in context returned by RGBABitmapContextForPageAtIndex in order to to upload")
+            
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+            textureData = malloc(contextWidth * contextHeight * 4);
+            textureContext = CGBitmapContextCreate(NULL, contextWidth, contextHeight, 8, contextWidth * 4, 
+                                                   colorSpace, kCGImageAlphaPremultipliedLast);
+            CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
+            
+            CGImageRef image = CGBitmapContextCreateImage(pageBitmapContext);
+            CGContextDrawImage(textureContext, CGRectMake(0.0f, 0.0f, contextWidth, contextHeight), image);
+            CGImageRelease(image);
+            CGColorSpaceRelease(colorSpace);
+        } 
+        
+        bitmapPair = [THPair pairWithFirst:[NSData dataWithBytesNoCopy:textureData
+                                                                length:contextWidth * contextHeight * 4
+                                                          freeWhenDone:textureContext != NULL]
+                                    second:[NSValue valueWithCGSize:correctedSize]];
+        
+        if(textureContext) {
+            if(memoryContext) {
+                // We're finished with this because we're using our own context now.
+                [memoryContext release];
+            }
+            
+            CGContextRelease(textureContext);
+            // The backing textureData is owned by the NSData in the pair we're 
+            // returning now, so don't free it here.
+        } else {
+            if(memoryContext) {
+                // Keep the memory context we've been handed alive for as long
+                // as its accociated NSData.
+                objc_setAssociatedObject(bitmapPair.first, memoryContext, @"EucPageTurningViewBitmapMemoryContext", OBJC_ASSOCIATION_RETAIN);
+                [memoryContext release];
+            }
+        }
     }
     [_bitmapDataSourceLock unlock];
 
-    
     return bitmapPair;
 }
 
@@ -1087,30 +1074,31 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
    forInternalPageOffset:(NSUInteger)pageOffset
                  minSize:(CGSize)minSize
 {
-    THLog(@"requesting Texture of size (%f, %f)", minSize.width,minSize.height);
-    [_pageContentsInformation[pageOffset] release];
-    _pageContentsInformation[pageOffset] = nil;
+    THLog(@"requesting Texture of size (%f, %f)", minSize.width, minSize.height);
 
     CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
                                    contentRectForPageAtIndex:newPageIndex];
     if(!CGRectIsEmpty(thisPageRect)) {
-        UIImage *fastImage = nil;
-        if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:fastUIImageForPageAtIndex:)]) {
-            fastImage = [_bitmapDataSource pageTurningView:self fastUIImageForPageAtIndex:newPageIndex];
+        if(!_pageContentsInformation[pageOffset] || _pageContentsInformation[pageOffset].pageIndex != newPageIndex) {
+            [_pageContentsInformation[pageOffset] release];
+            _pageContentsInformation[pageOffset] = [[EucPageTurningPageContentsInformation alloc] initWithTexturePool:_texturePool];
+            _pageContentsInformation[pageOffset].pageIndex = newPageIndex;
         }
-        _pageContentsInformation[pageOffset] = [[EucPageTurningPageContentsInformation alloc] initWithPageTurningView:self];
-        _pageContentsInformation[pageOffset].pageIndex = newPageIndex;
-        
-        if(fastImage) {
-            _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage];
-        } else {
-            _pageContentsInformation[pageOffset].texture = _grayThumbnail;
+
+        if(!_pageContentsInformation[pageOffset].texture) {
+            UIImage *fastImage = nil;
+            if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:fastUIImageForPageAtIndex:)]) {
+                fastImage = [_bitmapDataSource pageTurningView:self fastUIImageForPageAtIndex:newPageIndex];
+            }
+            
+            if(fastImage) {
+                _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage];
+            }
         }
         
         EucPageTurningTextureGenerationOperation *textureGenerationOperation = [[EucPageTurningTextureGenerationOperation alloc] init];
         textureGenerationOperation.delegate = self;
-        textureGenerationOperation.eaglContext = _backgroundThreadEAGLContext;
-        textureGenerationOperation.contextLock = _backgroundThreadEAGLContextLock;
+        textureGenerationOperation.texturePool = _texturePool;
         textureGenerationOperation.pageIndex = newPageIndex;
         textureGenerationOperation.textureRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
         textureGenerationOperation.isZoomed = NO;
@@ -1132,6 +1120,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [_textureGenerationOperationQueue addOperation:textureGenerationOperation];
 		[textureGenerationOperation release];
         [self refreshHighlightsForPageAtIndex:newPageIndex];
+    } else {
+        [_pageContentsInformation[pageOffset] release];
+        _pageContentsInformation[pageOffset] = nil;
     }
 }
 
@@ -1242,7 +1233,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                 _recacheFlags[0] = YES;
                 _recacheFlags[4] = YES; 
             }
-            [self _cacheNonVisiblePages];
+            [self _recachePages];
             
             [self setNeedsDraw];
         }
@@ -1436,7 +1427,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 	shouldStopAnimating = (shouldStopAnimatingPosition && shouldStopAnimatingTurn);
     
     EAGLContext *eaglContext = self.eaglContext;
-    [EAGLContext setCurrentContext:eaglContext];
+    [eaglContext thPush];
     
     glBindFramebuffer(GL_FRAMEBUFFER, _viewFramebuffer);
     glViewport(0, 0, _backingWidth, _backingHeight);
@@ -1527,97 +1518,93 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
     
-    if(_pageContentsInformation[_rightFlatPageIndex].texture) {        
-        // Draw the right-hand (or only) flat page.
+    
+    // Draw the right-hand (or only) flat page.
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture ?: _grayThumbnail);    
+    if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].zoomedTexture); 
+        CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex].zoomedTextureRect;
+        glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
+                     (GLfloat *)&zoomedTextureRect);
+    }
+    if(_pageContentsInformation[_rightFlatPageIndex].highlightTexture) {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].highlightTexture); 
+    }
 
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].texture);    
-        if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].zoomedTexture); 
-            CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex].zoomedTextureRect;
-            glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
-                         (GLfloat *)&zoomedTextureRect);
-        }
-        if(_pageContentsInformation[_rightFlatPageIndex].highlightTexture) {
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex].highlightTexture); 
-        }
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
-        glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        
-        if(_pageContentsInformation[_rightFlatPageIndex].highlightTexture) {
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
-        }                
-        if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
-            glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
-        }        
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
+    glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    
+    if(_pageContentsInformation[_rightFlatPageIndex].highlightTexture) {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
+    }                
+    if(_pageContentsInformation[_rightFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
+        glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
     }
     
     if(_leftPageVisible) {
         NSInteger leftFlatPageIndex = _rightFlatPageIndex - (shouldStopAnimatingTurn ? 1 : 3);
         if(leftFlatPageIndex >= 0 && _twoSidedPages) {
-            if(_pageContentsInformation[leftFlatPageIndex].texture) {
-                CATransform3D oldModelViewMatrix = modelViewMatrix;
-                modelViewMatrix = CATransform3DRotate(modelViewMatrix, (GLfloat)M_PI, 0, 1, 0);
-                glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
-                CATransform3D oldNormalMatrix = normalMatrix;
-                normalMatrix = THCATransform3DTranspose(CATransform3DInvert(modelViewMatrix));
-                glUniformMatrix4fv(glGetUniformLocation(_program, "uNormalMatrix"), sizeof(normalMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&normalMatrix);
-                
-                if(_twoSidedPages) {
-                    glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 1);
-                } else {
-                    glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 0.2f);
-                }
-                
-                glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].texture);
-                if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
-                    glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].zoomedTexture);    
-                    CGRect zoomedTextureRect = _pageContentsInformation[leftFlatPageIndex].zoomedTextureRect;
-                    glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
-                                 (GLfloat *)&zoomedTextureRect);
-                }
-                if(_pageContentsInformation[leftFlatPageIndex].highlightTexture) {
-                    glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].highlightTexture);    
-                }                
-                
-                glCullFace(GL_FRONT);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
-                glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-                glCullFace(GL_BACK);
-
-                
-                if(_pageContentsInformation[leftFlatPageIndex].highlightTexture) {
-                    glActiveTexture(GL_TEXTURE3);
-                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
-                }                                
-                if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
-                    glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
-                    glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
-                }                                        
-                
-                if(_twoSidedPages) {
-                    glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
-                } else {
-                    glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
-                }
-                
-                modelViewMatrix = oldModelViewMatrix;
-                glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
-                normalMatrix = oldNormalMatrix;
-                glUniformMatrix4fv(glGetUniformLocation(_program, "uNormalMatrix"), sizeof(normalMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&normalMatrix);
+            CATransform3D oldModelViewMatrix = modelViewMatrix;
+            modelViewMatrix = CATransform3DRotate(modelViewMatrix, (GLfloat)M_PI, 0, 1, 0);
+            glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
+            CATransform3D oldNormalMatrix = normalMatrix;
+            normalMatrix = THCATransform3DTranspose(CATransform3DInvert(modelViewMatrix));
+            glUniformMatrix4fv(glGetUniformLocation(_program, "uNormalMatrix"), sizeof(normalMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&normalMatrix);
+            
+            if(_twoSidedPages) {
+                glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 1);
+            } else {
+                glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 0.2f);
             }
+            
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].texture ?: _grayThumbnail);
+            if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].zoomedTexture);    
+                CGRect zoomedTextureRect = _pageContentsInformation[leftFlatPageIndex].zoomedTextureRect;
+                glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
+                             (GLfloat *)&zoomedTextureRect);
+            }
+            if(_pageContentsInformation[leftFlatPageIndex].highlightTexture) {
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageIndex].highlightTexture);    
+            }                
+            
+            glCullFace(GL_FRONT);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _triangleStripIndicesBuffer);
+            glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            glCullFace(GL_BACK);
+
+            
+            if(_pageContentsInformation[leftFlatPageIndex].highlightTexture) {
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
+            }                                
+            if(_pageContentsInformation[leftFlatPageIndex].zoomedTexture && _zoomFactor > 1.0f) {
+                glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
+            }                                        
+            
+            if(_twoSidedPages) {
+                glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
+            } else {
+                glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
+            }
+            
+            modelViewMatrix = oldModelViewMatrix;
+            glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
+            normalMatrix = oldNormalMatrix;
+            glUniformMatrix4fv(glGetUniformLocation(_program, "uNormalMatrix"), sizeof(normalMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&normalMatrix);
         }
     }
     
@@ -1636,7 +1623,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, pageVertexNormals);
         
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-2].texture);
+        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-2].texture ?: _grayThumbnail);
         if(_pageContentsInformation[_rightFlatPageIndex-2].zoomedTexture && _zoomFactor > 1.0f) {
             CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex - 2].zoomedTextureRect;
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
@@ -1656,7 +1643,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         if(_twoSidedPages) {
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-1].texture);
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageIndex-1].texture ?: _grayThumbnail);
             if(_zoomFactor > 1.0f) {
                 if(_pageContentsInformation[_rightFlatPageIndex-1].zoomedTexture) {
                     CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageIndex-1].zoomedTextureRect;
@@ -1772,8 +1759,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glBindRenderbuffer(GL_RENDERBUFFER, _viewRenderbuffer);
     [eaglContext presentRenderbuffer:GL_RENDERBUFFER];
 
+    [eaglContext thPop];
+    
     if(_viewsNeedRecache) {
-        [self _cacheNonVisiblePages];
+        [self _recachePages];
         [self _setNeedsAccessibilityElementsRebuild];
         UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     }
@@ -2612,10 +2601,34 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return shouldStopAnimating;
 }
 
-- (void)_cacheNonVisiblePages
+- (void)_recachePages
 {
-    [EAGLContext setCurrentContext:self.eaglContext];
-    if(_twoSidedPages) {
+    // Don't fetch page numbers for indexes 2 and 3, they'll already be set.
+    if(_recacheFlags[3] && _pageContentsInformation[3]) {
+        if(_viewDataSource) {
+            if(_pageContentsInformation[3].view) {
+                [self _setView:_pageContentsInformation[3].view forInternalPageOffsetPage:3 forceRefresh:YES];
+            }
+        } else {
+            if(_pageContentsInformation[3].pageIndex) {
+                [self _setupBitmapPage:_pageContentsInformation[3].pageIndex forInternalPageOffset:3];
+            }
+        }
+    }
+    
+    if(_twoSidedPages) { 
+        if(_recacheFlags[2] && _pageContentsInformation[2]) {
+            if(_viewDataSource) {
+                if(_pageContentsInformation[2].view) {
+                    [self _setView:_pageContentsInformation[2].view forInternalPageOffsetPage:2 forceRefresh:YES];
+                }
+            } else {
+                if(_pageContentsInformation[2].pageIndex) {
+                    [self _setupBitmapPage:_pageContentsInformation[2].pageIndex forInternalPageOffset:2];
+                }
+            }
+        }
+        
         if(_recacheFlags[1]) {
             if(_viewDataSource) {
                 if(_pageContentsInformation[2].view) {
@@ -2650,9 +2663,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
             }
         }
-        
-        // Pages 2 and 3 are already set.
-        
+                
         if(_recacheFlags[4]) {
             if(_viewDataSource) {
                 if(_pageContentsInformation[3].view) {
@@ -2705,8 +2716,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
             }
         }
-        
-        // Pages 3 is already set.
         
         if(_recacheFlags[5]) {
             if(_viewDataSource) {
@@ -2986,8 +2995,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                                                            intersect.size.height / scaledPageFrame.size.height);
                     EucPageTurningTextureGenerationOperation *textureGenerationOperation = [[EucPageTurningTextureGenerationOperation alloc] init];
                     textureGenerationOperation.delegate = self;
-                    textureGenerationOperation.eaglContext = _backgroundThreadEAGLContext;
-                    textureGenerationOperation.contextLock = _backgroundThreadEAGLContextLock;
+                    textureGenerationOperation.texturePool = _texturePool;
                     textureGenerationOperation.pageIndex = pageIndex;
                     textureGenerationOperation.textureRect = scaledIntersection;
                     textureGenerationOperation.isZoomed = YES;
@@ -3033,57 +3041,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 }
 
 #pragma mark -
-#pragma mark Texture Management
-
-- (GLuint)_unusedTexture
-{
-    EAGLContext *beforeContext = [EAGLContext currentContext];
-
-    GLuint ret;
-    [_textureLock lock];
-    
-    if(_recycledTextures.count) {
-        ret = [[_recycledTextures lastObject] intValue];
-        [_recycledTextures removeLastObject];
-    } else {
-        BOOL isMainThread = [NSThread isMainThread];
-        if(isMainThread) {
-            [EAGLContext setCurrentContext:self.eaglContext];
-        } else{
-            [_backgroundThreadEAGLContextLock lock];
-            [EAGLContext setCurrentContext:_backgroundThreadEAGLContext];
-        }
-        
-        glGenTextures(1, &ret);
-		_maxTex = ret;
-        
-        if(!isMainThread) {
-            [_backgroundThreadEAGLContextLock unlock];
-        }
-    }
-    
-    [_textureLock unlock];
-    
-    [EAGLContext setCurrentContext:beforeContext];
-    
-    return ret;
-}
-
-- (void)_recycleTexture:(GLuint)texture
-{
-    if(texture != _alphaWhiteZoomedContent && texture != _grayThumbnail) {
-        [_textureLock lock];
-        
-        [_recycledTextures addObject:[NSNumber numberWithInt:texture]];
-        
-        [_textureLock unlock];
-    }
-}
-     
-- (GLuint)textureGenerationOperationGetTextureId:(EucPageTurningTextureGenerationOperation *)operation
-{
-    return [self _unusedTexture];
-}
+#pragma mark Texture Generation Delegate
 
 - (void)textureGenerationOperationGeneratedTexture:(EucPageTurningTextureGenerationOperation *)operation;
 {
@@ -3110,7 +3068,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
             } else {
                 // This is an old zoom operation, for a non-front-facing page.
-                [self _recycleTexture:texture];
+                [_texturePool recycleTexture:texture];
             }
             if(_pageContentsInformation[index].currentZoomedTextureGenerationOperation == operation) {
                 _pageContentsInformation[index].currentZoomedTextureGenerationOperation = nil;
@@ -3126,7 +3084,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         [self setNeedsDraw];
     } else {
         // This is an old operation, for a page we don't have any more.
-        [self _recycleTexture:texture];
+        [_texturePool recycleTexture:texture];
     }    
 }
 

@@ -31,6 +31,4 @@
                                  minSize:(CGSize)size
                               getContext:(id *)context;
 
-- (THPair *)RGBABitmapDataForPage:(NSUInteger)page fromRect:(CGRect)rect minSize:(CGSize)size;
-
 @end

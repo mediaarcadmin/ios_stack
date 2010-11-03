@@ -19,10 +19,10 @@
 @synthesize currentTextureGenerationOperation = _currentTextureGenerationOperation;
 @synthesize currentZoomedTextureGenerationOperation = _currentZoomedTextureGenerationOperation;
 
-- (id)initWithPageTurningView:(EucPageTurningView *)pageTurningView
+- (id)initWithTexturePool:(THOpenGLTexturePool *)texturePool
 {
     if((self = [super init])) {
-        _pageTurningView = pageTurningView;
+        _texturePool = [texturePool retain];
     }
     return self;
 }
@@ -30,28 +30,29 @@
 - (void)dealloc
 {   
     if(_currentTextureGenerationOperation) {
-        THLog(@"EucPageTurningPageContentsInformation deallocing with pending texture generation operation!");
+        THLog(@"EucPageTurningPageContentsInformation deallocing with pending texture generation operation (this is not an error).");
         _currentTextureGenerationOperation.delegate = nil;
         _currentTextureGenerationOperation = nil;
     }
     if(_currentZoomedTextureGenerationOperation) {
-        THLog(@"EucPageTurningPageContentsInformation deallocing with pending zoomed texture generation operation!");
+        THLog(@"EucPageTurningPageContentsInformation deallocing with pending zoomed texture generation operation (this is not an error).");
         _currentZoomedTextureGenerationOperation.delegate = nil;
         _currentZoomedTextureGenerationOperation = nil;
     }
 
     [_view release];
-
+        
     if(_texture) {
-        [_pageTurningView _recycleTexture:_texture];
+        [_texturePool recycleTexture:_texture];
     }
     if(_zoomedTexture) {
-        [_pageTurningView _recycleTexture:_zoomedTexture];
+        [_texturePool recycleTexture:_zoomedTexture];
     }
-	
 	if(_highlightTexture) {
-        [_pageTurningView _recycleTexture:_highlightTexture];
+        [_texturePool recycleTexture:_highlightTexture];
     }
+    
+    [_texturePool release];
         
     [super dealloc];
 }
@@ -65,7 +66,7 @@
 {
     if(texture != _texture) {
         if(_texture) {
-            [_pageTurningView _recycleTexture:_texture];
+            [_texturePool recycleTexture:_texture];
         }
         _texture = texture;
     }
@@ -80,7 +81,7 @@
 {
     if(zoomedTexture != _zoomedTexture) {
         if(_zoomedTexture) {
-            [_pageTurningView _recycleTexture:_zoomedTexture];
+            [_texturePool recycleTexture:_zoomedTexture];
         }
         _zoomedTexture = zoomedTexture;
     }
@@ -95,7 +96,7 @@
 {
     if(texture != _highlightTexture) {
         if(_highlightTexture) {
-            [_pageTurningView _recycleTexture:_highlightTexture];
+            [_texturePool recycleTexture:_highlightTexture];
         }
         _highlightTexture = texture;
     }
@@ -123,6 +124,5 @@
         _currentZoomedTextureGenerationOperation = [zoomedTextureGenerationOperation retain];
     }
 }
-
 
 @end

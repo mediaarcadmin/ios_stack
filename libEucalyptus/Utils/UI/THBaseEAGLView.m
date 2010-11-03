@@ -11,6 +11,7 @@
 #import <objc/message.h>
 
 #import "THLog.h"
+#import "THEAGLContextAdditions.h"
 #import "THBaseEAGLView.h"
 
 @interface THBaseEAGLView ()
@@ -107,10 +108,23 @@
     [super didMoveToWindow];
 }
 
+
+- (void)willMoveToSuperview:(UIView *)superview
+{
+    if(self.isAnimating) {
+        self.animating = NO;
+    }
+    if(self.animationTimer) {
+        [self.animationTimer invalidate];
+        self.animationTimer = nil;
+    }
+    [super willMoveToSuperview:superview];
+}
+
 - (void)layoutSubviews 
 {
     [super layoutSubviews];
-    [EAGLContext setCurrentContext:self.eaglContext];
+    [self.eaglContext thPush];
     [self _destroyFramebuffer];
     [self _createFramebuffer];
     if(_didJustMoveToNewWindow) {
@@ -119,6 +133,7 @@
     } else {
         [self setNeedsDraw];
     }
+    [self.eaglContext thPop];
 }
 
 - (BOOL)_createFramebuffer 

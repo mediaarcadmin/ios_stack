@@ -428,6 +428,10 @@
 		7D79D072117F75C90081F554 /* EucCSSLayoutRunExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D79D070117F75C90081F554 /* EucCSSLayoutRunExtractor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D79D073117F75C90081F554 /* EucCSSLayoutRunExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79D071117F75C90081F554 /* EucCSSLayoutRunExtractor.m */; };
 		7D7E262F111F7BEE00F7F585 /* EucMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883FCB111C7735009669A8 /* EucMenuView.m */; };
+		7D868B2012802F9F003A3ACD /* THEAGLContextAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D868B0A12802C77003A3ACD /* THEAGLContextAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D868B2112802FA5003A3ACD /* THEAGLContextAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D868B0B12802C77003A3ACD /* THEAGLContextAdditions.m */; };
+		7D868B2212802FAF003A3ACD /* THOpenGLTexturePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D868B0212802AE5003A3ACD /* THOpenGLTexturePool.m */; };
+		7D868B2612802FB9003A3ACD /* THOpenGLTexturePool.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D868B0112802AE5003A3ACD /* THOpenGLTexturePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D883FA0111C640C009669A8 /* EucMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F5D111C5862009669A8 /* EucMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D883FA1111C640C009669A8 /* EucMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D883F5E111C5862009669A8 /* EucMenuItem.m */; };
 		7D883FA2111C640C009669A8 /* EucMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D883F63111C586F009669A8 /* EucMenuController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1185,6 +1189,10 @@
 		7D6AAD6C1028E7EC006289E6 /* THNSFileManagerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSFileManagerAdditions.h; sourceTree = "<group>"; };
 		7D79D070117F75C90081F554 /* EucCSSLayoutRunExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutRunExtractor.h; sourceTree = "<group>"; };
 		7D79D071117F75C90081F554 /* EucCSSLayoutRunExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutRunExtractor.m; sourceTree = "<group>"; };
+		7D868B0112802AE5003A3ACD /* THOpenGLTexturePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THOpenGLTexturePool.h; sourceTree = "<group>"; };
+		7D868B0212802AE5003A3ACD /* THOpenGLTexturePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THOpenGLTexturePool.m; sourceTree = "<group>"; };
+		7D868B0A12802C77003A3ACD /* THEAGLContextAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEAGLContextAdditions.h; sourceTree = "<group>"; };
+		7D868B0B12802C77003A3ACD /* THEAGLContextAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEAGLContextAdditions.m; sourceTree = "<group>"; };
 		7D883F5D111C5862009669A8 /* EucMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucMenuItem.h; sourceTree = "<group>"; };
 		7D883F5E111C5862009669A8 /* EucMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucMenuItem.m; sourceTree = "<group>"; };
 		7D883F63111C586F009669A8 /* EucMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucMenuController.h; sourceTree = "<group>"; };
@@ -2390,6 +2398,10 @@
 				7D4F3108124CD872001C2D8A /* THOpenGLUtils.m */,
 				7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */,
 				7DF8BC3211B526E3003B7A97 /* THBaseEAGLView.m */,
+				7D868B0112802AE5003A3ACD /* THOpenGLTexturePool.h */,
+				7D868B0212802AE5003A3ACD /* THOpenGLTexturePool.m */,
+				7D868B0A12802C77003A3ACD /* THEAGLContextAdditions.h */,
+				7D868B0B12802C77003A3ACD /* THEAGLContextAdditions.m */,
 				7D658C6D103DEAD900EB5003 /* THImageFactory.h */,
 				7D658C6E103DEAD900EB5003 /* THImageFactory.m */,
 				7D6AAC841028DEAD006289E6 /* THScalableSlider.h */,
@@ -2947,6 +2959,8 @@
 				7DC0FE391234E85F00FBE9B3 /* EucSelectorAccessibilityMask.h in Headers */,
 				7D589BAF125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h in Headers */,
 				7DAC9908125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.h in Headers */,
+				7D868B2012802F9F003A3ACD /* THEAGLContextAdditions.h in Headers */,
+				7D868B2612802FB9003A3ACD /* THOpenGLTexturePool.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3598,6 +3612,8 @@
 				7D6DA2241250C408005FD8CE /* euc_page_turning.fsh in Sources */,
 				7D589BB0125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m in Sources */,
 				7DAC9909125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.m in Sources */,
+				7D868B2112802FA5003A3ACD /* THEAGLContextAdditions.m in Sources */,
+				7D868B2212802FAF003A3ACD /* THOpenGLTexturePool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
