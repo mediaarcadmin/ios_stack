@@ -586,7 +586,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             } else {
                 NSUInteger newPageIndex = _focusedPageIndex;
                 for(NSUInteger i = 0; i < pageContentsInformationCount; ++i) {
-                    NSUInteger prospectivePageIndex = oldPageContentsInformation[i].pageIndex;
+                    NSUInteger prospectivePageIndex = oldPageContentsInformation[i] ? oldPageContentsInformation[i].pageIndex : NSUIntegerMax;
                     if(prospectivePageIndex == newPageIndex - 1) {
                         _pageContentsInformation[1] = [oldPageContentsInformation[i] retain];
                     } else if(prospectivePageIndex == newPageIndex) { 
