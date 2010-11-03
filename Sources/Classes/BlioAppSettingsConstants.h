@@ -37,4 +37,5 @@ static NSString * const kBlioDeviceRegisteredDefaultsKey = @"DeviceRegistered";
 static NSString * const kBlioServiceIDDefaultsKey = @"ServiceID";
 static NSString * const kBlioAccountIDDefaultsKey = @"AccountID";
 static NSString * const kBlioTapZoomsDefaultsKey = @"TapZooms";
+static NSString * const kBlioLandscapePageDefaultsKey = @"LandscapePage";
 static NSString * const kBlioDownloadNewBooksDefaultsKey = @"downloadnewbooks";

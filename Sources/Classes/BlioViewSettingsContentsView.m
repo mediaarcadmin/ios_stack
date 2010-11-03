@@ -34,10 +34,12 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 @synthesize fontSizeLabel;
 @synthesize pageColorLabel;
 @synthesize tapZoomsToBlockLabel;
+@synthesize landscapePageLabel;
 @synthesize pageLayoutSegment;
 @synthesize fontSizeSegment;
 @synthesize pageColorSegment;
 @synthesize tapZoomsToBlockSegment;
+@synthesize landscapePageSegment;
 //@synthesize tapZoomsToBlockSwitch;
 @synthesize lockButtonSegment;
 @synthesize doneButton;
@@ -67,6 +69,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     BOOL showFontSize = NO;
     BOOL showPageColor = NO;
     BOOL showTapZoomsToBlock = NO;
+    BOOL showLandscapePage = NO;
     
     if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowFontSizeSettings)]) {
         showFontSize = [self.viewSettingsDelegate shouldShowFontSizeSettings];
@@ -78,6 +81,9 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 
 	if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowTapZoomsToBlockSettings)]) {
         showTapZoomsToBlock = [self.viewSettingsDelegate shouldShowTapZoomsToBlockSettings];
+    }
+	if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowLandscapePageSettings)]) {
+        showLandscapePage = [self.viewSettingsDelegate shouldShowTapZoomsToBlockSettings];
     }
 	
     if (showFontSize) {
@@ -119,7 +125,17 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.tapZoomsToBlockSegment.alpha = 0.35f;
 		self.tapZoomsToBlockLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.tapZoomsToBlockLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];;
 	}
-
+	if (showLandscapePage) {
+		self.landscapePageLabel.enabled = YES;
+        self.landscapePageSegment.enabled = YES;
+        self.landscapePageSegment.alpha = 1.0f;
+		self.landscapePageLabel.accessibilityLabel = self.tapZoomsToBlockLabel.text;
+	} else {
+		self.landscapePageLabel.enabled = NO;
+		self.landscapePageSegment.enabled = NO;
+        self.landscapePageSegment.alpha = 0.35f;
+		self.landscapePageLabel.accessibilityLabel = [NSString stringWithFormat:@"%@ (%@)", self.tapZoomsToBlockLabel.text, NSLocalizedString(@"disabled",@"\"disabled\" suffix for accessibility labels")];;
+	}
 	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 
@@ -325,6 +341,41 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 //			[aTabZoomsToBlockSwitch setOn:NO animated:NO];		
 //		[aTabZoomsToBlockSwitch release];
 		
+		//////// LANDSCAPE PAGE NUMBER
+
+		UILabel *aLandscapePageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        aLandscapePageLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        aLandscapePageLabel.textColor = [UIColor whiteColor];
+        aLandscapePageLabel.backgroundColor = [UIColor clearColor];
+        aLandscapePageLabel.text = NSLocalizedString(@"Landscape",@"Settings Label for number of pages displayed in landscape.");
+        [self addSubview:aLandscapePageLabel];
+        self.landscapePageLabel = aLandscapePageLabel;
+        [aLandscapePageLabel release];
+		
+		NSArray *landscapePageTitles = [NSArray arrayWithObjects:
+									 NSLocalizedString(@"1 Page",@"\"1 Page\" segment label (for Landscape Page SegmentedControl)"),
+									 NSLocalizedString(@"2 Pages",@"\"2 Pages\" segment label (for Landscape Page SegmentedControl)"),
+									 nil];
+		
+		BlioAccessibilitySegmentedControl *aLandscapePageSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:landscapePageTitles];
+        aLandscapePageSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            aLandscapePageSegment.tintColor = [UIColor darkGrayColor];
+        } else {
+            aLandscapePageSegment.tintColor = kBlioViewSettingsPopverBlueButton;
+        }
+                
+        [self addSubview:aLandscapePageSegment];
+        self.landscapePageSegment = aLandscapePageSegment;
+        [aLandscapePageSegment release];
+        
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapePageDefaultsKey] == YES ) {
+			[self.landscapePageSegment setSelectedSegmentIndex:1];
+		}
+		else [self.landscapePageSegment setSelectedSegmentIndex:0];
+        
+        [self.landscapePageSegment addTarget:self.viewSettingsDelegate action:@selector(changeLandscapePage:) forControlEvents:UIControlEventValueChanged];
+		
 		//////// ORIENTATION LOCK
 
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
@@ -381,10 +432,14 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 }
 
 - (CGFloat)contentsHeight {
+	UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        return kBlioViewSettingsYInset * 1 + kBlioViewSettingsRowSpacing*5 + kBlioViewSettingsSegmentButtonHeight*5 + kBlioViewSettingsDoneButtonHeight;
+		if (UIInterfaceOrientationIsLandscape(interfaceOrientation))
+			return kBlioViewSettingsYInset * 1 + kBlioViewSettingsRowSpacing*5 + kBlioViewSettingsSegmentButtonHeight*5 + kBlioViewSettingsDoneButtonHeight;
+		else 
+			return kBlioViewSettingsYInset * 1 + kBlioViewSettingsRowSpacing*6 + kBlioViewSettingsSegmentButtonHeight*6 + kBlioViewSettingsDoneButtonHeight;
     } else {
-        return kBlioViewSettingsYInset * 2 + kBlioViewSettingsRowSpacing*4 + kBlioViewSettingsSegmentButtonHeight*4;
+        return kBlioViewSettingsYInset * 2 + kBlioViewSettingsRowSpacing*5 + kBlioViewSettingsSegmentButtonHeight*5;
     }
 }
 
@@ -405,9 +460,18 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 //    [self.tapZoomsToBlockSwitch setFrame:CGRectMake(CGRectGetWidth(self.bounds) - kBlioViewSettingsXInset - CGRectGetWidth(self.tapZoomsToBlockSwitch.bounds), CGRectGetMinY([self.tapZoomsToBlockLabel frame]) + (kBlioViewSettingsSegmentButtonHeight-CGRectGetHeight(self.tapZoomsToBlockSwitch.bounds))/2, CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
     [self.tapZoomsToBlockLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageColorSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
     [self.tapZoomsToBlockSegment setFrame:CGRectMake(CGRectGetMaxX([self.tapZoomsToBlockLabel frame]), CGRectGetMinY([self.tapZoomsToBlockLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-    [self.lockButtonSegment setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.tapZoomsToBlockLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - kBlioViewSettingsRowSpacing)/2.0f, kBlioViewSettingsSegmentButtonHeight)];
-    [self.doneButton setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.lockButtonSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset, kBlioViewSettingsDoneButtonHeight)];
-
+	[self.landscapePageLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.tapZoomsToBlockSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
+	UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+		[self.landscapePageSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageLabel frame]), CGRectGetMinY([self.landscapePageLabel frame]), CGRectGetWidth([self.tapZoomsToBlockSegment frame])/2 + kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
+		[self.lockButtonSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageSegment frame]) + kBlioViewSettingsXInset, CGRectGetMaxY([self.tapZoomsToBlockLabel frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - CGRectGetMaxX([self.landscapePageSegment frame]), kBlioViewSettingsSegmentButtonHeight)];
+		[self.doneButton setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.lockButtonSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset, kBlioViewSettingsDoneButtonHeight)];		
+	}
+	else {
+		[self.landscapePageSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageLabel frame]), CGRectGetMinY([self.landscapePageLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.landscapePageLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
+		[self.lockButtonSegment setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.landscapePageLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - kBlioViewSettingsRowSpacing)/2.0f, kBlioViewSettingsSegmentButtonHeight)];
+		[self.doneButton setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.lockButtonSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset, kBlioViewSettingsDoneButtonHeight)];
+	}
     [super layoutSubviews];
 }
 
@@ -447,3 +511,4 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 }
 
 @end
+ 
