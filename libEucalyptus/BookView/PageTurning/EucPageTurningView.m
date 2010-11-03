@@ -432,6 +432,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(!CGSizeEqualToSize(size, _lastLayoutBoundsSize)) {
         // Won't be needing any of these.
         [_textureGenerationOperationQueue cancelAllOperations];
+        NSUInteger pageContentsInformationCount = sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *);
+        for(NSUInteger i = 0; i < pageContentsInformationCount; ++i) {
+            _pageContentsInformation[i].currentTextureGenerationOperation = nil;
+            _pageContentsInformation[i].currentZoomedTextureGenerationOperation = nil;
+        }    
 
         [self willChangeValueForKey:@"zoomMatrix"];
         [self willChangeValueForKey:@"rightPageFrame"];
@@ -546,8 +551,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         [self _setupConstraints];
                 
+        [self _setZoomMatrixFromTranslation:CGPointZero zoomFactor:1.0f];
+        
+        _unzoomedLeftPageFrame = _leftPageFrame;
+        _unzoomedRightPageFrame = _rightPageFrame;        
+        
         if(_bitmapDataSource) {
-            NSUInteger pageContentsInformationCount = sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *);
             EucPageTurningPageContentsInformation *oldPageContentsInformation[pageContentsInformationCount];
             
             memcpy(oldPageContentsInformation, _pageContentsInformation, sizeof(_pageContentsInformation));
@@ -610,21 +619,15 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             [self _recachePages];
         }
         
+        _lastLayoutBoundsSize = size;
         
-        [self _setZoomMatrixFromTranslation:CGPointZero zoomFactor:1.0f];
-        
-        _unzoomedLeftPageFrame = _leftPageFrame;
-        _unzoomedRightPageFrame = _rightPageFrame;
+        [self setNeedsDraw];
         
         [self didChangeValueForKey:@"unzoomedLeftPageFrame"];
         [self didChangeValueForKey:@"unzoomedRightPageFrame"];
         [self didChangeValueForKey:@"leftPageFrame"];
         [self didChangeValueForKey:@"rightPageFrame"];
-        [self didChangeValueForKey:@"zoomMatrix"];
-        
-        _lastLayoutBoundsSize = size;
-        
-        [self setNeedsDraw];
+        [self didChangeValueForKey:@"zoomMatrix"];        
     }
 }    
 
@@ -2659,9 +2662,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 [self _setView:_pageContentsInformation[3].view forInternalPageOffsetPage:3 forceRefresh:YES];
             }
         } else {
-            if(_pageContentsInformation[3].pageIndex) {
-                [self _setupBitmapPage:_pageContentsInformation[3].pageIndex forInternalPageOffset:3];
-            }
+            [self _setupBitmapPage:_pageContentsInformation[3].pageIndex forInternalPageOffset:3];
         }
     }
     
@@ -2672,9 +2673,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _setView:_pageContentsInformation[2].view forInternalPageOffsetPage:2 forceRefresh:YES];
                 }
             } else {
-                if(_pageContentsInformation[2].pageIndex) {
-                    [self _setupBitmapPage:_pageContentsInformation[2].pageIndex forInternalPageOffset:2];
-                }
+                [self _setupBitmapPage:_pageContentsInformation[2].pageIndex forInternalPageOffset:2];
             }
         }
         

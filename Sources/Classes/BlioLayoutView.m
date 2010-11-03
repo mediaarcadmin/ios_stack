@@ -304,13 +304,7 @@
 	[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
 	self.selector = aSelector;
 	[aSelector release];
-	
-	// TODO: Get Jamie to provide an asynchronous update mechanism for this so we don't see a checkerboard flash
-	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex];
-	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex - 1];
-	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex - 2];
-	[self.pageTurningView refreshPageAtIndex:self.pageTurningView.rightPageIndex + 1];
-	
+
 	if(self.pageTurningView.isTwoUp) {
 		self.pageTurningView.zoomedTextureWidth = 1024;
 	} else {
