@@ -20,6 +20,7 @@
 #import "BlioBookManager.h"
 #import <unistd.h>
 #import "BlioImportManager.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -38,8 +39,11 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	if (launchOptions) NSLog(@"launchOptions: %@",launchOptions);
+//- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions { 		// returning YES *should* call application handleOpenURL, but for some reason, that is not being called on iOS < 4.0... hence, we use the older method until 3.x compatibility is retired.
+-(void)applicationDidFinishLaunching:(UIApplication *)application {
+//	if (launchOptions) {
+//		NSLog(@"launchOptions: %@",launchOptions);		
+//	}
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	NSError * audioError = nil;
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError];
@@ -171,11 +175,18 @@ tryAgain:
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
     
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-	return YES;
+		
+//	return YES;
 }
 
 -(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
 	NSLog(@"opened app with URL: %@",[url absoluteString]);
+	
+//	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+//								 message:[NSString stringWithFormat:@"handleOpenURL: %@",[url absoluteString]]
+//								delegate:nil
+//					   cancelButtonTitle:@"OK"
+//					   otherButtonTitles:nil];
 	
 	if ([url isFileURL]) {
 		NSString * file = [url path]; 
@@ -189,6 +200,11 @@ tryAgain:
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40200
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+//	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+//								 message:[NSString stringWithFormat:@"openURL: %@",[url absoluteString]]
+//								delegate:nil
+//					   cancelButtonTitle:@"OK"
+//					   otherButtonTitles:nil];
 	return [self application:application handleOpenURL:url];
 }
 
