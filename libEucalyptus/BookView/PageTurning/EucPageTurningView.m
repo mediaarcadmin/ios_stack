@@ -1056,6 +1056,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                 NSLog(@"Generated zoomed texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
             }
         }
+        NSUInteger bufferLength = contextWidth * contextWidth * 4;
         
         if(alphaBled) {
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -1068,7 +1069,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
         
         CGContextRef textureContext = NULL;
-        void *textureData;
+        unsigned char *textureData;
         BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(pageBitmapContext) != contextWidth * 4;
         if(dataIsNonContiguous || (textureData = CGBitmapContextGetData(pageBitmapContext)) == NULL) {
             // We need to generate contiguous data to upload, and we need to be
@@ -1077,7 +1078,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             THLog(@"Inefficient bitmap handling - having to copy image in context returned by RGBABitmapContextForPageAtIndex in order to to upload")
             
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-            textureData = malloc(contextWidth * contextHeight * 4);
+            textureData = malloc(bufferLength);
             textureContext = CGBitmapContextCreate(NULL, contextWidth, contextHeight, 8, contextWidth * 4, 
                                                    colorSpace, kCGImageAlphaPremultipliedLast);
             CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
@@ -1087,9 +1088,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             CGImageRelease(image);
             CGColorSpaceRelease(colorSpace);
         } 
-        
+                
         bitmapPair = [THPair pairWithFirst:[NSData dataWithBytesNoCopy:textureData
-                                                                length:contextWidth * contextHeight * 4
+                                                                length:bufferLength
                                                           freeWhenDone:textureContext != NULL]
                                     second:[NSValue valueWithCGSize:correctedSize]];
         
@@ -1717,7 +1718,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 1);
         } else {
-            glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 0.2);
+            glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 0.2f);
         }
         
         glCullFace(GL_FRONT);
@@ -1727,7 +1728,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_twoUp) {
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
         } else {
-            glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0);
+            glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
         }
         
         glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
@@ -3175,7 +3176,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 				CGContextTranslateCTM(textureContext, 0, -minSize.height);
 
                 CGFloat cornerRadius = 4.0f * textureScale;
-                CGContextSetBlendMode(textureContext, kCGBlendModeMultiply);
+                CGContextSetBlendMode(textureContext, kCGBlendModeNormal);
                 for(THPair *highlight in highlights) {
                     CGRect highlightRect = [highlight.first CGRectValue];
                     highlightRect.origin.x *= textureScale;
@@ -3193,14 +3194,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 				
 				// Unpremultiply the alpha for OpenGL.
 				for(int index = 0; index < bufferLength; index += 4) {
-                    CGFloat alpha = 256.0f / textureData[index+3];
+                    int alpha = textureData[index+3];
                     if(alpha > 0) {
-                        int red = textureData[index] * alpha;
-                        textureData[index] = MIN(red, 255);
-                        int green = textureData[index+1] * alpha;
-                        textureData[index+1] = MIN(green, 255);
-                        int blue = textureData[index+2] * alpha;
-                        textureData[index+2] = MIN(blue, 255);
+                        textureData[index] = (255 * textureData[index]) / alpha;
+                        textureData[index+1] = (255 * textureData[index+1]) / alpha;
+                        textureData[index+2] = (255 * textureData[index+2]) / alpha;
                     }
 				}
                 
