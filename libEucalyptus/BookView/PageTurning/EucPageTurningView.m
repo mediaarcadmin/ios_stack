@@ -51,7 +51,9 @@
 - (void)_scheduleRetextureForPanAndZoom;
 - (void)_cancelRetextureForPanAndZoom;
 
-- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
+- (void)_setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
+
+- (void)_refreshHighlightsForPageContentsIndex:(NSUInteger)index;
 
 @end
 
@@ -609,6 +611,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
             for(NSUInteger i = 0; i < pageContentsInformationCount; ++i) {
                 [oldPageContentsInformation[i] release];
+                if(_pageContentsInformation[i]) {
+                    [self _refreshHighlightsForPageContentsIndex:i];
+                }
             }    
                             
             _recacheFlags[0] = YES;
@@ -1166,7 +1171,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         [_textureGenerationOperationQueue addOperation:textureGenerationOperation];
 		[textureGenerationOperation release];
-        [self refreshHighlightsForPageAtIndex:newPageIndex];
+        [self _refreshHighlightsForPageContentsIndex:pageOffset];
     } else {
         [_pageContentsInformation[pageOffset] release];
         _pageContentsInformation[pageOffset] = nil;
@@ -2487,7 +2492,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     BOOL shouldStopAnimating = YES;
 	
 	if (_animationIndex >= 0) {
-		[self setTranslation:CGPointMake(_presentationTranslationX[_animationIndex], _presentationTranslationY[_animationIndex]) zoomFactor:_presentationZoomFactor[_animationIndex]];
+		[self _setTranslation:CGPointMake(_presentationTranslationX[_animationIndex], _presentationTranslationY[_animationIndex]) zoomFactor:_presentationZoomFactor[_animationIndex]];
 		_animationIndex++;
 		shouldStopAnimating = NO;
 	}
@@ -2826,7 +2831,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return translation;
 }
 
-- (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
+- (void)_setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
 	translation.x /= _viewportToBoundsPointsTransform.a;
 	translation.y /= _viewportToBoundsPointsTransform.d;
@@ -2835,30 +2840,34 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated
 {	
-	CGFloat currentZoom = _zoomFactor;
-	CGPoint currentTranslation = self.translation;
-	
-	// Setting the translation so we can check what the final positions will be (by interrogating the _animatedZoomFactor and _animatedTranslation)
-	[self setTranslation:translation zoomFactor:zoomFactor];
-	_modelZoomFactor = _zoomFactor;
-	_modelTranslation = self.translation;
-	[self setTranslation:currentTranslation zoomFactor:currentZoom];
-		
-	CGFloat zoomDelta = (_modelZoomFactor - _zoomFactor) / POSITIONING_ANIMATION_ITERATIONS;
-	CGFloat translationXDelta = (_modelTranslation.x - currentTranslation.x) / POSITIONING_ANIMATION_ITERATIONS; 
-	CGFloat translationYDelta = (_modelTranslation.y - currentTranslation.y) / POSITIONING_ANIMATION_ITERATIONS; 
+    if(animated) {
+        CGFloat currentZoom = _zoomFactor;
+        CGPoint currentTranslation = self.translation;
+        
+        // Setting the translation so we can check what the final positions will be (by interrogating the _animatedZoomFactor and _animatedTranslation)
+        [self _setTranslation:translation zoomFactor:zoomFactor];
+        _modelZoomFactor = _zoomFactor;
+        _modelTranslation = self.translation;
+        [self _setTranslation:currentTranslation zoomFactor:currentZoom];
+            
+        CGFloat zoomDelta = (_modelZoomFactor - _zoomFactor) / POSITIONING_ANIMATION_ITERATIONS;
+        CGFloat translationXDelta = (_modelTranslation.x - currentTranslation.x) / POSITIONING_ANIMATION_ITERATIONS; 
+        CGFloat translationYDelta = (_modelTranslation.y - currentTranslation.y) / POSITIONING_ANIMATION_ITERATIONS; 
 
-	for (int i = 0; i < POSITIONING_ANIMATION_ITERATIONS; i++) {
-		_presentationZoomFactor[i] = currentZoom + (zoomDelta * (i+1));
-		_presentationTranslationX[i] = currentTranslation.x + (translationXDelta * (i+1));
-		_presentationTranslationY[i] = currentTranslation.y + (translationYDelta * (i+1));
-	}
+        for (int i = 0; i < POSITIONING_ANIMATION_ITERATIONS; i++) {
+            _presentationZoomFactor[i] = currentZoom + (zoomDelta * (i+1));
+            _presentationTranslationX[i] = currentTranslation.x + (translationXDelta * (i+1));
+            _presentationTranslationY[i] = currentTranslation.y + (translationYDelta * (i+1));
+        }
 
-	_animationIndex = 0;
-		
-	self.animatingPosition = YES;
-	
-	[self setNeedsDraw];
+        _animationIndex = 0;
+            
+        self.animatingPosition = YES;
+        
+        [self setNeedsDraw];
+    } else {
+        [self _setTranslation:translation zoomFactor:zoomFactor];
+    }
 }
 
 - (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
@@ -3141,77 +3150,87 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 #pragma mark -
 #pragma mark Highlights
 
+- (void)_refreshHighlightsForPageContentsIndex:(NSUInteger)index
+{
+    BOOL gotHighlights = NO;
+    if([NSThread isMainThread]) {
+        // Don't do this first on a non-main thread, it will cause 
+        // glitching.
+        _pageContentsInformation[index].highlightTexture = 0;
+    }
+    if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:highlightsForPageAtIndex:)]) {
+        NSArray *highlights = [_bitmapDataSource pageTurningView:self highlightsForPageAtIndex:_pageContentsInformation[index].pageIndex];
+        
+        CGFloat textureScale = 0.25f;
+        
+        CGSize minSize = _unzoomedRightPageFrame.size;
+        minSize.width = ceilf(minSize.width * textureScale);
+        minSize.height = ceilf(minSize.height * textureScale);
+        
+        if(highlights && highlights.count) {                
+            size_t bufferLength = minSize.width * minSize.height * 4;
+            unsigned char *textureData = malloc(bufferLength);
+            uint32_t pattern = 0x00000000;
+            memset_pattern4(textureData, &pattern, bufferLength);
+
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+            CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
+                                                                colorSpace, kCGImageAlphaPremultipliedLast);
+            CGColorSpaceRelease(colorSpace);
+            CGContextScaleCTM(textureContext, 1.0f, -1.0f);
+            CGContextTranslateCTM(textureContext, 0, -minSize.height);
+
+            CGFloat cornerRadius = 4.0f * textureScale;
+            CGContextSetBlendMode(textureContext, kCGBlendModeNormal);
+            for(THPair *highlight in highlights) {
+                CGRect highlightRect = [highlight.first CGRectValue];
+                highlightRect.origin.x *= textureScale;
+                highlightRect.origin.y *= textureScale;
+                highlightRect.size.width *= textureScale;
+                highlightRect.size.height *= textureScale;
+                highlightRect = CGRectIntegral(highlightRect);
+                
+                UIColor *highlightColor = highlight.second;
+                CGContextSetFillColorWithColor(textureContext, highlightColor.CGColor);
+                CGContextBeginPath(textureContext);
+                THAddRoundedRectToPath(textureContext, highlightRect, cornerRadius, cornerRadius);
+                CGContextFillPath(textureContext);
+            }
+            
+            // Unpremultiply the alpha for OpenGL.
+            for(int i = 0; i < bufferLength; i += 4) {
+                int alpha = textureData[i+3];
+                if(alpha > 0) {
+                    textureData[i] = (255 * textureData[i]) / alpha;
+                    textureData[i+1] = (255 * textureData[i+1]) / alpha;
+                    textureData[i+2] = (255 * textureData[i+2]) / alpha;
+                }
+            }
+            
+            _pageContentsInformation[index].highlightTexture = [self _createTextureFromRGBABitmapContext:textureContext];
+            gotHighlights = YES;
+            
+            CGContextRelease(textureContext);
+            free(textureData);
+        }
+    }
+    if(!gotHighlights) {
+        _pageContentsInformation[index].highlightTexture = 0;
+    }
+}
+
 - (void)refreshHighlightsForPageAtIndex:(NSUInteger)pageIndex
 {
-	NSUInteger index = NSUIntegerMax;
-
+	NSUInteger pageContentsIndex = NSUIntegerMax;
+    
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
         if(_pageContentsInformation[i] && _pageContentsInformation[i].pageIndex == pageIndex) {
-            index = i;
+            pageContentsIndex = i;
             break;
         }
     }   
-    if(index != NSUIntegerMax) {
-        BOOL gotHighlights = NO;
-        if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:highlightsForPageAtIndex:)]) {
-            NSArray *highlights = [_bitmapDataSource pageTurningView:self highlightsForPageAtIndex:pageIndex];
-            
-            CGFloat textureScale = 0.25f;
-            
-            CGSize minSize = _unzoomedRightPageFrame.size;
-			minSize.width = ceilf(minSize.width * textureScale);
-			minSize.height = ceilf(minSize.height * textureScale);
-			
-            if(highlights && highlights.count) {                
-                size_t bufferLength = minSize.width * minSize.height * 4;
-                unsigned char *textureData = malloc(bufferLength);
-                uint32_t pattern = 0x00000000;
-                memset_pattern4(textureData, &pattern, bufferLength);
-
-                CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-                CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
-                                                                    colorSpace, kCGImageAlphaPremultipliedLast);
-                CGColorSpaceRelease(colorSpace);
-                CGContextScaleCTM(textureContext, 1.0f, -1.0f);
-				CGContextTranslateCTM(textureContext, 0, -minSize.height);
-
-                CGFloat cornerRadius = 4.0f * textureScale;
-                CGContextSetBlendMode(textureContext, kCGBlendModeNormal);
-                for(THPair *highlight in highlights) {
-                    CGRect highlightRect = [highlight.first CGRectValue];
-                    highlightRect.origin.x *= textureScale;
-                    highlightRect.origin.y *= textureScale;
-                    highlightRect.size.width *= textureScale;
-                    highlightRect.size.height *= textureScale;
-                    highlightRect = CGRectIntegral(highlightRect);
-                    
-                    UIColor *highlightColor = highlight.second;
-                    CGContextSetFillColorWithColor(textureContext, highlightColor.CGColor);
-                    CGContextBeginPath(textureContext);
-                    THAddRoundedRectToPath(textureContext, highlightRect, cornerRadius, cornerRadius);
-                    CGContextFillPath(textureContext);
-                }
-				
-				// Unpremultiply the alpha for OpenGL.
-				for(int index = 0; index < bufferLength; index += 4) {
-                    int alpha = textureData[index+3];
-                    if(alpha > 0) {
-                        textureData[index] = (255 * textureData[index]) / alpha;
-                        textureData[index+1] = (255 * textureData[index+1]) / alpha;
-                        textureData[index+2] = (255 * textureData[index+2]) / alpha;
-                    }
-				}
-                
-                _pageContentsInformation[index].highlightTexture = [self _createTextureFromRGBABitmapContext:textureContext];
-                gotHighlights = YES;
-                
-                CGContextRelease(textureContext);
-                free(textureData);
-            }
-        }
-        if(!gotHighlights) {
-            _pageContentsInformation[index].highlightTexture = 0;
-        }
+    if(pageContentsIndex != NSUIntegerMax) {
+        [self _refreshHighlightsForPageContentsIndex:pageContentsIndex];
     }
 }
 
