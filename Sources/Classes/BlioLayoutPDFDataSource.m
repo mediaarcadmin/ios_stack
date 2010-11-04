@@ -115,7 +115,11 @@
     CGContextRef bitmapContext = CGBitmapContextCreate([bitmapData mutableBytes], width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
     CGColorSpaceRelease(colorSpace);
 	
-	
+    // Store the default state because libEucalyptus expexts the context to
+    // be in the default state - it may write into it.  We'll restore it
+    // before returning the context.
+	CGContextSaveGState(bitmapContext);
+    
 	CGRect pageCropRect = [self cropRectForPage:page];
 	
     CGFloat pageZoomScaleWidth  = size.width / CGRectGetWidth(rect);
@@ -135,6 +139,8 @@
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
     CGContextDrawPDFPage(bitmapContext, aPage);
     [pdfLock unlock];
+    
+	CGContextRestoreGState(bitmapContext);
     
 	[self closeDocumentIfRequired];
 

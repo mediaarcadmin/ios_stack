@@ -205,12 +205,8 @@
         CGRect myBounds = self.bounds;
         if(myBounds.size.width > myBounds.size.height) {
             aPageTurningView.twoUp = YES;
-            aPageTurningView.twoUp = YES;
-			aPageTurningView.zoomedTextureWidth = 768;
         } else {
             aPageTurningView.twoUp = NO;
-            aPageTurningView.twoUp = NO;
-			aPageTurningView.zoomedTextureWidth = 1024;
         } 
         
         if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
@@ -258,8 +254,7 @@
 - (void)layoutSubviews {
     CGRect myBounds = self.bounds;
     if(myBounds.size.width > myBounds.size.height) {
-        self.pageTurningView.twoUp = YES;
-        self.pageTurningView.twoUp = YES;
+        self.pageTurningView.twoUp = YES;        
         // The first page is page 0 as far as the page turning view is concerned,
         // so it's an even page, so if it's mean to to be on the left, the odd 
         // pages should be on the right.
@@ -270,7 +265,6 @@
         // outside).
         //self.pageTurningView.oddPagesOnRight = [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
     } else {
-        self.pageTurningView.twoUp = NO;
         self.pageTurningView.twoUp = NO;
     }    
     [super layoutSubviews];
@@ -304,12 +298,6 @@
 	[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
 	self.selector = aSelector;
 	[aSelector release];
-
-	if(self.pageTurningView.isTwoUp) {
-		self.pageTurningView.zoomedTextureWidth = 1024;
-	} else {
-		self.pageTurningView.zoomedTextureWidth = 768;
-	} 
 }
 
 #pragma mark -
