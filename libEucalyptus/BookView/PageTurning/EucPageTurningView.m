@@ -1058,7 +1058,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGSize correctedSize = CGSizeMake(CGBitmapContextGetWidth(pageBitmapContext), CGBitmapContextGetHeight(pageBitmapContext));
         if(THWillLog()) {
             if(!CGSizeEqualToSize(correctedSize, size)) {
-                NSLog(@"Generated zoomed texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
+                NSLog(@"Generated texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
             }
         }
         NSUInteger bufferLength = contextWidth * contextWidth * 4;
@@ -1226,8 +1226,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         if(animated) {
             [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 
-            [self _setupBitmapPage:rightPageIndex forInternalPageOffset:forwards ? 5 : 1];
-            [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
+            if(_pageContentsInformation[forwards ? 5 : 1].pageIndex != rightPageIndex) {
+                [self _setupBitmapPage:rightPageIndex forInternalPageOffset:forwards ? 5 : 1];
+            } 
+            if(_pageContentsInformation[forwards ? 4 : 0].pageIndex != rightPageIndex - 1){
+                [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
+            }
             
             [self _prepareForTurnForwards:forwards];
             _isTurningAutomatically = YES;
@@ -1268,7 +1272,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             
             _automaticTurnPercentage = percentage;
             
-            [self waitForAllPageImagesToBeAvailable];
+            //[self waitForAllPageImagesToBeAvailable];
 		
             self.animatingTurn = YES;
         } else {
