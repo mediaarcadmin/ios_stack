@@ -436,6 +436,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         for(NSUInteger i = 0; i < pageContentsInformationCount; ++i) {
             _pageContentsInformation[i].currentTextureGenerationOperation = nil;
             _pageContentsInformation[i].currentZoomedTextureGenerationOperation = nil;
+            _pageContentsInformation[i].zoomedTexture = 0;
         }    
 
         [self willChangeValueForKey:@"zoomMatrix"];
@@ -1060,7 +1061,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
             CGContextSetStrokeColorSpace(pageBitmapContext, colorSpace);
             CGColorSpaceRelease(colorSpace);
-            CGFloat whiteAlpha[4] = { 1.0, 1.0, 1.0, 0.0 };
+            CGFloat whiteAlpha[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
             CGContextSetStrokeColor(pageBitmapContext, whiteAlpha);
             CGContextSetBlendMode(pageBitmapContext, kCGBlendModeCopy);
             CGContextStrokeRectWithWidth(pageBitmapContext, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
@@ -3153,9 +3154,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         BOOL gotHighlights = NO;
         if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:highlightsForPageAtIndex:)]) {
             NSArray *highlights = [_bitmapDataSource pageTurningView:self highlightsForPageAtIndex:pageIndex];
+            
+            CGFloat textureScale = 0.25f;
+            
             CGSize minSize = _unzoomedRightPageFrame.size;
-			minSize.width = floor(minSize.width / 4);
-			minSize.height = floor(minSize.height / 4);
+			minSize.width = ceilf(minSize.width * textureScale);
+			minSize.height = ceilf(minSize.height * textureScale);
 			
             if(highlights && highlights.count) {                
                 size_t bufferLength = minSize.width * minSize.height * 4;
@@ -3167,37 +3171,37 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
                                                                     colorSpace, kCGImageAlphaPremultipliedLast);
                 CGColorSpaceRelease(colorSpace);
-                //CGContextScaleCTM(textureContext, 1.0f, -1.0f);
-				//CGContextTranslateCTM(textureContext, 0, -minSize.height);
-                CGContextTranslateCTM(textureContext, 0, minSize.height);
-				CGContextScaleCTM(textureContext, 0.25f, -0.25f);
+                CGContextScaleCTM(textureContext, 1.0f, -1.0f);
+				CGContextTranslateCTM(textureContext, 0, -minSize.height);
 
+                CGFloat cornerRadius = 4.0f * textureScale;
                 CGContextSetBlendMode(textureContext, kCGBlendModeMultiply);
                 for(THPair *highlight in highlights) {
                     CGRect highlightRect = [highlight.first CGRectValue];
+                    highlightRect.origin.x *= textureScale;
+                    highlightRect.origin.y *= textureScale;
+                    highlightRect.size.width *= textureScale;
+                    highlightRect.size.height *= textureScale;
+                    highlightRect = CGRectIntegral(highlightRect);
+                    
                     UIColor *highlightColor = highlight.second;
                     CGContextSetFillColorWithColor(textureContext, highlightColor.CGColor);
                     CGContextBeginPath(textureContext);
-                    THAddRoundedRectToPath(textureContext, highlightRect, 3.0f, 3.0f);
+                    THAddRoundedRectToPath(textureContext, highlightRect, cornerRadius, cornerRadius);
                     CGContextFillPath(textureContext);
                 }
 				
-				// Remove the prmultiplied alpha
-				// TODO: Make this more efficient...
-				for (int i = 0; i < minSize.height; i++) {
-					for (int j = 0; j < minSize.width; j++) {
-						int index = 4 * ((i * minSize.width) + j);
-						int red = textureData[index];
-						int green = textureData[index+1];
-						int blue = textureData[index+2];
-						int alpha =  textureData[index+3];
-						if (alpha > 0) {
-							CGFloat premult = (alpha / 256.0f);
-							textureData[index] = MIN(red / premult, 255);
-							textureData[index+1] = MIN(green / premult, 255);
-							textureData[index+2] = MIN(blue / premult, 255);
-						}
-					}
+				// Unpremultiply the alpha for OpenGL.
+				for(int index = 0; index < bufferLength; index += 4) {
+                    CGFloat alpha = 256.0f / textureData[index+3];
+                    if(alpha > 0) {
+                        int red = textureData[index] * alpha;
+                        textureData[index] = MIN(red, 255);
+                        int green = textureData[index+1] * alpha;
+                        textureData[index+1] = MIN(green, 255);
+                        int blue = textureData[index+2] * alpha;
+                        textureData[index+2] = MIN(blue, 255);
+                    }
 				}
                 
                 _pageContentsInformation[index].highlightTexture = [self _createTextureFromRGBABitmapContext:textureContext];
