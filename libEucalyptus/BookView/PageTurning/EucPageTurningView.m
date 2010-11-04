@@ -1061,7 +1061,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                 NSLog(@"Generated texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
             }
         }
-        NSUInteger bufferLength = contextWidth * contextWidth * 4;
+        NSUInteger bufferLength = contextWidth * contextHeight * 4;
         
         if(alphaBled) {
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
