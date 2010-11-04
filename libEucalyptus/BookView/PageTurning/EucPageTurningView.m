@@ -1425,10 +1425,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     // they're set to nil.  Any that /do/ complete (because they're already
     // executing) will be ignored in the callbacks unless they're for the 
     // main, non-zoomed, texture.
-    _pageContentsInformation[2].currentTextureGenerationOperation = nil;
     _pageContentsInformation[2].currentZoomedTextureGenerationOperation = nil;
     _pageContentsInformation[2].zoomedTexture = 0;
-    _pageContentsInformation[3].currentTextureGenerationOperation = nil;
     _pageContentsInformation[3].currentZoomedTextureGenerationOperation = nil;
     _pageContentsInformation[3].zoomedTexture = 0;
 
