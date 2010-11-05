@@ -53,6 +53,8 @@
 }
 
 - (CGRect)cropRectForPage:(NSInteger)page {
+    CGRect cropRect = CGRectZero;
+    
     [pdfLock lock];
     if (nil == pdf) {
         [self openDocumentWithoutLock];
@@ -62,7 +64,9 @@
         }
     }
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    CGRect cropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
+    if(aPage) {
+        cropRect = CGPDFPageGetBoxRect(aPage, kCGPDFCropBox);
+    }
     [pdfLock unlock];
     
     return cropRect;

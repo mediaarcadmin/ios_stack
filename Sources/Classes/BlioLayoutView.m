@@ -1595,9 +1595,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		blockRecursionDepth = 0;
 		[self zoomToNextBlockReversed:YES];
 	} else {
-		NSInteger pageIndex = (self.pageTurningView.isTwoUp) ? self.pageTurningView.leftPageIndex : self.pageTurningView.rightPageIndex;
-		[self goToPageNumber:(pageIndex - 1) + 1 animated:YES];
-		[self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
+		NSUInteger pageIndex = (self.pageTurningView.isTwoUp) ? self.pageTurningView.leftPageIndex : self.pageTurningView.rightPageIndex;
+        if(pageIndex != NSUIntegerMax) {
+            NSInteger newPageIndex = pageIndex - 1;
+            if(self.pageTurningView.isTwoUp && newPageIndex > 0) {
+                // We want the left-hand page to be the focused page.
+                newPageIndex--;
+            }
+            [self goToPageNumber:newPageIndex + 1 animated:YES];
+            [self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
+        }
 	}
 }
 
@@ -1606,9 +1613,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		blockRecursionDepth = 0;
 		[self zoomToNextBlockReversed:NO];
 	} else {
-		NSInteger pageIndex = self.pageTurningView.rightPageIndex;
-		[self goToPageNumber:(pageIndex + 1) + 1 animated:YES];
-		[self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
+		NSUInteger pageIndex = self.pageTurningView.rightPageIndex;
+        if(pageIndex != NSUIntegerMax) {
+            NSInteger newPageIndex = pageIndex + 1;
+            [self goToPageNumber:newPageIndex animated:YES];
+            [self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
+        }
 	}
 }
 

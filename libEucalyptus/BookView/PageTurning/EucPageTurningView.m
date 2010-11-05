@@ -1206,7 +1206,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 	}
         
 	if (doTurn) {
-        BOOL forwards = newPageIndex > _pageContentsInformation[3].pageIndex;
+        BOOL forwards = newPageIndex > _focusedPageIndex;
         
         NSUInteger rightPageIndex = newPageIndex;
         if(_twoUp) {
