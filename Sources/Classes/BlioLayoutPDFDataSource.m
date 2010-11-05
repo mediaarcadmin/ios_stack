@@ -127,7 +127,10 @@
 	
 	CGRect pageRect = CGRectMake(0, 0, pageCropRect.size.width * pageZoomScaleWidth, pageCropRect.size.height * pageZoomScaleHeight);
    	
-    CGAffineTransform fitTransform = transformRectToFitRect(pageCropRect, pageRect, YES);
+    // Don't preserve the aspect ratio here - libEucalyptus sometimes /deliberately/
+    // asks for slightly different X and Y scle factors in order to have the 
+    // scaled rect fit to pixels.
+    CGAffineTransform fitTransform = transformRectToFitRect(pageCropRect, pageRect, NO);
     CGContextConcatCTM(bitmapContext, fitTransform);
 	CGContextTranslateCTM(bitmapContext, -(rect.origin.x - pageCropRect.origin.x) , (rect.origin.y - pageCropRect.origin.y) - (CGRectGetHeight(pageCropRect) - CGRectGetHeight(rect)));
 	
