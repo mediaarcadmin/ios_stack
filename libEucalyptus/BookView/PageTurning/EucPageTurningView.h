@@ -136,7 +136,6 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     
     BOOL _twoUp;
     BOOL _oddPagesOnRight;
-    BOOL _leftPageVisible;
     EucPageTurningViewZoomHandlingKind _zoomHandlingKind;
     BOOL _zoomingDelegateMessageSent;
     
