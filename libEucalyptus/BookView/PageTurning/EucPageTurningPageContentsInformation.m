@@ -121,7 +121,7 @@
     if(zoomedTextureGenerationOperation != _currentZoomedTextureGenerationOperation) {
         if(_currentZoomedTextureGenerationOperation) {
             [_currentZoomedTextureGenerationOperation cancel];
-            [_currentTextureGenerationOperation release];
+            [_currentZoomedTextureGenerationOperation release];
         }
         _currentZoomedTextureGenerationOperation = [zoomedTextureGenerationOperation retain];
     }

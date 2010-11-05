@@ -13,29 +13,27 @@ uniform lowp float uContentsBleed;
 
 uniform bool uInvertContentsLuminance;
 
-const lowp vec4 cWhite = vec4(1.0);
-
-const float cFZero = 0.0;
-const float cFOne = 1.0;
-
 lowp vec4 invertLuminance(in mediump vec4 rgba)
 {   
     mediump float oldCombined = dot(rgba.rgb, vec3(0.299, 0.587, 0.114));
-    return vec4(min(rgba.rgb * ((cFOne - oldCombined) / oldCombined), cFOne), rgba.a);
+    return vec4(min(rgba.rgb * ((1.0 - oldCombined) / oldCombined), 1.0), rgba.a);
 }
 
 void main()
 {
+    lowp vec4 zoomedColor = texture2D(sZoomedContentsTexture, vZoomedContentsCoordinate);
+    lowp vec4 contentsColor = texture2D(sContentsTexture, vContentsCoordinate);
     lowp vec4 paperColor = texture2D(sPaperTexture, vPaperCoordinate);
 
-    lowp vec4 zoomedContentsColor = texture2D(sZoomedContentsTexture, vZoomedContentsCoordinate);
-    lowp vec4 contentsColor = mix(texture2D(sContentsTexture, vContentsCoordinate), 
-                                  zoomedContentsColor,
-                                  zoomedContentsColor.a);
-                                      
-    lowp vec4 highlightColor = texture2D(sHighlightTexture, vContentsCoordinate);
+    //lowp float zoomedColorTransparency = 1.0 - zoomedColor.a;
+    //contentsColor =  contentsColor * zoomedColorTransparency + zoomedColor;
+    
+    contentsColor =  mix(contentsColor, zoomedColor,  zoomedColor.a);
 
-    contentsColor = mix(cWhite, mix(contentsColor, highlightColor, highlightColor.a), uContentsBleed);
+    lowp vec4 highlightColor = texture2D(sHighlightTexture, vContentsCoordinate);
+    
+    //contentsColor =  mix(vec4(1.0), ((contentsColor * (1.0 - highlightColor.a)) + highlightColor), uContentsBleed);
+    contentsColor =  mix(vec4(1.0), mix(contentsColor, highlightColor, highlightColor.a), uContentsBleed);
     
     if(uInvertContentsLuminance) {       
         gl_FragColor = vColor * invertLuminance(paperColor * contentsColor);
