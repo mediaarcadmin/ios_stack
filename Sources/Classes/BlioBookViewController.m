@@ -241,6 +241,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)initialiseBookView {
    
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && ![[NSUserDefaults standardUserDefaults] objectForKey:kBlioLandscapePageDefaultsKey]) {
+		NSLog(@"Landscape page setting undefined, changing setting to 2 pages on iPad...");
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioLandscapePageDefaultsKey];
+	}
     BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
     if (!([self.book hasEPub] || [self.book hasTextFlow]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
