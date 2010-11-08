@@ -9,7 +9,7 @@
 		<key>url</key>
 		<string>http://naphtali.crosscomm.net/don/kenny.zip</string>
 		<key>sampleFilename</key>
-		<string>sample-kenny.mp3</string>
+		<string>Kenny-ENU.mp3</string>
 	</dict>
 	<key>enu_laura_22k_ns.cvcu.411</key>
 	<dict>
@@ -18,7 +18,7 @@
 		<key>url</key>
 		<string>http://naphtali.crosscomm.net/don/laura.zip</string>
 		<key>sampleFilename</key>
-		<string>sample-laura.mp3</string>
+		<string>Laura-ENU.mp3</string>
 	</dict>
 	<key>enu_nelly_22k_ns.cvcu.411</key>
 	<dict>
@@ -27,7 +27,7 @@
 		<key>url</key>
 		<string>http://naphtali.crosscomm.net/don/nelly.zip</string>
 		<key>sampleFilename</key>
-		<string>sample-nelly.mp3</string>
+		<string>Nelly-ENU.mp3</string>
 	</dict>
 	<key>enu_ryan_22k_ns.cvcu.411</key>
 	<dict>
@@ -36,7 +36,7 @@
 		<key>url</key>
 		<string>http://naphtali.crosscomm.net/don/ryan.zip</string>
 		<key>sampleFilename</key>
-		<string>sample-ryan.mp3</string>
+		<string>Ryan-ENU.mp3</string>
 	</dict>
 	<key>enu_heather_22k_lf.bvcu.411</key>
 	<dict>
@@ -45,7 +45,7 @@
 		<key>url</key>
 		<string>http://naphtali.crosscomm.net/don/heather.zip</string>
 		<key>sampleFilename</key>
-		<string>sample-heather.mp3</string>
+		<string>Heather-ENU.mp3</string>
 	</dict>
 </dict>
 </plist>
