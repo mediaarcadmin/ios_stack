@@ -2836,6 +2836,22 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return translation;
 }
 
+- (CGFloat)fitToBoundsZoomFactor
+{
+    CGRect bounds = self.bounds;
+    CGRect pageRect;
+    if(_twoUp) {
+        pageRect = CGRectUnion(_unzoomedLeftPageFrame, _unzoomedRightPageFrame);
+    } else {
+        pageRect = _unzoomedRightPageFrame;
+    }
+    
+    CGFloat widthZoom = bounds.size.width / pageRect.size.width;
+    CGFloat heightZoom = bounds.size.height / pageRect.size.height;
+
+    return MAX(widthZoom, heightZoom);
+}
+
 - (void)_setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
 	translation.x /= _viewportToBoundsPointsTransform.a;

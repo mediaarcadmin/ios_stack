@@ -202,11 +202,13 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 
 @property (nonatomic, assign) CGFloat maxZoomFactor; // default = 14.0f
+@property (nonatomic, assign, readonly) CGFloat fitToBoundsZoomFactor;
 @property (nonatomic, assign, readonly) CGFloat zoomFactor;
 @property (nonatomic, assign, readonly) CGPoint translation;
 @property (nonatomic, assign, readonly) CGFloat animatedZoomFactor;
 @property (nonatomic, assign, readonly) CGPoint animatedTranslation;
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated;
+
 
 @property (nonatomic, assign) NSUInteger zoomedTextureWidth; // default = 1024
 
