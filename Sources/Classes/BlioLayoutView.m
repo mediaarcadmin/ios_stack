@@ -1616,7 +1616,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		NSUInteger pageIndex = self.pageTurningView.rightPageIndex;
         if(pageIndex != NSUIntegerMax) {
             NSInteger newPageIndex = pageIndex + 1;
-            [self goToPageNumber:newPageIndex animated:YES];
+            [self goToPageNumber:newPageIndex + 1 animated:YES];
             [self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
         }
 	}
