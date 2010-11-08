@@ -241,9 +241,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)initialiseBookView {
    
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && ![[NSUserDefaults standardUserDefaults] objectForKey:kBlioLandscapePageDefaultsKey]) {
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && ![[NSUserDefaults standardUserDefaults] objectForKey:kBlioLandscapeTwoPagesDefaultsKey]) {
 		NSLog(@"Landscape page setting undefined, changing setting to 2 pages on iPad...");
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioLandscapePageDefaultsKey];
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioLandscapeTwoPagesDefaultsKey];
 	}
     BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
@@ -1878,9 +1878,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 - (void)changeLandscapePage:(UIControl*)sender {
 	if ( ((UISegmentedControl*)sender).selectedSegmentIndex == 1 )
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioLandscapePageDefaultsKey];
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioLandscapeTwoPagesDefaultsKey];
 	else
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioLandscapePageDefaultsKey];	
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioLandscapeTwoPagesDefaultsKey];	
 }
 - (void)changeLockRotation {
     [self setRotationLocked:![self isRotationLocked]];

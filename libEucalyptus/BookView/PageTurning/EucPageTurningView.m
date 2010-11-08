@@ -431,7 +431,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)_layoutPages
 {
     CGSize size = self.bounds.size;
-    if(!CGSizeEqualToSize(size, _lastLayoutBoundsSize)) {
+    if(!CGSizeEqualToSize(size, _lastLayoutBoundsSize) ||
+       _lastLayoutTwoUp != _twoUp) {
         // Won't be needing any of these.
         [_textureGenerationOperationQueue cancelAllOperations];
         NSUInteger pageContentsInformationCount = sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *);
@@ -624,6 +625,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
         
         _lastLayoutBoundsSize = size;
+        _lastLayoutTwoUp = _twoUp;
         
         [self setNeedsDraw];
         
@@ -3035,7 +3037,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
         }
         
-        _zoomFactor = MIN(zoomMatrix.m11, zoomMatrix.m22);
+        _zoomFactor = zoomFactor;
         _scrollTranslation = CGPointMake(zoomMatrix.m41, zoomMatrix.m42);
 
         _zoomMatrix = zoomMatrix;

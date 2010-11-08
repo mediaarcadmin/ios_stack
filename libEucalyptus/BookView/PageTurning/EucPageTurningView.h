@@ -44,6 +44,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     GLuint _program;
     
     CGSize _lastLayoutBoundsSize;
+    BOOL _lastLayoutTwoUp;
     
     CGSize _viewportLogicalSize;
     CGSize _pageLogicalSize;

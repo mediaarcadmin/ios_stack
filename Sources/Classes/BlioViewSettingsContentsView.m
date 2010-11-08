@@ -369,7 +369,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.landscapePageSegment = aLandscapePageSegment;
         [aLandscapePageSegment release];
         
-		if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapePageDefaultsKey] == YES ) {
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] == YES ) {
 			[self.landscapePageSegment setSelectedSegmentIndex:1];
 		}
 		else [self.landscapePageSegment setSelectedSegmentIndex:0];
