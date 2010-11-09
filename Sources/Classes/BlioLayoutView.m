@@ -1141,8 +1141,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {   	
-	if (([touches count] == 1) && ([[touches anyObject] tapCount] > 1)) {
-		// Double-tap
+	if (([touches count] == 1) 
+        && ([[touches anyObject] tapCount] > 1) 
+        && !self.pageTurningView.animating) {
+		// Double-tap.  (Ignore double-taps if the page is animating)
 		if (self.delayedTouchesBeganTimer != nil) {
 			[self.delayedTouchesBeganTimer invalidate];
 			self.delayedTouchesBeganTimer = nil;
@@ -1163,7 +1165,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         if(self.pageTurningView.animating) {
             // If there's a page-turn in progress (probably a user-initiated
             // one 'drifting' due to gravity), pass the touch immediately
-            // so that the user can 'grap' the falling page.
+            // so that the user can 'grab' the falling page.
             startTouchPoint = CGPointMake(-1, -1);
             [self.delayedTouchesBeganTimer fire];
             self.delayedTouchesBeganTimer = nil;
