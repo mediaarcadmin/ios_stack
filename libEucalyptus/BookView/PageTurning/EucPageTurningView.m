@@ -1935,12 +1935,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     // Scale back to viewport coordinates.
     pageTouchPoint.x /= affineZoomMatrix.a;
     pageTouchPoint.y /= affineZoomMatrix.d;
-    //pageTouchPoint.x -= _rightPageRect.origin.x;
-    //pageTouchPoint.y -= _rightPageRect.origin.y;
         
     if(pageTouchPoint.y <= _rightPageRect.origin.y) {
         _touchRow = 0;
-    } else if(pageTouchPoint.y >= _rightPageRect.origin.x + _rightPageRect.size.height) {
+    } else if(pageTouchPoint.y >= _rightPageRect.origin.y + _rightPageRect.size.height) {
         _touchRow = Y_VERTEX_COUNT - 1;
     } else {
         _touchRow = (((pageTouchPoint.y - _rightPageRect.origin.y) / 
@@ -1960,7 +1958,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 _touchStartPoint.y = pageTouchPoint.y;
             }
         }
-    }
+    }    
     
     CGPoint translation = pageTouchPoint;
     translation.x -= _touchStartPoint.x;
@@ -2886,8 +2884,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         _animationIndex = 0;
             
         self.animatingPosition = YES;
-        
-        [self setNeedsDraw];
     } else {
         [self _setTranslation:translation zoomFactor:zoomFactor];
     }
