@@ -30,8 +30,8 @@
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
-//@property (nonatomic, retain) UIImage *pageTexture;
-//@property (nonatomic, assign) BOOL pageTextureIsDark;
+@property (nonatomic, retain) UIImage *pageTexture;
+@property (nonatomic, assign) BOOL pageTextureIsDark;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) BlioBookmarkRange *temporaryHighlightRange;
 @property (nonatomic, retain) NSTimer *delayedTouchesBeganTimer;
@@ -98,7 +98,7 @@
 	self.temporaryHighlightRange = nil;
     
     self.pageTurningView = nil;
-    //self.pageTexture = nil;
+    self.pageTexture = nil;
         
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
@@ -341,9 +341,13 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 	self.accessibilityElements = nil;
 }
 
-- (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDark {    
-    [self.pageTurningView setPageTexture:aPageTexture isDark:isDark];
-    [self.pageTurningView setNeedsDraw];
+- (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
+    if(self.pageTexture != aPageTexture || self.pageTextureIsDark != isDarkIn) {
+        [self.pageTurningView setPageTexture:aPageTexture isDark:isDarkIn];
+        [self.pageTurningView setNeedsDraw];
+        self.pageTexture = aPageTexture;
+        self.pageTextureIsDark = isDarkIn;
+    }
 }
 
 - (BOOL)wantsTouchesSniffed {
