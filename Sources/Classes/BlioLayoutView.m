@@ -214,14 +214,12 @@
             [aPageTurningView setPageAspectRatio:0];
         } else {
             [aPageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
-        }        
+        }
+        
         [self addSubview:aPageTurningView];
         self.pageTurningView = aPageTurningView;
         [aPageTurningView release];
-        
-        //[aPageTurningView addObserver:self forKeyPath:@"leftPageFrame" options:0 context:NULL];
-        //[aPageTurningView addObserver:self forKeyPath:@"rightPageFrame" options:0 context:NULL];        
-        
+
         [aPageTurningView turnToPageAtIndex:self.pageNumber - 1 animated:NO];
 		[aPageTurningView waitForAllPageImagesToBeAvailable];
         
@@ -229,6 +227,7 @@
                                                 forKeyPath:kBlioLandscapeTwoPagesDefaultsKey
                                                    options:0
                                                    context:NULL];
+        
     }
 }
 
@@ -248,8 +247,6 @@
         if(aPageTurningView) {
             aPageTurningView.bitmapDataSource = nil;
             aPageTurningView.delegate = nil;
-           // [aPageTurningView removeObserver:self forKeyPath:@"leftPageFrame"];
-           // [aPageTurningView removeObserver:self forKeyPath:@"rightPageFrame"];
             [aPageTurningView removeFromSuperview];
             self.pageTurningView = nil;
             [[NSUserDefaults standardUserDefaults] removeObserver:self
@@ -344,15 +341,9 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 	self.accessibilityElements = nil;
 }
 
-- (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDark
-{    
-    //if (self.pageTexture != aPageTexture || self.pageTextureIsDark != isDark) {
-        //self.pageTexture = aPageTexture;
-        //self.pageTextureIsDark = isDark;
-        [self.pageTurningView setPageTexture:aPageTexture isDark:isDark];
-        [self.pageTurningView setNeedsDraw];
-		//self.pageTexture = nil;
-    //}
+- (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDark {    
+    [self.pageTurningView setPageTexture:aPageTexture isDark:isDark];
+    [self.pageTurningView setNeedsDraw];
 }
 
 - (BOOL)wantsTouchesSniffed {
@@ -379,9 +370,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
-{
-	
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save {
 	suppressHistoryAfterTurn = NO;
 	
 	NSInteger targetPage = bookmarkPoint.layoutPage;
@@ -846,19 +835,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             }
         }
     }
-    //else if(object == self.pageTurningView) {
-//        if([keyPath isEqualToString:@"leftPageFrame"]) {
-//            //CGRect frame = ((EucPageTurningView *)object).leftPageFrame;
-//            //NSLog(@"Left page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
-//        } else if([keyPath isEqualToString:@"rightPageFrame"]) {
-//            //CGRect frame = ((EucPageTurningView *)object).rightPageFrame;
-//            //NSLog(@"Right page frame: { { %f, %f }, { %f, %f } }", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height); 
-//            
-//            // Would be nice, but it's /really/ slow.
-//            //[self.selector redisplaySelectedRange];
-//        }
-//    }
-
 }
 
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
@@ -1224,7 +1200,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	self.delayedTouchesEndedTimer = nil;
 }
 
-
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 
 	[self.delayedTouchesEndedTimer invalidate];
@@ -1409,8 +1384,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Accessibility
 
-// new
-
 - (NSArray *)textBlockAccessibilityElements {
     NSMutableArray *elements = [NSMutableArray array];
 	
@@ -1537,7 +1510,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
     return [[self accessibilityElements] indexOfObject:element];
 }
-
 
 - (CGRect)accessibilityFrame
 {
@@ -2031,25 +2003,24 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		translation.y = roundf((pointOffset + currentTranslation.y) * zoomScale);		
 	}
 
-    
-        if ((pageIndex + 1) != currentPage) {
-			if (self.pageTurningView.isTwoUp) {
-				if ((self.pageTurningView.leftPageIndex != pageIndex) && (self.pageTurningView.rightPageIndex != pageIndex)) {
-					// TODO: Add a way for these to be combined
-					[self goToPageNumber:(pageIndex + 1) animated:YES];
-					[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
-					return;
-				}
-			} else {
-				if (self.pageTurningView.rightPageIndex != pageIndex) {
-					// TODO: Add a way for these to be combined
-					[self goToPageNumber:(pageIndex + 1) animated:YES];
-					[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
-					return;
-				}
-			}
-		}
-	
+    if ((pageIndex + 1) != currentPage) {
+        if (self.pageTurningView.isTwoUp) {
+            if ((self.pageTurningView.leftPageIndex != pageIndex) && (self.pageTurningView.rightPageIndex != pageIndex)) {
+                // TODO: Add a way for these to be combined
+                [self goToPageNumber:(pageIndex + 1) animated:YES];
+                [self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+                return;
+            }
+        } else {
+            if (self.pageTurningView.rightPageIndex != pageIndex) {
+                // TODO: Add a way for these to be combined
+                [self goToPageNumber:(pageIndex + 1) animated:YES];
+                [self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+                return;
+            }
+        }
+    }
+
 	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
 
 	if ((roundf(self.pageTurningView.animatedTranslation.x) == roundf(currentTranslation.x)) && (roundf(self.pageTurningView.animatedTranslation.y) == roundf(currentTranslation.y))) {
@@ -2082,7 +2053,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     CGPoint offset = CGPointMake((CGRectGetMidX(self.pageTurningView.bounds) - point.x) * zoomFactor, (CGRectGetMidY(self.pageTurningView.bounds) - point.y) * zoomFactor); 
 	[self.pageTurningView setTranslation:offset zoomFactor:zoomFactor animated:YES];
 }
-
 
 - (void)zoomForNewPageAnimated:(BOOL)animated
 {
