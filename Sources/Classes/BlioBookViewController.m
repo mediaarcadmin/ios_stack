@@ -1090,6 +1090,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 // Usually, the SpeedRead "Page" tracks the layout page that the 
                 // current SpeedRead paragraph starts on.
                 self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+                _lastSavedPageNumber = self.bookView.pageNumber;
             } 
             
             // Save the current progress, for UI display purposes.
@@ -1738,6 +1739,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             // Usually, the SpeedRead "Page" tracks the layout page that the 
             // current SpeedRead paragraph starts on.
             self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+            _lastSavedPageNumber = self.bookView.pageNumber;
         }
         if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
@@ -1905,12 +1907,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		if ( _audioBookManager != nil )
 			[_audioBookManager setPageChanged:YES];
 		
-        if(_lastSavedPageNumber != self.bookView.pageNumber) {
+        if (_lastSavedPageNumber != self.bookView.pageNumber) {
             self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
             
             NSError *error;
-            if (![[self.book managedObjectContext] save:&error])
+            if ([[self.book managedObjectContext] save:&error]) {
+                _lastSavedPageNumber = _bookView.pageNumber;     
+            } else {
                 NSLog(@"[BlioBookViewController observeValueForKeyPath] Save failed with error: %@, %@", error, [error userInfo]);            
+            }
         }
     }
     
