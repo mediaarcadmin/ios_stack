@@ -1953,7 +1953,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _isTurning = 0; 
         } else {
             if(_isTurning == -1) {
-                _touchStartPoint.x = (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x) - _rightPageRect.size.width ;
+                _touchStartPoint.x = _rightPageFrame.origin.x > 0.0f ? (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x) - _rightPageRect.size.width : (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x);
                 _touchStartPoint.y = pageTouchPoint.y;
             } else {
                 _touchStartPoint.x = _rightPageRect.size.width - (_pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - pageTouchPoint.x);
