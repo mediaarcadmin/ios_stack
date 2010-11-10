@@ -68,7 +68,7 @@
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	currentUsername = [user retain];
 	currentPassword = [password retain];
-	if (!self.accountID) {
+	if (!self.userNum > 0) {
 		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
 		request.Service = DigitalLockerServiceRegistration;
 		request.Method = DigitalLockerMethodLogin;
@@ -101,7 +101,7 @@
 		
 		NSArray *responseBodyParts = response.bodyParts;
 		for(id bodyPart in responseBodyParts) {
-			NSLog(@"bodyPart: %@",bodyPart);
+//			NSLog(@"bodyPart: %@",bodyPart);
 		}
 		for(id bodyPart in responseBodyParts) {
 			NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
@@ -113,10 +113,17 @@
 			}
 			else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
 				self.token = [bodyPart LoginResult].Token;
+				NSLog(@"set token: %@",self.token);
 				self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
 				NSLog(@"timeout: %@",self.timeout);
-				
-				
+//				if ([self deviceRegistered]) {
+//					NSLog(@"rejoining domain...");
+//					BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
+//					if ( ![drmSessionManager joinDomain:self.token domainName:@"novel"] ) {
+//						NSLog(@"ERROR: newly logged in user could not rejoin registration domain!");
+//					}
+//					[drmSessionManager release];
+//				}
 				[delegate storeHelper:self receivedLoginResult:BlioLoginResultSuccess];
 				return;
 			}
@@ -268,7 +275,24 @@
 	return NO;
 }
 -(BlioDeviceRegisteredStatus)deviceRegistered {
-	return [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey];
+	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
+	if (usersDictionary) {
+		NSMutableDictionary * currentUserDictionary = [[usersDictionary objectForKey:[NSString stringWithFormat:@"%i",[self userNum]]] mutableCopy];
+		if (currentUserDictionary && [currentUserDictionary objectForKey:kBlioDeviceRegisteredDefaultsKey]) {
+			return [[currentUserDictionary objectForKey:kBlioDeviceRegisteredDefaultsKey] intValue];
+		}
+	}
+	return 0;
+}
+-(BOOL) setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)targetStatus {
+	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
+	if (!usersDictionary) usersDictionary = [NSMutableDictionary dictionary];
+	NSMutableDictionary * currentUserDictionary = [[usersDictionary objectForKey:[NSString stringWithFormat:@"%i",[self userNum]]] mutableCopy];
+	if (!currentUserDictionary) currentUserDictionary = [NSMutableDictionary dictionary];				
+	[currentUserDictionary setObject:[NSNumber numberWithInt:targetStatus] forKey:kBlioDeviceRegisteredDefaultsKey];
+	[usersDictionary setObject:currentUserDictionary forKey:[NSString stringWithFormat:@"%i",[self userNum]]];
+	[[NSUserDefaults standardUserDefaults] setObject:usersDictionary forKey:kBlioUsersDictionaryDefaultsKey];
+	return YES;
 }
 -(BOOL) setDeviceRegistered:(BlioDeviceRegisteredStatus)targetStatus {
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
@@ -301,6 +325,7 @@
 										delegate:nil 
 							   cancelButtonTitle:nil
 							   otherButtonTitles:@"OK", nil];
+			[drmSessionManager release];
 			return NO;
 		}
 	}
@@ -311,16 +336,21 @@
 										delegate:nil 
 							   cancelButtonTitle:nil
 							   otherButtonTitles:@"OK", nil];
+			[drmSessionManager release];
 			return NO;
+		}
+		else {
+			// de-registration succeeded, delete current user's books
+			[[BlioStoreManager sharedInstance].processingDelegate deletePaidBooksForUserNum:userNum siteNum:siteID];
 		}
 	}
 	[drmSessionManager release];
-	[[NSUserDefaults standardUserDefaults] setInteger:targetStatus forKey:kBlioDeviceRegisteredDefaultsKey];
+	[self setDeviceRegisteredSettingOnly:targetStatus];
 	return YES;
 }
 - (void)logout {
 	self.token = nil;
-	self.accountID = nil;
+	self.userNum = 0;
 	if (currentUsername) {
 		[currentUsername release];
 		currentUsername = nil;
@@ -330,7 +360,7 @@
 		currentPassword = nil;
 	}
 	self.timeout = [NSDate distantPast];
-	[[NSUserDefaults standardUserDefaults] removeObjectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:BlioBookSourceOnlineStore]];
+	[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];
 }
 -(void)retrieveBooks {
 	if (![BlioStoreManager sharedInstance].processingDelegate) {
@@ -375,7 +405,7 @@
 		}
 		else if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
 			NSString* url = [bodyPart RequestDownloadWithTokenResult].Url;
-			NSLog(@"Book download url is %@",url);
+//			NSLog(@"Book download url is %@",url);
 			return [NSURL URLWithString:url];
 		}
 		else {
@@ -429,11 +459,11 @@
 #pragma mark DigitalLockerConnectionDelegate methods
 
 - (void)connectionDidFinishLoading:(DigitalLockerConnection *)aConnection {
-	NSLog(@"BlioOnlineStoreHelper connectionDidFinishLoading...");
+//	NSLog(@"BlioOnlineStoreHelper connectionDidFinishLoading...");
 	if ([aConnection.Request.Method isEqualToString:DigitalLockerMethodLogin]) {
 		if (aConnection.digitalLockerResponse.ReturnCode == 0 || aConnection.digitalLockerResponse.ReturnCode == 301 ) {
 			DigitalLockerResponseOutputDataRegistration * OutputDataRegistration = (DigitalLockerResponseOutputDataRegistration*)(aConnection.digitalLockerResponse.OutputData);
-			self.accountID = [NSString stringWithFormat:@"%i",OutputDataRegistration.UserNum];
+			self.userNum = OutputDataRegistration.UserNum;
 			[self retrieveTokenWithUsername:currentUsername password:currentPassword];
 		}
 		else {

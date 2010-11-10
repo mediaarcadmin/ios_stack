@@ -72,7 +72,7 @@
         [pool drain];
         return;
     }
-	NSLog(@"BlioFlowPaginateOperation start entered: %@",self); 
+//	NSLog(@"BlioFlowPaginateOperation start entered: %@",self); 
 
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
@@ -114,7 +114,7 @@
 	}		
 #endif
 	
-    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
+    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
 
     if(self.forceReprocess) {
         // Best effort - ignore errors.
@@ -206,7 +206,7 @@
         [self setBookValue:[NSNumber numberWithInteger:layoutEquivalentPageCount]
                     forKey:@"layoutPageEquivalentCount"];
         
-        NSLog(@"Using layout equivalent page length of %ld for %@", layoutEquivalentPageCount, [self getBookValueForKey:@"title"]); 
+//        NSLog(@"Using layout equivalent page length of %ld for %@", layoutEquivalentPageCount, [self getBookValueForKey:@"title"]); 
     }
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
@@ -231,7 +231,7 @@
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
     if (self.percentageComplete != roundf(percentagePaginated)) {
 		self.percentageComplete = roundf(percentagePaginated);
-		NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
+//		NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
 	}
 }
 -(void)cancel {

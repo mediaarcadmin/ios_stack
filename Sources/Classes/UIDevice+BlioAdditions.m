@@ -151,7 +151,7 @@
 		{
 			if(temp_addr->ifa_addr->sa_family == AF_INET)
 			{
-				NSLog(@"[NSString stringWithUTF8String:temp_addr->ifa_name]: %@, %@",[NSString stringWithUTF8String:temp_addr->ifa_name],[NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)]);
+//				NSLog(@"[NSString stringWithUTF8String:temp_addr->ifa_name]: %@, %@",[NSString stringWithUTF8String:temp_addr->ifa_name],[NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)]);
 				// Check if interface is en0 which is the wifi connection on the iPhone
 				if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"])
 				{

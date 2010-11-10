@@ -62,7 +62,7 @@ static NSString * const BlioManifestEPubKey = @"BlioManifestEPubKey";
 static NSString * const BlioManifestPDFKey = @"BlioManifestPDFKey";
 static NSString * const BlioManifestTextFlowKey = @"BlioManifestTextFlowKey";
 static NSString * const BlioManifestXPSKey = @"BlioManifestXPSKey";
-static NSString * const BlioManifestCoverKey = @"BlioManifestCoverKey";
+static NSString * const BlioManifestCoverKey = @"CoverImage";
 static NSString * const BlioManifestThumbnailDirectoryKey = @"BlioManifestThumbnailDirectoryKey";
 static NSString * const BlioManifestRightsKey = @"BlioManifestRightsKey";
 static NSString * const BlioManifestAudiobookMetadataKey = @"BlioManifestAudiobookMetadataKey";
@@ -76,6 +76,10 @@ static NSString * const BlioManifestFirstLayoutPageOnLeftKey = @"BlioManifestFir
 
 static NSString * const BlioManifestEntryLocationKey = @"BlioManifestEntryLocationKey";
 static NSString * const BlioManifestEntryPathKey = @"BlioManifestEntryPathKey";
+
+static NSString * const BlioBookEucalyptusCacheDir = @"libEucalyptusCache";
+static NSString * const BlioBookThumbnailsDir = @"thumbnails";
+static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;

@@ -36,6 +36,7 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 	UIViewController * rootViewController;
 	BlioLoginViewController *loginViewController;
     id<BlioProcessingDelegate> _processingDelegate;
+	BlioStoreHelper * currentStoreHelper;
 }
 
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;
@@ -44,6 +45,7 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 @property (nonatomic, retain) BlioLoginViewController* loginViewController;
 @property (nonatomic) BOOL isShowingLoginView;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
+@property (nonatomic, retain) BlioStoreHelper * currentStoreHelper;
 
 /**
 	Returns the shared BlioStoreManager instance.
@@ -51,6 +53,8 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
  */
 +(BlioStoreManager*)sharedInstance;
 -(void)saveUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
+-(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID;
+-(NSDictionary*)registrationRecords;
 /**
  Passes the request to login with the included credentials to the appropriate store helper.
  @param user The username for the login request (usually the email address).
@@ -113,9 +117,11 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 	@returns The title as an NSString object.
  */
 -(NSString*)storeTitleForSourceID:(BlioBookSourceID)sourceID;
+-(NSInteger)currentUserNum;
+-(NSInteger)currentSiteNum;
 -(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID;
 -(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID;
-
+-(NSDictionary*)savedLoginCredentials;
 /**
 	Synchronously retrieves the URL for a book identified by a source-specific ID from the appropriate store helper.
 	@param sourceID The BlioBookSourceID of the book.
@@ -125,5 +131,6 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 -(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 -(void)dismissLoginView;
 -(BlioDeviceRegisteredStatus)deviceRegisteredForSourceID:(BlioBookSourceID)sourceID;
+-(BOOL)setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID;
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID;
 @end

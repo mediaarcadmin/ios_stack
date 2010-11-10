@@ -61,7 +61,7 @@
 	CGFloat activityIndicatorDiameter = 50.0f;
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
-
+	userNum = [[BlioStoreManager sharedInstance] currentUserNum];
 	[self fetchResults];
 }
 -(void)onBlioStoreRetrieveBooksStarted:(NSNotification*)note {
@@ -78,7 +78,13 @@
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			NSInteger newUserNum = [[BlioStoreManager sharedInstance] currentUserNum];
+			if (newUserNum != userNum) {
+				userNum = newUserNum;
+				[self fetchResults];
+			}
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+
 		}
 		else {
 //			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
@@ -105,7 +111,7 @@
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
 //	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState != %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState != %@ && sourceID == %@ && userNum == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioBookSourceOnlineStore],[NSNumber numberWithInt:userNum]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request
@@ -148,7 +154,6 @@
 	}
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] != NotReachable) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			NSLog(@"logged in");
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 			// The following is an instructional alert view that only shows once; we've decided to disable it for now, since the Archive view is not as prominent with paid books automatically downloading.
 //			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
@@ -162,7 +167,6 @@
 			
 		}
 		else {
-			NSLog(@"not logged in");
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 		}		
@@ -237,7 +241,7 @@
 						   otherButtonTitles:nil];
 		return;
 	}
-	if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] != BlioDeviceRegisteredStatusRegistered ) {
+	if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] != BlioDeviceRegisteredStatusRegistered ) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"This device is not registered...",@"\"This device is not registered...\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for viewing paid content. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
 									delegate:self 

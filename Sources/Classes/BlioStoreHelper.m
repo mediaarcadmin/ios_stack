@@ -11,7 +11,7 @@
 
 @implementation BlioStoreHelper
 
-@synthesize delegate, timeout, token, sourceID, storeTitle, siteID, siteKey, accountID, isRetrievingBooks,downloadNewBooks;
+@synthesize delegate, timeout, token, sourceID, storeTitle, siteID, siteKey, userNum, isRetrievingBooks,downloadNewBooks;
 
 -(void) dealloc {
 	if (currentUsername) [currentUsername release];
@@ -19,7 +19,6 @@
 	self.token = nil;
 	self.timeout = nil;
 	self.storeTitle = nil;
-	self.accountID = nil;
 	self.siteKey = nil;
 	[super dealloc];
 }
@@ -46,6 +45,9 @@
 -(BlioDeviceRegisteredStatus)deviceRegistered {
 	// abstract method	
 	return BlioDeviceRegisteredStatusUndefined;
+}
+-(BOOL) setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)targetStatus {
+	return NO;
 }
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
 	// abstract method	

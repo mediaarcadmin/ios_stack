@@ -59,7 +59,6 @@
 	[self.tableView reloadData];
 	
 	CGFloat viewHeight = self.tableView.contentSize.height;
-	NSLog(@"viewHeight: %f",viewHeight);
 	if (viewHeight > 600) viewHeight = 600;
 	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);	
 	
@@ -156,7 +155,7 @@
 				switchView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 				[switchView setTag:997];
 				[cell addSubview:switchView];
-				if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] == BlioDeviceRegisteredStatusRegistered ) {
+				if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered ) {
 					[switchView setOn:YES animated:NO];
 					self.registrationOn = YES;
 				}
@@ -193,20 +192,46 @@
 	sender.enabled = NO;
 	
 	BOOL changeSuccess = NO;
-	[activityIndicator startAnimating];  // thread issue...
 	if ( [(UISwitch*)sender isOn] ) {
+		[activityIndicator startAnimating];  // thread issue...
 		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore];
+		[activityIndicator stopAnimating];
+		if (!changeSuccess) {
+			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [(UISwitch*)sender setOn:YES];
+			else [(UISwitch*)sender setOn:NO];
+		}
+		sender.enabled = YES;
 	}
 	else {
-		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
+		registrationSwitch = (UISwitch*)sender;
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to de-register your device for this account? Doing so will remove all purchased books associated with this account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
+									delegate:self
+						   cancelButtonTitle:nil
+						   otherButtonTitles:@"Not Now", @"De-Register", nil];
+		
 	}
-	[activityIndicator stopAnimating];
-	if (!changeSuccess) {
-		if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [(UISwitch*)sender setOn:YES];
-		else [(UISwitch*)sender setOn:NO];
-	}
-	sender.enabled = YES;
 //	[self.navigationController popViewControllerAnimated:YES];
+}
+#pragma mark -
+#pragma mark UIAlertViewDelegate
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0) {
+		[registrationSwitch setOn:YES];
+	}
+	else if (buttonIndex == 1) {
+		BOOL changeSuccess = NO;
+		[activityIndicator startAnimating];  // thread issue...
+		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
+		[activityIndicator stopAnimating];
+		if (!changeSuccess) {
+			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [registrationSwitch setOn:YES];
+			else [registrationSwitch setOn:NO];
+		}
+		else [registrationSwitch setOn:NO];
+	}
+	registrationSwitch.enabled = YES;	
 }
 
 #pragma mark -

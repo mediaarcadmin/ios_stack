@@ -323,7 +323,7 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
 	
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
@@ -353,7 +353,7 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
 
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
@@ -381,7 +381,7 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
 	if (aCoverImage) return YES;
@@ -405,7 +405,7 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
 
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];

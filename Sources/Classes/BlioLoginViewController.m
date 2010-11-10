@@ -183,7 +183,7 @@
 	emailField.placeholder = NSLocalizedString(@"E-mail Address",@"\"E-mail Address\" placeholder");
 	emailField.delegate = self;
 	
-	NSMutableDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] objectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+	NSDictionary * loginCredentials = [[BlioStoreManager sharedInstance] savedLoginCredentials];
 	if (loginCredentials && [loginCredentials objectForKey:@"username"]) {
 		emailField.text = [loginCredentials objectForKey:@"username"];
 	}
@@ -360,9 +360,7 @@
 	NSLog(@"BlioLoginViewController connectionDidFinishLoading...");
 	[activityIndicatorView stopAnimating];
 	if (aConnection.digitalLockerResponse.ReturnCode == 0) {
-		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
-		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+		[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:nil sourceID:sourceID];
 		NSString * alertMessage = NSLocalizedStringWithDefaultValue(@"PASSWORD_SENT",nil,[NSBundle mainBundle],@"Your password has been sent to your email address.",@"Alert Text informing the end-user that his/her password has been sent to the email address specified.");
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:alertMessage

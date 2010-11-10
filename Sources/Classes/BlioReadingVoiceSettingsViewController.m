@@ -121,7 +121,6 @@
 	[super viewWillAppear:animated];
 	[self.tableView reloadData];
 	CGFloat viewHeight = self.tableView.contentSize.height;
-	NSLog(@"viewHeight: %f",viewHeight);
 	if (viewHeight > 600) viewHeight = 600;
 	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);	
 }

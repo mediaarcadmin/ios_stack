@@ -18384,10 +18384,12 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	// set version 1.1 - how?
 	[request setHTTPBody: bodyData];
 		
+#ifdef SERVICE_DEBUG
 	if(self.logXMLInOut) {
 		NSLog(@"OutputHeaders:\n%@", [request allHTTPHeaderFields]);
 		NSLog(@"OutputBody:\n%@", outputBody);
 	}
+#endif
 	
 	NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:operation];
 	
@@ -19502,10 +19504,12 @@ static ContentCafeSoap_envelope *ContentCafeSoapSharedEnvelopeInstance = nil;
 	// set version 1.1 - how?
 	[request setHTTPBody: bodyData];
 		
+#ifdef SERVICE_DEBUG
 	if(self.logXMLInOut) {
 		NSLog(@"OutputHeaders:\n%@", [request allHTTPHeaderFields]);
 		NSLog(@"OutputBody:\n%@", outputBody);
 	}
+#endif
 	
 	NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:operation];
 	

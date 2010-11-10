@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "BlioDrmSessionManager.h"
 
-@interface BlioPaidBooksSettingsController : UITableViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface BlioPaidBooksSettingsController : UITableViewController <UITableViewDelegate, UITableViewDataSource,UIAlertViewDelegate> {
 	UITableView *pbTableView;
 	UIActivityIndicatorView *activityIndicator;
 	BOOL registrationOn;
 	BlioDrmSessionManager* drmSessionManager;
+	UISwitch * registrationSwitch;
 }
 
 @property (nonatomic, retain) UITableView *pbTableView;

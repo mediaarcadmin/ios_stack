@@ -1141,7 +1141,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											   destructiveButtonTitle:nil
 													otherButtonTitles:sort0, sort1, sort2, nil];
 	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
-	[actionSheet showInView:self.view];
+//	[actionSheet showInView:self.view];
+	[actionSheet showFromToolbar:self.navigationController.toolbar];
 	[actionSheet release];	
 }
 
@@ -1173,11 +1174,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 #pragma mark - UINavigationControllerDelegate
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
 	CGSize viewSize = viewController.contentSizeForViewInPopover;
 	if ([viewController.view isKindOfClass:[UIScrollView class]]) {
 		[((UITableViewController*)viewController).tableView reloadData];
-		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
+//		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
 		viewSize.height = [(UIScrollView*)viewController.view contentSize].height;
 		if (viewSize.height > 600) viewSize.height = 600;
 	}
