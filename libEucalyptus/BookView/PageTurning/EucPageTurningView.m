@@ -431,7 +431,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)_layoutPages
 {
     CGSize size = self.bounds.size;
-    if(!CGSizeEqualToSize(size, _lastLayoutBoundsSize)) {
+    if(!CGSizeEqualToSize(size, _lastLayoutBoundsSize) ||
+       _lastLayoutTwoUp != _twoUp) {
         // Won't be needing any of these.
         [_textureGenerationOperationQueue cancelAllOperations];
         NSUInteger pageContentsInformationCount = sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *);
@@ -549,9 +550,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
         memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-        
-        _leftPageVisible = _rightPageRect.origin.x > 0.0f;
-        
+                
         [self _setupConstraints];
                 
         [self _setZoomMatrixFromTranslation:CGPointZero zoomFactor:1.0f];
@@ -626,6 +625,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
         
         _lastLayoutBoundsSize = size;
+        _lastLayoutTwoUp = _twoUp;
         
         [self setNeedsDraw];
         
@@ -1208,7 +1208,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 	}
         
 	if (doTurn) {
-        BOOL forwards = newPageIndex > _pageContentsInformation[3].pageIndex;
+        BOOL forwards = newPageIndex > _focusedPageIndex;
         
         NSUInteger rightPageIndex = newPageIndex;
         if(_twoUp) {
@@ -1236,8 +1236,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             [self _prepareForTurnForwards:forwards];
             _isTurningAutomatically = YES;
 
-            _viewportTouchPoint = CGPointMake(forwards ? _viewportLogicalSize.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-            _touchVelocity = forwards ? -0.4f : 0.4f;
+            if(forwards) {
+                _viewportTouchPoint = CGPointMake(_rightPageRect.size.width, _viewportLogicalSize.height * 0.5f);
+                _touchVelocity = -0.4f;
+            } else {
+                _viewportTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? -_leftPageRect.size.width : 0.0f, _viewportLogicalSize.height * 0.5f);
+                _touchVelocity = 0.4f;
+            }
             
             NSUInteger pageCount;
             if(forwards) {
@@ -1606,9 +1611,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
     }
     
-    if(_leftPageVisible) {
+    if(_twoUp && _rightPageFrame.origin.x > 0.0f) {
         NSInteger leftFlatPageContentsIndex = _rightFlatPageContentsIndex - (shouldStopAnimatingTurn ? 1 : 3);
-        if(leftFlatPageContentsIndex >= 0 && _twoUp && _pageContentsInformation[leftFlatPageContentsIndex]) {
+        if(leftFlatPageContentsIndex >= 0 && _pageContentsInformation[leftFlatPageContentsIndex]) {
             CATransform3D oldModelViewMatrix = modelViewMatrix;
             modelViewMatrix = CATransform3DRotate(modelViewMatrix, (GLfloat)M_PI, 0, 1, 0);
             glUniformMatrix4fv(glGetUniformLocation(_program, "uModelviewMatrix"), sizeof(modelViewMatrix) / sizeof(GLfloat), GL_FALSE, (GLfloat *)&modelViewMatrix);
@@ -1871,7 +1876,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     } else {
         if(_pageContentsInformation[1] ||
            _pageContentsInformation[2]) {
-            if(_rightPageRect.origin.x == 0.0f) {
+            if(_rightPageFrame.origin.x <= 0.0f) {
                 // Position the page floating just outside the field of view.
                 for(int column = 1; column < X_VERTEX_COUNT; ++column) {
                     for(int row = 0; row < Y_VERTEX_COUNT; ++row) {                            
@@ -1930,12 +1935,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     // Scale back to viewport coordinates.
     pageTouchPoint.x /= affineZoomMatrix.a;
     pageTouchPoint.y /= affineZoomMatrix.d;
-    //pageTouchPoint.x -= _rightPageRect.origin.x;
-    //pageTouchPoint.y -= _rightPageRect.origin.y;
         
     if(pageTouchPoint.y <= _rightPageRect.origin.y) {
         _touchRow = 0;
-    } else if(pageTouchPoint.y >= _rightPageRect.origin.x + _rightPageRect.size.height) {
+    } else if(pageTouchPoint.y >= _rightPageRect.origin.y + _rightPageRect.size.height) {
         _touchRow = Y_VERTEX_COUNT - 1;
     } else {
         _touchRow = (((pageTouchPoint.y - _rightPageRect.origin.y) / 
@@ -1948,14 +1951,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _isTurning = 0; 
         } else {
             if(_isTurning == -1) {
-                _touchStartPoint.x = (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x) - _rightPageRect.size.width ;
+                _touchStartPoint.x = _rightPageFrame.origin.x > 0.0f ? (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x) - _rightPageRect.size.width : (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x);
                 _touchStartPoint.y = pageTouchPoint.y;
             } else {
                 _touchStartPoint.x = _rightPageRect.size.width - (_pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - pageTouchPoint.x);
                 _touchStartPoint.y = pageTouchPoint.y;
             }
         }
-    }
+    }    
     
     CGPoint translation = pageTouchPoint;
     translation.x -= _touchStartPoint.x;
@@ -1981,7 +1984,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             self.animatingTurn = YES;
         }
     } else if(translationAfterScroll.x > 0.000001f && _isTurning <= 0) {
-        pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? (-_rightPageRect.size.width + translationAfterScroll.x) : translationAfterScroll.x,
+        pageTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? (-_rightPageRect.size.width + translationAfterScroll.x) : translationAfterScroll.x,
                                      translationAfterScroll.y);
         if(_isTurning != -1) {
             [self _prepareForTurnForwards:NO];
@@ -2833,6 +2836,22 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return translation;
 }
 
+- (CGFloat)fitToBoundsZoomFactor
+{
+    CGRect bounds = self.bounds;
+    CGRect pageRect;
+    if(_twoUp) {
+        pageRect = CGRectUnion(_unzoomedLeftPageFrame, _unzoomedRightPageFrame);
+    } else {
+        pageRect = _unzoomedRightPageFrame;
+    }
+    
+    CGFloat widthZoom = bounds.size.width / pageRect.size.width;
+    CGFloat heightZoom = bounds.size.height / pageRect.size.height;
+
+    return MAX(widthZoom, heightZoom);
+}
+
 - (void)_setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor
 {
 	translation.x /= _viewportToBoundsPointsTransform.a;
@@ -2865,8 +2884,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         _animationIndex = 0;
             
         self.animatingPosition = YES;
-        
-        [self setNeedsDraw];
     } else {
         [self _setTranslation:translation zoomFactor:zoomFactor];
     }
@@ -2944,45 +2961,79 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         leftPageFrame.origin.x -= rightPageFrame.size.width;
 
         // Now, fix up the translation to make sure the pages are not outside where 
-        // they're meant to be.
-        CGFloat widthMargin = _viewportLogicalSize.width - (_rightPageRect.origin.x + _rightPageRect.size.width);
-        CGFloat heightMargin = _rightPageRect.origin.y;
-                
+        // they're meant to be.                
         CGPoint remainingTranslation = CGPointZero;
         
-        CGFloat leftUnderflow = (_twoUp ? leftPageFrame.origin.x : rightPageFrame.origin.x) - widthMargin;
-        if(leftUnderflow > 0.0f) {
-            rightPageFrame.origin.x -= leftUnderflow;
-            leftPageFrame.origin.x -= leftUnderflow;
-            zoomMatrix.m41 -= leftUnderflow;
-            remainingTranslation.x += leftUnderflow;
-        }
-            
-        CGFloat rightUnderflow = (_viewportLogicalSize.width - widthMargin) - (rightPageFrame.origin.x + rightPageFrame.size.width);
-        if(rightUnderflow > 0.0f) {
-            rightPageFrame.origin.x += rightUnderflow;
-            leftPageFrame.origin.x += rightUnderflow;
-            zoomMatrix.m41 += rightUnderflow;
-            remainingTranslation.x -= rightUnderflow;
+        CGRect pagesRect;
+        if(_twoUp) {
+            pagesRect = CGRectUnion(leftPageFrame, rightPageFrame);
+        } else {
+            pagesRect = rightPageFrame;
         }
         
-        CGFloat topUnderflow = rightPageFrame.origin.y - heightMargin;
-        if(topUnderflow > 0.0f) {
-            leftPageFrame.origin.y -= topUnderflow;
-            rightPageFrame.origin.y -= topUnderflow;
-            zoomMatrix.m42 -= topUnderflow;
-            remainingTranslation.y += topUnderflow;
+        // Fix up things in the X axis.
+        if(pagesRect.size.width <= _viewportLogicalSize.width) {
+            // If it fits on the screen, center it.
+            CGFloat centeringOffset = (0.5f * (_viewportLogicalSize.width - pagesRect.size.width)) - pagesRect.origin.x;
+            rightPageFrame.origin.x += centeringOffset;
+            leftPageFrame.origin.x += centeringOffset;
+            pagesRect.origin.x += centeringOffset;
+            zoomMatrix.m41 += centeringOffset;
+            remainingTranslation.x -= centeringOffset;
+        } else {
+            // If it doesn't fit on the screen, make sure there's no blank space
+            // between the page edge and the edge of the screen.
+            CGFloat leftUnderflow = pagesRect.origin.x;
+            if(leftUnderflow > 0.0f) {
+                rightPageFrame.origin.x -= leftUnderflow;
+                leftPageFrame.origin.x -= leftUnderflow;
+                pagesRect.origin.x -= leftUnderflow;
+                zoomMatrix.m41 -= leftUnderflow;
+                remainingTranslation.x += leftUnderflow;
+            } else {
+                CGFloat rightUnderflow = _viewportLogicalSize.width - CGRectGetMaxX(pagesRect);
+                if(rightUnderflow > 0.0f) {
+                    rightPageFrame.origin.x += rightUnderflow;
+                    leftPageFrame.origin.x += rightUnderflow;
+                    pagesRect.origin.x += rightUnderflow;
+                    zoomMatrix.m41 += rightUnderflow;
+                    remainingTranslation.x -= rightUnderflow;
+                }
+            }
         }
         
-        CGFloat bottomUnderflow = (_viewportLogicalSize.height - heightMargin) - (rightPageFrame.origin.y + rightPageFrame.size.height);
-        if(bottomUnderflow > 0.0f) {
-            leftPageFrame.origin.y += bottomUnderflow;
-            rightPageFrame.origin.y += bottomUnderflow;
-            zoomMatrix.m42 += bottomUnderflow;
-            remainingTranslation.y -= bottomUnderflow;
+        // Fix up things in the Y axis.
+        if(pagesRect.size.height <= _viewportLogicalSize.height) {
+            // If it fits on the screen, center it.
+            CGFloat centeringOffset = (0.5f * (_viewportLogicalSize.height - pagesRect.size.height)) - pagesRect.origin.y;
+            rightPageFrame.origin.y += centeringOffset;
+            leftPageFrame.origin.y += centeringOffset;
+            pagesRect.origin.y += centeringOffset;
+            zoomMatrix.m42 += centeringOffset;
+            remainingTranslation.y -= centeringOffset;
+        } else {
+            // If it doesn't fit on the screen, make sure there's no blank space
+            // between the page edge and the edge of the screen.
+            CGFloat topUnderflow = pagesRect.origin.y;
+            if(topUnderflow > 0.0f) {
+                rightPageFrame.origin.y -= topUnderflow;
+                leftPageFrame.origin.y -= topUnderflow;
+                pagesRect.origin.y -= topUnderflow;
+                zoomMatrix.m42 -= topUnderflow;
+                remainingTranslation.y += topUnderflow;
+            } else {
+                CGFloat bottomUnderflow = _viewportLogicalSize.height - CGRectGetMaxY(pagesRect);
+                if(bottomUnderflow > 0.0f) {
+                    rightPageFrame.origin.y += bottomUnderflow;
+                    leftPageFrame.origin.y += bottomUnderflow;
+                    pagesRect.origin.y += bottomUnderflow;
+                    zoomMatrix.m42 += bottomUnderflow;
+                    remainingTranslation.y -= bottomUnderflow;
+                }
+            }
         }
         
-        _zoomFactor = MIN(zoomMatrix.m11, zoomMatrix.m22);
+        _zoomFactor = zoomFactor;
         _scrollTranslation = CGPointMake(zoomMatrix.m41, zoomMatrix.m42);
 
         _zoomMatrix = zoomMatrix;

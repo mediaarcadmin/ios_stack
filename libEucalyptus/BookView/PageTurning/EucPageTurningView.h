@@ -44,6 +44,7 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     GLuint _program;
     
     CGSize _lastLayoutBoundsSize;
+    BOOL _lastLayoutTwoUp;
     
     CGSize _viewportLogicalSize;
     CGSize _pageLogicalSize;
@@ -136,7 +137,6 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     
     BOOL _twoUp;
     BOOL _oddPagesOnRight;
-    BOOL _leftPageVisible;
     EucPageTurningViewZoomHandlingKind _zoomHandlingKind;
     BOOL _zoomingDelegateMessageSent;
     
@@ -203,11 +203,13 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 
 @property (nonatomic, assign) CGFloat maxZoomFactor; // default = 14.0f
+@property (nonatomic, assign, readonly) CGFloat fitToBoundsZoomFactor;
 @property (nonatomic, assign, readonly) CGFloat zoomFactor;
 @property (nonatomic, assign, readonly) CGPoint translation;
 @property (nonatomic, assign, readonly) CGFloat animatedZoomFactor;
 @property (nonatomic, assign, readonly) CGPoint animatedTranslation;
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated;
+
 
 @property (nonatomic, assign) NSUInteger zoomedTextureWidth; // default = 1024
 
