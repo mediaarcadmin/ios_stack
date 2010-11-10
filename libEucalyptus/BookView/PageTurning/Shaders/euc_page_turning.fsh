@@ -1,4 +1,4 @@
-precision mediump float;
+precision lowp float;
 
 varying lowp vec4 vColor;
 varying highp vec2 vPaperCoordinate;
@@ -25,10 +25,10 @@ void main()
     lowp vec4 contentsColor = texture2D(sContentsTexture, vContentsCoordinate);
     lowp vec4 paperColor = texture2D(sPaperTexture, vPaperCoordinate);
 
-    //lowp float zoomedColorTransparency = 1.0 - zoomedColor.a;
-    //contentsColor =  contentsColor * zoomedColorTransparency + zoomedColor;
+    lowp float zoomedColorTransparency = 1.0 - zoomedColor.a;
+    contentsColor =  contentsColor * zoomedColorTransparency + zoomedColor;
     
-    contentsColor =  mix(contentsColor, zoomedColor,  zoomedColor.a);
+    //contentsColor =  mix(contentsColor, zoomedColor,  zoomedColor.a);
 
     lowp vec4 highlightColor = texture2D(sHighlightTexture, vContentsCoordinate);
     
