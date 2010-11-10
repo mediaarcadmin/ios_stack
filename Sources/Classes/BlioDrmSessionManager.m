@@ -116,8 +116,7 @@ ErrorExit:
 	}
 ErrorExit:
 	if (dr != DRM_SUCCESS) {
-		unsigned int drInt = (unsigned int)dr;
-		NSLog(@"DRM commit error: %08X",drInt);
+		NSLog(@"DRM commit error: %08X",dr);
         return NO;
 	}
     return YES;
@@ -171,7 +170,7 @@ ErrorExit:
 	
 	DRM_RESULT dr = DRM_SUCCESS;
     DRM_RESULT dr2 = DRM_SUCCESS;
-    DRM_DOMAIN_ID oDomainID = [self domainIDFromSavedRegistration];
+    DRM_DOMAIN_ID oDomainID;
     DRM_DWORD cbChallenge = 0;
     DRM_BYTE *pbChallenge = NULL;
     DRM_BYTE *pbResponse = NULL;
@@ -183,7 +182,15 @@ ErrorExit:
     }
 	
 	if ( token == nil ) {
-		NSLog(@"DRM error attempting to leave domain outside login session.");
+		NSLog(@"DRM error: attempting to leave domain outside login session.");
+		return NO;
+	}
+	
+	NSDictionary * registrationRecords = [[BlioStoreManager sharedInstance] registrationRecords];
+	if ( [registrationRecords objectForKey:kBlioServiceIDDefaultsKey] != nil )
+		 oDomainID = [self domainIDFromSavedRegistration];
+	else {
+		NSLog(@"DRM error: attempting to leave domain with no domain ID information.");
 		return NO;
 	}
 	
@@ -417,11 +424,17 @@ ErrorExit:
 									   UTF8String];
 	DRM_DWORD customDataSz = (DRM_DWORD)(70 + [token length]);
 	
-	//@synchronized (self) {
+	// This should be a valid domain ID since registration is a prerequisite for 
+	// license acquistion.  If for some reason it is not, the server should return 
+	// an error that a domain join is required, and no license will be acquired.
+	// This will invoke logic higher up (in checkDomain) to attempt a domain join.
+	DRM_DOMAIN_ID oDomainIdFromNSUserDefaults = [self domainIDFromSavedRegistration];
+	
+	
 	dr = Drm_LicenseAcq_GenerateChallenge( drmIVars->drmAppContext,
 										  NULL,
 										  0,
-										  NULL,
+										  &oDomainIdFromNSUserDefaults,
 										  customData,
 										  customDataSz,
 										  rgchURL,
@@ -435,13 +448,7 @@ ErrorExit:
 	
     if( dr == DRM_E_BUFFERTOOSMALL )
     {
-		NSLog(@"DRM Buffer too small, increasing size and trying to generate challenge again...");
-//		cbChallenge += 3696; // ? Additional space needed for account ID
-		cbChallenge += 7400; // ? Additional space needed for account ID
-		
-		DRM_DOMAIN_ID oDomainIdFromNSUserDefaults = [self domainIDFromSavedRegistration];
-		
-        pbChallenge = Oem_MemAlloc( cbChallenge );
+		pbChallenge = Oem_MemAlloc( cbChallenge );
         ChkDR( Drm_LicenseAcq_GenerateChallenge( drmIVars->drmAppContext,
 												NULL,
 												0,
@@ -459,19 +466,15 @@ ErrorExit:
     {
         ChkDR( dr );
     }
-	//}
-#ifdef SERVICE_DEBUG	
-	NSLog(@"DRM license challenge: %s",(unsigned char*)pbChallenge);
-#endif
+		
+	//NSLog(@"DRM license challenge: %s",(unsigned char*)pbChallenge);
 #ifdef TEST_MODE
 	[self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #else
 	rgchURL[cchUrl] = '\0';
 	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #endif
-#ifdef SERVICE_DEBUG
-	NSLog(@"DRM license response: %@",[[[NSString alloc] initWithBytes:pbResponse length:cbResponse encoding:NSASCIIStringEncoding] autorelease]);
-#endif
+	//NSLog(@"DRM license response: %@",[[[NSString alloc] initWithBytes:pbResponse length:cbResponse encoding:NSASCIIStringEncoding] autorelease]);
 	@synchronized (self) {
 		ChkDR( Drm_LicenseAcq_ProcessResponse( drmIVars->drmAppContext,
 											  NULL,
@@ -518,9 +521,11 @@ ErrorExit:
 	NSDictionary * registrationRecords = [[BlioStoreManager sharedInstance] registrationRecords];
 	NSString* accountidStr = [registrationRecords objectForKey:kBlioAccountIDDefaultsKey];
 	NSString* serviceidStr = [registrationRecords objectForKey:kBlioServiceIDDefaultsKey];
-	if ( accountidStr == nil || serviceidStr == nil ) {
-		NSLog(@"DRM error attempting to create domain ID with no account information.");
-	}
+	
+	if ( accountidStr == nil ) 
+		accountidStr = @"";
+	if ( serviceidStr == nil ) 
+		serviceidStr = @"";
 	
 	unichar* aidBuf = (unichar*)Oem_MemAlloc([accountidStr length]*2);
 	[accountidStr getCharacters:aidBuf];
@@ -542,6 +547,7 @@ ErrorExit:
 
 	return oDomainIdFromNSUserDefaults;
 }
+
 - (DRM_RESULT)checkDomain:(NSString*)token {
 	DRM_RESULT dr = DRM_SUCCESS;
 	
