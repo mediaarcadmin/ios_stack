@@ -1949,6 +1949,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(!self.isAnimatingTurn) {
             _touchStartPoint = pageTouchPoint;
             _isTurning = 0; 
+            _dragKind = EucPageTurningViewDragKindDragUndecided;
         } else {
             if(_isTurning == -1) {
                 _touchStartPoint.x = _rightPageFrame.origin.x > 0.0f ? (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x) - _rightPageRect.size.width : (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x);
@@ -1957,67 +1958,85 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 _touchStartPoint.x = _rightPageRect.size.width - (_pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - pageTouchPoint.x);
                 _touchStartPoint.y = pageTouchPoint.y;
             }
+            _dragKind = EucPageTurningViewDragKindDragTurn;
         }
     }    
     
     CGPoint translation = pageTouchPoint;
     translation.x -= _touchStartPoint.x;
     translation.y -= _touchStartPoint.y;
-    translation.x *= _zoomFactor;
-    translation.y *= _zoomFactor;
-    translation.x += _scrollStartTranslation.x;
-    translation.y += _scrollStartTranslation.y;
-    CGPoint translationAfterScroll = [self _setZoomMatrixFromTranslation:translation zoomFactor:_zoomFactor];
-    translationAfterScroll.x /= _zoomFactor;
-    translationAfterScroll.y /= _zoomFactor;
     
-    CGFloat oldViewportTouchX = _viewportTouchPoint.x;
+    if(!CGPointEqualToPoint(CGPointZero, translation)) {
+        translation.x *= _zoomFactor;
+        translation.y *= _zoomFactor;
+        
+        if(_dragKind == EucPageTurningViewDragKindDragUndecided || _dragKind == EucPageTurningViewDragKindDragScroll) {
+            translation.x += _scrollStartTranslation.x;
+            translation.y += _scrollStartTranslation.y;
+            CGPoint translationAfterScroll = [self _setZoomMatrixFromTranslation:translation zoomFactor:_zoomFactor];
+            if(_dragKind == EucPageTurningViewDragKindDragUndecided) {
+                if(fabsf(translationAfterScroll.x) > 0.000001f || fabsf(translationAfterScroll.y) > 0.000001f) {
+                    _dragKind = EucPageTurningViewDragKindDragTurn;
+                } else {
+                    _dragKind = EucPageTurningViewDragKindDragScroll;
+                }
+            }
+            translation = translationAfterScroll;
+        }
+        
+        if(_dragKind == EucPageTurningViewDragKindDragTurn || _dragKind == EucPageTurningViewDragKindDragUndecided) {
+            translation.x /= _zoomFactor;
+            translation.y /= _zoomFactor;
+            
+            CGFloat oldViewportTouchX = _viewportTouchPoint.x;
 
-    if(translationAfterScroll.x < -0.000001f && _isTurning >= 0) {
-        pageTouchPoint = CGPointMake(_rightPageRect.size.width + translationAfterScroll.x,
-                                     translationAfterScroll.y);
-        if(_isTurning != 1) {
-            [self _prepareForTurnForwards:YES];
-            oldViewportTouchX = pageTouchPoint.x;
+            if(translation.x < -0.000001f && _isTurning >= 0) {
+                pageTouchPoint = CGPointMake(_rightPageRect.size.width + translation.x,
+                                             translation.y);
+                if(_isTurning != 1) {
+                    [self _prepareForTurnForwards:YES];
+                    oldViewportTouchX = pageTouchPoint.x;
+                }
+                if(_isTurning != 0 && !self.isAnimatingTurn) {
+                    self.animatingTurn = YES;
+                }
+            } else if(translation.x > 0.000001f && _isTurning <= 0) {
+                pageTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? (-_rightPageRect.size.width + translation.x) : translation.x,
+                                             translation.y);
+                if(_isTurning != -1) {
+                    [self _prepareForTurnForwards:NO];
+                    oldViewportTouchX = pageTouchPoint.x;
+                }
+                if(_isTurning != 0 && !self.isAnimatingTurn) {
+                    self.animatingTurn = YES;
+                }        
+            } else {
+                if(_isTurning == 1 && self.isAnimatingTurn) {
+                    pageTouchPoint = CGPointMake(_stablePageVertices[_touchRow][X_VERTEX_COUNT - 1].x,
+                                                 translation.y);
+                } else {
+                    pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? -_rightPageRect.size.width : 0, translation.y);
+                } 
+            }
+            
+            _viewportTouchPoint = pageTouchPoint;
+            
+            NSTimeInterval thisTouchTime = [touch timestamp];
+            if(_touchTime) {
+                GLfloat difference = (GLfloat)(thisTouchTime - _touchTime);
+                if(difference && !first) {
+                    _touchVelocity = (pageTouchPoint.x - oldViewportTouchX) / (30.0f * difference);
+                } else {
+                    _touchVelocity = 0;
+                }
+            } else {
+                _touchVelocity = 0;
+            }
+            _touchTime = thisTouchTime;
+            if(_isTurning != 0) {
+                [self _setPageTouchPointForPageX:pageTouchPoint.x];
+            }
         }
-        if(_isTurning != 0 && !self.isAnimatingTurn) {
-            self.animatingTurn = YES;
-        }
-    } else if(translationAfterScroll.x > 0.000001f && _isTurning <= 0) {
-        pageTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? (-_rightPageRect.size.width + translationAfterScroll.x) : translationAfterScroll.x,
-                                     translationAfterScroll.y);
-        if(_isTurning != -1) {
-            [self _prepareForTurnForwards:NO];
-            oldViewportTouchX = pageTouchPoint.x;
-        }
-        if(_isTurning != 0 && !self.isAnimatingTurn) {
-            self.animatingTurn = YES;
-        }        
-    } else {
-        if(_isTurning == 1 && self.isAnimatingTurn) {
-            pageTouchPoint = CGPointMake(_stablePageVertices[_touchRow][X_VERTEX_COUNT - 1].x,
-                                         translationAfterScroll.y);
-        } else {
-            pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? -_rightPageRect.size.width : 0, translationAfterScroll.y);
-        } 
-    }
-    
-    _viewportTouchPoint = pageTouchPoint;
-    
-    NSTimeInterval thisTouchTime = [touch timestamp];
-    if(_touchTime) {
-        GLfloat difference = (GLfloat)(thisTouchTime - _touchTime);
-        if(difference && !first) {
-            _touchVelocity = (pageTouchPoint.x - oldViewportTouchX) / (30.0f * difference);
-        } else {
-            _touchVelocity = 0;
-        }
-    } else {
-        _touchVelocity = 0;
-    }
-    _touchTime = thisTouchTime;
-    if(_isTurning != 0) {
-        [self _setPageTouchPointForPageX:pageTouchPoint.x];
     }
 }
 
@@ -2217,6 +2236,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
         _pinchTouches[0] = nil;
         _pinchTouches[1] = nil;
+        if(_zoomFactor < 1.0f) { 
+            [self setTranslation:CGPointZero zoomFactor:1.0f animated:YES];
+        }        
     }
 }
 
@@ -2859,6 +2881,27 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 	[self _setZoomMatrixFromTranslation:translation zoomFactor:zoomFactor];
 }
 
+// With a little help from http://www.anima-entertainment.de/?p=252:
+// assuming :
+// t is a value between 0 and 1
+// b is an offset
+// c is the height
+/*
+static CGFloat easeIn (CGFloat t, CGFloat b, CGFloat c) {
+    return c*pow(t, 3.0f) + b;
+}
+
+static CGFloat easeOut (CGFloat t, CGFloat b, CGFloat c) {
+    return c*(pow(t-1, 3.0f) + 1) + b;
+}
+*/
+static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
+    if ( (t*2.0f) < 1.0f)
+        return c*0.5f*powf(t*2.0f, 3.0f) + b;
+    else
+        return c*0.5f*(powf(t*2.0f-2.0f, 3.0f) + 2.0f) + b;
+}
+
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated
 {	
     if(animated) {
@@ -2870,17 +2913,21 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         _modelZoomFactor = _zoomFactor;
         _modelTranslation = self.translation;
         [self _setTranslation:currentTranslation zoomFactor:currentZoom];
-            
-        CGFloat zoomDelta = (_modelZoomFactor - _zoomFactor) / POSITIONING_ANIMATION_ITERATIONS;
-        CGFloat translationXDelta = (_modelTranslation.x - currentTranslation.x) / POSITIONING_ANIMATION_ITERATIONS; 
-        CGFloat translationYDelta = (_modelTranslation.y - currentTranslation.y) / POSITIONING_ANIMATION_ITERATIONS; 
-
+                    
+        CGFloat zoomDelta = (_modelZoomFactor - _zoomFactor);
+        CGFloat translationXDelta = (_modelTranslation.x - currentTranslation.x); 
+        CGFloat translationYDelta = (_modelTranslation.y - currentTranslation.y); 
+        
         for (int i = 0; i < POSITIONING_ANIMATION_ITERATIONS; i++) {
-            _presentationZoomFactor[i] = currentZoom + (zoomDelta * (i+1));
-            _presentationTranslationX[i] = currentTranslation.x + (translationXDelta * (i+1));
-            _presentationTranslationY[i] = currentTranslation.y + (translationYDelta * (i+1));
+            CGFloat step = (CGFloat)i / (CGFloat)(POSITIONING_ANIMATION_ITERATIONS - 1);
+            if(step > 1.0f) {
+                step = 1.0f;
+            }
+            _presentationZoomFactor[i] = easeInOut(step, currentZoom, zoomDelta);
+            _presentationTranslationX[i] = easeInOut(step, currentTranslation.x, translationXDelta);
+            _presentationTranslationY[i] = easeInOut(step, currentTranslation.y, translationYDelta);
         }
-
+        
         _animationIndex = 0;
             
         self.animatingPosition = YES;
@@ -2926,11 +2973,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         CGSize pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
                                       _rightPageRect.size.height * pixelViewportDimension);
         
-        if(zoomFactor < 1.0f) {
-            zoomFactor = 1.0f;
-        }
         if(zoomFactor > _maxZoom) {
             zoomFactor = _maxZoom;
+        }        
+        CGFloat compensatedZoomFactor = zoomFactor;
+        if(compensatedZoomFactor < 1.0f) {
+            compensatedZoomFactor = (powf(compensatedZoomFactor, 0.5f) + 0.5f) / 1.5f;
         }
         
         // Massage the zoom matrix to the nearest matrix that will scale the zoom 
@@ -2938,8 +2986,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         // nice and crisp, and the pages with have pixel-aligned edges.
         // Make sure the width is also divisible by two so that it can be centered
         // on a pixel boundry.
-        zoomMatrix.m11 = roundf(pixelSize.width * zoomFactor * 0.5f) / (pixelSize.width * 0.5f);
-        zoomMatrix.m22 = roundf(pixelSize.height * zoomFactor * 0.5f) / (pixelSize.height * 0.5f);
+        zoomMatrix.m11 = roundf(pixelSize.width * compensatedZoomFactor * 0.5f) / (pixelSize.width * 0.5f);
+        zoomMatrix.m22 = roundf(pixelSize.height * compensatedZoomFactor * 0.5f) / (pixelSize.height * 0.5f);
         
         CGPoint wholePixelTranslation = CGPointMake(roundf(translation.x * pixelViewportDimension) / pixelViewportDimension,
                                                     roundf(translation.y * pixelViewportDimension) / pixelViewportDimension);

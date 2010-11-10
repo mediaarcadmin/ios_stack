@@ -24,7 +24,9 @@
 #define Y_VERTEX_COUNT 16
 #define TRIANGLE_STRIP_COUNT ((Y_VERTEX_COUNT - 1) * (X_VERTEX_COUNT * 2 + 3))
 #define CONSTRAINT_COUNT (((X_VERTEX_COUNT * 2 - 1) + (X_VERTEX_COUNT - 1)) * (Y_VERTEX_COUNT - 1) + (X_VERTEX_COUNT - 1)  + X_VERTEX_COUNT + Y_VERTEX_COUNT)
-#define POSITIONING_ANIMATION_ITERATIONS 6
+
+// 1/3s at 30 fps.
+#define POSITIONING_ANIMATION_ITERATIONS (30 / 3) 
 
 typedef struct {
     GLubyte particleAIndex;
@@ -37,6 +39,12 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     EucPageTurningViewZoomHandlingKindInnerScaling = 0,
     EucPageTurningViewZoomHandlingKindZoom,
 } EucPageTurningViewZoomHandlingKind;
+
+typedef enum EucPageTurningViewDragKind {
+    EucPageTurningViewDragKindDragUndecided = 0,
+    EucPageTurningViewDragKindDragScroll,
+    EucPageTurningViewDragKindDragTurn,
+} EucPageTurningViewDragKind;
 
 #pragma mark -
 
@@ -99,6 +107,8 @@ typedef enum EucPageTurningViewZoomHandlingKind {
     GLfloat _touchVelocity;
 
     BOOL _dragUnderway;
+    EucPageTurningViewDragKind _dragKind;
+    
     BOOL _pinchUnderway;
     UITouch *_pinchTouches[2];
     CGPoint _pinchStartPoints[2];
