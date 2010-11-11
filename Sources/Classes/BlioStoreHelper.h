@@ -23,7 +23,7 @@
 	BOOL downloadNewBooks;
 	NSInteger siteID;
 	NSString* siteKey;
-	NSString* accountID;
+	NSInteger userNum;
 }
 @property (nonatomic, retain) NSDate* timeout;
 @property (nonatomic, readonly) NSString *username;
@@ -35,13 +35,14 @@
 @property (nonatomic, assign) BOOL downloadNewBooks;
 @property (nonatomic, assign) NSInteger siteID;
 @property (nonatomic, retain) NSString *siteKey;
-@property (nonatomic, retain) NSString *accountID;
+@property (nonatomic, assign) NSInteger userNum;
 
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password;
 - (void)logout;
 -(BOOL)hasValidToken;
 -(BOOL)isLoggedIn;
 -(BlioDeviceRegisteredStatus)deviceRegistered;
+-(BOOL) setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)targetStatus;
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status;
 -(void)retrieveBooks;
 -(NSURL*)URLForBookWithID:(NSString*)stringID;

@@ -46,7 +46,6 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
 	NSString *output = [webView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight;"];
 	NSInteger webviewHeight = [output intValue]+10;
-	NSLog(@"webviewHeight: %i",webviewHeight);
 	if (webviewHeight > 600) webviewHeight = 600;
 	self.contentSizeForViewInPopover = CGSizeMake(320, webviewHeight);
 }

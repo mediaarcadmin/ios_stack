@@ -364,7 +364,7 @@ static NSString * SessionId = nil;
 	NSString * hash = [[DigitalLockerBlioAppID md5Hash] substringWithRange:NSMakeRange(5, 6)];
 	[serialization appendString:[NSString stringWithFormat:@"<ClientUserAgent>%@; %@; %@%@</ClientUserAgent>", self.ClientUserAgent,systemNameVersion, self.AppID,hash]];
 	[serialization appendString:@"</State>"];
-	NSLog(@"serialization: %@",serialization);
+//	NSLog(@"serialization: %@",serialization);
 	return serialization;
 }
 
@@ -402,7 +402,7 @@ static NSString * SessionId = nil;
 		else if (valueForKey && [valueForKey isKindOfClass:[NSDictionary class]]) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,[DigitalLockerXMLObject serializeDictionary:(NSDictionary*)valueForKey withName:nil],key]];
 	}
 	[serialization appendString:@"</Request>"];
-	NSLog(@"serialization: %@",serialization);
+//	NSLog(@"serialization: %@",serialization);
 	return serialization;
 }
 
@@ -458,7 +458,9 @@ static NSString * SessionId = nil;
 	//		post = [(NSString *)urlString autorelease];
 	
 	NSString * requestString = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\">%@%@</Gateway>",[self.State serialize],[self.Request serialize]];
+#ifdef SERVICE_DEBUG
 	NSLog(@"requestString: %@",requestString);
+#endif
 	NSData *postData = [requestString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
 	NSString *postLength = [NSString stringWithFormat:@"%d",[postData length]];
 	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] init];
@@ -496,15 +498,15 @@ static NSString * SessionId = nil;
 #pragma mark NSURLConnectionDelegate methods
 
 - (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
-	NSLog(@"DigitalLockerConnection didReceiveResponse: %@",[[response URL] absoluteString]);
-	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
-	NSLog(@"MIMEType: %@",response.MIMEType);
-	NSLog(@"textEncodingName: %@",response.textEncodingName);
-	NSLog(@"suggestedFilename: %@",response.suggestedFilename);
-	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {		
-		NSLog(@"statusCode: %i",httpResponse.statusCode);
-		NSLog(@"allHeaderFields: %@",httpResponse.allHeaderFields);
-	}
+//	NSLog(@"DigitalLockerConnection didReceiveResponse: %@",[[response URL] absoluteString]);
+//	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
+//	NSLog(@"MIMEType: %@",response.MIMEType);
+//	NSLog(@"textEncodingName: %@",response.textEncodingName);
+//	NSLog(@"suggestedFilename: %@",response.suggestedFilename);
+//	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {		
+//		NSLog(@"statusCode: %i",httpResponse.statusCode);
+//		NSLog(@"allHeaderFields: %@",httpResponse.allHeaderFields);
+//	}
 }
 
 - (void)connection:(NSURLConnection *)aConnection didReceiveData:(NSData *)data {
@@ -513,8 +515,9 @@ static NSString * SessionId = nil;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
-	NSString * stringData = [[[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding] autorelease];
-	NSLog(@"stringData: %@",stringData);
+#ifdef SERVICE_DEBUG
+	NSLog(@"Digital Locker Connection response: %@",[[[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding] autorelease]);
+#endif
 	NSXMLParser * parser = [[NSXMLParser alloc] initWithData:_responseData];
 	parser.delegate = self;
 	[parser parse];
@@ -528,11 +531,11 @@ static NSString * SessionId = nil;
 
 // TODO: consider taking the two delegate methods below out for final release, as this is a work-around for B&T's godaddy certificate (reads as invalid)!
 - (BOOL)connection: ( NSURLConnection * )connection canAuthenticateAgainstProtectionSpace: ( NSURLProtectionSpace * ) protectionSpace {
-	NSLog(@"DigitalLockerConnection connection:%@ canAuthenticateAgainstProtectionSpace: %@",connection, protectionSpace);
+//	NSLog(@"DigitalLockerConnection connection:%@ canAuthenticateAgainstProtectionSpace: %@",connection, protectionSpace);
 	return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
 }
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {  
-	NSLog(@"DigitalLockerConnection connection:%@ didReceiveAuthenticationChallenge: %@",connection, challenge);
+//	NSLog(@"DigitalLockerConnection connection:%@ didReceiveAuthenticationChallenge: %@",connection, challenge);
     //if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])  
 	//if ([trustedHosts containsObject:challenge.protectionSpace.host])  
 	[challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];  

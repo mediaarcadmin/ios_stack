@@ -39,7 +39,7 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 #pragma mark -
 #pragma mark Application lifecycle
 
-//- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions { 		// returning YES *should* call application handleOpenURL, but for some reason, that is not being called on iOS < 4.0... hence, we use the older method until 3.x compatibility is retired.
+//- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions { // returning YES *should* call application handleOpenURL, but for some reason, that is not being called on iOS < 4.0... hence, we use the older method until 3.x compatibility is retired.
 -(void)applicationDidFinishLaunching:(UIApplication *)application {
 //	if (launchOptions) {
 //		NSLog(@"launchOptions: %@",launchOptions);		

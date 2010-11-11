@@ -28,9 +28,9 @@
 - (void)main {
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
+		NSLog(@"CompleteOperation dependencies: %@",[self dependencies]);
 		return;
 	}
-	NSLog(@"CompleteOperation dependencies: %@",[self dependencies]);
 	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
 //	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
 //	[userInfo setObject:self.bookID forKey:@"bookID"];
@@ -39,6 +39,7 @@
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"BlioProcessingCompleteOperation: failed dependency found! Operation: %@ Sending Failed Notification...",blioOp);
+			NSLog(@"CompleteOperation dependencies: %@",[self dependencies]);
 			if (currentProcessingState != kBlioBookProcessingStateNotSupported && currentProcessingState != kBlioBookProcessingStatePaused && currentProcessingState != kBlioBookProcessingStateSuspended) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateFailed] forKey:@"processingState"];
 //			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
 			[self cancel];
@@ -204,7 +205,7 @@
 		NSLog(@"Internet connection is dead, will prematurely abort main");
 		[self cancel];
     }
-	
+	NSLog(@"License Acquisition will use token: %@",[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]);
 	if ([[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] == nil) {
 		NSLog(@"ERROR: no valid token, cancelling BlioProcessingLicenseAcquisitionOperation...");
 		[self cancel];
@@ -499,13 +500,13 @@
 	}	
 }
 - (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
-	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
+//	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
 	self.expectedContentLength = [response expectedContentLength];
 
 	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
 	
 	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] && theConnection == headConnection) {		
-		NSLog(@"httpResponse.statusCode: %i",httpResponse.statusCode);
+//		NSLog(@"headConnection httpResponse.statusCode: %i",httpResponse.statusCode);
 		if (httpResponse.statusCode/100 != 2) {
 			// we are not getting valid response; try again from scratch.
 			resume = NO;
@@ -553,7 +554,7 @@
 	}
 	else if (theConnection == connection) {
 		if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {  // i.e. we're not a file:// download
-			NSLog(@"downloadConnection httpResponse.statusCode: %i",httpResponse.statusCode);
+//			NSLog(@"downloadConnection httpResponse.statusCode: %i",httpResponse.statusCode);
 			if (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO) {
 				// we are not getting partial content; try again from scratch.
 				// TODO: just erase previous progress and keep using this connection instead of starting from scratch
@@ -1362,18 +1363,24 @@
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
 	
-	pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
 	pixelSpecificFilename = [NSString stringWithFormat:@"%@.png",pixelSpecificKey];
 	
     UIImage *gridThumb = [self newThumbFromImage:cover forSize:CGSizeMake(scaledTargetThumbWidth, scaledTargetThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
-    NSString *gridThumbPath = [self.cacheDirectory stringByAppendingPathComponent:pixelSpecificFilename];
+    NSString *gridThumbDir = [self.cacheDirectory stringByAppendingPathComponent:BlioBookThumbnailsDir];
+	if (![[NSFileManager defaultManager] fileExistsAtPath:gridThumbDir]) {
+		NSError * createDirectoryError;
+		if (![[NSFileManager defaultManager] createDirectoryAtPath:gridThumbDir withIntermediateDirectories:YES attributes:nil error:&createDirectoryError])
+			NSLog(@"Failed to create book cache directory in processing manager with error: %@, %@", createDirectoryError, [createDirectoryError userInfo]);
+	}
+    NSString *gridThumbPath = [gridThumbDir stringByAppendingPathComponent:pixelSpecificFilename];
     [gridData writeToFile:gridThumbPath atomically:YES];
     [gridThumb release];
     
     NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
     [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
-    [gridThumbManifestEntry setValue:pixelSpecificFilename forKey:BlioManifestEntryPathKey];
+    [gridThumbManifestEntry setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:pixelSpecificFilename] forKey:BlioManifestEntryPathKey];
     [self setBookManifestValue:gridThumbManifestEntry forKey:pixelSpecificKey];
 
     if ([self isCancelled]) {
@@ -1388,18 +1395,24 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
 	pixelSpecificFilename = [NSString stringWithFormat:@"%@.png",pixelSpecificKey];
 	
     UIImage *listThumb = [self newThumbFromImage:cover forSize:CGSizeMake(scaledTargetThumbWidth, scaledTargetThumbHeight)];
     NSData *listData = UIImagePNGRepresentation(listThumb);
-    NSString *listThumbPath = [self.cacheDirectory stringByAppendingPathComponent:pixelSpecificFilename];
+	NSString *listThumbDir = [self.cacheDirectory stringByAppendingPathComponent:BlioBookThumbnailsDir];
+	if (![[NSFileManager defaultManager] fileExistsAtPath:listThumbDir]) {
+		NSError * createDirectoryError;
+		if (![[NSFileManager defaultManager] createDirectoryAtPath:gridThumbDir withIntermediateDirectories:YES attributes:nil error:&createDirectoryError])
+			NSLog(@"Failed to create book cache directory in processing manager with error: %@, %@", createDirectoryError, [createDirectoryError userInfo]);
+	}
+    NSString *listThumbPath = [listThumbDir stringByAppendingPathComponent:pixelSpecificFilename];
     [listData writeToFile:listThumbPath atomically:YES];
     [listThumb release];
     	
     NSDictionary *listThumbManifestEntry = [NSMutableDictionary dictionary];
     [listThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
-    [listThumbManifestEntry setValue:pixelSpecificFilename forKey:BlioManifestEntryPathKey];
+    [listThumbManifestEntry setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:pixelSpecificFilename] forKey:BlioManifestEntryPathKey];
     [self setBookManifestValue:listThumbManifestEntry forKey:pixelSpecificKey];
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000

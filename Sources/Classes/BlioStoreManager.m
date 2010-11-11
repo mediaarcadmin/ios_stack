@@ -15,7 +15,7 @@
 
 @implementation BlioStoreManager
 
-@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews;
+@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews,currentStoreHelper;
 @synthesize processingDelegate = _processingDelegate;
 
 +(BlioStoreManager*)sharedInstance
@@ -48,11 +48,12 @@
 -(void)addStoreHelper:(BlioStoreHelper*)helper {
 	helper.delegate = self;
 	[storeHelpers setObject:helper forKey:[NSNumber numberWithInt:helper.sourceID]];
+	if (!currentStoreHelper) self.currentStoreHelper = helper;
 }
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID {
 	// first check to see if login info is in NSUserDefaults
 	
-	NSMutableDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] objectForKey:[self storeTitleForSourceID:sourceID]];
+	NSDictionary * loginCredentials = [self savedLoginCredentials];
 	if (loginCredentials && [loginCredentials objectForKey:@"username"] && [loginCredentials objectForKey:@"password"]) {
 		[[BlioStoreManager sharedInstance] loginWithUsername:[loginCredentials objectForKey:@"username"] password:[loginCredentials objectForKey:@"password"] sourceID:sourceID];
 	}
@@ -78,11 +79,17 @@
 	}
 	return nil;
 }
+-(NSInteger)currentSiteNum {
+	return self.currentStoreHelper.siteID;
+}
 -(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID {
 	for (id key in self.storeHelpers) {
 		if ([key intValue] == sourceID) return ((BlioStoreHelper*)[self.storeHelpers objectForKey:key]).siteID; 
 	}
 	return -1;
+}
+-(NSInteger)currentUserNum {
+	return self.currentStoreHelper.userNum;
 }
 -(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID {
 	self.loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
@@ -111,22 +118,55 @@
 
 }
 -(void)saveUsername:(NSString*)username password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
-//	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"Users"] mutableCopy];
+//	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
 //	if (!usersDictionary) usersDictionary = [NSMutableDictionary dictionary];
-//	NSMutableDictionary * currentUserDictionary = [[usersDictionary dictionaryForKey:[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] accountID]] mutableCopy];
+//	NSMutableDictionary * currentUserDictionary = [[usersDictionary objectForKey:[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] userNum]] mutableCopy];
+//	if (!currentUserDictionary) currentUserDictionary = [NSMutableDictionary dictionary];
 	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-	if (username) [loginCredentials setObject:username forKey:@"username"];
-	if (password) [loginCredentials setObject:password forKey:@"password"];
-	[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];	
+	if (username) [loginCredentials setObject:[NSString stringWithString:username] forKey:@"username"];
+	if (password) [loginCredentials setObject:[NSString stringWithString:password] forKey:@"password"];
+//	[currentUserDictionary setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
+//	[usersDictionary setObject:currentUserDictionary forKey:[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] userNum]];
+//	[[NSUserDefaults standardUserDefaults] setObject:usersDictionary forKey:kBlioUsersDictionaryDefaultsKey];	
+	 
+	 [[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
+}
+-(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID {
+	NSLog(@"saveRegistrationAccountID: %@, serviceID: %@",accountID,serviceID);
+	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
+	if (!usersDictionary) {
+		NSLog(@"WARNING: registration credentials attempted to be saved without existing usersDictionary!");
+		return;
+	}
+	NSMutableDictionary * currentUserDictionary = [[usersDictionary objectForKey:[NSString stringWithFormat:@"%i",[[storeHelpers objectForKey:[NSNumber numberWithInt:BlioBookSourceOnlineStore]] userNum]]] mutableCopy];
+	if (!currentUserDictionary) NSLog(@"WARNING: registration credentials attempted to be saved without existing currentUserDictionary!");
+	else {
+		NSMutableDictionary * registrationRecords = [NSMutableDictionary dictionaryWithCapacity:2];
+		if (accountID) [registrationRecords setObject:[NSString stringWithString:accountID] forKey:kBlioAccountIDDefaultsKey];
+		if (serviceID) [registrationRecords setObject:[NSString stringWithString:serviceID] forKey:kBlioServiceIDDefaultsKey];		
+		[currentUserDictionary setObject:registrationRecords forKey:kBlioUserRegistrationRecordsDefaultsKey];
+		[usersDictionary setObject:currentUserDictionary forKey:[NSString stringWithFormat:@"%i",[[storeHelpers objectForKey:[NSNumber numberWithInt:BlioBookSourceOnlineStore]] userNum]]];
+		[[NSUserDefaults standardUserDefaults] setObject:usersDictionary forKey:kBlioUsersDictionaryDefaultsKey];	
+	}
+}
+-(NSDictionary*)registrationRecords {
+	NSDictionary * usersDictionary = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey];
+	if (usersDictionary) {
+		NSString * userNumString = [NSString stringWithFormat:@"%i",[[storeHelpers objectForKey:[NSNumber numberWithInt:BlioBookSourceOnlineStore]] userNum]];
+		NSLog(@"getting registration records for user: %@",userNumString);
+		NSDictionary * currentUserDictionary = [usersDictionary objectForKey:userNumString];
+		if (currentUserDictionary) {
+			return [currentUserDictionary objectForKey:kBlioUserRegistrationRecordsDefaultsKey];
+		}
+	}
+	return nil;
 }
 -(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {	
-	NSLog(@"beginIgnoringInteractionEvents");
 	[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginWithUsername:user password:password];
 }
 -(void)storeHelper:(BlioStoreHelper*)storeHelper receivedLoginResult:(NSInteger)loginResult {
 	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
-	NSLog(@"endIgnoringInteractionEvents");
 	[[UIApplication sharedApplication] endIgnoringInteractionEvents];
 	if (loginResult == BlioLoginResultInvalidPassword && isShowingLoginView == NO) {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
@@ -194,8 +234,9 @@
 //												otherButtonTitles:@"OK", nil];
 //				[drmSessionManager release];
 			}
-			else if (buttonIndex == 0)
-				[[NSUserDefaults standardUserDefaults] setInteger:BlioDeviceRegisteredStatusUnregistered forKey:kBlioDeviceRegisteredDefaultsKey];
+			else if (buttonIndex == 0) {
+				[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered];
+			}
 		}
 	}
 }
@@ -220,12 +261,18 @@
 - (void)logoutForSourceID:(BlioBookSourceID)sourceID {
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] logout];
 }
+-(NSDictionary*)savedLoginCredentials {
+	return [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
+}
 -(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] URLForBookWithID:sourceSpecificID];
 	return nil;	
 }
 -(BlioDeviceRegisteredStatus)deviceRegisteredForSourceID:(BlioBookSourceID)sourceID {
 	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] deviceRegistered];
+}
+-(BOOL)setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID {
+	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] setDeviceRegisteredSettingOnly:status];
 }
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID {
 	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] setDeviceRegistered:status];

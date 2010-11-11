@@ -662,11 +662,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             } else {
                 [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
             }
-			
-			if ( ([[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey] == kBlioPageLayoutPlainText) && [self.book hasAudiobook] )
-				// Audiobook is for fixed view only.
-				[item setEnabled:NO];
-            
         } else {
             audioImage = [UIImage imageNamed:@"icon-noTTS.png"];
             item = [[UIBarButtonItem alloc] initWithImage:audioImage
@@ -1741,28 +1736,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
             _lastSavedPageNumber = self.bookView.pageNumber;
         }
-        if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
+		if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
             self.bookView = ePubView;
             [ePubView release];
-            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];  
-			if ( [self.book hasAudiobook] ) {
-				for (UIBarButtonItem * item in self.toolbarItems)
-					if ( item.action == @selector(toggleAudio:) )
-						 [item setEnabled:NO];
-			}
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey]; 
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; 
-			if ( [self.book hasAudiobook] ) {
-				for (UIBarButtonItem * item in self.toolbarItems)
-					if ( item.action == @selector(toggleAudio:) )
-						[item setEnabled:YES];
-			}   
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
             speedReadView.delegate = self;
@@ -2030,14 +2015,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         audioMgr.blockWords = [paragraphSource wordsForParagraphWithID:audioMgr.currentBlock];
     } else {        
         // end of the book
-
         audioMgr.currentBlock = nil;
         audioMgr.currentWordOffset = 0;
         audioMgr.blockWords = nil;
-        
-        [self stopAudio];
-        self.audioPlaying = NO;
-        [self updatePauseButton];
     }
 }
 
@@ -2092,26 +2072,29 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	// Subtract 1 for now from page to match Blio layout page. Can't we have them match?
 	if ( !(segmentInfo = [(NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]] objectAtIndex:segmentIx]) )
 		return NO;
-//	NSString* audiobooksPath = [self.book.bookCacheDirectory stringByAppendingPathComponent:@"Audiobook"];
-	// For testing
-	//NSString* audiobooksPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/AudioBooks/Graveyard Book/"];
-//	NSString* timingPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.timeFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
 	if ( ![_audioBookManager loadWordTimesWithIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]] )  {
 		NSLog(@"Timing file could not be initialized.");
 		return NO;
 	}
-//	NSString* audioPath = [audiobooksPath stringByAppendingPathComponent:[_audioBookManager.audioFiles objectAtIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]]];
 	if ( ![_audioBookManager initAudioWithIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]] ) {
 		NSLog(@"Audio player could not be initialized.");
 		return NO;
 	}
 	_audioBookManager.avPlayer.delegate = self;
+	
+	BlioBookmarkPoint* bookmarkPt = self.bookView.currentBookmarkPoint;  
+	_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue] + bookmarkPt.wordOffset; // or just bookmarkPt.wordOffset?
+	NSTimeInterval timeOffset = [[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]/1000.0;
+	[_audioBookManager.avPlayer setCurrentTime:timeOffset];
+	
+	// Fixed-view-only implementation:
 	// Cue up the audio player to where it starts for this page.
 	// In future, could get this from TimeIndex.
-	NSTimeInterval timeOffset = [[segmentInfo objectAtIndex:kTimeOffset] intValue]/1000.0;
-	[_audioBookManager.avPlayer setCurrentTime:timeOffset];
+	//NSTimeInterval timeOffset = [[segmentInfo objectAtIndex:kTimeOffset] intValue]/1000.0;
+	//[_audioBookManager.avPlayer setCurrentTime:timeOffset];
 	// Set the timing file index for this page.
-	_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue]; // need to subtract one...
+	//_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue]; // need to subtract one...
+	
 	return YES;
 }
 
@@ -2339,7 +2322,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     if ( !loadedFilesAhead )
                         return;
                 }
-                
+				
 				if (startPoint) {
 					[self prepareTextToSpeakWithAudioManager:_audioBookManager fromBookmarkPoint:startPoint];
 				} else {

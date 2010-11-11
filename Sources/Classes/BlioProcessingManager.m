@@ -128,6 +128,13 @@
         [aBook setValue:title forKey:@"title"];
         [aBook setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
         [aBook setValue:sourceSpecificID forKey:@"sourceSpecificID"];
+		
+		if (sourceID == BlioBookSourceOnlineStore) {
+			NSInteger siteNum = [[BlioStoreManager sharedInstance] currentSiteNum];
+			NSInteger userNum = [[BlioStoreManager sharedInstance] currentUserNum];
+			[aBook setValue:[NSNumber numberWithInt:siteNum] forKey:@"siteNum"];
+			[aBook setValue:[NSNumber numberWithInt:userNum] forKey:@"userNum"];
+		}
 		NSString * authorsValue = @"";
 		for (int i = 0; i < [authors count]; i++) {
 			if (i != 0) authorsValue = [authorsValue stringByAppendingString:@"|"];
@@ -199,7 +206,7 @@
 }
 
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
-	NSLog(@"BlioProcessingManager enqueueBook: %@ placeholderOnly: %i",aBook, placeholderOnly);
+//	NSLog(@"BlioProcessingManager enqueueBook: %@ placeholderOnly: %i",aBook, placeholderOnly);
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
      NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
@@ -645,7 +652,6 @@
 			[xpsOps addObject:licenseOp];
 			[bookOps addObject:licenseOp];
 			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-			NSLog(@"manifestOp.isCancelled: %i",manifestOp.isCancelled);
 			if (!manifestOp || manifestOp.isCancelled) {
 				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
 				manifestOp.bookID = bookID;
@@ -874,7 +880,12 @@
 		if ([results count] > 0) {
 			NSLog(@"Found non-paused incomplete or failed book results, will resume..."); 
 			for (BlioBook * book in results) {
-				[self enqueueBook:book];
+				if ([[book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+					if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && [[book valueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
+						[self enqueueBook:book];
+					}
+				}
+				else [self enqueueBook:book];
 			}			
 		}
 		else {
@@ -886,18 +897,18 @@
 	// end resume previous processing operations
 }
 -(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook {
-	NSLog(@"BlioProcessingManager reprocessCoverThumbnailsForBook entered");
+//	NSLog(@"BlioProcessingManager reprocessCoverThumbnailsForBook entered");
 	[self addCoverOpToBookOps:nil forBook:aBook manifestLocation:nil withDependency:nil];
 }
 -(void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource {
-	NSLog(@"BlioProcessingManager resumeProcessingForSourceID:%i entered",bookSource);
+//	NSLog(@"BlioProcessingManager resumeProcessingForSourceID:%i entered",bookSource);
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
 	// resume previous processing operations
-	
+	NSInteger userNum = [[BlioStoreManager sharedInstance] currentUserNum];
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@ && userNum == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource],[NSNumber numberWithInt:userNum]]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -923,7 +934,7 @@
 	
 }
 - (void)loginDismissed:(NSNotification*)note {
-	NSLog(@"BlioProcessingManager loginDismissed entered");
+//	NSLog(@"BlioProcessingManager loginDismissed entered");
 	BlioBookSourceID sourceID = [[[note userInfo] valueForKey:@"sourceID"] intValue];
 	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:sourceID]) {
 		[self resumeProcessingForSourceID:sourceID];
@@ -1077,6 +1088,36 @@
 	}
 	*/
 }
+-(void) deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site {
+	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+		
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"userNum == %@ && siteNum == %@ && sourceID == %@", [NSNumber numberWithInt:user],[NSNumber numberWithInt:site],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+    if (errorExecute) {
+        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found %i book results with userNum:%i siteNum:%i, will delete...",[results count],user,site); 
+			for (BlioBook * book in results) {
+				[self deleteBook:book shouldSave:YES];
+			}
+			
+		}
+		else {
+			NSLog(@"No paid book results to delete."); 
+		}
+	}
+    [fetchRequest release];
+	
+	// end resume previous processing operations
+	
+}
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave {
 	// if book is processing, stop all associated operations
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) [self stopProcessingForBook:aBook];
@@ -1094,15 +1135,14 @@
 	
 	if ([[aBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		// delete all files except the thumbnail so that we can put the book back in the vault.
-		NSString * listThumbnailFilename = [aBook valueForKey:@"listThumbFilename"];
-		NSString * gridThumbnailFilename = [aBook valueForKey:@"gridThumbFilename"];
-		NSString * coverFilename = [aBook valueForKey:BlioManifestCoverKey];
+		NSString * coverFilename = BlioManifestCoverKey;
+		NSString * thumbnailsDirectory = BlioBookThumbnailsDir;
 		if ([fileManager fileExistsAtPath:[aBook bookCacheDirectory]]) {
 			NSError * directoryContentError;
 			NSArray *fileList = [fileManager contentsOfDirectoryAtPath:[aBook bookCacheDirectory] error:&directoryContentError];
 			if (fileList != nil) {
 				for (NSString * fileName in fileList) {
-					if (![fileName isEqualToString:listThumbnailFilename] && ![fileName isEqualToString:gridThumbnailFilename] && ![fileName isEqualToString:coverFilename] && [fileName rangeOfString:@"thumbFilename"].location == NSNotFound) {
+					if (![fileName isEqualToString:coverFilename] && ![fileName isEqualToString:thumbnailsDirectory] && [fileName rangeOfString:BlioBookThumbnailPrefix].location == NSNotFound) {
 						if (![fileManager removeItemAtPath:[[aBook bookCacheDirectory] stringByAppendingPathComponent:fileName] error:&error]) {
 							NSLog(@"WARNING: deletion of asset for paid book failed. %@, %@", error, [error userInfo]);
 						}

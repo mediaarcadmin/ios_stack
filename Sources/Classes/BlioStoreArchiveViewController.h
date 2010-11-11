@@ -26,6 +26,7 @@ static const NSInteger kBlioStoreMyVaultTag = 3;
 	BlioRoundedRectActivityView * activityIndicatorView;
 	NSString * noBooksText;
 	NSString * loadingBooksText;
+	NSInteger userNum;
 }
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController* fetchedResultsController;
