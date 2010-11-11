@@ -34,17 +34,19 @@ typedef struct {
     GLfloat lengthSquared;
 } EucPageTurningVerletContstraint;
 
-
 typedef enum EucPageTurningViewZoomHandlingKind {
     EucPageTurningViewZoomHandlingKindInnerScaling = 0,
     EucPageTurningViewZoomHandlingKindZoom,
 } EucPageTurningViewZoomHandlingKind;
 
-typedef enum EucPageTurningViewDragKind {
-    EucPageTurningViewDragKindDragUndecided = 0,
-    EucPageTurningViewDragKindDragScroll,
-    EucPageTurningViewDragKindDragTurn,
-} EucPageTurningViewDragKind;
+typedef enum EucPageTurningViewAnimationFlags {
+    EucPageTurningViewAnimationFlagsNone                 = 0x00,
+    EucPageTurningViewAnimationFlagsDragUndecided        = 0x01,
+    EucPageTurningViewAnimationFlagsDragScroll           = 0x02,
+    EucPageTurningViewAnimationFlagsDragTurn             = 0x04,
+    EucPageTurningViewAnimationFlagsAutomaticTurn        = 0x08,
+    EucPageTurningViewAnimationFlagsAutomaticPositioning = 0x10,
+} EucPageTurningViewAnimationFlags;
 
 #pragma mark -
 
@@ -104,10 +106,10 @@ typedef enum EucPageTurningViewDragKind {
     NSTimeInterval _touchTime;
     THVec3 _pageTouchPoint;
     CGPoint _viewportTouchPoint;
-    GLfloat _touchVelocity;
+    CGPoint _touchVelocity;
 
     BOOL _dragUnderway;
-    EucPageTurningViewDragKind _dragKind;
+    EucPageTurningViewAnimationFlags _animationFlags;
     
     BOOL _pinchUnderway;
     UITouch *_pinchTouches[2];
@@ -132,9 +134,6 @@ typedef enum EucPageTurningViewDragKind {
 	CGFloat _presentationTranslationY[POSITIONING_ANIMATION_ITERATIONS];
 	CGFloat _modelZoomFactor;
 	CGPoint _modelTranslation;
-	
-	BOOL _animatingPosition;
-    BOOL _animatingTurn;
 	
     NSInteger _isTurning;
     
@@ -164,7 +163,6 @@ typedef enum EucPageTurningViewDragKind {
     GLfloat _dimQuotient;
     NSInteger _reverseAnimatedTurnFrameCount;
     
-    BOOL _isTurningAutomatically;
     CGFloat _automaticTurnPercentage;
     
     //FILE *tempFile;

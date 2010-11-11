@@ -118,6 +118,10 @@
         [self.animationTimer invalidate];
         self.animationTimer = nil;
     }
+    
+    _needsDraw = NO;
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
+    
     [super willMoveToSuperview:superview];
 }
 
@@ -181,6 +185,8 @@
 {
     if(animating != _animating) {
         if(animating) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
+
             // Actually, don't use displaylink - it causes lots of jittering
             // during interaction on early devices.
             // Use CADisplayLink, if available.
@@ -207,6 +213,8 @@
             } else {
                 objc_msgSend(animationTimer, @selector(setPaused:), YES);
             }
+            
+            [self setNeedsDraw];
         }
         _animating = animating;        
     }

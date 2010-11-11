@@ -1803,6 +1803,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			}
 			
 			if (nil == targetBlock)	{
+                if(self.pageTurningView.isTwoUp) {
+                    pageIndex = self.pageTurningView.rightPageIndex;
+                }
+                if (pageIndex >= ([self pageCount] - 1)) {
+                    // If we are already at the last page, zoom to page
+                    //[self zoomToPageIndex:targetPage - 1];
+                    //[self goToPageNumber:targetPage animated:YES];
+                    [self zoomOut];
+                    return;
+                }                
 				[self goToPageNumber:(pageIndex + 1) + 1 animated:YES];
                 [self zoomForNewPageAnimated:YES];
 				return;

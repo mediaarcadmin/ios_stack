@@ -32,8 +32,6 @@
 @property (nonatomic, assign, readonly) CATransform3D zoomMatrix;
 @property (nonatomic, assign) CGRect leftPageFrame;
 @property (nonatomic, assign) CGRect rightPageFrame;
-@property (nonatomic, assign, getter=isAnimatingPosition) BOOL animatingPosition;
-@property (nonatomic, assign, getter=isAnimatingTurn) BOOL animatingTurn;
 
 - (void)_calculateVertexNormals;    
 //- (void)_accumulateForces;  // Not used - see comments around implementation.
@@ -86,8 +84,6 @@
 @synthesize pageAspectRatio = _pageAspectRatio;
 @synthesize animatedZoomFactor = _modelZoomFactor;
 @synthesize animatedTranslation = _modelTranslation;
-@synthesize animatingPosition = _animatingPosition;
-@synthesize animatingTurn = _animatingTurn;
 
 @synthesize focusedPageIndex = _focusedPageIndex;
 
@@ -127,10 +123,10 @@
     [self setNeedsLayout];
 }
 
-- (void)setAnimatingTurn:(BOOL)animating
+- (void)setAnimating:(BOOL)animating
 {	
     if(animating) {
-        if(!self.isAnimatingTurn) {
+        if(!self.isAnimating) {
             // Curtail background tasks to allow smooth animation.
             if([_delegate respondsToSelector:@selector(pageTurningViewWillBeginAnimating:)]) {
                 [_delegate pageTurningViewWillBeginAnimating:self];   
@@ -139,7 +135,7 @@
             super.animating = YES;
         }
     } else {
-        if(self.isAnimatingTurn) {
+        if(self.isAnimating) {
             // Allow background tasks again.
             [THBackgroundProcessingMediator allowBackgroundProcessing];
             super.animating = NO;
@@ -148,32 +144,6 @@
             }        
         }
     }
-		_animatingTurn = animating;
-}
-
-- (void)setAnimatingPosition:(BOOL)animating
-{
-	
-    if(animating) {
-        if(!self.isAnimatingPosition) {
-            // Curtail background tasks to allow smooth animation.
-            if([_delegate respondsToSelector:@selector(pageTurningViewWillBeginAnimating:)]) {
-                [_delegate pageTurningViewWillBeginAnimating:self];   
-            }
-            [THBackgroundProcessingMediator curtailBackgroundProcessing];
-			super.animating = YES;
-        }
-    } else {
-        if(self.isAnimatingPosition) {
-            // Allow background tasks again.
-            [THBackgroundProcessingMediator allowBackgroundProcessing];
-			super.animating = NO;
-            if([_delegate respondsToSelector:@selector(pageTurningViewDidEndAnimation:)]) {
-                [_delegate pageTurningViewDidEndAnimation:self];   
-            }        
-        }
-    }
-	_animatingPosition = animating;
 }
 
 static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsizei length, const void *pvrtcData)
@@ -963,10 +933,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
         
         [self _prepareForTurnForwards:forwards];
-        _isTurningAutomatically = YES;
 
         _viewportTouchPoint = CGPointMake(forwards ? _viewportLogicalSize.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-        _touchVelocity = forwards ? -0.4f : 0.4f;
+        _touchVelocity = CGPointMake(forwards ? -0.4f : 0.4f, 0.0f);
         
         CGFloat percentage = (CGFloat)pageCount / 512.0f;
         if(pageCount == 1) {
@@ -986,7 +955,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         _automaticTurnPercentage = percentage;
         
-        self.animatingTurn = YES;
+        _animationFlags |= EucPageTurningViewAnimationFlagsAutomaticTurn;
+        self.animating = YES;
     }
 }
 
@@ -1234,14 +1204,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             }
             
             [self _prepareForTurnForwards:forwards];
-            _isTurningAutomatically = YES;
 
             if(forwards) {
                 _viewportTouchPoint = CGPointMake(_rightPageRect.size.width, _viewportLogicalSize.height * 0.5f);
-                _touchVelocity = -0.4f;
+                _touchVelocity = CGPointMake(-0.4f, 0.0f);
             } else {
                 _viewportTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? -_leftPageRect.size.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-                _touchVelocity = 0.4f;
+                _touchVelocity = CGPointMake(0.4f, 0.0f);
             }
             
             NSUInteger pageCount;
@@ -1276,10 +1245,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             }                
             
             _automaticTurnPercentage = percentage;
-            
-            //[self waitForAllPageImagesToBeAvailable];
-		
-            self.animatingTurn = YES;
+            		
+            _animationFlags |= EucPageTurningViewAnimationFlagsAutomaticTurn;
+            self.animating = YES;
         } else {
             [self _setupBitmapPage:rightPageIndex forInternalPageOffset:3];
             if(_twoUp) {
@@ -1467,26 +1435,35 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {        
     [super drawView];
 	        
-    BOOL animatingTurn = self.isAnimatingTurn;
-    BOOL animatingPosition = self.isAnimatingPosition;
+    BOOL animating = self.isAnimating;
+
+    if(animating) {
+        NSParameterAssert(_animationFlags != EucPageTurningViewAnimationFlagsNone);
+    } else {
+        NSParameterAssert(_animationFlags == EucPageTurningViewAnimationFlagsNone);
+    }
+    
+    EucPageTurningViewAnimationFlags postDrawAnimationFlags = _animationFlags;
 	
-    BOOL shouldStopAnimating = !(animatingTurn || animatingPosition);
-	BOOL shouldStopAnimatingPosition = !animatingPosition;
-	BOOL shouldStopAnimatingTurn = !animatingTurn;
-	
-    if(animatingTurn) {
+    if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
+       (_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
         //[self _accumulateForces]; // Not used - see comments around implementation.
         [self _verlet];
-        shouldStopAnimatingTurn = [self _satisfyConstraints];
+        BOOL shouldStopAnimating = [self _satisfyConstraints];
         [self _calculateVertexNormals];
+        if(shouldStopAnimating) {
+            postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragTurn;
+            postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsAutomaticTurn;
+        }
     }
 	
-	if(animatingPosition) {
-		shouldStopAnimatingPosition = [self _satisfyPositioningConstraints];
+	if(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) {
+		BOOL shouldStopAnimating = [self _satisfyPositioningConstraints];
+        if(shouldStopAnimating) {
+            postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsAutomaticPositioning;
+        }
     }
-	
-	shouldStopAnimating = (shouldStopAnimatingPosition && shouldStopAnimatingTurn);
-    
+	    
     EAGLContext *eaglContext = self.eaglContext;
     [eaglContext thPush];
     
@@ -1612,7 +1589,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     
     if(_twoUp && _rightPageFrame.origin.x > 0.0f) {
-        NSInteger leftFlatPageContentsIndex = _rightFlatPageContentsIndex - (shouldStopAnimatingTurn ? 1 : 3);
+        NSInteger leftFlatPageContentsIndex = _rightFlatPageContentsIndex - (((postDrawAnimationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
+                                                                              (postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) ? 3 : 1);
         if(leftFlatPageContentsIndex >= 0 && _pageContentsInformation[leftFlatPageContentsIndex]) {
             CATransform3D oldModelViewMatrix = modelViewMatrix;
             modelViewMatrix = CATransform3DRotate(modelViewMatrix, (GLfloat)M_PI, 0, 1, 0);
@@ -1671,7 +1649,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
     }
     
-    if(!shouldStopAnimatingTurn) {
+    if((postDrawAnimationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
+       (postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
         // If we're animating, we have a curved page to draw on top.
         
         // Clear the depth buffer so that this page wins if it has coordinates 
@@ -1754,7 +1733,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
-        if(_isTurningAutomatically) {
+        if(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
             if(_automaticTurnPercentage > 0.0f) {
                 // Construct and draw the page edge.
                 
@@ -1828,18 +1807,26 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         [self _recachePages];
         [self _setNeedsAccessibilityElementsRebuild];
         UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-        if(!_isTurningAutomatically) {
+        if(!(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
             _focusedPageIndex = _pageContentsInformation[2] ? _pageContentsInformation[2].pageIndex : _pageContentsInformation[3].pageIndex;
         }
     }
     
-    if(shouldStopAnimating) {
-        if(_isTurningAutomatically) {
-            _isTurningAutomatically = NO;
+    if(_animationFlags != postDrawAnimationFlags) {
+        if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) &&
+           !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }
-        self.animatingTurn = NO;
-		self.animatingPosition = NO;
+        if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
+           !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)){
+            // May as well kick this off now to avoid the 0.2s delay.
+            [self _retextureForPanAndZoom];
+        }
+        
+        _animationFlags = postDrawAnimationFlags;
+        if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
+            self.animating = NO;
+        }
     }
 }
 
@@ -1855,7 +1842,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     _pageTouchPoint.x = pageX;
     _pageTouchPoint.y = ((GLfloat)_touchRow / (Y_VERTEX_COUNT - 1)) * touchablePageRect.size.height;
     _pageTouchPoint.z = -touchablePageRect.size.width * sqrtf(-(powf(((pageX)/touchablePageRect.size.width), 2) - 1));
-    //_pageTouchPoint.z = -sqrtf(touchablePageRect.size.width * touchablePageRect.size.width - pageX * pageX);    
+    //_pageTouchPoint.z = -sqrtf(touchablePageRect.size.width * touchablePageRect.size.width - pageX * pageX); 
 }
 
 - (void)_prepareForTurnForwards:(BOOL)forwards
@@ -1946,11 +1933,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     if(first) {
         _scrollStartTranslation = _scrollTranslation;
-        if(!self.isAnimatingTurn) {
-            _touchStartPoint = pageTouchPoint;
-            _isTurning = 0; 
-            _dragKind = EucPageTurningViewDragKindDragUndecided;
-        } else {
+        if(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) {
             if(_isTurning == -1) {
                 _touchStartPoint.x = _rightPageFrame.origin.x > 0.0f ? (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x) - _rightPageRect.size.width : (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x);
                 _touchStartPoint.y = pageTouchPoint.y;
@@ -1958,7 +1941,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 _touchStartPoint.x = _rightPageRect.size.width - (_pageVertices[_touchRow][X_VERTEX_COUNT - 1].x - pageTouchPoint.x);
                 _touchStartPoint.y = pageTouchPoint.y;
             }
-            _dragKind = EucPageTurningViewDragKindDragTurn;
+        } else {       
+            _touchStartPoint = pageTouchPoint;
+            _isTurning = 0; 
         }
     }    
     
@@ -1970,25 +1955,29 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         translation.x *= _zoomFactor;
         translation.y *= _zoomFactor;
         
-        if(_dragKind == EucPageTurningViewDragKindDragUndecided || _dragKind == EucPageTurningViewDragKindDragScroll) {
+        CGFloat oldViewportTouchX = _viewportTouchPoint.x;
+        CGFloat oldViewportTouchY = _viewportTouchPoint.y;
+        
+        if(!(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || 
+           (_animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
             translation.x += _scrollStartTranslation.x;
             translation.y += _scrollStartTranslation.y;
             CGPoint translationAfterScroll = [self _setZoomMatrixFromTranslation:translation zoomFactor:_zoomFactor];
-            if(_dragKind == EucPageTurningViewDragKindDragUndecided) {
+            if(!(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) && 
+               !(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
                 if(fabsf(translationAfterScroll.x) > 0.000001f || fabsf(translationAfterScroll.y) > 0.000001f) {
-                    _dragKind = EucPageTurningViewDragKindDragTurn;
+                    _animationFlags = EucPageTurningViewAnimationFlagsDragTurn;
                 } else {
-                    _dragKind = EucPageTurningViewDragKindDragScroll;
+                    _animationFlags = EucPageTurningViewAnimationFlagsDragScroll;
                 }
+                self.animating = YES;
             }
             translation = translationAfterScroll;
         }
         
-        if(_dragKind == EucPageTurningViewDragKindDragTurn || _dragKind == EucPageTurningViewDragKindDragUndecided) {
+        if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn)) {
             translation.x /= _zoomFactor;
             translation.y /= _zoomFactor;
-            
-            CGFloat oldViewportTouchX = _viewportTouchPoint.x;
 
             if(translation.x < -0.000001f && _isTurning >= 0) {
                 pageTouchPoint = CGPointMake(_rightPageRect.size.width + translation.x,
@@ -1997,9 +1986,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _prepareForTurnForwards:YES];
                     oldViewportTouchX = pageTouchPoint.x;
                 }
-                if(_isTurning != 0 && !self.isAnimatingTurn) {
-                    self.animatingTurn = YES;
-                }
             } else if(translation.x > 0.000001f && _isTurning <= 0) {
                 pageTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? (-_rightPageRect.size.width + translation.x) : translation.x,
                                              translation.y);
@@ -2007,36 +1993,39 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _prepareForTurnForwards:NO];
                     oldViewportTouchX = pageTouchPoint.x;
                 }
-                if(_isTurning != 0 && !self.isAnimatingTurn) {
-                    self.animatingTurn = YES;
-                }        
             } else {
-                if(_isTurning == 1 && self.isAnimatingTurn) {
+                if(_isTurning == 1 && self.isAnimating) {
                     pageTouchPoint = CGPointMake(_stablePageVertices[_touchRow][X_VERTEX_COUNT - 1].x,
                                                  translation.y);
                 } else {
                     pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? -_rightPageRect.size.width : 0, translation.y);
                 } 
             }
+            if(_isTurning == 0) {
+                _animationFlags &= ~EucPageTurningViewAnimationFlagsDragTurn;
+                self.animating = NO;  
+            }
             
             _viewportTouchPoint = pageTouchPoint;
             
-            NSTimeInterval thisTouchTime = [touch timestamp];
-            if(_touchTime) {
-                GLfloat difference = (GLfloat)(thisTouchTime - _touchTime);
-                if(difference && !first) {
-                    _touchVelocity = (pageTouchPoint.x - oldViewportTouchX) / (30.0f * difference);
-                } else {
-                    _touchVelocity = 0;
-                }
-            } else {
-                _touchVelocity = 0;
-            }
-            _touchTime = thisTouchTime;
             if(_isTurning != 0) {
                 [self _setPageTouchPointForPageX:pageTouchPoint.x];
-            }
+            }            
         }
+        
+        NSTimeInterval thisTouchTime = [touch timestamp];
+        if(_touchTime) {
+            CGFloat difference = (CGFloat)(thisTouchTime - _touchTime);
+            if(difference && !first) {
+                _touchVelocity.x = (pageTouchPoint.x - oldViewportTouchX) / (30.0f * difference);
+                _touchVelocity.y = (pageTouchPoint.y - oldViewportTouchY) / (30.0f * difference);
+            } else {
+                _touchVelocity = CGPointZero;
+            }
+        } else {
+            _touchVelocity = CGPointZero;
+        }
+        _touchTime = thisTouchTime;
     }
 }
 
@@ -2189,13 +2178,22 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             //NSLog(@"Real: %f", _touchVelocity);
             
-            GLfloat absTouchVelocity = fabsf(_touchVelocity);
-            if(absTouchVelocity < 0.02f) {
-                _touchVelocity = 0;
-            } else if(absTouchVelocity < 0.2f) {
-                _touchVelocity = _touchVelocity < 0 ? -0.2f : 0.2f;
-            } else if(absTouchVelocity > 0.4f) {
-                _touchVelocity = _touchVelocity < 0 ? -0.4f : 0.4f;
+            if(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) {
+                CGFloat absTouchVelocity = fabsf(_touchVelocity.x);
+                if(absTouchVelocity < 0.02f) {
+                    _touchVelocity.x = 0;
+                } else if(absTouchVelocity < 0.2f) {
+                    _touchVelocity.x = _touchVelocity.x < 0 ? -0.2f : 0.2f;
+                } else if(absTouchVelocity > 0.4f) {
+                    _touchVelocity.x = _touchVelocity.x < 0 ? -0.4f : 0.4f;
+                }
+                _touchVelocity.y = 0.0f;
+            } 
+            if(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
+                _animationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
+                if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
+                    self.animating = NO;
+                }
             }
             //NSLog(@"Corrected: %f", _touchVelocity);
             //_pageTouchPoint.x = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x;
@@ -2264,7 +2262,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
 
     if(!_dragUnderway && _touch && [touches containsObject:_touch]) {
-        if(!self.animatingTurn) {
+        if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
             BOOL turning = NO;
             
             CGPoint point = [_touch locationInView:self];
@@ -2481,16 +2479,16 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)_verlet
 {    
-    if(!_touch && _touchVelocity) {
-        _viewportTouchPoint.x = _viewportTouchPoint.x + _touchVelocity /** difference*/;
+    if(!_touch && _touchVelocity.x) {
+        _viewportTouchPoint.x = _viewportTouchPoint.x + _touchVelocity.x /** difference*/;
         [self _setPageTouchPointForPageX:_viewportTouchPoint.x ];
     } 
     
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
     THVec3 *flatOldPageVertices = (THVec3 *)_oldPageVertices;
     //GLfloatTriplet *flatForceAccumulators = (GLfloatTriplet *)_forceAccumulators;
-    GLfloat gravity = (_touch || _touchVelocity) ? 0.002 : 0.01;
-    GLfloat toAdd = (_touch || _touchVelocity) ? 0.6f : 0.99f;
+    GLfloat gravity = (_touch || _touchVelocity.x) ? 0.002 : 0.01;
+    GLfloat toAdd = (_touch || _touchVelocity.x) ? 0.6f : 0.99f;
     for(int i = 0; i < X_VERTEX_COUNT * Y_VERTEX_COUNT; ++i) {
         THVec3 x = flatPageVertices[i];
         THVec3 temp = x;
@@ -2537,7 +2535,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     BOOL shouldStopAnimating = NO;
     
     BOOL pageHasRigidEdge;
-    if(_isTurningAutomatically) {
+    if(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
         pageHasRigidEdge = YES;
     } else if([_delegate respondsToSelector:@selector(pageTurningView:viewEdgeIsRigid:)]) {
         pageHasRigidEdge = [_delegate pageTurningView:self viewEdgeIsRigid:_pageContentsInformation[_rightFlatPageContentsIndex-2].view];
@@ -2551,7 +2549,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
     int j;
     for(j=0; j < NUM_ITERATIONS; ++j) {              
-        if(_touch || _touchVelocity) {        
+        if(_touch || _touchVelocity.x) {        
             _pageVertices[MAX(0, _touchRow-1)][X_VERTEX_COUNT - 1].x = pageTouchPoint.x;
             _pageVertices[_touchRow][X_VERTEX_COUNT - 1] = pageTouchPoint;
             _pageVertices[MIN(Y_VERTEX_COUNT - 1, _touchRow+1)][X_VERTEX_COUNT - 1].x = pageTouchPoint.x;
@@ -2582,9 +2580,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         // Make sure the page is attached to the edge, and
         // above the surface.
-        BOOL isFlat = !_touch && _touchVelocity >= 0;
-        BOOL hasFlipped = !_touch && _touchVelocity <= 0;
-        BOOL hasFlippedFlat = !_touch && _touchVelocity <= 0;
+        BOOL isFlat = !_touch && _touchVelocity.x >= 0;
+        BOOL hasFlipped = !_touch && _touchVelocity.x <= 0;
+        BOOL hasFlippedFlat = !_touch && _touchVelocity.x <= 0;
         for(int row = 0; row < Y_VERTEX_COUNT; ++row) {
             GLfloat xCoord = _stablePageVertices[row][0].x;
             GLfloat yCoord = _stablePageVertices[row][0].y;
@@ -2631,7 +2629,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 if(isFlat) {
                     isFlat = NO;
                 }         
-                if(_touch || _touchVelocity) {
+                if(_touch || _touchVelocity.x) {
                     if(pageHasRigidEdge) {
                         _pageVertices[row][X_VERTEX_COUNT - 1].x = pageTouchPoint.x;
                         _pageVertices[row][X_VERTEX_COUNT - 1].z = pageTouchPoint.z;
@@ -2650,7 +2648,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(isFlat || hasFlipped) {
             memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
             memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
-            _touchVelocity = 0;
+            _touchVelocity = CGPointZero;
             
             if(_rightFlatPageContentsIndex == 5) {
                 if(hasFlipped) {
@@ -2930,7 +2928,8 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
         
         _animationIndex = 0;
             
-        self.animatingPosition = YES;
+        _animationFlags |= EucPageTurningViewAnimationFlagsAutomaticPositioning;
+        self.animating = YES;
     } else {
         [self _setTranslation:translation zoomFactor:zoomFactor];
     }
