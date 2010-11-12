@@ -253,7 +253,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
                                            target:self 
                                            action:@selector(showSettings:)];
     item.width = 69.0f;
-    [item setAccessibilityLabel:NSLocalizedString(@"App Settings", @"Accessibility label for Library View App Settings button")];
+    [item setAccessibilityLabel:NSLocalizedString(@"Application Settings", @"Accessibility label for Library View Settings button")];
 	
     [libraryItems addObject:item];
     [item release];
