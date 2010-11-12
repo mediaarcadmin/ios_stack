@@ -41,11 +41,10 @@ typedef enum EucPageTurningViewZoomHandlingKind {
 
 typedef enum EucPageTurningViewAnimationFlags {
     EucPageTurningViewAnimationFlagsNone                 = 0x00,
-    EucPageTurningViewAnimationFlagsDragUndecided        = 0x01,
-    EucPageTurningViewAnimationFlagsDragScroll           = 0x02,
-    EucPageTurningViewAnimationFlagsDragTurn             = 0x04,
-    EucPageTurningViewAnimationFlagsAutomaticTurn        = 0x08,
-    EucPageTurningViewAnimationFlagsAutomaticPositioning = 0x10,
+    EucPageTurningViewAnimationFlagsDragScroll           = 0x01,
+    EucPageTurningViewAnimationFlagsDragTurn             = 0x02,
+    EucPageTurningViewAnimationFlagsAutomaticTurn        = 0x04,
+    EucPageTurningViewAnimationFlagsAutomaticPositioning = 0x08,
 } EucPageTurningViewAnimationFlags;
 
 #pragma mark -

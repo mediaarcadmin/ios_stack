@@ -1028,7 +1028,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGSize correctedSize = CGSizeMake(CGBitmapContextGetWidth(pageBitmapContext), CGBitmapContextGetHeight(pageBitmapContext));
         if(THWillLog()) {
             if(!CGSizeEqualToSize(correctedSize, size)) {
-                NSLog(@"Generated texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
+                THLog(@"Generated texture = wanted %@, got %@", NSStringFromCGSize(size), NSStringFromCGSize(correctedSize));
             }
         }
         NSUInteger bufferLength = contextWidth * contextHeight * 4;
@@ -1463,7 +1463,24 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsAutomaticPositioning;
         }
     }
-	    
+    
+    if(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
+        if(!_dragUnderway) {
+            _touchVelocity.x /= 1.5f;
+            _touchVelocity.y /= 1.5f;
+            if(fabsf(_touchVelocity.x * _viewportToBoundsPointsTransform.a) < 0.1f &&
+               fabsf(_touchVelocity.y * _viewportToBoundsPointsTransform.d) < 0.1f) {
+                postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
+                _touchVelocity = CGPointZero;
+            } else {
+                CGPoint newTranslation = _scrollTranslation;
+                newTranslation.x += _touchVelocity.x * _zoomFactor;
+                newTranslation.y += _touchVelocity.y * _zoomFactor;
+                [self _setZoomMatrixFromTranslation:newTranslation zoomFactor:_zoomFactor];
+            }
+        }
+    }    
+    	    
     EAGLContext *eaglContext = self.eaglContext;
     [eaglContext thPush];
     
@@ -1943,7 +1960,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
         } else {       
             _touchStartPoint = pageTouchPoint;
-            _isTurning = 0; 
+            _isTurning = 0;
         }
     }    
     
@@ -1956,7 +1973,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGFloat oldViewportTouchX = _viewportTouchPoint.x;
     CGFloat oldViewportTouchY = _viewportTouchPoint.y;
 
-    if(fabsf(translation.x) > 0.001f || fabsf(translation.y) > 0.001f) {
+    if(fabsf(translation.x * _viewportToBoundsPointsTransform.a) > 0.5f || fabsf(translation.y * _viewportToBoundsPointsTransform.d) > 0.5f) {
         if(!(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || 
            (_animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
             translation.x += _scrollStartTranslation.x;
@@ -1964,10 +1981,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             CGPoint translationAfterScroll = [self _setZoomMatrixFromTranslation:translation zoomFactor:_zoomFactor];
             if(!(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) && 
                !(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
-                NSLog(@"%f, %f | %f, %f | %f, %f", translation.x, translation.y, translationAfterScroll.x, translationAfterScroll.y, (translation.x - translationAfterScroll.x) - _scrollStartTranslation.x, (translation.y - translationAfterScroll.y) - _scrollStartTranslation.y);
-                if(fabsf(translation.x - _scrollStartTranslation.x) > 0.001f &&
-                   fabsf((translation.x - translationAfterScroll.x) - _scrollStartTranslation.x) < 0.001f &&
-                   fabsf((translation.y - translationAfterScroll.y) - _scrollStartTranslation.y) < 0.02f) {
+                if(fabsf(translation.x - _scrollStartTranslation.x) * _viewportToBoundsPointsTransform.a > 0.5f &&
+                   fabsf((translation.x - translationAfterScroll.x) - _scrollStartTranslation.x) * _viewportToBoundsPointsTransform.a < 0.5f &&
+                   fabsf((translation.y - translationAfterScroll.y) - _scrollStartTranslation.y) * _viewportToBoundsPointsTransform.d < 4.0f) {
                     _animationFlags = EucPageTurningViewAnimationFlagsDragTurn;
                 } else {
                     _animationFlags = EucPageTurningViewAnimationFlagsDragScroll;
@@ -2007,27 +2023,28 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 _animationFlags &= ~EucPageTurningViewAnimationFlagsDragTurn;
                 self.animating = NO;  
             }
-            
-            _viewportTouchPoint = pageTouchPoint;
-            
+
             if(_isTurning != 0) {
                 [self _setPageTouchPointForPageX:pageTouchPoint.x];
             }            
         }
     }
+    
     NSTimeInterval thisTouchTime = [touch timestamp];
     if(_touchTime) {
         CGFloat difference = (CGFloat)(thisTouchTime - _touchTime);
         if(difference && !first) {
-            _touchVelocity.x = (pageTouchPoint.x - oldViewportTouchX) / (30.0f * difference);
-            _touchVelocity.y = (pageTouchPoint.y - oldViewportTouchY) / (30.0f * difference);
+            CGFloat fps = 1.0f / self.animationInterval;
+            _touchVelocity.x = (pageTouchPoint.x - oldViewportTouchX) / (fps * difference);
+            _touchVelocity.y = (pageTouchPoint.y - oldViewportTouchY) / (fps * difference);
         } else {
             _touchVelocity = CGPointZero;
         }
     } else {
         _touchVelocity = CGPointZero;
     }
-    _touchTime = thisTouchTime;            
+    _touchTime = thisTouchTime;
+    _viewportTouchPoint = pageTouchPoint;
 }
 
 
@@ -2177,7 +2194,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             if([event timestamp] > [_touch timestamp] + 0.1) {
                 [self _setTouchLocationFromTouch:_touch firstTouch:NO];
             }
-            //NSLog(@"Real: %f", _touchVelocity);
+            //NSLog(@"Real: %f, %f", _touchVelocity.x, _touchVelocity.y);
             
             if(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) {
                 CGFloat absTouchVelocity = fabsf(_touchVelocity.x);
@@ -2190,13 +2207,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
                 _touchVelocity.y = 0.0f;
             } 
-            if(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
+            /*if(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
                 _animationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
                 if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
                     self.animating = NO;
                 }
-            }
-            //NSLog(@"Corrected: %f", _touchVelocity);
+            }*/
+            //NSLog(@"Corrected: %f, %f", _touchVelocity.x, _touchVelocity.y);
             //_pageTouchPoint.x = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x;
             _touchTime = 0;
             _dragUnderway = NO;
@@ -2482,7 +2499,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {    
     if(!_touch && _touchVelocity.x) {
         _viewportTouchPoint.x = _viewportTouchPoint.x + _touchVelocity.x /** difference*/;
-        [self _setPageTouchPointForPageX:_viewportTouchPoint.x ];
+        [self _setPageTouchPointForPageX:_viewportTouchPoint.x];
     } 
     
     THVec3 *flatPageVertices = (THVec3 *)_pageVertices;
