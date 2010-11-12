@@ -29,6 +29,8 @@
 #import "BlioModalPopoverController.h"
 #import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
+#import "BlioTextFlowParagraphSource.h"
+#import "BlioTextFlowParagraph.h"
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -1174,10 +1176,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
+	[self stopAudio];
     [self.book reportReadingIfRequired];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
+	[self stopAudio];
     [self.book reportReadingIfRequired];
 }
 
@@ -2082,8 +2086,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
 	_audioBookManager.avPlayer.delegate = self;
 	
+	// Cue up the audio player to where it should start for this page.
 	BlioBookmarkPoint* bookmarkPt = self.bookView.currentBookmarkPoint;  
-	_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue] + bookmarkPt.wordOffset; // or just bookmarkPt.wordOffset?
+	_audioBookManager.timeIx = [[segmentInfo objectAtIndex:kTimeIndex] intValue] + bookmarkPt.wordOffset;
+	if (  bookmarkPt.blockOffset>0 ) {
+		NSArray *pageBlocks = [[self.book textFlow] blocksForPageAtIndex:layoutPage - 1 includingFolioBlocks:NO]; 
+		NSInteger numPrevWords = 0;
+		for ( int i=0; i< bookmarkPt.blockOffset; ++i ) {
+			BlioTextFlowBlock *thisBlock = [pageBlocks objectAtIndex:i];
+			numPrevWords += [[thisBlock words] count];
+		}
+		_audioBookManager.timeIx += numPrevWords;
+	}
 	NSTimeInterval timeOffset = [[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]/1000.0;
 	[_audioBookManager.avPlayer setCurrentTime:timeOffset];
 	
@@ -2301,7 +2315,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		
         if ([self.book hasAudiobook]) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
-                // So far this only would work for fixed view.
                 if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
                     // No audio files for this page.
                     // Look for next page with files.
