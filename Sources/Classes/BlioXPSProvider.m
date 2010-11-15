@@ -659,7 +659,15 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 		
 		if (fixedDocumentPath) {
 			NSData *fixedDocumentData = [self dataForComponentAtPath:fixedDocumentPath];
-			xpsPagesDirectory = [self extractFixedPagesPath:fixedDocumentData];
+			NSString *pagesPath = [self extractFixedPagesPath:fixedDocumentData];
+			if ([[pagesPath substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"/"]) {
+				xpsPagesDirectory = pagesPath;
+			} else {
+				if (![[fixedDocumentPath substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"/"]) {
+					fixedDocumentPath = [NSString stringWithFormat:@"/%@", fixedDocumentPath];
+				}
+				xpsPagesDirectory = [[fixedDocumentPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:pagesPath];
+			}
 			[xpsPagesDirectory retain];
 		}
 										 
@@ -691,8 +699,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
             gzipped = YES;
             componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
         } else {
-            componentPath = [NSString stringWithFormat:@"/%@", [[self xpsPagesDirectory] stringByAppendingPathComponent:path]];
+            componentPath = [[self xpsPagesDirectory] stringByAppendingPathComponent:path];
         }
+
         mapped = YES;
         cached = YES;
     } else if ([directory isEqualToString:BlioXPSEncryptedImagesDir] && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
