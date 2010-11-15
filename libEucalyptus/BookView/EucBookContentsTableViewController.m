@@ -216,6 +216,11 @@
     EucNameAndPageNumberView *nameAndPageNumberView = (EucNameAndPageNumberView *)[cell.contentView viewWithTag:49];
     
     THPair *nameAndSubtitle = [_dataSource presentationNameAndSubTitleForSectionUuid:uuid];
+	NSUInteger level = 0;
+	if ([_dataSource respondsToSelector:@selector(levelForSectionUuid:)]) {
+		level = [_dataSource levelForSectionUuid:uuid];
+	}
+
     NSUInteger pageNumber = [_dataSource pageNumberForSectionUuid:uuid];
     BOOL pageNumberIsValid = YES;
 

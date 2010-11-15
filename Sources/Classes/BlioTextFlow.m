@@ -1083,6 +1083,11 @@ static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char
     }
 }
 
+- (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid {
+	NSUInteger sectionIndex = [sectionUuid integerValue];
+    return [[self.tableOfContents objectAtIndex:sectionIndex] level];
+}
+
 - (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
 {
     NSUInteger sectionIndex = [sectionUuid integerValue];
