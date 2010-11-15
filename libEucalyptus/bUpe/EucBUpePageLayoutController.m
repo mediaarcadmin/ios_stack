@@ -245,7 +245,7 @@
                                  textViewClass:[EucBUpePageTextView class]] autorelease];
 }
 
-- (BOOL)viewShouldBeRigid:(UIView *)view
+- (BOOL)viewEdgeIsRigid:(UIView *)view
 {
     return [(EucPageView *)view pageNumberString] == nil;
 }

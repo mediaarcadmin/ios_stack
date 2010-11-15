@@ -35,7 +35,7 @@
 - (NSUInteger)pageNumberForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (EucBookPageIndexPoint *)indexPointForPageNumber:(NSUInteger)pageNumber;
 
-- (BOOL)viewShouldBeRigid:(UIView *)view;
+- (BOOL)viewEdgeIsRigid:(UIView *)view;
 
 + (EucPageView *)blankPageViewWithFrame:(CGRect)frame
                            forPointSize:(CGFloat)pointSize;
