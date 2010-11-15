@@ -36,6 +36,7 @@
 - (EucBookPageIndexPoint *)indexPointForPageNumber:(NSUInteger)pageNumber;
 
 - (BOOL)viewEdgeIsRigid:(UIView *)view;
+- (CGFloat)tapTurnMarginForView:(UIView *)view;
 
 + (EucPageView *)blankPageViewWithFrame:(CGRect)frame
                            forPointSize:(CGFloat)pointSize;

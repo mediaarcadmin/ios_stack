@@ -250,4 +250,10 @@
     return [(EucPageView *)view pageNumberString] == nil;
 }
 
+- (CGFloat)tapTurnMarginForView:(UIView *)view
+{
+    return [(EucPageView *)view margins].width;
+}
+
+
 @end

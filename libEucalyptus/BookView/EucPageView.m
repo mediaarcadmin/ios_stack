@@ -501,4 +501,9 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     }
 }
 
+- (CGSize)margins
+{
+   return _margins;    
+}
+
 @end

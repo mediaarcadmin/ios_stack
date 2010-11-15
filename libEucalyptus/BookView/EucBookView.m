@@ -1079,6 +1079,10 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     return [_pageLayoutController viewEdgeIsRigid:view];
 }
 
+- (CGFloat)pageTurningView:(EucPageTurningView *)pageTurningView tapTurnMarginForView:(UIView *)view
+{
+    return [_pageLayoutController tapTurnMarginForView:view];
+}
 
 #pragma mark -
 #pragma mark Selector
