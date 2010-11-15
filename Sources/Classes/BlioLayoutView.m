@@ -1778,9 +1778,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             }
         }
     } else {
-        if (!reversed) {
-            if (pageBlocks.count > 0) {
-                targetBlock = [pageBlocks objectAtIndex:0];
+        if (reversed) {
+			if (self.pageTurningView.twoUp) {
+				if (self.pageTurningView.focusedPageIndex == self.pageTurningView.rightPageIndex) {
+					NSArray *focusedBlocks = [self.textFlow blocksForPageAtIndex:self.pageTurningView.leftPageIndex includingFolioBlocks:NO];
+					if (focusedBlocks.count > 0) {
+						targetBlock = [focusedBlocks lastObject];
+						targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+					}
+				}
+			}
+		} else {
+			NSArray *focusedBlocks = [self.textFlow blocksForPageAtIndex:self.pageTurningView.focusedPageIndex includingFolioBlocks:NO];
+            if (focusedBlocks.count > 0) {
+                targetBlock = [focusedBlocks objectAtIndex:0];
                 targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
             }
         }
