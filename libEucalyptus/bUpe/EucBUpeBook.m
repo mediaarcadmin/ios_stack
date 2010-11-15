@@ -9,6 +9,7 @@
 
 #import "THLog.h"
 #import "EucBUpeBook.h"
+#import "EucBookNavPoint.h"
 #import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
@@ -486,9 +487,8 @@ static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)
                 if(src) {
                     NSString *text = navPointInfo.text;
                     if(text) {
-                        [context->buildNavMap setObject:[THPair pairWithFirst:text 
-                                                                       second:[[NSURL URLWithString:src 
-                                                                                      relativeToURL:context->url] absoluteString]]
+                        NSString *uuid = [[NSURL URLWithString:src relativeToURL:context->url] absoluteString];
+                        [context->buildNavMap setObject:[EucBookNavPoint navPointWithText:text uuid:uuid level:(context->navPointStack).count - 1]
                                                  forKey:[NSNumber numberWithUnsignedInteger:navPointInfo.playOrder]];
                     }
                 }
@@ -557,8 +557,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             [navPointsBuild addObject:[buildNavMap objectForKey:key]];
         }
     } else {
-        [navPointsBuild addPairWithFirst:NSLocalizedString(@"Start of Book", @"Contents section name for a book with no defined sections or titles")
-                                  second:[[NSURL URLWithString:[_manifest objectForKey:[_spine objectAtIndex:0]] relativeToURL:_root] absoluteString]];
+        [navPointsBuild addObject:[EucBookNavPoint navPointWithText:NSLocalizedString(@"Start of Book", @"Contents section name for a book with no defined sections or titles")
+                                                               uuid:[[NSURL URLWithString:[_manifest objectForKey:[_spine objectAtIndex:0]] relativeToURL:_root] absoluteString]
+                                                              level:0]];
     }
     _navPoints = navPointsBuild;
     

@@ -12,6 +12,7 @@
 #import "EucBUpeBook.h"
 #import "EucBUpePageTextView.h"
 
+#import "EucBookNavPoint.h"
 #import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
@@ -135,14 +136,27 @@
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)uuid
 {
     NSString *lastName = nil;
-    for(THPair *navPoint in _book.navPoints) {
-        NSString *identifier = navPoint.second;
+    for(EucBookNavPoint *navPoint in _book.navPoints) {
+        NSString *identifier = navPoint.uuid;
         if([identifier isEqualToString:uuid]) {
-            lastName = navPoint.first;
+            lastName = navPoint.text;
             break;
         }
     }
     return [lastName splitAndFormattedChapterName];
+}
+
+- (NSUInteger)levelForSectionUuid:(NSString *)uuid
+{
+    NSUInteger level = 0;
+    for(EucBookNavPoint *navPoint in _book.navPoints) {
+        NSString *identifier = navPoint.uuid;
+        if([identifier isEqualToString:uuid]) {
+            level = navPoint.level;
+            break;
+        }
+    }
+    return level;
 }
 
 - (NSArray *)sectionUuids
@@ -231,9 +245,15 @@
                                  textViewClass:[EucBUpePageTextView class]] autorelease];
 }
 
-- (BOOL)viewShouldBeRigid:(UIView *)view
+- (BOOL)viewEdgeIsRigid:(UIView *)view
 {
     return [(EucPageView *)view pageNumberString] == nil;
 }
+
+- (CGFloat)tapTurnMarginForView:(UIView *)view
+{
+    return [(EucPageView *)view margins].width;
+}
+
 
 @end

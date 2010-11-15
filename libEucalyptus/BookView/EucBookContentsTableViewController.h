@@ -45,6 +45,9 @@
 
 @protocol EucBookContentsTableViewControllerDataSource <NSObject>
 
+@optional
+- (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid;
+
 @required
 - (NSArray *)sectionUuids;
 - (NSString *)sectionUuidForPageNumber:(NSUInteger)pageNumber;

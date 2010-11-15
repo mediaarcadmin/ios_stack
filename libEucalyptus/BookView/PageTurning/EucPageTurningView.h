@@ -325,7 +325,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
 // Views are assumed not to have rigid edges if this is not implemented.
 - (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView viewEdgeIsRigid:(UIView *)view;
-- (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView tapTurnMarginForView:(UIView *)view;
+- (CGFloat)pageTurningView:(EucPageTurningView *)pageTurningView tapTurnMarginForView:(UIView *)view;
 
 @end
 

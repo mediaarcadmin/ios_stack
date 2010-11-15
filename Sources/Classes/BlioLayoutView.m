@@ -586,10 +586,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
 {
-    NSUInteger pageIndex = aPageTurningView.rightPageIndex;
-    if(pageIndex == NSUIntegerMax) {
-        pageIndex = aPageTurningView.leftPageIndex;
-    }
+    NSUInteger pageIndex = aPageTurningView.focusedPageIndex;
     if(self.pageNumber != pageIndex + 1) {
 		if (!suppressHistoryAfterTurn) {
 			[self pushCurrentBookmarkPoint];
@@ -602,28 +599,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	suppressHistoryAfterTurn = NO;
 	
     if(self.temporaryHighlightRange) {
-		BOOL pageIsVisible = YES;
 		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
 		
-		if (self.pageTurningView.isTwoUp) {
-			if ((self.pageTurningView.leftPageIndex != targetIndex) && (self.pageTurningView.rightPageIndex != targetIndex)) {
-				pageIsVisible = NO;
-			}
-		} else {
-			if (self.pageTurningView.rightPageIndex  != targetIndex) {
-				pageIsVisible = NO;
-			}
-		}
-		
-        if (pageIsVisible) {
+        if((self.pageTurningView.leftPageIndex == targetIndex) || (self.pageTurningView.rightPageIndex == targetIndex)) {
             EucSelectorRange *range = [self selectorRangeFromBookmarkRange:self.temporaryHighlightRange];
 			[self.selector temporarilyHighlightSelectorRange:range animated:YES];
         }
-		
+				
 		self.temporaryHighlightRange = nil;
-  
     }
-
 }
 
 - (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView 
@@ -764,22 +748,25 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (NSArray *)bookmarkRangesForCurrentPage {
-	BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
-	startPoint.blockOffset = 0;
-	
-	if (self.pageTurningView.isTwoUp) {
-		startPoint.layoutPage = [self.pageTurningView leftPageIndex] + 1;
-	} else {
-		startPoint.layoutPage = [self.pageTurningView rightPageIndex] + 1;
-	}
-	
-    NSArray *rightPageBlocks = [self.textFlow blocksForPageAtIndex:[self.pageTurningView rightPageIndex] includingFolioBlocks:NO];
-    NSUInteger maxOffset = [rightPageBlocks count];
+	NSUInteger startPageIndex = self.pageTurningView.leftPageIndex;
+    NSUInteger endPageIndex = self.pageTurningView.rightPageIndex;
+    if(startPageIndex == NSUIntegerMax) {
+        startPageIndex = endPageIndex;
+    } 
+    if(endPageIndex == NSUIntegerMax) {
+        endPageIndex = startPageIndex;
+    }
+    	
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+	startPoint.layoutPage = startPageIndex + 1;
     
     BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
-    endPoint.layoutPage = [self.pageTurningView rightPageIndex] + 1;
-    endPoint.blockOffset = maxOffset;
+    endPoint.layoutPage = endPageIndex + 1;
     
+    NSArray *endPageBlocks = [self.textFlow blocksForPageAtIndex:[self.pageTurningView rightPageIndex] includingFolioBlocks:NO];
+    NSUInteger maxOffset = [endPageBlocks count];
+    endPoint.blockOffset = maxOffset;
+
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
     range.startPoint = startPoint;
     range.endPoint = endPoint;
@@ -1038,11 +1025,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)refreshHighlights {
-	if (self.pageTurningView.isTwoUp) {
-		[self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.leftPageIndex];
-	}
-	[self.pageTurningView refreshHighlightsForPageAtIndex:self.pageTurningView.rightPageIndex];
-	[self.pageTurningView drawView];
+    NSUInteger pageIndex = self.pageTurningView.leftPageIndex;
+    if(pageIndex != NSUIntegerMax) {
+        [self.pageTurningView refreshHighlightsForPageAtIndex:pageIndex];
+    }
+    pageIndex = self.pageTurningView.rightPageIndex;
+    if(pageIndex != NSUIntegerMax) {
+        [self.pageTurningView refreshHighlightsForPageAtIndex:pageIndex];
+    }
 }
 
 #pragma mark -
@@ -1069,15 +1059,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		BOOL pageIsVisible = YES;
 		NSInteger targetIndex = bookmarkRange.startPoint.layoutPage - 1;
 		
-		if (self.pageTurningView.isTwoUp) {
-			if ((self.pageTurningView.leftPageIndex != targetIndex) && (self.pageTurningView.rightPageIndex != targetIndex)) {
-				pageIsVisible = NO;
-			}
-		} else {
-			if (self.pageTurningView.rightPageIndex  != targetIndex) {
-				pageIsVisible = NO;
-			}
-		}
+        if ((self.pageTurningView.leftPageIndex != targetIndex) && (self.pageTurningView.rightPageIndex != targetIndex)) {
+            pageIsVisible = NO;
+        }
 				
 		BOOL showHighlight = YES;
 		
@@ -1220,14 +1204,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if (!CGPointEqualToPoint(startTouchPoint, CGPointMake(-1, -1))) {
         if (self.pageTurningView.isTwoUp) {
             NSInteger leftPageIndex = [self.pageTurningView leftPageIndex];
-            if (leftPageIndex >= 0) {
+            if (leftPageIndex != NSUIntegerMax) {
                 touchedHyperlink = [self hyperlinkForPage:leftPageIndex + 1 atPoint:point];
             }
         }
         
         if (nil == touchedHyperlink) {
             NSInteger rightPageIndex = [self.pageTurningView rightPageIndex];
-            if (rightPageIndex < pageCount) {
+            if (rightPageIndex != NSUIntegerMax) {
                 touchedHyperlink = [self hyperlinkForPage:rightPageIndex + 1 atPoint:point];
             }
         }
@@ -1280,18 +1264,45 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			}
 		}
 		
+        NSUInteger wantPageIndex = NSUIntegerMax;
 		if (focusedElement == self.prevZone) {
 			if (self.pageTurningView.isTwoUp) {
-				[self goToPageNumber:(self.pageTurningView.leftPageIndex - 1) + 1 animated:YES];
+                wantPageIndex = self.pageTurningView.leftPageIndex;
+                if(wantPageIndex != NSUIntegerMax) {
+                    if(wantPageIndex >= 2) {
+                        // Subtract 2 so that the focused page after the turn is
+                        // on the right.
+                        wantPageIndex -= 2;
+                    } else if(wantPageIndex > 0) {
+                        --wantPageIndex;
+                    } else {
+                        // Already at index 0, can't turn.
+                        wantPageIndex = NSUIntegerMax;
+                    }
+                }
 				return;
 			} else {
-				[self goToPageNumber:(self.pageTurningView.rightPageIndex - 1) + 1 animated:YES];
+                wantPageIndex = self.pageTurningView.rightPageIndex;
+                if(wantPageIndex != NSUIntegerMax) {
+                    if(wantPageIndex > 0) {
+                        --wantPageIndex;
+                    } else {
+                        // Already at index 0, can't turn.
+                        wantPageIndex = NSUIntegerMax;
+                    }
+                }                
 				return;
 			}
 		} else if (focusedElement == self.nextZone) {
-			[self goToPageNumber:(self.pageTurningView.rightPageIndex + 1) + 1 animated:YES];
-			return;
-		} else {
+			wantPageIndex = self.pageTurningView.rightPageIndex;
+            if(wantPageIndex != NSUIntegerMax) {
+                ++wantPageIndex;
+            }
+		} 
+        if(wantPageIndex != NSUIntegerMax) {
+            [self goToPageNumber:wantPageIndex + 1 animated:YES];
+            return;
+        } else {
 			[self.delegate toggleToolbars]; 
 			return;
 		}
@@ -1393,35 +1404,37 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (NSArray *)textBlockAccessibilityElements {
     NSMutableArray *elements = [NSMutableArray array];
 	
-	if (self.pageTurningView.isTwoUp) {
-		NSInteger pageIndex = self.pageTurningView.leftPageIndex;
-		CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
-		NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    NSInteger pageIndex = self.pageTurningView.leftPageIndex;
+    if(pageIndex != NSUIntegerMax) {
+        CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
+        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
-		for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-			UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-			CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
-			blockRect = [self.window.layer convertRect:blockRect fromLayer:self.pageTurningView.layer];
-			[element setAccessibilityFrame:blockRect];
-			[element setAccessibilityLabel:[block string]];
-			[elements addObject:element];
-			[element release];
-		}
-    }
+        for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
+            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
+            blockRect = [self.window.layer convertRect:blockRect fromLayer:self.pageTurningView.layer];
+            [element setAccessibilityFrame:blockRect];
+            [element setAccessibilityLabel:[block string]];
+            [elements addObject:element];
+            [element release];
+        }
+        }
 	
-	NSInteger pageIndex = self.pageTurningView.rightPageIndex;
-	CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
-	NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    
-	for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-		UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-		CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
-		blockRect = [self.window.layer convertRect:blockRect fromLayer:self.pageTurningView.layer];
-		[element setAccessibilityFrame:blockRect];
-		[element setAccessibilityLabel:[block string]];
-		[elements addObject:element];
-		[element release];
-	}
+    pageIndex = self.pageTurningView.rightPageIndex;
+    if(pageIndex != NSUIntegerMax) {
+        CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
+        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        
+        for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
+            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
+            blockRect = [self.window.layer convertRect:blockRect fromLayer:self.pageTurningView.layer];
+            [element setAccessibilityFrame:blockRect];
+            [element setAccessibilityLabel:[block string]];
+            [elements addObject:element];
+            [element release];
+        }
+    }
 	
 	return elements;
 }
@@ -1765,9 +1778,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             }
         }
     } else {
-        if (!reversed) {
-            if (pageBlocks.count > 0) {
-                targetBlock = [pageBlocks objectAtIndex:0];
+        if (reversed) {
+			if (self.pageTurningView.twoUp) {
+				if (self.pageTurningView.focusedPageIndex == self.pageTurningView.rightPageIndex) {
+					NSArray *focusedBlocks = [self.textFlow blocksForPageAtIndex:self.pageTurningView.leftPageIndex includingFolioBlocks:NO];
+					if (focusedBlocks.count > 0) {
+						targetBlock = [focusedBlocks lastObject];
+						targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
+					}
+				}
+			}
+		} else {
+			NSArray *focusedBlocks = [self.textFlow blocksForPageAtIndex:self.pageTurningView.focusedPageIndex includingFolioBlocks:NO];
+            if (focusedBlocks.count > 0) {
+                targetBlock = [focusedBlocks objectAtIndex:0];
                 targetBlock = [blockCombiner lastCombinedBlockForBlock:targetBlock];
             }
         }

@@ -3349,6 +3349,7 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
     }   
     if(pageContentsIndex != NSUIntegerMax) {
         [self _refreshHighlightsForPageContentsIndex:pageContentsIndex];
+        [self setNeedsDraw];
     }
 }
 

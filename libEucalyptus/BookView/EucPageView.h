@@ -55,6 +55,7 @@ typedef enum EucPageViewTitleLineContents
 @property (nonatomic, assign) EucPageViewTitleLineContents titleLineContents;
 @property (nonatomic, assign) BOOL fullBleed;
 @property (nonatomic, assign, readonly) CGRect contentRect;
+@property (nonatomic, assign, readonly) CGSize margins;
 
 - (id)initWithFrame:(CGRect)frame
           pointSize:(CGFloat)pointSize 

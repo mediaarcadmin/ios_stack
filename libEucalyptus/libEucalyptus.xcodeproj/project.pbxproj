@@ -521,6 +521,8 @@
 		7DF4A38711F057C300F6A4DD /* EucLibCSSUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF4A34911EF839C00F6A4DD /* EucLibCSSUtils.h */; };
 		7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF58B5D10DA9005004E3DBB /* EucBookView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF58B6010DA9005004E3DBB /* EucBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF58B5E10DA9005004E3DBB /* EucBookView.m */; };
+		7DF823F51291E3FC0072C02B /* EucBookNavPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF823F31291E3FC0072C02B /* EucBookNavPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DF823F61291E3FC0072C02B /* EucBookNavPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF823F41291E3FC0072C02B /* EucBookNavPoint.m */; };
 		7DF8BC3311B526E3003B7A97 /* THBaseEAGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF8BC3411B526E3003B7A97 /* THBaseEAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF8BC3211B526E3003B7A97 /* THBaseEAGLView.m */; };
 		AA747D9F0F9514B9006C5449 /* libEucalyptus_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */; settings = {ATTRIBUTES = (); }; };
@@ -1266,6 +1268,8 @@
 		7DF4A34A11EF839C00F6A4DD /* EucLibCSSUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucLibCSSUtils.m; sourceTree = "<group>"; };
 		7DF58B5D10DA9005004E3DBB /* EucBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookView.h; sourceTree = "<group>"; };
 		7DF58B5E10DA9005004E3DBB /* EucBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookView.m; sourceTree = "<group>"; };
+		7DF823F31291E3FC0072C02B /* EucBookNavPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookNavPoint.h; sourceTree = "<group>"; };
+		7DF823F41291E3FC0072C02B /* EucBookNavPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookNavPoint.m; sourceTree = "<group>"; };
 		7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THBaseEAGLView.h; sourceTree = "<group>"; };
 		7DF8BC3211B526E3003B7A97 /* THBaseEAGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THBaseEAGLView.m; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* libEucalyptus_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libEucalyptus_Prefix.pch; sourceTree = SOURCE_ROOT; };
@@ -2438,6 +2442,8 @@
 				7D51710B1028AF47005F3C46 /* BookPaginator */,
 				7D9283CB1186E73C00061FCC /* Indexes */,
 				7D6AAD611028E78E006289E6 /* EucBook.h */,
+				7DF823F31291E3FC0072C02B /* EucBookNavPoint.h */,
+				7DF823F41291E3FC0072C02B /* EucBookNavPoint.m */,
 				7D5172A51028B771005F3C46 /* EucBookParagraph.h */,
 				7D6AAD641028E7A9006289E6 /* EucBookReference.h */,
 				7D6AAD631028E7A9006289E6 /* EucBookReference.m */,
@@ -2961,6 +2967,7 @@
 				7DAC9908125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.h in Headers */,
 				7D868B2012802F9F003A3ACD /* THEAGLContextAdditions.h in Headers */,
 				7D868B2612802FB9003A3ACD /* THOpenGLTexturePool.h in Headers */,
+				7DF823F51291E3FC0072C02B /* EucBookNavPoint.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3614,6 +3621,7 @@
 				7DAC9909125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.m in Sources */,
 				7D868B2112802FA5003A3ACD /* THEAGLContextAdditions.m in Sources */,
 				7D868B2212802FAF003A3ACD /* THOpenGLTexturePool.m in Sources */,
+				7DF823F61291E3FC0072C02B /* EucBookNavPoint.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
