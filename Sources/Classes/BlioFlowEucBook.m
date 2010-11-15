@@ -15,6 +15,7 @@
 #import "BlioXPSProvider.h"
 
 #import <libEucalyptus/EucBookPageIndexPoint.h>
+#import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THRegex.h>
 
@@ -77,13 +78,15 @@
        
         NSArray *tocEntries = self.textFlow.tableOfContents; 
         if(self.fakeCover) {
-            [buildNavPoints addPairWithFirst:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
-                                 second:[NSString stringWithFormat:@"textflow:0"]];
+            [buildNavPoints addObject:[EucBookNavPoint navPointWithText:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
+                                                                   uuid:@"textflow:0"
+                                                                  level:0]];
         }
         long index = 0;
-        for(BlioTextFlowTOCEntry *section in tocEntries) {
-            [buildNavPoints addPairWithFirst:section.name
-                                 second:[NSString stringWithFormat:@"textflowTOCIndex:%ld", index]];
+        for(BlioTextFlowTOCEntry *tocEntry in tocEntries) {
+            [buildNavPoints addObject:[EucBookNavPoint navPointWithText:tocEntry.name
+                                                                   uuid:[NSString stringWithFormat:@"textflowTOCIndex:%ld", index]
+                                                                  level:tocEntry.level]];
             ++index;
         }
         navPoints = buildNavPoints;

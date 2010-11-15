@@ -11,7 +11,7 @@
 
 @protocol EucBook <NSObject>
 
-// Pairs of string, uuid
+// Array of EucBookNavPoint
 @property (nonatomic, readonly) NSArray *navPoints;
 
 @property (nonatomic, copy) EucBookPageIndexPoint *currentPageIndexPoint;
