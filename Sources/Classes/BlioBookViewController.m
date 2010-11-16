@@ -2043,8 +2043,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 // So we're starting speech for the first time, or for the first time since changing the 
                 // page or book after stopping speech the last time (whew).
                 [audioMgr setCurrentBlock:blockId];
-                [audioMgr setCurrentWordOffset:wordOffset + 1];
                 [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:blockId]];
+				if ( wordOffset < [audioMgr.blockWords count] - 1 )
+					++wordOffset;
+                [audioMgr setCurrentWordOffset:wordOffset];
                 [audioMgr setPageChanged:NO];
             }
             else {
