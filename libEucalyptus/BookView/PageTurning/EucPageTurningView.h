@@ -114,7 +114,8 @@ typedef enum EucPageTurningViewAnimationFlags {
     UITouch *_pinchTouches[2];
     CGPoint _pinchStartPoints[2];
     
-    CGFloat _maxZoom;
+    CGFloat _minZoomFactor;
+    CGFloat _maxZoomFactor;
     CGFloat _zoomFactor;
     CGPoint _scrollTranslation;
     
@@ -208,7 +209,7 @@ typedef enum EucPageTurningViewAnimationFlags {
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
-
+@property (nonatomic, assign) CGFloat minZoomFactor; // default = 1.0f
 @property (nonatomic, assign) CGFloat maxZoomFactor; // default = 14.0f
 @property (nonatomic, assign, readonly) CGFloat fitToBoundsZoomFactor;
 @property (nonatomic, assign, readonly) CGFloat zoomFactor;

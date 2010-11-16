@@ -200,7 +200,6 @@
         aPageTurningView.bitmapDataSource = self;
         aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
-        aPageTurningView.maxZoomFactor = 8;
 		
         // Must do this here so that teh page aspect ration takes account of the twoUp property
         CGRect myBounds = self.bounds;
@@ -1689,7 +1688,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
     // Work out what parts of the page are visible
     CGRect visibleRect = [self visibleRectForPageAtIndex:pageIndex];
-    BOOL useVisibleRect = !((self.pageTurningView.zoomFactor == 1) && (nil == self.lastBlock));
+    BOOL useVisibleRect = !((self.pageTurningView.zoomFactor == self.pageTurningView.minZoomFactor) && (nil == self.lastBlock));
     
     if (useVisibleRect) {
         // Find first textFlow block that is partially visible. Loop past any textFlow
@@ -1929,16 +1928,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	} else {
         EucPageTurningView *myPageTurningView = self.pageTurningView;
         CGFloat currentZoomFactor = myPageTurningView.zoomFactor;
-        CGFloat fitToBoundsZoomFactor = myPageTurningView.fitToBoundsZoomFactor;
-        if(currentZoomFactor < fitToBoundsZoomFactor) {
-            [self zoomOutsideBlockAtPoint:point zoomFactor:fitToBoundsZoomFactor];
+        CGFloat minZoomFactor = myPageTurningView.minZoomFactor;
+        CGFloat doubleFitToBoundsZoomFactor = minZoomFactor * 2.0f;
+        if (currentZoomFactor < doubleFitToBoundsZoomFactor) {
+            [self zoomOutsideBlockAtPoint:point zoomFactor:doubleFitToBoundsZoomFactor];
         } else {
-            CGFloat doubleFitToBoundsZoomFactor = fitToBoundsZoomFactor * 2.0f;
-            if (currentZoomFactor < doubleFitToBoundsZoomFactor) {
-                [self zoomOutsideBlockAtPoint:point zoomFactor:doubleFitToBoundsZoomFactor];
-            } else {
-                [self zoomOut];
-            }
+            [self zoomOut];
         }
     }    
 }
@@ -2010,7 +2005,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	
 	//NSLog(@"zoom to block (%@) with rect %@ in combined block with rect %@", [NSString stringWithFormat:@"%@ %@...", [(id)[[targetBlock words] objectAtIndex:0] string], [(id)[[targetBlock words] objectAtIndex:1] string]], NSStringFromCGRect([targetBlock rect]), NSStringFromCGRect(combined));
     
-	if (self.pageTurningView.zoomFactor > 1) {
+	if (self.pageTurningView.zoomFactor > self.pageTurningView.minZoomFactor) {
 		// Determine if the combined block is currently partially visible (i.e. it's full width is visible and
 		// At least part of it's height is visible - so there is an intersection)
 		if ([self blockRect:combined isPartiallyVisibleInRect:visibleRect]) {
@@ -2084,7 +2079,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)zoomOut {
     self.lastBlock = nil;
-    [self.pageTurningView setTranslation:CGPointZero zoomFactor:1 animated:YES];
+    [self.pageTurningView setTranslation:CGPointZero zoomFactor:self.pageTurningView.minZoomFactor animated:YES];
 }
 
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point zoomFactor:(CGFloat)zoomFactor {
@@ -2115,6 +2110,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         zoomFactor = myPageTurningView.fitToBoundsZoomFactor;
     }
 
+    myPageTurningView.minZoomFactor = zoomFactor;
     CGPoint offset = CGPointMake(0, CGRectGetMidY(bounds) * zoomFactor); 
 	[self.pageTurningView setTranslation:offset zoomFactor:zoomFactor animated:animated];
 }
