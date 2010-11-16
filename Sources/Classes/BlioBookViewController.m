@@ -2043,7 +2043,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 // So we're starting speech for the first time, or for the first time since changing the 
                 // page or book after stopping speech the last time (whew).
                 [audioMgr setCurrentBlock:blockId];
-                [audioMgr setCurrentWordOffset:wordOffset];
+                [audioMgr setCurrentWordOffset:wordOffset + 1];
                 [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:blockId]];
                 [audioMgr setPageChanged:NO];
             }
@@ -2273,7 +2273,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
     if ( _audioBookManager.currentWordOffset == [_audioBookManager.blockWords count] ) {
 		// Last word of block, get more words.  
-		//NSLog(@"Reached end of block, getting more words.");
 		[self prepareTextToSpeakWithAudioManager:_audioBookManager];
 	}    
 }
