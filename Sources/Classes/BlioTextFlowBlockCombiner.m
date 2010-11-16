@@ -130,6 +130,17 @@
     return combinedBlocks;
 }
 
++ (CGRect)rectByCombiningAllBlocks:(NSArray *)theBlocks {
+	
+	CGRect combinedRect = CGRectNull;
+	
+	for (BlioTextFlowBlock *block in theBlocks) {
+		combinedRect = CGRectUnion(combinedRect, [block rect]);
+	}
+	
+	return combinedRect;
+}
+
 @end
 
 @implementation BlioTextFlowCombinedBlock
