@@ -364,7 +364,6 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
     [self drawRect:rect inContext:UIGraphicsGetCurrentContext()];
 }
 
-
 // Don't like all this messing with the scale factor below...
 // Doesn't seem like it should be necessary.
 // Amd now looking at the location in the window - urgh!
@@ -373,7 +372,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 {
     if(!_touch) {
         UITouch *touch = [touches anyObject];
-        CGPoint location = [touch locationInView:touch.window];
+        CGPoint location = [touch locationInView:touch.view];
         
         /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
@@ -396,7 +395,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 {
     if([touches containsObject:_touch]) {
         UITouch *touch = _touch;
-        CGPoint location = [touch locationInView:touch.window];
+        CGPoint location = [touch locationInView:touch.view];
         
         /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
@@ -415,8 +414,8 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 {
     if([touches containsObject:_touch]) {
         UITouch *touch = _touch;
-        CGPoint location = [touch locationInView:touch.window];
-        
+        CGPoint location = [touch locationInView:touch.view];
+                
         /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
                 CGFloat scaleFactor = self.contentScaleFactor;
@@ -437,7 +436,7 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
         UITouch *touch = _touch;
         _touch = nil;
         
-        CGPoint location = [touch locationInView:touch.window];
+        CGPoint location = [touch locationInView:touch.view];
         
         /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
             if(!self.superview) {
