@@ -75,7 +75,7 @@
         
         do {
             css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
-            if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {                
+            if(!currentNodeStyle || css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {                
                 // This is an inline element - start a run.
                 ret = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
                                                     underLimitNode:currentDocumentNode.blockLevelParent
@@ -108,15 +108,25 @@
 {
     EucCSSIntermediateDocumentNode *previousNode = [self.document nodeForKey:run.id].previous;
     if(previousNode) {
-        EucCSSLayoutDocumentRun *previousRun = [self documentRunForNodeWithKey:previousNode.key];
-        if(previousRun.id == run.id) {
-            // This happens if we're already at the first node.
-            return nil;
+        css_computed_style *previousNodeStyle = previousNode.computedStyle;
+
+        while(previousNodeStyle && css_computed_display(previousNodeStyle, false) == CSS_DISPLAY_BLOCK) {
+            // If the previous node was a block, there's no run between it and
+            // this run, so we have to move further back.
+            previousNode = previousNode.previous;
+            previousNodeStyle = previousNode.computedStyle;
         }
-        return previousRun;
-    } else {
-        return nil;
-    }
+
+        if(previousNode) {
+            EucCSSLayoutDocumentRun *previousRun = [self documentRunForNodeWithKey:previousNode.key];
+            if(previousRun.id == run.id) {
+                // This happens if we're already at the first node.
+                return nil;
+            }
+            return previousRun;
+        }
+    }       
+    return nil;
 }
 
 @end
