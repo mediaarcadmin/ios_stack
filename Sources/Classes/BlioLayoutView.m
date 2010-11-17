@@ -67,6 +67,7 @@
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context;
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context center:(CGPoint)centerPoint;
 - (void)zoomOut;
+- (void)zoomOutAtPoint:(CGPoint)point;
 - (void)advanceOrZoomOutAtPoint:(CGPoint)point;
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point zoomFactor:(CGFloat)zoomFactor;
 - (void)zoomForNewPageAnimated:(BOOL)animated;
@@ -1952,7 +1953,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         EucPageTurningView *myPageTurningView = self.pageTurningView;
         CGFloat currentZoomFactor = myPageTurningView.zoomFactor;
         CGFloat minZoomFactor = myPageTurningView.minZoomFactor;
-        CGFloat doubleFitToBoundsZoomFactor = minZoomFactor * 2.0f;
+        CGFloat doubleFitToBoundsZoomFactor = minZoomFactor * 1.25f;
         if (currentZoomFactor < doubleFitToBoundsZoomFactor) {
             [self zoomOutsideBlockAtPoint:point zoomFactor:doubleFitToBoundsZoomFactor];
         } else {
@@ -2017,18 +2018,37 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context center:(CGPoint)centerPoint {
     
-    NSInteger pageIndex = [targetBlock pageIndex];
-    
-    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    BlioTextFlowBlockCombiner *blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
-    blockCombiner.verticalSpacing = [self verticalSpacingForPage:pageIndex + 1];
-    
-    CGRect combined = [blockCombiner combinedRectForBlock:targetBlock];
-	CGRect nonVisibleBlockRect = combined;
+	CGPoint currentTranslation = [self.pageTurningView translation];
+	CGFloat currentZoomScale = [self.pageTurningView zoomFactor];
+	NSInteger currentPage = self.pageNumber;
 	
-	//NSLog(@"zoom to block (%@) with rect %@ in combined block with rect %@", [NSString stringWithFormat:@"%@ %@...", [(id)[[targetBlock words] objectAtIndex:0] string], [(id)[[targetBlock words] objectAtIndex:1] string]], NSStringFromCGRect([targetBlock rect]), NSStringFromCGRect(combined));
+    NSInteger pageIndex = [targetBlock pageIndex];
+	NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+	BlioTextFlowBlockCombiner *blockCombiner = [[[BlioTextFlowBlockCombiner alloc] initWithTextFlowBlocks:pageBlocks] autorelease];
+	blockCombiner.verticalSpacing = [self verticalSpacingForPage:pageIndex + 1];
     
-	if (self.pageTurningView.zoomFactor > self.pageTurningView.minZoomFactor) {
+	CGRect combined = [blockCombiner combinedRectForBlock:targetBlock];
+	
+	CGFloat zoomScale;
+	CGPoint translation;
+	
+	if (!CGPointEqualToPoint(centerPoint, CGPointZero)) {
+		// Point is specified
+		
+		translation = [self translationToFitRect:combined onPage:pageIndex + 1 zoomScale:&zoomScale reversed:reversed];
+		CGFloat pointOffset = CGRectGetMidY(self.pageTurningView.bounds) - centerPoint.y;
+		translation.y = roundf((pointOffset + currentTranslation.y)/currentZoomScale * zoomScale);		
+		
+	} else {
+		// No point specified - zoom to fit the next part of the block
+		
+    
+		
+		CGRect nonVisibleBlockRect = combined;
+	
+		//NSLog(@"zoom to block (%@) with rect %@ in combined block with rect %@", [NSString stringWithFormat:@"%@ %@...", [(id)[[targetBlock words] objectAtIndex:0] string], [(id)[[targetBlock words] objectAtIndex:1] string]], NSStringFromCGRect([targetBlock rect]), NSStringFromCGRect(combined));
+    
+		if (self.pageTurningView.zoomFactor > self.pageTurningView.minZoomFactor) {
 		// Determine if the combined block is currently partially visible (i.e. it's full width is visible and
 		// At least part of it's height is visible - so there is an intersection)
 		if ([self blockRect:combined isPartiallyVisibleInRect:visibleRect]) {
@@ -2047,20 +2067,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				}
 			}
 		}
-    }
+		}
 
-    CGFloat zoomScale;
-    CGPoint translation = [self translationToFitRect:nonVisibleBlockRect onPage:pageIndex + 1 zoomScale:&zoomScale reversed:reversed];
-	
-	CGPoint currentTranslation = [self.pageTurningView translation];
-	CGFloat currentZoom = [self.pageTurningView zoomFactor];
-	NSInteger currentPage = self.pageNumber;
-	
-	if (!CGPointEqualToPoint(centerPoint, CGPointZero)) {
-		CGFloat pointOffset = CGRectGetMidY(self.pageTurningView.bounds) - centerPoint.y;
-		translation.y = roundf((pointOffset + currentTranslation.y) * zoomScale);		
+		translation = [self translationToFitRect:nonVisibleBlockRect onPage:pageIndex + 1 zoomScale:&zoomScale reversed:reversed];
 	}
-
+	
     if ((pageIndex + 1) != currentPage) {
         if (self.pageTurningView.isTwoUp) {
             if ((self.pageTurningView.leftPageIndex != pageIndex) && (self.pageTurningView.rightPageIndex != pageIndex)) {
@@ -2078,21 +2089,38 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             }
         }
     }
-
-	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
-
-	if ((roundf(self.pageTurningView.animatedTranslation.x) == roundf(currentTranslation.x)) && (roundf(self.pageTurningView.animatedTranslation.y) == roundf(currentTranslation.y))) {
-		if (self.pageTurningView.animatedZoomFactor == currentZoom) {
-			if (self.pageNumber == currentPage) {
-				if (nil != context) {
-					NSInvocation *nextInvocation = (NSInvocation *)context;
-					[nextInvocation invoke];
-				} else {
-					[self zoomOut];
-					return;
-				}
+	
+	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:NO];
+	
+	CGPoint newTranslation = self.pageTurningView.translation;
+	CGFloat newZoomScale = self.pageTurningView.zoomFactor;
+	[self.pageTurningView setTranslation:currentTranslation zoomFactor:currentZoomScale animated:NO];
+	
+	CGFloat yDifference = newTranslation.y - currentTranslation.y;
+	CGFloat xDifference = newTranslation.x - currentTranslation.x;
+	CGFloat zoomDifference = newZoomScale - currentZoomScale;
+	
+	if (zoomDifference || 
+		(abs(yDifference) >= CGRectGetHeight(self.pageTurningView.bounds)*0.1f) ||
+		(abs(xDifference) >= CGRectGetWidth(self.pageTurningView.bounds)*0.1f)) {
+		
+		[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+		
+	} else if (self.pageNumber != currentPage) {
+		[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+	} else {
+		if (nil != context) {
+			NSInvocation *nextInvocation = (NSInvocation *)context;
+			[nextInvocation invoke];
+		} else {
+			CGRect bounds = self.pageTurningView.bounds;
+			BOOL viewIsLandscape = bounds.size.width > bounds.size.height;
+			if (viewIsLandscape && !self.pageTurningView.twoUp) {
+				[self zoomOutAtPoint:centerPoint];
+			} else {
+				[self zoomOut];
 			}
-		} 
+		}
 	}
 }
 
@@ -2127,8 +2155,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	CGPoint translation;
 	
 	if (zoomScale < self.pageTurningView.minZoomFactor || CGRectIsNull(targetRect)) {
-		// Just zoom to 2x at this point
-		zoomScale = 1.25 * self.pageTurningView.minZoomFactor;
+		zoomScale = 1.25f * self.pageTurningView.minZoomFactor;
 		translation = CGPointZero;
 	} else {
     
