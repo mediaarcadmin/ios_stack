@@ -27,4 +27,6 @@
 - (BlioTextFlowBlock *)lastCombinedBlockForBlock:(BlioTextFlowBlock *)block;
 - (CGRect)combinedRectForBlock:(BlioTextFlowBlock *)block;
 
++ (CGRect)rectByCombiningAllBlocks:(NSArray *)theBlocks;
+
 @end

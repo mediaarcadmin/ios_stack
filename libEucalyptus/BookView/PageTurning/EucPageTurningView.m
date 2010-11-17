@@ -66,7 +66,8 @@
 @synthesize oddPagesOnRight = _oddPagesOnRight;
 @synthesize zoomHandlingKind = _zoomHandlingKind;
 
-@synthesize maxZoomFactor = _maxZoom;
+@synthesize maxZoomFactor = _maxZoomFactor;
+@synthesize minZoomFactor = _minZoomFactor;
 @synthesize zoomMatrix = _zoomMatrix;
 @synthesize rightPageFrame = _rightPageFrame;
 @synthesize leftPageFrame = _leftPageFrame;
@@ -164,7 +165,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)_pageTurningViewInternalInit
 {       
     _zoomedTextureWidth = 1024;
-    _maxZoom = 14.0f;
+    _minZoomFactor = 1.0f;
+    _maxZoomFactor = 14.0f;
     _zoomFactor = 1.0f;
     _zoomMatrix = CATransform3DIdentity;
 	_animationIndex = -1;
@@ -418,6 +420,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [self willChangeValueForKey:@"unzoomedRightPageFrame"];
         [self willChangeValueForKey:@"unzoomedLeftPageFrame"];
         
+        // We'll re-set this at the end.
+        NSUInteger oldMinZoomFactor = _minZoomFactor;
+        _minZoomFactor = 1.0f;
+    
         if(size.width < size.height) {
             _viewportLogicalSize.width = 4.0f;
             _viewportLogicalSize.height = (size.height / size.width) * _viewportLogicalSize.width;
@@ -596,6 +602,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         _lastLayoutBoundsSize = size;
         _lastLayoutTwoUp = _twoUp;
+        
+        if(!_minZoomFactor != oldMinZoomFactor) {
+            _minZoomFactor = oldMinZoomFactor;
+            [self _setZoomMatrixFromTranslation:CGPointZero zoomFactor:oldMinZoomFactor];
+        }
         
         [self setNeedsDraw];
         
@@ -2252,8 +2263,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
         _pinchTouches[0] = nil;
         _pinchTouches[1] = nil;
-        if(_zoomFactor < 1.0f) { 
-            [self setTranslation:CGPointZero zoomFactor:1.0f animated:YES];
+        if(_zoomFactor < _minZoomFactor) { 
+            [self setTranslation:_scrollTranslation zoomFactor:_minZoomFactor animated:YES];
         }        
     }
 }
@@ -2990,12 +3001,13 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
         CGSize pixelSize = CGSizeMake(_rightPageRect.size.width * pixelViewportDimension,
                                       _rightPageRect.size.height * pixelViewportDimension);
         
-        if(zoomFactor > _maxZoom) {
-            zoomFactor = _maxZoom;
+        if(zoomFactor > _maxZoomFactor) {
+            zoomFactor = _maxZoomFactor;
         }        
         CGFloat compensatedZoomFactor = zoomFactor;
-        if(compensatedZoomFactor < 1.0f) {
-            compensatedZoomFactor = (powf(compensatedZoomFactor, 0.5f) + 0.5f) / 1.5f;
+        if(compensatedZoomFactor < _minZoomFactor) {
+            // Make the zoom factor larger to make it feel 'springy'.
+            compensatedZoomFactor = _minZoomFactor * (powf(compensatedZoomFactor / _minZoomFactor, 0.5f) + 0.5f) / 1.5f;
         }
         
         // Massage the zoom matrix to the nearest matrix that will scale the zoom 

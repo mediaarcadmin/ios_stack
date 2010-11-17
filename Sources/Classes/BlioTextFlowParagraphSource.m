@@ -27,7 +27,10 @@
 
 #import "BlioBookManager.h"
 
-#define MATCHING_WINDOW_SIZE 9
+#define MATCHING_WINDOW_SIZE 11
+
+static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
+
 
 @interface BlioTextFlowParagraphSource ()
 
@@ -137,7 +140,7 @@
                         NSInteger needMore = middleWordOffset + MATCHING_WINDOW_SIZE / 2 + 1 - words.count;
                         NSMutableArray *newWords = [[NSMutableArray alloc] initWithCapacity:needMore];
                         for(NSInteger i = 0; i < needMore; ++i) {
-                            [newWords addObject:@""];
+                            [newWords addObject:kNoWordPlaceholder];
                         }
                         words = [words arrayByAddingObjectsFromArray:newWords];
                         [newWords release];
@@ -165,7 +168,7 @@
                         NSInteger needMore = MATCHING_WINDOW_SIZE / 2 - middleWordOffset + 1;
                         NSMutableArray *newWords = [[NSMutableArray alloc] initWithCapacity:needMore];
                         for(NSInteger i = 0; i < needMore; ++i) {
-                            [newWords addObject:@""];
+                            [newWords addObject:kNoWordPlaceholder];
                         }
                         words = [newWords arrayByAddingObjectsFromArray:newWords];
                         [newWords release];
@@ -191,12 +194,12 @@
             lookForStrings[j] = [words objectAtIndex:middleWordOffset + i];
         }
         
-        
-        /*NSLog(@"Searching for:");
+        /*
+        NSLog(@"Searching for:");
         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
             NSLog(@"\t%@", lookForStrings[i]);
-        }*/
-        
+        }
+        */
         
         NSManagedObjectID *bookID = self.textFlow.bookID;
         BlioFlowEucBook *bUpeBook = (BlioFlowEucBook *)[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID];
@@ -273,9 +276,9 @@
         documentRun = [runExtractor documentRunForNodeWithKey:examiningRunKey];
         examiningRunKey = documentRun.id;
         
-        char emptyHash = [@"" hash] % 256;
+        char emptyHash = [kNoWordPlaceholder hash] % 256;
         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
-            blockStrings[i] = @"";
+            blockStrings[i] = kNoWordPlaceholder;
             blockHashes[i] = emptyHash;
             runKeys[i] = examiningRunKey;
             wordOffsets[i] = 0;
@@ -302,13 +305,14 @@
                 wordOffsets[MATCHING_WINDOW_SIZE - 1] = examiningWordOffset;
                 
                 int distance = levenshtein_distance_with_bytes(lookForHashes, MATCHING_WINDOW_SIZE, blockHashes, MATCHING_WINDOW_SIZE);
-                if(distance < bestDistance) {
-                    
-                     /*NSLog(@"Found, distance %d:", distance);
-                     for(NSInteger i = 0;  i < MATCHING_WINDOW_SIZE; ++i) {
-                         NSLog(@"\t%@", blockStrings[i]);
-                     }*/
-                    
+                if(distance < bestDistance || 
+                   (distance == bestDistance && [blockStrings[MATCHING_WINDOW_SIZE / 2] isEqualToString:lookForStrings[MATCHING_WINDOW_SIZE / 2]])) {
+                    /*
+                    NSLog(@"Found, distance %d:", distance);
+                    for(NSInteger i = 0;  i < MATCHING_WINDOW_SIZE; ++i) {
+                        NSLog(@"\t%@", blockStrings[i]);
+                    }
+                    */
                     bestDistance = distance;
                     bestRunKey = runKeys[MATCHING_WINDOW_SIZE / 2];
                     bestWordOffset = wordOffsets[MATCHING_WINDOW_SIZE / 2];
@@ -493,7 +497,7 @@
                     } else {
                         NSString *extraWords[MATCHING_WINDOW_SIZE / 2];
                         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE / 2; ++i) {
-                            extraWords[i] = @"";
+                            extraWords[i] = kNoWordPlaceholder;
                         }
                         runWords = [[NSArray arrayWithObjects:extraWords count:MATCHING_WINDOW_SIZE / 2] arrayByAddingObjectsFromArray:runWords];
                         middleWordOffset += MATCHING_WINDOW_SIZE / 2;
@@ -510,7 +514,7 @@
                     } else {
                         NSString *extraWords[MATCHING_WINDOW_SIZE / 2];
                         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE / 2; ++i) {
-                            extraWords[i] = @"";
+                            extraWords[i] = kNoWordPlaceholder;
                         }
                         runWords = [runWords arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:extraWords count:MATCHING_WINDOW_SIZE / 2] ];
                     }
@@ -538,9 +542,9 @@
         NSUInteger blockOffsets[MATCHING_WINDOW_SIZE];
         NSUInteger wordOffsets[MATCHING_WINDOW_SIZE];
         
-        char emptyHash = [@"" hash] % 256;
+        char emptyHash = [kNoWordPlaceholder hash] % 256;
         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
-            blockStrings[i] = @"";
+            blockStrings[i] = kNoWordPlaceholder;
             blockHashes[i] = emptyHash;
             pageIndexes[i] = startPageIndex;
             blockOffsets[i] = 0;
@@ -562,6 +566,7 @@
                 if(!block.folio) {
                     NSUInteger examiningWordOffset = 0;
                     for(NSString *word in block.wordStrings) {
+                        //NSLog(@"%@", word);
                         memmove(blockHashes, blockHashes + 1, sizeof(char) * MATCHING_WINDOW_SIZE - 1);
                         blockHashes[MATCHING_WINDOW_SIZE - 1] = [word hash] % 256;
 
@@ -578,13 +583,14 @@
                         wordOffsets[MATCHING_WINDOW_SIZE - 1] = examiningWordOffset;
                         
                         int distance = levenshtein_distance_with_bytes(lookForHashes, MATCHING_WINDOW_SIZE, blockHashes, MATCHING_WINDOW_SIZE);
-                        if(distance < bestDistance) {
-                            /*
-                            NSLog(@"Found, distance %d:", distance);
+                        if(distance < bestDistance || 
+                           (distance == bestDistance && [blockStrings[MATCHING_WINDOW_SIZE / 2] isEqualToString:lookForStrings[MATCHING_WINDOW_SIZE / 2]])) {
+                            
+                            /*NSLog(@"Found, distance %d:", distance);
                             for(NSInteger i = 0;  i < MATCHING_WINDOW_SIZE; ++i) {
                                 NSLog(@"\t%@", blockStrings[i]);
-                            }
-                            */
+                            }*/
+                            
                             bestDistance = distance;
                             bestPageIndex = pageIndexes[MATCHING_WINDOW_SIZE / 2];
                             bestBlockOffset = blockOffsets[MATCHING_WINDOW_SIZE / 2];
