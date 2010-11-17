@@ -371,13 +371,14 @@
 	}
 	if (_activeTouch == [touchArray objectAtIndex:0])
 	{
-	if (self.isEditing){
+		NSInteger touchedCellIndex = [self indexForTouchLocation:[_activeTouch locationInView:self]];
+		if (self.isEditing && [gridDataSource gridView:self canMoveCellAtIndex:touchedCellIndex]){
 		[self resetEditTimer];
 		CGPoint touchLoc = [_activeTouch locationInView:self];
 		self.currDraggedCell = (MRGridViewCell*)[self viewAtLocation:touchLoc];
 //		NSLog(@"self.currDraggedCell: %@",self.currDraggedCell);
 		currDraggedCellOriginalCenter = self.currDraggedCell.center;
-		currDraggedCellIndex = [self indexForTouchLocation:[_activeTouch locationInView:self]];
+		currDraggedCellIndex = touchedCellIndex;
 		currentHoveredIndex = currDraggedCellIndex;
 /*		
 		//insert shadow cell

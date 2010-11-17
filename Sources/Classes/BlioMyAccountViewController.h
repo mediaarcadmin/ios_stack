@@ -10,7 +10,7 @@
 
 
 @interface BlioMyAccountViewController : UITableViewController {
-
+	NSArray * subControllers;
 }
-
+@property (nonatomic, retain) NSArray * subControllers;
 @end

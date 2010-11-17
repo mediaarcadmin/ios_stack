@@ -274,9 +274,8 @@ typedef enum {
 {
     if ([self.delegate isRotationLocked]) {
         return NO;
-    } else {
-        return YES;
-    }
+    } else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+	return YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
