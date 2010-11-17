@@ -499,6 +499,7 @@
 		A31E837B120B522F00CB6657 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
 		A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
+		A3428F8D129454A700AA1DBF /* XPS in Resources */ = {isa = PBXBuildFile; fileRef = A31E8320120B40CD00CB6657 /* XPS */; };
 		A349F06B110E31CC009A8F89 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A349F067110E31CC009A8F89 /* AudioBooks */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A3689AF4116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3689AF3116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m */; };
@@ -3456,6 +3457,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3428F8D129454A700AA1DBF /* XPS in Resources */,
 				A30E0EFB123EA5B400D31157 /* credits.html in Resources */,
 				A30E0EFC123EA5B400D31157 /* MainWindow.xib in Resources */,
 				A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */,
