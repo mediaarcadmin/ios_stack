@@ -598,6 +598,12 @@ static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lh
     return (int)(*rhs).startPage - (int)(*lhs).startPage;
 }
 
+static int flowReferenceCompare(BlioTextFlowFlowReference **rhs, BlioTextFlowFlowReference **lhs) 
+{
+    return (int)(*rhs).startPage - (int)(*lhs).startPage;
+}
+
+
 - (void)parseSectionsXML
 {
     BlioTextFlowSectionsXMLParsingContext context = { [NSMutableArray array], [NSMutableArray array], [NSMutableArray array] };
@@ -617,7 +623,7 @@ static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lh
         XML_ParserFree(flowParser);
     }
     
-    self.flowReferences = context.buildFlowReferences;
+    self.flowReferences = [context.buildFlowReferences blioStableSortedArrayUsingFunction:(int (*)(id *arg1, id *arg2))flowReferenceCompare];
     self.references = context.buildReferences;
     
     // If there are no TOC entries for page index 0, add an artificial one.

@@ -159,6 +159,16 @@
     return _renderItemCount;
 }
 
+static inline void _incrementRenderitemsCount(size_t *renderItemCount, size_t *renderItemCapacity, EucCSSLayoutPositionedLineRenderItem **renderItems) 
+{
+    ++*renderItemCount;
+    if(*renderItemCount == *renderItemCapacity) { 
+        NSLog(@"increase!"); 
+        *renderItemCapacity *= 2; 
+        *renderItems = realloc(*renderItems, *renderItemCapacity * sizeof(EucCSSLayoutPositionedLineRenderItem)); 
+    } 
+}
+
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems
 {
     if(!_renderItems) {
@@ -169,6 +179,7 @@
         uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
         
         _renderItems = calloc(sizeof(EucCSSLayoutPositionedLineRenderItem), componentsCount);
+        size_t renderItemCapacity = componentsCount;
         
         CGRect contentBounds = self.contentBounds;
         CGSize size = contentBounds.size;
@@ -235,7 +246,7 @@
                         renderItem->item.underlineItem.underlinePoint = CGPointMake(ceilf(xPosition), yPosition + baseline + 1.5f);
                     }
                     ++renderItem;
-                    ++_renderItemCount;
+                    _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
                     currentUnderline = shouldUnderline;
                 }
                 checkForUnderline = NO;
@@ -256,7 +267,7 @@
                             renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
                             renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
                             ++renderItem;
-                            ++_renderItemCount;
+                            _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
                             [currentHyperlink release];
                             //NSLog(@"Hyperlink Off");
                             //NSLog(@"Hyperlink On");
@@ -264,7 +275,7 @@
                             renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                             renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
                             ++renderItem;
-                            ++_renderItemCount;
+                            _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
                         }
                     } else {
                         //NSLog(@"Hyperlink On");
@@ -272,7 +283,7 @@
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
                         ++renderItem;
-                        ++_renderItemCount;                        
+                        _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);                        
                     }
                 } else {
                     if(currentHyperlink) {
@@ -280,7 +291,7 @@
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
                         ++renderItem;
-                        ++_renderItemCount;
+                        _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
                         [currentHyperlink release];
                         currentHyperlink = nil;
                     }
@@ -296,7 +307,7 @@
                 renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                 renderItem->item.stringItem.layoutPoint = info->point;
                 ++renderItem;
-                ++_renderItemCount;
+                _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
                 
                 xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace || 
@@ -317,7 +328,7 @@
                     renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                     renderItem->item.stringItem.layoutPoint = info->point;
                     ++renderItem;
-                    ++_renderItemCount;
+                    _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
                     
                     xPosition += info->widthAfterHyphen;
                 }
@@ -328,7 +339,7 @@
                 renderItem->item.imageItem.layoutPoint = info->point;
                 renderItem->altText = [[info->documentNode altText] retain];
                 ++renderItem;
-                ++_renderItemCount;
+                _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
                 
                 xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {

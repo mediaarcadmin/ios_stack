@@ -914,11 +914,16 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         size_t startBreakOffset = 0;
         for(;;) {
             EucCSSLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
-            if(point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset)) {
+            if(startBreakOffset < _potentialBreaksCount && 
+               (point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset))) {
                 ++startBreakOffset;
             } else {
                 break;
             }
+        }        
+        
+        if(startBreakOffset >= _potentialBreaksCount) {
+            return nil;
         }        
         
         CGFloat indentationOffset;
@@ -938,6 +943,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         }
         
         int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
+                
         int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
         int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, thisLineWidth, 0, usedBreakIndexes);
 
