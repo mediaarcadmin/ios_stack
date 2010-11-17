@@ -67,11 +67,12 @@
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context;
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context center:(CGPoint)centerPoint;
 - (void)zoomOut;
-- (void)zoomOutAtPoint:(CGPoint)point;
+- (void)advanceOrZoomOutAtPoint:(CGPoint)point;
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point zoomFactor:(CGFloat)zoomFactor;
 - (void)zoomForNewPageAnimated:(BOOL)animated;
 - (void)zoomForNewPageAnimatedWithNumberThunk:(NSNumber *)animated;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point;
+- (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
 
 @end
 
@@ -1922,7 +1923,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         CGFloat minZoomFactor = self.pageTurningView.minZoomFactor;
         if (currentZoomFactor > minZoomFactor) {
 			if (viewIsLandscape && !self.pageTurningView.twoUp) {
-				[self zoomOutAtPoint:point];
+				[self advanceOrZoomOutAtPoint:point];
 			} else {
 				[self zoomOut];
 			}
@@ -2095,7 +2096,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	}
 }
 
-- (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point {
+- (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr {
 		
 	NSArray *rightBlocks = [self.textFlow blocksForPageAtIndex:self.pageTurningView.rightPageIndex includingFolioBlocks:NO];
 	CGRect rightRect = [BlioTextFlowBlockCombiner rectByCombiningAllBlocks:rightBlocks];
@@ -2154,10 +2155,19 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			translation = CGPointMake(scaledOffsetX, scaledOffsetY);
 		}
 	}
-		
-	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+	
+	*translationPtr = translation;
+	*zoomFactorPtr = zoomScale;
+	
 }
 
+- (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point {
+	CGFloat zoomScale;
+	CGPoint translation;
+	[self zoomToFitAllBlocksOnPageTurningViewAtPoint:point translation:&translation zoomFactor:&zoomScale];
+	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+}
+	
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context {
 	[self zoomToBlock:targetBlock visibleRect:visibleRect reversed:reversed context:context center:CGPointZero];
 }
@@ -2169,6 +2179,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)zoomOutAtPoint:(CGPoint)point {
+	
 	CGRect bounds = self.pageTurningView.bounds;
 	
 	CGRect rightPageFrame = [self.pageTurningView rightPageFrame];
@@ -2191,6 +2202,28 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 	[self.pageTurningView setTranslation:offset zoomFactor:zoomFactor animated:YES];
 
+}
+
+- (void)advanceOrZoomOutAtPoint:(CGPoint)point {
+	CGFloat zoomScale;
+	CGPoint translation;
+	[self zoomToFitAllBlocksOnPageTurningViewAtPoint:point translation:&translation zoomFactor:&zoomScale];
+	
+	CGPoint currentTranslation = self.pageTurningView.translation;
+	CGFloat currentZoomScale = self.pageTurningView.zoomFactor;
+	
+	[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:NO];
+	
+	CGPoint newTranslation = self.pageTurningView.translation;
+	[self.pageTurningView setTranslation:currentTranslation zoomFactor:currentZoomScale animated:NO];
+	
+	CGFloat difference = newTranslation.y - currentTranslation.y;
+	
+	if (abs(difference) >= CGRectGetHeight(self.pageTurningView.bounds)*0.1f) {
+		[self.pageTurningView setTranslation:translation zoomFactor:zoomScale animated:YES];
+	} else {
+		[self zoomOutAtPoint:point];
+	}
 }
 
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point zoomFactor:(CGFloat)zoomFactor {
