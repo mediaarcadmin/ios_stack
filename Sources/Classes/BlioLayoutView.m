@@ -2125,9 +2125,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	
 	CGPoint translation;
 	
-	if (zoomScale < self.pageTurningView.minZoomFactor) {
+	if (zoomScale < self.pageTurningView.minZoomFactor || CGRectIsNull(targetRect)) {
 		// Just zoom to 2x at this point
-		zoomScale = 2;
+		zoomScale = 1.25 * self.pageTurningView.minZoomFactor;
 		translation = CGPointZero;
 	} else {
     
