@@ -438,8 +438,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
         return NO;
-    else
-        return YES;
+    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+	return YES;
 }
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
@@ -467,13 +467,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 -(void)setLibrarySortType:(BlioLibrarySortType)sortType {
 	if (librarySortType != sortType) {
 		librarySortType = sortType;
-		if (sortType == kBlioLibrarySortTypePersonalized) {
-			self.navigationItem.rightBarButtonItem = self.editButtonItem;	
-		}
-		else {
-			if (self.editing) [self setEditing:NO animated:NO];
-			self.navigationItem.rightBarButtonItem = nil;
-		}
+//		if (sortType == kBlioLibrarySortTypePersonalized) {
+//			self.navigationItem.rightBarButtonItem = self.editButtonItem;	
+//		}
+//		else {
+//			if (self.editing) [self setEditing:NO animated:NO];
+//			self.navigationItem.rightBarButtonItem = nil;
+//		}
 		[self fetchResults];
 	}
 }
@@ -655,6 +655,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 -(NSString*)contentDescriptionForCellAtIndex:(NSInteger)index {
 	return [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] title];
+}
+-(BOOL) gridView:(MRGridView*)gridView canMoveCellAtIndex: (NSInteger)index {
+	if (librarySortType != kBlioLibrarySortTypePersonalized) return NO;
+	return YES;
 }
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex {
 	_didEdit = YES;
@@ -877,6 +881,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	return YES;
 }
 - (BOOL)tableView:(UITableView *)tableview canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	if (librarySortType != kBlioLibrarySortTypePersonalized) return NO;
+	
     NSArray *sections = [self.fetchedResultsController sections];
     NSUInteger bookCount = 0;
     if ([sections count]) {
@@ -1216,15 +1223,15 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.processingDelegate pauseProcessingForBook:book];
 }
 -(void) enqueueBook:(BlioBook*)book {
-	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_DOWNLOAD_BOOK",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to download this book.",@"Alert message when the user tries to download a book without an Internet connection.")
-									delegate:nil 
-						   cancelButtonTitle:@"OK"
-						   otherButtonTitles:nil];
-		return;
-	}
-	else [self.processingDelegate enqueueBook:book];
+//	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+//		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+//									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_DOWNLOAD_BOOK",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to download this book.",@"Alert message when the user tries to download a book without an Internet connection.")
+//									delegate:nil 
+//						   cancelButtonTitle:@"OK"
+//						   otherButtonTitles:nil];
+//		return;
+//	}
+	[self.processingDelegate enqueueBook:book];
 }
 
 - (void)changeLibraryLayout:(id)sender {

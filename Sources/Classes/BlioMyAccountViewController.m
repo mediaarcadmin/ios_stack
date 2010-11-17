@@ -13,6 +13,7 @@
 
 @implementation BlioMyAccountViewController
 
+@synthesize subControllers;
 
 #pragma mark -
 #pragma mark Initialization
@@ -23,11 +24,10 @@
 		UIBarButtonItem * aButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStyleBordered target:self action:@selector(logoutButtonPressed:)];
 		self.navigationItem.rightBarButtonItem = aButton;
 		[aButton release];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
-#endif
+		self.subControllers = [NSArray arrayWithObjects:[[[BlioPaidBooksSettingsController alloc] init] autorelease],[[[BlioArchiveSettingsViewController alloc] init] autorelease],nil];
     }
     return self;
 }
@@ -92,6 +92,33 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
+    return [subControllers count];
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // Return the number of rows in the section.
+	UITableViewController * tableVC = (UITableViewController*)[subControllers objectAtIndex:section];
+    return [tableVC tableView:tableView numberOfRowsInSection:0];
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	UITableViewController * tableVC = (UITableViewController*)[subControllers objectAtIndex:indexPath.section];
+	if (tableVC) {
+		NSIndexPath * newIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+		return [tableVC tableView:tableView cellForRowAtIndexPath:newIndexPath];
+	}
+	return nil;
+}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	UITableViewController * tableVC = (UITableViewController*)[subControllers objectAtIndex:section];
+	return tableVC.title;
+}
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+	UITableViewController * tableVC = (UITableViewController*)[subControllers objectAtIndex:section];
+	return [tableVC tableView:tableView titleForFooterInSection:0];
+}
+/*
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    // Return the number of sections.
     return 2;
 }
 
@@ -100,7 +127,6 @@
     // Return the number of rows in the section.
     return 1;
 }
-
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -122,22 +148,13 @@
 		case 1:
 			[cell.textLabel setText:@"Archive Settings"];
 			break;
-			/*
-		case 1:
-			cell.textLabel.textAlignment = UITextAlignmentCenter;
-			cell.accessoryType = UITableViewCellAccessoryNone;
-//			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) cell.textLabel.text = [NSString stringWithFormat:@"Logged in as %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
-			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) cell.textLabel.text = @"Logout";
-			else cell.textLabel.text = @"Login";
-			break;
-			 */
 		default:
 			break;
 	}
 	
     return cell;
 }
-
+*/
 
 /*
 // Override to support conditional editing of the table view.
@@ -181,7 +198,7 @@
 
 #pragma mark -
 #pragma mark Table view delegate
-
+/*
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	BlioPaidBooksSettingsController * paidBooksController = nil;
 	BlioArchiveSettingsViewController * archiveSettingsViewController = nil;
@@ -196,25 +213,11 @@
 			[self.navigationController pushViewController:archiveSettingsViewController animated:YES];
 			[archiveSettingsViewController release];
 			break;
-			/*
-		case 1:
-			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-				[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
-				// [tableView cellForRowAtIndexPath:indexPath].textLabel.text = @"Login";
-				[self.navigationController popViewControllerAnimated:YES];
-			}
-			else {
-				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-			}
-			[tableView deselectRowAtIndexPath:indexPath animated:YES];
-			break;
-			 */
 		default:
 			break;
 	}
 }
-
+*/
 #pragma mark -
 #pragma mark Memory management
 
@@ -232,6 +235,7 @@
 
 
 - (void)dealloc {
+	self.subControllers = nil;
     [super dealloc];
 }
 

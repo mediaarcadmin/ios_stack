@@ -292,6 +292,7 @@
 	[currentUserDictionary setObject:[NSNumber numberWithInt:targetStatus] forKey:kBlioDeviceRegisteredDefaultsKey];
 	[usersDictionary setObject:currentUserDictionary forKey:[NSString stringWithFormat:@"%i",[self userNum]]];
 	[[NSUserDefaults standardUserDefaults] setObject:usersDictionary forKey:kBlioUsersDictionaryDefaultsKey];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 	return YES;
 }
 -(BOOL) setDeviceRegistered:(BlioDeviceRegisteredStatus)targetStatus {
@@ -332,7 +333,7 @@
 	else {
 		if ( ![drmSessionManager leaveDomain:self.token] ) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"UNREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to unregister device. Please try again later.",@"Alert message shown when device unregistration fails.")
+										 message:NSLocalizedStringWithDefaultValue(@"DEREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to de-register device. Please try again later.",@"Alert message shown when device de-registration fails.")
 										delegate:nil 
 							   cancelButtonTitle:nil
 							   otherButtonTitles:@"OK", nil];
