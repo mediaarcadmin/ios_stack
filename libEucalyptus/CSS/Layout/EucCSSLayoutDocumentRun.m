@@ -173,6 +173,13 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     if(!inlineNode.isTextNode && !inlineNode.isImageNode) {
                         // If the node /doesn't/ have children, it's already closed,
                         // above.
+                        if(currentComponentInfo.documentNode != inlineNode) {
+                            // We can close nodes that we didn't start if we're in
+                            // an inline node with block nodes within it, so we
+                            // need to populate this if we didn't above (usually,
+                            // it's populated on node open).
+                            [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
+                        }
                         currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
                         [self _addComponent:&currentComponentInfo];
                         [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
