@@ -159,14 +159,18 @@
     return _renderItemCount;
 }
 
-static inline void _incrementRenderitemsCount(size_t *renderItemCount, size_t *renderItemCapacity, EucCSSLayoutPositionedLineRenderItem **renderItems) 
+static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderItem **currentRenderItem, size_t *renderItemCount, size_t *renderItemCapacity, EucCSSLayoutPositionedLineRenderItem **renderItems) 
 {
     ++*renderItemCount;
     if(*renderItemCount == *renderItemCapacity) { 
-        NSLog(@"increase!"); 
+        size_t oldCapacity = *renderItemCapacity;
         *renderItemCapacity *= 2; 
         *renderItems = realloc(*renderItems, *renderItemCapacity * sizeof(EucCSSLayoutPositionedLineRenderItem)); 
-    } 
+        bzero((*renderItems) + oldCapacity, oldCapacity * sizeof(EucCSSLayoutPositionedLineRenderItem));
+        *currentRenderItem = (*renderItems) + oldCapacity;
+    } else {
+        ++*currentRenderItem;
+    }
 }
 
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems
@@ -245,8 +249,7 @@ static inline void _incrementRenderitemsCount(size_t *renderItemCount, size_t *r
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStop;
                         renderItem->item.underlineItem.underlinePoint = CGPointMake(ceilf(xPosition), yPosition + baseline + 1.5f);
                     }
-                    ++renderItem;
-                    _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
+                    _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     currentUnderline = shouldUnderline;
                 }
                 checkForUnderline = NO;
@@ -266,32 +269,28 @@ static inline void _incrementRenderitemsCount(size_t *renderItemCount, size_t *r
                         if(![currentHyperlink isEqual:href]) {
                             renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
                             renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
-                            ++renderItem;
-                            _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
+                            _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                             [currentHyperlink release];
                             //NSLog(@"Hyperlink Off");
                             //NSLog(@"Hyperlink On");
                             currentHyperlink = [href retain];
                             renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                             renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
-                            ++renderItem;
-                            _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
+                            _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                         }
                     } else {
                         //NSLog(@"Hyperlink On");
                         currentHyperlink = [href retain];
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
-                        ++renderItem;
-                        _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);                        
+                        _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     }
                 } else {
                     if(currentHyperlink) {
                         //NSLog(@"Hyperlink Off");
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
                         renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
-                        ++renderItem;
-                        _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
+                        _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                         [currentHyperlink release];
                         currentHyperlink = nil;
                     }
@@ -306,8 +305,7 @@ static inline void _incrementRenderitemsCount(size_t *renderItemCount, size_t *r
                 renderItem->item.stringItem.pointSize = info->pointSize;
                 renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                 renderItem->item.stringItem.layoutPoint = info->point;
-                ++renderItem;
-                _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
+                _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                 
                 xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace || 
@@ -327,8 +325,7 @@ static inline void _incrementRenderitemsCount(size_t *renderItemCount, size_t *r
                     renderItem->item.stringItem.pointSize = info->pointSize;
                     renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                     renderItem->item.stringItem.layoutPoint = info->point;
-                    ++renderItem;
-                    _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
+                    _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     
                     xPosition += info->widthAfterHyphen;
                 }
@@ -338,8 +335,7 @@ static inline void _incrementRenderitemsCount(size_t *renderItemCount, size_t *r
                 renderItem->item.imageItem.rect = CGRectMake(xPosition, yPosition + baseline - info->ascender, info->width, info->pointSize);
                 renderItem->item.imageItem.layoutPoint = info->point;
                 renderItem->altText = [[info->documentNode altText] retain];
-                ++renderItem;
-                _incrementRenderitemsCount(&_renderItemCount, &renderItemCapacity, &_renderItems);
+                _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                 
                 xPosition += info->width;
             } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
@@ -365,7 +361,6 @@ static inline void _incrementRenderitemsCount(size_t *renderItemCount, size_t *r
                 renderItem->item.stringItem.string = [(NSString *)info->component retain];
                 renderItem->item.stringItem.rect.size.width = info->widthBeforeHyphen;
                 renderItem->item.stringItem.layoutPoint = info->point;
-                ++renderItem;                
             }
         }
         
