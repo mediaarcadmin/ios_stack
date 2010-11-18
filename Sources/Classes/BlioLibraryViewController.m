@@ -343,6 +343,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
+        [self.processingDelegate enqueueBookWithTitle:@"Frommers Florida" 
+                                              authors:[NSArray arrayWithObjects:@"Rose, Lesley Anne", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Frommers Florida.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"FrommersFlorida" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
 #ifdef DEMO_MODE		
 		
         [self.processingDelegate enqueueBookWithTitle:@"Toy Story" 
@@ -412,6 +425,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Grilling Basics" 
+                                              authors:[NSArray arrayWithObjects:@"Larsen, Linda Johnson", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Grilling Basics.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"GrillingBasics" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
