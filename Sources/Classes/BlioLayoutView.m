@@ -973,6 +973,36 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [self.pageTurningView drawView];
 }
 
+- (NSArray *)rectsFromBlocksAtPageIndex:(NSInteger)pageIndex inBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
+	NSMutableArray *rects = [[NSMutableArray alloc] init];
+	
+	NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+	
+	CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
+
+	for (BlioTextFlowBlock *block in pageBlocks) {                
+		for (BlioTextFlowPositionedWord *word in [block words]) {
+			// If the range starts before this word:
+			if ( bookmarkRange.startPoint.layoutPage < (pageIndex + 1) ||
+				((bookmarkRange.startPoint.layoutPage == (pageIndex + 1)) && (bookmarkRange.startPoint.blockOffset < block.blockIndex)) ||
+				((bookmarkRange.startPoint.layoutPage == (pageIndex + 1)) && (bookmarkRange.startPoint.blockOffset == block.blockIndex) && (bookmarkRange.startPoint.wordOffset <= word.wordIndex)) ) {
+				// If the range ends after this word:
+				if ( bookmarkRange.endPoint.layoutPage > (pageIndex +1 ) ||
+					((bookmarkRange.endPoint.layoutPage == (pageIndex + 1)) && (bookmarkRange.endPoint.blockOffset > block.blockIndex)) ||
+					((bookmarkRange.endPoint.layoutPage == (pageIndex + 1)) && (bookmarkRange.endPoint.blockOffset == block.blockIndex) && (bookmarkRange.endPoint.wordOffset >= word.wordIndex)) ) {
+					// This word is in the range.
+					CGRect pageRect = CGRectApplyAffineTransform([word rect], pageTransform);
+					[rects addObject:[NSValue valueWithCGRect:pageRect]];
+					
+				}                            
+			}
+		}
+	}
+	
+	return [rects autorelease];
+	
+}
+
 - (NSArray *)highlightRectsForPageAtIndex:(NSInteger)pageIndex excluding:(BlioBookmarkRange *)excludedBookmark {
     NSMutableArray *allHighlights = [NSMutableArray array];
     NSArray *highlightRanges = nil;
@@ -980,34 +1010,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         highlightRanges = [self.delegate rangesToHighlightForLayoutPage:pageIndex + 1];
     }
 
-    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
+    
 
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
         
         if (![highlightRange isEqual:excludedBookmark]) {
-            NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
-            
-            for (BlioTextFlowBlock *block in pageBlocks) {                
-                for (BlioTextFlowPositionedWord *word in [block words]) {
-                    // If the range starts before this word:
-                    if ( highlightRange.startPoint.layoutPage < (pageIndex + 1) ||
-                        ((highlightRange.startPoint.layoutPage == (pageIndex + 1)) && (highlightRange.startPoint.blockOffset < block.blockIndex)) ||
-                        ((highlightRange.startPoint.layoutPage == (pageIndex + 1)) && (highlightRange.startPoint.blockOffset == block.blockIndex) && (highlightRange.startPoint.wordOffset <= word.wordIndex)) ) {
-                        // If the range ends after this word:
-                        if ( highlightRange.endPoint.layoutPage > (pageIndex +1 ) ||
-                            ((highlightRange.endPoint.layoutPage == (pageIndex + 1)) && (highlightRange.endPoint.blockOffset > block.blockIndex)) ||
-                            ((highlightRange.endPoint.layoutPage == (pageIndex + 1)) && (highlightRange.endPoint.blockOffset == block.blockIndex) && (highlightRange.endPoint.wordOffset >= word.wordIndex)) ) {
-                            // This word is in the range.
-                            CGRect pageRect = CGRectApplyAffineTransform([word rect], pageTransform);
-                            [highlightRects addObject:[NSValue valueWithCGRect:pageRect]];
-							NSLog(@"Adding pageRect: %@", NSStringFromCGRect(pageRect));
-
-                        }                            
-                    }
-                }
-            }
-            
+			
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			
+			NSArray *highlightRects = [self rectsFromBlocksAtPageIndex:pageIndex inBookmarkRange:highlightRange];
             NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
             
             for (NSValue *rectValue in coalescedRects) {
@@ -1016,7 +1027,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 [highlightPair release];
             }
             
-            [highlightRects release];
+            [pool drain];
         }
         
     }
@@ -1411,7 +1422,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (BlioBookmarkRange *)noteBookmarkForPage:(NSInteger)page atPoint:(CGPoint)point {
-
+	
 	NSUInteger pageIndex = page - 1;
 	
 	NSArray *highlightRanges = nil;
@@ -1419,55 +1430,34 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         highlightRanges = [self.delegate rangesToHighlightForLayoutPage:page];
     }
 	
-    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    //CGAffineTransform  highlightTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
-	CGAffineTransform  viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
-
-
+    CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
+	CGAffineTransform  viewTransform = CGAffineTransformConcat(CGAffineTransformInvert(pageTransform), [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES]);
+	
 	BlioBookmarkRange *noteBookmarkMatch = nil;
 	
     for (BlioBookmarkRange *highlightRange in highlightRanges) {
-		NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
-		for (BlioTextFlowBlock *block in pageBlocks) {                
-			for (BlioTextFlowPositionedWord *word in [block words]) {
-				// If the range starts before this word:
-				if ( highlightRange.startPoint.layoutPage < (pageIndex + 1) ||
-					((highlightRange.startPoint.layoutPage == (pageIndex + 1)) && (highlightRange.startPoint.blockOffset < block.blockIndex)) ||
-					((highlightRange.startPoint.layoutPage == (pageIndex + 1)) && (highlightRange.startPoint.blockOffset == block.blockIndex) && (highlightRange.startPoint.wordOffset <= word.wordIndex)) ) {
-					// If the range ends after this word:
-					if ( highlightRange.endPoint.layoutPage > (pageIndex +1 ) ||
-						((highlightRange.endPoint.layoutPage == (pageIndex + 1)) && (highlightRange.endPoint.blockOffset > block.blockIndex)) ||
-						((highlightRange.endPoint.layoutPage == (pageIndex + 1)) && (highlightRange.endPoint.blockOffset == block.blockIndex) && (highlightRange.endPoint.wordOffset >= word.wordIndex)) ) {
-						// This word is in the range.
-						//CGRect pageRect = CGRectApplyAffineTransform([word rect], highlightTransform);
-						[highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
-						//NSLog(@"Adding pageRect: %@", NSStringFromCGRect(pageRect));
-					}                            
-				}
-			}
-		}
-		
+		NSArray *highlightRects = [self rectsFromBlocksAtPageIndex:pageIndex inBookmarkRange:highlightRange];
 		NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
-		
 		
 		for (NSValue *rectValue in coalescedRects) {
 			CGRect coalescedRect = CGRectApplyAffineTransform([rectValue CGRectValue], viewTransform);
-
+			
 			if (CGRectContainsPoint(coalescedRect, point)) {
 				noteBookmarkMatch = highlightRange;
 				break;
 			}
 		}
 		
-		[highlightRects release];
+		[pool drain];
 		
 		if (noteBookmarkMatch != nil) {
 			break;
 		}
         
     }
-	    
+	
     return noteBookmarkMatch;
 }
 
