@@ -1242,10 +1242,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
-        if(_cachedBlockAndElementIdentifierToRects) {
+        /*if(_cachedBlockAndElementIdentifierToRects) {
             CFRelease(_cachedBlockAndElementIdentifierToRects);
             _cachedBlockAndElementIdentifierToRects = NULL;
-        }
+        }*/
         
         // Work out he rects to highlight
         NSArray *highlightRects = [self _highlightRectsForRange:selectedRange];

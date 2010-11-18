@@ -771,8 +771,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
     endPoint.layoutPage = endPageIndex + 1;
     
-    NSArray *endPageBlocks = [self.textFlow blocksForPageAtIndex:[self.pageTurningView rightPageIndex] includingFolioBlocks:NO];
-    NSUInteger maxOffset = [endPageBlocks count];
+    NSArray *endPageBlocks = [self.textFlow blocksForPageAtIndex:endPageIndex includingFolioBlocks:NO];
+    NSUInteger maxOffset = [endPageBlocks count] + 1;
     endPoint.blockOffset = maxOffset;
 
     BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
