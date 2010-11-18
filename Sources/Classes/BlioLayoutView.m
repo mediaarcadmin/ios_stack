@@ -59,6 +59,9 @@
 - (BlioLayoutHyperlink *)hyperlinkForPage:(NSInteger)page atPoint:(CGPoint)point;
 - (void)hyperlinkTapped:(NSString *)link;
 
+- (BlioBookmarkRange *)noteBookmarkForPage:(NSInteger)page atPoint:(CGPoint)point;
+- (void)showNoteForBookmark:(BlioBookmarkRange *)bookmark;
+
 - (CGRect)visibleRectForPageAtIndex:(NSInteger)pageIndex;
 - (void)zoomAtPoint:(CGPoint)point;
 - (void)zoomToPreviousBlock;
@@ -998,6 +1001,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                             // This word is in the range.
                             CGRect pageRect = CGRectApplyAffineTransform([word rect], pageTransform);
                             [highlightRects addObject:[NSValue valueWithCGRect:pageRect]];
+							NSLog(@"Adding pageRect: %@", NSStringFromCGRect(pageRect));
+
                         }                            
                     }
                 }
@@ -1181,13 +1186,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
     startTouchPoint = CGPointMake(-1, -1);
 	
-    NSDictionary *touchesEventAndLink = [timer userInfo];
-	NSString *link = [touchesEventAndLink valueForKey:@"link"];
-		
-	if (link) {
+    NSDictionary *touchesInfo = [timer userInfo];
+	NSString *link = [touchesInfo valueForKey:@"link"];
+	BlioBookmarkRange *noteBookmark = [touchesInfo valueForKey:@"noteBookmark"];
+	
+	if (noteBookmark != (id)[NSNull null]) {
+		[self showNoteForBookmark:noteBookmark];
+	} else if (link != (id)[NSNull null]) {
 		[self hyperlinkTapped:link];
 	} else {
-		[self handleSingleTapAtPoint:[[[touchesEventAndLink valueForKey:@"touches"] anyObject] locationInView:self]];
+		[self handleSingleTapAtPoint:[[[touchesInfo valueForKey:@"touches"] anyObject] locationInView:self]];
 	}
 	
 	self.delayedTouchesEndedTimer = nil;
@@ -1202,6 +1210,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     self.delayedTouchesBeganTimer = nil;
     
     BlioLayoutHyperlink *touchedHyperlink = nil;
+	BlioBookmarkRange *touchedNoteBookmark = nil;
+	
     CGPoint point = [[touches anyObject] locationInView:self];
     
     if (!CGPointEqualToPoint(startTouchPoint, CGPointMake(-1, -1))) {
@@ -1209,13 +1219,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             NSInteger leftPageIndex = [self.pageTurningView leftPageIndex];
             if (leftPageIndex != NSUIntegerMax) {
                 touchedHyperlink = [self hyperlinkForPage:leftPageIndex + 1 atPoint:point];
+				touchedNoteBookmark = [self noteBookmarkForPage:leftPageIndex + 1 atPoint:point];
             }
         }
         
-        if (nil == touchedHyperlink) {
+        if ((nil == touchedHyperlink) && (nil == touchedNoteBookmark)) {
             NSInteger rightPageIndex = [self.pageTurningView rightPageIndex];
             if (rightPageIndex != NSUIntegerMax) {
                 touchedHyperlink = [self hyperlinkForPage:rightPageIndex + 1 atPoint:point];
+				touchedNoteBookmark = [self noteBookmarkForPage:rightPageIndex + 1 atPoint:point];
             }
         }
 		
@@ -1227,8 +1239,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             return;
         }
 		
-		NSDictionary *touchesEventAndLink = [NSDictionary dictionaryWithObjectsAndKeys:touches, @"touches", event, @"event", [touchedHyperlink link], @"link", nil];
-        self.delayedTouchesEndedTimer = [NSTimer scheduledTimerWithTimeInterval:0.3f target:self selector:@selector(delayedTouchesEnded:) userInfo:touchesEventAndLink repeats:NO];
+		NSDictionary *touchesInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+									 touches, @"touches", 
+									 event, @"event", 
+									 [touchedHyperlink link] ? : (id)[NSNull null], @"link", 
+									 touchedNoteBookmark ? : (id)[NSNull null], @"noteBookmark", 
+									 nil];
+		
+        self.delayedTouchesEndedTimer = [NSTimer scheduledTimerWithTimeInterval:0.3f target:self selector:@selector(delayedTouchesEnded:) userInfo:touchesInfo repeats:NO];
 		
     } else {
         [self.pageTurningView touchesEnded:touches withEvent:event];
@@ -1341,6 +1359,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         [self.delegate toggleToolbars]; 
     }
 }
+
+#pragma mark -
+#pragma mark Actions
+
+- (void)showNoteForBookmark:(BlioBookmarkRange *)bookmark {
+	NSLog(@"Show note for bookmark %@", bookmark);
+	//if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:withColor:)]) {
+//		[self.delegate updateHighlightNoteAtRange:bookmark withColor:nil];
+//	}
+}
         
 #pragma mark -
 #pragma mark Hyperlinks
@@ -1383,6 +1411,70 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [hyperlinksCacheLock unlock];
     
     return hyperlinksArray;
+}
+
+- (BlioBookmarkRange *)noteBookmarkForPage:(NSInteger)page atPoint:(CGPoint)point {
+
+	NSUInteger pageIndex = page - 1;
+	
+	NSArray *highlightRanges = nil;
+    if (self.delegate) {
+        highlightRanges = [self.delegate rangesToHighlightForLayoutPage:page];
+    }
+	
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+    //CGAffineTransform  highlightTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
+	CGAffineTransform  viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
+
+
+	BlioBookmarkRange *noteBookmarkMatch = nil;
+	
+    for (BlioBookmarkRange *highlightRange in highlightRanges) {
+		NSMutableArray *highlightRects = [[NSMutableArray alloc] init];
+		
+		for (BlioTextFlowBlock *block in pageBlocks) {                
+			for (BlioTextFlowPositionedWord *word in [block words]) {
+				// If the range starts before this word:
+				if ( highlightRange.startPoint.layoutPage < (pageIndex + 1) ||
+					((highlightRange.startPoint.layoutPage == (pageIndex + 1)) && (highlightRange.startPoint.blockOffset < block.blockIndex)) ||
+					((highlightRange.startPoint.layoutPage == (pageIndex + 1)) && (highlightRange.startPoint.blockOffset == block.blockIndex) && (highlightRange.startPoint.wordOffset <= word.wordIndex)) ) {
+					// If the range ends after this word:
+					if ( highlightRange.endPoint.layoutPage > (pageIndex +1 ) ||
+						((highlightRange.endPoint.layoutPage == (pageIndex + 1)) && (highlightRange.endPoint.blockOffset > block.blockIndex)) ||
+						((highlightRange.endPoint.layoutPage == (pageIndex + 1)) && (highlightRange.endPoint.blockOffset == block.blockIndex) && (highlightRange.endPoint.wordOffset >= word.wordIndex)) ) {
+						// This word is in the range.
+						//CGRect pageRect = CGRectApplyAffineTransform([word rect], highlightTransform);
+						[highlightRects addObject:[NSValue valueWithCGRect:[word rect]]];
+						//NSLog(@"Adding pageRect: %@", NSStringFromCGRect(pageRect));
+					}                            
+				}
+			}
+		}
+		
+		NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
+		
+		
+		for (NSValue *rectValue in coalescedRects) {
+			CGRect coalescedRect = CGRectApplyAffineTransform([rectValue CGRectValue], viewTransform);
+			CGRect cropRect = [self cropForPage:page];
+			CGRect scaledPage = CGRectApplyAffineTransform(cropRect, viewTransform);
+			CGRect frameRect = self.pageTurningView.rightPageFrame;
+						
+			if (CGRectContainsPoint(coalescedRect, point)) {
+				noteBookmarkMatch = highlightRange;
+				break;
+			}
+		}
+		
+		[highlightRects release];
+		
+		if (noteBookmarkMatch != nil) {
+			break;
+		}
+        
+    }
+	    
+    return noteBookmarkMatch;
 }
 
 - (BlioLayoutHyperlink *)hyperlinkForPage:(NSInteger)page atPoint:(CGPoint)point {
