@@ -192,7 +192,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-grid.png"]],
+                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
                               [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
                               nil];
     BlioAccessibilitySegmentedControl *segmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
