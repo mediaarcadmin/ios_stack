@@ -11,5 +11,5 @@ Paragraph { display:block }
 *[TextAlignment="Left"] { text-align:left }
 *[TextAlignment="Right"] { text-align:right }
 LineBreak:before { content:"\A"; white-space: pre-line }
-:link { text-decoration: underline }
+:link { color: blue }
 :link * { text-decoration: inherit }
