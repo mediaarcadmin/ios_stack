@@ -1375,6 +1375,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Actions
 
 - (void)showNoteForBookmark:(BlioBookmarkRange *)bookmarkRange {
+	//EucSelectorRange *selectedRange = [self selectorRangeFromBookmarkRange:bookmarkRange];
+	//[self.selector setSelectedRange:selectedRange];
 	[self.delegate updateHighlightNoteAtRange:bookmarkRange toRange:nil withColor:nil];
 }
         
