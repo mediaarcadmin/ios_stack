@@ -24,6 +24,7 @@ typedef enum EucSelectorTrackingStage {
 @interface EucSelector : NSObject <THEventCaptureObserver, EucSelectorKnobDelegate> {
     BOOL _shouldSniffTouches;
     BOOL _selectionDisabled;
+    BOOL _shouldTrackSingleTapsOnHighights;
     
     id<EucSelectorDataSource> _dataSource;
     id<EucSelectorDelegate> _delegate;
@@ -118,6 +119,7 @@ typedef enum EucSelectorTrackingStage {
 // bedin, moved, ended, cancelled etc. interfaces.
 // Do not change this while the selector is attached to a view.
 @property (nonatomic, assign) BOOL shouldSniffTouches;
+@property (nonatomic, assign) BOOL shouldTrackSingleTapsOnHighights; // Default is YES.
 
 - (void)touchesBegan:(NSSet *)touches;
 - (void)touchesMoved:(NSSet *)touches;
@@ -140,8 +142,6 @@ typedef enum EucSelectorTrackingStage {
 // Optionally return a UIColor to use for the selection highlight (nil = default blue color).
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange;
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)selectedRange movedToRange:(EucSelectorRange *)selectedRange;
-
-- (void)eucSelector:(EucSelector *)selector didReceiveTapOnHighlightWithRange:(EucSelectorRange *)selectedRange;
 
 @end
 

@@ -258,9 +258,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
     sortSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     sortSegmentedControl.frame = CGRectMake(0,0, kBlioLibrarySortButtonWidth, sortSegmentedControl.frame.size.height);
-    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:0];
+    [sortSegmentedControl setContentOffset:CGSizeMake(0, 0) forSegmentAtIndex:0];
     [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
-    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:2];
+    [sortSegmentedControl setContentOffset:CGSizeMake(0, 0) forSegmentAtIndex:2];
 	
     [sortSegmentedControl addTarget:self action:@selector(setSortOption:) forControlEvents:UIControlEventValueChanged];
     

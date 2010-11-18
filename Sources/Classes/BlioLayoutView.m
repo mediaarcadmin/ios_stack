@@ -242,6 +242,7 @@
     if(self.superview) {
         EucSelector *aSelector = [[EucSelector alloc] init];
         aSelector.shouldSniffTouches = YES;
+        aSelector.shouldTrackSingleTapsOnHighights = NO;
         aSelector.dataSource = self;
         aSelector.delegate =  self;
         [aSelector attachToView:self];
