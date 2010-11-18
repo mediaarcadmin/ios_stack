@@ -104,14 +104,14 @@
 //			NSLog(@"bodyPart: %@",bodyPart);
 		}
 		for(id bodyPart in responseBodyParts) {
-			NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
 			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 				NSLog(@"SOAP error for login: %@",err);
 				[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
 				return;
 			}
-			else if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
+			NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
+			if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
 				self.token = [bodyPart LoginResult].Token;
 				NSLog(@"set token: %@",self.token);
 				self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
