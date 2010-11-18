@@ -289,13 +289,12 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 
     css_color currentColor = 0x000000FF;
     CGContextSetFillColorWithCSSColor(_cgContext, currentColor);
+    CGContextSetStrokeColorWithCSSColor(_cgContext, currentColor);
     
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         switch(renderItem->kind) {
             case EucCSSLayoutPositionedLineRenderItemKindString: {
                 if(renderItem->item.stringItem.color != currentColor) {
-                    currentColor = renderItem->item.stringItem.color;
-                    CGContextSetFillColorWithCSSColor(_cgContext, currentColor);
                     if(currentUnderline) {
                         if(lastMaxX != 0.0f) {
                             underlinePoints[1].x = lastMaxX;
@@ -303,6 +302,9 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                             underlinePoints[0].x = lastMaxX + 1.0f;
                         }
                     }
+                    currentColor = renderItem->item.stringItem.color;
+                    CGContextSetFillColorWithCSSColor(_cgContext, currentColor);
+                    CGContextSetStrokeColorWithCSSColor(_cgContext, currentColor);
                 }
                 CGRect rect = renderItem->item.stringItem.rect;
                 [renderItem->item.stringItem.stringRenderer drawString:renderItem->item.stringItem.string
