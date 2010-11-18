@@ -221,22 +221,30 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
                 xPosition += _indent;
         }
 
+        css_color color = 0x00000000;
         BOOL currentUnderline = NO;
-        BOOL checkForUnderline = YES;
-        
         NSURL *currentHyperlink = nil;
-        BOOL checkForHyperlink = YES;
+        BOOL checkNodeDependentStyles = YES;
         
         EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
         for(i = startComponentOffset, info = componentInfos;
             i < componentsCount && i < afterEndComponentOffset; 
             ++i, ++info) {
             
-            if(checkForUnderline) {
+            if(checkNodeDependentStyles) {
                 css_computed_style *style = [info->documentNode computedStyle];
                 if(!style) {
                     style = [(info->documentNode).parent computedStyle];
                 }
+                
+                css_color newColor;
+                uint8_t colorRet = css_computed_color(style, &newColor);
+                if(colorRet == CSS_COLOR_COLOR) {
+                    color = newColor;
+                } else {
+                    THWarn(@"Unexpected color format %ld", (long)colorRet);
+                }
+                
                 uint8_t decoration = css_computed_text_decoration(style);
                 BOOL shouldUnderline = (decoration == CSS_TEXT_DECORATION_UNDERLINE);
                 if(currentUnderline != shouldUnderline) {
@@ -252,10 +260,7 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
                     _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     currentUnderline = shouldUnderline;
                 }
-                checkForUnderline = NO;
-            }
-            
-            if(checkForHyperlink) {
+
                 NSURL *href = nil;
                 EucCSSIntermediateDocumentNode *documentNode = info->documentNode;
                 while(!href && documentNode) {
@@ -295,7 +300,8 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
                         currentHyperlink = nil;
                     }
                 }
-                checkForHyperlink = NO;
+                        
+                checkNodeDependentStyles = NO;
             }
             
             if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
@@ -305,6 +311,7 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
                 renderItem->item.stringItem.pointSize = info->pointSize;
                 renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                 renderItem->item.stringItem.layoutPoint = info->point;
+                renderItem->item.stringItem.color = color;
                 _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                 
                 xPosition += info->width;
@@ -325,6 +332,7 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
                     renderItem->item.stringItem.pointSize = info->pointSize;
                     renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
                     renderItem->item.stringItem.layoutPoint = info->point;
+                    renderItem->item.stringItem.color = color;
                     _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     
                     xPosition += info->widthAfterHyphen;
@@ -338,12 +346,8 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
                 _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                 
                 xPosition += info->width;
-            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
-                checkForUnderline = YES;
-                checkForHyperlink = YES;
-            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode) {
-                checkForUnderline = YES;
-                checkForHyperlink = YES;
+            } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode || info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode) {
+                checkNodeDependentStyles = YES;
             }
         }
         

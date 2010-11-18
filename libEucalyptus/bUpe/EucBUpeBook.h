@@ -72,7 +72,7 @@
 // Default is YES.  Controls whether to look for a HEAD element in the supplied
 // document trees to parse for CSS etc.
 - (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree;
-- (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
+- (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
 - (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
 
 // From the EucBook protocol - included here because it's useful for overriding

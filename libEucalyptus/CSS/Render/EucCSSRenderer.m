@@ -283,11 +283,29 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     
     BOOL currentUnderline = NO;
     CGPoint underlinePoints[2] = { { 0 } };    
-    CGFloat lastMaxX = 0;
+    CGFloat lastMaxX = 0.0f;
+    
+    CGContextSaveGState(_cgContext);
+
+    css_color currentColor = 0x000000FF;
+    CGContextSetFillColorWithCSSColor(_cgContext, currentColor);
+    CGContextSetStrokeColorWithCSSColor(_cgContext, currentColor);
     
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         switch(renderItem->kind) {
             case EucCSSLayoutPositionedLineRenderItemKindString: {
+                if(renderItem->item.stringItem.color != currentColor) {
+                    if(currentUnderline) {
+                        if(lastMaxX != 0.0f) {
+                            underlinePoints[1].x = lastMaxX;
+                            CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
+                            underlinePoints[0].x = lastMaxX + 1.0f;
+                        }
+                    }
+                    currentColor = renderItem->item.stringItem.color;
+                    CGContextSetFillColorWithCSSColor(_cgContext, currentColor);
+                    CGContextSetStrokeColorWithCSSColor(_cgContext, currentColor);
+                }
                 CGRect rect = renderItem->item.stringItem.rect;
                 [renderItem->item.stringItem.stringRenderer drawString:renderItem->item.stringItem.string
                                                              inContext:_cgContext 
@@ -334,6 +352,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
         
         //NSLog(@"Underline: %@ -> %@", NSStringFromCGPoint(underlinePoints[0]), NSStringFromCGPoint(underlinePoints[1])); 
     }
+    
+    CGContextRestoreGState(_cgContext);
     
     THLogVerbose(@"Positioned Line End");
 }

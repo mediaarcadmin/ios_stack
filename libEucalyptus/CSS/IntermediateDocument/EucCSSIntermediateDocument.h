@@ -39,7 +39,7 @@ struct css_stylesheet;
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
-               baseCSSPath:(NSString *)baseCSSPath
+              baseCSSPaths:(NSArray *)baseCSSPaths
                userCSSPath:(NSString *)userCSSPath
                     isHTML:(BOOL)isHTML;
 

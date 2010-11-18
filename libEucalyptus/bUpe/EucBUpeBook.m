@@ -640,9 +640,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return YES;
 }
 
-- (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
-    return [[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"];
+    return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];
 }
 
 - (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
@@ -1048,8 +1048,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         if(documentTree) {
             document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
                                                                          forURL:url
-                                                                    dataSource:self
-                                                                    baseCSSPath:[self baseCSSPathForDocumentTree:documentTree]
+                                                                     dataSource:self
+                                                                   baseCSSPaths:[self baseCSSPathsForDocumentTree:documentTree]
                                                                     userCSSPath:[self userCSSPathForDocumentTree:documentTree]
                                                                          isHTML:[self documentTreeIsHTML:documentTree]];
         }

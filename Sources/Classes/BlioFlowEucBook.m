@@ -95,14 +95,16 @@
     return navPoints;
 }
 
-- (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
-        return [[NSBundle mainBundle] pathForResource:@"TextFlowFlow" ofType:@"css"];
+        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowFlow" ofType:@"css"]];
     } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
-        return [[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"];
+        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"]];
     } else {
-        return [super baseCSSPathForDocumentTree:documentTree];
+        NSMutableArray *ret = [[super baseCSSPathsForDocumentTree:documentTree] mutableCopy];
+        [ret addObject:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]];
+        return ret;
     }
 }
 

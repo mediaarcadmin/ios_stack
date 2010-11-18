@@ -104,6 +104,9 @@
 		7D4A015C11DBA36900DDA5B7 /* SelectionKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */; };
 		7D4CE4751100C64C0061BDF2 /* BlioBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */; };
 		7D529C111158DC1100548C00 /* TextFlowCover.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = 7D529C101158DC1100548C00 /* TextFlowCover.xhtml */; };
+		7D5DFC691295580A00F7B41C /* ePubBaseOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */; };
+		7D5DFC6A1295580A00F7B41C /* ePubBaseOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */; };
+		7D5DFC6B1295580A00F7B41C /* ePubBaseOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */; };
 		7D6D9FF1124E9DC5005FD8CE /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
 		7D6D9FF2124E9DC5005FD8CE /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		7D6D9FF3124E9DC5005FD8CE /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
@@ -1357,6 +1360,7 @@
 		7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmark.h; sourceTree = "<group>"; };
 		7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmark.m; sourceTree = "<group>"; };
 		7D529C101158DC1100548C00 /* TextFlowCover.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TextFlowCover.xhtml; sourceTree = "<group>"; };
+		7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ePubBaseOverrides.css; sourceTree = "<group>"; };
 		7D6DA3411250DF6D005FD8CE /* paper-white-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white-ipad.png"; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
@@ -2256,6 +2260,7 @@
 				C9C546F110F7802F00ECE126 /* Blio.xcdatamodel */,
 				7DF2A589115381EF00FC2045 /* TextFlowFlow.css */,
 				7DBD0EDC12018E78009CD9DA /* TextFlowXAML.css */,
+				7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */,
 				7D529C101158DC1100548C00 /* TextFlowCover.xhtml */,
 				C9E5DC11117C741600950BA0 /* Localizable.strings */,
 				DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */,
@@ -3450,6 +3455,7 @@
 				7DE3103D1281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DE3103E1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
 				7DE3103F1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
+				7D5DFC6A1295580A00F7B41C /* ePubBaseOverrides.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3662,6 +3668,7 @@
 				7DE310411281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DE310421281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
 				7DE310431281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
+				7D5DFC6B1295580A00F7B41C /* ePubBaseOverrides.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3875,6 +3882,7 @@
 				7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
 				7DE3103B1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
+				7D5DFC691295580A00F7B41C /* ePubBaseOverrides.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
