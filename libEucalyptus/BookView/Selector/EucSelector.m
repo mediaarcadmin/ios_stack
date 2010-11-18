@@ -1366,11 +1366,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         _selectedRangeIsHighlight = newSelectedRangeIsHighlight;    
         if(newSelectedRange) {
             [self redisplaySelectedRange];
+            if(self.trackingStage <= EucSelectorTrackingStageDelay) {
+                self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
+            }
         } 
-        
-        if(self.trackingStage <= EucSelectorTrackingStageDelay) {
-            self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
-        }
     }
 }
 
