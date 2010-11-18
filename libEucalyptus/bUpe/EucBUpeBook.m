@@ -655,16 +655,21 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     NSString *ret = nil;
     
     NSString *manifestKey = [_meta objectForKey:@"cover"];
+    if(!manifestKey) {
+        manifestKey = @"cover-image"; // Should be specified, but sometimes it's not in real life...
+    }
     if(manifestKey) {
         NSString *documentsRelativeCover = [_manifestOverrides objectForKey:manifestKey];
         if(documentsRelativeCover) {
             NSString *documentsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByStandardizingPath];
             ret = [documentsPath stringByAppendingPathComponent:documentsRelativeCover];
         } else {
-            ret = [[_manifest objectForKey:manifestKey] path];
+            NSString *relativePath = [_manifest objectForKey:manifestKey];
+            if(relativePath) {
+                ret = [[NSURL URLWithString:relativePath relativeToURL:_root] path];
+            }
         }
     } 
-    
     if(!ret) {
         ret = _coverPath;
     }
