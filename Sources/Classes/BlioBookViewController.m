@@ -3003,22 +3003,24 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
-- (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange withColor:(UIColor *)newColor {
+- (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor {
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
-        
-        BlioBookmarkRange *toRange = [self.bookView selectedRange];
         NSManagedObject *existingNote = nil;
         NSManagedObject *highlight = [self.book fetchHighlightWithBookmarkRange:highlightRange];
         
         if (nil != highlight) {
-            [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.layoutPage] forKeyPath:@"range.startPoint.layoutPage"];
-            [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.blockOffset] forKeyPath:@"range.startPoint.blockOffset"];
-            [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.wordOffset] forKeyPath:@"range.startPoint.wordOffset"];
-            [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.elementOffset] forKeyPath:@"range.startPoint.elementOffset"];
-            [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.layoutPage] forKeyPath:@"range.endPoint.layoutPage"];
-            [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.blockOffset] forKeyPath:@"range.endPoint.blockOffset"];
-            [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.wordOffset] forKeyPath:@"range.endPoint.wordOffset"];
-            [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.elementOffset] forKeyPath:@"range.endPoint.elementOffset"];
+            if(toRange) {
+                [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.layoutPage] forKeyPath:@"range.startPoint.layoutPage"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.blockOffset] forKeyPath:@"range.startPoint.blockOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.wordOffset] forKeyPath:@"range.startPoint.wordOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.startPoint.elementOffset] forKeyPath:@"range.startPoint.elementOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.layoutPage] forKeyPath:@"range.endPoint.layoutPage"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.blockOffset] forKeyPath:@"range.endPoint.blockOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.wordOffset] forKeyPath:@"range.endPoint.wordOffset"];
+                [highlight setValue:[NSNumber numberWithInteger:toRange.endPoint.elementOffset] forKeyPath:@"range.endPoint.elementOffset"];
+            } else {
+                toRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[highlight valueForKey:@"range"]];
+            }
             if (nil != newColor) [highlight setValue:newColor forKeyPath:@"range.color"];
             
             NSError *error;
