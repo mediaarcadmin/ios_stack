@@ -874,6 +874,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                         }
                     } 
                 }                
+                [self redisplaySelectedRange];
                 [self _positionKnobs]; 
                 id<EucSelectorDelegate> delegate = self.delegate;
                 if([delegate respondsToSelector:@selector(menuItemsForEucSelector:)]) {
@@ -1365,9 +1366,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         _selectedRange = [newSelectedRange retain];
         _selectedRangeIsHighlight = newSelectedRangeIsHighlight;    
         if(newSelectedRange) {
-            [self redisplaySelectedRange];
             if(self.trackingStage <= EucSelectorTrackingStageDelay) {
                 self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
+            } else {
+                [self redisplaySelectedRange];
             }
         } 
     }
