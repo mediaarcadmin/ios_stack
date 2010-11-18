@@ -71,6 +71,7 @@
 - (void)zoomToBlock:(BlioTextFlowBlock *)targetBlock visibleRect:(CGRect)visibleRect reversed:(BOOL)reversed context:(void *)context center:(CGPoint)centerPoint;
 - (void)zoomOut;
 - (void)zoomOutAtPoint:(CGPoint)point;
+- (void)zoomOutAtPoint:(CGPoint)point animated:(BOOL)animated;
 - (void)advanceOrZoomOutAtPoint:(CGPoint)point;
 - (void)zoomOutsideBlockAtPoint:(CGPoint)point zoomFactor:(CGFloat)zoomFactor;
 - (void)zoomForNewPageAnimated:(BOOL)animated;
@@ -1093,6 +1094,26 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			}
         } 
 		if (showHighlight) {
+			CGRect visibleRect = [self visibleRectForPageAtIndex:targetIndex];
+			CGRect boundingRect = CGRectNull;
+			
+			CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:targetIndex offsetOrigin:NO applyZoom:NO];
+
+			NSArray *rectValues = [self rectsFromBlocksAtPageIndex:targetIndex inBookmarkRange:bookmarkRange];
+			for (NSValue *rectValue in rectValues) {
+				CGRect rect = CGRectApplyAffineTransform([rectValue CGRectValue], CGAffineTransformInvert(pageTransform));
+				boundingRect = CGRectUnion(boundingRect, rect);
+			}
+						
+			if (!CGRectEqualToRect(CGRectIntegral(CGRectIntersection(visibleRect, boundingRect)), CGRectIntegral(boundingRect))) {
+				
+				CGAffineTransform  viewTransform = [self pageTurningViewTransformForPageAtIndex:targetIndex offsetOrigin:YES applyZoom:YES];
+				CGRect viewBoundingRect = CGRectApplyAffineTransform(boundingRect, viewTransform);
+				CGPoint midPoint = CGPointMake(CGRectGetMidX(viewBoundingRect), CGRectGetMidY(viewBoundingRect));
+				
+				[self zoomOutAtPoint:midPoint animated:animated];
+			}
+			
 			EucSelectorRange *range = [self selectorRangeFromBookmarkRange:bookmarkRange];
 			[self.selector temporarilyHighlightSelectorRange:range animated:animated];
 		}
@@ -2284,7 +2305,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)zoomOutAtPoint:(CGPoint)point {
-	
+	[self zoomOutAtPoint:point animated:YES];
+}
+
+- (void)zoomOutAtPoint:(CGPoint)point animated:(BOOL)animated {
 	CGRect bounds = self.pageTurningView.bounds;
 	
 	CGRect rightPageFrame = [self.pageTurningView rightPageFrame];
@@ -2296,17 +2320,18 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		pageFrame = self.pageTurningView.unzoomedLeftPageFrame;
 	}
 	
-	CGFloat zoomFactor = self.pageTurningView.fitToBoundsZoomFactor;
+	CGFloat zoomFactor = self.pageTurningView.minZoomFactor;
 	CGFloat topAlignedOffset = CGRectGetMidY(pageFrame) * zoomFactor - CGRectGetMidY(bounds);
-
+	
 	CGFloat currentOffset = self.pageTurningView.translation.y / self.pageTurningView.zoomFactor * zoomFactor;
 	CGFloat insetFromTopOfPage = (topAlignedOffset - currentOffset) / zoomFactor;
 	
+	CGPoint offset;
+	
 	CGFloat positionYInPage = insetFromTopOfPage + point.y / zoomFactor;
-    CGPoint offset = CGPointMake(0, (CGRectGetMidY(bounds) - positionYInPage) * zoomFactor); 
-
-	[self.pageTurningView setTranslation:offset zoomFactor:zoomFactor animated:YES];
-
+	offset = CGPointMake(0, (CGRectGetMidY(bounds) - positionYInPage) * zoomFactor); 
+		
+	[self.pageTurningView setTranslation:offset zoomFactor:zoomFactor animated:animated];
 }
 
 - (void)advanceOrZoomOutAtPoint:(CGPoint)point {
