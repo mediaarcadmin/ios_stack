@@ -340,7 +340,7 @@ static void *background_init_thread(void * arg) {
 	// Save data if appropriate
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"[BlioAppAppDelegate applicationWilTerminate] Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioAppAppDelegate applicationWillTerminate] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 #pragma mark -

@@ -15,7 +15,6 @@
 #import "BlioAppSettingsController.h"
 #import "BlioLoginViewController.h"
 #import "BlioProcessingStandardOperations.h"
-#import "BlioAccessibilitySegmentedControl.h"
 #import "BlioStoreArchiveViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
@@ -178,6 +177,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)viewDidLoad {
     // N.B. on iOS 4.0 it is important to set the toolbar tint before adding the UIBarButtonItems
+	
+	BlioLibraryLayout loadedLibraryLayout = [[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"];
+	
     UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
     [self.navigationController setToolbarHidden:NO ];
     [self.navigationController.toolbar setTintColor:tintColor];
@@ -190,7 +192,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
+                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-grid.png"]],
                               [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
                               nil];
     BlioAccessibilitySegmentedControl *segmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
@@ -209,8 +211,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
     [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
     
-    self.libraryLayout = kBlioLibraryLayoutUndefined;
-    [segmentedControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"]];
+    [segmentedControl setSelectedSegmentIndex:loadedLibraryLayout];
 	
     
     UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
@@ -218,22 +219,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [libraryLayoutButton release];
     [segmentedControl release];
     
-	NSMutableArray *libraryItems = [NSMutableArray array];
+	if (libraryItems) [libraryItems release];
+	libraryItems = [[NSMutableArray alloc] initWithCapacity:4];
+	if (sortLibraryItems) [sortLibraryItems release];
+	sortLibraryItems = [[NSMutableArray alloc] initWithCapacity:5];
     UIBarButtonItem *item;
-	
-	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Sort", @"Label for Library View Sort button")
-	                                        style:UIBarButtonItemStyleBordered
-	                                       target:self 
-	                                       action:@selector(showSortOptions:)];
-    item.width = 69.0f;
-	[item setAccessibilityLabel:NSLocalizedString(@"Sort", @"Accessibility label for Library View Sort button")];
-	[item setAccessibilityHint:NSLocalizedString(@"Provides options for sorting the library", @"Accessibility label for Library View Sort hint")];
-	[libraryItems addObject:item];
-	[item release];
-	
-	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-	[libraryItems addObject:item];
-	[item release];
 	
 	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Get Books", @"Label for Library View Sort button")
                                             style:UIBarButtonItemStyleBordered
@@ -241,10 +231,59 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
                                            action:@selector(showStore:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Get Books", @"Accessibility label for Library View Get Books button")];
 	[libraryItems addObject:item];
+	[sortLibraryItems addObject:item];
+	[item release];
+	
+	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+	[libraryItems addObject:item];
+	[sortLibraryItems addObject:item];
+	[item release];
+	
+//	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Sort", @"Label for Library View Sort button")
+//	                                        style:UIBarButtonItemStyleBordered
+//	                                       target:self 
+//	                                       action:@selector(showSortOptions:)];
+//    item.width = 69.0f;
+//	[item setAccessibilityLabel:NSLocalizedString(@"Sort", @"Accessibility label for Library View Sort button")];
+//	[item setAccessibilityHint:NSLocalizedString(@"Provides options for sorting the library", @"Accessibility label for Library View Sort hint")];
+	
+	// sort segmented control start
+	NSArray *sortSegmentImages = [NSArray arrayWithObjects:
+								  [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-arbitrary.png"]],
+								  [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-title.png"]],
+								  [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-author.png"]],
+								  nil];
+    if (sortSegmentedControl) [sortSegmentedControl release];
+	sortSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:sortSegmentImages];
+    
+    sortSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    sortSegmentedControl.frame = CGRectMake(0,0, kBlioLibrarySortButtonWidth, sortSegmentedControl.frame.size.height);
+    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:0];
+    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
+    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:2];
+	
+    [sortSegmentedControl addTarget:self action:@selector(setSortOption:) forControlEvents:UIControlEventValueChanged];
+    
+    [sortSegmentedControl setIsAccessibilityElement:NO];
+	sortSegmentedControl.tintColor = tintColor;
+    [[sortSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"View by Grid Order", @"Accessibility label for Library View view by grid order button")];
+    [[sortSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+	[[sortSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"View by Title", @"Accessibility label for Library View view by title button")];
+    [[sortSegmentedControl imageForSegmentAtIndex:1] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+	[[sortSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"View by Author", @"Accessibility label for Library View view by author button")];
+    [[sortSegmentedControl imageForSegmentAtIndex:2] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+	
+	[sortSegmentedControl setSelectedSegmentIndex:self.librarySortType];
+	
+    item = [[UIBarButtonItem alloc] initWithCustomView:sortSegmentedControl];
+	[sortLibraryItems addObject:item];
     [item release];	
+	
+	// sort segmented control end
     
 	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 	[libraryItems addObject:item];
+	[sortLibraryItems addObject:item];
 	[item release];
 	
 	
@@ -256,12 +295,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [item setAccessibilityLabel:NSLocalizedString(@"Application Settings", @"Accessibility label for Library View Settings button")];
 	
     [libraryItems addObject:item];
+	[sortLibraryItems addObject:item];
     [item release];
     
-    [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
+    if (loadedLibraryLayout == kBlioLibraryLayoutGrid) [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
+    else [self setToolbarItems:[NSArray arrayWithArray:sortLibraryItems] animated:YES];
     
 	maxLayoutPageEquivalentCount = 0;
 	
+	self.libraryLayout = loadedLibraryLayout;
+
     
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -422,6 +465,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)viewDidUnload {
+	if (sortSegmentedControl) [sortSegmentedControl release];
 }
 
 - (NSInteger)columnCount {
@@ -583,15 +627,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
 	
     NSSortDescriptor *sortDescriptor = nil;
-	switch (librarySortType) {
-		case kBlioLibrarySortTypeTitle:
-			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES] autorelease];
-			break;
-		case kBlioLibrarySortTypeAuthor:
-			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"author" ascending:YES] autorelease];
-			break;
-        default: {
-			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO] autorelease];
+	if (self.libraryLayout == kBlioLibraryLayoutGrid) {
+		sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO] autorelease];
+	}
+	else {
+		switch (librarySortType) {
+			case kBlioLibrarySortTypeTitle:
+				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES] autorelease];
+				break;
+			case kBlioLibrarySortTypeAuthor:
+				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"author" ascending:YES] autorelease];
+				break;
+			default: {
+				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO] autorelease];
+			}
 		}
 	}
 	NSArray *sorters = [NSArray arrayWithObject:sortDescriptor]; 
@@ -1234,6 +1283,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self.processingDelegate enqueueBook:book];
 }
 
+- (void)setSortOption:(id)sender {
+	self.librarySortType = (BlioLibrarySortType)[sender selectedSegmentIndex];
+}
+
 - (void)changeLibraryLayout:(id)sender {
     
     BlioLibraryLayout newLayout = (BlioLibraryLayout)[sender selectedSegmentIndex];
@@ -1241,19 +1294,24 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     if (self.libraryLayout != newLayout) {
         self.libraryLayout = newLayout;
         [[NSUserDefaults standardUserDefaults] setInteger:self.libraryLayout forKey:@"kBlioLastLibraryLayoutDefaultsKey"];
-        
+		
         switch (newLayout) {
             case kBlioLibraryLayoutGrid:
 				[self.view bringSubviewToFront:self.gridView];
-				[self.gridView reloadData];
+				if (self.librarySortType != kBlioLibrarySortTypePersonalized) [self fetchResults];
+				else [self.gridView reloadData];
 				self.gridView.hidden = NO;
 				self.tableView.hidden = YES;
+				[self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
                 break;
             case kBlioLibraryLayoutList:
 				[self.view bringSubviewToFront:self.tableView];
-				[self.tableView reloadData];
+				if (self.librarySortType != kBlioLibrarySortTypePersonalized) [self fetchResults];
+				else [self.tableView reloadData];
 				self.gridView.hidden = YES;
 				self.tableView.hidden = NO;
+				[self setToolbarItems:[NSArray arrayWithArray:sortLibraryItems] animated:YES];
+				[sortSegmentedControl setSelectedSegmentIndex:self.librarySortType];
                 break;
             default:
                 NSLog(@"Unexpected library layout %ld", (long)newLayout);

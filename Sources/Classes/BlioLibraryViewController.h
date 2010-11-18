@@ -10,6 +10,7 @@
 #import "MRGridView.h"
 #import "BlioBook.h"
 #import "BlioCoverView.h"
+#import "BlioAccessibilitySegmentedControl.h"
 
 @class BlioTestBlockWords;
 @class BlioBookViewController;
@@ -47,6 +48,7 @@ static const CGFloat kBlioLibraryGridBookSpacing = 0;
 static const CGFloat kBlioLibraryGridBookSpacingPad = 40;
 
 static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
+static const CGFloat kBlioLibrarySortButtonWidth = 117;
 
 static const CGFloat kBlioProportionalProgressBarInsetX = 3;
 static const CGFloat kBlioProportionalProgressBarInsetY = 3;
@@ -107,6 +109,9 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	UIButton * libraryVaultButton;
 	BOOL showArchiveCell;
 	NSInteger selectedGridIndex;
+	BlioAccessibilitySegmentedControl * sortSegmentedControl;
+	NSMutableArray * libraryItems;
+	NSMutableArray * sortLibraryItems;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
 #endif
