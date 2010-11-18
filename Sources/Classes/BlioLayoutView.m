@@ -1363,11 +1363,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Actions
 
-- (void)showNoteForBookmark:(BlioBookmarkRange *)bookmark {
-	NSLog(@"Show note for bookmark %@", bookmark);
-	//if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:withColor:)]) {
-//		[self.delegate updateHighlightNoteAtRange:bookmark withColor:nil];
-//	}
+- (void)showNoteForBookmark:(BlioBookmarkRange *)bookmarkRange {
+	[self.delegate updateHighlightNoteAtRange:bookmarkRange toRange:nil withColor:nil];
 }
         
 #pragma mark -
@@ -1456,10 +1453,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		
 		for (NSValue *rectValue in coalescedRects) {
 			CGRect coalescedRect = CGRectApplyAffineTransform([rectValue CGRectValue], viewTransform);
-			CGRect cropRect = [self cropForPage:page];
-			CGRect scaledPage = CGRectApplyAffineTransform(cropRect, viewTransform);
-			CGRect frameRect = self.pageTurningView.rightPageFrame;
-						
+
 			if (CGRectContainsPoint(coalescedRect, point)) {
 				noteBookmarkMatch = highlightRange;
 				break;
