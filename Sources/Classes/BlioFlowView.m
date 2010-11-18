@@ -519,6 +519,14 @@
     return [_eucBookView eucSelector:selector didEndEditingHighlightWithRange:fromRange movedToRange:toRange];
 }
 
+- (void)eucSelector:(EucSelector *)selector didReceiveTapOnHighlightWithRange:(EucSelectorRange *)selectedRange
+{
+    BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:selectedRange];
+    if([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:toRange:withColor:)]) {
+        [self.delegate updateHighlightNoteAtRange:highlightRange toRange:nil withColor:nil];
+    } 
+}
+
 #pragma mark -
 #pragma mark Visual Properties
 
