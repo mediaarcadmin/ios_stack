@@ -20,7 +20,7 @@
 - (void)addHighlightWithColor:(UIColor *)color;
 - (void)addHighlightNoteWithColor:(UIColor *)color;
 - (void)removeHighlightAtRange:(BlioBookmarkRange *)range;
-- (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange withColor:(UIColor *)newColor;
+- (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor;
 
 - (void)copyWithRange:(BlioBookmarkRange *)range;
 

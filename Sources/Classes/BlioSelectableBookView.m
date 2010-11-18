@@ -209,8 +209,8 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 - (void)addNote:(id)sender {
     if ([self.selector selectedRangeIsHighlight]) {
         BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
-        if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:withColor:)])
-            [self.delegate updateHighlightNoteAtRange:highlightRange withColor:nil];
+        if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:toRange:withColor:)])
+            [self.delegate updateHighlightNoteAtRange:highlightRange toRange:self.selectedRange withColor:nil];
     } else {
         if ([self.delegate respondsToSelector:@selector(addHighlightNoteWithColor:)])
             [self.delegate addHighlightNoteWithColor:self.lastHighlightColor];

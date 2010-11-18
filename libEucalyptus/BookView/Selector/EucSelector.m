@@ -1488,6 +1488,43 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     }
 }
 
+- (void)_trackSingleTapTouch:(UITouch *)touch
+{
+    id<EucSelectorDelegate> delegate = self.delegate;
+
+    if([delegate respondsToSelector:@selector(eucSelector:didReceiveTapOnHighlightWithRange:)]) {
+        CALayer *attachedLayer = self.attachedLayer;
+        CGPoint location = [attachedLayer convertPoint:[touch locationInView:nil] fromLayer:attachedLayer.windowLayer];
+        
+        THPair *blockAndElementIds = [self _blockAndElementIdsForPoint:location];        
+        if(blockAndElementIds) {
+            BOOL tapRangeIsHighlight = NO;
+            EucSelectorRange *tapRange = [[[EucSelectorRange alloc] init] autorelease];
+            id blockId = blockAndElementIds.first;
+            id elementId = blockAndElementIds.second;
+            
+            tapRange.startBlockId = blockId;
+            tapRange.endBlockId = blockId;
+            tapRange.startElementId = elementId;
+            tapRange.endElementId = elementId;
+            
+            // If we overlap a highlight range, select the entire range.
+            for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
+                if([highlightRange overlaps:tapRange]) {
+                    tapRange = highlightRange;
+                    tapRangeIsHighlight = YES;
+                    break;
+                }
+            }
+            if(tapRangeIsHighlight) {
+                [delegate eucSelector:self didReceiveTapOnHighlightWithRange:tapRange];
+            }
+        }
+        
+        [self _clearSelectionCaches];
+    }
+}
+
 - (void)_startSelection
 {
     self.trackingStage = EucSelectorTrackingStageFirstSelection;
@@ -1703,8 +1740,15 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     if(!self.selectionDisabled && [touches containsObject:trackingTouch]) {
         EucSelectorTrackingStage currentStage = self.trackingStage;
         if(currentStage == EucSelectorTrackingStageDelay) {
+            BOOL wasSingleTapWithoutSelection = NO;
+            if(!self.selectedRange && !self.trackingTouchHasMoved) {
+                wasSingleTapWithoutSelection = YES;
+            }
             self.trackingTouch = nil;
             self.trackingStage = EucSelectorTrackingStageNone;
+            if(wasSingleTapWithoutSelection) {
+                [self _trackSingleTapTouch:trackingTouch];
+            }
         } else {
             [self _trackTouch:trackingTouch];
             if((self.trackingStage == EucSelectorTrackingStageChangingSelection && self.draggingKnob) ||
