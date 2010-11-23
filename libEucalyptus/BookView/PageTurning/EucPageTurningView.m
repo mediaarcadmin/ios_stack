@@ -3331,9 +3331,9 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
             for(int i = 0; i < bufferLength; i += 4) {
                 int alpha = textureData[i+3];
                 if(alpha > 0) {
-                    textureData[i] = (255 * textureData[i]) / alpha;
-                    textureData[i+1] = (255 * textureData[i+1]) / alpha;
-                    textureData[i+2] = (255 * textureData[i+2]) / alpha;
+                    textureData[i] = (255 * (int)textureData[i]) / alpha;
+                    textureData[i+1] = (255 * (int)textureData[i+1]) / alpha;
+                    textureData[i+2] = (255 * (int)textureData[i+2]) / alpha;
                 }
             }
             
