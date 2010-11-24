@@ -258,7 +258,7 @@ static css_error EucCSSDocumentTreeNodeHasAttributeEqual(void *pw, void *node, l
     NSString *nsName = [[NSString alloc] initWithLWCString:name];
     NSString *nsAttributeValue = [treeNode attributeWithName:nsName];
     if(nsAttributeValue) {
-        NSString *nsValue = [[NSString alloc] initWithLWCString:name];
+        NSString *nsValue = [[NSString alloc] initWithLWCString:value];
         *match = [nsAttributeValue caseInsensitiveCompare:nsValue] == NSOrderedSame;
         [nsValue release];
     } else {
