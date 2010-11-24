@@ -352,7 +352,7 @@
 		7D516FFF10287922005F3C46 /* THCopyWithCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FFD10287922005F3C46 /* THCopyWithCoder.m */; };
 		7D51700A1028796E005F3C46 /* EucChapterNameFormatting.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170081028796E005F3C46 /* EucChapterNameFormatting.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51700B1028796E005F3C46 /* EucChapterNameFormatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170091028796E005F3C46 /* EucChapterNameFormatting.m */; };
-		7D51701310287987005F3C46 /* VCTitleCase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51700F10287987005F3C46 /* VCTitleCase.h */; settings = {ATTRIBUTES = (); }; };
+		7D51701310287987005F3C46 /* VCTitleCase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51700F10287987005F3C46 /* VCTitleCase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51701410287987005F3C46 /* VCTitleCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51701010287987005F3C46 /* VCTitleCase.m */; };
 		7D51701B102879C7005F3C46 /* THGeometryUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D517019102879C7005F3C46 /* THGeometryUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51701C102879C7005F3C46 /* THGeometryUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D51701A102879C7005F3C46 /* THGeometryUtils.c */; };
