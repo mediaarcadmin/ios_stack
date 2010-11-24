@@ -246,7 +246,7 @@
     NSString *titleString = [self title];
     NSUInteger maxTitleLength = 100;
     if ([titleString length] > maxTitleLength) {
-        titleString = [NSString stringWithFormat:@"%@...", [titleString substringToIndex:maxTitleLength]];
+        titleString = [NSString stringWithFormat:@"%@\u2026", [titleString substringToIndex:maxTitleLength]];
     }
     
     THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"LinuxLibertine"];
