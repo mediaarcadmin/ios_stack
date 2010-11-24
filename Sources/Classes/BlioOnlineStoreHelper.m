@@ -321,26 +321,16 @@
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
 	if ( targetStatus == BlioDeviceRegisteredStatusRegistered ) {
 		if ( ![drmSessionManager joinDomain:self.token domainName:@"novel"] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-										delegate:nil 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
 			[drmSessionManager release];
 			return NO;
-		}
+		} 
 	}
 	else {
 		if ( ![drmSessionManager leaveDomain:self.token] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"DEREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to de-register device. Please try again later.",@"Alert message shown when device de-registration fails.")
-										delegate:nil 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
 			[drmSessionManager release];
 			return NO;
 		}
-		else {
+		else { 
 			// de-registration succeeded, delete current user's books
 			[[BlioStoreManager sharedInstance].processingDelegate deletePaidBooksForUserNum:userNum siteNum:siteID];
 		}
