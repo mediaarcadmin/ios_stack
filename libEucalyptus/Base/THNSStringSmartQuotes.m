@@ -25,10 +25,10 @@ static void setup_character_sets() {
 #define kLeftQuote       0x201C
 #define kRightQuote      0x201D
 
-- (NSString *)stringWithSmartQuotes
+- (NSString *)stringWithSmartQuotesWithPreviousCharacter:(UniChar)previousCaracterIn
 {
     pthread_once(&s_setup_character_sets_once_control, setup_character_sets);
-
+    
     NSMutableString *ret = nil;
     NSString *searchString = self;
     
@@ -37,7 +37,7 @@ static void setup_character_sets() {
     while((resultRange = [searchString rangeOfCharacterFromSet:sQuoteSet options:0 range:searchRange]).location != NSNotFound) {
         if(resultRange.length == 1) {
             UniChar theChar = [searchString characterAtIndex:resultRange.location];
-            UniChar prevChar = resultRange.location > 0 ? [searchString characterAtIndex:resultRange.location - 1] : 0;
+            UniChar prevChar = resultRange.location > 0 ? [searchString characterAtIndex:resultRange.location - 1] : previousCaracterIn;
             // From http://www.pensee.com/dunham/smartQuotes.html
             if (prevChar == 0 ||                                            // Beginning of text
                 prevChar == '(' || prevChar == '[' || prevChar == '{' ||	// Left thingies
@@ -62,6 +62,11 @@ static void setup_character_sets() {
     }
     
     return searchString;
+}
+
+- (NSString *)stringWithSmartQuotes
+{
+    return [self stringWithSmartQuotesWithPreviousCharacter:'\0'];
 }
 
 @end

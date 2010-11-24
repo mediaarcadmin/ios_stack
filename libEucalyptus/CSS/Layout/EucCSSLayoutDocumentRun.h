@@ -73,6 +73,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     uint32_t _currentWordElementCount;
    
     BOOL _previousInlineCharacterWasSpace;
+    UniChar _characterBeforeWord;
     BOOL _alreadyInsertedSpace;
     BOOL _seenNonSpace;
     
