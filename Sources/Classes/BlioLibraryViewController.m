@@ -328,7 +328,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"PeterRabbit" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-		];
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
+                                              authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/New Italian Kitchen.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"The Legend of Sleepy Hollow" 
                                               authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
