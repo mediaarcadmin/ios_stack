@@ -2369,16 +2369,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     CGRect bounds = myPageTurningView.bounds;
     
     BOOL viewIsLandscape = bounds.size.width > bounds.size.height;
-    CGRect pagesFrame;
-    if(self.pageTurningView.isTwoUp) {
-        pagesFrame = CGRectUnion(self.pageTurningView.unzoomedLeftPageFrame, self.pageTurningView.unzoomedRightPageFrame);
-    } else {
-        pagesFrame = self.pageTurningView.unzoomedRightPageFrame;
-    }
-    BOOL pageAreLandscape = pagesFrame.size.width > pagesFrame.size.height;
-    
+
     CGFloat zoomFactor;
-    if(pageAreLandscape == viewIsLandscape) {
+	
+	if(!viewIsLandscape || myPageTurningView.isTwoUp) {
         zoomFactor = 1.0f;
     } else {
         zoomFactor = myPageTurningView.fitToBoundsZoomFactor;
