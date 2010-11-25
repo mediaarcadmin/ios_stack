@@ -2044,8 +2044,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 // page or book after stopping speech the last time (whew).
                 [audioMgr setCurrentBlock:blockId];
                 [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:blockId]];
-				if ( wordOffset < [audioMgr.blockWords count] - 1 )
+
+				if ( [audioMgr.blockWords count] && (wordOffset < [audioMgr.blockWords count] - 1 )) {
 					++wordOffset;
+				}
                 [audioMgr setCurrentWordOffset:wordOffset];
                 [audioMgr setPageChanged:NO];
             }
