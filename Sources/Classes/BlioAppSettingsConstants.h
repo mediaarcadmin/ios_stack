@@ -21,7 +21,8 @@
 #define kLabelHeight			20.0
 #define kTextFieldHeight		24.0
 #define kSliderHeight			7.0
-#define kCellLeftOffset			8.0
+#define kCellLeftOffset			10.0
+#define kCellLeftOffsetPad		30.0
 #define kCellTopOffset			10.0
 #define kCellHeight				44.0
 
@@ -35,3 +36,9 @@ static NSString * const kBlioTTSEnabledDefaultsKey = @"TTSEnabled";
 static NSString * const kBlioDeviceRegisteredDefaultsKey = @"DeviceRegistered";
 static NSString * const kBlioServiceIDDefaultsKey = @"ServiceID";
 static NSString * const kBlioAccountIDDefaultsKey = @"AccountID";
+static NSString * const kBlioTapZoomsDefaultsKey = @"TapZooms";
+static NSString * const kBlioLandscapeTwoPagesDefaultsKey = @"LandscapeTwoPages";
+static NSString * const kBlioDownloadNewBooksDefaultsKey = @"downloadnewbooks";
+static NSString * const kBlioUsersDictionaryDefaultsKey = @"kBlioUsersDictionaryDefaultsKey";
+static NSString * const kBlioUserLoginCredentialsDefaultsKey = @"kBlioUserLoginCredentialsDefaultsKey";
+static NSString * const kBlioUserRegistrationRecordsDefaultsKey = @"kBlioUserRegistrationRecordsDefaultsKey";

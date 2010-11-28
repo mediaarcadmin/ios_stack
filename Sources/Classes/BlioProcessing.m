@@ -31,12 +31,58 @@ static int mutationCount = 0;
 	return self;
 }
 
+- (void)flushBookCache {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    pthread_mutex_lock(&sBookMutationMutex);
+    {
+        ++mutationCount;
+        if(mutationCount != 1) {
+            NSLog(@"rrewrewrewrew");
+        }
+		if (!self.bookID) NSLog(@"WARNING: self.bookID for %@ is nil, flushBookCache will fail!",[self description]);
+        BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+        if (nil == book) {
+            NSLog(@"Failed to retrieve book in BlioProcessing flushBookCache");
+        } else {
+            [book flushCaches];
+        }
+        --mutationCount;
+    }
+    pthread_mutex_unlock(&sBookMutationMutex);
+    
+    [pool drain];
+}
+
+- (void)reportBookReadingIfRequired {
+	NSLog(@"reportBookReadingIfRequired");
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    pthread_mutex_lock(&sBookMutationMutex);
+    {
+        ++mutationCount;
+        if(mutationCount != 1) {
+            NSLog(@"rrewrewrewrew");
+        }
+        BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+        if (nil == book) {
+            NSLog(@"Failed to retrieve book in BlioProcessing reportBookReadingIfRequired");
+        } else {
+            [book reportReadingIfRequired];
+        }
+        --mutationCount;
+    }
+    pthread_mutex_unlock(&sBookMutationMutex);
+    
+    [pool drain];
+}
+
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	if (self.bookID) [self flushBookCache];
     self.bookID = nil;
 	self.sourceSpecificID = nil;
     self.cacheDirectory = nil;
     self.tempDirectory = nil;
+    
     [super dealloc];
 }
 
@@ -51,7 +97,7 @@ static int mutationCount = 0;
         }
         BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
         if (nil == book) {
-            NSLog(@"Failed to retrieve book");
+            NSLog(@"Failed to retrieve book in BlioProcessing setBookManifestValue:forKey:");
         } else {
             [book setManifestValue:value forKey:key];
         }
@@ -74,7 +120,7 @@ static int mutationCount = 0;
         BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
         BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
         if (nil == book) {
-            NSLog(@"Failed to retrieve book");
+            NSLog(@"Failed to retrieve book in BlioProcessing setBookValue:forKey:");
         } else {
             [book setValue:value forKey:key];
         }
@@ -92,7 +138,7 @@ static int mutationCount = 0;
 - (NSString *)getBookManifestPathForKey:(NSString *)key {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {
-        NSLog(@"Failed to retrieve book");
+        NSLog(@"Failed to retrieve book in BlioProcessing getBookManifestPathForKey:");
         return nil;
     } else {
         return [book manifestPathForKey:key];
@@ -102,7 +148,7 @@ static int mutationCount = 0;
 - (BOOL)hasBookManifestValueForKey:(NSString *)key {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {
-        NSLog(@"Failed to retrieve book");
+        NSLog(@"Failed to retrieve book in BlioProcessing hasBookManifestValueForKey:");
         return NO;
     } else {
         return [book hasManifestValueForKey:key];
@@ -112,7 +158,7 @@ static int mutationCount = 0;
 - (NSData *)getBookManifestDataForKey:(NSString *)key {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {
-        NSLog(@"Failed to retrieve book");
+        NSLog(@"Failed to retrieve book in BlioProcessing getBookManifestDataForKey:");
         return nil;
     } else {
         return [book manifestDataForKey:key];
@@ -122,7 +168,7 @@ static int mutationCount = 0;
 - (NSData *)getBookTextFlowDataWithPath:(NSString *)path {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {
-        NSLog(@"Failed to retrieve book");
+        NSLog(@"Failed to retrieve book in BlioProcessing getBookTextFlowDataWithPath:");
         return nil;
     } else {
         return [book textFlowDataWithPath:path];
@@ -132,7 +178,7 @@ static int mutationCount = 0;
 - (BOOL)bookManifestPath:(NSString *)path existsForLocation:(NSString *)location {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {
-        NSLog(@"Failed to retrieve book");
+        NSLog(@"Failed to retrieve book in BlioProcessing bookManifestPath:existsForLocation:");
         return NO;
     } else {
         return [book manifestPath:path existsForLocation:location];
@@ -142,7 +188,7 @@ static int mutationCount = 0;
 - (id)getBookValueForKey:(NSString *)key {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {
-        NSLog(@"Failed to retrieve book");
+        NSLog(@"Failed to retrieve book in BlioProcessing getBookValueForKey:");
         return nil;
     } else {
         return [book valueForKey:key];
@@ -151,8 +197,12 @@ static int mutationCount = 0;
 
 -(void) setOperationSuccess:(BOOL)operationOutcome {
 	operationSuccess = operationOutcome;
-	if (operationOutcome) [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self];
-	else [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self];
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+	[userInfo setObject:self.bookID forKey:@"bookID"];
+	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
+	[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];	
+	if (operationOutcome) [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
+	else [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];
 }
 
 -(BOOL) operationSuccess {
@@ -161,9 +211,13 @@ static int mutationCount = 0;
 
 -(void) setPercentageComplete:(NSUInteger)percentage {
 	percentageComplete = percentage;
-	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
-	[userInfo setObject:self.bookID forKey:@"bookID"];	
-    [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self userInfo:userInfo];
+	if (![self isCancelled]) {
+		NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+		[userInfo setObject:self.bookID forKey:@"bookID"];
+		[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
+		[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];	
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self userInfo:userInfo];
+	}
 }
 
 -(NSUInteger) percentageComplete {

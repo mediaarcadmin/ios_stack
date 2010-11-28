@@ -20,7 +20,7 @@
 - (void)addHighlightWithColor:(UIColor *)color;
 - (void)addHighlightNoteWithColor:(UIColor *)color;
 - (void)removeHighlightAtRange:(BlioBookmarkRange *)range;
-- (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange withColor:(UIColor *)newColor;
+- (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor;
 
 - (void)copyWithRange:(BlioBookmarkRange *)range;
 
@@ -32,11 +32,14 @@
 - (void)toggleToolbars;
 - (BOOL)toolbarsVisible;
 - (BOOL)audioPlaying;
+- (void)cancelPendingToolbarShow;
 
 @property (nonatomic, readonly) BOOL audioPlaying;
 
 - (CGRect)nonToolbarRect;
 - (void)firstPageDidRender;
+
+- (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 @end
 
@@ -69,7 +72,10 @@
 
 @property (nonatomic, readonly) BlioBookmarkPoint *currentBookmarkPoint;
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save;
+
 - (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (void)pushCurrentBookmarkPoint;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 
@@ -88,14 +94,20 @@
 // BookMarkRange methods - some of these should be required once flow view is ready
 - (BlioBookmarkRange *)selectedRange;
 - (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange;
+
 - (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
+- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated saveToHistory:(BOOL)save;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
-- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save;
 
-- (BOOL)toolbarShowShouldBeSuppressed;
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated saveToHistory:(BOOL)save;
+
+- (BOOL)toolbarShowShouldBeSuppressed; 
+- (BOOL)toolbarHideShouldBeSuppressed; 
 
 @end

@@ -15,6 +15,7 @@
 #import "BlioXPSProvider.h"
 
 #import <libEucalyptus/EucBookPageIndexPoint.h>
+#import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THRegex.h>
 
@@ -35,7 +36,6 @@
 @synthesize fakeCover;
 @synthesize textFlow;
 @synthesize paragraphSource;
-@synthesize idToIndexPoint;
 
 - (id)initWithBookID:(NSManagedObjectID *)blioBookID
 {
@@ -61,6 +61,9 @@
     [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.bookID];
     self.textFlow = nil;
     [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:self.bookID];
+    
+    BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    [aBook flushCaches];
     self.bookID = nil;
     
     [navPoints release];
@@ -75,13 +78,15 @@
        
         NSArray *tocEntries = self.textFlow.tableOfContents; 
         if(self.fakeCover) {
-            [buildNavPoints addPairWithFirst:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
-                                 second:[NSString stringWithFormat:@"textflow:0"]];
+            [buildNavPoints addObject:[EucBookNavPoint navPointWithText:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
+                                                                   uuid:@"textflow:0"
+                                                                  level:0]];
         }
         long index = 0;
-        for(BlioTextFlowTOCEntry *section in tocEntries) {
-            [buildNavPoints addPairWithFirst:section.name
-                                 second:[NSString stringWithFormat:@"textflowTOCIndex:%ld", index]];
+        for(BlioTextFlowTOCEntry *tocEntry in tocEntries) {
+            [buildNavPoints addObject:[EucBookNavPoint navPointWithText:tocEntry.name
+                                                                   uuid:[NSString stringWithFormat:@"textflowTOCIndex:%ld", index]
+                                                                  level:tocEntry.level]];
             ++index;
         }
         navPoints = buildNavPoints;
@@ -90,14 +95,16 @@
     return navPoints;
 }
 
-- (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
-        return [[NSBundle mainBundle] pathForResource:@"TextFlowFlow" ofType:@"css"];
+        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowFlow" ofType:@"css"]];
     } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
-        return [[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"];
+        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"]];
     } else {
-        return [super baseCSSPathForDocumentTree:documentTree];
+        NSMutableArray *ret = [[super baseCSSPathsForDocumentTree:documentTree] mutableCopy];
+        [ret addObject:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]];
+        return ret;
     }
 }
 
@@ -199,40 +206,55 @@
     return _indexSourceScaleFactors;
 }
 
-- (NSDictionary *)idToIndexPoint
+- (NSDictionary *)buildIdToIndexPoint
 {
-    if(!idToIndexPoint) {
-        NSArray *myNavPoints = self.navPoints;
-        NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] initWithCapacity:myNavPoints.count];
-        for(THPair *navPoint in myNavPoints) {
-            EucBookPageIndexPoint *indexPoint = nil;
-            NSString *identifier = navPoint.second;
-            NSString *tocIndexString = [[identifier matchPOSIXRegex:@"^textflowTOCIndex:([[:digit:]]+)$"] match:1];
-            if(tocIndexString) {
-                BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
-                BlioTextFlowTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
-                point.layoutPage = entry.startPage + 1;
-                indexPoint = [self bookPageIndexPointFromBookmarkPoint:point];
-            } else {
-                NSString *indexString = [[identifier matchPOSIXRegex:@"^textflow:([[:digit:]]+)$"] match:1];
-                if(indexString) {
+    NSArray *myNavPoints = self.navPoints;
+    NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] initWithCapacity:myNavPoints.count];
+    for(THPair *navPoint in myNavPoints) {
+        NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
+        
+        EucBookPageIndexPoint *indexPoint = nil;
+        NSString *identifier = navPoint.second;
+        NSString *tocIndexString = [[identifier matchPOSIXRegex:@"^textflowTOCIndex:([[:digit:]]+)$"] match:1];
+        if(tocIndexString) {
+            BlioTextFlowTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
+            NSUInteger layoutPageIndex = entry.startPage;
+            NSUInteger flowReferenceIndex = 0;
+            for(BlioTextFlowFlowReference *flowReference in self.textFlow.flowReferences) {
+                if(flowReference.startPage == layoutPageIndex) {
                     indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
-                    indexPoint.source = [indexString integerValue];
+                    indexPoint.source = flowReferenceIndex;
+                    break;
                 }
+                ++flowReferenceIndex;
             }
-            if(indexPoint) {
-                [buildIdToIndexPoint setObject:indexPoint forKey:identifier];
+            if(!indexPoint) {
+                BlioBookmarkPoint *point = [[[BlioBookmarkPoint alloc] init] autorelease];
+                point.layoutPage = layoutPageIndex + 1;
+                indexPoint = [self bookPageIndexPointFromBookmarkPoint:point];
+            }
+        } else {
+            NSString *indexString = [[identifier matchPOSIXRegex:@"^textflow:([[:digit:]]+)$"] match:1];
+            if(indexString) {
+                indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
+                indexPoint.source = [indexString integerValue];
             }
         }
-        idToIndexPoint = buildIdToIndexPoint;
+        if(indexPoint) {
+            [buildIdToIndexPoint setObject:indexPoint forKey:identifier];
+        }
+        
+        [innerPool drain];
     }
-    return idToIndexPoint;
+    [buildIdToIndexPoint addEntriesFromDictionary:super.buildIdToIndexPoint];
+
+    return [buildIdToIndexPoint autorelease];
 }
     
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
+    BlioBookmarkPoint *ret = nil;
     
     EucBookPageIndexPoint *eucIndexPoint = [indexPoint copy];
     
@@ -246,6 +268,7 @@
     }
     
     if(eucIndexPoint.source == 0 && self.fakeCover) {
+        ret = [[BlioBookmarkPoint alloc] init];
         // This is the cover section.
         ret.layoutPage = 1;
         ret.blockOffset = 0;
@@ -255,15 +278,21 @@
         eucIndexPoint.source--;
     }
     
-    NSUInteger indexes[2] = { eucIndexPoint.source , [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
-    NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
-    BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
-    [indexPath release];
-    
-    ret.layoutPage = bookmarkPoint.layoutPage;
-    ret.blockOffset = bookmarkPoint.blockOffset;
-    ret.wordOffset = bookmarkPoint.wordOffset;
-    ret.elementOffset = eucIndexPoint.element;
+    if(!ret) {
+        ret = [[BlioBookmarkPoint alloc] init];
+        
+        NSUInteger indexes[2] = { eucIndexPoint.source , [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
+        NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
+        BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
+        [indexPath release];
+        
+        if(bookmarkPoint) {
+            ret.layoutPage = bookmarkPoint.layoutPage;
+            ret.blockOffset = bookmarkPoint.blockOffset;
+            ret.wordOffset = bookmarkPoint.wordOffset;
+            ret.elementOffset = eucIndexPoint.element;
+        }
+    }
 
     [eucIndexPoint release];
     

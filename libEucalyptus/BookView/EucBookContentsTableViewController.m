@@ -18,6 +18,7 @@
 #import "THLog.h"
 
 #define TABLE_CONTENTS_CELL_WIDTH 282
+#define TABLE_CONTENTS_CELL_INDENTATION_WIDTH 10
 #define TABLE_CONTENTS_CELL_WIDTH_WITH_ACCESSORY 249
 
 @implementation EucBookContentsTableViewController
@@ -182,6 +183,7 @@
         backgroundView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         cell.backgroundView = backgroundView;
         [cell setIsAccessibilityElement:YES];
+        cell.indentationWidth = TABLE_CONTENTS_CELL_INDENTATION_WIDTH;
         
         CGRect contentViewRect = cell.contentView.bounds;
         contentViewRect = CGRectInset(contentViewRect, 9, 9);
@@ -196,6 +198,7 @@
     NSArray *rows = [_uuids objectAtIndex:indexPath.section];
             
     EucBookContentsTableViewCellPosition backgroundViewPosition;
+    
     
     NSUInteger rowCount = rows.count;
     NSUInteger rowIndex = indexPath.row;
@@ -212,10 +215,19 @@
     ((EucBookContentsTableViewCellBackground *)cell.backgroundView).position = backgroundViewPosition;
     
     NSString *uuid = [rows objectAtIndex:rowIndex];
-
+    
+    NSUInteger indentationLevel = 0;
+	if ([_dataSource respondsToSelector:@selector(levelForSectionUuid:)]) {
+		indentationLevel = [_dataSource levelForSectionUuid:uuid];
+	}
+    cell.indentationLevel = indentationLevel;    
+    
     EucNameAndPageNumberView *nameAndPageNumberView = (EucNameAndPageNumberView *)[cell.contentView viewWithTag:49];
     
+    nameAndPageNumberView.indentationWidth = indentationLevel * TABLE_CONTENTS_CELL_INDENTATION_WIDTH; 
+    
     THPair *nameAndSubtitle = [_dataSource presentationNameAndSubTitleForSectionUuid:uuid];
+
     NSUInteger pageNumber = [_dataSource pageNumberForSectionUuid:uuid];
     BOOL pageNumberIsValid = YES;
 
@@ -260,7 +272,8 @@
             CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
             CGGradientRef gradient = CGGradientCreateWithColorComponents(rgbColorSpace, colorRefs, locationRefs, 2);   
             CGColorSpaceRelease(rgbColorSpace);
-            CGFloat height = [EucNameAndPageNumberView heightForWidth:TABLE_CONTENTS_CELL_WIDTH // Sems like very bad form to be hard-coding this... 
+            CGFloat height = [EucNameAndPageNumberView heightForWidth:TABLE_CONTENTS_CELL_WIDTH + TABLE_CONTENTS_CELL_INDENTATION_WIDTH * indentationLevel 
+                                                                      // Seems like very bad form to be hard-coding these... 
                                                           withName:nameAndSubtitle.first 
                                                           subTitle:nameAndSubtitle.second 
                                                         pageNumber:nameAndPageNumberView.pageNumber] + 18;
@@ -298,7 +311,14 @@
     NSUInteger pageNumber = [_dataSource pageNumberForSectionUuid:uuid];
     BOOL pageNumberIsValid = YES;
 
-    CGFloat ret = [EucNameAndPageNumberView heightForWidth:pageNumberIsValid ? TABLE_CONTENTS_CELL_WIDTH : TABLE_CONTENTS_CELL_WIDTH_WITH_ACCESSORY // Seems like very bad form to be hard-coding this... 
+    NSUInteger indentationLevel = 0;
+	if ([_dataSource respondsToSelector:@selector(levelForSectionUuid:)]) {
+		indentationLevel = [_dataSource levelForSectionUuid:uuid];
+	}    
+    
+    CGFloat ret = [EucNameAndPageNumberView heightForWidth:(pageNumberIsValid ? TABLE_CONTENTS_CELL_WIDTH : TABLE_CONTENTS_CELL_WIDTH_WITH_ACCESSORY)
+                                                           + TABLE_CONTENTS_CELL_INDENTATION_WIDTH * indentationLevel
+                                                           // Seems like very bad form to be hard-coding these... 
                                                   withName:nameAndSubtitle.first 
                                                   subTitle:nameAndSubtitle.second 
                                                 pageNumber:pageNumberIsValid ? [_dataSource displayPageNumberForPageNumber:pageNumber] : nil] + 18;

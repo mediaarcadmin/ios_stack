@@ -31,7 +31,7 @@ struct BlioDrmSessionManagerDrmIVars;
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name;
 - (BOOL)leaveDomain:(NSString*)token;
-- (void)reportReading;
+- (BOOL)reportReading;
 - (BOOL)getLicense:(NSString*)token;
 - (BOOL)bindToLicense;
 - (BOOL)decryptData:(NSData *)data;

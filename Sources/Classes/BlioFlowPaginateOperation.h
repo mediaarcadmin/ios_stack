@@ -18,6 +18,8 @@
     EucBookPaginator *paginator;
     NSString *bookTitle;
     CFAbsoluteTime startTime;
+    
+    BOOL bookCheckedOut;
 }
 
 @end

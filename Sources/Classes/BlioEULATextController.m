@@ -27,6 +27,9 @@
 		[textView setScalesPageToFit:YES];
 		self.view = textView;
 		//textView.delegate = self;
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			self.contentSizeForViewInPopover = CGSizeMake(320, 550);
+		}				
 	}
 	return self;
 }
@@ -34,8 +37,8 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
         return NO;
-    else
-        return YES;
+    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+	return YES;
 }
 
 #pragma mark -

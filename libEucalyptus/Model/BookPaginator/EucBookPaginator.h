@@ -36,6 +36,9 @@ extern NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey;
     NSUInteger *_pageCounts;
     
     NSTimer *_monitoringTimer;
+    
+    NSUInteger _desiredFontSizesCount;
+    NSUInteger *_desiredFontSizes;
 }
 
 @property (nonatomic, readonly) float percentagePaginated;

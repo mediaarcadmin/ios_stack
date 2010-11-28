@@ -400,6 +400,7 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
     if(touch == _touch)  {
         if(_touchHyperlinkIndex != NSUIntegerMax) {
             NSUInteger newTouchHyperlinkIndex = [self _hyperlinkIndexForPoint:location];
+            NSLog(@"%ld, %ld", (long)_touchHyperlinkIndex, (long)newTouchHyperlinkIndex);
             if(newTouchHyperlinkIndex == _touchHyperlinkIndex) {
                 id<EucPageTextViewDelegate> myDelegate = self.delegate;
                 if([myDelegate respondsToSelector:@selector(pageTextView:didReceiveTapOnHyperlinkWithURL:)]) {

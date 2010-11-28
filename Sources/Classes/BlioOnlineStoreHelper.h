@@ -9,11 +9,34 @@
 #import <Foundation/Foundation.h>
 #import "BlioStoreHelper.h"
 #import "BlioContentCafe.h"
+#import "BlioBookVault.h"
+#import "DigitalLockerGateway.h"
 
+static NSString * const BlioIOSStoreSiteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
 
-@interface BlioOnlineStoreHelper : BlioStoreHelper {
-	NSMutableArray* _isbns; // array of ISBN numbers
+@class BlioOnlineStoreHelper;
+
+@interface BlioOnlineStoreHelperBookVaultDelegate : NSObject <BookVaultSoapResponseDelegate> {
+	BlioOnlineStoreHelper * delegate;
 }
-- (ContentCafe_ProductItem*)getContentMetaDataFromISBN:(NSString*)isbn;
-- (BOOL)fetchBookISBNArrayFromServer;
+@property (assign) BlioOnlineStoreHelper * delegate;
+
+@end
+
+@interface BlioOnlineStoreHelperContentCafeDelegate : NSObject <ContentCafeSoapResponseDelegate> {
+	BlioOnlineStoreHelper * delegate;
+}
+@property (assign) BlioOnlineStoreHelper * delegate;
+
+@end
+
+@interface BlioOnlineStoreHelper : BlioStoreHelper <DigitalLockerConnectionDelegate> {
+	NSMutableArray* _isbns; // array of ISBN numbers
+	NSInteger newISBNs;
+	NSInteger responseCount;
+	NSInteger successfulResponseCount;
+	BlioOnlineStoreHelperBookVaultDelegate * bookVaultDelegate;
+	BlioOnlineStoreHelperContentCafeDelegate * contentCafeDelegate;
+}
+
 @end

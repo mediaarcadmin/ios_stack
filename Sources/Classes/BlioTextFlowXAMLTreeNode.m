@@ -12,6 +12,7 @@
 
 - (void)dealloc
 {
+    [_tag release];
     if(_constructedInlineStyle) {
         [_constructedInlineStyle release];
     }
@@ -50,7 +51,7 @@
                     } else if([key isEqualToString:@"Stretch"]) {
                         NSString *value = [myAttributes objectForKey:key];
                         if([value isEqualToString:@"Fill"]) {
-                            [constructionString appendString:@"width:100%; height:100%;"];
+                            [constructionString appendString:@"width:100%;height:100%;"];
                         }
                     }
                 }
@@ -87,6 +88,16 @@
 {
     return [self attributeWithName:@"NavigateUri"];
 }
+
+- (NSString *)tag
+{
+    if(!_tag) {
+        _tag = [[self attributeWithName:@"Tag"] retain];
+        _tagFound = YES;
+    }
+    return _tag;
+}
+
 
 
 @end

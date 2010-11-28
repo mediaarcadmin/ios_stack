@@ -35,11 +35,10 @@
 @dynamic sourceSpecificID;
 @dynamic layoutPageEquivalentCount;
 @dynamic libraryPosition;
-@dynamic hasAudiobook;
-@dynamic hasAudiobookRights;
+@dynamic audiobook;
+@dynamic ttsRight;
+@dynamic ttsCapable;
 @dynamic reflowRight;
-@dynamic audiobookFilename;
-@dynamic timingIndicesFilename;
 
 - (void)dealloc {    
     [self flushCaches];
@@ -52,12 +51,15 @@
 
 - (BlioBookmarkPoint *)implicitBookmarkPoint
 {
-    BlioBookmarkPoint *ret;
+    BlioBookmarkPoint *ret = nil;
     
     NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
     if(placeInBook) {
         ret = [BlioBookmarkPoint bookmarkPointWithPersistentBookmarkPoint:[[placeInBook valueForKey:@"range"] valueForKey:@"startPoint"]];
-    } else {
+    } 
+    
+    if(!ret || 
+       ret.layoutPage == 0) {  // layoutPage should never be zero, but some old versions of the app did save it that way.
         ret = [[[BlioBookmarkPoint alloc] init] autorelease];
         ret.layoutPage = 1;
     }
@@ -66,6 +68,14 @@
 
 - (void)setImplicitBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
+    if(bookmarkPoint.layoutPage == 0) {
+        NSParameterAssert(bookmarkPoint.blockOffset == 0 && bookmarkPoint.wordOffset == 0 && bookmarkPoint.elementOffset == 0);
+        // This is a result of saving a nil bookmark point.  Shouldn't really 
+        // happen, but it's easy to guard against here anyway.
+        bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+        bookmarkPoint.layoutPage = 1;
+    }
+    
     NSManagedObject *placeInBook = [self valueForKey:@"placeInBook"];
     if(placeInBook) {
         NSManagedObject *persistentBookmarkRange = [placeInBook valueForKey:@"range"];
@@ -140,6 +150,10 @@
     }
 }
 
+- (void)reportReadingIfRequired {
+    [[self xpsProvider] reportReadingIfRequired];
+}
+
 - (NSString *)bookCacheDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
@@ -154,11 +168,22 @@
     return bookPath;
 }
 
-- (BOOL)audioRights {
-    return [[self valueForKey:@"hasAudiobookRights"] boolValue];
+- (BOOL)hasAudiobook {
+	return [[self valueForKey:@"audiobook"] boolValue];
+//	return [self hasManifestValueForKey:BlioManifestAudiobookMetadataKey];
+}
+- (BOOL)hasTTSRights {
+	//    return NO;//[[self valueForKey:@"hasTTSRightsNum"] boolValue];
+    return [[self valueForKey:@"ttsRight"] boolValue];
+}
+- (BOOL)isTTSCapable {
+    return [[self valueForKey:@"ttsCapable"] boolValue];
 }
 - (BOOL)reflowEnabled {
-    return [[self valueForKey:@"reflowRight"] boolValue];
+    return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
+}
+-(BOOL)fixedViewEnabled {
+	return ([self hasPdf] || [self hasXps]);
 }
 
 - (NSString *)ePubPath {
@@ -184,14 +209,28 @@
 - (BOOL)hasXps {
     return [self hasManifestValueForKey:BlioManifestXPSKey];
 }
+- (BOOL)hasCoverImage {
+    return [self hasManifestValueForKey:BlioManifestCoverKey];
+}
 
 - (BOOL)hasTextFlow {
     return [self hasManifestValueForKey:BlioManifestTextFlowKey];
+}
+- (BOOL)hasSearch {
+    return ([self hasEPub] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
+}
+- (BOOL)hasTOC {
+    return ([self hasEPub] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
 }
 
 - (BOOL)isEncrypted {
     return [self hasManifestValueForKey:BlioManifestDrmHeaderKey];
 }
+
+- (BOOL)firstLayoutPageOnLeft {
+    return [self hasManifestValueForKey:BlioManifestFirstLayoutPageOnLeftKey];
+}
+
 
 - (UIImage *)missingCoverImageOfSize:(CGSize)size {
     if(UIGraphicsBeginImageContextWithOptions != nil) {
@@ -207,10 +246,10 @@
     NSString *titleString = [self title];
     NSUInteger maxTitleLength = 100;
     if ([titleString length] > maxTitleLength) {
-        titleString = [NSString stringWithFormat:@"%@...", [titleString substringToIndex:maxTitleLength]];
+        titleString = [NSString stringWithFormat:@"%@\u2026", [titleString substringToIndex:maxTitleLength]];
     }
     
-    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"Georgia"];
+    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"LinuxLibertine"];
 
     CGSize fullSize = [[UIScreen mainScreen] bounds].size;
     CGFloat pointSize = roundf(fullSize.height / 8.0f);
@@ -247,6 +286,7 @@
     [renderer release];
     
     UIImage *aCoverImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
     
     return aCoverImage;
 }
@@ -261,7 +301,6 @@
         return [self missingCoverImageOfSize:CGSizeMake(screenSize.width, screenSize.height)];
     }
 }
-
 - (BOOL)hasAppropriateCoverThumbForGrid {
     CGFloat scaleFactor = 1;
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
@@ -284,7 +323,7 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
 	
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
@@ -314,7 +353,7 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
 
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
@@ -342,7 +381,7 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
 	if (aCoverImage) return YES;
@@ -366,7 +405,7 @@
 	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
 	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
-	NSString * pixelSpecificKey = [NSString stringWithFormat:@"thumbFilename%ix%i",scaledTargetThumbWidth,scaledTargetThumbHeight];
+	NSString * pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
 
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
@@ -811,21 +850,6 @@ static void sortedHighlightRangePredicateInit() {
 	return nil;
 }
 
-+(NSString*)standardNameFromCanonicalName:(NSString*)aName {
-	if (!aName) return nil;
-	//Find last comma in name string (assumes that there are no commas in correctly formatted first or middle names)
-	NSRange lastCommaLocation = [aName rangeOfString:@", " options:NSBackwardsSearch];
-	
-	//Check to see if it is a single name like Plato
-	if (lastCommaLocation.location == NSNotFound)
-		return aName;
-	
-	//Get first and last Name strings and put them in the correct order
-	return [NSString stringWithFormat:@"%@ %@",
-			[aName substringFromIndex:lastCommaLocation.location+lastCommaLocation.length ],
-			[aName substringToIndex:lastCommaLocation.location]];
-	
-}
 +(NSString*)standardNamesFromCanonicalNameArray:(NSArray*)aNameArray {
 	if (aNameArray) {
 		NSString * authorsString = @"";
@@ -842,38 +866,148 @@ static void sortedHighlightRangePredicateInit() {
 	}
 	return nil;
 }
++(NSArray*) suffixes{
+	return [NSArray arrayWithObjects:@"Ph.D.",@"PhD",@"M.D.",@"M.d.",@"MD",nil];
+}
 
-+(NSString*)canonicalNameFromStandardName:(NSString*)aName {
-	if (!aName) return nil;
-	//list of common suffixes.  Add more here if special case arises.
-	NSArray* suffixes = [NSArray arrayWithObjects:@"Jr.",@"Sr.",@"Jr",@"Sr",@"Esq.",@"Ph.D.",@"PhD",@"M.D.",@"MD",@"II",@"III",@"IV",@"V",nil];
++(NSArray*) suffixesWithoutCommas{
+	return [NSArray arrayWithObjects:@"Jr.",@"Sr.",@"Jr",@"Sr",@"Esq.",@"II",@"III",@"IV",@"V",nil];
+}
+
++(NSArray*) prefixes{
+	return [NSArray arrayWithObjects:@"Saint",@"Sir",@"Viscount",@"Baron",@"Brother",nil];
+}
+
++(NSString*)standardNameFromCanonicalName:(NSString*)name {
+	//get a mutable copy so we can delete unneeded parts of the string
+	NSMutableString* aName = [name mutableCopy];
+	
+	//This is to check and handle the case where there are Contributors to the book. This is resolved at the end of this function with adding back the contributor tag
+	BOOL needContributorTag = NO;
+	NSRange contributorRange = [aName rangeOfString:@" (CON)"];
+	if (contributorRange.location != NSNotFound){
+		[aName deleteCharactersInRange:contributorRange];
+		needContributorTag = YES;
+	}
+	
+	//Split by commas
+	NSMutableArray* namePieces = [[aName componentsSeparatedByString:@", "]mutableCopy];
+	
+	//If 1 Piece, Plato Case (only one name) return piece
+	if ([namePieces count] == 1)
+		return aName;
+	
+	//If 2 Pieces, no suffix, so return 2nd piece first Piece
+	if ([namePieces count] == 2){
+		NSString* result = [NSString stringWithFormat:@"%@ %@",[namePieces objectAtIndex:1],[namePieces objectAtIndex:0]];
+		if (needContributorTag){
+			result = [result stringByAppendingString:@" (CON)"];
+		}
+		return result;
+	}
+	
+	//if 3 pieces, there are suffixes/prefixes, so return 2nd Piece 1st Piece, 3rd Piece
+	//determine the suffixes, prefixes and suffixes that don't require commas
+	NSMutableArray* suffixPrefixPieces = [[[namePieces objectAtIndex:2]componentsSeparatedByString:@" "]mutableCopy];
+	NSMutableArray* suffixes = [NSMutableArray array];
+	NSMutableArray* suffixesWithoutCommas = [NSMutableArray array];
+	NSMutableArray* prefixes = [NSMutableArray array];
+	
+	//for each suffix/prefix piece, see if it is in one of the predefined subsets and add to arrays of objects for reinsertion to main string later
+	for (NSString* suffixPrefixPiece in suffixPrefixPieces){
+		if ([[BlioBook suffixes]containsObject:suffixPrefixPiece]){
+			[suffixes addObject:suffixPrefixPiece];
+		} else if ([[BlioBook suffixesWithoutCommas]containsObject:suffixPrefixPiece]){
+			[suffixesWithoutCommas addObject:suffixPrefixPiece];
+		} else if ([[BlioBook prefixes]containsObject:suffixPrefixPiece]){
+			[prefixes addObject:suffixPrefixPiece];
+		} else NSLog(@"potential suffix of %@ found, not recognized and ignoring",suffixPrefixPiece);
+	}
+	
+	//Build string by handling prefixes first, then add in the main pieces of the name, then tacking on suffixes
+	NSString* standardName = @"";
+	if ([prefixes count]>0){
+		standardName = [NSString stringWithFormat:@"%@ %@",[prefixes componentsJoinedByString:@" "],[namePieces objectAtIndex:1]];
+	} else {
+		standardName = [namePieces objectAtIndex:1];
+	}
+	
+	standardName = [standardName stringByAppendingFormat:@" %@",[namePieces objectAtIndex:0]];
+	
+	if ([suffixesWithoutCommas count]>0)
+		standardName = [standardName stringByAppendingFormat:@" %@",[suffixesWithoutCommas componentsJoinedByString:@" "]];
+	
+	if ([suffixes count]>0)
+		standardName = [standardName stringByAppendingFormat:@", %@",[suffixes componentsJoinedByString:@" "]];
+	
+	if (needContributorTag){
+		standardName = [standardName stringByAppendingString:@" (CON)"];
+	}
+	
+	return standardName;
+}
+
++(NSString*)canonicalNameFromStandardName:(NSString*)name {
+	//get a mutable copy so we can delete unneeded parts of the string
+	NSMutableString* aName = [name mutableCopy];
+	
+	//This is to check and handle the case where there are Contributors to the book. This is resolved at the end of this function with adding back the contributor tag
+	BOOL needContributorTag = NO;
+	NSRange contributorRange = [aName rangeOfString:@" (CON)"];
+	if (contributorRange.location != NSNotFound){
+		[aName deleteCharactersInRange:contributorRange];
+		needContributorTag = YES;
+	}
 	
 	//split name string into pieces by spaces.  Array is mutable so it can be changed later in function
-	NSMutableArray* namePieces = [NSMutableArray arrayWithArray:[aName componentsSeparatedByString:@" "]];
+	NSMutableArray* namePieces = [[aName componentsSeparatedByString:@" "]mutableCopy];
 	
 	//Check Plato case: if single name, return single name unchanged
 	if ([namePieces count] == 1)
 		return aName;
 	
 	//lastNamePieces holds all the pieces in the last name (including suffixes)
-	NSMutableArray* lastNamePieces = [NSMutableArray array];
-	NSString* lastPiece;
+	NSMutableArray* suffixesPrefixes = [NSMutableArray array];
+	NSString* piece;
+	BOOL finished = NO;
 	
-	//remove the last object in the namePieces array and add to the lastNamePieces array while we have a suffix
+	//find all the prefixes and add in to array
+	do {
+		piece = [namePieces objectAtIndex:0];
+		if ([[BlioBook prefixes]containsObject:piece]){
+			[suffixesPrefixes addObject:piece];
+			[namePieces removeObjectAtIndex:0];
+		} else finished = YES;
+	} while (!finished);
+	
+	finished = NO;
+	
+	//remove the last object in the namePieces array and add to the suffixesPrefixes array while we have a suffix
 	do {
 		//get last piece and then remove it from the namePieces array
-		lastPiece = [namePieces lastObject];
+		piece = [namePieces lastObject];
 		[namePieces removeLastObject];
-		
-		//insert at beginning of lastNamePieces array to preserve order
-		[lastNamePieces insertObject:lastPiece atIndex:0];
+		if ([[BlioBook suffixes]containsObject:piece] || [[BlioBook suffixesWithoutCommas]containsObject:piece]){
+			[suffixesPrefixes addObject:piece];
+		} else finished = YES;
 		//NOTE: if this comparison becomes more complicated than simply looking at a list of suffixes, you could use a regular expression to check each piece
-	} while ([suffixes containsObject:lastPiece]);
+	} while (!finished);
+	
+	if ([piece hasSuffix:@","])
+		piece = [piece stringByReplacingOccurrencesOfString:@"," withString:@""];
+	
+	//the last name is now stored in the piece value as the first piece before the suffixes
+	NSString* finalString;
+	if ([suffixesPrefixes count] == 0)
+		finalString = [NSString stringWithFormat:@"%@, %@",piece,[namePieces componentsJoinedByString:@" "]];
+	else finalString = [NSString stringWithFormat:@"%@, %@, %@",piece,[namePieces componentsJoinedByString:@" "],[suffixesPrefixes componentsJoinedByString:@" "]];
+	if (needContributorTag){
+		finalString = [finalString stringByAppendingString:@" (CON)"];
+	}
 	
 	//flatten arrays into strings separated by original spaces and add in comma
-	return [[lastNamePieces componentsJoinedByString:@" "] stringByAppendingFormat:@", %@",[namePieces componentsJoinedByString:@" "]];	
+	return finalString;
 }
-
 
 @end
 

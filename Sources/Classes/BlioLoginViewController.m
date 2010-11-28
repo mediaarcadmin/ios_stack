@@ -15,7 +15,7 @@
 
 @implementation BlioLoginViewController
 
-@synthesize sourceID, emailField, passwordField, activityIndicatorView;
+@synthesize sourceID, emailField, passwordField, activityIndicatorView, loginFooterView;
 
 - (id)initWithSourceID:(BlioBookSourceID)bookSourceID
 {
@@ -23,7 +23,30 @@
 	if (self)
 	{
 		self.sourceID = bookSourceID;
-		self.title = NSLocalizedString(@"Sign in to Blio",@"\"Sign in to Blio\" view controller header");
+		self.title = NSLocalizedString(@"Sign In",@"\"Sign In\" view controller header");
+		
+		UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		aButton.showsTouchWhenHighlighted = NO;
+		[aButton setTitle:NSLocalizedString(@"Forgot Password?",@"\"Forgot Password?\" button label") forState:UIControlStateNormal];
+		[aButton setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];		
+		[aButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];
+		[aButton.titleLabel setShadowOffset:CGSizeMake(0.0f, -1.0f)];
+		[aButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+		[aButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButton.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateNormal];
+		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButtonPressed.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateHighlighted];
+		[aButton addTarget:self action:@selector(forgotPassword:) forControlEvents:UIControlEventTouchUpInside];
+		aButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
+		CGFloat leftMargin = kCellTopOffset;
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			leftMargin = kCellLeftOffsetPad;
+		}
+		aButton.frame = CGRectMake(leftMargin, 20,150, 30);
+		[aButton setAccessibilityLabel:NSLocalizedString(@"Forgot Password?", @"Accessibility label for Forgot Password button.")];
+		[aButton setAccessibilityHint:	NSLocalizedString(@"Sends your password to your email address.", @"Accessibility hint for Forgot Password button.")];
+		self.loginFooterView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+		[self.loginFooterView addSubview:aButton];
+
 	}
 	
 	return self;
@@ -44,7 +67,12 @@
 }
 
 - (void)loadView {
+
+
+
+	
 	[super loadView];
+	
 	self.tableView.frame = [[UIScreen mainScreen] applicationFrame];
 	self.tableView.scrollEnabled = YES;
 	self.tableView.autoresizesSubviews = YES;
@@ -62,37 +90,92 @@
 											   target:self
 											   action:@selector(dismissLoginView:)]
 											 autorelease];
-	
-	
-	 
+//	self.loginButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//	[self.loginButton setTitle:@"Login" forState:UIControlStateNormal];
+//	self.loginButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+//	self.loginButton.backgroundColor = [UIColor clearColor];
+//	self.loginButton.frame = CGRectMake(0, 0, 150, kStdButtonHeight);
+//	[self.loginButton addTarget:self action:@selector(loginButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+	 	
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
 	CGFloat activityIndicatorDiameter = 50.0f;
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
-	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 }
-
+-(void)viewDidUnload {
+	[activityIndicatorView removeFromSuperview];
+	self.activityIndicatorView = nil;
+}
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertWelcome"];
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Welcome To Blio",@"\"Welcome To Blio\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"INTRO_WELCOME_ALERT",nil,[NSBundle mainBundle],@"Lets get started! If you have an account with Blio, please enter your registered email address and password above. Otherwise, please create an account by selecting the option below.",@"Alert Text encouraging the end-user to either login or create a new account.")
+									 message:NSLocalizedStringWithDefaultValue(@"INTRO_WELCOME_ALERT",nil,[NSBundle mainBundle],@"If you have an account, you can log in to download books that you've purchased. Otherwise you can create an account.",@"Alert Text encouraging the end-user to either login or create a new account.")
 									delegate:nil
 						   cancelButtonTitle:@"OK"
 						   otherButtonTitles:nil];		
 	}
 
 }
+- (void)viewDidDisappear:(BOOL)animated {
+	[activityIndicatorView removeFromSuperview];
+}
+-(void)loginButtonPressed:(id)sender {
+	if (!emailField.text || [emailField.text isEqualToString:@""]) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your email address before logging in.",@"Alert Text informing the end-user that the email address must be entered to login.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
+		[emailField becomeFirstResponder];
+		return;
+	}
+	if (!passwordField.text || [passwordField.text isEqualToString:@""]) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your password before logging in.",@"Alert Text informing the end-user that the password must be entered to login.")
+									delegate:nil 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];			
+		[passwordField becomeFirstResponder];
+		return;
+	}	
+	
+	[activityIndicatorView startAnimating];
+	[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:passwordField.text sourceID:self.sourceID];	
+	[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];	
+}
+- (void)receivedLoginResult:(BlioLoginResult)loginResult {
+	NSString * loginErrorText = nil;
+	if ( loginResult == BlioLoginResultSuccess ) {
+		[self dismissModalViewControllerAnimated:YES];
+	}
+	else if ( loginResult == BlioLoginResultInvalidPassword ) {
+		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
+		passwordField.text = @"";
+	}
+	else loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
+	[activityIndicatorView stopAnimating];
+	if (loginErrorText != nil) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+									 message:loginErrorText
+									delegate:self 
+						   cancelButtonTitle:@"OK"
+						   otherButtonTitles:nil];
+	}
+}
+
 - (void) dismissLoginView: (id) sender {
 	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
-	[self dismissModalViewControllerAnimated:YES];
+//	[self dismissModalViewControllerAnimated:YES];
+	[[BlioStoreManager sharedInstance] dismissLoginView];
 }
 
 - (UITextField *)createEmailTextField {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.emailField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.emailField) self.emailField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
-	emailField.keyboardType = UIKeyboardTypeAlphabet;
+	emailField.keyboardType = UIKeyboardTypeEmailAddress;
 	emailField.keyboardAppearance = UIKeyboardAppearanceDefault;
 	emailField.returnKeyType = UIReturnKeyNext;
 	emailField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -100,7 +183,7 @@
 	emailField.placeholder = NSLocalizedString(@"E-mail Address",@"\"E-mail Address\" placeholder");
 	emailField.delegate = self;
 	
-	NSMutableDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] objectForKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+	NSDictionary * loginCredentials = [[BlioStoreManager sharedInstance] savedLoginCredentials];
 	if (loginCredentials && [loginCredentials objectForKey:@"username"]) {
 		emailField.text = [loginCredentials objectForKey:@"username"];
 	}
@@ -114,11 +197,11 @@
 - (UITextField *)createPasswordTextField
 {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.passwordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.passwordField) self.passwordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	passwordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	passwordField.keyboardType = UIKeyboardTypeAlphabet;
 	passwordField.keyboardAppearance = UIKeyboardAppearanceDefault;
-	passwordField.returnKeyType = UIReturnKeyDone;
+	passwordField.returnKeyType = UIReturnKeyGo;
 	passwordField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	passwordField.autocorrectionType = UITextAutocorrectionTypeNo;
 	passwordField.placeholder = NSLocalizedString(@"Password",@"\"Password\" placeholder");
@@ -140,13 +223,14 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
         return NO;
-    else
-        return YES;
+    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+	return YES;
 }
 
 - (void)dealloc {
 	self.emailField = nil;
 	self.passwordField = nil;
+	self.loginFooterView = nil;
 	if (self.activityIndicatorView) [self.activityIndicatorView removeFromSuperview];
 	self.activityIndicatorView = nil;
 	[super dealloc];
@@ -156,58 +240,13 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {   
-	
 	if (textField == emailField) 
 		[passwordField becomeFirstResponder];
 	else { 
-		if (!emailField.text || [emailField.text isEqualToString:@""]) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your email address before logging in.",@"Alert Text informing the end-user that the email address must be entered to login.")
-										delegate:nil 
-							   cancelButtonTitle:@"OK"
-							   otherButtonTitles:nil];
-			[emailField becomeFirstResponder];
-			return NO;
-		}
-		if (!passwordField.text || [passwordField.text isEqualToString:@""]) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your password before logging in.",@"Alert Text informing the end-user that the password must be entered to login.")
-										delegate:nil 
-							   cancelButtonTitle:@"OK"
-							   otherButtonTitles:nil];			
-			[passwordField becomeFirstResponder];
-			return NO;
-		}
-		[activityIndicatorView startAnimating];
-		
-		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
-		[loginCredentials setObject:[NSString stringWithString:passwordField.text] forKey:@"password"];
-		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
 		[textField resignFirstResponder];
-		[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
+		[self loginButtonPressed:textField];
 	}
 	return NO;
-}
-
-- (void)receivedLoginResult:(BlioLoginResult)loginResult {
-	NSString * loginErrorText = nil;
-	if ( loginResult == BlioLoginResultSuccess ) {
-		[self dismissModalViewControllerAnimated:YES];
-	}
-	else if ( loginResult == BlioLoginResultInvalidPassword ) 
-		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
-	else
-		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
-	[activityIndicatorView stopAnimating];
-	passwordField.text = @"";
-	if (loginErrorText != nil) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
-									 message:loginErrorText
-									delegate:self 
-						   cancelButtonTitle:@"OK"
-						   otherButtonTitles:nil];
-	}
 }
 #pragma mark - UITableView delegates
 	
@@ -218,7 +257,7 @@
 	
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 3;
+	return 2;
 }
 	
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -226,12 +265,22 @@
 	if (section == 0) return 2;
 	else return 1;
 }
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+	if (section == 0) {
+		return self.loginFooterView;
+	}
+	return nil;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+	return 60;
+}
 
+/*
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
 	if (section == 0) return NSLocalizedStringWithDefaultValue(@"LOGIN_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"If you have a blioreader.com username, login now to retrieve your latest blioreader.com purchases.",@"Explanatory message that appears at the bottom of the Login table.");
 	return nil;
 }
-
+*/
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	return kCellHeight;
 }
@@ -258,14 +307,14 @@
 		NSString * genericTableViewCellID = @"genericTableCell";
 		cell = [tableView dequeueReusableCellWithIdentifier:genericTableViewCellID];
 		if (cell == nil) cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:genericTableViewCellID] autorelease];		
+//		if (section == 1) {
+//			cell.textLabel.textAlignment = UITextAlignmentCenter;
+//			cell.textLabel.text = @"Forgot Password";
+//			
+//		}
 		if (section == 1) {
-			cell.textLabel.textAlignment = UITextAlignmentCenter;
-			cell.textLabel.text = @"Forgot Password";
-			
-		}
-		else if (section == 2) {
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.textLabel.text = @"Create New Account";
+			cell.textLabel.text = @"Create Account";
 		}
 	}
 	return cell;
@@ -273,18 +322,18 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger section = [indexPath section];
+//	if (section == 1) {
+//		[tableView deselectRowAtIndexPath:indexPath animated:YES];
+//		[self forgotPassword];
+//		return;
+//	}
 	if (section == 1) {
-		[tableView deselectRowAtIndexPath:indexPath animated:YES];
-		[self forgotPassword];
-		return;
-	}
-	else if (section == 2) {
 		BlioCreateAccountViewController * createAccountViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
 		[self.navigationController pushViewController:createAccountViewController animated:YES];
 	}
 }
 
--(void)forgotPassword {
+-(void)forgotPassword:(id)sender {
 	if (!self.emailField.text || [self.emailField.text isEqualToString:@""]) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"ENTER_PASSWORD_IF_FORGOTTEN",nil,[NSBundle mainBundle],@"In order for Blio to send you your password, please first enter your email address.",@"Alert Text informing the end-user that his/her email address must be entered before Blio can send his/her password.")
@@ -299,7 +348,7 @@
 	NSMutableDictionary * inputData = [NSMutableDictionary dictionaryWithCapacity:1];
 	[inputData setObject:[NSString stringWithString:self.emailField.text] forKey:DigitalLockerInputDataEmailKey];
 	request.InputData = inputData;
-	DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
+	DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request siteNum:[[BlioStoreManager sharedInstance] storeSiteIDForSourceID:sourceID] siteKey:[[BlioStoreManager sharedInstance] storeSiteKeyForSourceID:sourceID] delegate:self];
 	[connection start];
 	[request release];	
 }
@@ -311,9 +360,7 @@
 	NSLog(@"BlioLoginViewController connectionDidFinishLoading...");
 	[activityIndicatorView stopAnimating];
 	if (aConnection.digitalLockerResponse.ReturnCode == 0) {
-		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
-		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+		[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:nil sourceID:sourceID];
 		NSString * alertMessage = NSLocalizedStringWithDefaultValue(@"PASSWORD_SENT",nil,[NSBundle mainBundle],@"Your password has been sent to your email address.",@"Alert Text informing the end-user that his/her password has been sent to the email address specified.");
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:alertMessage

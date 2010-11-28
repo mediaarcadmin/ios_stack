@@ -17,6 +17,8 @@
 #import "BlioBook.h"
 #import "BlioParagraphSource.h"
 
+static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f, 95.0f, 120.0f };
+
 @interface BlioSpeedReadView ()
 
 @property (nonatomic, assign) NSInteger pageNumber;
@@ -28,7 +30,22 @@
 
 @implementation BlioSpeedReadView
 
-@synthesize pageNumber, currentWordOffset, currentParagraphID, fingerImage, backgroundImage, fingerImageHolder, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize pageNumber, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize delegate;
+
+- (void)dealloc {
+   
+    [textArray release]; textArray = nil;
+    [sampleTextLabel release]; sampleTextLabel = nil;
+    [bigTextLabel release]; bigTextLabel = nil;
+    [fingerImageHolder release]; fingerImageHolder = nil;
+    [currentParagraphID release]; currentParagraphID = nil;
+    [paragraphSource release]; paragraphSource = nil;
+    
+	// Don't release as was not retained
+	delegate = nil;
+    [super dealloc];
+}
 
 - (id)initWithFrame:(CGRect)frame
              bookID:(NSManagedObjectID *)bookID 
@@ -41,28 +58,36 @@
         [self setBackgroundColor:[UIColor whiteColor]];
         
         fingerImageHolder = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 93, 93)];
-        fingerImage = [[CALayer alloc] init];
+        fingerImage = [CALayer layer];
         [fingerImage setContents:(id)[[UIImage imageNamed:@"speedread-thumb.png"] CGImage]];
         [fingerImage setFrame:CGRectMake(0, 0, 93, 93)];
         [fingerImageHolder.layer addSublayer:fingerImage];
         
-        backgroundImage = [[CALayer alloc] init];
+        backgroundImage = [CALayer layer];
         [backgroundImage setFrame:CGRectMake(0, 0, 320, 480)];
-        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedread-background-light-portrait.png"] CGImage]];
+        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-portrait.png"] CGImage]];
         [self.layer addSublayer:backgroundImage];
         
-        CALayer *roundedCorners = [[CALayer alloc] init];
-        [roundedCorners setFrame:CGRectMake(0, 0, 320, 480)];
-        [roundedCorners setContents:(id)[[UIImage imageNamed:@"roundedcorners.png"] CGImage]];
-        [self.layer addSublayer:roundedCorners];
-        [roundedCorners release];
+        backgroundImageLandscape = [CALayer layer];
+        [backgroundImageLandscape setFrame:CGRectMake(0, 160, 480, 320 )];
+        [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-landscape.png"] CGImage]];
+        [self.layer addSublayer:backgroundImageLandscape];
+        
+        roundCorners = [CALayer layer];
+        [roundCorners setFrame:CGRectMake(0, 0, 320, 480)];
+        [roundCorners setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/roundcorners-portrait.png"] CGImage]];
+        [self.layer addSublayer:roundCorners];
+        
+        roundCornersLandscape = [CALayer layer];
+        [roundCornersLandscape setFrame:CGRectMake(0, 160, 480, 320)];
+        [roundCornersLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/roundcorners-landscape.png"] CGImage]];
+        [self.layer addSublayer:roundCornersLandscape];
         
         bigTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 100, 290, 240)];
         [bigTextLabel setTextColor:[UIColor blackColor]];
         [bigTextLabel setBackgroundColor:[UIColor clearColor]];
         [bigTextLabel setNumberOfLines:1];
         [bigTextLabel setAdjustsFontSizeToFitWidth:YES];
-        
         
         [self addSubview:bigTextLabel];
         
@@ -85,7 +110,8 @@
         
         [self addSubview:fingerImageHolder];
         
-        currentFontSize = 90.0;
+        NSInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastFontSize"];        
+        currentFontSize = kBlioSpeedReadFontPointSizeArray[fontSizeIndex];
         font = [UIFont fontWithName:@"Helvetica" size:currentFontSize];
         
         speed = 0;
@@ -99,8 +125,108 @@
         initialTouchDifference = 0;
         
         zooming = NO;
+        
+        self.autoresizesSubviews = YES;
+        
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     }    
     return self;
+}
+
+
+- (CGFloat)fontPointSize {
+    return (currentFontSize-20.0)*8.0/100.0+14;
+}
+
+- (void)setFontPointSize:(CGFloat)fontPointSize
+{
+    fontPointSize = (fontPointSize - 14)*100/8+20;
+    
+    currentFontSize = fontPointSize;
+    bigTextLabel.font = [font fontWithSize:currentFontSize];
+    sampleTextLabel.font = [font fontWithSize:currentFontSize];
+    
+    
+    
+}
+
+- (void)setColor:(BlioPageColor)newColor {
+    if (newColor == kBlioPageColorWhite) {
+        
+        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-light-portrait.png"] CGImage]];
+        [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-light-landscape.png"] CGImage]];
+        self.backgroundColor = [UIColor whiteColor];
+        [bigTextLabel setTextColor:[UIColor blackColor]];
+        [sampleTextLabel setTextColor:[UIColor blackColor]];
+    } else if (newColor == kBlioPageColorBlack) {
+        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-portrait.png"] CGImage]];
+        [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-landscape.png"] CGImage]];
+        self.backgroundColor = [UIColor blackColor];
+        [bigTextLabel setTextColor:[UIColor whiteColor]];        
+        [sampleTextLabel setTextColor:[UIColor whiteColor]];        
+    } else if (newColor == kBlioPageColorNeutral) {
+        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-neutral-portrait.png"] CGImage]];
+        [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-neutral-landscape.png"] CGImage]];
+        self.backgroundColor = [UIColor colorWithRed:253.0f/255.0f green:235.0f/255.0f blue:213.0f/255.0f alpha:1];
+        [bigTextLabel setTextColor:[UIColor blackColor]];        
+        [sampleTextLabel setTextColor:[UIColor blackColor]];                
+    }
+}
+
+- (void)layoutLandscape {
+    bigTextLabel.frame = CGRectMake(15, 200, 430, 240);
+    sampleTextLabel.frame = CGRectMake(15, 200, 2000, 240);    
+    
+    [backgroundImageLandscape setHidden:NO];    
+    [backgroundImage setHidden:YES];        
+}
+
+- (void)layoutPortrait {
+    bigTextLabel.frame = CGRectMake(15, 100, 290, 240);
+    sampleTextLabel.frame = CGRectMake(15, 100, 2000, 240);        
+    
+    [backgroundImageLandscape setHidden:YES];
+    [backgroundImage setHidden:NO];            
+}
+
+- (void)layoutSubviews {
+    UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation]; 
+    
+    
+    if(UIInterfaceOrientationIsLandscape(i)) {
+        
+        [self layoutLandscape];
+        [roundCorners setHidden:YES];
+        [roundCornersLandscape setHidden:NO];        
+    } else {
+        
+        [self layoutPortrait];
+        [roundCorners setHidden:NO];
+        [roundCornersLandscape setHidden:YES];
+    }}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [roundCorners setHidden:YES];
+    [roundCornersLandscape setHidden:YES];
+    if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
+        [self layoutLandscape];
+    } else {
+        [self layoutPortrait];
+        
+    }
+    
+    
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        [roundCornersLandscape setHidden:NO];
+        
+    } else {
+        [roundCorners setHidden:NO];    
+        
+    }
+    
 }
 
 - (BOOL)fillArrayWithNextBlock {
@@ -113,7 +239,7 @@
     if(newId) {
         self.currentParagraphID = newId;
         self.currentWordOffset = 0;
-            
+        
         return [self fillArrayWithCurrentBlock];
     } else {
         return NO;
@@ -127,7 +253,7 @@
         [textArray release];
         textArray = nil;
     }
-
+    
     self.textArray = [paragraphSource wordsForParagraphWithID:self.currentParagraphID];
     if (textArray.count) {
         ret = YES;
@@ -168,10 +294,18 @@
         
     } else {
         
-        float loc = [[[touches allObjects] objectAtIndex:0] locationInView:nil].y;
+        float xOffset = 0;
+        float yOffset = 0;
         
-        float fingerImageYValue = [[[touches allObjects] objectAtIndex:0] locationInView:nil].y-46;
-        [fingerImageHolder setFrame:CGRectMake([self calculateFingerXValueFromY:fingerImageYValue], fingerImageYValue, 93, 93)];
+        float loc = [[[touches allObjects] objectAtIndex:0] locationInView:self].y;
+        float fingerImageYValue = loc-46;        
+        UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIDeviceOrientationIsLandscape(i)){
+            xOffset = 147;
+            yOffset = -80;
+        }
+        
+        [fingerImageHolder setFrame:CGRectMake([self calculateFingerXValueFromY:fingerImageYValue+yOffset]+xOffset, fingerImageYValue, 93, 93)];
         
         [CATransaction begin];
         [CATransaction setValue:[NSNumber numberWithFloat:0.25f] forKey:kCATransactionAnimationDuration];
@@ -181,6 +315,7 @@
         
         [CATransaction begin];
         [CATransaction setValue:[NSNumber numberWithFloat:1.0f] forKey:kCATransactionAnimationDuration];
+        backgroundImageLandscape.opacity = 0.35f;
         backgroundImage.opacity = 0.35f;
         [CATransaction commit];
         
@@ -192,7 +327,6 @@
                 nextWordTimer = nil;
             }
         } else if (!nextWordTimer) nextWordTimer = [NSTimer scheduledTimerWithTimeInterval:fabs(speed) target:self selector:@selector(nextWord:) userInfo:nil repeats:YES];
-        
 	}
 }
 
@@ -215,12 +349,21 @@
         }
         
     } else {
+        float xOffset = 0;
+        float yOffset = 0;
         
         int oldSpeed = speed;
-        float loc = [[[touches allObjects] objectAtIndex:0] locationInView:nil].y;
-        float fingerImageYValue = [[[touches allObjects] objectAtIndex:0] locationInView:nil].y-46;
+        float loc = [[[touches allObjects] objectAtIndex:0] locationInView:self].y;
+        float fingerImageYValue = loc-46;        
+        UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIDeviceOrientationIsLandscape(i)){
+            xOffset = 147;
+            yOffset = -80;
+        }
         
-        [fingerImageHolder setFrame:CGRectMake([self calculateFingerXValueFromY:fingerImageYValue], fingerImageYValue, 93, 93)];
+        
+        
+        [fingerImageHolder setFrame:CGRectMake([self calculateFingerXValueFromY:fingerImageYValue+yOffset]+xOffset, fingerImageYValue, 93, 93)];
         
         speed = [self speedForYValue:loc];
         
@@ -284,6 +427,7 @@
         
         [CATransaction begin];
         [CATransaction setValue:[NSNumber numberWithFloat:1.0f] forKey:kCATransactionAnimationDuration];
+        backgroundImageLandscape.opacity = 1.0f;        
         backgroundImage.opacity = 1.0f;
         [CATransaction commit];
         
@@ -294,13 +438,29 @@
 
 - (float)speedForYValue:(float)y {
     
-    if (y > 400) {
-        return ((480-y)/80)*-1;
-    }
-    if (y > 350) return 0;
-    if (y < 100) return .06;
     
-    y = (y-100)/250+.06;
+    UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UIDeviceOrientationIsPortrait(i)) {
+        if (y > 400) {
+            return ((480-y)/80)*-1;
+        }
+        if (y > 350) return 0;
+        if (y < 100) return .06;
+        
+        
+        
+        y = (y-100)/250+.06;        
+        
+    } else {
+        if (y > 440) {
+            return ((480-y)/40)*-1;
+        }
+        if (y > 380) return 0;
+        if (y < 220) return .06;
+        
+        y = (y-220)/160+.06;   
+    }
+    
     
     return y;
 }
@@ -367,8 +527,16 @@
     return [ret autorelease];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
 {
+    if (save) {
+        [self pushCurrentBookmarkPoint];
+    }
+    
     id paragraphId = nil;
     uint32_t wordOffset = 0;
     [paragraphSource bookmarkPoint:bookmarkPoint toParagraphID:&paragraphId wordOffset:&wordOffset];
@@ -378,6 +546,16 @@
     
     [self fillArrayWithCurrentBlock];
     [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
+}
+
+#pragma mark -
+#pragma mark Back Button History
+
+- (void)pushCurrentBookmarkPoint {
+    BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
+    if (bookmarkPoint) {
+        [self.delegate pushBookmarkPoint:bookmarkPoint];
+    }
 }
 
 - (NSString *)pageLabelForPageNumber:(NSInteger)page {
@@ -415,19 +593,6 @@
 
 - (void)drawRect:(CGRect)rect {
     // Drawing code
-}
-
-
-- (void)dealloc {
-    [textArray release];
-    [sampleTextLabel release];
-    [bigTextLabel release];
-    [fingerImage release];
-    [fingerImageHolder release];
-    [backgroundImage release];
-    [currentParagraphID release];
-    [paragraphSource release];
-    [super dealloc];
 }
 
 #pragma mark -

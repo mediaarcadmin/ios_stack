@@ -9,28 +9,28 @@
 #import <UIKit/UIKit.h>
 #import <libEucalyptus/EucBookView.h>
 #import "BlioBookView.h"
+#import "BlioBookViewController.h"
 
 @protocol BlioParagraphSource;
 
 
-@interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {
-    CGPDFDocumentRef pdf;
-    UIScrollView *scrollView;
-    UIView *containerView;
-    NSMutableArray *pageViews;
-    id navigationController;
-    NSInteger visiblePageIndex;
-    
+@interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {    
     NSInteger pageNumber;
     NSInteger pageCount;
     
     id<BlioParagraphSource> paragraphSource;
+    id<BlioBookViewDelegate> delegate;
     id currentParagraphID;
 	uint32_t currentWordOffset;
-        
+    
     UIView *fingerImageHolder;
     CALayer *fingerImage;
+    
+    CALayer *backgroundImageLandscape;    
     CALayer *backgroundImage;
+    CALayer *roundCornersLandscape;    
+    CALayer *roundCorners;
+    
     float initialTouchDifference;
     
     float initialFontSize;
@@ -62,14 +62,12 @@
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 @property (nonatomic, readonly) CGRect firstPageRect;
 
-@property (nonatomic, retain) UIView *fingerImageHolder;
-@property (nonatomic, retain) CALayer *fingerImage;
-@property (nonatomic, retain) CALayer *backgroundImage;
-
 - (float)speedForYValue:(float)y;
 - (float)calculateFingerXValueFromY:(float)y;
 - (BOOL)fillArrayWithNextBlock;
 - (BOOL)fillArrayWithCurrentBlock;
+
+- (void)setColor:(BlioPageColor)newColor;
 
 @property (nonatomic) float speed;
 
@@ -81,5 +79,6 @@
 @property (nonatomic, retain) UILabel *bigTextLabel;
 @property (nonatomic, retain) UILabel *sampleTextLabel;
 
+@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
 
 @end

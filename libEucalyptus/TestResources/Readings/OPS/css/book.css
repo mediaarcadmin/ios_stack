@@ -1,0 +1,63 @@
+* {
+	font-family: LinuxLibertine;
+}
+sup{
+	font-size: 67%;
+	vertical-align: 33%;
+}
+sub{
+	font-size: 67%;
+	vertical-align: -10%;
+}
+.s1{
+	color: #000000;
+	font-size: 175.0000%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	letter-spacing: 0.0000em;
+	margin-bottom: 0.0000%;
+	margin-top: 0.0000%;
+	padding-left: 0.0000%;
+	padding-right: 0.0000%;
+	text-align: left;
+	text-decoration: none;
+	text-indent: 0.0000%;
+	text-transform: none;
+}
+.s2{
+	font-size: 225.0000%;
+	text-align: center;
+}
+.s3{
+	color: #000000;
+	font-size: 75.0000%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	letter-spacing: 0.0000em;
+	margin-bottom: 0.0000%;
+	margin-top: 0.0000%;
+	padding-left: 0.0000%;
+	padding-right: 0.0000%;
+	text-align: left;
+	text-decoration: none;
+	text-indent: 0.0000%;
+	text-transform: none;
+}
+.s4{
+	font-size: 87.5000%;
+	text-align: center;
+}
+.s5{
+	text-align: center;
+}
+.s6{
+	font-size: 112.5000%;
+	margin-bottom: 2.9069%;
+	text-align: center;
+}
+.s7{
+	font-size: 112.5000%;
+	text-align: center;
+}

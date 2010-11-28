@@ -14,12 +14,14 @@
     NSString *_subTitle;
     NSString *_pageNumber;
     UIColor *_textColor;
+    NSUInteger _indentationWidth;
 }
 
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *subTitle;
 @property (nonatomic, retain) UIColor *textColor;
 @property (nonatomic, assign) NSString *pageNumber;
+@property (nonatomic, assign) NSUInteger indentationWidth;
 
 + (CGFloat)heightForWidth:(CGFloat)width withName:(NSString *)name subTitle:(NSString *)subTitle pageNumber:(NSString *)pageNumber;
 

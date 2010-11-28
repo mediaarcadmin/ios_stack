@@ -52,6 +52,13 @@ NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey = @"EucBoo
 {
     if((self = [super init])) {
         pthread_mutex_init(&_paginationInfoMutex, NULL);   
+        NSArray *desiredFontSizeNumbers = [EucConfiguration objectForKey:EucConfigurationFontSizesKey];
+        _desiredFontSizesCount = desiredFontSizeNumbers.count;
+        _desiredFontSizes = malloc(_desiredFontSizesCount * sizeof(NSUInteger));
+        NSUInteger i = 0;
+        for(NSNumber *pointSizeNumber in desiredFontSizeNumbers) {
+            _desiredFontSizes[i++] = pointSizeNumber.unsignedIntegerValue;
+        }    
     }
     return self;
 }
@@ -59,6 +66,7 @@ NSString * const EucBookPaginatorNotificationPageCountForPointSizeKey = @"EucBoo
 - (void)dealloc
 {
     pthread_mutex_destroy(&_paginationInfoMutex);
+    free(_desiredFontSizes);
     [super dealloc];
 }
 
@@ -71,14 +79,13 @@ static void *PaginationThread(void *self)
     return NULL;
 }
 
-static const NSUInteger sDesiredPointSizes[] = { 14, 16, 18, 20, 22 };
-static const NSUInteger sDesiredPointSizesCount = (sizeof(sDesiredPointSizes) / sizeof(sDesiredPointSizes[0]));
-
 static const CGSize sDesiredPageSizes[] = { {320, 480}, {480, 320}, {768, 1024}, {1024, 768} };
 static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / sizeof(sDesiredPageSizes[0]));
 
 - (void)_paginationThread
 {
+    [self retain];
+    
     THImageFactory *imageFactory = nil;
     
     [UIApplication sharedApplication].idleTimerDisabled = YES;
@@ -88,21 +95,21 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
     [_paginationStartedLock lockWhenCondition:0];
     off_t indexPointSize = [EucBookPageIndexPoint sizeOnDisk];
     NSString *indexDirectoryPath = _book.cacheDirectoryPath;
-    
-    int pageIndexFDs[sDesiredPointSizesCount * sDesiredPageSizesCount];
+        
+    int pageIndexFDs[_desiredFontSizesCount * sDesiredPageSizesCount];
     memset(pageIndexFDs, 0, sizeof(pageIndexFDs));
-    EucBookPageIndexPoint *currentPoints[sDesiredPointSizesCount * sDesiredPageSizesCount];
+    EucBookPageIndexPoint *currentPoints[_desiredFontSizesCount * sDesiredPageSizesCount];
     memset(currentPoints, 0, sizeof(currentPoints));
-    EucPageView *pageViews[sDesiredPointSizesCount * sDesiredPageSizesCount];
+    EucPageView *pageViews[_desiredFontSizesCount * sDesiredPageSizesCount];
     memset(pageViews, 0, sizeof(pageViews));
         
     // Open raw index files.
     NSUInteger i = 0;
-    for(NSUInteger pointSize = 0; pointSize < sDesiredPointSizesCount; ++pointSize) {
+    for(NSUInteger pointSize = 0; pointSize < _desiredFontSizesCount; ++pointSize) {
         for(NSUInteger pageSize = 0; pageSize < sDesiredPageSizesCount; ++pageSize) {
             NSString *path = [indexDirectoryPath stringByAppendingPathComponent:[EucBookIndex constructionFilenameForPageIndexForFont:[EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey]
                                                                                                                              pageSize:sDesiredPageSizes[pageSize]
-                                                                                                                             fontSize:sDesiredPointSizes[pointSize]]];
+                                                                                                                             fontSize:_desiredFontSizes[pointSize]]];
             if([[NSFileManager defaultManager] fileExistsAtPath:path]) {
                 pageIndexFDs[i] = open([path fileSystemRepresentation], O_RDWR, S_IRUSR | S_IWUSR);
             } else {
@@ -118,28 +125,22 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
     }
         
     // See if we can read the last index point (i.e. if the files are in-progress).
-    for(NSUInteger i = 0; i < sDesiredPointSizesCount * sDesiredPageSizesCount; ++i) {
-        struct stat stat;
-        if(fstat(pageIndexFDs[i], &stat) != 0) {
-            THWarn(@"Error %d attempting to stat index", errno);
-            goto abandon;
+    for(NSUInteger i = 0; i < _desiredFontSizesCount * sDesiredPageSizesCount; ++i) {
+        off_t currentIndexSize = lseek(pageIndexFDs[i], 0, SEEK_END);
+        if((currentIndexSize % indexPointSize) != 0) {
+            // Just in case we quit in the middle of writing a point:
+            currentIndexSize = currentIndexSize / indexPointSize;
+            ftruncate(pageIndexFDs[i], currentIndexSize);            
+        }
+        if(currentIndexSize > 0) {
+            lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
+            currentPoints[i] = [[EucBookPageIndexPoint bookPageIndexPointFromOpenFD:pageIndexFDs[i]] retain];
+            lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
+            // We'll overwrite this point, below.
+            
+            _pageCounts[i] = (currentIndexSize / indexPointSize) - 1;
         } else {
-            off_t currentIndexSize = stat.st_size;
-            if((currentIndexSize % indexPointSize) != 0) {
-                // Just in case we quit in the middle of writing a point:
-                currentIndexSize = currentIndexSize / indexPointSize;
-                ftruncate(pageIndexFDs[i], currentIndexSize);            
-            }
-            if(currentIndexSize > 0) {
-                lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
-                currentPoints[i] = [[EucBookPageIndexPoint bookPageIndexPointFromOpenFD:pageIndexFDs[i]] retain];
-                lseek(pageIndexFDs[i], currentIndexSize - indexPointSize, SEEK_SET);
-                // We'll overwrite this point, below.
-                
-                _pageCounts[i] = (currentIndexSize / indexPointSize) - 1;
-            } else {
-                currentPoints[i] = [[EucBookPageIndexPoint alloc] init];
-            }
+            currentPoints[i] = [[EucBookPageIndexPoint alloc] init];
         }
     }    
     
@@ -148,12 +149,12 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
         
     // Create the text views we'll use for layout.
     i = 0;
-    for(NSUInteger pointSize = 0; pointSize < sDesiredPointSizesCount; ++pointSize) {
+    for(NSUInteger pointSize = 0; pointSize < _desiredFontSizesCount; ++pointSize) {
         for(NSUInteger pageSize = 0; pageSize < sDesiredPageSizesCount; ++pageSize) {
             pageViews[i] = [[_book.pageLayoutControllerClass blankPageViewWithFrame:CGRectMake(0, 0, sDesiredPageSizes[pageSize].width, sDesiredPageSizes[pageSize].height)
-                                                                       forPointSize:sDesiredPointSizes[pointSize]] retain];
+                                                                       forPointSize:_desiredFontSizes[pointSize]] retain];
             if(!pageViews[i]) {
-                THWarn(@"Could not create book text view for point size %lu", (unsigned long)sDesiredPointSizes[i]);
+                THWarn(@"Could not create book text view for point size %lu", (unsigned long)_desiredFontSizes[i]);
                 goto abandon;
             }
             ++i;
@@ -169,7 +170,7 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
         
         // Work out which is the furthest behind index.
         NSInteger currentPointIndex = -1;
-        for(NSUInteger i = 0; i < sDesiredPointSizesCount * sDesiredPageSizesCount; ++i) {
+        for(NSUInteger i = 0; i < _desiredFontSizesCount * sDesiredPageSizesCount; ++i) {
             if(currentPoints[i]) {
                 if(currentPointIndex == -1) {
                     currentPointIndex = i;
@@ -271,7 +272,7 @@ abandon:
         [_paginationStartedLock unlockWithCondition:1];
     }
 
-    for(NSUInteger i = 0; i < sDesiredPointSizesCount * sDesiredPageSizesCount; ++i) {
+    for(NSUInteger i = 0; i < _desiredFontSizesCount * sDesiredPageSizesCount; ++i) {
         [currentPoints[i] release]; 
         [pageViews[i] release];
         close(pageIndexFDs[i]);
@@ -283,6 +284,8 @@ abandon:
     [imageFactory release];
     
     [UIApplication sharedApplication].idleTimerDisabled = NO;
+    
+    [self release];
 }
 
 - (void)_paginateBook:(id<EucBook>)book inBackground:(BOOL)inBackground saveImagesTo:(NSString *)saveImagesTo
@@ -293,7 +296,7 @@ abandon:
     _saveImagesTo = [[saveImagesTo stringByAppendingPathComponent:@"PageImages"] retain];
     _continueParsing = YES;
     
-    _pageCounts = calloc(sizeof(NSUInteger), sDesiredPointSizesCount * sDesiredPageSizesCount);
+    _pageCounts = calloc(sizeof(NSUInteger), _desiredFontSizesCount * sDesiredPageSizesCount);
     
     if(_saveImagesTo) {
         [[NSFileManager defaultManager] removeItemAtPath:_saveImagesTo error:nil];
@@ -393,10 +396,10 @@ abandon:
     // allowing calls to start pagination in the completion
     // callback.
     id<EucBook> book = [_book retain];
-    NSMutableDictionary *pageCounts = [[NSMutableDictionary alloc] initWithCapacity:sDesiredPointSizesCount * sDesiredPageSizesCount];
-    for(NSUInteger i = 0; i < sDesiredPointSizesCount * sDesiredPageSizesCount; ++i) {
+    NSMutableDictionary *pageCounts = [[NSMutableDictionary alloc] initWithCapacity:_desiredFontSizesCount * sDesiredPageSizesCount];
+    for(NSUInteger i = 0; i < _desiredFontSizesCount * sDesiredPageSizesCount; ++i) {
         [pageCounts setObject:[NSNumber numberWithInteger:_pageCounts[i]]
-                       forKey:[NSNumber numberWithInteger:sDesiredPointSizes[i]]];
+                       forKey:[NSNumber numberWithInteger:_desiredFontSizes[i]]];
     }
         
     [self _releasePaginationIvars]; 

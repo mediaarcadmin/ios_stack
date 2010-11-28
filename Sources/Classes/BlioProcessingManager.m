@@ -13,6 +13,7 @@
 #import "BlioStoreManager.h"
 #import "BlioAlertManager.h"
 #import "NSString+BlioAdditions.h"
+#import "BlioImportManager.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -51,33 +52,24 @@
 
 #pragma mark -
 #pragma mark BlioProcessingDelegate
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath {
-	// for legacy compatibility (pre-sourceID and sourceSpecificID)
-	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
-					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:(NSString *)xpsPath textFlowPath:textFlowPath 
-				 audiobookPath:audiobookPath sourceID:BlioBookSourceLocalBundle sourceSpecificID:title placeholderOnly:NO];
-}
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
-	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
-					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
-				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO];    
-}
+//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+//			   audiobookPath:(NSString *)audiobookPath {
+//	// for legacy compatibility (pre-sourceID and sourceSpecificID)
+//	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
+//					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:(NSString *)xpsPath textFlowPath:textFlowPath 
+//				 audiobookPath:audiobookPath sourceID:BlioBookSourceLocalBundle sourceSpecificID:title placeholderOnly:NO];
+//}
+//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+//			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+//	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
+//					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
+//				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO];    
+//}
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
-	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
-					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
-				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:placeholderOnly fromBundle:NO];    
-	
-}
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly fromBundle:(BOOL)fromBundle {    
-	
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (nil != moc) {
         
@@ -113,6 +105,11 @@
 
 			NSLog(@"Processing Manager: Found Book in context already"); 
 			
+			if (placeholderOnly) {
+				NSLog(@"Therefore no need to fulfill a placeholderOnly enqueue new book command. Aborting...");
+				return;
+			}
+			
 			aBook = [results objectAtIndex:0];
 			
 			
@@ -125,23 +122,32 @@
 			// create a new book in context from scratch
 //			NSLog(@"Processing Manager: Creating new book"); 
             aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioBook" inManagedObjectContext:moc];
+			[aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
 		}
 		
         [aBook setValue:title forKey:@"title"];
         [aBook setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
         [aBook setValue:sourceSpecificID forKey:@"sourceSpecificID"];
+		
+		if (sourceID == BlioBookSourceOnlineStore) {
+			NSInteger siteNum = [[BlioStoreManager sharedInstance] currentSiteNum];
+			NSInteger userNum = [[BlioStoreManager sharedInstance] currentUserNum];
+			[aBook setValue:[NSNumber numberWithInt:siteNum] forKey:@"siteNum"];
+			[aBook setValue:[NSNumber numberWithInt:userNum] forKey:@"userNum"];
+		}
 		NSString * authorsValue = @"";
 		for (int i = 0; i < [authors count]; i++) {
 			if (i != 0) authorsValue = [authorsValue stringByAppendingString:@"|"];
 			authorsValue = [authorsValue stringByAppendingString:[authors objectAtIndex:i]];
 		}
 		[aBook setValue:authorsValue forKey:@"author"];
-        [aBook setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];        
         if (placeholderOnly) [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed] forKey:@"processingState"];
         else [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
         
 		NSString * locationValue = nil;
-		if (fromBundle) locationValue = BlioManifestEntryLocationBundle;
+		if (sourceID == BlioBookSourceLocalBundle) locationValue = BlioManifestEntryLocationBundle;
+		else if (sourceID == BlioBookSourceFileSharing) locationValue = BlioManifestEntryLocationDocumentsDirectory;
+		else if (sourceID == BlioBookSourceOtherApplications) locationValue = BlioManifestEntryLocationFileSystemOther;
 		else locationValue = BlioManifestEntryLocationWeb;
         if (coverPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
@@ -154,6 +160,8 @@
             [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
             [manifestEntry setValue:ePubPath forKey:BlioManifestEntryPathKey];
             [aBook setManifestValue:manifestEntry forKey:BlioManifestEPubKey];
+			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"ttsRight"]; 
+			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"ttsCapable"]; 
         }
         if (pdfPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
@@ -173,12 +181,12 @@
             [manifestEntry setValue:textFlowPath forKey:BlioManifestEntryPathKey];
             [aBook setManifestValue:manifestEntry forKey:BlioManifestTextFlowKey];
         }
-        if (audiobookPath != nil) {
+		// Obsolete: audiobooks are inside the book.
+		if (audiobookPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
             [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
             [manifestEntry setValue:audiobookPath forKey:BlioManifestEntryPathKey];
             [aBook setManifestValue:manifestEntry forKey:BlioManifestAudiobookKey];
-			[aBook setValue:[NSNumber numberWithBool:YES] forKey:@"hasAudiobook"];
         }
 		
 		if ([aBook valueForKey:@"uuid"] == nil)
@@ -189,6 +197,7 @@
         if (![moc save:&error]) {
             NSLog(@"[BlioProcessingManager enqueueBookWithTitle:] (saving UUID) Save failed with error: %@, %@", error, [error userInfo]);
         }
+	
 		[self enqueueBook:aBook placeholderOnly:placeholderOnly];
 	}
 }
@@ -197,10 +206,10 @@
 }
 
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
-	NSLog(@"BlioProcessingManager enqueueBook: %@ placeholderOnly: %i",aBook, placeholderOnly);
+//	NSLog(@"BlioProcessingManager enqueueBook: %@ placeholderOnly: %i",aBook, placeholderOnly);
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
-    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (moc == nil) {
 		NSLog(@"WARNING: enqueueing book attempted while Processing Manager MOC == nil!");
 		return;
@@ -219,31 +228,32 @@
 			// get XPS URL
 //			NSError * error;
 
-			NSURL * xpsURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:[[aBook valueForKey:@"sourceSpecificID"] intValue] sourceSpecificID:[aBook valueForKey:@"sourceSpecificID"]];
-			if (xpsURL != nil) {
-				NSLog(@"[xpsURL absoluteString]: %@",[xpsURL absoluteString]);
+//			NSURL * xpsURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:[[aBook valueForKey:@"sourceSpecificID"] intValue] sourceSpecificID:[aBook valueForKey:@"sourceSpecificID"]];
+//			if (xpsURL != nil) {
+//				NSLog(@"[xpsURL absoluteString]: %@",[xpsURL absoluteString]);
 //				[aBook setValue:[xpsURL absoluteString] forKey:BlioManifestXPSKey];
 //				if (![moc save:&error]) {
 //					NSLog(@"Save failed for xps filename in processing manager with error: %@, %@", error, [error userInfo]);
 //				}				
-			}
+//			}
 
 		}		
 	}
-
+//	NSLog(@"processingState before: %i",[[aBook valueForKey:@"processingState"] intValue]);
+	[moc refreshObject:aBook mergeChanges:YES];
+//	NSLog(@"processingState after: %i",[[aBook valueForKey:@"processingState"] intValue]);
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		NSLog(@"WARNING: enqueue method called on already complete book!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
 		return;
 	}
-	if (![[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed && placeholderOnly) {
+	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed && placeholderOnly) {
 		NSLog(@"WARNING: enqueue method with placeholderOnly called on a book that is in a state other than NotProcessed!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
 		return;			
 	}
 	
-	[moc refreshObject:aBook mergeChanges:YES];
-	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateIncomplete && [[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed) {
+	if ([[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateIncomplete && [[aBook valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed && !placeholderOnly) {
 		// if book is paused, reflect unpausing in state
 		[aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];			
 		NSError * error;
@@ -303,11 +313,17 @@
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				ePubOp = (BlioProcessingDownloadEPubOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadEPubOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				ePubOp = (BlioProcessingDownloadEPubOperation*)[self operationByClass:[BlioProcessingDownloadEPubOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				
 				if (!ePubOp || ePubOp.isCancelled) // TODO: honor force reprocess option here
 				{
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
+						url = [NSURL fileURLWithPath:stringURL];
+					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+						url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
 						url = [NSURL fileURLWithPath:stringURL];
 					}
 					else url = [NSURL URLWithString:stringURL];				
@@ -384,13 +400,19 @@
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				pdfOp = (BlioProcessingDownloadPdfOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadPdfOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				pdfOp = (BlioProcessingDownloadPdfOperation*)[self operationByClass:[BlioProcessingDownloadPdfOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				
 				if (!pdfOp || pdfOp.isCancelled) {
 					
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
 					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+						url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+						url = [NSURL fileURLWithPath:stringURL];
+					}					
 					else url = [NSURL URLWithString:stringURL];				
 					pdfOp = [[[BlioProcessingDownloadPdfOperation alloc] initWithUrl:url] autorelease];
 					pdfOp.bookID = bookID;
@@ -434,11 +456,17 @@
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				audiobookOp = (BlioProcessingDownloadAudiobookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadAudiobookOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				audiobookOp = (BlioProcessingDownloadAudiobookOperation*)[self operationByClass:[BlioProcessingDownloadAudiobookOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!audiobookOp || audiobookOp.isCancelled) {
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
 					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+						url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+						url = [NSURL fileURLWithPath:stringURL];
+					}					
 					else url = [NSURL URLWithString:stringURL];								
 					audiobookOp = [[[BlioProcessingDownloadAudiobookOperation alloc] initWithUrl:url] autorelease];
 					audiobookOp.bookID = bookID;
@@ -461,6 +489,7 @@
     // non-encrypted XPS books
     manifestLocation = [aBook manifestLocationForKey:BlioManifestXPSKey];
 	if (manifestLocation && (sourceID != BlioBookSourceOnlineStore)) {
+		BlioProcessingDownloadXPSOperation * xpsOp = nil;
 		if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
@@ -468,16 +497,21 @@
 		else {
 			stringURL = [aBook manifestPathForKey:BlioManifestXPSKey];
 			BOOL usedPreExistingOperation = NO;
-			BlioProcessingDownloadXPSOperation * xpsOp = nil;
 			
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadXPSOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				xpsOp = (BlioProcessingDownloadXPSOperation*)[self operationByClass:[BlioProcessingDownloadXPSOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!xpsOp || xpsOp.isCancelled) {
 					if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						url = [NSURL fileURLWithPath:stringURL];
 					}
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+						url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+					}					
+					else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+						url = [NSURL fileURLWithPath:stringURL];
+					}					
 					else url = [NSURL URLWithString:stringURL];	
 					NSLog(@"creating new BlioProcessingDownloadXPSOperation...");
 					xpsOp = [[[BlioProcessingDownloadXPSOperation alloc] initWithUrl:url] autorelease];
@@ -495,13 +529,68 @@
 				}
 				[bookOps addObject:xpsOp];
 			}
-		}	
+		}
+		////////////
+		if (![aBook manifestPreAvailabilityCompleteForKey:BlioManifestXPSKey] && !placeholderOnly) {
+			
+			NSMutableArray * xpsOps = [NSMutableArray array];
+			
+			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			if (!manifestOp || manifestOp.isCancelled) {
+				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
+				manifestOp.bookID = bookID;
+				manifestOp.sourceID = sourceID;
+				manifestOp.sourceSpecificID = sourceSpecificID;
+				manifestOp.cacheDirectory = cacheDir;
+				manifestOp.tempDirectory = tempDir;
+				if (xpsOp) [manifestOp addDependency:xpsOp];
+				[self.preAvailabilityQueue addOperation:manifestOp];
+			} else {
+				if (xpsOp && ![[manifestOp dependencies] containsObject:xpsOp]) [manifestOp addDependency:xpsOp];
+            }
+			[xpsOps addObject:manifestOp];
+			[bookOps addObject:manifestOp];
+			
+			
+			if ([[aBook manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+				alreadyCompletedOperations++;
+				url = nil;
+			} else {
+				[self addCoverOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];
+			}
+			
+			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+				alreadyCompletedOperations++;
+				url = nil;
+			} else {
+				[self addTextFlowOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];                  			
+			}
+			
+			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
+			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+			preAvailabilityCompleteOp.filenameKey = BlioManifestXPSKey;
+			preAvailabilityCompleteOp.bookID = bookID;
+			preAvailabilityCompleteOp.sourceID = sourceID;
+			preAvailabilityCompleteOp.sourceSpecificID = sourceSpecificID;
+			preAvailabilityCompleteOp.cacheDirectory = cacheDir;
+			preAvailabilityCompleteOp.tempDirectory = tempDir;
+			
+			for (BlioProcessingOperation * op in xpsOps) {
+				[preAvailabilityCompleteOp addDependency:op];
+			}
+			[bookOps addObject:preAvailabilityCompleteOp];
+			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];
+			[preAvailabilityCompleteOp release];
+			
+		}
+		
+		
+		///////////
 	}
     
     
 	// paid books only.
-	manifestLocation = [aBook manifestLocationForKey:BlioManifestXPSKey];
-	if (manifestLocation || (sourceID == BlioBookSourceOnlineStore)) {
+    else if (sourceID == BlioBookSourceOnlineStore) { 
 		
 		BOOL usedPreExistingOperation = NO;
 		BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
@@ -515,7 +604,7 @@
 //			if (stringURL != nil) {
 				// we still need to finish downloading this file
 				// so check to see if operation already exists
-				paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadPaidBookOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				paidBookOp = (BlioProcessingDownloadPaidBookOperation*)[self operationByClass:[BlioProcessingDownloadPaidBookOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 				if (!paidBookOp || paidBookOp.isCancelled) {
 					if (manifestLocation && [manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
 						stringURL = [aBook manifestPathForKey:BlioManifestXPSKey];
@@ -544,7 +633,7 @@
 
 			NSMutableArray * xpsOps = [NSMutableArray array];
 
-			BlioProcessingOperation * licenseOp = [self operationByClass:NSClassFromString(@"BlioProcessingLicenseAcquisitionOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			BlioProcessingOperation * licenseOp = [self operationByClass:[BlioProcessingLicenseAcquisitionOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!licenseOp || licenseOp.isCancelled) {
 				
 				
@@ -557,12 +646,12 @@
                 if (paidBookOp) [licenseOp addDependency:paidBookOp];
 				[self.preAvailabilityQueue addOperation:licenseOp];
 			} else {
-                if (paidBookOp) [licenseOp addDependency:paidBookOp];
+				if (paidBookOp && ![[licenseOp dependencies] containsObject:paidBookOp]) [licenseOp addDependency:paidBookOp];
+
             }
 			[xpsOps addObject:licenseOp];
 			[bookOps addObject:licenseOp];
-			
-			BlioProcessingOperation * manifestOp = [self operationByClass:NSClassFromString(@"BlioProcessingXPSManifestOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!manifestOp || manifestOp.isCancelled) {
 				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
 				manifestOp.bookID = bookID;
@@ -573,7 +662,7 @@
                 [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
-                [manifestOp addDependency:licenseOp];
+				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
             }
 			[xpsOps addObject:manifestOp];
 			[bookOps addObject:manifestOp];
@@ -604,6 +693,7 @@
 			
 			for (BlioProcessingOperation * op in xpsOps) {
 				[preAvailabilityCompleteOp addDependency:op];
+				[bookOps addObject:op];
 			}
 			[bookOps addObject:preAvailabilityCompleteOp];
 			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];
@@ -651,6 +741,12 @@
         if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
             url = [NSURL fileURLWithPath:stringURL];
         }
+		else if ([manifestLocation isEqualToString:BlioManifestEntryLocationDocumentsDirectory]) {
+			url = [NSURL fileURLWithPath:[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:stringURL]];
+		}					
+		else if ([manifestLocation isEqualToString:BlioManifestEntryLocationFileSystemOther]) {
+			url = [NSURL fileURLWithPath:stringURL];
+		}		
         else url = [NSURL URLWithString:stringURL];
         coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:url];
         coverOp.bookID = bookID;
@@ -696,7 +792,7 @@
         if (nil != stringURL) {
             // we still need to finish downloading this file
             // so check to see if operation already exists
-            textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:NSClassFromString(@"BlioProcessingDownloadTextFlowOperation") forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+            textFlowOp = (BlioProcessingDownloadTextFlowOperation*)[self operationByClass:[BlioProcessingDownloadTextFlowOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
             if (!textFlowOp || textFlowOp.isCancelled) {
                 if ([manifestLocation isEqualToString:BlioManifestEntryLocationBundle]) {
                     url = [NSURL fileURLWithPath:stringURL];
@@ -725,7 +821,6 @@
     for (BlioProcessingOperation *preAvailOp in textFlowPreAvailOps) {
         BlioProcessingOperation * preExist = [self operationByClass:[preAvailOp class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
         if (!preExist || preExist.isCancelled) {
-            
             preAvailOp.bookID = bookID;
             preAvailOp.sourceID = sourceID;
             preAvailOp.sourceSpecificID = sourceSpecificID;
@@ -739,7 +834,7 @@
         }
         else {
             // if it already exists, it is dependent on a completed operation
-            [bookOps addObject:preExist];
+			[bookOps addObject:preExist];
             [newTextFlowPreAvailOps addObject:preExist];
         }
     }
@@ -773,7 +868,7 @@
 	
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@ || processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete], [NSNumber numberWithInt:kBlioBookProcessingStateFailed]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@ || processingState == %@ || processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed],[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete], [NSNumber numberWithInt:kBlioBookProcessingStateFailed]]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -785,7 +880,12 @@
 		if ([results count] > 0) {
 			NSLog(@"Found non-paused incomplete or failed book results, will resume..."); 
 			for (BlioBook * book in results) {
-				[self enqueueBook:book];
+				if ([[book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+					if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && [[book valueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
+						[self enqueueBook:book];
+					}
+				}
+				else [self enqueueBook:book];
 			}			
 		}
 		else {
@@ -797,18 +897,18 @@
 	// end resume previous processing operations
 }
 -(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook {
-	NSLog(@"BlioProcessingManager reprocessCoverThumbnailsForBook entered");
+//	NSLog(@"BlioProcessingManager reprocessCoverThumbnailsForBook entered");
 	[self addCoverOpToBookOps:nil forBook:aBook manifestLocation:nil withDependency:nil];
 }
 -(void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource {
-	NSLog(@"BlioProcessingManager resumeProcessingForSourceID:%i entered",bookSource);
+//	NSLog(@"BlioProcessingManager resumeProcessingForSourceID:%i entered",bookSource);
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
 	// resume previous processing operations
-	
+	NSInteger userNum = [[BlioStoreManager sharedInstance] currentUserNum];
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@ && userNum == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource],[NSNumber numberWithInt:userNum]]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -834,7 +934,7 @@
 	
 }
 - (void)loginDismissed:(NSNotification*)note {
-	NSLog(@"BlioProcessingManager loginDismissed entered");
+//	NSLog(@"BlioProcessingManager loginDismissed entered");
 	BlioBookSourceID sourceID = [[[note userInfo] valueForKey:@"sourceID"] intValue];
 	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:sourceID]) {
 		[self resumeProcessingForSourceID:sourceID];
@@ -976,11 +1076,47 @@
 //	[[self processingCompleteOperationForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID] cancel];
 	
 	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
-	NSLog(@"Stopping %i operations...",[relatedOperations count]);
+	NSLog(@"Stopping %i operations for sourceSpecificID: %@",[relatedOperations count],aBook.sourceSpecificID);
 	for (BlioProcessingOperation * op in relatedOperations) {
 		NSLog(@"Stopping Operation (%u complete): %@",op.percentageComplete,op);
 		[op cancel];
 	}
+	/*
+	NSLog(@"remaining operations:");
+	for (BlioProcessingOperation * op in [self.preAvailabilityQueue operations]) {
+		NSLog(@"sourceSpecificID: %@ operation: %@",op.sourceSpecificID,op);
+	}
+	*/
+}
+-(void) deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site {
+	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+		
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"userNum == %@ && siteNum == %@ && sourceID == %@", [NSNumber numberWithInt:user],[NSNumber numberWithInt:site],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+    if (errorExecute) {
+        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found %i book results with userNum:%i siteNum:%i, will delete...",[results count],user,site); 
+			for (BlioBook * book in results) {
+				[self deleteBook:book shouldSave:YES];
+			}
+			
+		}
+		else {
+			NSLog(@"No paid book results to delete."); 
+		}
+	}
+    [fetchRequest release];
+	
+	// end resume previous processing operations
+	
 }
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave {
 	// if book is processing, stop all associated operations
@@ -999,15 +1135,14 @@
 	
 	if ([[aBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		// delete all files except the thumbnail so that we can put the book back in the vault.
-		NSString * listThumbnailFilename = [aBook valueForKey:@"listThumbFilename"];
-		NSString * gridThumbnailFilename = [aBook valueForKey:@"gridThumbFilename"];
-		NSString * coverFilename = [aBook valueForKey:BlioManifestCoverKey];
+		NSString * coverFilename = BlioManifestCoverKey;
+		NSString * thumbnailsDirectory = BlioBookThumbnailsDir;
 		if ([fileManager fileExistsAtPath:[aBook bookCacheDirectory]]) {
 			NSError * directoryContentError;
 			NSArray *fileList = [fileManager contentsOfDirectoryAtPath:[aBook bookCacheDirectory] error:&directoryContentError];
 			if (fileList != nil) {
 				for (NSString * fileName in fileList) {
-					if (![fileName isEqualToString:listThumbnailFilename] && ![fileName isEqualToString:gridThumbnailFilename] && ![fileName isEqualToString:coverFilename] && [fileName rangeOfString:@"thumbFilename"].location == NSNotFound) {
+					if (![fileName isEqualToString:coverFilename] && ![fileName isEqualToString:thumbnailsDirectory] && [fileName rangeOfString:BlioBookThumbnailPrefix].location == NSNotFound) {
 						if (![fileManager removeItemAtPath:[[aBook bookCacheDirectory] stringByAppendingPathComponent:fileName] error:&error]) {
 							NSLog(@"WARNING: deletion of asset for paid book failed. %@, %@", error, [error userInfo]);
 						}
@@ -1025,8 +1160,24 @@
 				NSLog(@"ERROR: could not get directory content listing for paid book. %@, %@", directoryContentError, [directoryContentError userInfo]);
 			}
 		}
-		
-		
+		// delete bookmarks and notes
+		if ([aBook valueForKey:@"bookmarks"]) {
+			for (NSManagedObject * obj in [aBook valueForKey:@"bookmarks"]) {	
+				[moc deleteObject:obj];
+			}
+		}
+		if ([aBook valueForKey:@"highlights"]) {
+			for (NSManagedObject * obj in [aBook valueForKey:@"highlights"]) {	
+				[moc deleteObject:obj];
+			}
+		}
+		if ([aBook valueForKey:@"notes"]) {
+			for (NSManagedObject * obj in [aBook valueForKey:@"notes"]) {	
+				[moc deleteObject:obj];
+			}
+		}
+		if ([aBook valueForKey:@"placeInBook"]) [moc deleteObject:[aBook valueForKey:@"placeInBook"]];
+		[aBook setValue:[NSNumber numberWithFloat:0] forKey:@"progress"];
 	}
 	else {
 		// delete permanent files
@@ -1057,7 +1208,6 @@
 			newPosition--;
 			[book setValue:[NSNumber numberWithInt:newPosition] forKey:@"libraryPosition"];
 		}
-		// TODO: make sure all the relationships in the object graph have the appropriate delete rules set.
 		
 		// delete record. N.B.: this needs to happen after the re-ordering, as the update changeObject events for the re-ordering to the fetchedController delegate should happen after the delete event.
 		[moc deleteObject:aBook];
@@ -1069,9 +1219,9 @@
 		}		
 	}
 }
-- (void)stopDownloadingOperations {
-	NSArray * downloadOperations = [self downloadOperations];
-	for (BlioProcessingOperation * op in downloadOperations) {
+- (void)stopInternetOperations {
+	NSArray * internetOperations = [self internetOperations];
+	for (BlioProcessingOperation * op in internetOperations) {
 		[op cancel];
 	}
 	// any processing operations that are dependent on these downloads will also cancel (as intended).
@@ -1107,11 +1257,22 @@
 	return nil;
 	
 }
-- (NSArray *)downloadOperations {
+- (BlioProcessingDownloadOperation*) incompleteDownloadOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+	// helper function to search for such an operation that meets the conditions in the parameters
+	NSArray * operations = [preAvailabilityQueue operations];
+	for (BlioProcessingOperation * op in operations) {
+		if ([op isKindOfClass:[BlioProcessingDownloadOperation class]] && op.sourceID == sourceID && [op.sourceSpecificID isEqualToString:sourceSpecificID] && op.percentageComplete != 100) {
+			return (BlioProcessingDownloadOperation*)op;
+		}
+	}
+	return nil;
+	
+}
+- (NSArray *)internetOperations {
 	NSArray * operations = [preAvailabilityQueue operations];
 	NSMutableArray * tempArray = [NSMutableArray array];
 	for (BlioProcessingOperation * op in operations) {
-		if ([op isKindOfClass:[BlioProcessingDownloadOperation class]]) {
+		if ([op isKindOfClass:[BlioProcessingDownloadOperation class]] || [op isKindOfClass:[BlioProcessingLicenseAcquisitionOperation class]]) {
 			[tempArray addObject:op];
 		}
 	}

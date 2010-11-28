@@ -11,13 +11,15 @@
 
 @implementation BlioStoreHelper
 
-@synthesize delegate, timeout, username, token, isLoggedIn, sourceID, storeTitle;
+@synthesize delegate, timeout, token, sourceID, storeTitle, siteID, siteKey, userNum, isRetrievingBooks,downloadNewBooks;
 
 -(void) dealloc {
+	if (currentUsername) [currentUsername release];
+	if (currentPassword) [currentPassword release];
 	self.token = nil;
 	self.timeout = nil;
-	self.username = nil;
 	self.storeTitle = nil;
+	self.siteKey = nil;
 	[super dealloc];
 }
 
@@ -33,12 +35,23 @@
 	// abstract method	
 	return NO;
 }
+-(BOOL)isLoggedIn {
+	return [self hasValidToken];
+}
+-(NSString*)username {
+	if ([self isLoggedIn]) return currentUsername;
+	else return nil;
+}
 -(BlioDeviceRegisteredStatus)deviceRegistered {
 	// abstract method	
 	return BlioDeviceRegisteredStatusUndefined;
 }
--(void)setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
+-(BOOL) setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)targetStatus {
+	return NO;
+}
+-(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
 	// abstract method	
+	return NO;
 }
 -(void)retrieveBooks {
 	// abstract method	

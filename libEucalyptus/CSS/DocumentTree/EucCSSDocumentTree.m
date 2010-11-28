@@ -102,13 +102,16 @@ static css_error EucCSSDocumentTreeNamedAncestorNode(void *pw, void *node, lwc_s
     id<EucCSSDocumentTree> tree = (id<EucCSSDocumentTree>)pw;
     uint32_t key = (uint32_t)((intptr_t)node);
     
-    NSString *nsName = [NSString stringWithLWCString:name];
+    NSString *nsName = [[NSString alloc] initWithLWCString:name];
+    
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
     NSString *treeNodeName;
     do {
         treeNode = treeNode.parent;
         treeNodeName = treeNode.name;
     } while(treeNode && (!treeNodeName || ([treeNodeName caseInsensitiveCompare:nsName] != NSOrderedSame)));
+    
+    [nsName release];
     
     if(treeNode) {
         *ancestor = (void *)((intptr_t)treeNode.key);
@@ -135,12 +138,15 @@ static css_error EucCSSDocumentTreeNamedParentNode(void *pw, void *node, lwc_str
     uint32_t key = (uint32_t)((intptr_t)node);
     
     id<EucCSSDocumentTreeNode> parentNode = [tree nodeForKey:key].parent;
+    NSString *nsName = [[NSString alloc] initWithLWCString:name];
     
-    if(parentNode && ([[NSString stringWithLWCString:name] caseInsensitiveCompare:parentNode.name] == NSOrderedSame)) {
+    if(parentNode && ([nsName caseInsensitiveCompare:parentNode.name] == NSOrderedSame)) {
         *parent = (void *)((intptr_t)parentNode.key);
     } else {
         *parent = NULL;
     }
+    
+    [nsName release];
     
     return CSS_OK;
 }
@@ -172,9 +178,13 @@ static css_error EucCSSDocumentTreeNamedSiblingNode(void *pw, void *node, lwc_st
 
         id<EucCSSDocumentTreeNode> previousSiblingNode = [tree nodeForKey:(uint32_t)((intptr_t)(*sibling))];
         
-        if([[NSString stringWithLWCString:name] caseInsensitiveCompare:previousSiblingNode.name] != NSOrderedSame) {
+        NSString *nsName = [[NSString alloc] initWithLWCString:name];
+
+        if([nsName caseInsensitiveCompare:previousSiblingNode.name] != NSOrderedSame) {
             *sibling = NULL;
         }
+        
+        [nsName release];
     }
     
     return CSS_OK;    
@@ -187,7 +197,9 @@ static css_error EucCSSDocumentTreeNodeHasName(void *pw, void *node, lwc_string 
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
 
     NSString *treeNodeName = treeNode.name;
-    *match = (treeNodeName != nil && [treeNodeName caseInsensitiveCompare:[NSString stringWithLWCString:name]] == NSOrderedSame);
+    NSString *nsName = [[NSString alloc] initWithLWCString:name];
+    *match = (treeNodeName != nil && [treeNodeName caseInsensitiveCompare:nsName] == NSOrderedSame);
+    [nsName release];
     
     return CSS_OK;        
 }
@@ -216,8 +228,10 @@ static css_error EucCSSDocumentTreeNodeHasID(void *pw, void *node, lwc_string *n
     uint32_t key = (uint32_t)((intptr_t)node);
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
     
+    NSString *nsName = [[NSString alloc] initWithLWCString:name];
     NSString *identifier = [treeNode attributeWithName:@"id"];
-    *match = (identifier && [identifier caseInsensitiveCompare:[NSString stringWithLWCString:name]] == NSOrderedSame);
+    *match = (identifier && [identifier caseInsensitiveCompare:nsName] == NSOrderedSame);
+    [nsName release];
     
     return CSS_OK;        
 }
@@ -228,7 +242,9 @@ static css_error EucCSSDocumentTreeNodeHasAttribute(void *pw, void *node, lwc_st
     uint32_t key = (uint32_t)((intptr_t)node);
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
     
-    *match = [treeNode attributeWithName:[NSString stringWithLWCString:name]] != nil;
+    NSString *nsName = [[NSString alloc] initWithLWCString:name];
+    *match = [treeNode attributeWithName:nsName] != nil;
+    [nsName release];
     
     return CSS_OK;        
 }
@@ -238,9 +254,17 @@ static css_error EucCSSDocumentTreeNodeHasAttributeEqual(void *pw, void *node, l
     id<EucCSSDocumentTree> tree = (id<EucCSSDocumentTree>)pw;
     uint32_t key = (uint32_t)((intptr_t)node);
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
-    
-    NSString *nsAttributeValue = [treeNode attributeWithName:[NSString stringWithLWCString:name]];
-    *match = nsAttributeValue != nil && ([nsAttributeValue caseInsensitiveCompare:[NSString stringWithLWCString:value]] == NSOrderedSame);
+        
+    NSString *nsName = [[NSString alloc] initWithLWCString:name];
+    NSString *nsAttributeValue = [treeNode attributeWithName:nsName];
+    if(nsAttributeValue) {
+        NSString *nsValue = [[NSString alloc] initWithLWCString:value];
+        *match = [nsAttributeValue caseInsensitiveCompare:nsValue] == NSOrderedSame;
+        [nsValue release];
+    } else {
+        *match = false;
+    }
+    [nsName release];
     
     return CSS_OK;        
 }
@@ -251,9 +275,10 @@ static css_error EucCSSDocumentTreeNodeHasAttributeDashmatch(void *pw, void *nod
     uint32_t key = (uint32_t)((intptr_t)node);
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
     
-    NSString *attributeValue = [treeNode attributeWithName:[NSString stringWithLWCString:name]];
+    NSString *nsName = [[NSString alloc] initWithLWCString:name];
+    NSString *attributeValue = [treeNode attributeWithName:nsName];
     if(attributeValue) {
-        NSString *valueToMatch = [NSString stringWithLWCString:value];
+        NSString *valueToMatch = [[NSString alloc] initWithLWCString:value];
         if([attributeValue hasPrefix:valueToMatch]) {
             NSUInteger valueToMatchLength = valueToMatch.length;
             if(attributeValue.length > valueToMatch.length) {
@@ -262,9 +287,11 @@ static css_error EucCSSDocumentTreeNodeHasAttributeDashmatch(void *pw, void *nod
                 *match = true;
             }
         }
+        [valueToMatch release];
     } else {
         *match = false;
     }
+    [nsName release];
     
     return CSS_OK;        
 }
@@ -275,7 +302,8 @@ static css_error EucCSSDocumentTreeNodeHasAttributeIncludes(void *pw, void *node
     uint32_t key = (uint32_t)((intptr_t)node);
     id<EucCSSDocumentTreeNode> treeNode = [tree nodeForKey:key];
     
-    NSString *attributeValue = [treeNode attributeWithName:[NSString stringWithLWCString:name]];
+    NSString *nsName = [[NSString alloc] initWithLWCString:name];
+    NSString *attributeValue = [treeNode attributeWithName:nsName];
     if(attributeValue) {        
         const char *utf8AttibuteValue = [attributeValue UTF8String];        
         *match = _StringContainsElement(utf8AttibuteValue, strlen(utf8AttibuteValue),
@@ -283,6 +311,7 @@ static css_error EucCSSDocumentTreeNodeHasAttributeIncludes(void *pw, void *node
     } else {
         *match = false;
     }
+    [nsName release];
     
     return CSS_OK;        
 }

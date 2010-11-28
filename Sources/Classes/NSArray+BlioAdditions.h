@@ -11,5 +11,6 @@
 @interface NSArray (BlioAdditions)
 
 - (NSArray *)blioStableSortedArrayUsingFunction:(int (*)(id *arg1, id *arg2))function;
+- (id)longestComponentizedMatch:(NSString *)match componentsSeperatedByString:(NSString *)separator forKeyPath:(NSString *)keyPath;
 
 @end

@@ -14,6 +14,7 @@
 #import "BlioStoreWebsiteViewController.h"
 #import "BlioStoreFreeBooksViewController.h"
 #import "BlioStoreBookViewController.h"
+#import "BlioGetBooksImportViewController.h"
 
 #import "BlioSplitViewController.h"
 
@@ -161,9 +162,16 @@
         UINavigationController* nc5 = [[UINavigationController alloc] initWithRootViewController:vc5];
         [vc5.navigationItem setRightBarButtonItem:aDoneButton];
         [vc5 release];
-        
+
+		BlioGetBooksImportViewController* importViewController = [[BlioGetBooksImportViewController alloc] init];
+		importViewController.processingDelegate = self.processingDelegate;
+        UINavigationController* wrappedImportViewController = [[UINavigationController alloc] initWithRootViewController:importViewController];
+        [importViewController.navigationItem setRightBarButtonItem:aDoneButton];
+        [importViewController release];
 		
-        NSArray* controllers = [NSArray arrayWithObjects:nc5, freeBooksViewController, nc4, nil];
+		
+//        NSArray* controllers = [NSArray arrayWithObjects:nc5, freeBooksViewController, nc4, wrappedImportViewController, nil];
+        NSArray* controllers = [NSArray arrayWithObjects:nc5, nc4, wrappedImportViewController, nil];
         self.viewControllers = controllers;
         
         [nc1 release];
@@ -171,7 +179,7 @@
 //        [nc3 release];
         [nc4 release];
         [nc5 release];
-        
+        [wrappedImportViewController release];
         [aDoneButton release];
     }
     return self;

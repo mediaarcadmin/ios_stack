@@ -27,7 +27,7 @@
 {
     UILabel *label = [[[UILabel alloc] initWithFrame:frame] autorelease];
     
-	label.textAlignment = UITextAlignmentLeft;
+	label.textAlignment = UITextAlignmentCenter;
     label.text = title;
 	label.adjustsFontSizeToFitWidth = YES;
 	label.numberOfLines = 0;
@@ -50,7 +50,7 @@
 		// Display instructions for website.
 		CGFloat yPlacement = kTopMargin;
 		CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
-		[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Vault for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.")]];
+		[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Archive for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.")]];
 		
 		// blioreader.com button.
 		yPlacement += kTweenMargin + 5*kLabelHeight;
@@ -103,6 +103,7 @@
 		explanationFrame.size.height = explanationSize.height;
 		explanationLabel.frame = explanationFrame;
 		explanationLabel.text = explanationText;
+		explanationLabel.textAlignment = UITextAlignmentCenter;
 		
 		// blioreader.com button.
 		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -117,19 +118,24 @@
 }
 
 - (void)launchWebsite:(id)sender {	
+	// Open question whether we will go to a single top-level URL here for both iphone and ipad.
+//	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		UIButton* ctl = (UIButton*)sender;
+		if ( ctl == launchButton ) {
+//			NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
+			NSURL* url = [[NSURL alloc] initWithString:@"http://bliodemo.crosscomm.net"];
+			
+			[[UIApplication sharedApplication] openURL:url];			  
+		}
+//	}
 	// TODO: take out this beta alert below!
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
-								 message:NSLocalizedStringWithDefaultValue(@"BETA_MOBILE_STORE_NOT_AVAILABLE",nil,[NSBundle mainBundle],@"The Blio Book Store is not available for this beta release.",@"Alert Text informing the end-user that the Blio Book Store is not available for this beta release.")
-								delegate:nil 
-					   cancelButtonTitle:@"OK"
-					   otherButtonTitles:nil];
-	return;
-	
-	UIButton* ctl = (UIButton*)sender;
-	if ( ctl == launchButton ) {
-		NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
-		[[UIApplication sharedApplication] openURL:url];			  
-	}
+//	else {
+//		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+//								 message:NSLocalizedStringWithDefaultValue(@"BETA_MOBILE_STORE_NOT_AVAILABLE",nil,[NSBundle mainBundle],@"The Blio Book Store cannot be accessed through this link during the beta testing period.",@"Alert Text informing the end-user that the Blio Book Store is not available for this beta release.")
+//								delegate:nil 
+//					   cancelButtonTitle:@"OK"
+//					   otherButtonTitles:nil];
+//	}
 }
 
 // Override to allow orientations other than the default portrait orientation.

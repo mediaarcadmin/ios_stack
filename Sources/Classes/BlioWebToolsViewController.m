@@ -23,12 +23,13 @@
     UIViewController *aVC = [[UIViewController alloc] init];
     aVC.view = aWebView;
 	
-	UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
-	[activityIndicator setCenter:CGPointMake(160.0f, 208.0f)];
-    [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-	activityIndicator.tag = ACTIVITY_INDICATOR;
-    [aWebView addSubview:activityIndicator];
-	[activityIndicator release];
+	activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
+	
+	CGRect screenBounds = [[UIScreen mainScreen] bounds];
+	activityIndicatorView.center = CGPointMake(screenBounds.size.width/2, screenBounds.size.height/2);
+	[activityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+	activityIndicatorView.tag = ACTIVITY_INDICATOR;
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 	
 	aWebView.delegate = self;
 	
@@ -78,7 +79,11 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:YES];
+	} else {
+		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
+	}
     
     if (statusBarHiddenOnEntry) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
@@ -90,13 +95,12 @@
 	}
 }
     
-/*
-// Override to allow orientations other than the default portrait orientation.
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+    return YES;
 }
-*/
+
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -112,19 +116,19 @@
 
 
 - (void)dealloc {
+	[activityIndicatorView removeFromSuperview];	
+	[activityIndicatorView release];
     [super dealloc];
 }
 
 
 
 -(void)webViewDidStartLoad:(UIWebView*)webView {
-	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
-	[activityIndicator startAnimating];
+	[activityIndicatorView startAnimating];
 }
 
 -(void)webViewDidFinishLoad:(UIWebView*)webView {
-	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
-	[activityIndicator stopAnimating];
+	[activityIndicatorView stopAnimating];
 	// Update navigation buttons
 	if ( [(UIWebView*)self.topViewController.view canGoBack] ) 
 		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
@@ -148,8 +152,7 @@
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
-	[activityIndicator stopAnimating];
+	[activityIndicatorView stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
 	NSLog(@"Error loading web page: %@",errorMsg);
 	[BlioAlertManager showAlertWithTitle:@""

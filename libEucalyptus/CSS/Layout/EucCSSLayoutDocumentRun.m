@@ -25,6 +25,7 @@
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 #import "EucCSSIntermediateDocumentNode.h"
+#import "EucCSSDocumentTreeNode.h"
 #import "THStringRenderer.h"
 #import "THNSStringSmartQuotes.h"
 #import "THPair.h"
@@ -35,6 +36,7 @@
 
 #import <libcss/libcss.h>
 #import <pthread.h>
+#import <objc/runtime.h>
 
 typedef struct EucCSSLayoutDocumentRunBreakInfo {
     EucCSSLayoutDocumentRunPoint point;
@@ -64,17 +66,8 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 @synthesize nextNodeInDocument = _nextNodeInDocument;
 @synthesize scaleFactor = _scaleFactor;
 
-pthread_mutex_t sCachedRunsMutex = PTHREAD_MUTEX_INITIALIZER;
-static NSInteger sCachedRunsCount = 0;
-static const NSInteger sCachedRunsCapacity = 1024;
-EucCSSLayoutDocumentRun **sCachedRuns = NULL;
-
-+ (void)initialize
-{
-    if(self == [EucCSSLayoutDocumentRun class]) {
-        sCachedRuns = (EucCSSLayoutDocumentRun **)malloc(sCachedRunsCapacity * sizeof(EucCSSLayoutDocumentRun *));
-    }
-}
+#define RUN_CACHE_CAPACITY 48
+static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey";
 
 + (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
            underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
@@ -83,61 +76,41 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
 {
     EucCSSLayoutDocumentRun *ret = nil;
     
-    pthread_mutex_lock(&sCachedRunsMutex);
-    for(NSInteger i = sCachedRunsCount - 1; i >= 0; --i) {
-        EucCSSLayoutDocumentRun *cachedRun = sCachedRuns[i];
-        if(cachedRun->_scaleFactor == scaleFactor &&
-           cachedRun->_id == id &&
-           cachedRun->_startNode.key == inlineNode.key &&
-           cachedRun->_underNode.key == underNode.key &&
-           cachedRun->_startNode.document == inlineNode.document) {
-            ret = [cachedRun autorelease];
-            
-            size_t toMove = sCachedRunsCount - i - 1;
-            if(toMove) {
-                memmove(sCachedRuns + i, sCachedRuns + i + 1, toMove * sizeof(EucCSSLayoutDocumentRun *));
-            } 
-            sCachedRunsCount--;
-            
-            //THLog(@"Reusing at index: %ld", (long)i);
-            
-            break;
+    EucCSSIntermediateDocument *document = inlineNode.document;
+    @synchronized(document) {
+        NSMutableArray *cachedRuns = objc_getAssociatedObject(document, EucCSSDocumentRunCacheKey);
+        if(!cachedRuns) {
+            cachedRuns = [[NSMutableArray alloc] initWithCapacity:RUN_CACHE_CAPACITY];
+            objc_setAssociatedObject(document, EucCSSDocumentRunCacheKey, cachedRuns, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            [cachedRuns release];
         }
-    }
-    
-    if(!ret) {
-        /*THLog(@"Creating run for document %p, node %ld, under %ld, id %ld, scaleFactor %f",
-              inlineNode.document,
-              (uint32_t)inlineNode.key,
-              (uint32_t)underNode.key,
-              (uint32_t)id,
-              scaleFactor);*/
-        
-        ret = [[[self class] alloc] initWithNode:inlineNode
-                                  underLimitNode:underNode 
-                                           forId:id 
-                                     scaleFactor:scaleFactor];
-        [ret autorelease];
-    } /*else {
-        THLog(@"Reusing run for document %p, node %ld, under %ld, id %ld, scaleFactor %f",
-              inlineNode.document,
-              (uint32_t)inlineNode.key,
-              (uint32_t)underNode.key,
-              (uint32_t)id,
-              scaleFactor);        
-    }*/
-    
-    if(ret) {
-        if(sCachedRunsCount == sCachedRunsCapacity) {
-            [sCachedRuns[0] release];
-            memmove(sCachedRuns, sCachedRuns + 1, sizeof(EucCSSLayoutDocumentRun *) * (sCachedRunsCapacity - 1));
-            --sCachedRunsCount;
+        for(EucCSSLayoutDocumentRun *cachedRun in [cachedRuns reverseObjectEnumerator]) {
+            if(cachedRun->_scaleFactor == scaleFactor &&
+               cachedRun->_id == id &&
+               cachedRun->_startNode.key == inlineNode.key &&
+               cachedRun->_underNode.key == underNode.key) {
+                ret = cachedRun;
+                break;
+            }
         }
-        sCachedRuns[sCachedRunsCount++] = [ret retain];
+        if(ret) {
+            [ret retain];
+            [cachedRuns removeObject:ret];
+            // We'll add it again at the end to keep the last-used
+            // eviction working.
+        }
+        if(!ret) {
+            ret = [[[self class] alloc] initWithNode:inlineNode
+                                      underLimitNode:underNode 
+                                               forId:id 
+                                         scaleFactor:scaleFactor];
+        }
+        if(cachedRuns.count == RUN_CACHE_CAPACITY) {
+            [cachedRuns removeObjectAtIndex:0];
+        }
+        [cachedRuns addObject:ret];
+        [ret release];
     }
-    
-    pthread_mutex_unlock(&sCachedRunsMutex);
-    
     return ret;
 }
         
@@ -153,8 +126,17 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         
         _scaleFactor = scaleFactor;
         
+        
         _startNode = [inlineNode retain];
         _underNode = [underNode retain];
+        
+        // Retain this, because we're retaining nodes, but nodes don't retain
+        // their documents.
+        // No need to do this - noone should be using the rund after the 
+        // document's gone.
+        //_document = [_startNode.document retain];        
+        _document = _startNode.document;        
+        
         css_computed_style *inlineNodeStyle = inlineNode.computedStyle;
         
         // _wordToComponent is 1-indexed for words - word '0' is the start of 
@@ -200,9 +182,17 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                 while(inlineNode != nextNodeParent && 
                       inlineNode != underNode) {
                     if(!inlineNode.isTextNode && 
-                       !inlineNode.isImageNode && 
+                       !inlineNode.isImageNode &&
                        (!inlineNodeStyle || css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE)) {
-                        [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
+                        // If the node /doesn't/ have children, it's already closed,
+                        // above.
+                        if(currentComponentInfo.documentNode != inlineNode) {
+                            // We can close nodes that we didn't start if we're in
+                            // an inline node with block nodes within it, so we
+                            // need to populate this if we didn't above (usually,
+                            // it's populated on node open).
+                            [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
+                        }
                         currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
                         [self _addComponent:&currentComponentInfo];
                     }                    
@@ -258,6 +248,9 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     [_nextNodeInDocument release];
 
     [_sizeDependentComponentIndexes release];
+    
+    // See comments in init.
+    //[_document release];
     
     [_sharedHyphenator release];
     
@@ -662,6 +655,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                         // No break - fall through.
                     case 0x0009: // tab
                     case 0x0020: // Space
+                    case 0x00A0: // Non-breaking Space
                         if(!_previousInlineCharacterWasSpace) {
                             if(wordStart != cursor) {
                                 CFIndex wordLength = cursor - wordStart;
@@ -670,7 +664,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                                                                                   wordLength);
                                 if(string) {
                                     if(wordNeedsSmartQuotes) {
-                                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotes];
+                                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotesWithPreviousCharacter:_characterBeforeWord];
                                         CFRelease(string);
                                         string = (CFStringRef)[smartQuoted retain];
                                         wordNeedsSmartQuotes = NO;
@@ -702,7 +696,15 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                                     CFRelease(string);
                                 }
                             }
-                            _previousInlineCharacterWasSpace = YES;
+                            if(ch == 0x00A0) {
+                                EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
+                                info.kind = EucCSSLayoutDocumentRunComponentKindNonbreakingSpace;
+                                [self _addComponent:&info];
+                                wordStart = cursor + 1;
+                            } else {
+                                _previousInlineCharacterWasSpace = YES;
+                            }
+                            _characterBeforeWord = ' ';
                         }
                         if(whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
                            whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP ||
@@ -757,7 +759,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                                                                   cursor - wordStart);
                 if(string) {
                     if(wordNeedsSmartQuotes) {
-                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotes];
+                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotesWithPreviousCharacter:_characterBeforeWord];
                         CFRelease(string);
                         string = (CFStringRef)[smartQuoted retain];
                         wordNeedsSmartQuotes = NO;
@@ -777,6 +779,8 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
                     _alreadyInsertedSpace = YES;
                 }
             }
+            
+            _characterBeforeWord = *(cursor - 1);
             
             if(charactersToFree) {
                 free(charactersToFree);
@@ -819,13 +823,14 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
             EucCSSLayoutDocumentRunComponentInfo componentInfo = _componentInfos[i];
             switch(componentInfo.kind) {
                 case EucCSSLayoutDocumentRunComponentKindSpace:
+                case EucCSSLayoutDocumentRunComponentKindNonbreakingSpace:
                     {
                         if(whiteSpaceModel != CSS_WHITE_SPACE_PRE && 
                            whiteSpaceModel != CSS_WHITE_SPACE_NOWRAP) {
                             breaks[breaksCount].x0 = lineSoFarWidth;
                             lineSoFarWidth += _componentInfos[i].width;
                             breaks[breaksCount].x1 = lineSoFarWidth;
-                            breaks[breaksCount].penalty = 0;
+                            breaks[breaksCount].penalty = componentInfo.kind == EucCSSLayoutDocumentRunComponentKindNonbreakingSpace ? 1024 : 0;
                             breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
                             breakInfos[breaksCount].point = _componentInfos[i].point;
                             breakInfos[breaksCount].consumesComponent = YES;
@@ -950,11 +955,16 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         size_t startBreakOffset = 0;
         for(;;) {
             EucCSSLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
-            if(point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset)) {
+            if(startBreakOffset < _potentialBreaksCount && 
+               (point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset))) {
                 ++startBreakOffset;
             } else {
                 break;
             }
+        }        
+        
+        if(startBreakOffset >= _potentialBreaksCount) {
+            return nil;
         }        
         
         CGFloat indentationOffset;
@@ -974,6 +984,7 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
         }
         
         int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
+                
         int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
         int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, thisLineWidth, 0, usedBreakIndexes);
 
@@ -1137,6 +1148,41 @@ EucCSSLayoutDocumentRun **sCachedRuns = NULL;
     }
     
     return words;
+}
+
+- (NSArray *)attributeValuesForWordsForAttributeName:(NSString *)attributeName
+{
+    NSUInteger wordsCount = _wordsCount;
+    NSMutableArray *attributeValues = [NSMutableArray arrayWithCapacity:wordsCount];
+    
+    EucCSSIntermediateDocumentNode *lastDocumentNode = nil;
+    NSString *lastAttribute = nil;
+    for(NSUInteger i = 0; i < wordsCount; ++i) {
+        NSString *attribute = lastAttribute;
+        EucCSSIntermediateDocumentNode *documentNode = (id)_componentInfos[_wordToComponent[i + 1]].documentNode;
+        if(documentNode != lastDocumentNode) {
+            BOOL found = NO;
+            EucCSSIntermediateDocumentNode *containingNode = documentNode;
+            do {
+                EucCSSIntermediateDocumentNode *containingNode = documentNode.parent;
+                if([containingNode respondsToSelector:@selector(documentTreeNode)]) {
+                    NSString *newAttribute =  [(id <EucCSSDocumentTreeNode>)[containingNode performSelector:@selector(documentTreeNode)] attributeWithName:attributeName];
+                    if(newAttribute) {
+                        if(![newAttribute isEqualToString:attribute]) {
+                            lastAttribute = newAttribute;
+                            attribute = newAttribute;
+                        }
+                        found = YES;
+                    }
+                }
+            } while(containingNode && !found);
+        
+            lastDocumentNode = documentNode;
+        }
+        [attributeValues addObject:attribute ?: @""];
+    }
+    
+    return attributeValues;    
 }
 
 @end

@@ -31,7 +31,7 @@
 
 @class BlioContentsTabContentsViewController, BlioContentsTabBookmarksViewController, BlioContentsTabNotesViewController;
 
-@interface BlioContentsTabViewController : UINavigationController <EucBookContentsTableViewControllerDelegate> {
+@interface BlioContentsTabViewController : UINavigationController <EucBookContentsTableViewControllerDelegate, UIPopoverControllerDelegate> {
     BlioContentsTabContentsViewController *contentsController;
     BlioContentsTabBookmarksViewController *bookmarksController;
     BlioContentsTabNotesViewController *notesController;
@@ -40,6 +40,8 @@
     UIBarButtonItem *doneButton;
     BlioBook *book;
     UISegmentedControl *tabSegment;
+    UIPopoverController *popoverController;
+	BOOL isTOCActive;
 }
 
 @property (nonatomic, retain) BlioContentsTabContentsViewController *contentsController;
@@ -50,6 +52,7 @@
 @property (nonatomic, retain) UIBarButtonItem *doneButton;
 @property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, retain) UISegmentedControl *tabSegment;
+@property (nonatomic, assign) UIPopoverController *popoverController;
 
 - (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook;
 

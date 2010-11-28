@@ -16,6 +16,7 @@
 @synthesize subTitle = _subTitle;
 @synthesize pageNumber = _pageNumber;
 @synthesize textColor = _textColor;
+@synthesize indentationWidth = _indentationWidth;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -23,6 +24,7 @@
         self.opaque = YES;
         self.clearsContextBeforeDrawing = YES;
         self.backgroundColor = [UIColor whiteColor];
+		self.contentMode = UIViewContentModeRedraw;
     }
     return self;
 }
@@ -37,7 +39,10 @@
 }
 
 
-+ (CGFloat)heightForWidth:(CGFloat)width withName:(NSString *)name subTitle:(NSString *)subTitle pageNumber:(NSString *)pageNumber
++ (CGFloat)heightForWidth:(CGFloat)width 
+                 withName:(NSString *)name 
+                 subTitle:(NSString *)subTitle 
+               pageNumber:(NSString *)pageNumber
 {    
     CGSize pageNumberSize = CGSizeZero;
     CGSize minimumDotsSize = CGSizeZero;
@@ -101,10 +106,10 @@
     }
     
     minimumDotsSize = [@"." sizeWithFont:nameFont];
-    CGSize constraintSize = CGSizeMake(bounds.size.width - pageNumberSize.width - minimumDotsSize.width, CGFLOAT_MAX);
+    CGSize constraintSize = CGSizeMake(bounds.size.width - pageNumberSize.width - minimumDotsSize.width - _indentationWidth, CGFLOAT_MAX);
     CGSize stringSize = [_name sizeWithFont:nameFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap]; 
     
-    [_name drawInRect:CGRectMake(0, 0, stringSize.width, stringSize.height) 
+    [_name drawInRect:CGRectMake(_indentationWidth, 0, stringSize.width, stringSize.height) 
              withFont:nameFont
         lineBreakMode:UILineBreakModeWordWrap]; 
     
@@ -113,7 +118,7 @@
     if(_subTitle) {
         subTitleFont = [UIFont boldSystemFontOfSize:FONT_SIZE * (2.0f/3.0f)];
         subTitleSize = [_subTitle sizeWithFont:subTitleFont constrainedToSize:constraintSize lineBreakMode:UILineBreakModeWordWrap]; 
-        [_subTitle drawInRect:CGRectMake(0, stringSize.height, subTitleSize.width, subTitleSize.height)
+        [_subTitle drawInRect:CGRectMake(_indentationWidth, stringSize.height, subTitleSize.width, subTitleSize.height)
                      withFont:subTitleFont 
                 lineBreakMode:UILineBreakModeWordWrap];
     }

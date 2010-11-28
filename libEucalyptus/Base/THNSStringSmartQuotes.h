@@ -11,6 +11,7 @@
 
 @interface NSString (THNSStringSmartQuotes)
 
+- (NSString *)stringWithSmartQuotesWithPreviousCharacter:(UniChar)previousCaracterIn;
 - (NSString *)stringWithSmartQuotes;
 
 @end

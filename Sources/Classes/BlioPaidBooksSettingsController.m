@@ -26,11 +26,11 @@
 	if (self)
 	{
 		self.title = NSLocalizedString(@"Device Registration",@"\"Device Registration\" view controller title.");
-//#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-//		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-//			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
-//		}
-//#endif
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
+		}
+#endif
 	}
 	return self;
 }
@@ -53,6 +53,15 @@
 	activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
 	[activityIndicator setCenter:CGPointMake(300.0f, 20.0f)];
 	[self.navigationController.navigationBar addSubview:activityIndicator];
+}
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+	[self.tableView reloadData];
+	
+	CGFloat viewHeight = self.tableView.contentSize.height;
+	if (viewHeight > 600) viewHeight = 600;
+	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);	
+	
 }
 
 /*
@@ -84,8 +93,8 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
         return NO;
-    else
-        return YES;
+    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+	return YES;
 }
 
 #pragma mark UITableViewDataSource Methods
@@ -100,7 +109,7 @@
 	return 1;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
 	NSString *title = nil;
 	switch (section)
@@ -137,39 +146,40 @@
 	cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 	if (cell == nil) {
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+		switch (indexPath.section)
+		{
+			case 0:
+			{
+				cell.textLabel.text = NSLocalizedString(@"Registration","\"Registration\" cell label");
+				UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(cell.contentView.bounds.size.width - 80.0f - 35.0f, 9.0f, 80.0f, 28.0f)];
+				switchView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+				[switchView setTag:997];
+				[cell addSubview:switchView];
+				if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered ) {
+					[switchView setOn:YES animated:NO];
+					self.registrationOn = YES;
+				}
+				else {
+					[switchView setOn:NO animated:NO];
+					self.registrationOn = NO;
+				}
+				[switchView addTarget:self action:@selector(changeRegistration:) forControlEvents:UIControlEventValueChanged];
+				[switchView release];
+				break;
+			}
+				//case 1:
+				//{
+				//	cell.textLabel.text = NSLocalizedString(@"Register Textbook-Reading Device","\"Register Textbook Device\" cell label");
+				//if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioTextbookDeviceRegisteredDefaultsKey] == 1 )
+				//	[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+				//else 
+				//	[cell setAccessoryType:UITableViewCellAccessoryNone];
+				//	break;
+				//}
+		}
 	}
 
-	switch (indexPath.section)
-	{
-		case 0:
-		{
-			cell.textLabel.text = NSLocalizedString(@"Registration","\"Registration\" cell label");
-			UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(200.0f, 9.0f, 80.0f, 28.0f)];
-			[switchView setTag:997];
-			[cell addSubview:switchView];
-			if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] == BlioDeviceRegisteredStatusRegistered ) {
-				[switchView setOn:YES animated:NO];
-				self.registrationOn = YES;
-			}
-			else {
-				[switchView setOn:NO animated:NO];
-				self.registrationOn = NO;
-			}
-			[switchView addTarget:self action:@selector(changeRegistration:) forControlEvents:UIControlEventValueChanged];
-			[switchView release];
-			break;
-		}
-		//case 1:
-		//{
-			//	cell.textLabel.text = NSLocalizedString(@"Register Textbook-Reading Device","\"Register Textbook Device\" cell label");
-			//if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioTextbookDeviceRegisteredDefaultsKey] == 1 )
-			//	[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-			//else 
-			//	[cell setAccessoryType:UITableViewCellAccessoryNone];
-			//	break;
-		//}
-	}
-	
+	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
 }
 
@@ -180,27 +190,48 @@
 	//self.registrationOn = !self.registrationOn;
 	
 	sender.enabled = NO;
-	[activityIndicator startAnimating];  // thread issue...
+	
+	BOOL changeSuccess = NO;
 	if ( [(UISwitch*)sender isOn] ) {
-		if ( ![self.drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-										delegate:self 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
+		[activityIndicator startAnimating];  // thread issue...
+		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore];
+		[activityIndicator stopAnimating];
+		if (!changeSuccess) {
+			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [(UISwitch*)sender setOn:YES];
+			else [(UISwitch*)sender setOn:NO];
 		}
+		sender.enabled = YES;
 	}
 	else {
-		if ( ![self.drmSessionManager leaveDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"UNREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to unregister device. Please try again later.",@"Alert message shown when device unregistration fails.")
-										delegate:self 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
-		}
+		registrationSwitch = (UISwitch*)sender;
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to de-register your device for this account? Doing so will remove all purchased books associated with this account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
+									delegate:self
+						   cancelButtonTitle:nil
+						   otherButtonTitles:@"Not Now", @"De-Register", nil];
+		
 	}
-	[activityIndicator stopAnimating];
-	[self.navigationController popViewControllerAnimated:YES];
+//	[self.navigationController popViewControllerAnimated:YES];
+}
+#pragma mark -
+#pragma mark UIAlertViewDelegate
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0) {
+		[registrationSwitch setOn:YES];
+	}
+	else if (buttonIndex == 1) {
+		BOOL changeSuccess = NO;
+		[activityIndicator startAnimating];  // thread issue...
+		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
+		[activityIndicator stopAnimating];
+		if (!changeSuccess) {
+			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [registrationSwitch setOn:YES];
+			else [registrationSwitch setOn:NO];
+		}
+		else [registrationSwitch setOn:NO];
+	}
+	registrationSwitch.enabled = YES;	
 }
 
 #pragma mark -

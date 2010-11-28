@@ -19,7 +19,7 @@
 
 @implementation NSString (VCTitleCase)
 
-- (NSString *)titlecaseString
+- (NSString *)titleCaseString
 {
     static NSSet *shortWords = nil;
     static NSMutableCharacterSet *wordStartCharacterSet = nil;

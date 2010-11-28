@@ -29,6 +29,8 @@
     id<BlioNotesViewDelegate> delegate;
     NSManagedObject *note;
     BlioBookmarkRange *range;
+    UIView *showInView;
+    CGFloat bottomInset;
 }
 
 @property (nonatomic, retain) UITextView *textView;

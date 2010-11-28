@@ -272,25 +272,26 @@
     }
     _childCount = childCount;
     
-    uint32_t *children = malloc(childCount * sizeof(uint32_t));
-    uint32_t *child = children;
-    
-    if(self.computedBeforeStyle) {
-        *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode;
+    if(childCount) {
+        uint32_t *children = malloc(childCount * sizeof(uint32_t));
+        uint32_t *child = children;
+        
+        if(self.computedBeforeStyle) {
+            *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode;
+        }
+        
+        id<EucCSSDocumentTreeNode> documentChild = _documentTreeNode.firstChild;
+        while(documentChild) {
+             *(child++) = documentChild.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+            documentChild = documentChild.nextSibling;
+        }
+        
+        if(self.computedAfterStyle) {
+            *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode;
+        }
+        
+        _childKeys = children;
     }
-    
-    id<EucCSSDocumentTreeNode> documentChild = _documentTreeNode.firstChild;
-    while(documentChild) {
-         *(child++) = documentChild.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
-        documentChild = documentChild.nextSibling;
-    }
-    
-    if(self.computedAfterStyle) {
-        *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode;
-    }
-    
-    _childKeys = children;
-    
     _childrenComputed = YES;
 }
 

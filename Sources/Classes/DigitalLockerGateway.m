@@ -6,10 +6,9 @@
 //  Copyright 2010 CrossComm, Inc. All rights reserved.
 //
 
-#include <ifaddrs.h>
-#include <arpa/inet.h>
-
 #import "DigitalLockerGateway.h"
+#import "NSString+BlioAdditions.h"
+#import "UIDevice+BlioAdditions.h"
 
 @implementation DigitalLockerXMLObject
 
@@ -107,14 +106,137 @@
 
 @end
 
+@implementation DigitalLockerResponseOutputData
+
+@synthesize OutputDataType;
+
+-(void)dealloc {
+	[super dealloc];
+}
+@end
+
+@implementation DigitalLockerResponseOutputDataRegistration
+
+@synthesize UserNum,UserName,UserEmail,FirstName,LastName,UserNewAccount,UserAuthenticated,EmailOption,AccountNum,BookVaultId;
+
+-(id)init {
+	self = [super init];
+	if (self) {
+		OutputDataType = DigitalLockerServiceRegistration;
+	}	
+	return self;	
+}
+
+-(void)dealloc {
+	self.UserName = nil;
+	self.UserEmail = nil;
+	self.FirstName = nil;
+	self.LastName = nil;
+	self.EmailOption = nil;
+	[super dealloc];
+}
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
+	//	NSLog(@"didStartElement: %@",elementName);
+}
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+	//	NSLog(@"found characters: %@",string);
+	if (!parserCharacters) parserCharacters = [[NSMutableString alloc] initWithCapacity:50];
+	[parserCharacters appendString:string];
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {    
+	//	NSLog(@"didEndElement: %@",elementName);
+
+	if ( [elementName isEqualToString:@"UserNum"] ) {
+		if (parserCharacters) {
+			self.UserNum = [parserCharacters intValue];
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"UserName"] ) {
+		if (parserCharacters) {
+			self.UserName = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"UserEmail"] ) {
+		if (parserCharacters) {
+			self.UserEmail = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"FirstName"] ) {
+		if (parserCharacters) {
+			self.FirstName = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"LastName"] ) {
+		if (parserCharacters) {
+			self.LastName = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"UserNewAccount"] ) {
+		if (parserCharacters) {
+			if ([parserCharacters compare:@"yes" options:NSCaseInsensitiveSearch] == NSOrderedSame)  self.UserNewAccount = YES;
+			else self.UserNewAccount = NO;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"UserAuthenticated"] ) {
+		if (parserCharacters) {
+			if ([parserCharacters compare:@"yes" options:NSCaseInsensitiveSearch] == NSOrderedSame)  self.UserAuthenticated = YES;
+			else self.UserAuthenticated = NO;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"EmailOption"] ) {
+		if (parserCharacters) {
+			self.EmailOption = parserCharacters;
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}
+	else if ( [elementName isEqualToString:@"AccountNum"] ) {
+		if (parserCharacters) {
+			self.AccountNum = [parserCharacters intValue];
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}	
+	else if ( [elementName isEqualToString:@"BookVaultId"] ) {
+		if (parserCharacters) {
+			self.BookVaultId = [parserCharacters intValue];
+			[parserCharacters release];
+			parserCharacters = nil;
+		}
+	}	
+	else if ( [elementName isEqualToString:OutputDataType] ){
+		[super parser:parser didEndElement:elementName namespaceURI:namespaceURI qualifiedName:qName];
+	}
+}
+
+
+@end 
+
 @implementation DigitalLockerResponse
 
-@synthesize ReturnCode, ReturnMessage, ResponseTime, Errors;
+@synthesize ReturnCode, ReturnMessage, ResponseTime, Errors, OutputData;
 
 -(void)dealloc {
 	self.ReturnMessage = nil;
 	self.ResponseTime = nil;
 	self.Errors = nil;
+	self.OutputData = nil;
 	[super dealloc];
 }
 #pragma mark -
@@ -131,6 +253,13 @@
 		[self.Errors addObject:error];
 		[error release];
 		parser.delegate = error;
+	}
+	else if ( [elementName isEqualToString:DigitalLockerServiceRegistration] ) {
+		DigitalLockerResponseOutputDataRegistration * OutputDataRegistration = [[DigitalLockerResponseOutputDataRegistration alloc] init];
+		OutputDataRegistration.parent = self;
+		self.OutputData = OutputDataRegistration;
+		[OutputDataRegistration release];
+		parser.delegate = OutputDataRegistration;
 	}
 }
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
@@ -178,15 +307,22 @@
 @synthesize ClientUserAgent = _ClientUserAgent;
 @synthesize SiteKey = _SiteKey;
 @synthesize AppID = _AppID;
+@synthesize SiteNum = _SiteNum;
 
 static NSString * SessionId = nil;
 
 -(id)init {
 	self = [super init];
 	if (self) {
-		_ClientIPAddress = [DigitalLockerState IPAddress];
+		_ClientIPAddress = [UIDevice IPAddress];
 		[_ClientIPAddress retain];
-		_ClientDomain = @"gw.bliodigitallocker.net";
+		
+#ifdef TEST_MODE
+		_ClientDomain = DigitalLockerGatewayClientDomainTest;
+#else	
+		_ClientDomain = DigitalLockerGatewayClientDomainProduction;
+#endif
+		
 		[_ClientDomain retain];
 		_ClientLanguage = @"en";
 		[_ClientLanguage retain];
@@ -194,8 +330,11 @@ static NSString * SessionId = nil;
 		[_ClientLocation retain];
 		_ClientUserAgent = [NSString stringWithFormat:@"Blio iPhone/%@",[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
 		[_ClientUserAgent retain];
-		_SiteKey = DigitalLockerBlioIOSSiteKey;
+		// default settings for SiteKey and SiteNum
+		_SiteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
 		[_SiteKey retain];
+		_SiteNum = @"12555";
+		[_SiteNum retain];
 		_AppID = DigitalLockerBlioAppID;
 		[_AppID retain];
 	}	
@@ -213,50 +352,19 @@ static NSString * SessionId = nil;
 	SessionId = [[NSString alloc] initWithString:sessionId];
 }
 
-+(NSString *) IPAddress {
-	NSString *address = @"error";
-	struct ifaddrs *interfaces = NULL;
-	struct ifaddrs *temp_addr = NULL;
-	int success = 0;
-	
-	// retrieve the current interfaces - returns 0 on success
-	success = getifaddrs(&interfaces);
-	if (success == 0)
-	{
-		// Loop through linked list of interfaces
-		temp_addr = interfaces;
-		while(temp_addr != NULL)
-		{
-			if(temp_addr->ifa_addr->sa_family == AF_INET)
-			{
-				// Check if interface is en0 which is the wifi connection on the iPhone
-				if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"])
-				{
-					// Get NSString from C String
-					address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
-				}
-			}
-			
-			temp_addr = temp_addr->ifa_next;
-		}
-	}
-	
-	// Free memory
-	freeifaddrs(interfaces);
-	
-	return address;
-}
 -(NSString *) serialize {
-	NSArray * keys = [NSArray arrayWithObjects:@"ClientIPAddress",@"ClientDomain",@"ClientLanguage",@"ClientLocation",@"SiteKey",nil];
+	NSArray * keys = [NSArray arrayWithObjects:@"ClientIPAddress",@"ClientDomain",@"ClientLanguage",@"ClientLocation",@"SiteNum",@"SiteKey",nil];
 	NSMutableString * serialization = [NSMutableString stringWithString:@"<State>"];
 	
 	for (NSString* key in keys) {
 		NSString * valueForKey = [self valueForKey:key];
 		if (valueForKey) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,valueForKey,key]];
 	}
-	[serialization appendString:[NSString stringWithFormat:@"<ClientUserAgent>%@; %@</ClientUserAgent>", self.ClientUserAgent, self.AppID]];
+	NSString * systemNameVersion = [NSString stringWithFormat:@"%@/%@",[[UIDevice currentDevice] systemName],[[UIDevice currentDevice] systemVersion]];
+	NSString * hash = [[DigitalLockerBlioAppID md5Hash] substringWithRange:NSMakeRange(5, 6)];
+	[serialization appendString:[NSString stringWithFormat:@"<ClientUserAgent>%@; %@; %@%@</ClientUserAgent>", self.ClientUserAgent,systemNameVersion, self.AppID,hash]];
 	[serialization appendString:@"</State>"];
-	NSLog(@"serialization: %@",serialization);
+//	NSLog(@"serialization: %@",serialization);
 	return serialization;
 }
 
@@ -294,7 +402,7 @@ static NSString * SessionId = nil;
 		else if (valueForKey && [valueForKey isKindOfClass:[NSDictionary class]]) [serialization appendString:[NSString stringWithFormat:@"<%@>%@</%@>",key,[DigitalLockerXMLObject serializeDictionary:(NSDictionary*)valueForKey withName:nil],key]];
 	}
 	[serialization appendString:@"</Request>"];
-	NSLog(@"serialization: %@",serialization);
+//	NSLog(@"serialization: %@",serialization);
 	return serialization;
 }
 
@@ -319,43 +427,56 @@ static NSString * SessionId = nil;
 
 #ifdef TEST_MODE
 		_gatewayURL = DigitalLockerGatewayURLTest;
+		NSLog(@"initializing DigitalLockerConnetion with test URL: %@",_gatewayURL);
 #else	
 		_gatewayURL = DigitalLockerGatewayURLProduction;
+		NSLog(@"initializing DigitalLockerConnetion with production URL: %@",_gatewayURL);
 #endif
 		
-		
-		//		CFStringRef urlString = CFURLCreateStringByAddingPercentEscapes(
-		//																		NULL,
-		//																		(CFStringRef)post,
-		//																		NULL,
-		//																		(CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
-		//																		kCFStringEncodingNonLossyASCII );
-		//		post = [(NSString *)urlString autorelease];
-		
-		NSString * requestString = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\">%@%@</Gateway>",[self.State serialize],[self.Request serialize]];
-		NSLog(@"requestString: %@",requestString);
-		NSData *postData = [requestString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
-		NSString *postLength = [NSString stringWithFormat:@"%d",[postData length]];
-		NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] init];
-		[urlRequest setURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://gw.bliodigitallocker.net/nww/gateway/request"]]];
-		[urlRequest setHTTPMethod:@"POST"];
-		//		[request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
-		[urlRequest setValue:postLength forHTTPHeaderField:@"Content-Length"];
-		//		[request setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];  
-		//		[request setValue:@"application/xml" forHTTPHeaderField:@"Content-Type"];  
-		[urlRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-		[urlRequest setHTTPBody:postData];
-		
-		_responseData = [[NSMutableData alloc] init];
-		
-		urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
 		self.parserDelegateStack = [NSMutableArray array];
 	}
 	
 	return self;	
 }
-
+-(id)initWithDigitalLockerRequest:(DigitalLockerRequest*)aRequest siteNum:(NSInteger)aNum siteKey:(NSString*)aKey delegate:(id)delegate {
+	self = [self initWithDigitalLockerRequest:aRequest delegate:delegate];
+	if (self)
+	{
+		_State.SiteNum = [NSString stringWithFormat:@"%i",aNum];
+		NSLog(@"setting siteKey for Request: %@",aKey);
+		_State.SiteKey = aKey;
+	}
+	return self;
+}
 -(void)start {
+	//		CFStringRef urlString = CFURLCreateStringByAddingPercentEscapes(
+	//																		NULL,
+	//																		(CFStringRef)post,
+	//																		NULL,
+	//																		(CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
+	//																		kCFStringEncodingNonLossyASCII );
+	//		post = [(NSString *)urlString autorelease];
+	
+	NSString * requestString = [NSString stringWithFormat:@"request=<Gateway version=\"4.1\" debug=\"1\">%@%@</Gateway>",[self.State serialize],[self.Request serialize]];
+#ifdef SERVICE_DEBUG
+	NSLog(@"requestString: %@",requestString);
+#endif
+	NSData *postData = [requestString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+	NSString *postLength = [NSString stringWithFormat:@"%d",[postData length]];
+	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] init];
+	[urlRequest setURL:[NSURL URLWithString:_gatewayURL]];
+	[urlRequest setHTTPMethod:@"POST"];
+	//		[request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+	[urlRequest setValue:postLength forHTTPHeaderField:@"Content-Length"];
+	//		[request setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];  
+	//		[request setValue:@"application/xml" forHTTPHeaderField:@"Content-Type"];  
+	[urlRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+	[urlRequest setHTTPBody:postData];
+	
+	_responseData = [[NSMutableData alloc] init];
+	
+	urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
+	
 	if (self.urlConnection) [self.urlConnection start];
 }
 
@@ -377,25 +498,26 @@ static NSString * SessionId = nil;
 #pragma mark NSURLConnectionDelegate methods
 
 - (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
-	NSLog(@"DigitalLockerConnection didReceiveResponse: %@",[[response URL] absoluteString]);
-	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
-	NSLog(@"MIMEType: %@",response.MIMEType);
-	NSLog(@"textEncodingName: %@",response.textEncodingName);
-	NSLog(@"suggestedFilename: %@",response.suggestedFilename);
-	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {		
-		NSLog(@"statusCode: %i",httpResponse.statusCode);
-		NSLog(@"allHeaderFields: %@",httpResponse.allHeaderFields);
-	}
+//	NSLog(@"DigitalLockerConnection didReceiveResponse: %@",[[response URL] absoluteString]);
+//	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
+//	NSLog(@"MIMEType: %@",response.MIMEType);
+//	NSLog(@"textEncodingName: %@",response.textEncodingName);
+//	NSLog(@"suggestedFilename: %@",response.suggestedFilename);
+//	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {		
+//		NSLog(@"statusCode: %i",httpResponse.statusCode);
+//		NSLog(@"allHeaderFields: %@",httpResponse.allHeaderFields);
+//	}
 }
 
 - (void)connection:(NSURLConnection *)aConnection didReceiveData:(NSData *)data {
-	NSLog(@"DigitalLockerConnection connection:%@ didReceiveData: %@",aConnection,data);
+//	NSLog(@"DigitalLockerConnection connection:%@ didReceiveData: %@",aConnection,data);
 	[_responseData appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
-	NSString * stringData = [[[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding] autorelease];
-	NSLog(@"stringData: %@",stringData);
+#ifdef SERVICE_DEBUG
+	NSLog(@"Digital Locker Connection response: %@",[[[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding] autorelease]);
+#endif
 	NSXMLParser * parser = [[NSXMLParser alloc] initWithData:_responseData];
 	parser.delegate = self;
 	[parser parse];
@@ -409,11 +531,11 @@ static NSString * SessionId = nil;
 
 // TODO: consider taking the two delegate methods below out for final release, as this is a work-around for B&T's godaddy certificate (reads as invalid)!
 - (BOOL)connection: ( NSURLConnection * )connection canAuthenticateAgainstProtectionSpace: ( NSURLProtectionSpace * ) protectionSpace {
-	NSLog(@"DigitalLockerConnection connection:%@ canAuthenticateAgainstProtectionSpace: %@",connection, protectionSpace);
+//	NSLog(@"DigitalLockerConnection connection:%@ canAuthenticateAgainstProtectionSpace: %@",connection, protectionSpace);
 	return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
 }
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {  
-	NSLog(@"DigitalLockerConnection connection:%@ didReceiveAuthenticationChallenge: %@",connection, challenge);
+//	NSLog(@"DigitalLockerConnection connection:%@ didReceiveAuthenticationChallenge: %@",connection, challenge);
     //if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])  
 	//if ([trustedHosts containsObject:challenge.protectionSpace.host])  
 	[challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];  

@@ -32,6 +32,7 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
             CGFloat pointSize;
             THStringRenderer *stringRenderer;
             EucCSSLayoutDocumentRunPoint layoutPoint;
+            uint32_t color;
         } stringItem;
         struct {
             CGImageRef image;

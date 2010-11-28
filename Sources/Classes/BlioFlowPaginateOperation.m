@@ -22,6 +22,7 @@
 @property (nonatomic, retain) EucBookPaginator *paginator;
 @property (nonatomic, copy) NSString *bookTitle;
 @property (nonatomic, assign) CFAbsoluteTime startTime;
+@property (nonatomic, assign) BOOL bookCheckedOut;
 
 @end
 
@@ -30,6 +31,7 @@
 @synthesize paginator;
 @synthesize bookTitle;
 @synthesize startTime;
+@synthesize bookCheckedOut;
 
 - (BOOL)isConcurrent {
     return YES;
@@ -44,6 +46,11 @@
 }
 
 - (void)finish {
+    if(bookCheckedOut) {
+        [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
+    }
+    [self reportBookReadingIfRequired];
+
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
     
@@ -51,7 +58,7 @@
     finished = YES;
     
     [self didChangeValueForKey:@"isExecuting"];
-    [self didChangeValueForKey:@"isFinished"];
+    [self didChangeValueForKey:@"isFinished"];    
 }
 
 
@@ -65,7 +72,7 @@
         [pool drain];
         return;
     }
-	NSLog(@"BlioFlowPaginateOperation start entered: %@",self); 
+//	NSLog(@"BlioFlowPaginateOperation start entered: %@",self); 
 
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
@@ -83,6 +90,18 @@
         return;
     }
     
+	if (![self hasBookManifestValueForKey:BlioManifestTextFlowKey] && ![self hasBookManifestValueForKey:BlioManifestEPubKey]) {
+		// no value means this is probably a free XPS; no need to continue, but no need to send a fail signal to dependent operations either.
+		self.operationSuccess = YES;
+		self.percentageComplete = 100;
+        [self willChangeValueForKey:@"isFinished"];
+        finished = YES;
+		NSLog(@"No TextFlow data available, will end PaginateOperation without cancelling dependencies...");
+        [self didChangeValueForKey:@"isFinished"];
+		[pool drain];
+		return;
+	}
+	
     
     [self willChangeValueForKey:@"isExecuting"];
     executing = YES;
@@ -95,7 +114,7 @@
 	}		
 #endif
 	
-    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
+    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
 
     if(self.forceReprocess) {
         // Best effort - ignore errors.
@@ -116,6 +135,9 @@
         NSLog(@"Paginating book %@", self.bookTitle);
         
         eucBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID] retain];
+        if(eucBook) {
+            [self setBookCheckedOut:YES];
+        }
         
         [pool drain];
     }
@@ -123,8 +145,8 @@
     if([eucBook paginationIsComplete] || eucBook == nil) {
         // This book is already fully paginated!
 		NSLog(@"This book is already fully paginated!");
-		self.percentageComplete = 100;
         self.operationSuccess = YES;
+		self.percentageComplete = 100;
         [self finish];
     } else {
         BOOL isDirectory = YES;
@@ -135,8 +157,8 @@
             [[NSFileManager defaultManager] copyItemAtPath:cannedPaginationPath
                                                     toPath:paginationPath 
                                                      error:NULL];
-			self.percentageComplete = 100;
             self.operationSuccess = YES;
+			self.percentageComplete = 100;
             [self finish];
         } else {
             // Create the directory to store the pagination data if necessary.
@@ -166,7 +188,7 @@
     }
     
     [eucBook release];
-    [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
+    
     
     [pool drain];
 }
@@ -184,7 +206,7 @@
         [self setBookValue:[NSNumber numberWithInteger:layoutEquivalentPageCount]
                     forKey:@"layoutPageEquivalentCount"];
         
-        NSLog(@"Using layout equivalent page length of %ld for %@", layoutEquivalentPageCount, [self getBookValueForKey:@"title"]); 
+//        NSLog(@"Using layout equivalent page length of %ld for %@", layoutEquivalentPageCount, [self getBookValueForKey:@"title"]); 
     }
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
@@ -194,9 +216,9 @@
 	}				
 #endif
 	
-    self.percentageComplete = 100;
     self.operationSuccess = YES;
-    
+    self.percentageComplete = 100;
+        
     CFAbsoluteTime elapsedTime = CFAbsoluteTimeGetCurrent() - self.startTime;
     NSLog(@"Pagination of book %@ took %ld seconds", self.bookTitle, (long)round(elapsedTime));
     
@@ -207,15 +229,22 @@
 {
     NSDictionary *userInfo = [notification userInfo];
     CGFloat percentagePaginated = [[userInfo objectForKey:EucBookPaginatorNotificationPercentagePaginatedKey] floatValue];
-    self.percentageComplete = roundf(percentagePaginated);
-//	NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
-
+    if (self.percentageComplete != roundf(percentagePaginated)) {
+		self.percentageComplete = roundf(percentagePaginated);
+//		NSLog(@"Book %@ pagination progress: %u",self.bookTitle,self.percentageComplete);
+	}
 }
 -(void)cancel {
 	[super cancel];
 	NSLog(@"Cancelling pagination...");
-	[paginator stop];
+//	[paginator stop];
+	[self performSelectorInBackground:@selector(stopPaginator) withObject:nil];
 	[self finish];	
+}
+-(void)stopPaginator {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	[paginator stop];
+	[pool drain];
 }
 -(void) dealloc {
     self.bookTitle = nil;

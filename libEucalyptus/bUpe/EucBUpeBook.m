@@ -9,6 +9,7 @@
 
 #import "THLog.h"
 #import "EucBUpeBook.h"
+#import "EucBookNavPoint.h"
 #import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
@@ -486,9 +487,8 @@ static void tocNcxEndElementHandler(void *ctx, const XML_Char *name)
                 if(src) {
                     NSString *text = navPointInfo.text;
                     if(text) {
-                        [context->buildNavMap setObject:[THPair pairWithFirst:text 
-                                                                       second:[[NSURL URLWithString:src 
-                                                                                      relativeToURL:context->url] absoluteString]]
+                        NSString *uuid = [[NSURL URLWithString:src relativeToURL:context->url] absoluteString];
+                        [context->buildNavMap setObject:[EucBookNavPoint navPointWithText:text uuid:uuid level:(context->navPointStack).count - 1]
                                                  forKey:[NSNumber numberWithUnsignedInteger:navPointInfo.playOrder]];
                     }
                 }
@@ -557,8 +557,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             [navPointsBuild addObject:[buildNavMap objectForKey:key]];
         }
     } else {
-        [navPointsBuild addPairWithFirst:NSLocalizedString(@"Start of Book", @"Contents section name for a book with no defined sections or titles")
-                                  second:[[NSURL URLWithString:[_manifest objectForKey:[_spine objectAtIndex:0]] relativeToURL:_root] absoluteString]];
+        [navPointsBuild addObject:[EucBookNavPoint navPointWithText:NSLocalizedString(@"Start of Book", @"Contents section name for a book with no defined sections or titles")
+                                                               uuid:[[NSURL URLWithString:[_manifest objectForKey:[_spine objectAtIndex:0]] relativeToURL:_root] absoluteString]
+                                                              level:0]];
     }
     _navPoints = navPointsBuild;
     
@@ -639,9 +640,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return YES;
 }
 
-- (NSString *)baseCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
-    return [[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"];
+    return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];
 }
 
 - (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
@@ -654,16 +655,21 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     NSString *ret = nil;
     
     NSString *manifestKey = [_meta objectForKey:@"cover"];
+    if(!manifestKey) {
+        manifestKey = @"cover-image"; // Should be specified, but sometimes it's not in real life...
+    }
     if(manifestKey) {
         NSString *documentsRelativeCover = [_manifestOverrides objectForKey:manifestKey];
         if(documentsRelativeCover) {
             NSString *documentsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByStandardizingPath];
             ret = [documentsPath stringByAppendingPathComponent:documentsRelativeCover];
         } else {
-            ret = [[_manifest objectForKey:manifestKey] path];
+            NSString *relativePath = [_manifest objectForKey:manifestKey];
+            if(relativePath) {
+                ret = [[NSURL URLWithString:relativePath relativeToURL:_root] path];
+            }
         }
     } 
-    
     if(!ret) {
         ret = _coverPath;
     }
@@ -768,15 +774,13 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 
                 _currentPageIndexPointFD = open([path fileSystemRepresentation], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
                 if(_currentPageIndexPointFD != -1) {
-                    struct stat statResult;
-                    if(fstat(_currentPageIndexPointFD, &statResult) != -1) {
-                        if(statResult.st_size == 0) {
-                            EucBookPageIndexPoint *cover = [[EucBookPageIndexPoint alloc] init];
-                            [self setCurrentPageIndexPoint:cover];
-                            return [cover autorelease]; 
-                        }
+                    off_t size = lseek(_currentPageIndexPointFD, 0, SEEK_END);
+                    if(size == 0) {
+                        EucBookPageIndexPoint *cover = [[EucBookPageIndexPoint alloc] init];
+                        [self setCurrentPageIndexPoint:cover];
+                        return [cover autorelease]; 
                     } else {
-                        THWarn(@"Could not stat file at %@, error %d", path, errno);
+                        lseek(_currentPageIndexPointFD, 0, SEEK_SET);
                     }
                 } else {
                     _currentPageIndexPointFD = 0;
@@ -815,61 +819,68 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return NSClassFromString(@"EucBUpePageLayoutController");
 }
 
+- (NSDictionary *)buildIdToIndexPoint
+{
+    EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
+    NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] init];
+    EucBookPageIndexPoint *sourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
+    int source = 0;
+    EucCSSIntermediateDocument *document = [self intermediateDocumentForIndexPoint:sourceIndexPoint];
+    
+    for(; 
+        document != nil;
+        sourceIndexPoint.source = ++source, document = [self intermediateDocumentForIndexPoint:sourceIndexPoint]) {
+        NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+        
+        NSURL *documentUrl = document.url;
+        EucBookPageIndexPoint *thisIndexPoint = [sourceIndexPoint copy];
+        [buildIdToIndexPoint setObject:thisIndexPoint forKey:[documentUrl absoluteString]];
+        [thisIndexPoint release];
+        
+        layouter.document = document;
+        
+        NSDictionary *localIdsToNodes = document.idToNodeKey;
+        if(localIdsToNodes) {
+            NSString *documentUrlString = [documentUrl absoluteString];
+            for(NSString *localId in [localIdsToNodes keyEnumerator]) {
+                NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+                
+                EucCSSIntermediateDocumentNode *node = [document nodeForKey:[document nodeKeyForId:localId]];
+                EucCSSLayoutPoint layoutPoint = [layouter layoutPointForNode:node];                   
+                EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
+                indexPoint.source = source;
+                indexPoint.block = layoutPoint.nodeKey;
+                indexPoint.word = layoutPoint.word;
+                indexPoint.element = layoutPoint.element;
+                
+                NSString *globalURLString = [documentUrlString stringByAppendingFormat:@"#%@", localId];
+                NSURL *globalUrl = [NSURL URLWithString:globalURLString];
+                if(globalUrl) {
+                    globalURLString = [globalUrl absoluteString];
+                }
+                [buildIdToIndexPoint setObject:indexPoint forKey:globalURLString];
+                
+                [indexPoint release];
+                
+                [innerPool drain];
+            }
+        }
+        
+        layouter.document = nil;
+        
+        [innerPool drain];
+    }
+        
+    [sourceIndexPoint release];
+    [layouter release];    
+    
+    return [buildIdToIndexPoint autorelease];
+}
+
 - (NSDictionary *)idToIndexPoint
 {
     if(!_idToIndexPoint) {
-        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
-        NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] init];
-        EucBookPageIndexPoint *sourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
-        int source = 0;
-        EucCSSIntermediateDocument *document = [self intermediateDocumentForIndexPoint:sourceIndexPoint];
-        
-        for(; 
-            document != nil;
-            sourceIndexPoint.source = ++source, document = [self intermediateDocumentForIndexPoint:sourceIndexPoint]) {
-            NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
-            
-            NSURL *documentUrl = document.url;
-            EucBookPageIndexPoint *thisIndexPoint = [sourceIndexPoint copy];
-            [buildIdToIndexPoint setObject:thisIndexPoint forKey:[documentUrl absoluteString]];
-            [thisIndexPoint release];
-            
-            layouter.document = document;
-            
-            NSDictionary *localIdsToNodes = document.idToNodeKey;
-            if(localIdsToNodes) {
-                NSString *documentUrlString = [documentUrl absoluteString];
-                for(NSString *localId in [localIdsToNodes keyEnumerator]) {
-                    NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
-
-                    EucCSSIntermediateDocumentNode *node = [document nodeForKey:[document nodeKeyForId:localId]];
-                    EucCSSLayoutPoint layoutPoint = [layouter layoutPointForNode:node];                   
-                    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-                    indexPoint.source = source;
-                    indexPoint.block = layoutPoint.nodeKey;
-                    indexPoint.word = layoutPoint.word;
-                    indexPoint.element = layoutPoint.element;
-                    
-                    NSURL *globalUrl = [NSURL URLWithString:[documentUrlString stringByAppendingFormat:@"#%@", localId]];
-                    
-                    [buildIdToIndexPoint setObject:indexPoint forKey:[globalUrl absoluteString]];
-                    
-                    [indexPoint release];
-                    
-                    [innerPool drain];
-                }
-            }
-            
-            layouter.document = nil;
-
-            [innerPool drain];
-        }
-
-        self.idToIndexPoint = buildIdToIndexPoint;
-        
-        [sourceIndexPoint release];
-        [buildIdToIndexPoint release];
-        [layouter release];
+        _idToIndexPoint = [[self buildIdToIndexPoint] retain];
     }
     return _idToIndexPoint;
 }
@@ -934,7 +945,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         ret += 100.0f * scaleFactors[i];
     }
 
-    ret += ([[self intermediateDocumentForIndexPoint:point] estimatedPercentageForNodeWithKey:point.block] * scaleFactors[source]);
+    if(point.block) {
+        ret += ([[self intermediateDocumentForIndexPoint:point] estimatedPercentageForNodeWithKey:point.block] * scaleFactors[source]);
+    }
 
     return ret;
 }
@@ -1036,7 +1049,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
                                                                          forURL:url
                                                                      dataSource:self
-                                                                    baseCSSPath:[self baseCSSPathForDocumentTree:documentTree]
+                                                                   baseCSSPaths:[self baseCSSPathsForDocumentTree:documentTree]
                                                                     userCSSPath:[self userCSSPathForDocumentTree:documentTree]
                                                                          isHTML:[self documentTreeIsHTML:documentTree]];
         }
@@ -1089,10 +1102,15 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         // a backup/restore).
         NSMutableDictionary *toArchive = [[NSMutableDictionary alloc] initWithCapacity:idToIndexPoint.count];
         for(NSString *key in [idToIndexPoint keyEnumerator]) {
-            NSURL *keyURL = [[NSURL alloc]  initWithString:key];
-            [toArchive setObject:[idToIndexPoint objectForKey:key]
-                          forKey:[keyURL pathRelativeTo:_root]];
-            [keyURL release];
+            NSURL *keyURL = [[NSURL alloc] initWithString:key];
+            if(keyURL) {
+                [toArchive setObject:[idToIndexPoint objectForKey:key]
+                              forKey:[keyURL pathRelativeTo:_root]];
+                [keyURL release];
+            } else {
+                [toArchive setObject:[idToIndexPoint objectForKey:key]
+                              forKey:key];
+            }
         }
         [NSKeyedArchiver archiveRootObject:toArchive 
                                     toFile:[self _persistedDataPath]];
@@ -1107,12 +1125,16 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         NSMutableDictionary *idToIndexPoint = [[NSMutableDictionary alloc] initWithCapacity:fromArchive.count];
         for(NSString *key in [fromArchive keyEnumerator]) {
             NSURL *fullKeyURL = [[NSURL alloc] initWithString:key relativeToURL:_root];
-            [idToIndexPoint setObject:[fromArchive objectForKey:key]
-                               forKey:[fullKeyURL absoluteString]];
-            [fullKeyURL release];
+            if(fullKeyURL) {
+                [idToIndexPoint setObject:[fromArchive objectForKey:key]
+                                   forKey:[fullKeyURL absoluteString]];
+                [fullKeyURL release];
+            } else {
+                [idToIndexPoint setObject:[fromArchive objectForKey:key]
+                                   forKey:key];
+            }
         }
-        self.idToIndexPoint = idToIndexPoint;
-        [idToIndexPoint release];
+        _idToIndexPoint = idToIndexPoint;
     }
 }
 

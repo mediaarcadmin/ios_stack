@@ -2840,8 +2840,10 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 + (BookVaultSoap *)BookVaultSoap
 {
 #ifdef TEST_MODE
+	NSLog(@"BookVaultSoap test mode: %@",testBookvaultUrl);
 	return [[[BookVaultSoap alloc] initWithAddress:testBookvaultUrl] autorelease];
 #else	
+	NSLog(@"BookVaultSoap production mode: %@",productionBookvaultUrl);
 	return [[[BookVaultSoap alloc] initWithAddress:productionBookvaultUrl] autorelease];
 #endif
 }
@@ -3002,12 +3004,13 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 	[request setHTTPMethod: @"POST"];
 	// set version 1.1 - how?
 	[request setHTTPBody: bodyData];
-		
+
+#ifdef SERVICE_DEBUG
 	if(self.logXMLInOut) {
 		NSLog(@"OutputHeaders:\n%@", [request allHTTPHeaderFields]);
 		NSLog(@"OutputBody:\n%@", outputBody);
 	}
-	
+#endif	
 	NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:operation];
 	
 	operation.urlConnection = connection;
@@ -3137,6 +3140,7 @@ parameters:(BookVault_RegisterSale *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRegisterSale;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3230,6 +3234,7 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeVaultContentsWithToken;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3323,6 +3328,7 @@ parameters:(BookVault_VaultContents *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeVaultContents;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3416,6 +3422,7 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRequestDownloadWithToken;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3509,6 +3516,7 @@ parameters:(BookVault_RequestDownload *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRequestDownload;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3602,6 +3610,7 @@ parameters:(BookVault_Login *)aParameters
 {
 	[response autorelease];
 	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeLogin;
 	
 	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
 	
@@ -3613,7 +3622,7 @@ parameters:(BookVault_Login *)aParameters
 	if(parameters != nil) [bodyElements setObject:parameters forKey:@"Login"];
 	
 	NSString *operationXMLString = [envelope serializedFormUsingHeaderElements:headerElements bodyElements:bodyElements];
-	
+//	NSLog(@"BookVault operationXMLString: %@",operationXMLString);
 	[binding sendHTTPCallUsingBody:operationXMLString soapAction:@"BlioBookVault/Login" forOperation:self];
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -3740,6 +3749,7 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 }
 @end
 @implementation BookVaultSoapResponse
+@synthesize responseType;
 @synthesize headers;
 @synthesize bodyParts;
 @synthesize error;
@@ -3754,6 +3764,7 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	return self;
 }
 -(void)dealloc {
+	self.responseType = nil;
     self.headers = nil;
     self.bodyParts = nil;
     self.error = nil;	
@@ -3907,11 +3918,12 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	// set version 1.1 - how?
 	[request setHTTPBody: bodyData];
 		
+#ifdef SERVICE_DEBUG
 	if(self.logXMLInOut) {
 		NSLog(@"OutputHeaders:\n%@", [request allHTTPHeaderFields]);
 		NSLog(@"OutputBody:\n%@", outputBody);
 	}
-	
+#endif
 	NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:operation];
 	
 	operation.urlConnection = connection;

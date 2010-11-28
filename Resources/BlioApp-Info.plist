@@ -11,9 +11,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>6</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleDisplayName</key>
@@ -44,6 +44,10 @@
 	</array>
 	<key>UIPrerenderedIcon</key>
 	<true/>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>opengles-2</string>
+	</array>
 	<key>UIStatusBarHidden</key>
 	<false/>
 	<key>UIStatusBarStyle</key>
@@ -54,9 +58,123 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIRequiredDeviceCapabilities</key>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>CFBundleURLTypes</key>
 	<array>
-		<string>opengles-2</string>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>blioapp</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.knfbreading.blio</string>
+		</dict>
+	</array>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>Icon.png</string>
+			</array>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.blio.xps</string>
+				<string>com.microsoft.xps</string>
+				<string>com.pkware.zip-archive</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleTypeName</key>
+			<string>XPS Document</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/vnd.ms-xpsdocument</string>
+				<string>application/zip</string>
+				<string>application/xps</string>
+				<string>application/oxps</string>
+				<string>application/xps+zip</string>
+				<string>application/oxps+zip</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>xps</string>
+				<string>oxps</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>Icon.png</string>
+			</array>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.idpf.epub-container</string>
+				<string>com.pkware.zip-archive</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleTypeName</key>
+			<string>Epub Document</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/epub+zip</string>
+				<string>application/zip</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>epub</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>Icon.png</string>
+			</array>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleTypeName</key>
+			<string>PDF Document</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/pdf</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pdf</string>
+			</array>
+		</dict>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<string>xps</string>
+				<key>public.mime-type</key>
+				<string>application/vnd.ms-xpsdocument</string>
+			</dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.blio.xps</string>
+			<key>UTTypeDescription</key>
+			<string>XPS Document</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.pkware.zip-archive</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

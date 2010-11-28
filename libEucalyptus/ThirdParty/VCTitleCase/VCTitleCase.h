@@ -31,6 +31,6 @@
  The list of "small words" which are not capped comes from
  the New York Times Manual of Style, plus "vs" ans "v".
 */
-- (NSString *)titlecaseString;
+- (NSString *)titleCaseString;
 
 @end

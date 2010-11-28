@@ -16,6 +16,7 @@
 -(MRGridViewCell*)gridView:(MRGridView*)gridView cellForGridIndex: (NSInteger)index;
 -(NSInteger)numberOfItemsInGridView:(MRGridView*)gridView;
 -(NSString*)contentDescriptionForCellAtIndex:(NSInteger)index;
+-(BOOL) gridView:(MRGridView*)gridView canMoveCellAtIndex: (NSInteger)index;
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex;
 -(void) gridView:(MRGridView*)gridView finishedMovingCellToIndex:(NSInteger)toIndex;
 -(void) gridView:(MRGridView*)gridView commitEditingStyle:(MRGridViewCellEditingStyle)editingStyle forIndex:(NSInteger)index;

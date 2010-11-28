@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import "BlioProcessing.h"
+#import "BlioRoundedRectActivityView.h"
 
 static const NSInteger kBlioStoreMyVaultTag = 3;
 
@@ -22,13 +23,17 @@ static const NSInteger kBlioStoreMyVaultTag = 3;
 	UILabel * noResultsLabel;
 	BlioBook * currBook;
 	BOOL userDismissedLogin;
-
+	BlioRoundedRectActivityView * activityIndicatorView;
+	NSString * noBooksText;
+	NSString * loadingBooksText;
+	NSInteger userNum;
 }
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController* fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 @property (nonatomic, retain) UILabel * noResultsLabel;
+@property (nonatomic, retain) BlioRoundedRectActivityView * activityIndicatorView;
 
 -(void)calculateMaxLayoutPageEquivalentCount;
 -(void)fetchResults;

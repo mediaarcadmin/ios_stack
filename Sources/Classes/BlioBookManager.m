@@ -119,7 +119,7 @@ static pthread_key_t sManagedObjectContextKey;
     if (aBookID) {
         book = (BlioBook *)[context objectWithID:aBookID];
     }
-    
+    else NSLog(@"WARNING: BlioBookManager bookWithID: aBookID is nil!");
     if (book) {
         [context refreshObject:book mergeChanges:YES];
     }
@@ -219,7 +219,7 @@ static pthread_key_t sManagedObjectContextKey;
                 eucBook = [[BlioFlowEucBook alloc] initWithBookID:aBookID];
             }
             if(eucBook) {
-                eucBook.cacheDirectoryPath = [book.bookCacheDirectory stringByAppendingPathComponent:@"libEucalyptusCache"];
+                eucBook.cacheDirectoryPath = [book.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
                 //NSLog(@"Creating and caching EucBook for book with ID %@", aBookID);
                 NSCountedSet *myCachedEucBookCheckoutCounts = self.cachedEucBookCheckoutCounts;
                 if(!myCachedEucBookCheckoutCounts) {
@@ -360,6 +360,9 @@ static pthread_key_t sManagedObjectContextKey;
         }
     }
     
+    //NSLog(@"[%d] checkOutXPSProviderForBookWithID %@", [self.cachedXPSProviderCheckoutCounts countForObject:aBookID], aBookID);
+
+    
     [self.persistentStoreCoordinator unlock];
     
     return ret;
@@ -384,6 +387,8 @@ static pthread_key_t sManagedObjectContextKey;
                 }
             }
         }
+        //NSLog(@"[%d] checkInXPSProviderForBookWithID %@", [self.cachedXPSProviderCheckoutCounts countForObject:aBookID], aBookID);
+
     }
 }
 

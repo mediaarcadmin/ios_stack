@@ -11,13 +11,16 @@
 
 @class BlioBook;
 @class BlioProcessingCompleteOperation;
+@class BlioProcessingDownloadOperation;
 
 typedef enum {
 	BlioBookSourceNotSpecified = 0,
-	BlioBookSourceLocalBundle = 1,
-	BlioBookSourceOnlineStore = 2,
-	BlioBookSourceFeedbooks = 3,
-	BlioBookSourceGoogleBooks = 4
+	BlioBookSourceFileSharing = 1,
+	BlioBookSourceLocalBundle = 2,
+	BlioBookSourceOnlineStore = 3,
+	BlioBookSourceOtherApplications = 4,
+	BlioBookSourceFeedbooks = 5,
+	BlioBookSourceGoogleBooks = 6
 } BlioBookSourceID;
 
 static NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
@@ -62,22 +65,21 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void)setBookValue:(id)value forKey:(NSString *)key;
 - (id)getBookValueForKey:(NSString *)key;
 
+- (void)reportBookReadingIfRequired;
+
 @end
 
 @protocol BlioProcessingDelegate
 @required
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath;
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+//			   audiobookPath:(NSString *)audiobookPath;
+//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+//			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly fromBundle:(BOOL)fromBundle;	
 -(void) enqueueBook:(BlioBook*)aBook;
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
 - (void) resumeProcessing;
@@ -91,9 +93,10 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void)pauseProcessingForBook:(BlioBook*)aBook;
 - (void)suspendProcessingForBook:(BlioBook*)aBook;
 - (void)stopProcessingForBook:(BlioBook*)aBook;
+-(void) deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site;
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave;
-- (void)stopDownloadingOperations;
-- (NSArray *)downloadOperations;
+- (void)stopInternetOperations;
+- (NSArray *)internetOperations;
 - (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
-
+- (BlioProcessingDownloadOperation*) incompleteDownloadOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 @end

@@ -46,9 +46,11 @@
 		BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
         [feedBooksFeed setTitle:@"Feedbooks"];
         [feedBooksFeed setParserClass:[BlioStoreFeedBooksParser class]];
+		feedBooksFeed.sourceID = BlioBookSourceFeedbooks;
         BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
         [googleBooksFeed setTitle:@"Google Books"];
         [googleBooksFeed setParserClass:[BlioStoreGoogleBooksParser class]];
+		googleBooksFeed.sourceID = BlioBookSourceGoogleBooks;
         [storeSearchTableViewDataSource setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
         [feedBooksFeed release];
         [googleBooksFeed release];
@@ -290,23 +292,34 @@
 	}
 	else currentModeFeeds = self.feeds;
 	BOOL stillParsing = NO;
+	BlioStoreFeed * aFeed = nil;
 	for (BlioStoreFeed *feed in currentModeFeeds) {
-		if (feed.parser.isParsing) {
-			stillParsing = YES;
+        if ([feed.parser isEqual:parser]) {
+			aFeed = feed;
 			break;
 		}
 	}
-	if (!stillParsing) {
-		NSLog(@"stillParsing is NO, hiding UIActivityIndicator");
-		// hide UIActivityIndicator
-		[activityIndicatorView stopAnimating];
-		activityIndicatorView.hidden = YES;
-		if (self.searchDisplayController.active) {
-			[activityIndicatorView removeFromSuperview];
-			[self.searchDisplayController.searchResultsTableView addSubview:self.activityIndicatorView];
+	if (aFeed && (([aFeed.categories count] + [aFeed.entities count]) < (aFeed.previousFeedCount + 10)) && aFeed.nextURL) {
+		[aFeed.parser startWithURL:aFeed.nextURL];			
+	}
+	else {
+		for (BlioStoreFeed *feed in currentModeFeeds) {
+			if (feed.parser.isParsing) {
+				stillParsing = YES;
+				break;
+			}
+		}
+		if (!stillParsing) {
+			NSLog(@"stillParsing is NO, hiding UIActivityIndicator");
+			// hide UIActivityIndicator
+			[activityIndicatorView stopAnimating];
+			activityIndicatorView.hidden = YES;
+			if (self.searchDisplayController.active) {
+				[activityIndicatorView removeFromSuperview];
+				[self.searchDisplayController.searchResultsTableView addSubview:self.activityIndicatorView];
+			}
 		}
 	}
-	
 	if (self.searchDisplayController.active) {
 		// prepare it to appear on the searchResultsTableView for subsequent searches
 		

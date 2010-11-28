@@ -14,6 +14,7 @@
 #import "BlioDrmSessionManager.h"
 #import "BlioAppSettingsConstants.h"
 #import "Reachability.h"
+#import "BlioStoreHelper.h"
 
 @interface BlioStoreArchiveViewController()
 @property (nonatomic, retain) BlioBook* currBook;
@@ -25,6 +26,7 @@
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate,noResultsLabel,maxLayoutPageEquivalentCount;
+@synthesize activityIndicatorView;
 
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
@@ -39,7 +41,8 @@
 -(void) loadView {
 	[super loadView];
 	noResultsLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
-	noResultsLabel.text = NSLocalizedString(@"There are no books in your archive.",@"\"There are no books in your archive.\" indicator"); 
+	noBooksText = NSLocalizedString(@"There are no books in your archive.",@"\"There are no books in your archive.\" indicator"); 
+	loadingBooksText = NSLocalizedString(@"Retrieving books into your archive...",@"\"Retrieving books into your archive.\" indicator"); 
 	noResultsLabel.textAlignment = UITextAlignmentCenter;
 	noResultsLabel.font = [UIFont systemFontOfSize:14.0];
 	noResultsLabel.textColor = [UIColor colorWithRed:108.0/255.0 green:108.0/255.0 blue:108.0/255.0 alpha:1.0];
@@ -50,14 +53,38 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+	BlioStoreHelper * helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioStoreRetrieveBooksStarted:) name:BlioStoreRetrieveBooksStarted object:helper];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioStoreRetrieveBooksFinished:) name:BlioStoreRetrieveBooksFinished object:helper];
+	
+	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
+	CGFloat activityIndicatorDiameter = 50.0f;
+	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
+	userNum = [[BlioStoreManager sharedInstance] currentUserNum];
 	[self fetchResults];
+}
+-(void)onBlioStoreRetrieveBooksStarted:(NSNotification*)note {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
+	[self.activityIndicatorView startAnimating];
+	[self.tableView reloadData];
+}
+-(void)onBlioStoreRetrieveBooksFinished:(NSNotification*)note {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
+	[self.activityIndicatorView stopAnimating];
+	[self.tableView reloadData];
 }
 -(void)loginDismissed:(NSNotification*)note {
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			NSInteger newUserNum = [[BlioStoreManager sharedInstance] currentUserNum];
+			if (newUserNum != userNum) {
+				userNum = newUserNum;
+				[self fetchResults];
+			}
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-			[self fetchResults];
+
 		}
 		else {
 //			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
@@ -83,7 +110,8 @@
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+//	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState != %@ && sourceID == %@ && userNum == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioBookSourceOnlineStore],[NSNumber numberWithInt:userNum]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request
@@ -115,27 +143,30 @@
 - (void)viewDidAppear:(BOOL)animated {
 	NSLog(@"viewDidAppear");
     [super viewDidAppear:animated];
-		
-	if (userDismissedLogin) {
+	
+	if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
+		[self.activityIndicatorView startAnimating];
+	}		
+	
+	if (userDismissedLogin && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
 		userDismissedLogin = NO;
 		return;
 	}
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] != NotReachable) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			NSLog(@"logged in");
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
-				[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertArchive"];
-				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Retrieving Your Books",@"\"Retrieving Your Books\" alert message title") 
-											 message:NSLocalizedStringWithDefaultValue(@"INTRO_ARCHIVE_ALERT",nil,[NSBundle mainBundle],@"The Archive is where you'll find your recently purchased books; although these books have been purchased, they still need to be downloaded to your device. Tap on the \"load\" button to the right of a book's title to start downloading, then tap on the \"Done\" button to see your book's progress in the Library!",@"Alert Text encouraging the end-user to go to start downloading paid books in the archive.")
-											delegate:nil
-								   cancelButtonTitle:@"OK"
-								   otherButtonTitles:nil];		
-			}
+			// The following is an instructional alert view that only shows once; we've decided to disable it for now, since the Archive view is not as prominent with paid books automatically downloading.
+//			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
+//				[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertArchive"];
+//				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Retrieving Your Books",@"\"Retrieving Your Books\" alert message title") 
+//											 message:NSLocalizedStringWithDefaultValue(@"INTRO_ARCHIVE_ALERT",nil,[NSBundle mainBundle],@"The Archive is where you'll find your recently purchased books; although these books have been purchased, they still need to be downloaded to your device. Tap on the \"load\" button to the right of a book's title to start downloading, then tap on the \"Done\" button to see your book's progress in the Library!",@"Alert Text encouraging the end-user to go to start downloading paid books in the archive.")
+//											delegate:nil
+//								   cancelButtonTitle:@"OK"
+//								   otherButtonTitles:nil];		
+//			}
 			
 		}
 		else {
-			NSLog(@"not logged in");
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 		}		
@@ -149,11 +180,12 @@
 	}
 }
 
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
+	[self.activityIndicatorView stopAnimating];
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
@@ -176,6 +208,12 @@
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioStoreRetrieveBooksStarted object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioStoreRetrieveBooksFinished object:nil];
+	if (self.activityIndicatorView) [self.activityIndicatorView removeFromSuperview];
+	self.activityIndicatorView = nil;
+
 }
 
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
@@ -203,7 +241,7 @@
 						   otherButtonTitles:nil];
 		return;
 	}
-	if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDeviceRegisteredDefaultsKey] != BlioDeviceRegisteredStatusRegistered ) {
+	if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] != BlioDeviceRegisteredStatusRegistered ) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"This device is not registered...",@"\"This device is not registered...\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for viewing paid content. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
 									delegate:self 
@@ -218,17 +256,18 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 	if (buttonIndex == 1) {
-		BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-		if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-										delegate:self 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
-		}
-		else if ( currBook != nil )
-			[self enqueueBook:currBook]; 
-		[drmSessionManager release];
+		if ([[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore] && currBook) [self enqueueBook:currBook];
+//		BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
+//		if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
+//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+//										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
+//										delegate:self 
+//							   cancelButtonTitle:nil
+//							   otherButtonTitles:@"OK", nil];
+//		[drmSessionManager release];
+//		}
+//	else if ( currBook != nil )
+//		[self enqueueBook:currBook]; 
 	}
 }
 
@@ -294,6 +333,8 @@
 		noResultsLabel.frame = self.view.bounds;
 		noResultsLabel.hidden = NO;
 		tableView.scrollEnabled = NO;
+		if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) noResultsLabel.text = loadingBooksText;
+		else noResultsLabel.text = noBooksText;
 	}
 	else {
 		noResultsLabel.hidden = YES;
@@ -320,7 +361,7 @@
 	
 	static NSString *ListCellIdentifier = @"BlioLibraryListCellIdentifier";
 	
-	BlioLibraryListCell *cell;
+	BlioLibraryListCell * cell = nil;
 	
 	cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 	if (cell == nil) {
@@ -438,6 +479,8 @@
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	if (self.activityIndicatorView) [self.activityIndicatorView removeFromSuperview];
+	self.activityIndicatorView = nil;
 	self.processingDelegate = nil;
 	self.fetchedResultsController = nil;
 	self.noResultsLabel = nil;

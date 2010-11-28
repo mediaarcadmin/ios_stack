@@ -41,8 +41,8 @@
 
 - (void)dealloc
 {
-    [_name release];
     [_attributes release];
+    [_name release];
     [_characters release];
     [_children release];
     [super dealloc];

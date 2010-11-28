@@ -14,10 +14,13 @@
 #import "BlioAlertManager.h"
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
+#import "BlioStoreHelper.h"
 #import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookManager.h"
 #import <unistd.h>
+#import "BlioImportManager.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 
@@ -36,7 +39,11 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {  
+//- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions { // returning YES *should* call application handleOpenURL, but for some reason, that is not being called on iOS < 4.0... hence, we use the older method until 3.x compatibility is retired.
+-(void)applicationDidFinishLaunching:(UIApplication *)application {
+//	if (launchOptions) {
+//		NSLog(@"launchOptions: %@",launchOptions);		
+//	}
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	NSError * audioError = nil;
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError];
@@ -144,37 +151,64 @@ tryAgain:
     libraryController.managedObjectContext = moc;
     libraryController.processingDelegate = self.processingManager;
 
+	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
+
 	// Copy DRM resources to writeable directory.
 	NSError* err;	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [[paths objectAtIndex:0] stringByAppendingString:@"/"];
 	
-	NSString* wmModelKeyFilename = @"priv.dat";
 	NSString* wmModelCertFilename = @"devcerttemplate.dat";
-	NSString* prModelKeyFilename = @"iphonezgpriv.dat";
 	NSString* prModelCertFilename = @"iphonecert.dat";
 	
 	NSString* sourceDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/"];
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) 
 		sourceDir = [sourceDir stringByAppendingString:@"DRM/"];
 	
-	NSString* rsrcWmModelKey = [sourceDir stringByAppendingString:wmModelKeyFilename]; 
-	NSString* docsWmModelKey = [documentsDirectory stringByAppendingString:wmModelKeyFilename];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelKey toPath:docsWmModelKey error:&err];
 	NSString* rsrcWmModelCert = [sourceDir stringByAppendingString:wmModelCertFilename]; 
 	NSString* docsWmModelCert = [documentsDirectory stringByAppendingString:wmModelCertFilename];
 	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
 	NSString* rsrcPRModelCert = [sourceDir stringByAppendingString:prModelCertFilename]; 
 	NSString* docsPRModelCert = [documentsDirectory stringByAppendingString:prModelCertFilename];
 	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];
-	NSString* rsrcPRModelKey = [sourceDir stringByAppendingString:prModelKeyFilename]; 
-	NSString* docsPRModelKey = [documentsDirectory stringByAppendingString:prModelKeyFilename];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelKey toPath:docsPRModelKey error:&err];
 
     [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
     
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+		
+//	return YES;
 }
+
+-(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+	NSLog(@"opened app with URL: %@",[url absoluteString]);
+	
+//	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+//								 message:[NSString stringWithFormat:@"handleOpenURL: %@",[url absoluteString]]
+//								delegate:nil
+//					   cancelButtonTitle:@"OK"
+//					   otherButtonTitles:nil];
+	
+	if ([url isFileURL]) {
+		NSString * file = [url path]; 
+		if ([file.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+			[[BlioImportManager sharedImportManager] importBookFromFilePath:file];
+			return YES;
+		}
+	}
+	return NO;
+}
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40200
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+//	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+//								 message:[NSString stringWithFormat:@"openURL: %@",[url absoluteString]]
+//								delegate:nil
+//					   cancelButtonTitle:@"OK"
+//					   otherButtonTitles:nil];
+	return [self application:application handleOpenURL:url];
+}
+
+#endif
 
 -(void)loginDismissed:(NSNotification*)note {
 	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
@@ -185,7 +219,7 @@ tryAgain:
 		}
 		else {
 			//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-			//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Vault. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Vault. In the meantime, previously synced books will display.")]
+			//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Archive. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Archive. In the meantime, previously synced books will display.")]
 			//										delegate:self
 			//							   cancelButtonTitle:@"OK"
 			//							   otherButtonTitles:nil];			
@@ -267,15 +301,17 @@ static void *background_init_thread(void * arg) {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
-	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 
 	if (self.networkStatus != NotReachable) {
-		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-		}
-		else {
+		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-		}		
+		}
+//		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+//			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+//		}
+//		else {
+//			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+//		}		
 		[self.processingManager resumeProcessing];
 	}	
 	
@@ -304,21 +340,33 @@ static void *background_init_thread(void * arg) {
 	// Save data if appropriate
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"[BlioAppAppDelegate applicationWilTerminate] Save failed with error: %@, %@", error, [error userInfo]);
+        NSLog(@"[BlioAppAppDelegate applicationWillTerminate] Save failed with error: %@, %@", error, [error userInfo]);
 }
 
 #pragma mark -
 #pragma mark UIApplicationDelegate - Background Tasks
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-
 -(void)applicationDidEnterBackground:(UIApplication *)application {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);	
+        NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
-
-#endif
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+	NSLog(@"%@", NSStringFromSelector(_cmd));	
+}
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
+	if (self.networkStatus != NotReachable) {
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && ![[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
+			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		}
+	}		
+}
+- (void)applicationWillResignActive:(UIApplication *)application {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
+}
 
 #pragma mark -
 #pragma mark Network Reachability
@@ -334,23 +382,16 @@ static void *background_init_thread(void * arg) {
 	NSLog(@"previousNetStatus: %i",previousNetStatus);
 	NSLog(@"self.networkStatus: %i",self.networkStatus);
 	if (previousNetStatus != NotReachable && self.networkStatus == NotReachable) { // if changed from available to unavailable
-		[self.processingManager stopDownloadingOperations];
-		if ([[self.processingManager downloadOperations] count] > 0)
+		if ([[self.processingManager internetOperations] count] > 0)
 		{
 			// ALERT user to what just happened.
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
 															message:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")
-														   delegate:self
+														   delegate:nil
 												  cancelButtonTitle:@"OK"
 												  otherButtonTitles:nil];
-//			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-//															message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")]
-//														   delegate:self
-//												  cancelButtonTitle:@"OK"
-//												  otherButtonTitles:nil];
-//			[alert show];
-//			[alert release];
 		}
+		[self.processingManager stopInternetOperations];
 	}
 	else if (previousNetStatus == NotReachable && self.networkStatus != NotReachable) { // if changed from unavailable to available
 		[self.processingManager resumeProcessing];

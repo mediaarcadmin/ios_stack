@@ -11,11 +11,10 @@
 #import <objc/message.h>
 
 #import "THLog.h"
+#import "THEAGLContextAdditions.h"
 #import "THBaseEAGLView.h"
 
 @interface THBaseEAGLView ()
-
-@property (nonatomic, assign) id animationTimer;
 
 - (BOOL)_createFramebuffer;
 - (void)_destroyFramebuffer;
@@ -46,9 +45,10 @@
     
     eaglLayer.opaque = YES;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
+                                    [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
+                                    kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
     
-    _eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+    _eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
     if (!_eaglContext || ![EAGLContext setCurrentContext:_eaglContext]) {
         return NO;
@@ -83,17 +83,20 @@
 
 - (void)setNeedsDraw
 {
-    if(!_animating && !_needsDraw) {
-        [self performSelector:@selector(drawView) withObject:nil afterDelay:0];
+    if(![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(setNeedsDraw) withObject:nil waitUntilDone:NO];
+    } else {
+        if(!_animating && !_needsDraw) {
+            [self performSelector:@selector(drawView) withObject:nil afterDelay:0.0f];
+            _needsDraw = YES;
+        }
     }
 }
 
 - (void)drawView 
 {
-    if(_needsDraw) {
-        _needsDraw = NO;
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
-    }    
+    _needsDraw = NO;
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
 }
 
 - (void)didMoveToWindow
@@ -105,10 +108,27 @@
     [super didMoveToWindow];
 }
 
+
+- (void)willMoveToSuperview:(UIView *)superview
+{
+    if(self.isAnimating) {
+        self.animating = NO;
+    }
+    if(self.animationTimer) {
+        [self.animationTimer invalidate];
+        self.animationTimer = nil;
+    }
+    
+    _needsDraw = NO;
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
+    
+    [super willMoveToSuperview:superview];
+}
+
 - (void)layoutSubviews 
 {
     [super layoutSubviews];
-    [EAGLContext setCurrentContext:self.eaglContext];
+    [self.eaglContext thPush];
     [self _destroyFramebuffer];
     [self _createFramebuffer];
     if(_didJustMoveToNewWindow) {
@@ -117,28 +137,29 @@
     } else {
         [self setNeedsDraw];
     }
+    [self.eaglContext thPop];
 }
 
 - (BOOL)_createFramebuffer 
 {    
-    glGenFramebuffersOES(1, &_viewFramebuffer);
-    glGenRenderbuffersOES(1, &_viewRenderbuffer);
+    glGenFramebuffers(1, &_viewFramebuffer);
+    glGenRenderbuffers(1, &_viewRenderbuffer);
     
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, _viewRenderbuffer);
-    [self.eaglContext renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
-    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, _viewRenderbuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, _viewFramebuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _viewRenderbuffer);
+    [self.eaglContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer*)self.layer];
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _viewRenderbuffer);
     
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &_backingWidth);
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &_backingHeight);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backingWidth);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backingHeight);
     
-    glGenRenderbuffersOES(1, &_depthRenderbuffer);
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, _depthRenderbuffer);
-    glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, _backingWidth, _backingHeight);
-    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, _depthRenderbuffer);
+    glGenRenderbuffers(1, &_depthRenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _backingWidth, _backingHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderbuffer);
 
-    if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES) {
-        THWarn(@"failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        THWarn(@"failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
         return NO;
     }
     
@@ -148,13 +169,13 @@
 
 - (void)_destroyFramebuffer 
 {    
-    glDeleteFramebuffersOES(1, &_viewFramebuffer);
+    glDeleteFramebuffers(1, &_viewFramebuffer);
     _viewFramebuffer = 0;
-    glDeleteRenderbuffersOES(1, &_viewRenderbuffer);
+    glDeleteRenderbuffers(1, &_viewRenderbuffer);
     _viewRenderbuffer = 0;
     
     if(_depthRenderbuffer) {
-        glDeleteRenderbuffersOES(1, &_depthRenderbuffer);
+        glDeleteRenderbuffers(1, &_depthRenderbuffer);
         _depthRenderbuffer = 0;
     }
 }
@@ -164,10 +185,12 @@
 {
     if(animating != _animating) {
         if(animating) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
+
             // Actually, don't use displaylink - it causes lots of jittering
             // during interaction on early devices.
             // Use CADisplayLink, if available.
-            /*Class displayLinkClass = NSClassFromString(@"CADisplayLink");
+            Class displayLinkClass = NSClassFromString(@"CADisplayLink");
             if(displayLinkClass) {
                 if(!self.animationTimer) {
                     id displayLink = objc_msgSend(displayLinkClass, @selector(displayLinkWithTarget:selector:), self, @selector(drawView));
@@ -179,9 +202,9 @@
                     objc_msgSend(displayLink, @selector(setFrameInterval:), round(_animationInterval * 60.0));
                     objc_msgSend(displayLink, @selector(setPaused:), NO);
                 }
-            } else {*/
+            } else {
                 self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:self.animationInterval target:self selector:@selector(drawView) userInfo:nil repeats:YES];
-            //}
+            }
         } else {
             id animationTimer = self.animationTimer;
             if([animationTimer isKindOfClass:[NSTimer class]]) {
@@ -190,6 +213,8 @@
             } else {
                 objc_msgSend(animationTimer, @selector(setPaused:), YES);
             }
+            
+            [self setNeedsDraw];
         }
         _animating = animating;        
     }
@@ -211,7 +236,7 @@
         [self.animationTimer invalidate]; // Works with NSTimer and CADisplayLink.
         self.animationTimer = nil;
     }
-    if(!_needsDraw) {
+    if(_needsDraw) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(drawView) object:nil];
     }
     

@@ -199,6 +199,13 @@
 
 @end
 
+@interface BlioTextFlowReference ()
+
+@property (nonatomic, assign) NSInteger pageIndex;
+@property (nonatomic, retain) NSString *referenceId;
+
+@end
+
 @implementation BlioTextFlowFlowReference
 
 @synthesize flowSourceFileName, startPage;
@@ -210,6 +217,20 @@
 
 @end
 
+@implementation BlioTextFlowReference
+
+@synthesize referenceId, pageIndex;
+
+- (void)dealloc {
+    self.referenceId = nil;
+    [super dealloc];
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"{ PageIndex: %d, ReferenceId: %@ }", self.pageIndex, self.referenceId];            
+}
+            
+@end
 
 @interface BlioTextFlowTOCEntry ()
 
@@ -237,6 +258,7 @@
 @property (nonatomic, retain) NSSet *pageRanges;
 @property (nonatomic, retain) NSArray *flowReferences;
 @property (nonatomic, retain) NSArray *tableOfContents;
+@property (nonatomic, retain) NSArray *references;
 
 @property (nonatomic, assign) BlioTextFlowFlowTreeKind flowTreeKind;
 
@@ -249,11 +271,13 @@
 @synthesize pageRanges;
 @synthesize flowReferences; // Lazily loaded - see -(NSArray *)flowReferences
 @synthesize tableOfContents; // Lazily loaded - see -(NSArray *)tableOfContents
+@synthesize references; // Lazily loaded - see -(NSArray *)references
 @synthesize bookID;
 
 - (void)dealloc {
     self.pageRanges = nil;
     self.flowReferences = nil;
+    self.references = nil;
     [pageBlocksCacheLock release];
     
     for(NSUInteger i = 0; i < kTextFlowPageBlocksCacheCapacity; ++i) {
@@ -321,7 +345,10 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 newBlockIDString = [[NSString alloc] initWithUTF8String:atts[i+1]];
             } else if (strcmp("Folio", atts[i]) == 0) {
                 folio = (strcmp("True", atts[i+1]) == 0);
+            } else if (strcmp("Surround", atts[i]) == 0) {
+                folio = (strcmp("True", atts[i+1]) == 0);
             }
+            
         }
         
         NSInteger targetIndex = context->pageIndex;
@@ -396,7 +423,6 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         NSUInteger dataLength = [data length];
         NSUInteger offset = (NSUInteger)[targetMarker byteIndex];
         if (offset >= dataLength) {
-            [data release];
             return nil;
         }
         
@@ -461,6 +487,7 @@ typedef struct BlioTextFlowSectionsXMLParsingContext
 {
     NSMutableArray *buildTableOfContents;
     NSMutableArray *buildFlowReferences;
+    NSMutableArray *buildReferences;
 } BlioTextFlowSectionsXMLParsingContext;
 
 static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) {
@@ -532,12 +559,54 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
             }
         }
         [newSection release];
+    }  else if (strcmp("Reference", name) == 0) {
+        BlioTextFlowReference *newReference = [[BlioTextFlowReference alloc] init];
+        
+        BOOL pageIndexFound = NO;
+        BOOL idFound = NO;
+        
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageIndex", atts[i]) == 0) {
+                newReference.pageIndex = atoi(atts[i+1]);
+                pageIndexFound = YES;
+            } else if (strcmp("Id", atts[i]) == 0) {
+                NSString *idString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != idString) {
+                    newReference.referenceId = idString;
+                    [idString release];
+                    idFound = YES;
+                }                
+            }
+        }
+        
+        if(pageIndexFound && idFound) {
+            [context->buildReferences addObject:newReference];
+        } else {
+            if(!pageIndexFound) {
+                NSLog(@"Warning - Reference with no page index - ignoring");
+            }
+            if(!idFound) {
+                NSLog(@"Warning - Reference with no id - ignoring");
+            }
+        }
+        [newReference release];
     }
 }
 
+static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lhs) 
+{
+    return (int)(*rhs).startPage - (int)(*lhs).startPage;
+}
+
+static int flowReferenceCompare(BlioTextFlowFlowReference **rhs, BlioTextFlowFlowReference **lhs) 
+{
+    return (int)(*rhs).startPage - (int)(*lhs).startPage;
+}
+
+
 - (void)parseSectionsXML
 {
-    BlioTextFlowSectionsXMLParsingContext context = { [NSMutableArray array], [NSMutableArray array] };
+    BlioTextFlowSectionsXMLParsingContext context = { [NSMutableArray array], [NSMutableArray array], [NSMutableArray array] };
 
     BlioBook *aBook = self.book;
     NSData *data = [aBook manifestDataForKey:BlioManifestTextFlowKey];
@@ -554,7 +623,8 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         XML_ParserFree(flowParser);
     }
     
-    self.flowReferences = context.buildFlowReferences;
+    self.flowReferences = [context.buildFlowReferences blioStableSortedArrayUsingFunction:(int (*)(id *arg1, id *arg2))flowReferenceCompare];
+    self.references = context.buildReferences;
     
     // If there are no TOC entries for page index 0, add an artificial one.
     BOOL makeArtificialFrontEnrty = YES;
@@ -570,7 +640,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         [tocEntry release];
     }
 
-    self.tableOfContents = context.buildTableOfContents;
+    self.tableOfContents = [context.buildTableOfContents blioStableSortedArrayUsingFunction:(int (*)(id *arg1, id *arg2))tocEntryCompare];
 }
 
 - (NSArray *)flowReferences
@@ -581,18 +651,20 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     return flowReferences;
 }
 
-static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lhs) 
-{
-    return (int)(*rhs).startPage - (int)(*lhs).startPage;
-}
-
 - (NSArray *)tableOfContents
 {
     if(!tableOfContents) {
         [self parseSectionsXML];
-        self.tableOfContents = [tableOfContents blioStableSortedArrayUsingFunction:(int (*)(id *arg1, id *arg2))tocEntryCompare];
     }
     return tableOfContents;
+}
+
+- (NSArray *)references
+{
+    if(!references) {
+        [self parseSectionsXML];
+    }
+    return references;
 }
 
 - (BlioBook *)book {
@@ -691,6 +763,13 @@ static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char
     }
     
     return tree;    
+}
+
+- (BlioTextFlowReference *)referenceForReferenceId:(NSString *)referenceId {
+    NSArray *referencesArray = [self references];
+    BlioTextFlowReference *referenceMatch = [referencesArray longestComponentizedMatch:referenceId componentsSeperatedByString:@"/" forKeyPath:@"referenceId"];
+    
+    return referenceMatch;
 }
 
 #pragma mark -
@@ -1010,6 +1089,11 @@ static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char
     }
 }
 
+- (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid {
+	NSUInteger sectionIndex = [sectionUuid integerValue];
+    return [[self.tableOfContents objectAtIndex:sectionIndex] level];
+}
+
 - (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid
 {
     NSUInteger sectionIndex = [sectionUuid integerValue];
@@ -1101,12 +1185,21 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 		return;
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	if (![self hasBookManifestValueForKey:BlioManifestTextFlowKey]) {
+		// no value means this is probably a free XPS; no need to continue, but no need to send a fail signal to dependent operations either.
+		self.operationSuccess = YES;
+		self.percentageComplete = 100;
+		[pool drain];
+		return;
+	}
 	
     NSData *data = [self getBookManifestDataForKey:BlioManifestTextFlowKey];
     
     if (nil == data) {
         //NSLog(@"Could not create TextFlow data file.");
         NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist at path: %@.", [self getBookManifestPathForKey:BlioManifestTextFlowKey]);
+		self.operationSuccess = NO;
         [pool drain];
         return;
     }
@@ -1147,6 +1240,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         
         if (!data) {
             NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist with name: %@.", [pageRange fileName]);
+			self.operationSuccess = NO;
             [pool drain];
             return;
         }

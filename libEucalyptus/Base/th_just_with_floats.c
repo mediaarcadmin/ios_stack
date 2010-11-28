@@ -12,6 +12,7 @@
 #include "stdlib.h"
 #include "stdbool.h"
 #include "limits.h"
+#include "string.h"
 #include "assert.h"
 
 #include <Accelerate/Accelerate.h>
@@ -48,13 +49,15 @@ static int extract_min(struct Estimates *estimates, int count, CGFloat *shortest
     CGFloat smallest_estimate_found;
     vDSP_Length smallest_index;
     
-    if(sizeof(CGFloat) == 4) {
+    if(sizeof(CGFloat) == 4 
+       && &vDSP_minvi != NULL) { // Check for the function's existence - it's 4.0+ and we support 3.2
         vDSP_minvi((float *)shortest_path_vector,
                    1,
                    (float *)&smallest_estimate_found,
                    &smallest_index,
                    count);        
-    } else if(sizeof(CGFloat) == 8) {
+    } else if(sizeof(CGFloat) == 8 
+              && &vDSP_minviD != NULL) { // Check for the function's existence - it's 4.0+ and we support 3.2
         vDSP_minviD((double *)shortest_path_vector,
                     1,
                     (double *)&smallest_estimate_found,
@@ -159,17 +162,18 @@ int th_just_with_floats(const THBreak *breaks, int break_count, CGFloat offset, 
     // nodes.  A node's estimate in here is re-set to CGFLOAT_MAX when it is 
     // visited.  It's used so that we can use vector functions in extract_min
     // to find the minimum estimate for an unvisited node.
-    CGFloat *shortest_path_vector = malloc(sizeof(CGFloat) * break_count);
-    const CGFloat to_fill = CGFLOAT_MAX;
+    size_t shortest_path_vector_length = sizeof(CGFloat) * break_count;
+    CGFloat *shortest_path_vector = malloc(shortest_path_vector_length);
+    const CGFloat to_fill_with = CGFLOAT_MAX;
     if(sizeof(CGFloat) == 4) {
-        vDSP_vfill((float *)&to_fill, (float *)shortest_path_vector, 1, break_count);
+        memset_pattern4(shortest_path_vector, &to_fill_with, shortest_path_vector_length);
     } else if(sizeof(CGFloat) == 8) {
-        vDSP_vfillD((double *)&to_fill, (double *)shortest_path_vector, 1, break_count);
+        memset_pattern8(shortest_path_vector, &to_fill_with, shortest_path_vector_length);
     } else {
         for(int i = 0; i < break_count; ++i) {
-            shortest_path_vector[i] = to_fill;
+            shortest_path_vector[i] = to_fill_with;
         }
-    }
+    }        
     
     // The meat of Dijkstra's algorithm:
     int examining_break = -1;

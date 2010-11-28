@@ -10,14 +10,15 @@
 #import "MRGridView.h"
 #import "BlioBook.h"
 #import "BlioCoverView.h"
+#import "BlioAccessibilitySegmentedControl.h"
 
 @class BlioTestBlockWords;
 @class BlioBookViewController;
 
 typedef enum {
     kBlioLibraryLayoutUndefined = -1,
-    kBlioLibraryLayoutList = 0,
-	kBlioLibraryLayoutGrid = 1,
+    kBlioLibraryLayoutGrid = 0,
+	kBlioLibraryLayoutList = 1,
 } BlioLibraryLayout;
 
 typedef enum {
@@ -47,6 +48,7 @@ static const CGFloat kBlioLibraryGridBookSpacing = 0;
 static const CGFloat kBlioLibraryGridBookSpacingPad = 40;
 
 static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
+static const CGFloat kBlioLibrarySortButtonWidth = 117;
 
 static const CGFloat kBlioProportionalProgressBarInsetX = 3;
 static const CGFloat kBlioProportionalProgressBarInsetY = 3;
@@ -83,7 +85,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @end
 
-@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, BlioCoverViewDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
+@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, BlioCoverViewDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
     BlioLibraryBookView *_currentBookView;
     UIImageView *_currentPoppedBookCover;
     BOOL _bookCoverPopped;
@@ -105,6 +107,11 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     BlioLibraryBookView *selectedLibraryBookView;
     BlioBookViewController *openBookViewController;
 	UIButton * libraryVaultButton;
+	BOOL showArchiveCell;
+	NSInteger selectedGridIndex;
+	BlioAccessibilitySegmentedControl * sortSegmentedControl;
+	NSMutableArray * libraryItems;
+	NSMutableArray * sortLibraryItems;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
 #endif
@@ -124,6 +131,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) NSUInteger maxLayoutPageEquivalentCount;
 @property (nonatomic, assign) BlioLibrarySortType librarySortType;
 @property (nonatomic, retain) UIButton * libraryVaultButton;
+@property (nonatomic, assign) BOOL showArchiveCell;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @property (nonatomic, retain) UIPopoverController * settingsPopoverController;
@@ -210,18 +218,17 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 -(void)listenToProcessingNotifications;
 -(void)stopListeningToProcessingNotifications;
-
+-(NSString*)stateBasedAccessibilityHint;
 @end
 
 @interface BlioLibraryListCell : UITableViewCell {
     BlioLibraryBookView *bookView;
     UILabel *titleLabel;
     UILabel *authorLabel;
-	BlioProgressView *progressSlider;
-	BlioProportionalProgressView *proportionalProgressView;
+	//BlioProgressView *progressSlider;
+	//BlioProportionalProgressView *proportionalProgressView;
     UIProgressView *progressView;
-    UIButton * pauseButton;
-    UIButton * resumeButton;
+	UIButton * pauseResumeButton;
     id delegate;
 	NSUInteger layoutPageEquivalentCount;
 	UIImageView * statusBadge;
@@ -230,17 +237,16 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
 @property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UILabel *authorLabel;
-@property (nonatomic, retain) BlioProgressView *progressSlider;
-@property (nonatomic, retain) BlioProportionalProgressView *proportionalProgressView;
+//@property (nonatomic, retain) BlioProgressView *progressSlider;
+//@property (nonatomic, retain) BlioProportionalProgressView *proportionalProgressView;
 @property (nonatomic, retain) UIProgressView *progressView;
-@property (nonatomic, retain) UIButton *pauseButton;
-@property (nonatomic, retain) UIButton *resumeButton;
+@property (nonatomic, retain) UIButton *pauseResumeButton;
 @property (nonatomic, assign) BlioBook *book;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) UIImageView *statusBadge;
 
 -(void)resetAuthorText;
--(void)resetProgressSlider;
+//-(void)resetProgressSlider;
 -(void)listenToProcessingNotifications;
 -(void)stopListeningToProcessingNotifications;
 

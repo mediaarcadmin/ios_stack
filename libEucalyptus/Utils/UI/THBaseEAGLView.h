@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
+#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES2/glext.h>
 
 @interface THBaseEAGLView : UIView {
     GLint _backingWidth;
@@ -33,6 +33,7 @@
 
 @property (nonatomic, assign, getter=isAnimating) BOOL animating;
 @property (nonatomic, assign) NSTimeInterval animationInterval;
+@property (nonatomic, assign) id animationTimer;
 
 - (void)setNeedsDraw;
 - (void)drawView;

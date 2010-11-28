@@ -409,7 +409,8 @@ typedef struct {
 typedef struct {
 
 	int compression_type; ///< compression type 8 = deflate, 0 = uncompressed
-	int length;				///< number of bytes 
+	int length;				///< number of bytes of compressed data
+	int uncmp_length;
 	void *pComponentData;	///< pointer to data for this component
 } XPS_FILE_PACKAGE_INFO;
 
@@ -1689,7 +1690,7 @@ XPSSDK void XPSCALL XPS_FreeUUID(const XPSCHAR * uuid);
  * @see XPS_QueryOption
  *
  */
-XPSSDK void XPSCALL XPS_SetOption(XPS_HANDLE handle, const XPSCHAR * option, int value);
+XPSSDK void XPSCALL XPS_SetOption(XPS_HANDLE handle, const XPSCHAR * option, int value, char *aValue);
 
 /**
  * @brief Delete a named option setting

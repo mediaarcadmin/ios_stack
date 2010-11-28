@@ -350,6 +350,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 										audiobookPath:nil
 											 sourceID:self.feed.sourceID
 									 sourceSpecificID:self.entity.id
+									  placeholderOnly:NO
 		 ];
 		
 		// register as listener

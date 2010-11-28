@@ -46,7 +46,10 @@
     return self;
 }
 
-- (void)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint {
+- (BOOL)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint {
+    if ([string rangeOfCharacterFromSet:[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet]].location == NSNotFound) {
+        return NO;
+    }
     self.searchString = string;
     self.hasWrapped = NO;
     
@@ -73,6 +76,8 @@
     self.startElementOffset = self.currentCharacterOffset;
     
     [self findNextOccurrence];
+    
+    return YES;
 }
 
 - (void)searchStopped {

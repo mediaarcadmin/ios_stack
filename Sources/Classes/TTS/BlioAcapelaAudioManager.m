@@ -151,7 +151,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
         wordsToSpeak = [wordsToSpeak subarrayWithRange:NSMakeRange(offset, wordsToSpeak.count - offset)];
     } 
     for(NSString *word in wordsToSpeak) {
-        NSUInteger wordLength = [word length];
+		NSUInteger wordLength = [word length];
         CFIndex oldLength = CFAttributedStringGetLength(stringWithWordOffsets);
         CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(oldLength, 0), (CFStringRef)word);
         CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(oldLength + wordLength, 0), CFSTR(" "));
@@ -172,7 +172,12 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
     
     NSString *stringToSpeak = (NSString *)CFAttributedStringGetString(currentStringWithWordOffsets);
     return [engine startSpeakingString:stringToSpeak];
-	return NO;
+	
+	// TESTING
+	//return [engine startSpeakingString:@"In the bosom of one of those spacious coves which indent"];
+    //[engine queueSpeakingString:@"the eastern shore of the Hudson"];
+	
+	//return NO;
 }
 
 - (BOOL)startSpeaking:(NSString *)string {

@@ -17,17 +17,19 @@
 	UITextField* passwordField;
 	BlioRoundedRectActivityView * activityIndicatorView;
 	BlioBookSourceID sourceID;
+	UIView * loginFooterView;
 }
 
 @property (nonatomic,retain) UITextField* emailField;
 @property (nonatomic,retain) UITextField* passwordField;
 @property (nonatomic,retain) BlioRoundedRectActivityView* activityIndicatorView;
 @property (nonatomic,assign) BlioBookSourceID sourceID;
+@property (nonatomic,retain) UIView * loginFooterView;
 
 
 -(void)receivedLoginResult:(BlioLoginResult)loginResult;
 -(id)initWithSourceID:(BlioBookSourceID)bookSourceID;
 - (UITextField *)createEmailTextField;
 - (UITextField *)createPasswordTextField;
--(void)forgotPassword;
+-(void)forgotPassword:(id)sender;
 @end

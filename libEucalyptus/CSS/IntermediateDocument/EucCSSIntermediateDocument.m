@@ -109,36 +109,38 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 }
 
 
-- (void)_setupStylesheetWithUserAgentSheetPath:(NSString *)basePath 
+- (void)_setupStylesheetWithUserAgentSheetPath:(NSArray *)basePaths
                                  userSheetPath:(NSString *)userPath
                                      parseHead:(BOOL)parseHead
 {
-    NSData *baseSheet = [NSData dataWithContentsOfMappedFile:basePath];
-    
     css_stylesheet *stylesheet;
-    if(css_stylesheet_create(CSS_LEVEL_3, "UTF-8",
-                             "", "", CSS_ORIGIN_UA, 
-                             CSS_MEDIA_ALL, false,
-                             false, _lwcContext,
-                             EucRealloc, NULL,
-                             EucResolveURL, NULL,
-                             &stylesheet) == CSS_OK) {
-        css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)baseSheet.bytes, baseSheet.length);
-        if(err != CSS_NEEDDATA) {
-            THWarn(@"Unexpected error %ld parsing base stylesheet", err);
-        }
-        err = css_stylesheet_data_done(stylesheet);
-        if (err == CSS_OK) {
-            ++_stylesheetsCount;
-            _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
-            _stylesheets[_stylesheetsCount-1] = stylesheet;
-            
-            css_select_ctx_append_sheet(_selectCtx, stylesheet);
-        } else {
-            css_stylesheet_destroy(stylesheet);
-            THWarn(@"Error %ld parsing stylesheet", (long)err);
-        }
-    }        
+    
+    for(NSString *basePath in basePaths) {
+        NSData *baseSheet = [NSData dataWithContentsOfMappedFile:basePath];
+        if(css_stylesheet_create(CSS_LEVEL_3, "UTF-8",
+                                 "", "", CSS_ORIGIN_UA, 
+                                 CSS_MEDIA_ALL, false,
+                                 false, _lwcContext,
+                                 EucRealloc, NULL,
+                                 EucResolveURL, NULL,
+                                 &stylesheet) == CSS_OK) {
+            css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)baseSheet.bytes, baseSheet.length);
+            if(err != CSS_NEEDDATA) {
+                THWarn(@"Unexpected error %ld parsing user stylesheet %@", (long)err, basePath);
+            }
+            err = css_stylesheet_data_done(stylesheet);
+            if (err == CSS_OK) {
+                ++_stylesheetsCount;
+                _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
+                _stylesheets[_stylesheetsCount-1] = stylesheet;
+                
+                css_select_ctx_append_sheet(_selectCtx, stylesheet);
+            } else {
+                css_stylesheet_destroy(stylesheet);
+                THWarn(@"Error %ld parsing user stylesheet %@", (long)err, basePath);
+            }
+        }        
+    }
     
     if(userPath) {
         NSData *userSheet = [NSData dataWithContentsOfMappedFile:userPath];
@@ -151,7 +153,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                                  &stylesheet) == CSS_OK) {
             css_error err = css_stylesheet_append_data(stylesheet, (uint8_t *)userSheet.bytes, userSheet.length);
             if(err != CSS_NEEDDATA) {
-                THWarn(@"Unexpected error %ld parsing user stylesheet", err);
+                THWarn(@"Unexpected error %ld parsing user stylesheet %@", (long)err, userPath);
             }
             err = css_stylesheet_data_done(stylesheet);
             if (err == CSS_OK) {
@@ -162,7 +164,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                 css_select_ctx_append_sheet(_selectCtx, stylesheet);
             } else {
                 css_stylesheet_destroy(stylesheet);
-                THWarn(@"Error %ld parsing stylesheet", (long)err);
+                THWarn(@"Error %ld parsing stylesheet %@", (long)err, userPath);
             }
         }
     }    
@@ -317,7 +319,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 }
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
-               baseCSSPath:(NSString *)baseCSSPath
+              baseCSSPaths:(NSArray *)baseCSSPaths
                userCSSPath:(NSString *)userCSSPath
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
@@ -332,7 +334,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         _lwcContext = lwcContext;
         lwc_context_ref(_lwcContext);
         if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
-            [self _setupStylesheetWithUserAgentSheetPath:baseCSSPath userSheetPath:userCSSPath parseHead:isHTML];
+            [self _setupStylesheetWithUserAgentSheetPath:baseCSSPaths userSheetPath:userCSSPath parseHead:isHTML];
             success = YES;
         }
         
@@ -349,13 +351,13 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
-               baseCSSPath:(NSString *)baseCSSPath
+              baseCSSPaths:(NSArray *)baseCSSPaths
                userCSSPath:(NSString *)userCSSPath
                     isHTML:(BOOL)isHTML
 {
     lwc_context *lwcContext;
     if(lwc_create_context(EucRealloc, NULL, &lwcContext) == lwc_error_ok) {
-        return [self initWithDocumentTree:documentTree baseCSSPath:baseCSSPath userCSSPath:userCSSPath forURL:url dataSource:dataSource isHTML:isHTML lwcContext:lwcContext];
+        return [self initWithDocumentTree:documentTree baseCSSPaths:baseCSSPaths userCSSPath:userCSSPath forURL:url dataSource:dataSource isHTML:isHTML lwcContext:lwcContext];
     } else {
         [self release];
         return nil;
@@ -441,6 +443,9 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 {        
     [_keyToExtantNode release];
 
+    [_documentTree release];    
+    [_url release];
+
     css_select_ctx_destroy(_selectCtx);
 
     for(NSUInteger i = 0; i < _stylesheetsCount; ++i) {
@@ -452,9 +457,6 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     if(_lwcContext) {
         lwc_context_unref(_lwcContext);
     }
-    
-    [_documentTree release];    
-    [_url release];
 
     [super dealloc];
 }

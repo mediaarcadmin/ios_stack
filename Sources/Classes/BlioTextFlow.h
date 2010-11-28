@@ -102,6 +102,16 @@
 
 @end
 
+@interface BlioTextFlowReference : NSObject {
+    NSInteger pageIndex;
+    NSString *referenceId;
+}
+
+@property (nonatomic, assign, readonly) NSInteger pageIndex;
+@property (nonatomic, retain, readonly) NSString *referenceId;
+
+@end
+
 @interface BlioTextFlowTOCEntry: NSObject {
     NSString *name;
     NSUInteger startPage;
@@ -147,6 +157,7 @@ typedef enum BlioTextFlowFlowTreeKind
 
 - (BlioTextFlowFlowTree *)flowTreeForFlowIndex:(NSUInteger)sectionIndex;
 - (BlioTextFlowXAMLTree *)xamlTreeForFlowIndex:(NSUInteger)sectionIndex;
+- (BlioTextFlowReference *)referenceForReferenceId:(NSString *)referenceId;
 
 // Convenience methods
 - (NSArray *)sortedPageRanges;

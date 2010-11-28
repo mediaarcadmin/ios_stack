@@ -10,9 +10,11 @@
 #import "BlioBook.h"
 #import "BlioXPSProvider.h"
 #import "BlioBookManager.h"
-//#import "BlioDrmManager.h"
 #import "BlioDrmSessionManager.h"
+#import "BlioLayoutHyperlink.h"
 #import "zlib.h"
+#import <objc/runtime.h>
+#import <libEucalyptus/THPair.h>
 
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
 void BlioXPSProviderDRMRewind(URI_HANDLE h);
@@ -20,6 +22,14 @@ size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb);
 size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb);
 size_t BlioXPSProviderDRMSize(URI_HANDLE h);
 void BlioXPSProviderDRMClose(URI_HANDLE h);
+
+@interface BlioXPSBitmapReleaseCallback : NSObject {
+    void *data;
+}
+
+@property (nonatomic, assign) void *data;
+
+@end
 
 @interface BlioXPSProvider()
 
@@ -31,10 +41,12 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @property (nonatomic, retain) BlioTimeOrderedCache *componentCache;
 @property (nonatomic, assign, readonly) BOOL bookIsEncrypted;
 @property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
+@property (nonatomic, retain) NSString *xpsPagesDirectory;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
 - (NSData *)decompressWithGZipCompression:(NSData *)data;
+- (NSArray *)extractHyperlinks:(NSData *)data;
 
 @end
 
@@ -44,13 +56,16 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 @synthesize tempDirectory, imageInfo, xpsData, uriMap;
 @synthesize componentCache;
 @synthesize drmSessionManager;
+@synthesize xpsPagesDirectory;
 
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
 		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
-        NSLog(@"------- BOUND TO BOOK %@ --------------", [self.book title]);
         if ([drmSessionManager bindToLicense]) {
             decryptionAvailable = YES;
+            if (reportingStatus != kBlioXPSProviderReportingStatusComplete) {
+                reportingStatus = kBlioXPSProviderReportingStatusRequired;
+            }
         }
     }
 	return drmSessionManager;
@@ -74,6 +89,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     self.bookID = nil;
     self.xpsData = nil;
     self.uriMap = nil;
+	self.xpsPagesDirectory = nil;
     
     if (currentUriString) {
         [currentUriString release];
@@ -84,14 +100,11 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     [inflateLock release];
     
     self.componentCache = nil;
-	
-	if (drmSessionManager) {
-        // Only reports reading if decryption actually took place
-        [drmSessionManager reportReading];
-        NSLog(@"------- REPORTED READING FOR BOOK %@ --------------", [self.book title]);
+    
+    if (drmSessionManager) {
 		[drmSessionManager release];
     }
-    
+	
     [super dealloc];
 }
 
@@ -169,6 +182,14 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     return self;
 }
 
+- (void)reportReadingIfRequired {
+    if (reportingStatus == kBlioXPSProviderReportingStatusRequired) {
+        if ([drmSessionManager reportReading]) {
+            reportingStatus = kBlioXPSProviderReportingStatusComplete;
+        }
+    }
+}
+
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path {
     // Should have been deleted by XPS cleanup but remove if not
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -242,11 +263,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     CGAffineTransform ctm = CGContextGetCTM(ctx);
     CGRect insetBounds = CGRectInset(bounds, inset, inset);
     
-    [renderingLock lock];
-        memset(&properties,0,sizeof(properties));
-        XPS_GetFixedPageProperties(xpsHandle, 0, page - 1, &properties);
-        CGRect pageCropRect = CGRectMake(properties.contentBox.x, properties.contentBox.y, properties.contentBox.width, properties.contentBox.height);
-    [renderingLock unlock];
+	CGRect pageCropRect = [self cropRectForPage:page];
     
     CGFloat widthScale = (CGRectGetWidth(insetBounds) / CGRectGetWidth(pageCropRect)) * ctm.a;
     CGFloat heightScale = (CGRectGetHeight(insetBounds) / CGRectGetHeight(pageCropRect)) * ctm.d;
@@ -312,6 +329,60 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     [renderingLock unlock];
 }
 
+- (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
+                                fromRect:(CGRect)rect
+                                 minSize:(CGSize)size 
+                              getContext:(id *)context {
+	
+	CGRect pageCropRect = [self cropRectForPage:page];
+    
+    OutputFormat format;
+    memset(&format,0,sizeof(format));
+    
+    CGFloat pageSizeScaleWidth  = size.width / pageCropRect.size.width;
+    CGFloat pageSizeScaleHeight = size.height / pageCropRect.size.height;
+    
+    CGFloat pageZoomScaleWidth  = size.width / CGRectGetWidth(rect);
+    CGFloat pageZoomScaleHeight = size.height / CGRectGetHeight(rect);
+    
+    XPS_ctm render_ctm = { pageZoomScaleWidth, 0, 0, pageZoomScaleHeight, -rect.origin.x * pageZoomScaleWidth, -rect.origin.y * pageZoomScaleHeight};
+    format.xResolution = 96;			
+    format.yResolution = 96;	
+    format.colorDepth = 8;
+    format.colorSpace = XPS_COLORSPACE_RGBA;
+    format.pagesizescale = 1;	
+    format.pagesizescalewidth = pageSizeScaleWidth;		
+    format.pagesizescaleheight = pageSizeScaleHeight;
+    format.ctm = &render_ctm;				
+    format.formatType = OutputFormat_RAW;
+    imageInfo = NULL;
+    
+    [renderingLock lock];
+    XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
+    XPS_SetUserData(xpsHandle, self);
+    XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
+    
+    CGContextRef bitmapContext = nil;
+    
+    if (imageInfo) {
+        size_t width  = imageInfo->widthInPixels;
+        size_t height = imageInfo->height;
+        
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+
+        bitmapContext = CGBitmapContextCreate(imageInfo->pBits, width, height, 8, imageInfo->rowStride, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);
+        BlioXPSBitmapReleaseCallback *releaseCallback = [[BlioXPSBitmapReleaseCallback alloc] init];
+        releaseCallback.data = imageInfo->pBits;
+        
+        *context = [releaseCallback autorelease];
+                        
+        CGColorSpaceRelease(colorSpace);
+    }
+    [renderingLock unlock];
+    
+    return (CGContextRef)[(id)bitmapContext autorelease];
+}
+
 - (UIImage *)thumbnailForPage:(NSInteger)pageNumber {
     UIImage *thumbnail = nil;
     NSString *thumbnailsLocation = [self.book manifestLocationForKey:BlioManifestThumbnailDirectoryKey];
@@ -325,6 +396,13 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     return thumbnail;
 }
 
+- (NSArray *)hyperlinksForPage:(NSInteger)page {
+    NSData *fpage = [self dataForComponentAtPath:[NSString stringWithFormat:@"%d.fpage", page]];
+    NSArray *hyperlinks = [self extractHyperlinks:fpage];
+
+    return hyperlinks;
+}
+
 // Not required as XPS document stays open during rendering
 - (void)openDocumentIfRequired {}
 
@@ -336,6 +414,97 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 
 #pragma mark -
 #pragma mark XPS Component Data
+
+- (CGRect)xpsRectFromString:(NSString *)pathString {
+    CGMutablePathRef mutablePath = CGPathCreateMutable();
+    NSScanner *pathScanner = [NSScanner scannerWithString:pathString];
+    [pathScanner setCharactersToBeSkipped:nil]; 
+    
+    NSCharacterSet *XPSCOMMANDS = [NSCharacterSet characterSetWithCharactersInString:@"FMmLlZz "];
+    NSString *COMMA = @",";
+    NSString *lastCommand = nil;
+    
+    while ([pathScanner isAtEnd] == NO)
+    {
+        NSString *command = nil;
+        CGFloat a = 0, b = 0;
+        
+        [pathScanner scanUpToCharactersFromSet:XPSCOMMANDS intoString:NULL];
+        [pathScanner scanCharactersFromSet:XPSCOMMANDS intoString:&command];
+        
+        if ([command isEqualToString:@" "]) {
+            command = [NSString stringWithString:lastCommand];
+        } else {
+            lastCommand = command;
+        }
+        
+        if ([[command uppercaseString] isEqualToString:@"M"]) {
+            [pathScanner scanFloat:&a];
+            [pathScanner scanString:COMMA intoString:NULL];
+            [pathScanner scanFloat:&b];
+            CGPathMoveToPoint(mutablePath, NULL, a, b);
+        } else if ([[command uppercaseString] isEqualToString:@"L"]) {
+            [pathScanner scanFloat:&a];
+            [pathScanner scanString:COMMA intoString:NULL];
+            [pathScanner scanFloat:&b];
+            CGPathAddLineToPoint(mutablePath, NULL, a, b);
+        } else if ([[command uppercaseString] isEqualToString:@"Z"]) {
+            CGPathCloseSubpath(mutablePath);
+        }
+    }
+    
+    CGRect boundingRect = CGPathGetBoundingBox(mutablePath);
+    CGPathRelease(mutablePath);
+    
+    return boundingRect;                
+}
+
+- (NSArray *)extractHyperlinks:(NSData *)data {
+    NSMutableArray *hyperlinks = [NSMutableArray array];
+    
+    NSString *inputString = [[NSString alloc] initWithBytesNoCopy:(void *)[data bytes] length:[data length] encoding:NSUTF8StringEncoding freeWhenDone:NO];
+    
+    NSString *HYPERLINK = @"<Path FixedPage.NavigateUri";
+    NSString *DATA = @"Data";
+    NSString *QUOTE = @"\"";
+    NSString *CLOSINGBRACKET = @"/>";
+    
+    NSScanner *aScanner = [NSScanner scannerWithString:inputString];
+    
+    while ([aScanner isAtEnd] == NO)
+    {
+        NSString *hyperlinkString = nil;
+        [aScanner scanUpToString:HYPERLINK intoString:NULL];
+        [aScanner scanString:HYPERLINK intoString:NULL];
+        [aScanner scanUpToString:QUOTE intoString:NULL];
+        [aScanner scanString:QUOTE intoString:NULL];
+        [aScanner scanUpToString:CLOSINGBRACKET intoString:&hyperlinkString];
+        [aScanner scanString:CLOSINGBRACKET intoString:NULL];
+        if (hyperlinkString != nil) {
+            NSScanner *hyperlinkScanner = [NSScanner scannerWithString:hyperlinkString];
+            while ([hyperlinkScanner isAtEnd] == NO)
+            {
+                NSString *link = nil, *pathData = nil;
+                [hyperlinkScanner scanUpToString:QUOTE intoString:&link];
+                [hyperlinkScanner scanString:QUOTE intoString:NULL];
+                [hyperlinkScanner scanUpToString:DATA intoString:NULL];
+                [hyperlinkScanner scanString:DATA intoString:NULL];
+                [hyperlinkScanner scanUpToString:QUOTE intoString:NULL];
+                [hyperlinkScanner scanString:QUOTE intoString:NULL];
+                [hyperlinkScanner scanUpToString:QUOTE intoString:&pathData];
+                [hyperlinkScanner scanString:QUOTE intoString:NULL];
+                CGRect hyperlinkRect = [self xpsRectFromString:pathData];
+                BlioLayoutHyperlink *blioHyperlink = [[BlioLayoutHyperlink alloc] initWithLink:link rect:hyperlinkRect];
+                [hyperlinks addObject:blioHyperlink];
+                [blioHyperlink release];
+            }
+        }
+    }
+    [inputString release];
+    
+    return hyperlinks;
+}
+
 
 - (NSData *)replaceMappedResources:(NSData *)data {
     NSString *inputString = [[NSString alloc] initWithBytesNoCopy:(void *)[data bytes] length:[data length] encoding:NSUTF8StringEncoding freeWhenDone:NO];
@@ -423,6 +592,90 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     return NO;
 }
 
+- (NSString *)extractFixedDocumentPath:(NSData *)data {
+	NSString *docRefString = nil;
+	
+	if (data) {
+		NSString *inputString = [[NSString alloc] initWithBytesNoCopy:(void *)[data bytes] length:[data length] encoding:NSUTF8StringEncoding freeWhenDone:NO];
+		
+		NSString *DOCREF = @"<DocumentReference";
+		NSString *QUOTE = @"\"";
+		
+		NSScanner *aScanner = [NSScanner scannerWithString:inputString];
+		
+		while ([aScanner isAtEnd] == NO)
+		{
+			
+			[aScanner scanUpToString:DOCREF intoString:NULL];
+			[aScanner scanString:DOCREF intoString:NULL];
+			[aScanner scanUpToString:QUOTE intoString:NULL];
+			[aScanner scanString:QUOTE intoString:NULL];
+			[aScanner scanUpToString:QUOTE intoString:&docRefString];
+			break;
+		}
+		[inputString release];
+	}
+	
+	return docRefString;
+}
+
+- (NSString *)extractFixedPagesPath:(NSData *)data {
+	NSString *pageContentString = nil;
+	NSString *fixedPagesString = nil;
+	
+	if (data) {
+		NSString *inputString = [[NSString alloc] initWithBytesNoCopy:(void *)[data bytes] length:[data length] encoding:NSUTF8StringEncoding freeWhenDone:NO];
+		
+		NSString *PAGECONTENT = @"<PageContent";
+		NSString *QUOTE = @"\"";
+		
+		NSScanner *aScanner = [NSScanner scannerWithString:inputString];
+		
+		while ([aScanner isAtEnd] == NO)
+		{
+			
+			[aScanner scanUpToString:PAGECONTENT intoString:NULL];
+			[aScanner scanString:PAGECONTENT intoString:NULL];
+			[aScanner scanUpToString:QUOTE intoString:NULL];
+			[aScanner scanString:QUOTE intoString:NULL];
+			[aScanner scanUpToString:QUOTE intoString:&pageContentString];
+			
+			if (pageContentString) {
+				fixedPagesString = [NSString stringWithString:[pageContentString stringByDeletingLastPathComponent]];
+				break;
+			}
+			
+		}
+		[inputString release];
+	}
+	
+	return fixedPagesString;
+}
+
+- (NSString *)xpsPagesDirectory {
+	if (!xpsPagesDirectory) {
+		NSData *sequenceData = [self dataForComponentAtPath:BlioXPSSequenceFile];
+		NSString *fixedDocumentPath = [self extractFixedDocumentPath:sequenceData];
+		
+		if (fixedDocumentPath) {
+			NSData *fixedDocumentData = [self dataForComponentAtPath:fixedDocumentPath];
+			NSString *pagesPath = [self extractFixedPagesPath:fixedDocumentData];
+			if ([[pagesPath substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"/"]) {
+				xpsPagesDirectory = pagesPath;
+			} else {
+				if (![[fixedDocumentPath substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"/"]) {
+					fixedDocumentPath = [NSString stringWithFormat:@"/%@", fixedDocumentPath];
+				}
+				xpsPagesDirectory = [[fixedDocumentPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:pagesPath];
+			}
+			[xpsPagesDirectory retain];
+		}
+										 
+	}
+	
+	return xpsPagesDirectory ? : @"";
+}
+
 - (NSData *)dataForComponentAtPath:(NSString *)path {
     NSString *componentPath = path;
     NSString *directory = [path stringByDeletingLastPathComponent];
@@ -444,16 +697,19 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         if (self.bookIsEncrypted) {
             encrypted = YES;
             gzipped = YES;
+            componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
+        } else {
+            componentPath = [[self xpsPagesDirectory] stringByAppendingPathComponent:path];
         }
+
         mapped = YES;
         cached = YES;
-        componentPath = [[BlioXPSEncryptedPagesDir stringByAppendingPathComponent:[path lastPathComponent]] stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
     } else if ([directory isEqualToString:BlioXPSEncryptedImagesDir] && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
         if (self.bookIsEncrypted) {
             encrypted = YES;
+            componentPath = [path stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
         }
         cached = YES;
-        componentPath = [path stringByAppendingPathExtension:BlioXPSComponentExtensionEncrypted];
     } else if ([directory isEqualToString:BlioXPSEncryptedTextFlowDir]) {  
         if (![path isEqualToString:@"/Documents/1/Other/KNFB/Flow/Sections.xml"]) {
             if (self.bookIsEncrypted) {
@@ -485,8 +741,21 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     NSData *componentData = [self rawDataForComponentAtPath:componentPath];
              
     if (encrypted) {
-		//if (![[BlioDrmManager getDrmManager] decryptData:componentData forBookWithID:self.bookID]) {
-        if ((self.drmSessionManager == nil) || !decryptionAvailable || ![self.drmSessionManager decryptData:componentData]) {
+        BOOL decrypted = NO;
+        if (!decryptionAvailable) {
+            // Check if this is first run
+            if (self.drmSessionManager && decryptionAvailable) {
+                if ([self.drmSessionManager decryptData:componentData]) {
+                    decrypted = YES;
+                }
+            }
+        } else {
+            if ([self.drmSessionManager decryptData:componentData]) {
+                decrypted = YES;
+            }
+        }
+        
+        if (!decrypted) {
 			NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
             return nil;
         }
@@ -728,6 +997,20 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
         }
     }
     return uriMap;
+}
+
+@end
+
+@implementation BlioXPSBitmapReleaseCallback
+
+@synthesize data;
+
+- (void)dealloc {
+    if (self.data) {
+        //NSLog(@"Release: %p", self.data);
+        XPS_ReleaseImageMemory(self.data);
+    }
+    [super dealloc];
 }
 
 @end

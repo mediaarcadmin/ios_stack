@@ -283,11 +283,29 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     
     BOOL currentUnderline = NO;
     CGPoint underlinePoints[2] = { { 0 } };    
-    CGFloat lastMaxX = 0;
+    CGFloat lastMaxX = 0.0f;
+    
+    CGContextSaveGState(_cgContext);
+
+    css_color currentColor = 0x000000FF;
+    CGContextSetFillColorWithCSSColor(_cgContext, currentColor);
+    CGContextSetStrokeColorWithCSSColor(_cgContext, currentColor);
     
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         switch(renderItem->kind) {
             case EucCSSLayoutPositionedLineRenderItemKindString: {
+                if(renderItem->item.stringItem.color != currentColor) {
+                    if(currentUnderline) {
+                        if(lastMaxX != 0.0f) {
+                            underlinePoints[1].x = lastMaxX;
+                            CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
+                            underlinePoints[0].x = lastMaxX + 1.0f;
+                        }
+                    }
+                    currentColor = renderItem->item.stringItem.color;
+                    CGContextSetFillColorWithCSSColor(_cgContext, currentColor);
+                    CGContextSetStrokeColorWithCSSColor(_cgContext, currentColor);
+                }
                 CGRect rect = renderItem->item.stringItem.rect;
                 [renderItem->item.stringItem.stringRenderer drawString:renderItem->item.stringItem.string
                                                              inContext:_cgContext 
@@ -298,6 +316,18 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
             }
             case EucCSSLayoutPositionedLineRenderItemKindImage: {
                 CGRect rect = renderItem->item.stringItem.rect;
+                
+                // Massage the rect a bit so that if it's an integral
+                // width or height, it's placed on a pixel boundary.
+                // (not worth trying if they're not integral width or height - 
+                // may as well use the precise placement).
+                if(fmodf(rect.size.width, 1) == 0.0f){
+                    rect.origin.x = roundf(rect.origin.x);
+                }
+                if(fmodf(rect.size.height, 1) == 0.0f) {
+                    rect.origin.y = roundf(rect.origin.y);
+                }
+                
                 CGContextSaveGState(_cgContext);
                 CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
                 CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
@@ -334,6 +364,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
         
         //NSLog(@"Underline: %@ -> %@", NSStringFromCGPoint(underlinePoints[0]), NSStringFromCGPoint(underlinePoints[1])); 
     }
+    
+    CGContextRestoreGState(_cgContext);
     
     THLogVerbose(@"Positioned Line End");
 }

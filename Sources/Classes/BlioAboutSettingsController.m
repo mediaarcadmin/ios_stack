@@ -24,6 +24,9 @@
 	if (self)
 	{
 		self.title = NSLocalizedString(@"About",@"\"About\" view controller title.");
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
+		}		
 	}
 	return self;
 }
@@ -41,11 +44,21 @@
 #pragma mark -
 #pragma mark View lifecycle
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+	[self.tableView reloadData];
+	
+	CGFloat viewHeight = self.tableView.contentSize.height;
+	if (viewHeight > 600) viewHeight = 600;
+	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);	
+	
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
         return NO;
-    else
-        return YES;
+    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+	return YES;
 }
 
 #pragma mark UITableViewDataSource Methods

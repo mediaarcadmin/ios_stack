@@ -12,6 +12,7 @@
 #import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import "BlioParagraphSource.h"
+#import "levenshtein_distance.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucHighlightRange.h>
@@ -19,11 +20,13 @@
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/THPair.h>
+#import "NSArray+BlioAdditions.h"
 
 @interface BlioFlowView ()
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 @property (nonatomic, assign) NSInteger pageCount;
 @property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, retain) BlioBookmarkPoint *lastSavedPoint;
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 @end
 
@@ -36,6 +39,7 @@
 
 @synthesize pageCount = _pageCount;
 @synthesize pageNumber = _pageNumber;
+@synthesize lastSavedPoint = _lastSavedPoint;
 
 - (id)initWithFrame:(CGRect)frame
              bookID:(NSManagedObjectID *)bookID 
@@ -65,7 +69,7 @@
                 _eucBookView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
                 if (!animated) {
-                    [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO];
+                    [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO saveToHistory:NO];
                 }
                 
                 [_eucBookView addObserver:self forKeyPath:@"pageCount" options:NSKeyValueObservingOptionInitial context:NULL];
@@ -73,6 +77,7 @@
                 
                 [self addSubview:_eucBookView];
             }
+			
         }
         
         if(!_eucBookView) {
@@ -101,6 +106,7 @@
     }
     
     [_bookID release];
+	[_lastSavedPoint release]; _lastSavedPoint = nil;
     
     [super dealloc];
 }
@@ -141,8 +147,21 @@
     return [self bookmarkPointFromBookPageIndexPoint:[_eucBookView.book currentPageIndexPoint]];
 }
 
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
+}
+
+- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
 {
+	if (save) {
+		[self pushCurrentBookmarkPoint];
+		if (animated) {
+			_suppressHistory = YES;
+		}
+	} else {
+		_suppressHistory = YES;
+	}
+    
     EucBookPageIndexPoint *eucIndexPoint;
     if([_eucBookView.book isKindOfClass:[BlioFlowEucBook class]] &&
        _textFlowFlowTreeKind == BlioTextFlowFlowTreeKindFlow &&
@@ -165,12 +184,29 @@
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
 {
-    return [_eucBookView goToUuid:uuid animated:animated];
+    [self pushCurrentBookmarkPoint];
+	if (animated) {
+		_suppressHistory = YES;
+	}
+    [_eucBookView goToUuid:uuid animated:animated];
+}
+
+- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated saveToHistory:(BOOL)save;
+{
+	if (save) {
+		[self pushCurrentBookmarkPoint];
+		if (animated) {
+			_suppressHistory = YES;
+		}
+	} else {
+		_suppressHistory = YES;
+	}
+    [_eucBookView goToPageNumber:pageNumber animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 {
-    return [_eucBookView goToPageNumber:pageNumber animated:animated];
+    [self goToPageNumber:pageNumber animated:animated saveToHistory:YES];
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
@@ -217,18 +253,78 @@
     return _pageViewIsTurning || self.selector.tracking;
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
-{
-    [_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
 }
 
-- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save;
 {
-    EucHighlightRange *eucRange = [[EucHighlightRange alloc] init];
-    eucRange.startPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.startPoint];
-    eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
-    [_eucBookView highlightWordsInHighlightRange:eucRange animated:animated];
-    [eucRange release];
+   
+	if (save) {
+		[self pushCurrentBookmarkPoint];
+	} else if (bookmarkPoint) {
+		NSInteger currentPage = [self pageNumber];
+        NSInteger bookmarkedPage = [self pageNumberForBookmarkPoint:bookmarkPoint];
+		if (currentPage != bookmarkedPage) {
+			[self pushCurrentBookmarkPoint];
+		}
+	}	
+	_suppressHistory = YES;
+
+	if (bookmarkPoint) {
+		[_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
+	} else {
+		_suppressHistory = NO;
+	}
+}
+
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated {
+    [self highlightWordsInBookmarkRange:blioRange animated:animated saveToHistory:NO];
+}
+
+- (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)blioRange animated:(BOOL)animated saveToHistory:(BOOL)save
+{
+    if (save) {
+		[self pushCurrentBookmarkPoint];
+	} else if (blioRange) {
+		NSInteger currentPage = [self pageNumber];
+        NSInteger bookmarkedPage = [self pageNumberForBookmarkPoint:blioRange.startPoint];
+		if (currentPage != bookmarkedPage) {
+			[self pushCurrentBookmarkPoint];
+		}
+	}
+	
+	if (animated) {
+		_suppressHistory = YES;
+	}
+	
+	if (blioRange) {
+		EucHighlightRange *eucRange = [[EucHighlightRange alloc] init];
+		eucRange.startPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.startPoint];
+		eucRange.endPoint = [self bookPageIndexPointFromBookmarkPoint:blioRange.endPoint];
+		[_eucBookView highlightWordsInHighlightRange:eucRange animated:animated];
+		[eucRange release];
+	} else {
+		_suppressHistory = NO;
+	}
+}
+
+#pragma mark -
+#pragma mark Back Button History
+
+- (void)pushCurrentBookmarkPoint {
+	BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
+	
+	if (self.lastSavedPoint) {
+		if ([self.lastSavedPoint compare:bookmarkPoint] != NSOrderedSame) {
+			[self.delegate pushBookmarkPoint:self.lastSavedPoint];
+		}
+	} else {
+		[self.delegate pushBookmarkPoint:bookmarkPoint];
+	}
+	
+	self.lastSavedPoint = nil;
+
 }
 
 #pragma mark -
@@ -236,12 +332,23 @@
 
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
 {
+    [_delegate cancelPendingToolbarShow];
+
     _pageViewIsTurning = YES;
+	if (!_suppressHistory) {
+		self.lastSavedPoint = [self currentBookmarkPoint];
+	}
 }
 
 - (void)bookViewPageTurnDidEnd:(EucBookView *)bookView
 {
     _pageViewIsTurning = NO;
+	
+	if (!_suppressHistory) {
+		[self pushCurrentBookmarkPoint];
+	}
+	
+	_suppressHistory = NO;
 }
 
 - (BOOL)bookViewToolbarsVisible:(EucBookView *)bookView
@@ -281,6 +388,53 @@
     return ret;
 }
 
+- (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link
+{
+    [_delegate cancelPendingToolbarShow];
+
+    BOOL handled = NO;
+    if([link.scheme isEqualToString:@"textflow"]) {
+        NSString *internalURI = link.relativeString;
+        
+        if([_eucBook isKindOfClass:[BlioFlowEucBook class]]) {
+            BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+            BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:self.bookID];
+            BlioTextFlowReference *reference = [textFlow referenceForReferenceId:internalURI];
+            [bookManager checkInTextFlowForBookWithID:self.bookID];
+            
+            if (reference) {
+                BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+                bookmarkPoint.layoutPage = reference.pageIndex + 1;
+
+                NSDictionary *idToIndexPoint = [(EucBUpeBook *)_eucBook idToIndexPoint];
+                
+                NSArray *longKeys = [idToIndexPoint allKeys];
+                NSMutableArray *shortKeys = [NSMutableArray arrayWithCapacity:[longKeys count]];
+                for (NSString *longKey in longKeys) {
+                    NSRange firstHash = [longKey rangeOfString:@"#"];
+                    NSString *shortKey = longKey;
+                    if ((firstHash.location != NSNotFound) && (firstHash.location < ([longKey length] - 1))) {
+                        shortKey = [longKey substringFromIndex:firstHash.location + 1];
+                    }
+                    [shortKeys addObject:shortKey];
+                }
+                
+                NSString *matchKey = [shortKeys longestComponentizedMatch:[reference referenceId] componentsSeperatedByString:@"/" forKeyPath:@"self"];
+          
+                if (matchKey) {
+                    NSUInteger keyIndex = [shortKeys indexOfObject:matchKey];
+                    [self goToUuid:[longKeys objectAtIndex:keyIndex] animated:YES];
+                    return !handled;
+                } else {
+                    // Handle failure cases by going straight to the page
+                    [self goToBookmarkPoint:bookmarkPoint animated:YES];
+                }
+            }
+        }
+    }
+        
+    return handled;
+}
 
 #pragma mark -
 #pragma mark BlioSelectableBookView overrides
@@ -357,11 +511,13 @@
 
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
 {
+    [_delegate cancelPendingToolbarShow];
     return [_eucBookView eucSelector:selector willBeginEditingHighlightWithRange:selectedRange];
 }
 
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange
 {
+    [_delegate cancelPendingToolbarShow];
     return [_eucBookView eucSelector:selector didEndEditingHighlightWithRange:fromRange movedToRange:toRange];
 }
 

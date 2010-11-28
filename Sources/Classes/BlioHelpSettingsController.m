@@ -25,7 +25,10 @@
 		[textView loadHTMLString:helpText baseURL:nil];
 		[textView setScalesPageToFit:YES];
 		self.view = textView;
-		//textView.delegate = self;
+//		textView.delegate = self;
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			self.contentSizeForViewInPopover = CGSizeMake(320, 400);
+		}		
 	}
 	return self;
 }
@@ -33,8 +36,18 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
         return NO;
-    else
-        return YES;
+    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+	return YES;
+}
+
+#pragma mark -
+#pragma mark UIWebViewDelegate
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+	NSString *output = [webView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight;"];
+	NSInteger webviewHeight = [output intValue]+10;
+	if (webviewHeight > 600) webviewHeight = 600;
+	self.contentSizeForViewInPopover = CGSizeMake(320, webviewHeight);
 }
 
 #pragma mark -

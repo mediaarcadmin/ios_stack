@@ -15,10 +15,6 @@
 #import "BlioAppSettingsController.h"
 #import "BlioLoginViewController.h"
 #import "BlioProcessingStandardOperations.h"
-#import "BlioAccessibilitySegmentedControl.h"
-// TEMPORARY
-#import "BlioDrmManager.h"
-#import "BlioXpsClient.h"
 #import "BlioStoreArchiveViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
@@ -71,6 +67,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize selectedLibraryBookView;
 @synthesize openBookViewController;
 @synthesize libraryVaultButton;
+@synthesize showArchiveCell;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @synthesize settingsPopoverController;
@@ -80,7 +77,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	if ((self = [super init])) {
 		_didEdit = NO;
 		self.title = @"Bookshelf";
-
+		showArchiveCell = NO;
 		librarySortType = kBlioLibrarySortTypePersonalized;
 	}
 	return self;
@@ -144,7 +141,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.libraryVaultButton.titleLabel.font = [UIFont boldSystemFontOfSize: 16];
 	self.libraryVaultButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
 	[self.libraryVaultButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-	[self.libraryVaultButton setTitle:NSLocalizedString(@"View Your Archive",@"Label for button in library that shows Book Vault.") forState:UIControlStateNormal];
+	[self.libraryVaultButton setTitle:NSLocalizedString(@"View Your Archive",@"Label for button in library that shows the Archive.") forState:UIControlStateNormal];
 	[self.libraryVaultButton setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.75f] forState:UIControlStateNormal];
 	[self.libraryVaultButton setBackgroundImage:[UIImage imageNamed:@"table-headerbar-background.png"] forState:UIControlStateNormal];
 	[self.libraryVaultButton addTarget:self action:@selector(showStore:) forControlEvents:UIControlEventTouchUpInside];
@@ -180,6 +177,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)viewDidLoad {
     // N.B. on iOS 4.0 it is important to set the toolbar tint before adding the UIBarButtonItems
+	
+	BlioLibraryLayout loadedLibraryLayout = [[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"];
+	
     UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
     [self.navigationController setToolbarHidden:NO ];
     [self.navigationController.toolbar setTintColor:tintColor];
@@ -192,8 +192,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     NSArray *segmentImages = [NSArray arrayWithObjects:
-                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
                               [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-grid.png"]],
+                              [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"button-list.png"]],
                               nil];
     BlioAccessibilitySegmentedControl *segmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
     
@@ -206,12 +206,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
     [segmentedControl setIsAccessibilityElement:NO];
 	
-	[[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
-    [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
+    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Grid layout", @"Accessibility label for Library View grid layout button")];
+    [[segmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+	[[segmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"List layout", @"Accessibility label for Library View list layout button")];
     [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
     
-    self.libraryLayout = kBlioLibraryLayoutUndefined;
-    [segmentedControl setSelectedSegmentIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"]];
+    [segmentedControl setSelectedSegmentIndex:loadedLibraryLayout];
 	
     
     UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
@@ -219,22 +219,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [libraryLayoutButton release];
     [segmentedControl release];
     
-	NSMutableArray *libraryItems = [NSMutableArray array];
+	if (libraryItems) [libraryItems release];
+	libraryItems = [[NSMutableArray alloc] initWithCapacity:4];
+	if (sortLibraryItems) [sortLibraryItems release];
+	sortLibraryItems = [[NSMutableArray alloc] initWithCapacity:5];
     UIBarButtonItem *item;
-	
-	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Sort", @"Label for Library View Sort button")
-	                                        style:UIBarButtonItemStyleBordered
-	                                       target:self 
-	                                       action:@selector(showSortOptions:)];
-    item.width = 69.0f;
-	[item setAccessibilityLabel:NSLocalizedString(@"Sort", @"Accessibility label for Library View Sort button")];
-	[item setAccessibilityHint:NSLocalizedString(@"Provides options for sorting the library", @"Accessibility label for Library View Sort hint")];
-	[libraryItems addObject:item];
-	[item release];
-	
-	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-	[libraryItems addObject:item];
-	[item release];
 	
 	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Get Books", @"Label for Library View Sort button")
                                             style:UIBarButtonItemStyleBordered
@@ -242,10 +231,59 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
                                            action:@selector(showStore:)];
     [item setAccessibilityLabel:NSLocalizedString(@"Get Books", @"Accessibility label for Library View Get Books button")];
 	[libraryItems addObject:item];
+	[sortLibraryItems addObject:item];
+	[item release];
+	
+	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+	[libraryItems addObject:item];
+	[sortLibraryItems addObject:item];
+	[item release];
+	
+//	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Sort", @"Label for Library View Sort button")
+//	                                        style:UIBarButtonItemStyleBordered
+//	                                       target:self 
+//	                                       action:@selector(showSortOptions:)];
+//    item.width = 69.0f;
+//	[item setAccessibilityLabel:NSLocalizedString(@"Sort", @"Accessibility label for Library View Sort button")];
+//	[item setAccessibilityHint:NSLocalizedString(@"Provides options for sorting the library", @"Accessibility label for Library View Sort hint")];
+	
+	// sort segmented control start
+	NSArray *sortSegmentImages = [NSArray arrayWithObjects:
+								  [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-arbitrary.png"]],
+								  [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-title.png"]],
+								  [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-author.png"]],
+								  nil];
+    if (sortSegmentedControl) [sortSegmentedControl release];
+	sortSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:sortSegmentImages];
+    
+    sortSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    sortSegmentedControl.frame = CGRectMake(0,0, kBlioLibrarySortButtonWidth, sortSegmentedControl.frame.size.height);
+//    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:0];
+//    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
+//    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:2];
+	
+    [sortSegmentedControl addTarget:self action:@selector(setSortOption:) forControlEvents:UIControlEventValueChanged];
+    
+    [sortSegmentedControl setIsAccessibilityElement:NO];
+	sortSegmentedControl.tintColor = tintColor;
+    [[sortSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"View by Grid Order", @"Accessibility label for Library View view by grid order button")];
+    [[sortSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+	[[sortSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"View by Title", @"Accessibility label for Library View view by title button")];
+    [[sortSegmentedControl imageForSegmentAtIndex:1] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+	[[sortSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"View by Author", @"Accessibility label for Library View view by author button")];
+    [[sortSegmentedControl imageForSegmentAtIndex:2] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
+	
+	[sortSegmentedControl setSelectedSegmentIndex:self.librarySortType];
+	
+    item = [[UIBarButtonItem alloc] initWithCustomView:sortSegmentedControl];
+	[sortLibraryItems addObject:item];
     [item release];	
+	
+	// sort segmented control end
     
 	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 	[libraryItems addObject:item];
+	[sortLibraryItems addObject:item];
 	[item release];
 	
 	
@@ -254,15 +292,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
                                            target:self 
                                            action:@selector(showSettings:)];
     item.width = 69.0f;
-    [item setAccessibilityLabel:NSLocalizedString(@"Settings", @"Accessibility label for Library View Settings button")];
+    [item setAccessibilityLabel:NSLocalizedString(@"Application Settings", @"Accessibility label for Library View Settings button")];
 	
     [libraryItems addObject:item];
+	[sortLibraryItems addObject:item];
     [item release];
     
-    [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
+    if (loadedLibraryLayout == kBlioLibraryLayoutGrid) [self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
+    else [self setToolbarItems:[NSArray arrayWithArray:sortLibraryItems] animated:YES];
     
 	maxLayoutPageEquivalentCount = 0;
 	
+	self.libraryLayout = loadedLibraryLayout;
+
     
 	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -272,307 +314,76 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self fetchResults];
 	
     if (![[self.fetchedResultsController fetchedObjects] count]) {
-        NSLog(@"Creating Mock Books");
 		
-#ifdef DEMO_MODE
+        NSLog(@"Creating Books");  
 		
-        [self.processingDelegate enqueueBookWithTitle:@"Fables: Legends In Exile" 
-                                              authors:[NSArray arrayWithObject:@"Willingham, Bill"]
-											coverPath:@"MockCovers/FablesLegendsInExile.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Legends.pdf"
-											  xpsPath:nil
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Fables: Legends In Exile"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-
-        [self.processingDelegate enqueueBookWithTitle:@"Essentials Of Discrete Mathematics" 
-                                              authors:[NSArray arrayWithObject:@"Hunter, David J."]
-											coverPath:@"MockCovers/Essentials_of_Discrete_Mathematics.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Essentials_of_Discrete_Mathematics.pdf"
-											  xpsPath:nil
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Essentials Of Discrete Mathematics"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Exiles In The Garden" 
-                                              authors:[NSArray arrayWithObject:@"Just, Ward"]
-											coverPath:@"MockCovers/Exiles In The Garden.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Exiles In The Garden.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Exiles In The Garden.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Exiles In The Garden"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Dead Is So Last Year" 
-                                              authors:[NSArray arrayWithObject:@"Perez, Marlene"]
-											coverPath:@"MockCovers/Dead Is So Last Year.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Dead Is So Last Year.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Dead Is So Last Year.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Dead Is So Last Year"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Jamberry" 
-                                              authors:[NSArray arrayWithObject:@"Degen, Bruce"]
-											coverPath:@"MockCovers/Jamberry.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Jamberry.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Jamberry.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Jamberry"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"The Pet Dragon" 
-                                              authors:[NSArray arrayWithObject:@"Niemann, Christoph"]
-											coverPath:@"MockCovers/ChristophNiemann.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Pet Dragon.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Pet Dragon.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"The Pet Dragon"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"The Graveyard Book" 
-                                              authors:[NSArray arrayWithObject:@"Gaiman, Neil"]
-											coverPath:@"MockCovers/NeilGaiman.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Graveyard Book.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Graveyard Book.zip"
-										audiobookPath:@"AudioBooks/Graveyard Book.zip"
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"The Graveyard Book"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"Martha Stewart's Cookies" 
-                                              authors:[NSArray arrayWithObject:@"Stewart, Martha"]
-											coverPath:@"MockCovers/Martha Stewart Cookies.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Martha Stewart Cookies.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Martha Stewart Cookies.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Martha Stewart's Cookies"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Baby Mouse" 
-                                              authors:[NSArray arrayWithObjects:@"Holme, Jennifer L.", @"Holme, Matthew", nil]
-											coverPath:@"MockCovers/Baby Mouse.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Baby Mouse.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Baby Mouse.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Baby Mouse"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Persepolis 2" 
-                                              authors:[NSArray arrayWithObject:@"Satrapi, Marjane"]
-											coverPath:@"MockCovers/Persepolis 2.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Persepolis 2.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Persepolis 2.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Persepolis 2"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"The Art of the Band T-Shirt" 
-                                              authors:[NSArray arrayWithObjects:@"Easby, Amber", @"Oliver, Henry", nil]
-											coverPath:@"MockCovers/Art of the Band T-Shirt.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Art of the Band T-Shirt.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Art of the Band T-Shirt.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"The Art of the Band T-Shirt"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Sylvester and the Magic Pebble" 
-                                              authors:[NSArray arrayWithObject:@"Steig, William"]
-											coverPath:@"MockCovers/Sylvester and the Magic Pebble.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Sylvester and the Magic Pebble.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Sylvester and the Magic Pebble.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Sylvester and the Magic Pebble"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"You On A Diet" 
-                                              authors:[NSArray arrayWithObjects:@"Roizen, M.D., Michael F.", @"Oz, M.D., Mehmet C.", nil]
-											coverPath:@"MockCovers/You On A Diet.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/You On A Diet.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/You On A Diet.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"You On A Diet"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"BakeWise" 
-                                              authors:[NSArray arrayWithObjects:@"Corriher, Shirley O.", nil]
-											coverPath:@"MockCovers/Bakewise.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Bakewise.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Bakewise.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"BakeWise"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Chick Chicka Boom Boom" 
-                                              authors:[NSArray arrayWithObjects:@"Martin Jr, Bill", @"Archambault, Joan", nil]
-											coverPath:@"MockCovers/Chicka Chicka Boom Boom.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Chicka Chicka Boom Boom.pdf"
-											  xpsPath:nil
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Chick Chicka Boom Boom"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"Five Greatest Warriors" 
-                                              authors:[NSArray arrayWithObjects:@"Reilly, Matthew", nil]
-											coverPath:@"MockCovers/Five Greatest Warriors.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Five Greatest Warriors.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Five Greatest Warriors.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Five Greatest Warriors"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Spinster Goose" 
-                                              authors:[NSArray arrayWithObjects:@"Wheeler, Lisa", @"Blackall, Sophie", nil]
-											coverPath:@"MockCovers/Spinster Goose.png"
-											 ePubPath:nil
-											  pdfPath:@"PDFs/Spinster Goose.pdf"
-											  xpsPath:nil
-										 textFlowPath:@"TextFlows/Spinster Goose.zip"
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Spinster Goose"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
-                                              authors:[NSArray arrayWithObject:@"Blackstone, Stella"]
-											coverPath:@"MockCovers/Three_Little_Pigs.png"
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Three Little Pigs.xps"
-										 textFlowPath:@"TextFlows/Three Little Pigs.zip"
-										audiobookPath:@"AudioBooks/Three Little Pigs.zip"
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Three Little Pigs"
-									  placeholderOnly:NO
-										   fromBundle:YES		 
-		 ];
-		
-#endif // DEMO_MODE
-#ifdef DEV_MODE
-
-        [self.processingDelegate enqueueBookWithTitle:@"The Tale of Peter Rabbit" 
-                                              authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
+		[self.processingDelegate enqueueBookWithTitle:@"Peter Rabbit" 
+											  authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/The Tale of Peter Rabbit.drm.xps"
+											  xpsPath:@"XPS/Peter Rabbit.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
-									 sourceSpecificID:@"The Tale of Peter Rabbit" // this should normally be ISBN number when downloaded from the Book Store
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"PeterRabbit" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
-    
-        [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
-                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
+		
+        [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
+                                              authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Virgin Islands.drm.xps"
+											  xpsPath:@"XPS/New Italian Kitchen.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
-									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Woodstock - Peace, Music, and Memories" 
-                                              authors:[NSArray arrayWithObjects:@"Littleproud, Brad", @"Hague, Joanne", nil]
+		
+        [self.processingDelegate enqueueBookWithTitle:@"The Legend of Sleepy Hollow" 
+                                              authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Woodstock - Peace, Music, and Memories.xps"
+											  xpsPath:@"XPS/The Legend of Sleepy Hollow.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
-									 sourceSpecificID:@"Woodstock - Peace, Music, and Memories" // this should normally be ISBN number when downloaded from the Book Store
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
-        
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Frommers Florida" 
+                                              authors:[NSArray arrayWithObjects:@"Rose, Lesley Anne", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Frommers Florida.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"FrommersFlorida" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
+#ifdef DEMO_MODE		
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Toy Story" 
+                                              authors:[NSArray arrayWithObject:@"Disney"]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Toy Story.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Toy Story"
+									  placeholderOnly:NO
+		 ];
+		
         [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
                                               authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
 											coverPath:nil
@@ -581,52 +392,66 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											  xpsPath:@"XPS/OldLady.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
+											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
-
-        [self.processingDelegate enqueueBookWithTitle:@"Liberty And Tyranny" 
-                                              authors:[NSArray arrayWithObjects:@"Levin, Mark R.", nil]
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Cars" 
+                                              authors:[NSArray arrayWithObjects:@"Disney", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/LibertyTyranny.drm.xps"
+											  xpsPath:@"XPS/Cars.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
-									 sourceSpecificID:@"LibertyTyranny" // this should normally be ISBN number when downloaded from the Book Store
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Cars" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Uncle John's Triumphant 20th Anniversary Bathroom Reader" 
-                                              authors:[NSArray arrayWithObjects:@"Bathroom Reader's Institute", nil]
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Three Little Pigs" 
+                                              authors:[NSArray arrayWithObjects:@"Blackstone, Stella", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/UJBR Triumphant 20th.xps"
+											  xpsPath:@"XPS/Three Little Pigs.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
-									 sourceSpecificID:@"UJBR Triumphant 20th" // this should normally be ISBN number when downloaded from the Book Store
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"Three Little Pigs" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
 		 ];
-        
-        [self.processingDelegate enqueueBookWithTitle:@"Facebook for Dummies" 
-                                              authors:[NSArray arrayWithObjects:@"Pearlman, Lynne", @"Abram, Carolyn", nil]
+		
+		
+#endif // DEMO_MODE
+		
+#ifdef DEV_MODE
+    
+        [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
+                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Facebook For Dummies.drm.xps"
+											  xpsPath:@"XPS/Virgin Islands.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
-											 sourceID:BlioBookSourceOnlineStore
-									 sourceSpecificID:@"Facebook For Dummies" // this should normally be ISBN number when downloaded from the Book Store
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-										   fromBundle:YES
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Grilling Basics" 
+                                              authors:[NSArray arrayWithObjects:@"Larsen, Linda Johnson", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Grilling Basics.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"GrillingBasics" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
 		 ];
 		
 #endif // DEV_MODE
@@ -649,6 +474,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	
+	/* Not needed if starter books are bundled rather than downloaded through the bookvault.
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertLibrary"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertLibrary"];
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Introducing Your Library",@"\"Introducing Your Library\" alert message title") 
@@ -657,6 +483,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 						   cancelButtonTitle:@"OK"
 						   otherButtonTitles:nil];		
 	}
+	 */
 	
 	// resume suspended operations related to paid books.
 //	[self.processingDelegate resumeSuspendedProcessingForSourceID:BlioBookSourceOnlineStore];
@@ -677,6 +504,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)viewDidUnload {
+	if (sortSegmentedControl) [sortSegmentedControl release];
 }
 
 - (NSInteger)columnCount {
@@ -693,8 +521,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
         return NO;
-    else
-        return YES;
+    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
+	return YES;
 }
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
@@ -722,15 +550,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 -(void)setLibrarySortType:(BlioLibrarySortType)sortType {
 	if (librarySortType != sortType) {
 		librarySortType = sortType;
-		if (sortType == kBlioLibrarySortTypePersonalized) {
-			self.navigationItem.rightBarButtonItem = self.editButtonItem;	
-		}
-		else {
-			if (self.editing) [self setEditing:NO animated:NO];
-			self.navigationItem.rightBarButtonItem = nil;
-		}
+//		if (sortType == kBlioLibrarySortTypePersonalized) {
+//			self.navigationItem.rightBarButtonItem = self.editButtonItem;	
+//		}
+//		else {
+//			if (self.editing) [self setEditing:NO animated:NO];
+//			self.navigationItem.rightBarButtonItem = nil;
+//		}
 		[self fetchResults];
 	}
+}
+-(void) needsAccessibilityLayoutChanged {
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
+	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 -(void) calculateMaxLayoutPageEquivalentCount {
 	
@@ -773,8 +605,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.delegate = self;
-	
 	cell.showsReorderControl = YES;	
 }
 -(void) configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index {
@@ -836,15 +666,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
 	
     NSSortDescriptor *sortDescriptor = nil;
-	switch (librarySortType) {
-		case kBlioLibrarySortTypeTitle:
-			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES] autorelease];
-			break;
-		case kBlioLibrarySortTypeAuthor:
-			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"author" ascending:YES] autorelease];
-			break;
-        default: {
-			sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO] autorelease];
+	if (self.libraryLayout == kBlioLibraryLayoutGrid) {
+		sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO] autorelease];
+	}
+	else {
+		switch (librarySortType) {
+			case kBlioLibrarySortTypeTitle:
+				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES] autorelease];
+				break;
+			case kBlioLibrarySortTypeAuthor:
+				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"author" ascending:YES] autorelease];
+				break;
+			default: {
+				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"libraryPosition" ascending:NO] autorelease];
+			}
 		}
 	}
 	NSArray *sorters = [NSArray arrayWithObject:sortDescriptor]; 
@@ -869,7 +704,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         NSLog(@"Error loading from persistent store: %@, %@", error, [error userInfo]);
 	else {
 		[self.tableView reloadData];
-		[self.gridView reloadData];		
+		[self.gridView reloadData];	
 	}
 }
 #pragma mark - 
@@ -908,6 +743,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 -(NSString*)contentDescriptionForCellAtIndex:(NSInteger)index {
 	return [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] title];
+}
+-(BOOL) gridView:(MRGridView*)gridView canMoveCellAtIndex: (NSInteger)index {
+	if (librarySortType != kBlioLibrarySortTypePersonalized) return NO;
+	return YES;
 }
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex {
 	_didEdit = YES;
@@ -967,7 +806,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //			// cancel all other operations related to paid books.
 //			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
 //		}
-		
+		cell.statusBadge.hidden = YES;
+		selectedGridIndex = index;
 		[self bookSelected:cell.bookView];
 	}
 }
@@ -1076,7 +916,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         bookCount = [sectionInfo numberOfObjects];
         self.logoView.numberOfBooksInLibrary = bookCount;
     }
-	return bookCount + 1;
+	if (showArchiveCell) return bookCount + 1;
+	return bookCount;
 }
 
 // Customize the appearance of table view cells.
@@ -1091,7 +932,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     if ([sections count]) {
         id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
         bookCount = [sectionInfo numberOfObjects];
-		if ([indexPath row] == bookCount) {
+		if ([indexPath row] == bookCount && showArchiveCell) {
 			UITableViewCell * genericCell = nil;
 			genericCell = [tableView dequeueReusableCellWithIdentifier:GenericTableCellIdentifier];
 			if (genericCell == nil) {
@@ -1104,11 +945,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 	}
 	
-	BlioLibraryListCell *cell;
+	BlioLibraryListCell * cell = nil;
 	
 	cell = (BlioLibraryListCell *)[tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
 	if (cell == nil) {
 		cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+		cell.delegate = self;
 	} 
 	
 	[self configureTableCell:cell atIndexPath:indexPath];
@@ -1117,13 +959,37 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-	//    if (self.libraryLayout == kBlioLibraryLayoutList)
+    NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([indexPath row] >= bookCount) return NO;
+    }
 	return YES;
-	//    else
-	//        return NO;
 }
 - (BOOL)tableView:(UITableView *)tableview canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+	
+	if (librarySortType != kBlioLibrarySortTypePersonalized) return NO;
+	
+    NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([indexPath row] >= bookCount) return NO;
+    }
 	return YES;	
+}
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
+	NSArray *sections = [self.fetchedResultsController sections];
+    NSUInteger bookCount = 0;
+    if ([sections count]) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[proposedDestinationIndexPath section]];
+        bookCount = [sectionInfo numberOfObjects];
+		if ([proposedDestinationIndexPath row] >= bookCount) return [NSIndexPath indexPathForRow:bookCount-1 inSection:[proposedDestinationIndexPath section]];
+    }
+	return proposedDestinationIndexPath;		
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
@@ -1178,7 +1044,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		 // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
 	 }   
  }
-
 #pragma mark -
 #pragma mark Fetched Results Controller Delegate
 //- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
@@ -1272,30 +1137,28 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										atIndex:indexPath.row];
 						break;
 					case kBlioLibraryLayoutList:
+//						if (self.tableView.isEditing) {
 						[self configureTableCell:(BlioLibraryListCell*)[self.tableView cellForRowAtIndexPath:indexPath]
 									 atIndexPath:indexPath];
+//						}
+//						else {
+//							[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//						}
 						break;
                     default:
                         break;
 				}
+				
 			}
 			break;
-			// this will always be user-instigated, so the view will actually be updated before the model, not the other way around.
-			//			case NSFetchedResultsChangeMove:
-			//				[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-			//								 withRowAnimation:UITableViewRowAnimationFade];
-			//				[tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-			//								 withRowAnimation:UITableViewRowAnimationFade];
-			//				break;
 	}
 }
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-	// 	NSLog(@"controllerDidChangeContent. _didEdit: %i",_didEdit);
-	
+//	[self performSelector:@selector(needsAccessibilityLayoutChanged) withObject:nil afterDelay:0.2f];
+	[self needsAccessibilityLayoutChanged];
 	//   [self.tableView endUpdates];
-	
 }
 /*
  - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
@@ -1373,65 +1236,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											   destructiveButtonTitle:nil
 													otherButtonTitles:sort0, sort1, sort2, nil];
 	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
-	[actionSheet showInView:self.view];
+//	[actionSheet showInView:self.view];
+	[actionSheet showFromToolbar:self.navigationController.toolbar];
 	[actionSheet release];	
 }
 
 - (void)showSettings:(id)sender {    
     BlioAppSettingsController *appSettingsController = [[BlioAppSettingsController alloc] init];
+	[appSettingsController.tableView reloadData];
 	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:appSettingsController];
-    [appSettingsController release];
+    settingsController.delegate = self;
+	[appSettingsController release];
     
-	// TEMPORARY: test code, will be moved
-    /*
-    // Fetch all paid books
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-    [request setEntity:entityDescription];
-    
-    NSError *error;
-    NSArray *paidBooks = [self.managedObjectContext executeFetchRequest:request error:&error];
-    NSManagedObjectID *virginID = nil;
-    NSManagedObjectID *rabbitID = nil;
 
-    // Iterate through the paid books getting their ids
-    for (NSManagedObject *book in paidBooks) {
-        if ([[book valueForKey:@"title"] isEqualToString:@"Virgin Islands"])
-            virginID = book.objectID;
-        else if ([[book valueForKey:@"title"] isEqualToString:@"The Tale of Peter Rabbit"])
-            rabbitID = book.objectID;
-    }
-    
-    BOOL success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:virginID];
-    NSLog(@"License retrieval for virgin book %@.", success ? @"succeeded" : @"failed");
-    success = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:rabbitID];
-    NSLog(@"License retrieval for rabbit book %@.", success ? @"succeeded" : @"failed");
-    
-    BlioXPSProvider *virginXPS = [[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:virginID];
-//    BlioXPSProvider *rabbitXPS = [[[BlioBookManager sharedBookManager] bookWithID:rabbitID] xpsProvider];
-
-    NSData *decryptedData;
-
-
-    // Decrypt a textflow file for Virgin Islands.
-    decryptedData = [virginXPS dataForComponentAtPath:[encryptedTextflowDir stringByAppendingString:@"Flow_2.xml"]];
-    NSLog(@"Virgin Islands decrypted textflow length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-    
-    // Decrypt a fixed page for Virgin Islands.
-    decryptedData = [virginXPS dataForComponentAtPath:[encryptedPagesDir stringByAppendingString:@"1.fpage.bin"]];
-    NSLog(@"Virgin Islands decrypted fixed page 1 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-	
-    // Decrypt a fixed page for Virgin Islands by requesting the dummy page
-    decryptedData = [virginXPS dataForComponentAtPath:@"/Documents/1/Pages/2.fpage"];
-    NSLog(@"Virgin Islands decrypted fixed page 2 length (%d): %s", [decryptedData length], [decryptedData bytes]);  // Not null-terminated, but gives an idea.
-    
-    [[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:virginID];
-    //[[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:rabbitID];
-    
-	//	
-	// END temporary code
-	*/
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		if (self.settingsPopoverController && self.settingsPopoverController.popoverVisible == YES) {
 			[self.settingsPopoverController dismissPopoverAnimated:YES];
@@ -1439,30 +1256,37 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 		else {
 			self.settingsPopoverController = [[[NSClassFromString(@"UIPopoverController") alloc] initWithContentViewController:settingsController] autorelease];
-			self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 600);
+//			self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 600);
 			self.settingsPopoverController.delegate = self;
 			[self.settingsPopoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 		}
 	}
 	else {
 		[self presentModalViewController:settingsController animated:YES];
-	}	
-#else
-	[self presentModalViewController:settingsController animated:YES];
-#endif
-	
+	}		
     [settingsController release];    
+}
+#pragma mark - UINavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
+	CGSize viewSize = viewController.contentSizeForViewInPopover;
+	if ([viewController.view isKindOfClass:[UIScrollView class]]) {
+		[((UITableViewController*)viewController).tableView reloadData];
+//		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
+		viewSize.height = [(UIScrollView*)viewController.view contentSize].height;
+		if (viewSize.height > 600) viewSize.height = 600;
+	}
+	self.settingsPopoverController.popoverContentSize = viewSize;
 }
 
 #pragma mark - UIPopoverControllerDelegate
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	// N.B. - from Apple's documentation: The popover controller does not call this method in response to programmatic calls to the dismissPopoverAnimated: method.
 	self.settingsPopoverController = nil;
 }
 
-#endif
 
 #pragma mark - UIActionSheetDelegate
 
@@ -1487,15 +1311,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.processingDelegate pauseProcessingForBook:book];
 }
 -(void) enqueueBook:(BlioBook*)book {
-	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_DOWNLOAD_BOOK",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to download this book.",@"Alert message when the user tries to download a book without an Internet connection.")
-									delegate:nil 
-						   cancelButtonTitle:@"OK"
-						   otherButtonTitles:nil];
-		return;
-	}
-	else [self.processingDelegate enqueueBook:book];
+//	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+//		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+//									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_DOWNLOAD_BOOK",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to download this book.",@"Alert message when the user tries to download a book without an Internet connection.")
+//									delegate:nil 
+//						   cancelButtonTitle:@"OK"
+//						   otherButtonTitles:nil];
+//		return;
+//	}
+	[self.processingDelegate enqueueBook:book];
+}
+
+- (void)setSortOption:(id)sender {
+	self.librarySortType = (BlioLibrarySortType)[sender selectedSegmentIndex];
 }
 
 - (void)changeLibraryLayout:(id)sender {
@@ -1505,24 +1333,29 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     if (self.libraryLayout != newLayout) {
         self.libraryLayout = newLayout;
         [[NSUserDefaults standardUserDefaults] setInteger:self.libraryLayout forKey:@"kBlioLastLibraryLayoutDefaultsKey"];
-        
+		
         switch (newLayout) {
             case kBlioLibraryLayoutGrid:
 				[self.view bringSubviewToFront:self.gridView];
-				[self.gridView reloadData];
+				if (self.librarySortType != kBlioLibrarySortTypePersonalized) [self fetchResults];
+				else [self.gridView reloadData];
 				self.gridView.hidden = NO;
 				self.tableView.hidden = YES;
+				[self setToolbarItems:[NSArray arrayWithArray:libraryItems] animated:YES];
                 break;
             case kBlioLibraryLayoutList:
 				[self.view bringSubviewToFront:self.tableView];
-				[self.tableView reloadData];
+				if (self.librarySortType != kBlioLibrarySortTypePersonalized) [self fetchResults];
+				else [self.tableView reloadData];
 				self.gridView.hidden = YES;
 				self.tableView.hidden = NO;
+				[self setToolbarItems:[NSArray arrayWithArray:sortLibraryItems] animated:YES];
+				[sortSegmentedControl setSelectedSegmentIndex:self.librarySortType];
                 break;
             default:
                 NSLog(@"Unexpected library layout %ld", (long)newLayout);
         }
-        
+		UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
     
 }
@@ -1534,7 +1367,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [libraryBookView setHidden:YES];
         
     BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:[libraryBookView book] delegate:self];
-    self.openBookViewController = aBookViewController;
     
     if (nil != aBookViewController) {
         [aBookViewController setManagedObjectContext:self.managedObjectContext];
@@ -1543,13 +1375,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     } else {
         [libraryBookView displayError];
         self.selectedLibraryBookView = nil;
-        self.openBookViewController = nil;
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        return;
     }
     
-    [aBookViewController release];
-    
-    return;
 #if 0    
     [UIView beginAnimations:@"popBook" context:coverView];
     [UIView setAnimationDuration:0.65f];
@@ -1583,11 +1412,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [aTextureView release];
     [poppedImageView release];
     
+    self.openBookViewController = aBookViewController;
     self.currentBookView = bookView;
     self.currentPoppedBookCover = aCoverImageView;
     self.bookCoverPopped = NO;
     self.firstPageRendered = NO;
 #endif
+    
+    [aBookViewController release];
+    
+    return;    
 }
 
 - (UIView *)coverViewViewForOpening {
@@ -1608,6 +1442,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)coverViewDidAnimatePop {
     [self.selectedLibraryBookView setHidden:NO];
+	BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:selectedGridIndex];
+	if (cell) cell.statusBadge.hidden = NO;
 }
 
 - (void)coverViewDidAnimateFade {
@@ -1699,7 +1535,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         newImage = [newBook coverThumbForGrid];
     }    
     [self.imageView setImage:newImage];
-	if (!hasAppropriateCoverThumb && [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+	if (newBook.hasCoverImage && !hasAppropriateCoverThumb && [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		NSLog(@"Does not have appropriate cover thumb for book: %@, reprocessing cover thumbnails...",[newBook title]);
 		[self.delegate reprocessCoverThumbnailsForBook:newBook];
 	}
@@ -1780,7 +1616,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.bookView = aBookView;
 		
 		progressBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"library-progress-background.png"]];
-		progressBackgroundView.center = CGPointMake(floor(self.frame.size.width/2), floor(kBlioLibraryGridBookHeightPhone-25));
+		progressBackgroundView.center = CGPointMake(floor(self.frame.size.width/2), floor(bookHeight-(bookHeight*0.2f)));
 		progressBackgroundView.hidden = YES;
 		[self.contentView addSubview:progressBackgroundView];
 		
@@ -1803,6 +1639,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		pauseButton.showsTouchWhenHighlighted = YES;
 		[pauseButton addTarget:delegate action:@selector(onPauseButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		pauseButton.frame = CGRectMake(floor(self.frame.size.width/2 - pauseButton.frame.size.width/2), floor(self.frame.size.height/2 - pauseButton.frame.size.height/2), pauseButton.frame.size.width, pauseButton.frame.size.height);
+		[pauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Library View cell book pause button.")];
+		[pauseButton setAccessibilityHint:NSLocalizedString(@"Pauses downloading and processing of book.", @"Accessibility hint for Library View cell book pause button.")];
 		pauseButton.hidden = YES;
 		[self.contentView addSubview:pauseButton];
 		
@@ -1811,6 +1649,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		resumeButton.showsTouchWhenHighlighted = YES;
 		[resumeButton addTarget:delegate action:@selector(onResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		resumeButton.frame = CGRectMake(floor(self.frame.size.width/2 - resumeButton.frame.size.width/2), floor(self.frame.size.height/2 - resumeButton.frame.size.height/2), resumeButton.frame.size.width, resumeButton.frame.size.height);
+		[resumeButton setAccessibilityLabel:NSLocalizedString(@"Resume", @"Accessibility label for Library View cell book resume button.")];
+		[resumeButton setAccessibilityHint:NSLocalizedString(@"Resumes downloading and processing of book.", @"Accessibility hint for Library View cell book resume button.")];
 		resumeButton.hidden = YES;
 		[self.contentView addSubview:resumeButton];
 		
@@ -1819,12 +1659,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.contentView addSubview:statusBadge];		
 		
         [aBookView release];
+		[self listenToProcessingNotifications];
 	}
     return self;
 }
 -(void) prepareForReuse{
 	[super prepareForReuse];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	progressBackgroundView.hidden = YES;
 	progressView.hidden = YES;
 	pauseButton.hidden = YES;
@@ -1862,15 +1702,26 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         BlioAccessibleGridBookElement *bookElement = [[BlioAccessibleGridBookElement alloc] initWithAccessibilityContainer:self];
         [bookElement setTarget:self];
         bookElement.delegate = self.delegate;
-        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
-											[[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]]];
+//        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
+//											[[self.bookView book] title], [[self.bookView book] author], 100 * [[[self.bookView book] progress] floatValue]]];
+		NSString * authorString = @"";
+		NSString * audioString = @"";
+		if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
+			audioString = @", audiobook enabled.";
+		}
+		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
+			audioString = @", text-to-speech enabled.";
+		}
+		if (![[[self.bookView book] authorsWithStandardFormat] isEqualToString:@""]) authorString = [NSString stringWithFormat:@" by %@",[[self.bookView book] authorsWithStandardFormat]];
+        [bookElement setAccessibilityLabel:[NSString stringWithFormat:NSLocalizedString(@"%@%@%@", @"Accessibility label for Library View cell book description"), 
+											[[self.bookView book] title], authorString,audioString]];
 		
         [bookElement setAccessibilityTraits:UIAccessibilityTraitButton];
         [bookElement setVisibleRect:[self.delegate visibleRect]];
         if (![self.deleteButton isHidden] && [self.deleteButton alpha]) {
             [bookElement setAccessibilityHint:NSLocalizedString(@"Draggable. Double-tap and hold then move to desired location.", @"Accessibility hint for Library View cell book when editing")];
         } else {
-            [bookElement setAccessibilityHint:NSLocalizedString(@"Opens book.", @"Accessibility hint for Library View cell book when not editing")];
+            [bookElement setAccessibilityHint:[self stateBasedAccessibilityHint]];
         }
         [accArray addObject:bookElement];
         [bookElement release];
@@ -1880,7 +1731,33 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
     return [self.accessibilityElements count];
 }
-
+-(NSString*)stateBasedAccessibilityHint {
+	
+	if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed) {
+		return NSLocalizedString(@"retrieving information.", @"Accessibility hint for not-processed Library View cell book description");
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
+		return NSLocalizedString(@" not yet downloaded.", @"Accessibility hint for placeholder-only Library View cell book description");
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+		NSString * incompleteTextLabel = @"processing";
+		if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) incompleteTextLabel = @"downloading";
+		return incompleteTextLabel;
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateFailed) {
+		return NSLocalizedString(@"failed to download.", @"Accessibility label for failed Library View cell book description");
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
+		return NSLocalizedString(@"requires app update to be read.", @"Accessibility label for not supported Library View cell book description");
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
+		return NSLocalizedString(@"paused.", @"Accessibility label for paused Library View cell book description");
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
+		return NSLocalizedString(@"suspended.", @"Accessibility label for suspended Library View cell book description");
+	}
+	else return NSLocalizedString(@"Opens book.", @"Accessibility hint for Library View cell book when not editing");
+}
 - (id)accessibilityElementAtIndex:(NSInteger)index {    
     return [self.accessibilityElements objectAtIndex:index];
 }
@@ -1894,13 +1771,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)setBook:(BlioBook *)newBook {
-	[self stopListeningToProcessingNotifications];
 	self.bookView.delegate = self.delegate;
-    [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:0];
+    [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutGrid];
     self.titleLabel.text = [newBook title];
 	self.cellContentDescription = [newBook title];
     self.authorLabel.text = [[newBook author] uppercaseString];
-//    if ([newBook audioRights]) {
+//    if (![newBook hasTTSRights]) {
 //        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
 //    }
     self.progressSlider.value = [[newBook progress] floatValue];
@@ -1914,7 +1790,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.stateLabel.hidden = YES;
 	}	
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
-		[self listenToProcessingNotifications];
 		// set appearance to reflect incomplete state
 		self.bookView.alpha = 0.35f;
 		self.progressBackgroundView.hidden = NO;
@@ -1975,23 +1850,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.pauseButton.hidden = YES;
 		self.progressBackgroundView.hidden = YES;
 		bookView.alpha = 1;
-		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
 		}
-		else if (![self.book audioRights]) {
+		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-tts.png"];
 		}
 		
 	}
 }
 -(void) listenToProcessingNotifications {
-	//	NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
-	//	if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
-	//			NSLog(@"adding table cell as observer...");
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingFailedNotification:) name:BlioProcessingOperationFailedNotification object:nil];
-	//	}	
 }
 -(void) stopListeningToProcessingNotifications {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationProgressNotification object:nil];
@@ -2008,14 +1879,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	//            forControlEvents:UIControlEventTouchUpInside];
 }
 - (void)onProcessingProgressNotification:(NSNotification*)note {
-	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
-		//	NSLog(@"BlioLibraryGridViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
-		BlioProcessingCompleteOperation * completeOp = [note object];
-		progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
+	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+			BlioProcessingCompleteOperation * completeOp = [note object];
+			progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
+            NSLog(@"BlioLibraryGridViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
 	}
 }
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
-	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
+	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		//	NSLog(@"BlioLibraryGridViewCell onProcessingCompleteNotification entered");
 		progressBackgroundView.hidden = YES;
 		pauseButton.hidden = YES;	
@@ -2026,7 +1897,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {
-	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
+	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
 //		self.resumeButton.hidden = NO;
 //		self.stateLabel.hidden = NO;
@@ -2040,19 +1911,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryListCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider,proportionalProgressView, delegate,progressView,pauseButton,resumeButton,statusBadge;
+@synthesize bookView, titleLabel, authorLabel, /*progressSlider,proportionalProgressView,*/ delegate,progressView,pauseResumeButton,statusBadge;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.bookView = nil;
     self.titleLabel = nil;
     self.authorLabel = nil;
-    self.progressSlider = nil;
+    //self.progressSlider = nil;
     self.progressView = nil;
-	self.pauseButton = nil;
-	self.resumeButton = nil;
+	self.pauseResumeButton = nil;
 	self.statusBadge = nil;
-    self.delegate = nil;
     [super dealloc];
 }
 
@@ -2063,7 +1932,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.selectionStyle = UITableViewCellSelectionStyleGray;
         
 		self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		
+				
 		self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
 		self.backgroundView.autoresizesSubviews = YES;
 		UIImageView * dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
@@ -2095,6 +1964,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.authorLabel = aAuthorLabel;
         [aAuthorLabel release];
         
+		/*
         BlioProgressView *aSlider = [[BlioProgressView alloc] init];
         [aSlider setIsAccessibilityElement:NO];
         aSlider.userInteractionEnabled = NO;
@@ -2104,86 +1974,147 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.contentView addSubview:aSlider];
         self.progressSlider = aSlider;
         [aSlider release];
+		*/
 		
-		self.progressView = [[[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault] autorelease];
+		progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
 		progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
 		progressView.hidden = NO;
 		progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		[self.contentView addSubview:progressView];		
 		
-		pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, kBlioLibraryListButtonWidth, kBlioLibraryListButtonHeight)];
-		[pauseButton setImage:[UIImage imageNamed:@"library-pausebutton.png"] forState:UIControlStateNormal];
-		pauseButton.showsTouchWhenHighlighted = YES;
-		[pauseButton addTarget:delegate action:@selector(onPauseButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-		pauseButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeightPhone/2);
-		
-		resumeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, kBlioLibraryListButtonWidth, kBlioLibraryListButtonHeight)];
-		[resumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
-		resumeButton.showsTouchWhenHighlighted = YES;
-		[resumeButton addTarget:delegate action:@selector(onResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-		resumeButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeightPhone/2);
+		pauseResumeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, kBlioLibraryListButtonWidth, kBlioLibraryListButtonHeight)];
+		[pauseResumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
+		pauseResumeButton.showsTouchWhenHighlighted = YES;
+		[pauseResumeButton addTarget:delegate action:@selector(onPauseResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+		pauseResumeButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeightPhone/2);
+		[pauseResumeButton setAccessibilityLabel:NSLocalizedString(@"Resume", @"Accessibility label for Library View cell book resume button.")];
+		[pauseResumeButton setAccessibilityHint:NSLocalizedString(@"Resumes downloading and processing of book.", @"Accessibility hint for Library View cell book resume button.")];
 		
 //		statusBadge = [[UIImageView alloc] initWithFrame:CGRectMake(self.contentView.bounds.size.width - 20 - kBlioLibraryListAccessoryMargin, 28, 20, 20)];
 		statusBadge = [[UIImageView alloc] initWithFrame:CGRectMake(45, 52, 20, 20)];
 		statusBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:statusBadge];
+		[self listenToProcessingNotifications];
 	}
     return self;
 }
 -(void)prepareForReuse {
 	[super prepareForReuse];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	self.accessoryView = nil;
-	progressSlider.hidden = YES;
+	[progressView removeFromSuperview];
+	progressView.isAccessibilityElement = NO;
+	progressView.progress = 0;
+	progressView.hidden = YES;
+	//progressSlider.hidden = YES;
 	self.statusBadge.image = nil;
+	self.accessoryView = nil;
 }
--(void)onPauseButtonPressed:(id)sender {
-	[delegate pauseProcessingForBook:[self book]];
+-(void)onPauseResumeButtonPressed:(id)sender {
+	if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) [delegate pauseProcessingForBook:[self book]];
+	else [delegate enqueueBook:[self book]];
 }
--(void)onResumeButtonPressed:(id)sender {
-	[delegate enqueueBook:[self book]];
+-(void)resetPauseResumeButton {
+	if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+		[pauseResumeButton setImage:[UIImage imageNamed:@"library-pausebutton.png"] forState:UIControlStateNormal];
+		[pauseResumeButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Library View cell book pause button.")];
+		[pauseResumeButton setAccessibilityHint:NSLocalizedString(@"Pauses downloading and processing of book.", @"Accessibility hint for Library View cell book pause button.")];
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
+		[pauseResumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
+		[pauseResumeButton setAccessibilityLabel:NSLocalizedString(@"Download", @"Accessibility label for Archive View cell book download button.")];
+		[pauseResumeButton setAccessibilityHint:NSLocalizedString(@"Downloads book.", @"Accessibility hint for Library View cell book download button.")];
+	}
+	else {
+		[pauseResumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
+		[pauseResumeButton setAccessibilityLabel:NSLocalizedString(@"Resume", @"Accessibility label for Library View cell book resume button.")];
+		[pauseResumeButton setAccessibilityHint:NSLocalizedString(@"Resumes downloading and processing of book.", @"Accessibility hint for Library View cell book resume button.")];
+	}
 }
-
 - (NSString *)accessibilityLabel {
-    return [NSString stringWithFormat:NSLocalizedString(@"%@ by %@, %.0f%% complete", @"Accessibility label for Library View cell book description"), 
-            [[self.bookView book] title], [[self.bookView book] authorsWithStandardFormat], 100 * [[[self.bookView book] progress] floatValue]];
+	NSString * authorString = @"";
+	NSString * audioString = @"";
+	if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
+		audioString = @", audiobook enabled.";
+	}
+	else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
+		audioString = @", text-to-speech enabled.";
+	}
 	
+	if (![[[self.bookView book] authorsWithStandardFormat] isEqualToString:@""]) authorString = [NSString stringWithFormat:@" by %@",[[self.bookView book] authorsWithStandardFormat]];
+
+	if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed) {
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, retrieving information.", @"Accessibility label for not-processed Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, not yet downloaded.", @"Accessibility label for placeholder-only Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+//		return [NSString stringWithFormat:NSLocalizedString(@"%@%@, %.0f%% complete", @"Accessibility label for incomplete Library View cell book description"), 
+//				[[self.bookView book] title], authorString, 100 * [[[self.bookView book] progress] floatValue]];
+		NSString * incompleteTextLabel = @"processing";
+		if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) incompleteTextLabel = @"downloading";
+
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, %@.", @"Accessibility label for incomplete Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString,incompleteTextLabel];
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateFailed) {
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, failed to download.", @"Accessibility label for failed Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, requires app update to be read.", @"Accessibility label for not supported Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, paused", @"Accessibility label for paused Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
+	}
+	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
+		return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@, suspended", @"Accessibility label for suspended Library View cell book description"), 
+				[[self.bookView book] title], authorString,audioString];
+	}
+	else return [NSString stringWithFormat:NSLocalizedString(@"%@%@%@", @"Accessibility label for complete Library View cell book description"), 
+						[[self.bookView book] title], authorString,audioString];
 }
 
 - (NSString *)accessibilityHint {
-    return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
+    if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) return NSLocalizedString(@"Opens book.", @"Accessibility label for Library View cell book hint");
+	return @"";
 }
-
 - (BlioBook *)book {
     return [(BlioLibraryBookView *)self.bookView book];
 }
 
 - (void)setBook:(BlioBook *)newBook {
-	[self stopListeningToProcessingNotifications];
 	self.bookView.delegate = self.delegate;
     [(BlioLibraryBookView *)self.bookView setBook:newBook forLayout:kBlioLibraryLayoutList];
     self.titleLabel.text = [newBook title];
 	layoutPageEquivalentCount = [self.book.layoutPageEquivalentCount unsignedIntValue];
-    self.progressSlider.value = [[newBook progress] floatValue];
+    //self.progressSlider.value = [[newBook progress] floatValue];
 	
-	[self resetProgressSlider];
-	
+	//[self resetProgressSlider];
+	[self resetPauseResumeButton];
+
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
+		progressView.isAccessibilityElement = NO;
 		[self.progressView removeFromSuperview];
-		self.accessoryView = resumeButton;
+		progressView.hidden = YES;
+		self.accessoryView = pauseResumeButton;
 		[self resetAuthorText];
-		self.progressSlider.hidden = YES;
+		//self.progressSlider.hidden = YES;
 	}			
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
-		[self listenToProcessingNotifications];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
+		self.accessoryView = pauseResumeButton;
 		// set appearance to reflect incomplete state
 		// self.bookView.alpha = 0.35f;
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+			progressView.isAccessibilityElement = YES;
 			[self.contentView addSubview:self.progressView];
 			progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
 			progressView.hidden = NO;
-			self.progressSlider.hidden = YES;
+
+			//self.progressSlider.hidden = YES;
 			BlioProcessingCompleteOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 			if (completeOp) {
 				[completeOp calculateProgress];
@@ -2193,65 +2124,79 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 				// NSLog(@"WARNING: could not find completeOp for obtaining processing progress for book: %@",[newBook title]);
 				progressView.progress = 0;
 			}
-			self.accessoryView = pauseButton;
-			self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+			if (progressView.progress == 0) NSLocalizedString(@"Calculating...","\"Calculating...\" status indicator in BlioLibraryListCell");
+			if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+			else self.authorLabel.text = NSLocalizedString(@"Processing...","\"Processing...\" status indicator in BlioLibraryListCell");
+
+		}
+		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed) {
+			self.authorLabel.text = NSLocalizedString(@"Retrieving Information...","\"Retrieving Information...\" status indicator in BlioLibraryListCell");
+			progressView.isAccessibilityElement = NO;
+			[progressView removeFromSuperview];
+			progressView.hidden = YES;
+			self.accessoryView = nil;
+			//self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
-			self.accessoryView = resumeButton;
 			self.authorLabel.text = NSLocalizedString(@"Paused...","\"Paused...\" status indicator in BlioLibraryListCell");
-			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			progressView.isAccessibilityElement = NO;
+			[progressView removeFromSuperview];
+			progressView.hidden = YES;
+			//self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateFailed) {
-			self.accessoryView = resumeButton;
 			self.authorLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryListCell");
-			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			progressView.isAccessibilityElement = NO;
+			[progressView removeFromSuperview];
+			progressView.hidden = YES;
+			//self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
-			self.accessoryView = resumeButton;
+
 			self.authorLabel.text = NSLocalizedString(@"App Update Required","\"App Update Required\" status indicator in BlioLibraryListCell");
-			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			progressView.isAccessibilityElement = NO;
+			[progressView removeFromSuperview];
+			progressView.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
-			self.accessoryView = nil;
 			self.authorLabel.text = NSLocalizedString(@"Suspended","\"Suspended\" status indicator in BlioLibraryListCell");
-			self.progressView.hidden = YES;
-			self.progressSlider.hidden = YES;
+			progressView.isAccessibilityElement = NO;
+			[progressView removeFromSuperview];
+			progressView.hidden = YES;
+			//self.progressSlider.hidden = YES;
 //			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
 	}
 	else {
-		self.progressSlider.hidden = NO;
-		[self.progressView removeFromSuperview];
-		[self resetAuthorText];
+		//self.progressSlider.hidden = NO;
+		progressView.isAccessibilityElement = NO;
+		[progressView removeFromSuperview];
+		progressView.hidden = YES;
 		self.accessoryView = nil;
+		[self resetAuthorText];
 		self.selectionStyle = UITableViewCellSelectionStyleGray;
-		if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+		if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-audiobook.png"];
 		}
-		else if (![self.book audioRights]) {
+		else if ([self.book hasTTSRights] && (self.book.hasEPub || self.book.hasTextFlow)) {
 			self.statusBadge.image = [UIImage imageNamed:@"badge-tts.png"];
 		}
 	}
     [self setNeedsLayout];
+	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 -(void) listenToProcessingNotifications {
-	//	NSOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
-	//	if (completeOp != nil && [completeOp isKindOfClass:[BlioProcessingCompleteOperation class]]) {
-	//			NSLog(@"adding table cell as observer...");
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingFailedNotification:) name:BlioProcessingOperationFailedNotification object:nil];
-	//	}	
 }
 -(void) stopListeningToProcessingNotifications {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationProgressNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationCompleteNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationFailedNotification object:nil];
 }
+/*
 -(void) resetProgressSlider {
     CGRect progressFrame = self.progressSlider.frame;
 	CGFloat targetProgressWidth = 0;
@@ -2277,9 +2222,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //	}
 	
 }
+*/
 -(void) resetAuthorText {
     self.authorLabel.text = [[self.book authorsWithStandardFormat] uppercaseString];
-//    if ([self.book audioRights] && [self.book hasManifestValueForKey:@"audiobookMetadataFilename"]) {
+//    if (![self.book hasTTSRights] && [self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
 //        self.authorLabel.text = [NSString stringWithFormat:@"%@ %@", self.authorLabel.text, @"♫"];
 //    }	
 }
@@ -2295,30 +2241,29 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 -(void) onBlioMaxLayoutPageEquivalentCountChanged:(NSNotification*)note {
 	NSLog(@"onBlioMaxLayoutPageEquivalentCountChanged entered");
-	if (delegate == [note object]) [self resetProgressSlider];
+	// TODO: might this function be needed for anything else?
+	//if (delegate == [note object]) [self resetProgressSlider];
 }
 - (void)onProcessingProgressNotification:(NSNotification*)note {
-	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
-		BlioProcessingCompleteOperation * completeOp = [note object];
-		//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
-		[self.contentView addSubview:self.progressView];
-		progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
-		progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
-	}
+		if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+			BlioProcessingCompleteOperation * completeOp = [note object];
+			//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
+			progressView.isAccessibilityElement = YES;
+			progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
+			progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
+
+
+		}
 }
 
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
-	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
-		//	NSLog(@"BlioLibraryListViewCell onProcessingCompleteNotification entered");
-		//	progressView.hidden = YES;
-		//	[self resetAuthorText];
-		//	self.accessoryView = nil;
-		// bookView.alpha = 1;
-//		[(BlioLibraryViewController*)delegate calculateMaxLayoutPageEquivalentCount];
-	}
+		if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingDownloadOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+			if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
+			else self.authorLabel.text = NSLocalizedString(@"Processing...","\"Processing...\" status indicator in BlioLibraryListCell");
+		}
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {
-	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
+	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		NSLog(@"BlioLibraryListViewCell onProcessingFailedNotification entered");
 //		self.accessoryView = resumeButton;
 //		self.authorLabel.text = @"Failed...";

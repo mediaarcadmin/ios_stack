@@ -5,17 +5,17 @@
 	<key>EucFontSizes</key>
 	<array>
 		<integer>14</integer>
-		<integer>16</integer>
-		<integer>18</integer>
-		<integer>20</integer>
-		<integer>22</integer>
+		<integer>17</integer>
+		<integer>19</integer>
+		<integer>23</integer>
+		<integer>29</integer>
 	</array>
 	<key>EucDefaultFontSize</key>
-	<string>18</string>
+	<string>19</string>
 	<key>EucDefaultFontFamily</key>
-	<string>Georgia</string>
+	<string>LinuxLibertine</string>
 	<key>EucSerifFontFamily</key>
-	<string>Georgia</string>
+	<string>LinuxLibertine</string>
 	<key>EucSansSerifFontFamily</key>
 	<string>Helvetica</string>
 	<key>EucMonospaceFontFamily</key>

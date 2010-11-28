@@ -1,15 +1,22 @@
 * { margin:0; padding:0; border:0; }
-Flow { text-align:left; display:block }
+Flow { text-align:justify; display:block }
 Section { display:block }
 Paragraph { display:block }
 *[FontWeight="Bold"] { font-weight:bold }
 *[FontStyle="Italic"] { font-style:italic }
-*[PageBreakBefore="True"] { page-break-before:always }
 *[BreakPageBefore="True"] { page-break-before:always }
+*[BreakColumnBefore="True"] { page-break-before:always }
 *[TextAlignment="Justify"] { text-align:justify }
 *[TextAlignment="Center"] { text-align:center }
 *[TextAlignment="Left"] { text-align:left }
 *[TextAlignment="Right"] { text-align:right }
-LineBreak:before { content:"\A"; white-space: pre-line }
-:link { text-decoration: underline }
-:link * { text-decoration: inherit }
+*[BaselineAlignment="Top"] { vertical-align:top }
+*[BaselineAlignment="Center"] { vertical-align:middle }
+*[BaselineAlignment="Bottom"] { vertical-align:bottom }
+*[BaselineAlignment="Baseline"] { vertical-align:baseline }
+*[BaselineAlignment="TextTop"] { vertical-align:text-top }
+*[BaselineAlignment="TextBottom"] { vertical-align:text-bottom }
+*[BaselineAlignment="Subscript"] { vertical-align:sub }
+*[BaselineAlignment="Superscript"] { vertical-align:super }
+LineBreak:before { content:"\A"; white-space:pre-line }
+:link { color:blue }

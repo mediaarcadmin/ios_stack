@@ -117,11 +117,11 @@
 - (UITextField *)createConfirmPasswordTextField
 {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.confirmPasswordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.confirmPasswordField) self.confirmPasswordField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	confirmPasswordField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	confirmPasswordField.keyboardType = UIKeyboardTypeAlphabet;
 	confirmPasswordField.keyboardAppearance = UIKeyboardAppearanceDefault;
-	confirmPasswordField.returnKeyType = UIReturnKeyDone;
+	confirmPasswordField.returnKeyType = UIReturnKeyGo;
 	confirmPasswordField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	confirmPasswordField.autocorrectionType = UITextAutocorrectionTypeNo;
 	confirmPasswordField.placeholder = NSLocalizedString(@"Confirm Password",@"\"Confirm Password\" placeholder");
@@ -134,8 +134,9 @@
 }
 - (UITextField *)createFirstNameTextField
 {
+	NSLog(@"createFirstNameTextField");
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.firstNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.firstNameField) self.firstNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	firstNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	firstNameField.keyboardType = UIKeyboardTypeAlphabet;
 	firstNameField.keyboardAppearance = UIKeyboardAppearanceDefault;
@@ -150,7 +151,7 @@
 - (UITextField *)createLastNameTextField
 {
 	CGRect frame = CGRectMake(0.0, 0.0, 100.0, 100.0);
-	self.lastNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
+	if (!self.lastNameField) self.lastNameField = [[[UITextField alloc] initWithFrame:frame] autorelease];
 	lastNameField.clearButtonMode = UITextFieldViewModeWhileEditing;
 	lastNameField.keyboardType = UIKeyboardTypeAlphabet;
 	lastNameField.keyboardAppearance = UIKeyboardAppearanceDefault;
@@ -205,10 +206,12 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	if (section == 0) return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CREATE_ACCOUNT_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Passwords must have a minimum of 6 characters, including at least one upper case and one digit. Characters %@ are not allowed.",@"Explanatory message that appears at the bottom of the Create Account fields."),BlioPasswordInvalidCharacters];
+	if (section == 0) return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CREATE_ACCOUNT_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Passwords must have a minimum of 8 characters, including at least one upper case and one digit. Characters %@ are not allowed.",@"Explanatory message that appears at the bottom of the Create Account fields."),BlioPasswordInvalidCharacters];
 	return nil;
 }
-
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+	return 100;
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -280,12 +283,51 @@
 		[confirmPasswordField becomeFirstResponder];
 	}
 	else {
+		if (!firstNameField.text || [firstNameField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"FIRSTNAME_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your first name before creating your account.",@"Alert Text informing the end-user that the first name must be entered to create an account.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];
+			[firstNameField becomeFirstResponder];
+			return NO;
+		}
+		if (!lastNameField.text || [lastNameField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"LASTNAME_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your last name before creating your account.",@"Alert Text informing the end-user that the last name must be entered to create an account.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"	
+							   otherButtonTitles:nil];
+			[lastNameField becomeFirstResponder];
+			return NO;
+		}
+		
 		// TODO: validate email address using regex
+
+		if (!emailField.text || [emailField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your email address before creating your account.",@"Alert Text informing the end-user that the email address must be entered to create an account.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];
+			[emailField becomeFirstResponder];
+			return NO;
+		}
+		if (!passwordField.text || [passwordField.text isEqualToString:@""]) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your password before creating your account.",@"Alert Text informing the end-user that the password must be entered to create an account.")
+										delegate:nil 
+							   cancelButtonTitle:@"OK"
+							   otherButtonTitles:nil];			
+			[passwordField becomeFirstResponder];
+			return NO;
+		}
+		
 		
 		
 		
 		// check to confirm password fields match
-		if (![passwordField.text isEqualToString:confirmPasswordField.text]) {
+		if (!confirmPasswordField.text || ![passwordField.text isEqualToString:confirmPasswordField.text]) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORDS_MUST_MATCH_ALERT_TEXT",nil,[NSBundle mainBundle],@"Please make sure your passwords match.",@"Alert Text informing the end-user that the password and confirm password fields must match.")
 										delegate:nil 
@@ -362,7 +404,7 @@
 		[inputData setObject:[NSString stringWithString:self.passwordField.text] forKey:DigitalLockerInputDataPasswordKey];
 		[inputData setObject:@"N" forKey:DigitalLockerInputDataEmailOptionKey];
 		request.InputData = inputData;
-		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request delegate:self];
+		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request siteNum:[[BlioStoreManager sharedInstance] storeSiteIDForSourceID:sourceID] siteKey:[[BlioStoreManager sharedInstance] storeSiteKeyForSourceID:sourceID] delegate:self];
 		[connection start];
 		[request release];
 	}
@@ -376,10 +418,7 @@
 	NSLog(@"BlioCreateAccountViewController connectionDidFinishLoading...");
 	[activityIndicatorView stopAnimating];
 	if (aConnection.digitalLockerResponse.ReturnCode == 0) {
-		NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-		[loginCredentials setObject:[NSString stringWithString:emailField.text] forKey:@"username"];
-		[loginCredentials setObject:[NSString stringWithString:passwordField.text] forKey:@"password"];
-		[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:[[BlioStoreManager sharedInstance] storeTitleForSourceID:sourceID]];
+		[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:passwordField.text sourceID:sourceID];
 		NSString * alertMessage = NSLocalizedStringWithDefaultValue(@"ACCOUNT_CREATED",nil,[NSBundle mainBundle],@"Your account has been created! Blio will now login under your new account.",@"Alert Text informing the end-user that an account has been created, and the app will now login under that new account.");
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Congratulations",@"\"Congratulations\" alert message title") 
 									 message:alertMessage
@@ -409,6 +448,7 @@
 #pragma mark UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+	[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
 	[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
 }
 

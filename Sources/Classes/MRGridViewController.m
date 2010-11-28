@@ -63,7 +63,9 @@
 -(NSInteger)numberOfItemsInGridView:(MRGridView*)gridView{
 	return 0;
 }
-
+-(BOOL) gridView:(MRGridView*)gridView canMoveCellAtIndex:(NSInteger)index {
+	return YES;
+}
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex{
 	//no implementation here, must subclass to implement this function
 }
