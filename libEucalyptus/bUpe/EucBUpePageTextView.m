@@ -73,8 +73,6 @@
     self.positionedBlock = nil;
     
     if(document) {
-        NSLog(@"Source: %ld",  (long)point.source);
-        
         EucCSSLayoutPoint layoutPoint;
         layoutPoint.nodeKey = point.block ?: document.rootNode.key;
         layoutPoint.word = point.word;

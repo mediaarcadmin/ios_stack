@@ -318,9 +318,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                  lastBlockNodeKey:(uint32_t)lastBlockNodeKey
                             constructingAncestors:(BOOL)constructingAncestors
 {
-    NSLog(@"Intern: %d, %d, %d", point.nodeKey, point.word, point.element);
-
-    
     EucCSSLayoutPositionedBlock *positionedRoot = nil;      
     
     /*
@@ -380,11 +377,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     uint32_t nodeKey = point.nodeKey;
     uint32_t wordOffset = point.word;
     uint32_t elementOffset = point.element;
-    
-    if(nodeKey == 208) {
-        NSLog(@"3dsfdsfdsfds");
-    }
-    
     
     EucCSSIntermediateDocument *document = self.document;
     EucCSSIntermediateDocumentNode* currentDocumentNode = [self _layoutNodeForKey:nodeKey];
@@ -658,7 +650,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             *returningCompleted = YES;
             EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
             *returningNextPoint = fakeNextPoint;
-            NSLog(@"~~%d, %d, %d", returningNextPoint->nodeKey, returningNextPoint->word, returningNextPoint->element); 
         } else {
             if(reachedBottomOfFrame) {
                 *returningCompleted = NO;
@@ -672,11 +663,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                   pageBreaksDisallowedByRuleD:&pageBreaksDisallowedByRuleD];
                 if(nextPointValid) {
                     *returningNextPoint = nextPoint;
-                    NSLog(@"++%d, %d, %d", returningNextPoint->nodeKey, returningNextPoint->word, returningNextPoint->element);
-
-                    if(returningNextPoint->nodeKey == 208) {
-                        NSLog(@"dsadsadsa");
-                    }
                     
                     reachedBottomOfFrame = NO;
                     closedLastNode = YES;
@@ -690,7 +676,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     } else {
                         *returningCompleted = YES;
                     }
-                    NSLog(@"--%d, %d, %d", returningNextPoint->nodeKey, returningNextPoint->word, returningNextPoint->element);
                 }
             } else {
                 *returningCompleted = YES;
@@ -710,13 +695,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         *returningNextPoint = point;
         *returningCompleted = YES;
     }
-    
-    NSLog(@"%d, %d, %d", returningNextPoint->nodeKey, returningNextPoint->word, returningNextPoint->element);
-    
-    if(returningNextPoint->nodeKey == 208) {
-        NSLog(@"ddsadsadsa");
-    }
-    
+            
     return positionedRoot;
 }
 
@@ -725,8 +704,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
                               returningCompleted:(BOOL *)returningCompleted;
 {    
-    NSLog(@"From: %d, %d, %d", point.nodeKey, point.word, point.element);
-    
     EucCSSLayoutPositionedBlock *ret = [self _layoutFromPoint:point
                                                       inFrame:frame
                                            returningNextPoint:returningNextPoint
