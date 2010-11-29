@@ -504,7 +504,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)viewDidUnload {
-	if (sortSegmentedControl) [sortSegmentedControl release];
+	if (sortSegmentedControl) {
+		[sortSegmentedControl release];
+		sortSegmentedControl = nil;
+	}
 }
 
 - (NSInteger)columnCount {
