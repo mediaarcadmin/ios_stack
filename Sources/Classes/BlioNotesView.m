@@ -313,7 +313,7 @@ void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
     CGContextDrawLinearGradient (ctx, myGradient, CGPointMake(CGRectGetMinX(inRect), CGRectGetMinY(inRect)), CGPointMake(CGRectGetMinX(inRect), CGRectGetMaxY(inRect)), 0);
     CGGradientRelease(myGradient);
     
-    CGContextSetRGBFillColor(ctx, 1.0f, 0.0f, 1.0f, 0.7f);
+    CGContextSetRGBFillColor(ctx, 1.0f, 1.0f, 1.0f, 0.7f);
     
     CGContextSetShadow(ctx, CGSizeMake(0,1), 0);
     CGContextFillRect(ctx, CGRectMake(inRect.origin.x + kBlioNotesViewTextXInset, inRect.origin.y + kBlioNotesViewToolbarHeight + 1, inRect.size.width - 2 * kBlioNotesViewTextXInset, 1));
