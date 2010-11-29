@@ -51,7 +51,7 @@
                     } else if([key isEqualToString:@"Stretch"]) {
                         NSString *value = [myAttributes objectForKey:key];
                         if([value isEqualToString:@"Fill"]) {
-                            [constructionString appendString:@"width:100%; height:100%;"];
+                            [constructionString appendString:@"width:100%;height:100%;"];
                         }
                     }
                 }

@@ -328,7 +328,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"PeterRabbit" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
-		];
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
+                                              authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/New Italian Kitchen.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
 		
         [self.processingDelegate enqueueBookWithTitle:@"The Legend of Sleepy Hollow" 
                                               authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
@@ -340,6 +353,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Frommers Florida" 
+                                              authors:[NSArray arrayWithObjects:@"Rose, Lesley Anne", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Frommers Florida.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"FrommersFlorida" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
@@ -412,6 +438,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+		
+        [self.processingDelegate enqueueBookWithTitle:@"Grilling Basics" 
+                                              authors:[NSArray arrayWithObjects:@"Larsen, Linda Johnson", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Grilling Basics.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"GrillingBasics" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		

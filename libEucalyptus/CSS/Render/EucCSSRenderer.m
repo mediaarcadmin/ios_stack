@@ -316,6 +316,18 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
             }
             case EucCSSLayoutPositionedLineRenderItemKindImage: {
                 CGRect rect = renderItem->item.stringItem.rect;
+                
+                // Massage the rect a bit so that if it's an integral
+                // width or height, it's placed on a pixel boundary.
+                // (not worth trying if they're not integral width or height - 
+                // may as well use the precise placement).
+                if(fmodf(rect.size.width, 1) == 0.0f){
+                    rect.origin.x = roundf(rect.origin.x);
+                }
+                if(fmodf(rect.size.height, 1) == 0.0f) {
+                    rect.origin.y = roundf(rect.origin.y);
+                }
+                
                 CGContextSaveGState(_cgContext);
                 CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
                 CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));

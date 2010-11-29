@@ -352,7 +352,7 @@
 		7D516FFF10287922005F3C46 /* THCopyWithCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FFD10287922005F3C46 /* THCopyWithCoder.m */; };
 		7D51700A1028796E005F3C46 /* EucChapterNameFormatting.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170081028796E005F3C46 /* EucChapterNameFormatting.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51700B1028796E005F3C46 /* EucChapterNameFormatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5170091028796E005F3C46 /* EucChapterNameFormatting.m */; };
-		7D51701310287987005F3C46 /* VCTitleCase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51700F10287987005F3C46 /* VCTitleCase.h */; settings = {ATTRIBUTES = (); }; };
+		7D51701310287987005F3C46 /* VCTitleCase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D51700F10287987005F3C46 /* VCTitleCase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51701410287987005F3C46 /* VCTitleCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D51701010287987005F3C46 /* VCTitleCase.m */; };
 		7D51701B102879C7005F3C46 /* THGeometryUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D517019102879C7005F3C46 /* THGeometryUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D51701C102879C7005F3C46 /* THGeometryUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D51701A102879C7005F3C46 /* THGeometryUtils.c */; };
@@ -494,7 +494,6 @@
 		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
 		7DD48E6110C2E46C0001203D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E6010C2E46C0001203D /* QuartzCore.framework */; };
 		7DD48E7C10C2E5780001203D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E7B10C2E5780001203D /* AudioToolbox.framework */; };
-		7DD48ED310C2E61E0001203D /* animatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */; };
 		7DD48EDF10C2E61E0001203D /* BookButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC410C2E61E0001203D /* BookButton.png */; };
 		7DD48EE010C2E61E0001203D /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC510C2E61E0001203D /* BookEdge.pvrtc */; };
 		7DD48EE110C2E61E0001203D /* BookPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48EC610C2E61E0001203D /* BookPaper.png */; };
@@ -506,7 +505,6 @@
 		7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */; };
 		7DD48EFD10C2E69E0001203D /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DD48EFE10C2E6A50001203D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
-		7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */ = {isa = PBXBuildFile; fileRef = 7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */; };
 		7DE9F47011D8FCF80083089E /* BookPaperBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE9F46F11D8FCF80083089E /* BookPaperBlack.png */; };
 		7DE9F47111D8FCF80083089E /* BookPaperBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE9F46F11D8FCF80083089E /* BookPaperBlack.png */; };
 		7DF012AF103EDD5600DAA9DA /* THTextFittingLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1246,7 +1244,6 @@
 		7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		7DD48E6010C2E46C0001203D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7DD48E7B10C2E5780001203D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = animatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
 		7DD48EC410C2E61E0001203D /* BookButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookButton.png; sourceTree = "<group>"; };
 		7DD48EC510C2E61E0001203D /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
 		7DD48EC610C2E61E0001203D /* BookPaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaper.png; sourceTree = "<group>"; };
@@ -1256,7 +1253,6 @@
 		7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemFastForward.png; sourceTree = "<group>"; };
 		7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
 		7DD48ED210C2E61E0001203D /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
-		7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */ = {isa = PBXFileReference; lastKnownFileType = file; path = reverseAnimatedBookTurnVertices.vertexData; sourceTree = "<group>"; };
 		7DE9F46F11D8FCF80083089E /* BookPaperBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BookPaperBlack.png; sourceTree = "<group>"; };
 		7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THTextFittingLabel.h; sourceTree = "<group>"; };
 		7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THTextFittingLabel.m; sourceTree = "<group>"; };
@@ -2652,8 +2648,6 @@
 			children = (
 				7D2CCB08114DA3A2007FDEAF /* Aliases */,
 				7D9A986610D7E6F100C2E00A /* HyphenationPatterns */,
-				7DD48EB710C2E61E0001203D /* animatedBookTurnVertices.vertexData */,
-				7DD491A610C326170001203D /* reverseAnimatedBookTurnVertices.vertexData */,
 				7DD48EB810C2E61E0001203D /* Apple */,
 				7DD48EC510C2E61E0001203D /* BookEdge.pvrtc */,
 				7DD48EC610C2E61E0001203D /* BookPaper.png */,
@@ -3228,7 +3222,6 @@
 				7D9A992810D7F2BA00C2E00A /* HyphenationPatterns in Resources */,
 				7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */,
 				7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */,
-				7DD48ED310C2E61E0001203D /* animatedBookTurnVertices.vertexData in Resources */,
 				7DD48EDF10C2E61E0001203D /* BookButton.png in Resources */,
 				7DD48EE010C2E61E0001203D /* BookEdge.pvrtc in Resources */,
 				7DD48EE110C2E61E0001203D /* BookPaper.png in Resources */,
@@ -3238,7 +3231,6 @@
 				7DD48EEA10C2E61E0001203D /* UIBarButtonSystemItemFastForward.png in Resources */,
 				7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */,
 				7DD48EEC10C2E61E0001203D /* XHTMLEntityMap.plist in Resources */,
-				7DD491A710C326170001203D /* reverseAnimatedBookTurnVertices.vertexData in Resources */,
 				7DB9F8ED10F394930010DF0B /* LinuxLibertine-Bold.otf in Resources */,
 				7DB9F8EE10F394930010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */,
 				7DB9F8EF10F394930010DF0B /* LinuxLibertine-Italic.otf in Resources */,

@@ -328,7 +328,7 @@
 							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
 			[drmSessionManager release];
 			return NO;
-		}
+		} 
 	}
 	else {
 		if ( ![drmSessionManager leaveDomain:self.token] ) {
@@ -340,7 +340,7 @@
 			[drmSessionManager release];
 			return NO;
 		}
-		else {
+		else { 
 			// de-registration succeeded, delete current user's books
 			[[BlioStoreManager sharedInstance].processingDelegate deletePaidBooksForUserNum:userNum siteNum:siteID];
 		}

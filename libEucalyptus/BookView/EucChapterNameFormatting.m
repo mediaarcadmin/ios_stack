@@ -73,9 +73,9 @@ static NSCharacterSet *sCharsToTrim = nil;
                                                                                         options:0
                                                                                           range:NSMakeRange(endOfSecondWordCharacterRange.location, lowercaseNameLength - endOfSecondWordCharacterRange.location)];
                 if(startOfThirdWordCharacterRange.length > 0) {
-                    mainName = [[[lowercaseName substringToIndex:endOfSecondWordCharacterRange.location] titlecaseString] stringWithSmartQuotes];
+                    mainName = [[[lowercaseName substringToIndex:endOfSecondWordCharacterRange.location] titleCaseString] stringWithSmartQuotes];
                     if(wantSubName) {
-                        subName = [[[lowercaseName substringFromIndex:startOfThirdWordCharacterRange.location] titlecaseString] stringWithSmartQuotes];
+                        subName = [[[lowercaseName substringFromIndex:startOfThirdWordCharacterRange.location] titleCaseString] stringWithSmartQuotes];
                     }
                 }
             }
@@ -84,7 +84,7 @@ static NSCharacterSet *sCharsToTrim = nil;
     }
 
     if(!mainName) {
-        mainName = [[lowercaseName titlecaseString] stringWithSmartQuotes];   
+        mainName = [[lowercaseName titleCaseString] stringWithSmartQuotes];   
     }    
     
     return [THPair pairWithFirst:mainName second:subName]; 

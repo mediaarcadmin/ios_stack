@@ -639,7 +639,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                                                                   wordLength);
                                 if(string) {
                                     if(wordNeedsSmartQuotes) {
-                                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotes];
+                                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotesWithPreviousCharacter:_characterBeforeWord];
                                         CFRelease(string);
                                         string = (CFStringRef)[smartQuoted retain];
                                         wordNeedsSmartQuotes = NO;
@@ -679,6 +679,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                             } else {
                                 _previousInlineCharacterWasSpace = YES;
                             }
+                            _characterBeforeWord = ' ';
                         }
                         if(whiteSpaceModel == CSS_WHITE_SPACE_PRE ||
                            whiteSpaceModel == CSS_WHITE_SPACE_PRE_WRAP ||
@@ -733,7 +734,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                                                   cursor - wordStart);
                 if(string) {
                     if(wordNeedsSmartQuotes) {
-                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotes];
+                        NSString *smartQuoted = [(NSString *)string stringWithSmartQuotesWithPreviousCharacter:_characterBeforeWord];
                         CFRelease(string);
                         string = (CFStringRef)[smartQuoted retain];
                         wordNeedsSmartQuotes = NO;
@@ -753,6 +754,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     _alreadyInsertedSpace = YES;
                 }
             }
+            
+            _characterBeforeWord = *(cursor - 1);
             
             if(charactersToFree) {
                 free(charactersToFree);

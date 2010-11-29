@@ -2007,7 +2007,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void) getNextBlockForAudioManager:(BlioAudioManager*)audioMgr {
-    id<BlioParagraphSource> paragraphSource = self.book.paragraphSource;
+    id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
     
     id newBlock  = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
 
@@ -2030,12 +2030,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
 	else {
 		// Play button has just been pushed.
-        id<BlioParagraphSource> paragraphSource = self.book.paragraphSource;
+        id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease]; // retain/autorelease to work around dealloc bug #235
         id blockId = nil;
         uint32_t wordOffset = 0;
 		[paragraphSource bookmarkPoint:point toParagraphID:&blockId wordOffset:&wordOffset]; 
 		
-		NSLog(@"prepareTextToSpeakWithAudioManager. CurrentBookmarkPoint is on page %d. blockId: %@ wordOffset: %d)", self.bookView.currentBookmarkPoint.layoutPage, blockId, wordOffset);
+//		NSLog(@"prepareTextToSpeakWithAudioManager. CurrentBookmarkPoint is on page %d. blockId: %@ wordOffset: %d)", self.bookView.currentBookmarkPoint.layoutPage, blockId, wordOffset);
 
         if ( blockId ) {
             if ( audioMgr.pageChanged ) {  
@@ -2044,8 +2044,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 // page or book after stopping speech the last time (whew).
                 [audioMgr setCurrentBlock:blockId];
                 [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:blockId]];
-				if ( wordOffset < [audioMgr.blockWords count] - 1 )
+
+				if ( [audioMgr.blockWords count] && (wordOffset < [audioMgr.blockWords count] - 1 )) {
 					++wordOffset;
+				}
                 [audioMgr setCurrentWordOffset:wordOffset];
                 [audioMgr setPageChanged:NO];
             }
@@ -2132,7 +2134,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
+			id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
+            BlioBookmarkPoint *point = [paragraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
                                                                                    wordOffset:wordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
@@ -2265,7 +2268,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-            BlioBookmarkPoint *point = [self.book.paragraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
+			id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
+            BlioBookmarkPoint *point = [paragraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
                                                                                     wordOffset:_audioBookManager.currentWordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }

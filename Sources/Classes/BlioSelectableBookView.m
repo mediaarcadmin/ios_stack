@@ -80,15 +80,18 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     
     EucMenuItem *colorItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Color", "\"Color\" option in popup menu")
                                                           action:@selector(showColorMenu:)] autorelease];
-    
+   
+    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu")
+                                                                 action:@selector(showWebTools:)] autorelease];
+
     EucMenuItem *removeItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Remove", "\"Remove Highlight\" option in popup menu")
                                                            action:@selector(removeHighlight:)] autorelease];
     
     NSArray *ret;
     if (copy)
-        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, colorItem, nil];
+        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWebToolsItem, colorItem, nil];
     else
-        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, colorItem, nil];
+        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWebToolsItem, colorItem, nil];
     
     return ret;
 }

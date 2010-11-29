@@ -79,6 +79,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 @synthesize shouldSniffTouches = _shouldSniffTouches;
 @synthesize selectionDisabled = _selectionDisabled;
+@synthesize shouldTrackSingleTapsOnHighights = _shouldTrackSingleTapsOnHighights;
 
 @synthesize dataSource = _dataSource;
 @synthesize delegate = _delegate;
@@ -126,6 +127,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     if((self = [super init])) {
         _shouldSniffTouches = YES;
+        _shouldTrackSingleTapsOnHighights = YES;
     }
     return self;
 }
@@ -857,7 +859,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             case EucSelectorTrackingStageSelectedAndWaiting:
             {
                 self.tracking = NO;
-                if(previousStage == EucSelectorTrackingStageFirstSelection && self.selectedRangeIsHighlight) {
+                if(previousStage <= EucSelectorTrackingStageFirstSelection && self.selectedRangeIsHighlight) {
                     self.selectedRangeOriginalHighlightRange = self.selectedRange;
                     if([self.delegate respondsToSelector:@selector(eucSelector:willBeginEditingHighlightWithRange:)]) {
                         UIColor *selectionColor = [self.delegate eucSelector:self willBeginEditingHighlightWithRange:self.selectedRange];
@@ -872,6 +874,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                         }
                     } 
                 }                
+                [self redisplaySelectedRange];
                 [self _positionKnobs]; 
                 id<EucSelectorDelegate> delegate = self.delegate;
                 if([delegate respondsToSelector:@selector(menuItemsForEucSelector:)]) {
@@ -1239,10 +1242,10 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 {
     EucSelectorRange *selectedRange = self.selectedRange;
     if(selectedRange) {
-        if(_cachedBlockAndElementIdentifierToRects) {
+        /*if(_cachedBlockAndElementIdentifierToRects) {
             CFRelease(_cachedBlockAndElementIdentifierToRects);
             _cachedBlockAndElementIdentifierToRects = NULL;
-        }
+        }*/
         
         // Work out he rects to highlight
         NSArray *highlightRects = [self _highlightRectsForRange:selectedRange];
@@ -1308,11 +1311,13 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 }
 
 
-- (void)setSelectedRange:(EucSelectorRange *)newRange
+- (void)setSelectedRange:(EucSelectorRange *)newSelectedRange
 {
-    if(newRange != _selectedRange &&
-       !(newRange && [newRange isEqual:_selectedRange])) {
-        if(!newRange) {
+    if(newSelectedRange != _selectedRange &&
+       !(newSelectedRange && [newSelectedRange isEqual:_selectedRange])) {
+        BOOL newSelectedRangeIsHighlight = NO;
+        
+        if(!newSelectedRange) {
             if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {
                 [CATransaction begin];
                 [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
@@ -1323,11 +1328,49 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             } else {
                 self.trackingStage = EucSelectorTrackingStageNone;
             }            
+        } else {
+            // If we overlap a highlight range, select the entire range.
+            for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
+                if([highlightRange overlaps:newSelectedRange]) {
+                    newSelectedRange = highlightRange;
+                    newSelectedRangeIsHighlight = YES;
+                    break;
+                }
+            }
+            
+            if(&UIAccessibilityAnnouncementNotification != NULL) {
+                if(![newSelectedRange isEqual:self.selectedRange]) {
+                    NSString *labelFormat = @"%@";
+                    if(!self.accessibilityAnnouncedSelecting) {
+                        labelFormat = NSLocalizedString(@"Selecting: %@", @"Accessibility announcement when selector is first used.  Arg = word hovered over");
+                        self.accessibilityAnnouncedSelecting = YES;
+                    }
+                    NSString *labelString;
+                    NSString *highlightString = [self _accessibilityLabelForRange:newSelectedRange];
+                    if(newSelectedRangeIsHighlight) {
+                        NSString *labelStringFormat = NSLocalizedString(@"Highlight: %@", @"Accessibility announcement when selector is first used and the user is hovering over an existing highlight.  Arg = highlighted text hovered over");
+                        labelString = [NSString stringWithFormat:labelStringFormat, highlightString ?: @""];
+                    } else {
+                        labelString = highlightString;
+                    }
+                    NSString *label = [NSString stringWithFormat:labelFormat, labelString ?: @""];
+                    if(label) {
+                        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
+                    }
+                    [self.accessibilityMask setSelectionString:labelString];
+                }
+            }
         }
+        
         [_selectedRange release];
-        _selectedRange = [newRange retain];
-        if(newRange) {
-            [self redisplaySelectedRange];
+        _selectedRange = [newSelectedRange retain];
+        _selectedRangeIsHighlight = newSelectedRangeIsHighlight;    
+        if(newSelectedRange) {
+            if(self.trackingStage <= EucSelectorTrackingStageDelay) {
+                self.trackingStage = EucSelectorTrackingStageSelectedAndWaiting;
+            } else {
+                [self redisplaySelectedRange];
+            }
         } 
     }
 }
@@ -1403,7 +1446,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             
             [self.accessibilityMask setSelectionString:entireSelection];
         }       
-        self.selectedRange = newSelectedRange;
+        [_selectedRange release];
+        _selectedRange = [newSelectedRange retain];
+        if(newSelectedRange) {
+            [self redisplaySelectedRange];
+        }         
         UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
 }
@@ -1416,7 +1463,6 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     
     if(self.trackingStage == EucSelectorTrackingStageFirstSelection) {
         EucSelectorRange *newSelectedRange = nil;
-        BOOL newSelectedRangeIsHighlight = NO;
 
         THPair *blockAndElementIds = [self _blockAndElementIdsForPoint:location];        
         if(blockAndElementIds) {
@@ -1428,43 +1474,9 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             newSelectedRange.endBlockId = blockId;
             newSelectedRange.startElementId = elementId;
             newSelectedRange.endElementId = elementId;
-
-            // If we overlap a highlight range, select the entire range.
-            for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
-                if([highlightRange overlaps:newSelectedRange]) {
-                    newSelectedRange = highlightRange;
-                    newSelectedRangeIsHighlight = YES;
-                    break;
-                }
-            }
-            
-            if(&UIAccessibilityAnnouncementNotification != NULL) {
-                if(![newSelectedRange isEqual:self.selectedRange]) {
-                    NSString *labelFormat = @"%@";
-                    if(!self.accessibilityAnnouncedSelecting) {
-                        labelFormat = NSLocalizedString(@"Selecting: %@", @"Accessibility announcement when selector is first used.  Arg = word hovered over");
-                        self.accessibilityAnnouncedSelecting = YES;
-                    }
-                    NSString *labelString;
-                    if(newSelectedRangeIsHighlight) {
-                        NSString *highlightString = [self _accessibilityLabelForRange:newSelectedRange];
-                        NSString *labelStringFormat = NSLocalizedString(@"Highlight: %@", @"Accessibility announcement when selector is first used and the user is hovering over an existing highlight.  Arg = highlighted text hovered over");
-                        labelString = [NSString stringWithFormat:labelStringFormat, highlightString ?: @""];
-                    } else {
-                        labelString = [_dataSource eucSelector:self accessibilityLabelForElementWithIdentifier:elementId 
-                                         ofBlockWithIdentifier:blockId];
-                    }
-                    NSString *label = [NSString stringWithFormat:labelFormat, labelString ?: @""];
-                    if(label) {
-                        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, label);
-                    }
-                    [self.accessibilityMask setSelectionString:labelString];
-                }
-            }
         }
         
         self.selectedRange = newSelectedRange;
-        self.selectedRangeIsHighlight = newSelectedRangeIsHighlight;
         
         [self _loupeToPoint:location yOffset:4.0f];
     } else {
@@ -1490,38 +1502,33 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)_trackSingleTapTouch:(UITouch *)touch
 {
-    id<EucSelectorDelegate> delegate = self.delegate;
-
-    if([delegate respondsToSelector:@selector(eucSelector:didReceiveTapOnHighlightWithRange:)]) {
-        CALayer *attachedLayer = self.attachedLayer;
-        CGPoint location = [attachedLayer convertPoint:[touch locationInView:nil] fromLayer:attachedLayer.windowLayer];
+    CALayer *attachedLayer = self.attachedLayer;
+    CGPoint location = [attachedLayer convertPoint:[touch locationInView:nil] fromLayer:attachedLayer.windowLayer];
+    
+    THPair *blockAndElementIds = [self _blockAndElementIdsForPoint:location];        
+    if(blockAndElementIds) {
+        BOOL tapRangeIsHighlight = NO;
+        EucSelectorRange *tapRange = [[[EucSelectorRange alloc] init] autorelease];
+        id blockId = blockAndElementIds.first;
+        id elementId = blockAndElementIds.second;
         
-        THPair *blockAndElementIds = [self _blockAndElementIdsForPoint:location];        
-        if(blockAndElementIds) {
-            BOOL tapRangeIsHighlight = NO;
-            EucSelectorRange *tapRange = [[[EucSelectorRange alloc] init] autorelease];
-            id blockId = blockAndElementIds.first;
-            id elementId = blockAndElementIds.second;
-            
-            tapRange.startBlockId = blockId;
-            tapRange.endBlockId = blockId;
-            tapRange.startElementId = elementId;
-            tapRange.endElementId = elementId;
-            
-            // If we overlap a highlight range, select the entire range.
-            for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
-                if([highlightRange overlaps:tapRange]) {
-                    tapRange = highlightRange;
-                    tapRangeIsHighlight = YES;
-                    break;
-                }
-            }
-            if(tapRangeIsHighlight) {
-                [delegate eucSelector:self didReceiveTapOnHighlightWithRange:tapRange];
+        tapRange.startBlockId = blockId;
+        tapRange.endBlockId = blockId;
+        tapRange.startElementId = elementId;
+        tapRange.endElementId = elementId;
+        
+        // If we overlap a highlight range, select the entire range.
+        for(EucSelectorRange *highlightRange in [self _highlightRanges]) {
+            if([highlightRange overlaps:tapRange]) {
+                tapRange = highlightRange;
+                tapRangeIsHighlight = YES;
+                break;
             }
         }
-        
-        [self _clearSelectionCaches];
+
+        if(tapRangeIsHighlight) {
+            self.selectedRange = tapRange;
+        }
     }
 }
 
@@ -1746,7 +1753,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             }
             self.trackingTouch = nil;
             self.trackingStage = EucSelectorTrackingStageNone;
-            if(wasSingleTapWithoutSelection) {
+            if(wasSingleTapWithoutSelection && _shouldTrackSingleTapsOnHighights) {
                 [self _trackSingleTapTouch:trackingTouch];
             }
         } else {

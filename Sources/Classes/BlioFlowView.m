@@ -511,20 +511,14 @@
 
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
 {
+    [_delegate cancelPendingToolbarShow];
     return [_eucBookView eucSelector:selector willBeginEditingHighlightWithRange:selectedRange];
 }
 
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange
 {
+    [_delegate cancelPendingToolbarShow];
     return [_eucBookView eucSelector:selector didEndEditingHighlightWithRange:fromRange movedToRange:toRange];
-}
-
-- (void)eucSelector:(EucSelector *)selector didReceiveTapOnHighlightWithRange:(EucSelectorRange *)selectedRange
-{
-    BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:selectedRange];
-    if([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:toRange:withColor:)]) {
-        [self.delegate updateHighlightNoteAtRange:highlightRange toRange:nil withColor:nil];
-    } 
 }
 
 #pragma mark -
