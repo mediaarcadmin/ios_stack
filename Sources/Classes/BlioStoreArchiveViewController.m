@@ -30,7 +30,7 @@
 
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
-        self.title = NSLocalizedString(@"Archive",@"\"Archive\" view controller header");
+        self.title = NSLocalizedString(@"Archive",@"\"Archive\" view controller title");
         UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Archive",@"\"Archive\" button title") image:[UIImage imageNamed:@"icon-vault.png"] tag:kBlioStoreMyVaultTag];
         self.tabBarItem = theItem;
 		self.currBook = nil;
@@ -175,7 +175,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_FOR_VAULT",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to update your Vault.",@"Alert message when the user views the Vault screen without an Internet connection.")
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];		
 	}
 }
@@ -237,7 +237,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_RESTORE_VAULT_BOOK",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to download this book.",@"Alert message when the user tries to download a Vault book without an Internet connection.")
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
 		return;
 	}
@@ -246,7 +246,7 @@
 									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for viewing paid content. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
 									delegate:self 
 						   cancelButtonTitle:nil
-						   otherButtonTitles:@"Not Now", @"Register", nil];
+						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Register",@"\"Register\" button label within Confirm De/Registration alertview"), nil];
 		currBook = book;
 		return;
 	}

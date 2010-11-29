@@ -133,7 +133,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     }
     
     UIFont *buttonFont = [UIFont boldSystemFontOfSize:12.0f];
-    NSString *buttonText = @"Cancel";
+    NSString *buttonText = NSLocalizedString(@"Cancel",@"\"Cancel\" button label for Notes View");
     UIImage *buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
     
     UISegmentedControl *aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
@@ -147,7 +147,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     [self addSubview:aButtonSegment];
     [aButtonSegment release];
     
-    buttonText = @"Save";
+    buttonText = NSLocalizedString(@"Save",@"\"Save\" button label for Notes View");
     buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
     
     aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
@@ -167,7 +167,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     NSString *dateString = [dateFormat stringFromDate:date];  
     [dateFormat release];
     if (nil != self.page)
-        toolbarLabel.text = [NSString stringWithFormat:@"Page %@, %@", self.page, dateString];
+        toolbarLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Page %@, %@",@"\"Page %@, %@\" toolbar label for Notes View"), self.page, dateString];
     else
         toolbarLabel.text = [NSString stringWithFormat:@"%@", self.page, dateString];
     toolbarLabel.adjustsFontSizeToFitWidth = YES;

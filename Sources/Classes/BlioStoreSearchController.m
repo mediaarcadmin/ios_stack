@@ -76,10 +76,10 @@
         [filler release];
         
         BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
-        [feedBooksFeed setTitle:@"Feedbooks"];
+        [feedBooksFeed setTitle:NSLocalizedString(@"Feedbooks",@"\"Feedbooks\" table section header")];
         [feedBooksFeed setParserClass:[BlioStoreFeedBooksParser class]];
         BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
-        [googleBooksFeed setTitle:@"Google Books"];
+        [googleBooksFeed setTitle:NSLocalizedString(@"Google Books",@"\"Google Books\" table section header")];
         [googleBooksFeed setParserClass:[BlioStoreGoogleBooksParser class]];
         [self setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
         [feedBooksFeed release];

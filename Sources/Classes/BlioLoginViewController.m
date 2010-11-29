@@ -23,7 +23,7 @@
 	if (self)
 	{
 		self.sourceID = bookSourceID;
-		self.title = NSLocalizedString(@"Sign In",@"\"Sign In\" view controller header");
+		self.title = NSLocalizedString(@"Sign In",@"\"Sign In\" view controller title");
 		
 		UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		aButton.showsTouchWhenHighlighted = NO;
@@ -113,7 +113,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Welcome To Blio",@"\"Welcome To Blio\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"INTRO_WELCOME_ALERT",nil,[NSBundle mainBundle],@"If you have an account, you can log in to download books that you've purchased. Otherwise you can create an account.",@"Alert Text encouraging the end-user to either login or create a new account.")
 									delegate:nil
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];		
 	}
 
@@ -126,7 +126,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your email address before logging in.",@"Alert Text informing the end-user that the email address must be entered to login.")
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
 		[emailField becomeFirstResponder];
 		return;
@@ -135,7 +135,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your password before logging in.",@"Alert Text informing the end-user that the password must be entered to login.")
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];			
 		[passwordField becomeFirstResponder];
 		return;
@@ -160,7 +160,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
 									 message:loginErrorText
 									delegate:self 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
 	}
 }
@@ -314,7 +314,7 @@
 //		}
 		if (section == 1) {
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			cell.textLabel.text = @"Create Account";
+			cell.textLabel.text = NSLocalizedString(@"Create Account",@"\"Create Account\" text label for cell in Login View Controller");
 		}
 	}
 	return cell;
@@ -338,7 +338,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"ENTER_PASSWORD_IF_FORGOTTEN",nil,[NSBundle mainBundle],@"In order for Blio to send you your password, please first enter your email address.",@"Alert Text informing the end-user that his/her email address must be entered before Blio can send his/her password.")
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];	
 		return;
 	}
@@ -365,7 +365,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:alertMessage
 									delegate:self 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
 	}
 	else {
@@ -376,7 +376,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:errorMessage
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
 	}
 	[aConnection release];

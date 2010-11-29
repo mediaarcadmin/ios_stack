@@ -20,8 +20,8 @@
 
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-		self.title = @"My Account";
-		UIBarButtonItem * aButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStyleBordered target:self action:@selector(logoutButtonPressed:)];
+		self.title = NSLocalizedString(@"My Account",@"\"My Account\" view controller title.");
+		UIBarButtonItem * aButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Logout",@"\"Logout\" bar button text label within My Account.") style:UIBarButtonItemStyleBordered target:self action:@selector(logoutButtonPressed:)];
 		self.navigationItem.rightBarButtonItem = aButton;
 		[aButton release];
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

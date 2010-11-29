@@ -208,7 +208,7 @@
 									 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to de-register your device for this account? Doing so will remove all purchased books associated with this account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
 									delegate:self
 						   cancelButtonTitle:nil
-						   otherButtonTitles:@"Not Now", @"De-Register", nil];
+						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"De-Register",@"\"De-Register\" button label within Confirm Deregistration alertview"), nil];
 		
 	}
 //	[self.navigationController popViewControllerAnimated:YES];

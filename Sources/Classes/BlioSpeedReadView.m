@@ -96,7 +96,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         [sampleTextLabel setBackgroundColor:[UIColor clearColor]];
         [sampleTextLabel setNumberOfLines:1];
         [sampleTextLabel setAdjustsFontSizeToFitWidth:NO];
-        [sampleTextLabel setText:@"Sample"];
+        [sampleTextLabel setText:NSLocalizedString(@"Sample",@"\"Sample\" text label for speed read view")];
         [sampleTextLabel setAlpha:0.0f];
         
         [self addSubview:sampleTextLabel];

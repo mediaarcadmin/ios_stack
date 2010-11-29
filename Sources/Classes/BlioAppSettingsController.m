@@ -20,7 +20,7 @@
 
 - (BlioAppSettingsController*)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-		self.title = @"Settings";
+		self.title = NSLocalizedString(@"Settings",@"\"Settings\" view controller title");
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
@@ -122,33 +122,33 @@
 			switch ([indexPath row])
 			{
 				case 0:
-					[cell.textLabel setText:@"Voice"];
+					[cell.textLabel setText:NSLocalizedString(@"Voice",@"\"Voice\" text label for App Settings cell")];
 					break;
 //				case 1:
-//					[cell.textLabel setText:@"Navigation"];
+//					[cell.textLabel setText:NSLocalizedString(@"Navigation",@"\"Navigation\" text label for App Settings cell")];
 //					break;
 				case 1:
-					[cell.textLabel setText:@"Web Tools"];
+					[cell.textLabel setText:NSLocalizedString(@"Web Tools",@"\"Web Tools\" text label for App Settings cell")];
 					break;
 			}
 			break;
 		case 1:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-				cell.textLabel.text = [NSString stringWithFormat:@"My Account: %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
+				cell.textLabel.text = [NSString stringWithFormat:@"%@%@",NSLocalizedString(@"My Account: ",@"\"My Account: \" text label prefix for App Settings cell"),[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
 				//			 cell.textLabel.text = [NSString stringWithFormat:@"Logged in as %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
 			}
 			else {
 //				cell.textLabel.textAlignment = UITextAlignmentCenter;
 //				cell.accessoryType = UITableViewCellAccessoryNone;
 //				cell.textLabel.text = @"Login";
-				cell.textLabel.text = @"My Account";
+				cell.textLabel.text = NSLocalizedString(@"My Account",@"\"My Account\" text label for App Settings cell");
 			}
 			break;
 		case 2:
-			[cell.textLabel setText:@"Help"];
+			[cell.textLabel setText:NSLocalizedString(@"Help",@"\"Help\" text label for App Settings cell")];
 			break;
 		case 3:
-			[cell.textLabel setText:@"About"];
+			[cell.textLabel setText:NSLocalizedString(@"About",@"\"About\" text label for App Settings cell")];
 			break;
 		default:
 			break;

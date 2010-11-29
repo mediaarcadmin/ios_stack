@@ -945,7 +945,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
 									 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_PAID_BOOKS_PROCESSING",nil,[NSBundle mainBundle],@"%@ books could not continue processing because you need to login first.",@"Alert message informing the end-user that paid book processing cannot continue because the user needs to login."),@"Paid"]
 									delegate:self
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
 	}
 

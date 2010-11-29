@@ -14,7 +14,7 @@
 
 - (id)init {
     if ((self = [super init])) {
-        self.title = NSLocalizedString(@"Buy Books",@"\"Buy Books\" view controller header");
+        self.title = NSLocalizedString(@"Buy Books",@"\"Buy Books\" view controller title");
         
         UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Buy Books",@"\"Buy Books\" bar button title") image:[UIImage imageNamed:@"icon-cart.png"] tag:kBlioStoreBuyBooksTag];
         self.tabBarItem = theItem;

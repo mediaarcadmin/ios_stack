@@ -71,7 +71,7 @@
             [self addSubview:aNavBar];
             [aNavBar release];
             
-            aButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(done:)];
+            aButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" label for book search toolbar Done button") style:UIBarButtonItemStyleBordered target:self action:@selector(done:)];
             self.doneButton = aButton;
             [aButton release];
             

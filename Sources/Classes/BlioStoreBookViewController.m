@@ -14,12 +14,6 @@
 
 #define AUTHORPADDINGABOVE 4
 #define AUTHORPADDINGBELOW 9
-NSString * const kBlioStoreDownloadButtonStateLabelInitial = @"Free";
-NSString * const kBlioStoreDownloadButtonStateLabelConfirm = @"Download Now";
-NSString * const kBlioStoreDownloadButtonStateLabelInProcess = @"Downloading";
-NSString * const kBlioStoreDownloadButtonStateLabelDone = @"Installed";
-NSString * const kBlioStoreDownloadButtonStateLabelNoDownload = @"Not Available";
-
 
 
 @interface BlioStoreFetchThumbOperation : NSOperation {
@@ -78,19 +72,10 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
     [super dealloc];
 }
 
-
-// - (id)init {
-// if ((self = [super init])) {
-//	 NSLog(@"BlioStoreBookViewController init entered");
-//	 self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
-//	 self.entity = nil;
-// }
-// return self;
-//}
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
 	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
 //		NSLog(@"BlioStoreBookViewController init entered");
-		self.downloadStateLabels = [NSArray arrayWithObjects:kBlioStoreDownloadButtonStateLabelInitial,kBlioStoreDownloadButtonStateLabelConfirm,kBlioStoreDownloadButtonStateLabelInProcess,kBlioStoreDownloadButtonStateLabelDone,kBlioStoreDownloadButtonStateLabelNoDownload,nil];
+		self.downloadStateLabels = [NSArray arrayWithObjects:NSLocalizedString(@"Free",@"\"Free\" button label in free book details view"),NSLocalizedString(@"Download Now",@"\"Download Now\" button label in free book details view"),NSLocalizedString(@"Downloading",@"\"Downloading\" button label in free book details view"),NSLocalizedString(@"Installed",@"\"Installed\" button label in free book details view"),NSLocalizedString(@"Not Available",@"\"Not Available\" button label in free book details view"),nil];
 		self.entity = nil;
 	}
 	return self;	
@@ -125,9 +110,9 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 	NSMutableArray * validFieldViews = [NSMutableArray array];
     self.bookTitle.text = [self.entity title];
     if ([self.entity authors]) {
-        self.authors.text = [NSString stringWithFormat:@"By %@", [BlioBook standardNamesFromCanonicalNameArray:self.entity.authors]];
+        self.authors.text = [NSString stringWithFormat:NSLocalizedString(@"By %@","\"By %@\" Author label in free book details view"), [BlioBook standardNamesFromCanonicalNameArray:self.entity.authors]];
     } else if ([self.entity publisher]) {
-        self.authors.text = [[NSString stringWithFormat:@"By %@", [self.entity publisher]] uppercaseString];      
+        self.authors.text = [[NSString stringWithFormat:NSLocalizedString(@"By %@","\"By %@\" Author label in free book details view"), [self.entity publisher]] uppercaseString];      
     } else {
         self.authors.text = nil;
     }

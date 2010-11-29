@@ -42,12 +42,12 @@
 
 - (void)createControls
 {
-	NSArray *searchOptions = [NSArray arrayWithObjects: @"Google", @"Yahoo", @"Bing", nil];
+	NSArray *searchOptions = [NSArray arrayWithObjects: NSLocalizedString(@"Google",@"\"Google\" search option within web tool settings"), NSLocalizedString(@"Yahoo",@"\"Yahoo\" search option within web tool settings"), NSLocalizedString(@"Bing",@"\"Bing\" search option within web tool settings"), nil];
 	
 	// Search engine control
 	CGFloat yPlacement = kTopMargin;
 	CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
-	[self.view addSubview:[BlioWebToolSettingsController labelWithFrame:frame title:@"Search"]];
+	[self.view addSubview:[BlioWebToolSettingsController labelWithFrame:frame title:NSLocalizedString(@"Search",@"\"Search\" label within web tool settings")]];
 	
 	yPlacement += kTweenMargin + kLabelHeight;
 	searchControl = [[UISegmentedControl alloc] initWithItems:searchOptions];
@@ -65,10 +65,10 @@
 	[searchControl release];
 	
 	// Encyclopedia control
-	NSArray *encyclopediaOptions = [NSArray arrayWithObjects: @"Wikipedia", @"Britannica", nil];
+	NSArray *encyclopediaOptions = [NSArray arrayWithObjects: NSLocalizedString(@"Wikipedia",@"\"Wikipedia\" encyclopedia option within web tool settings"), NSLocalizedString(@"Britannica",@"\"Britannica\" encyclopedia option within web tool settings"), nil];
 	yPlacement += (kTweenMargin * 2.0) + kSegmentedControlHeight;
 	frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - (kRightMargin * 2.0), kLabelHeight);
-	[self.view addSubview:[BlioWebToolSettingsController labelWithFrame:frame title:@"Encyclopedia"]];
+	[self.view addSubview:[BlioWebToolSettingsController labelWithFrame:frame title:NSLocalizedString(@"Encyclopedia",@"\"Encyclopedia\" label within web tool settings")]];
 	yPlacement += kTweenMargin + kLabelHeight;
 	encyclopediaControl = [[UISegmentedControl alloc] initWithItems:encyclopediaOptions];
 	frame = CGRectMake(	kLeftMargin,

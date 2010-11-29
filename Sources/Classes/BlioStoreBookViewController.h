@@ -18,11 +18,6 @@ static const NSUInteger kBlioStoreDownloadButtonStateConfirm = 1;
 static const NSUInteger kBlioStoreDownloadButtonStateInProcess = 2;
 static const NSUInteger kBlioStoreDownloadButtonStateDone = 3;
 static const NSUInteger kBlioStoreDownloadButtonStateNoDownload = 4;
-extern NSString * const kBlioStoreDownloadButtonStateLabelInitial;
-extern NSString * const kBlioStoreDownloadButtonStateLabelConfirm;
-extern NSString * const kBlioStoreDownloadButtonStateLabelInProcess;
-extern NSString * const kBlioStoreDownloadButtonStateLabelDone;
-extern NSString * const kBlioStoreDownloadButtonStateLabelNoDownload;
 extern NSString * const BlioProcessingOperationCompleteNotification;
 
 @protocol BlioProcessingDelegate;
