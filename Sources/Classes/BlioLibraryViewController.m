@@ -1599,7 +1599,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier: (NSString*) identifier{
     if ((self = [super initWithFrame:frame reuseIdentifier:identifier])) {
-        
+        self.clipsToBounds = NO;
 		CGFloat bookWidth = kBlioLibraryGridBookWidthPhone;
 		CGFloat bookHeight = kBlioLibraryGridBookHeightPhone;
 		
