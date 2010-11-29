@@ -31,6 +31,7 @@
     BlioBookmarkRange *range;
     UIView *showInView;
     CGFloat bottomInset;
+	BOOL noteSaved;
 }
 
 @property (nonatomic, retain) UITextView *textView;
@@ -39,6 +40,7 @@
 @property (nonatomic, assign) id<BlioNotesViewDelegate> delegate;
 @property (nonatomic, retain) NSManagedObject *note;
 @property (nonatomic, retain) BlioBookmarkRange *range;
+@property (nonatomic, assign) BOOL noteSaved;
 
 - (id)initWithRange:(BlioBookmarkRange *)range note:(NSManagedObject *)aNote;
 - (void)showInView:(UIView *)view;

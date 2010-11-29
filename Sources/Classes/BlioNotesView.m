@@ -35,7 +35,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
 
 @implementation BlioNotesView
 
-@synthesize page, textView, delegate, note, range, toolbarLabel, showInView;
+@synthesize page, textView, delegate, note, range, toolbarLabel, showInView, noteSaved;
 
 - (void)dealloc {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -63,6 +63,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
         self.backgroundColor = [UIColor clearColor];
         self.page = [[NSNumber numberWithInteger:[[aRange startPoint] layoutPage]] stringValue];
         self.note = aNote;
+		self.noteSaved = NO;
         self.range = aRange;
         // Setting this forces layoutSubviews to be called on a rotation
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -133,7 +134,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     }
     
     UIFont *buttonFont = [UIFont boldSystemFontOfSize:12.0f];
-    NSString *buttonText = NSLocalizedString(@"Cancel",@"\"Cancel\" button label for Notes View");
+	NSString *buttonText = NSLocalizedString(@"Cancel",@"\"Cancel\" button label for Notes View"); 
     UIImage *buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
     
     UISegmentedControl *aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
@@ -147,7 +148,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     [self addSubview:aButtonSegment];
     [aButtonSegment release];
     
-    buttonText = NSLocalizedString(@"Save",@"\"Save\" button label for Notes View");
+	buttonText = NSLocalizedString(@"Save",@"\"Save\" button label for Notes View");
     buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
     
     aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
@@ -167,7 +168,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     NSString *dateString = [dateFormat stringFromDate:date];  
     [dateFormat release];
     if (nil != self.page)
-        toolbarLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Page %@, %@",@"\"Page %@, %@\" toolbar label for Notes View"), self.page, dateString];
+		toolbarLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Page %@, %@",@"\"Page %@, %@\" toolbar label for Notes View"), self.page, dateString];
     else
         toolbarLabel.text = [NSString stringWithFormat:@"%@", self.page, dateString];
     toolbarLabel.adjustsFontSizeToFitWidth = YES;
@@ -299,7 +300,7 @@ void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
         glossRect.size.height = 26.0f;
         drawGlossGradient(ctx, glossRect);
     }
-
+	
     CGFloat components[8] = { 0.996f, 0.976f, 0.718f, 1.0f,  // Start color
         0.996f, 0.969f, 0.537f, 1.0f }; // End color
     
@@ -312,7 +313,7 @@ void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
     CGContextDrawLinearGradient (ctx, myGradient, CGPointMake(CGRectGetMinX(inRect), CGRectGetMinY(inRect)), CGPointMake(CGRectGetMinX(inRect), CGRectGetMaxY(inRect)), 0);
     CGGradientRelease(myGradient);
     
-    CGContextSetRGBFillColor(ctx, 1.0f, 1.0f, 1.0f, 0.7f);
+    CGContextSetRGBFillColor(ctx, 1.0f, 0.0f, 1.0f, 0.7f);
     
     CGContextSetShadow(ctx, CGSizeMake(0,1), 0);
     CGContextFillRect(ctx, CGRectMake(inRect.origin.x + kBlioNotesViewTextXInset, inRect.origin.y + kBlioNotesViewToolbarHeight + 1, inRect.size.width - 2 * kBlioNotesViewTextXInset, 1));
@@ -345,6 +346,15 @@ void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
     [UIView commitAnimations];
     
     [self.showInView setUserInteractionEnabled:YES];
+	
+	// Remove highlight if there was no pre-existing note and
+	// we didn't just save a new one.  (We can't just use "!self.note"
+	// because a note we just saved may not have yet been persisted.)
+	if (!self.note  && !self.noteSaved) {
+		if ([self.delegate respondsToSelector:@selector(removeHighlightAtRange:)])
+			[self.delegate performSelector:@selector(removeHighlightAtRange:) withObject:self.range]; 
+	}
+	self.noteSaved = NO;
     
 }
 
@@ -356,7 +366,6 @@ void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
         if ([self.delegate respondsToSelector:@selector(notesViewCreateNote:)])
             [self.delegate performSelector:@selector(notesViewCreateNote:) withObject:self];
     }
-    
     [self dismiss:sender];
 }
                 

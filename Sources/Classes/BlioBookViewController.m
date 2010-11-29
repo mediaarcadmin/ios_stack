@@ -1952,8 +1952,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)showAddMenu:(id)sender {
     [self setToolbarsForModalOverlayActive:YES];
     
-    UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" text label for Add Bookmark action sheet") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Add Bookmark",@"\"Add Bookmark\" text label for Add Bookmark action sheet"), NSLocalizedString(@"Add Notes",@"\"Add Notes\" text label for Add Bookmark action sheet"), nil];
-    aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" text label for Add Bookmark action sheet") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Add Bookmark",@"\"Add Bookmark\" text label for Add Bookmark action sheet"), NSLocalizedString(@"Add Notes",@"\"Add Notes\" text label for Add Bookmark action sheet"), nil]; 
+	aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     aActionSheet.delegate = self;
     UIToolbar *toolbar = self.navigationController.toolbar;
     [aActionSheet showFromToolbar:toolbar];
@@ -2360,8 +2360,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Library Settings section and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
 											delegate:nil 
-								   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-								   otherButtonTitles: nil];
+								   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
+									otherButtonTitles:nil];
 				return;
 			}
         }
@@ -2369,8 +2369,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 										 message:NSLocalizedStringWithDefaultValue(@"NO_AUDIO_PERMITTED_FOR_THIS_BOOK",nil,[NSBundle mainBundle],@"No audio is permitted for this book.",@"Alert message shown to end-user when the end-user attempts to hear a book read but no audiobook is present and TTS is not enabled.")
 										delegate:nil 
-							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-							   otherButtonTitles: nil];
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
+							   otherButtonTitles:nil];
 			return;
         }
     }    
@@ -2385,8 +2385,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title")
 								 message:errorMsg
 								delegate:nil 
-					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-					   otherButtonTitles: nil];
+					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
+					   otherButtonTitles:nil];
 }
 
 - (void)search:(id)sender {
@@ -2471,8 +2471,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     NSError *error;
-    if (![[self managedObjectContext] save:&error])
+    if (![[self managedObjectContext] save:&error]) 
         NSLog(@"[BlioBookViewController notesViewCreateNote:] Save failed with error: %@, %@", error, [error userInfo]);
+	else 
+		notesView.noteSaved = YES;
 }
 
 - (void)notesViewUpdateNote:(BlioNotesView *)notesView {
@@ -2491,8 +2493,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         NSError *error;
-        if (![[self managedObjectContext] save:&error])
+        if (![[self managedObjectContext] save:&error]) 
             NSLog(@"[BlioBookViewController notesViewUpdateNote:] Save failed with error: %@, %@", error, [error userInfo]);
+		else 
+			notesView.noteSaved = YES; 
     }
 }
 
@@ -2763,8 +2767,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_WEBTOOL",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to use this web tool.",@"Alert message when the user tries to download a book without an Internet connection.")
 									delegate:nil 
-						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-						   otherButtonTitles: nil];		
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
+						   otherButtonTitles:nil];		
 		return;
 	}
 	
@@ -2998,13 +3002,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         //[self.bookView refreshHighlights];
 }
 
+- (BOOL)hasNoteOverlappingSelectedRange {
+	return ([[self.book fetchHighlightWithBookmarkRange:[self.bookView selectedRange]] valueForKey:@"note"] != nil);
+}
+
 - (void)addHighlightNoteWithColor:(UIColor *)color {
-    [self addHighlightWithColor:color];
+	
+	[self addHighlightWithColor:color];
     
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
         BlioBookmarkRange *range = [self.bookView selectedRange];
         [self displayNote:nil atRange:range animated:YES];
     }
+	
 }
 
 - (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor {
