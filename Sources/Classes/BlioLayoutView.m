@@ -429,13 +429,13 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 
     if (section && chapter.first) {
         if (pageStr) {
-            ret = [NSString stringWithFormat:@"Page %@ \u2013 %@", pageStr, chapter.first];
+            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ \u2013 %@",@"Page label with page number and chapter"), pageStr, chapter.first];
         } else {
             ret = [NSString stringWithFormat:@"%@", chapter.first];
         }
     } else {
         if (pageStr) {
-            ret = [NSString stringWithFormat:@"Page %@ of %lu", pageStr, (unsigned long)self.pageCount];
+            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) in BlioFlowView"), pageStr, (unsigned long)self.pageCount];
         } else {
             ret = [[BlioBookManager sharedBookManager] bookWithID:self.bookID].title;
         }

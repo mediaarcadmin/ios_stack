@@ -175,7 +175,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"BACKGROUND_LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"The app cannot login at this time due to a server error. You can try again later by logging in within the Settings area.",@"Alert message when the login web service has failed.")
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];		
 	}
 	else if (isShowingLoginView == YES) {

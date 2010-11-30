@@ -28,7 +28,7 @@
 	if (self)
 	{
 		self.sourceID = bookSourceID;
-		self.title = NSLocalizedString(@"Create New Account",@"\"Create New Account\" view controller header");
+		self.title = NSLocalizedString(@"Create New Account",@"\"Create New Account\" view controller title");
 	}
 	
 	return self;
@@ -287,7 +287,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"FIRSTNAME_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your first name before creating your account.",@"Alert Text informing the end-user that the first name must be entered to create an account.")
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];
 			[firstNameField becomeFirstResponder];
 			return NO;
@@ -296,7 +296,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"LASTNAME_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your last name before creating your account.",@"Alert Text informing the end-user that the last name must be entered to create an account.")
 										delegate:nil 
-							   cancelButtonTitle:@"OK"	
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")	
 							   otherButtonTitles:nil];
 			[lastNameField becomeFirstResponder];
 			return NO;
@@ -308,7 +308,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your email address before creating your account.",@"Alert Text informing the end-user that the email address must be entered to create an account.")
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];
 			[emailField becomeFirstResponder];
 			return NO;
@@ -317,7 +317,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED_ACCOUNT_CREATION",nil,[NSBundle mainBundle],@"Please enter your password before creating your account.",@"Alert Text informing the end-user that the password must be entered to create an account.")
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];			
 			[passwordField becomeFirstResponder];
 			return NO;
@@ -331,7 +331,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORDS_MUST_MATCH_ALERT_TEXT",nil,[NSBundle mainBundle],@"Please make sure your passwords match.",@"Alert Text informing the end-user that the password and confirm password fields must match.")
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
 			confirmPasswordField.text = @"";
@@ -346,7 +346,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_NOT_CONTAIN_INVALID_CHARACTER_ALERT_TEXT",nil,[NSBundle mainBundle],@"Please make sure your password does not contain the character: %@.",@"Alert Text informing the end-user that the password and confirm password fields must match."),offendingCharacter]
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
 			confirmPasswordField.text = @"";
@@ -358,7 +358,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_CONTAIN_MINIMUM_NUMBER_OF_CHARACTERS",nil,[NSBundle mainBundle],@"Please make sure your password contains at least %u characters.",@"Alert Text informing the end-user that the password must contain the minimum number of characters."),BlioPasswordCharacterLengthMinimum]
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
 			confirmPasswordField.text = @"";
@@ -370,7 +370,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_CONTAIN_UPPERCASE_CHARACTER",nil,[NSBundle mainBundle],@"Please make sure your password contains at least one uppercase character.",@"Alert Text informing the end-user that the password must contain at least one uppercase character.")
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
 			confirmPasswordField.text = @"";
@@ -382,7 +382,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_CONTAIN_DIGIT",nil,[NSBundle mainBundle],@"Please make sure your password contains at least one digit.",@"Alert Text informing the end-user that the password must contain at least one digit.")
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];
 			passwordField.text = @"";
 			confirmPasswordField.text = @"";
@@ -423,7 +423,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Congratulations",@"\"Congratulations\" alert message title") 
 									 message:alertMessage
 									delegate:self 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
 	}
 	else {
@@ -434,7 +434,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
 									 message:errorMessage
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
 	}
 	[aConnection release];

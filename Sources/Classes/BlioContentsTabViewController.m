@@ -501,10 +501,10 @@ typedef enum {
     NSLog(@"[self.bookView contentsDataSource]: %@",[self.bookView contentsDataSource]);
 	NSLog(@"displayPage: %@",displayPage);
 	if (displayPage) {
-		mainLabel.text = [NSString stringWithFormat:@"p.%@", displayPage];
+		mainLabel.text = [NSString stringWithFormat:NSLocalizedString(@"p.%@",@"\"p.%@\" page number format"), displayPage];
 	}
-	else if (pageNum <= 1) mainLabel.text = @"Cover";
-	else mainLabel.text = @"Undefined Bookmark";
+	else if (pageNum <= 1) mainLabel.text = NSLocalizedString(@"Cover",@"\"Cover\" text label for cell inside contents tab view");
+	else mainLabel.text = NSLocalizedString(@"Undefined Bookmark",@"\"Undefined Bookmark\" text label for cell inside contents tab view");
     secondLabel.text = [currentBookmark valueForKey:@"bookmarkText"];
 	
     return cell;
@@ -680,7 +680,7 @@ typedef enum {
     
     NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
         
-    mainLabel.text = [NSString stringWithFormat:@"p.%@", displayPage];
+    mainLabel.text = [NSString stringWithFormat:NSLocalizedString(@"p.%@",@"\"p.%@\" page number format"), displayPage];
     secondLabel.text = [currentNote valueForKey:@"noteText"];
 	
     return cell;

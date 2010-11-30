@@ -22,7 +22,7 @@
 - (id)init {
     // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-		self.title = NSLocalizedString(@"Import",@"\"Import\" view controller header");
+		self.title = NSLocalizedString(@"Import",@"\"Import\" view controller title");
 		UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Import",@"\"Import\" button title") image:[UIImage imageNamed:@"icon-import.png"] tag:kBlioGetBooksImportTag];
         self.tabBarItem = theItem;
     }

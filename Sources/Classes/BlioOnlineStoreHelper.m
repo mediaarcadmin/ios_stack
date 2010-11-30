@@ -260,7 +260,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 										 message:ISBNMetadataResponseAlertText
 										delegate:nil 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles: nil];
 		}
 		NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
@@ -303,7 +303,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 									 message:internetMessage
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles: nil];		
 		return NO;
 	}
@@ -314,19 +314,29 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 									 message:loginMessage
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles: nil];		
 		return NO;
 	}
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
 	if ( targetStatus == BlioDeviceRegisteredStatusRegistered ) {
 		if ( ![drmSessionManager joinDomain:self.token domainName:@"novel"] ) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
+										delegate:nil 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
 			[drmSessionManager release];
 			return NO;
 		} 
 	}
 	else {
 		if ( ![drmSessionManager leaveDomain:self.token] ) {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"DEREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to de-register device. Please try again later.",@"Alert message shown when device de-registration fails.")
+										delegate:nil 
+							   cancelButtonTitle:nil
+							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
 			[drmSessionManager release];
 			return NO;
 		}
@@ -391,7 +401,7 @@
 										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"Blio was not able to obtain the purchased book; the server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
 										delegate:nil 
 							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
+							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
 			return nil;
 		}
 		else if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
@@ -406,14 +416,14 @@
 											 message:[bodyPart RequestDownloadWithTokenResult].Message
 											delegate:nil 
 								   cancelButtonTitle:nil
-								   otherButtonTitles:@"OK", nil];				
+								   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];				
 			}
 			else {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"Blio was not able to obtain the purchased book; the server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
 										delegate:nil 
 							   cancelButtonTitle:nil
-							   otherButtonTitles:@"OK", nil];
+							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
 			}
 			return nil;
 		}

@@ -158,7 +158,7 @@
 	[BlioAlertManager showAlertWithTitle:@""
 								 message:errorMsg 
 								delegate:self 
-					   cancelButtonTitle:@"OK"
+					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 					   otherButtonTitles:nil];
 }
 

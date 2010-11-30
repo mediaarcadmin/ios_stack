@@ -187,7 +187,7 @@
 	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 									 message:NSLocalizedStringWithDefaultValue(@"AUDIOBOOK_CANNOT_BE_READ",nil,[NSBundle mainBundle],@"The audiobook cannot be read. Please contact Blio technical support.",@"Alert message when audiobook cannot be read.")
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles: nil];
 	// This will cause audio to go over to TTS.
 	// Would it be better to just disable audio??

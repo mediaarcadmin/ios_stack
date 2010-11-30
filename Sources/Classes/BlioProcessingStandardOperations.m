@@ -943,7 +943,7 @@
 						[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
 													 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INCOMPATIBLE_FEATURE",nil,[NSBundle mainBundle],@"The book, \"%@\" contains features that cannot be taken advantage of by this version of the Blio app. In order to enjoy this book, please check the iTunes App Store for an update to this App.",@"Alert message informing the end-user that an incompatible feature was found during the processing of a book, and prompting the end-user to visit the iTunes App Store."),book.title]
 													delegate:nil
-										   cancelButtonTitle:@"OK"
+										   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 										   otherButtonTitles:nil];
 						[self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotSupported] forKey:@"processingState"];
 						[self cancel];

@@ -21,6 +21,7 @@
 - (void)addHighlightNoteWithColor:(UIColor *)color;
 - (void)removeHighlightAtRange:(BlioBookmarkRange *)range;
 - (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor;
+- (BOOL)hasNoteOverlappingSelectedRange;
 
 - (void)copyWithRange:(BlioBookmarkRange *)range;
 

@@ -214,7 +214,7 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         self.fontSizeLabel = aFontSizeLabel;
         [aFontSizeLabel release];
         
-        NSString *letter = @"A";
+        NSString *letter = NSLocalizedString(@"A",@"Sample letter used for showing font sizes");
         
         // Sizes and offsets for the font size buttons chosen to look 'right' visually
         // rather than being completly accurate to the book view technically.
@@ -392,8 +392,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             self.lockButtonSegment = aLockButtonSegmentedControl;
             [aLockButtonSegmentedControl release];
             
-            self.unlockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:@"Unlock Rotation" font:defaultFont color:white textInset:inset];
-            self.lockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:@"Lock Rotation" font:defaultFont color:white textInset:inset];
+            self.unlockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:NSLocalizedString(@"Unlock Rotation",@"\"Unlock Rotation\" label for Lock button") font:defaultFont color:white textInset:inset];
+            self.lockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:NSLocalizedString(@"Lock Rotation",@"\"Lock Rotation\" label for Lock button") font:defaultFont color:white textInset:inset];
             
             BOOL currentLock = [self.viewSettingsDelegate isRotationLocked];
             if (currentLock) {

@@ -303,7 +303,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
 									 message:NSLocalizedStringWithDefaultValue(@"ERROR_WHILE_DOWNLOADING_VOICE",nil,[NSBundle mainBundle],@"An error occurred while downloading this voice. Please try again later.",@"Alert message shown to end-user when the BlioProcessingDownloadAndUnzipVoiceOperation fails.")
 									delegate:nil 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles: nil];
 		
 	}

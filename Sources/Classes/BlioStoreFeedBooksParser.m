@@ -79,7 +79,7 @@
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
 									 message:[[error userInfo] objectForKey:NSLocalizedDescriptionKey] ? [[error userInfo] objectForKey:NSLocalizedDescriptionKey] : NSLocalizedStringWithDefaultValue(@"ERROR_WHILE_PARSING_FEED",nil,[NSBundle mainBundle],@"An error occurred while reading this feed. Please try again later.",@"Alert message shown to end-user when parsing of a Get Books feed fails.")
 									delegate:self 
-						   cancelButtonTitle:@"OK"
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];				
 		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
 	}

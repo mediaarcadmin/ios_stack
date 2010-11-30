@@ -61,7 +61,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
 										 message:[[error userInfo] objectForKey:NSLocalizedFailureReasonErrorKey]
 										delegate:self 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];		
 		}
 		[self performSelectorOnMainThread:@selector(parseEnded) withObject:nil waitUntilDone:NO];
@@ -90,7 +90,7 @@
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
 										 message:[[error userInfo] objectForKey:NSLocalizedFailureReasonErrorKey]
 										delegate:self 
-							   cancelButtonTitle:@"OK"
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 							   otherButtonTitles:nil];		
 		}		
 	}

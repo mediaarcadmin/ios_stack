@@ -93,9 +93,9 @@
 	switch (section) 
 	{ 
 		case 0: 
-			return @"Authors"; 
+			return NSLocalizedString(@"Authors",@"\"Authors\" table section header"); 
 		case 1: 
-			return @"Books"; 
+			return NSLocalizedString(@"Books",@"\"Books\" table section header"); 
 		default: 
 			return @""; 
 	}

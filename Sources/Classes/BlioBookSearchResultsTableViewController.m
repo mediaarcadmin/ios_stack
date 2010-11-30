@@ -191,7 +191,7 @@
     } else {
         pageNumberText = [NSString stringWithFormat:@"%d", result.bookmarkRange.startPoint.layoutPage];
     }
-    page.text = [NSString stringWithFormat:@"p.%@", pageNumberText];
+    page.text = [NSString stringWithFormat:NSLocalizedString(@"p.%@",@"\"p.%@\" page number format"), pageNumberText];
     [page sizeToFit];
     CGRect pageFrame = page.frame;
     pageFrame.origin = CGPointMake(5, (CGRectGetHeight(cell.contentView.frame) - pageFrame.size.height)/2.0f);

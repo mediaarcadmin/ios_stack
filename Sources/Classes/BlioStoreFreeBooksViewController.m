@@ -44,11 +44,11 @@
 	if (!storeSearchTableViewDataSource) {
 		storeSearchTableViewDataSource = [[BlioStoreSearchTableViewDataSource alloc] init];
 		BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
-        [feedBooksFeed setTitle:@"Feedbooks"];
+        [feedBooksFeed setTitle:NSLocalizedString(@"Feedbooks",@"\"Feedbooks\" table section header")];
         [feedBooksFeed setParserClass:[BlioStoreFeedBooksParser class]];
 		feedBooksFeed.sourceID = BlioBookSourceFeedbooks;
         BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
-        [googleBooksFeed setTitle:@"Google Books"];
+        [googleBooksFeed setTitle:NSLocalizedString(@"Google Books",@"\"Google Books\" table section header")];
         [googleBooksFeed setParserClass:[BlioStoreGoogleBooksParser class]];
 		googleBooksFeed.sourceID = BlioBookSourceGoogleBooks;
         [storeSearchTableViewDataSource setFeeds:[NSArray arrayWithObjects:feedBooksFeed, googleBooksFeed, nil]];
@@ -146,13 +146,13 @@
 	[vc2 setManagedObjectContext:self.managedObjectContext];
 	NSURL *feedbooksFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"feedbooks" ofType:@"atom" inDirectory:@"Feeds"]];
 	BlioStoreFeed *feedBooksFeed = [[BlioStoreFeed alloc] init];
-	[feedBooksFeed setTitle:@"Feedbooks"];
+	[feedBooksFeed setTitle:NSLocalizedString(@"Feedbooks",@"\"Feedbooks\" table section header")];
 	[feedBooksFeed setFeedURL:feedbooksFeedURL];
 	[feedBooksFeed setParserClass:[BlioStoreLocalParser class]];
 	feedBooksFeed.sourceID = BlioBookSourceFeedbooks;
 	NSURL *googleFeedURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"googlebooks" ofType:@"atom" inDirectory:@"Feeds"]];
 	BlioStoreFeed *googleBooksFeed = [[BlioStoreFeed alloc] init];
-	[googleBooksFeed setTitle:@"Google Books"];
+	[googleBooksFeed setTitle:NSLocalizedString(@"Google Books",@"\"Google Books\" table section header")];
 	[googleBooksFeed setFeedURL:googleFeedURL];
 	[googleBooksFeed setParserClass:[BlioStoreLocalParser class]];
 	googleBooksFeed.sourceID = BlioBookSourceGoogleBooks;
