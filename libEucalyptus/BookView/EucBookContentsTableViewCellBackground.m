@@ -49,8 +49,8 @@
     if((self = [super initWithFrame:frame])) {
         borderColor = [[[UIColor grayColor] colorWithAlphaComponent:0.65f] retain];
         fillColor = [[UIColor whiteColor] retain];
-        self.opaque = YES;
-        self.clearsContextBeforeDrawing = YES;
+        self.opaque = NO;
+        self.clearsContextBeforeDrawing = NO;
         self.contentMode = UIViewContentModeRedraw;
     }
     return self;
@@ -68,19 +68,22 @@
     CGRect bounds = self.bounds;
     
     CGContextRef c = UIGraphicsGetCurrentContext();
+    CGContextSaveGState(c);
+    CGContextSetBlendMode(c, kCGBlendModeCopy);
+    
     CGColorRef cgFillColor = [fillColor CGColor];
     
     CGContextSetStrokeColorWithColor(c, [borderColor CGColor]);
     
-    // Set line width to 1, and inset by 0.5 piels to get our lines in the
+    // Set line width to 1, and inset by 0.5 pixels to get our lines in the
     // center of pixels.
     CGContextSetLineWidth(c, 1);  
     CGRect strokeRect = CGRectInset(bounds, 0.5, 0.5);
 
     // The behaviour of the default cell drawing changed slightly changed
-    // as of iOS 4 - hence this if.  Whatever the OS, we eed to match the 
-    // default to ensure that highlighting o tap looks correct.
-    if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+    // as of iOS 3.2 - hence this if.  Whatever the OS, we need to match the 
+    // default to ensure that highlighting or tap looks correct.
+    if([[UIDevice currentDevice] compareSystemVersion:@"3.2"] >= NSOrderedSame) {
         if(position != EucBookContentsTableViewCellPositionSingle &&
            position != EucBookContentsTableViewCellPositionTop) {
             // Only single or top cells actually draw their own top
@@ -124,7 +127,7 @@
         CGContextSetFillColorWithColor(c, [[UIColor groupTableViewBackgroundColor] CGColor]);
         CGContextFillRect(c, bounds);
         
-        // Now, the wounded rect (white filled).
+        // Now, the rounded rect (white filled).
         CGContextSetFillColorWithColor(c, cgFillColor);    
         
         CGContextBeginPath(c);
@@ -135,6 +138,8 @@
         THAddRoundedRectToPath(c, strokeRect, 10.0f, 10.0f);  
         CGContextStrokePath(c);   
     }
+    
+    CGContextRestoreGState(c);
 }
 
 @end
