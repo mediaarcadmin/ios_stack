@@ -86,13 +86,20 @@
 	}
     
     if (statusBarHiddenOnEntry) {
+		[self performSelector:@selector(hideStatusBar) withObject:nil afterDelay:0.01f];
+	}
+}
+
+- (void)hideStatusBar {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-		else [(id)[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
+		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+			[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		} else {
+			[(id)[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.	
+		}
 #else
 		[[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // original code 
 #endif
-	}
 }
     
 
