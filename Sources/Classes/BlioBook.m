@@ -220,7 +220,7 @@
     return ([self hasEPub] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
 }
 - (BOOL)hasTOC {
-    return ([self hasEPub] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
+    return ([self hasEPub] || [self hasPdf] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
 }
 
 - (BOOL)isEncrypted {

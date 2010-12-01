@@ -23,7 +23,6 @@
     BOOL pageTextureIsDark;
     
     BlioTextFlow *textFlow;
-    CGPDFDocumentRef pdf;
     
     EucSelector *selector;
     NSMutableDictionary *pageCropsCache;
@@ -36,6 +35,7 @@
        
     BlioXPSProvider *xpsProvider;
     id<BlioLayoutDataSource> dataSource;
+	id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
     
     NSLock *layoutCacheLock;
     NSLock *hyperlinksCacheLock;

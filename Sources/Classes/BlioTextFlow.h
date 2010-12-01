@@ -12,6 +12,7 @@
 #import "BlioBookmark.h"
 #import "BlioProcessingManager.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
+#import "BlioTOCEntry.h"
 
 @class BlioTextFlowFlowTree, BlioTextFlowXAMLTree;
 
@@ -109,18 +110,6 @@
 
 @property (nonatomic, assign, readonly) NSInteger pageIndex;
 @property (nonatomic, retain, readonly) NSString *referenceId;
-
-@end
-
-@interface BlioTextFlowTOCEntry: NSObject {
-    NSString *name;
-    NSUInteger startPage;
-    NSUInteger level;
-}
-
-@property (nonatomic, retain, readonly) NSString *name;
-@property (nonatomic, assign, readonly) NSUInteger startPage;
-@property (nonatomic, assign, readonly) NSUInteger level;
 
 @end
 
