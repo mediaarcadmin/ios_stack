@@ -2,6 +2,10 @@
 Flow { text-align:justify; display:block }
 Section { display:block }
 Paragraph { display:block }
+
+LineBreak:before { content:"\A"; white-space:pre-line }
+:link { color:blue }
+
 *[FontWeight="Bold"] { font-weight:bold }
 *[FontStyle="Italic"] { font-style:italic }
 *[BreakPageBefore="True"] { page-break-before:always }
@@ -17,6 +21,16 @@ Paragraph { display:block }
 *[BaselineAlignment="TextTop"] { vertical-align:text-top }
 *[BaselineAlignment="TextBottom"] { vertical-align:text-bottom }
 *[BaselineAlignment="Subscript"] { vertical-align:sub }
-*[BaselineAlignment="Superscript"] { vertical-align:super }
-LineBreak:before { content:"\A"; white-space:pre-line }
-:link { color:blue }
+
+/* 
+   These are not fully semantically equivalant, but they work for the 
+   Blio ePub-sourced XAML files 
+*/
+*[HorizontalAnchor="PageLeft"] { float:left }
+*[HorizontalAnchor="ColumnLeft"] { float:left }
+*[HorizontalAnchor="ContentLeft"] { float:left }
+*[HorizontalAnchor="PageRight"] { float:right }
+*[HorizontalAnchor="ColumnRight"] { float:right }
+*[HorizontalAnchor="ContentRight"] { float:right }
+*[Stretch="Fill"] { width:100%;height:100%; }
+
