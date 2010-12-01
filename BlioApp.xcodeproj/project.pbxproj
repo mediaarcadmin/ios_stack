@@ -932,6 +932,9 @@
 		C972648E111C7B8C001BCC0B /* BlioStoreArchiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */; };
 		C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
 		C974F226113C1AB1007B5868 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F225113C1AB1007B5868 /* SystemConfiguration.framework */; };
+		C976B33612A6486000D2CC05 /* BlioTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C976B33512A6486000D2CC05 /* BlioTOCEntry.m */; };
+		C976B33712A6486000D2CC05 /* BlioTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C976B33512A6486000D2CC05 /* BlioTOCEntry.m */; };
+		C976B33812A6486000D2CC05 /* BlioTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C976B33512A6486000D2CC05 /* BlioTOCEntry.m */; };
 		C9775AF610DFD728005E0E2B /* BlioBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioBook.m */; };
 		C9775EA510DFE1C3005E0E2B /* MockCovers in Resources */ = {isa = PBXBuildFile; fileRef = C9775E9A10DFE1C3005E0E2B /* MockCovers */; };
 		C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
@@ -1779,6 +1782,8 @@
 		C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreArchiveViewController.m; sourceTree = "<group>"; };
 		C974F221113C1AA0007B5868 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		C974F225113C1AB1007B5868 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		C976B33412A6486000D2CC05 /* BlioTOCEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTOCEntry.h; sourceTree = "<group>"; };
+		C976B33512A6486000D2CC05 /* BlioTOCEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTOCEntry.m; sourceTree = "<group>"; };
 		C9775AF410DFD728005E0E2B /* BlioBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBook.h; sourceTree = "<group>"; };
 		C9775AF510DFD728005E0E2B /* BlioBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBook.m; sourceTree = "<group>"; };
 		C9775E9A10DFE1C3005E0E2B /* MockCovers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MockCovers; sourceTree = "<group>"; };
@@ -2470,6 +2475,8 @@
 		7DA5664F11529F74000A849D /* TextFlow */ = {
 			isa = PBXGroup;
 			children = (
+				C976B33412A6486000D2CC05 /* BlioTOCEntry.h */,
+				C976B33512A6486000D2CC05 /* BlioTOCEntry.m */,
 				C9E1FA23110EE4D500999587 /* BlioTextFlow.h */,
 				C9E1FA24110EE4D500999587 /* BlioTextFlow.m */,
 				7DF2A3891152C5F100FC2045 /* BlioTextFlowFlowTree.h */,
@@ -4097,6 +4104,7 @@
 				DCAC9612126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */,
 				A37966D1127397930077D95A /* BlioReadingNavigationSettingsController.m in Sources */,
 				DC8BB2481277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
+				C976B33712A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4231,6 +4239,7 @@
 				DCAC9611126918C200C24BF7 /* BlioMyAccountViewController.m in Sources */,
 				A37966D3127397930077D95A /* BlioReadingNavigationSettingsController.m in Sources */,
 				DC8BB2491277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
+				C976B33812A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4365,6 +4374,7 @@
 				DCAC9613126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */,
 				A37966D2127397930077D95A /* BlioReadingNavigationSettingsController.m in Sources */,
 				DC8BB2471277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
+				C976B33612A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

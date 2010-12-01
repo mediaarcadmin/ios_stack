@@ -232,26 +232,6 @@
             
 @end
 
-@interface BlioTextFlowTOCEntry ()
-
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, assign) NSUInteger startPage;
-@property (nonatomic, assign) NSUInteger level;
-
-@end
-
-@implementation BlioTextFlowTOCEntry
-
-@synthesize name, startPage, level;
-
-- (void)dealloc {
-    self.name = nil;
-    [super dealloc];
-}
-
-@end
-
-
 @interface BlioTextFlow()
 
 @property (nonatomic, assign, readonly) BlioBook *book;
@@ -494,7 +474,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     BlioTextFlowSectionsXMLParsingContext *context = (BlioTextFlowSectionsXMLParsingContext *)ctx;
     
     if (strcmp("Section", name) == 0) {
-        BlioTextFlowTOCEntry *tocEntry = [[BlioTextFlowTOCEntry alloc] init];
+        BlioTOCEntry *tocEntry = [[BlioTOCEntry alloc] init];
         
         BOOL pageIndexFound = NO;
         BOOL nameFound = NO;
@@ -593,7 +573,7 @@ static void sectionsXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     }
 }
 
-static int tocEntryCompare(BlioTextFlowTOCEntry **rhs, BlioTextFlowTOCEntry **lhs) 
+static int tocEntryCompare(BlioTOCEntry **rhs, BlioTOCEntry **lhs) 
 {
     return (int)(*rhs).startPage - (int)(*lhs).startPage;
 }
@@ -628,13 +608,13 @@ static int flowReferenceCompare(BlioTextFlowFlowReference **rhs, BlioTextFlowFlo
     
     // If there are no TOC entries for page index 0, add an artificial one.
     BOOL makeArtificialFrontEnrty = YES;
-    for(BlioTextFlowTOCEntry *entry in context.buildTableOfContents) {
+    for(BlioTOCEntry *entry in context.buildTableOfContents) {
         if(entry.startPage == 0) {
             makeArtificialFrontEnrty = NO;
         }
     }
     if(makeArtificialFrontEnrty) {
-        BlioTextFlowTOCEntry *tocEntry = [[BlioTextFlowTOCEntry alloc] init];
+        BlioTOCEntry *tocEntry = [[BlioTOCEntry alloc] init];
         tocEntry.name = NSLocalizedString(@"Front of book", @"Name for the single table-of-contents entry for the front page of a book that does not specify a TOC entry for the front page");
         [context.buildTableOfContents addObject:tocEntry];
         [tocEntry release];
@@ -1060,7 +1040,7 @@ static void flowDetectionXMLParsingStartElementHandler(void *ctx, const XML_Char
     NSUInteger pageIndex = page - 1;
     NSUInteger sectionIndex = 0;
     NSUInteger nextSectionIndex = 0;
-    for(BlioTextFlowTOCEntry *section in self.tableOfContents) {
+    for(BlioTOCEntry *section in self.tableOfContents) {
         if(section.startPage <= pageIndex) {
             sectionIndex = nextSectionIndex;
             ++nextSectionIndex;

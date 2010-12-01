@@ -369,7 +369,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    [self goToPageNumber:[self.textFlow pageNumberForSectionUuid:uuid] animated:animated];
+    [self goToPageNumber:[self.contentsDataSource pageNumberForSectionUuid:uuid] animated:animated];
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
@@ -1131,7 +1131,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource {
-    return self.textFlow;
+	if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+		return (BlioLayoutPDFDataSource *)self.dataSource;
+	} else {
+		return self.textFlow;
+	}
 }
 
 #pragma mark -

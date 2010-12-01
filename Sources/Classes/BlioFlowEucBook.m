@@ -83,7 +83,7 @@
                                                                   level:0]];
         }
         long index = 0;
-        for(BlioTextFlowTOCEntry *tocEntry in tocEntries) {
+        for(BlioTOCEntry *tocEntry in tocEntries) {
             [buildNavPoints addObject:[EucBookNavPoint navPointWithText:tocEntry.name
                                                                    uuid:[NSString stringWithFormat:@"textflowTOCIndex:%ld", index]
                                                                   level:tocEntry.level]];
@@ -227,7 +227,7 @@
         NSString *identifier = navPoint.second;
         NSString *tocIndexString = [[identifier matchPOSIXRegex:@"^textflowTOCIndex:([[:digit:]]+)$"] match:1];
         if(tocIndexString) {
-            BlioTextFlowTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
+            BlioTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
             NSUInteger layoutPageIndex = entry.startPage;
             NSUInteger flowReferenceIndex = 0;
             for(BlioTextFlowFlowReference *flowReference in self.textFlow.flowReferences) {
