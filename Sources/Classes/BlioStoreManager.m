@@ -118,16 +118,9 @@
 
 }
 -(void)saveUsername:(NSString*)username password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
-//	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
-//	if (!usersDictionary) usersDictionary = [NSMutableDictionary dictionary];
-//	NSMutableDictionary * currentUserDictionary = [[usersDictionary objectForKey:[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] userNum]] mutableCopy];
-//	if (!currentUserDictionary) currentUserDictionary = [NSMutableDictionary dictionary];
 	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
 	if (username) [loginCredentials setObject:[NSString stringWithString:username] forKey:@"username"];
 	if (password) [loginCredentials setObject:[NSString stringWithString:password] forKey:@"password"];
-//	[currentUserDictionary setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
-//	[usersDictionary setObject:currentUserDictionary forKey:[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] userNum]];
-//	[[NSUserDefaults standardUserDefaults] setObject:usersDictionary forKey:kBlioUsersDictionaryDefaultsKey];	
 	 
 	 [[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
 }
@@ -147,7 +140,9 @@
 		[currentUserDictionary setObject:registrationRecords forKey:kBlioUserRegistrationRecordsDefaultsKey];
 		[usersDictionary setObject:currentUserDictionary forKey:[NSString stringWithFormat:@"%i",[[storeHelpers objectForKey:[NSNumber numberWithInt:BlioBookSourceOnlineStore]] userNum]]];
 		[[NSUserDefaults standardUserDefaults] setObject:usersDictionary forKey:kBlioUsersDictionaryDefaultsKey];	
+		[currentUserDictionary release];
 	}
+	[usersDictionary release];
 }
 -(NSDictionary*)registrationRecords {
 	NSDictionary * usersDictionary = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey];

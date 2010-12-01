@@ -176,6 +176,7 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 +(NSArray*) suffixes;
 +(NSArray*) suffixesWithoutCommas;
 +(NSArray*) prefixes;
++(NSArray*) specialSuffixes;
 +(NSString*)standardNameFromCanonicalName:(NSString*)aName;
 +(NSString*)canonicalNameFromStandardName:(NSString*)aName;
 

@@ -102,7 +102,7 @@
     } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
         return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"]];
     } else {
-        NSMutableArray *ret = [[super baseCSSPathsForDocumentTree:documentTree] mutableCopy];
+        NSMutableArray *ret = [[[super baseCSSPathsForDocumentTree:documentTree] mutableCopy] autorelease];
         [ret addObject:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]];
         return ret;
     }

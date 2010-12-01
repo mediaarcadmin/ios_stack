@@ -275,9 +275,9 @@
 	return NO;
 }
 -(BlioDeviceRegisteredStatus)deviceRegistered {
-	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
+	NSMutableDictionary * usersDictionary = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy] autorelease];
 	if (usersDictionary) {
-		NSMutableDictionary * currentUserDictionary = [[usersDictionary objectForKey:[NSString stringWithFormat:@"%i",[self userNum]]] mutableCopy];
+		NSMutableDictionary * currentUserDictionary = [[[usersDictionary objectForKey:[NSString stringWithFormat:@"%i",[self userNum]]] mutableCopy] autorelease];
 		if (currentUserDictionary && [currentUserDictionary objectForKey:kBlioDeviceRegisteredDefaultsKey]) {
 			return [[currentUserDictionary objectForKey:kBlioDeviceRegisteredDefaultsKey] intValue];
 		}
@@ -285,9 +285,9 @@
 	return 0;
 }
 -(BOOL) setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)targetStatus {
-	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
+	NSMutableDictionary * usersDictionary = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy] autorelease];
 	if (!usersDictionary) usersDictionary = [NSMutableDictionary dictionary];
-	NSMutableDictionary * currentUserDictionary = [[usersDictionary objectForKey:[NSString stringWithFormat:@"%i",[self userNum]]] mutableCopy];
+	NSMutableDictionary * currentUserDictionary = [[[usersDictionary objectForKey:[NSString stringWithFormat:@"%i",[self userNum]]] mutableCopy] autorelease];
 	if (!currentUserDictionary) currentUserDictionary = [NSMutableDictionary dictionary];				
 	[currentUserDictionary setObject:[NSNumber numberWithInt:targetStatus] forKey:kBlioDeviceRegisteredDefaultsKey];
 	[usersDictionary setObject:currentUserDictionary forKey:[NSString stringWithFormat:@"%i",[self userNum]]];
