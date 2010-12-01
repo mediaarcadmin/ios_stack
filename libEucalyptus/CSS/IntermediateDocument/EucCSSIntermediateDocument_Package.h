@@ -28,7 +28,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
               baseCSSPaths:(NSArray *)baseCSSPaths
-               userCSSPath:(NSString *)userCSSPath
+              userCSSPaths:(NSArray *)userCSSPaths
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
                     isHTML:(BOOL)isHTML
