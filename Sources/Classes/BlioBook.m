@@ -878,20 +878,26 @@ static void sortedHighlightRangePredicateInit() {
 	return [NSArray arrayWithObjects:@"Saint",@"Sir",@"Viscount",@"Baron",@"Brother",nil];
 }
 
++(NSArray*) specialSuffixes{
+	return [NSArray arrayWithObjects:@"(CON)",@"(ILT)",nil];
+}
+
 +(NSString*)standardNameFromCanonicalName:(NSString*)name {
 	//get a mutable copy so we can delete unneeded parts of the string
-	NSMutableString* aName = [name mutableCopy];
+	NSMutableString* aName = [[name mutableCopy] autorelease];
 	
-	//This is to check and handle the case where there are Contributors to the book. This is resolved at the end of this function with adding back the contributor tag
-	BOOL needContributorTag = NO;
-	NSRange contributorRange = [aName rangeOfString:@" (CON)"];
-	if (contributorRange.location != NSNotFound){
-		[aName deleteCharactersInRange:contributorRange];
-		needContributorTag = YES;
+	//This is to check and handle the case where there are special suffixes to the author. This is resolved at the end of this function with adding back the special suffix
+	NSString* specialEnding = @"";
+	for (NSString* endingType in [BlioBook specialSuffixes]){
+		NSRange endingRange = [aName rangeOfString:[NSString stringWithFormat:@" %@",endingType]];
+		if (endingRange.location != NSNotFound){
+			[aName deleteCharactersInRange:endingRange];
+			specialEnding = [NSString stringWithFormat:@" %@",endingType];
+		}
 	}
 	
 	//Split by commas
-	NSMutableArray* namePieces = [[aName componentsSeparatedByString:@", "]mutableCopy];
+	NSMutableArray* namePieces = [[[aName componentsSeparatedByString:@", "]mutableCopy] autorelease];
 	
 	//If 1 Piece, Plato Case (only one name) return piece
 	if ([namePieces count] == 1)
@@ -900,15 +906,15 @@ static void sortedHighlightRangePredicateInit() {
 	//If 2 Pieces, no suffix, so return 2nd piece first Piece
 	if ([namePieces count] == 2){
 		NSString* result = [NSString stringWithFormat:@"%@ %@",[namePieces objectAtIndex:1],[namePieces objectAtIndex:0]];
-		if (needContributorTag){
-			result = [result stringByAppendingString:@" (CON)"];
+		if ([specialEnding length]>0){
+			result = [result stringByAppendingString:specialEnding];
 		}
 		return result;
 	}
 	
 	//if 3 pieces, there are suffixes/prefixes, so return 2nd Piece 1st Piece, 3rd Piece
 	//determine the suffixes, prefixes and suffixes that don't require commas
-	NSMutableArray* suffixPrefixPieces = [[[namePieces objectAtIndex:2]componentsSeparatedByString:@" "]mutableCopy];
+	NSArray* suffixPrefixPieces = [[namePieces objectAtIndex:2]componentsSeparatedByString:@" "];
 	NSMutableArray* suffixes = [NSMutableArray array];
 	NSMutableArray* suffixesWithoutCommas = [NSMutableArray array];
 	NSMutableArray* prefixes = [NSMutableArray array];
@@ -940,8 +946,8 @@ static void sortedHighlightRangePredicateInit() {
 	if ([suffixes count]>0)
 		standardName = [standardName stringByAppendingFormat:@", %@",[suffixes componentsJoinedByString:@" "]];
 	
-	if (needContributorTag){
-		standardName = [standardName stringByAppendingString:@" (CON)"];
+	if ([specialEnding length]>0){
+		standardName = [standardName stringByAppendingString:specialEnding];
 	}
 	
 	return standardName;
@@ -949,18 +955,20 @@ static void sortedHighlightRangePredicateInit() {
 
 +(NSString*)canonicalNameFromStandardName:(NSString*)name {
 	//get a mutable copy so we can delete unneeded parts of the string
-	NSMutableString* aName = [name mutableCopy];
+	NSMutableString* aName = [[name mutableCopy] autorelease];
 	
-	//This is to check and handle the case where there are Contributors to the book. This is resolved at the end of this function with adding back the contributor tag
-	BOOL needContributorTag = NO;
-	NSRange contributorRange = [aName rangeOfString:@" (CON)"];
-	if (contributorRange.location != NSNotFound){
-		[aName deleteCharactersInRange:contributorRange];
-		needContributorTag = YES;
+	//This is to check and handle the case where there are special suffixes to the author. This is resolved at the end of this function with adding back the special suffix
+	NSString* specialEnding = @"";
+	for (NSString* endingType in [BlioBook specialSuffixes]){
+		NSRange endingRange = [aName rangeOfString:[NSString stringWithFormat:@" %@",endingType]];
+		if (endingRange.location != NSNotFound){
+			[aName deleteCharactersInRange:endingRange];
+			specialEnding = [NSString stringWithFormat:@" %@",endingType];
+		}
 	}
 	
 	//split name string into pieces by spaces.  Array is mutable so it can be changed later in function
-	NSMutableArray* namePieces = [[aName componentsSeparatedByString:@" "]mutableCopy];
+	NSMutableArray* namePieces = [[[aName componentsSeparatedByString:@" "]mutableCopy] autorelease];
 	
 	//Check Plato case: if single name, return single name unchanged
 	if ([namePieces count] == 1)
@@ -1001,8 +1009,8 @@ static void sortedHighlightRangePredicateInit() {
 	if ([suffixesPrefixes count] == 0)
 		finalString = [NSString stringWithFormat:@"%@, %@",piece,[namePieces componentsJoinedByString:@" "]];
 	else finalString = [NSString stringWithFormat:@"%@, %@, %@",piece,[namePieces componentsJoinedByString:@" "],[suffixesPrefixes componentsJoinedByString:@" "]];
-	if (needContributorTag){
-		finalString = [finalString stringByAppendingString:@" (CON)"];
+	if ([specialEnding length]>0){
+		finalString = [finalString stringByAppendingString:specialEnding];
 	}
 	
 	//flatten arrays into strings separated by original spaces and add in comma

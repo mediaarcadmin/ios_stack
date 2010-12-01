@@ -17,8 +17,9 @@
     [self getObjects:objects range:NSMakeRange(0, count)];
     
     mergesort(objects, count, sizeof(id), (int (*)(const void *arg1, const void *arg2))function);
-    
-    return [NSArray arrayWithObjects:objects count:count];
+    NSArray * result = [NSArray arrayWithObjects:objects count:count];
+	free(objects);
+    return result;
 }   
 
 - (id)longestComponentizedMatch:(NSString *)match componentsSeperatedByString:(NSString *)separator forKeyPath:(NSString *)keyPath {

@@ -219,7 +219,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
-            if ([self.book hasAudiobook]) 
+            if ([self.book hasAudiobook])
+				if (_audioBookManager) [_audioBookManager release];
 				_audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
 			// This is not an "else" because the above initialization could have discovered
 			// a corrupt audiobook, in which case hasAudiobook would now be false.
@@ -1215,6 +1216,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.searchButton = nil;
 	self.backButton = nil;
     self.historyStack = nil;
+	if (_audioBookManager) [_audioBookManager release];
 	[super dealloc];
 }
 

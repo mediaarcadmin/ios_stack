@@ -23,6 +23,7 @@ static NSString * const BlioFileSharingImportAborted = @"BlioFileSharingImportAb
 	BlioBookSourceID sourceID;
 	NSString * sourceSpecificID;
 	BOOL isDRM;
+	NSOperationQueue *importQueue;
 }
 @property(nonatomic,retain) NSString * fileName;
 @property(nonatomic,retain) NSString * filePath;

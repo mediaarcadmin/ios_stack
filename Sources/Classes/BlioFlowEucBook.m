@@ -95,6 +95,16 @@
     return navPoints;
 }
 
+- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree
+{
+    if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]] ||
+       [documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
+        return NO;
+    } else {
+        return [super documentTreeIsHTML:documentTree];
+    }
+}
+
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
@@ -102,20 +112,20 @@
     } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
         return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"]];
     } else {
-        NSMutableArray *ret = [[super baseCSSPathsForDocumentTree:documentTree] mutableCopy];
+        NSMutableArray *ret = [[[super baseCSSPathsForDocumentTree:documentTree] mutableCopy] autorelease];
         [ret addObject:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]];
         return ret;
     }
 }
 
-- (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)userCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
         return nil;
     } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
-        return nil;
+        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowXAMLOverrides" ofType:@"css"]];
     } else {
-        return [super userCSSPathForDocumentTree:documentTree];
+        return [super userCSSPathsForDocumentTree:documentTree];
     }
 }
 

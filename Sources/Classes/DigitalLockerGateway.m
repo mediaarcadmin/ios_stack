@@ -376,6 +376,7 @@ static NSString * SessionId = nil;
 	if (_ClientUserAgent) [_ClientUserAgent release];
 	if (_SiteKey) [_SiteKey release];
 	if (_AppID) [_AppID release];
+	self.SiteNum = nil;
 	[super dealloc];
 }
 
@@ -476,7 +477,7 @@ static NSString * SessionId = nil;
 	_responseData = [[NSMutableData alloc] init];
 	
 	urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
-	
+	[urlRequest release];
 	if (self.urlConnection) [self.urlConnection start];
 }
 

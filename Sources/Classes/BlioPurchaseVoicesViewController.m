@@ -29,7 +29,6 @@
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
 #endif
-		// TODO: make connection to CrossComm server to obtain product IDs.	
 		
 		[[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 		
@@ -60,8 +59,7 @@
 
 }
 -(void)didReceiveInAppPurchaseProductsUpdated:(NSNotification*)note {
-    // Uncomment the following line to preserve selection between presentations.
-	//    self.clearsSelectionOnViewWillAppear = NO;
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 	
 	NSMutableArray * voices = [NSMutableArray array];
 	NSArray * availableVoicesForUse = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse];

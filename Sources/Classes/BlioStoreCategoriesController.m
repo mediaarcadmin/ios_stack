@@ -25,6 +25,7 @@
 			if (feed.parser) [feed.parser cancel];
 		}
 	}
+	self.feeds = nil;
     self.processingDelegate = nil;
 	self.detailViewController = nil;
 	self.activityIndicatorView = nil;

@@ -31,6 +31,7 @@
 	[super dealloc];
 }
 -(void)fetchProductsFromProductServer {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 	CCInAppPurchaseConnection * connection = [[CCInAppPurchaseConnection alloc] initWithRequest:[[[CCInAppPurchaseFetchProductsRequest alloc] init] autorelease]];
 	connection.delegate = self;
 	[connection start];
@@ -58,7 +59,7 @@
 		CCInAppPurchaseFetchProductsResponse * fetchProductsResponse = (CCInAppPurchaseFetchProductsResponse*)aConnection.inAppPurchaseResponse;
 		NSMutableArray * productIDs = [NSMutableArray array];
 		for (CCInAppPurchaseProduct * product in fetchProductsResponse.products) {
-			NSLog(@"product: %@",product);
+			NSLog(@"product: %@, %@",product,product.productId);
 			[productIDs addObject:product.productId];
 		}
 		[self requestProductsWithProductIdentifiers:[NSSet setWithArray:productIDs]];		

@@ -13,6 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+#import "EucCSSLayouter.h"
 #import "EucCSSLayouter_Package.h"
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutDocumentRun_Package.h"
@@ -48,6 +49,7 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 - (void)_addComponent:(EucCSSLayoutDocumentRunComponentInfo *)info;
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode;
+- (void)_accumulateFloatNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (CGFloat)_textIndentInWidth:(CGFloat)width;
 @end 
 
@@ -130,7 +132,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         
         // Retain this, because we're retaining nodes, but nodes don't retain
         // their documents.
-        // No need to do this - noone should be using the rund after the 
+        // No need to do this - noone should be using the run after the 
         // document's gone.
         //_document = [_startNode.document retain];        
         _document = _startNode.document;        
@@ -147,30 +149,41 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         
         EucCSSLayoutDocumentRunComponentInfo currentComponentInfo = { EucCSSLayoutDocumentRunComponentKindNone };
         
-        while (!reachedLimit && 
-               inlineNode && 
-               (inlineNode.isTextNode || (inlineNodeStyle &&
-                                          //css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE &&
-                                          (css_computed_display(inlineNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK))) {
+        BOOL wasFloat = NO;
+        while(YES) {
+            EucCSSIntermediateDocumentNode *nextNode = nil;
+            
             if(inlineNode.isTextNode) {
                 [self _accumulateTextNode:inlineNode];
+                nextNode = [inlineNode nextDisplayableUnder:underNode];
             } else if(inlineNode.isImageNode) {
                 [self _accumulateImageNode:inlineNode];
+                nextNode = [inlineNode nextDisplayableUnder:underNode];
+            } else if(inlineNodeStyle) {
+                if(css_computed_float(inlineNodeStyle) != CSS_FLOAT_NONE) {
+                    [self _accumulateFloatNode:inlineNode];
+                    nextNode = [inlineNode.parent displayableNodeAfter:inlineNode under:underNode];
+                    wasFloat = YES;
+                } else if(css_computed_display(inlineNodeStyle, false) != CSS_DISPLAY_BLOCK) {
+                    // Open this node.
+                    [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
+                    currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
+                    [self _addComponent:&currentComponentInfo];
+                    nextNode = [inlineNode nextDisplayableUnder:underNode];
+                } else {
+                    break;
+                }
             } else {
-                // Open this node.
-                [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
-                currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
-                [self _addComponent:&currentComponentInfo];
+                break;   
             }
             
-            EucCSSIntermediateDocumentNode *nextNode = nil;
-
-            nextNode = [inlineNode nextDisplayableUnder:underNode];
             if(nextNode) {
                 EucCSSIntermediateDocumentNode *nextNodeParent = nextNode.parent;
                 while(inlineNode != nextNodeParent && 
                       inlineNode != underNode) {
-                    if(!inlineNode.isTextNode && !inlineNode.isImageNode) {
+                    if(!inlineNode.isTextNode && 
+                       !inlineNode.isImageNode &&
+                       (!inlineNodeStyle || css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE)) {
                         // If the node /doesn't/ have children, it's already closed,
                         // above.
                         if(currentComponentInfo.documentNode != inlineNode) {
@@ -182,16 +195,24 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                         }
                         currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
                         [self _addComponent:&currentComponentInfo];
-                        [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode.parent];
                     }                    
                     inlineNode = inlineNode.parent;
+                    inlineNodeStyle = inlineNode.computedStyle;
                 }
 
                 inlineNode = nextNode;
                 inlineNodeStyle = inlineNode.computedStyle;
             } else {
-                inlineNode = [inlineNode nextDisplayable];
+                if(wasFloat) {
+                    inlineNode = [inlineNode.parent displayableNodeAfter:inlineNode under:nil];
+                } else {
+                    inlineNode = [inlineNode nextDisplayable];
+                }
                 reachedLimit = YES;
+                break;
+            }
+            if(wasFloat) {
+                wasFloat = NO;
             }
         }    
         
@@ -227,6 +248,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     [_nextNodeInDocument release];
 
     [_sizeDependentComponentIndexes release];
+    [_floatComponentIndexes release];
     
     // See comments in init.
     //[_document release];
@@ -398,7 +420,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         }
 #endif
         if(image) {
-            EucCSSLayoutDocumentRunComponentInfo info = { EucCSSLayoutDocumentRunComponentKindNone };
+            EucCSSLayoutDocumentRunComponentInfo info = { 0 };
             info.documentNode = subnode;
             info.kind = EucCSSLayoutDocumentRunComponentKindImage;
             info.component = (void *)image;
@@ -492,7 +514,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
             _componentInfos[offset].lineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, _scaleFactor);
         } else {
             _componentInfos[offset].lineHeight = calculatedSize.height;
-        }            
+        }  
     }
 }
 
@@ -539,7 +561,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     // The font size percentages should already be fully resolved.
     CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);             
 
-    EucCSSLayoutDocumentRunComponentInfo spaceInfo = { EucCSSLayoutDocumentRunComponentKindSpace };
+    EucCSSLayoutDocumentRunComponentInfo spaceInfo = { 0 };
+    spaceInfo.kind = EucCSSLayoutDocumentRunComponentKindSpace;
     [self _populateComponentInfo:&spaceInfo forNode:subnode];
     spaceInfo.width = [stringRenderer widthOfString:@" " pointSize:fontPixelSize];
     
@@ -764,6 +787,19 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     }
 }
 
+- (void)_accumulateFloatNode:(EucCSSIntermediateDocumentNode *)subnode
+{
+    EucCSSLayoutDocumentRunComponentInfo info = { 0 };
+    info.documentNode = subnode;
+    info.kind = EucCSSLayoutDocumentRunComponentKindFloat;
+    [self _addComponent:&info];    
+    
+    if(!_floatComponentIndexes) {
+        _floatComponentIndexes = [[NSMutableArray alloc] init];
+    }
+    [_floatComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];    
+}
+
 - (void)_ensurePotentialBreaksCalculated
 {
     if(!_potentialBreaks) {
@@ -878,10 +914,11 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     }
 }
 
-- (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
-                                         inContainer:(EucCSSLayoutPositionedBlock *)container
-                                          wordOffset:(uint32_t)wordOffset 
-                                       elementOffset:(uint32_t)elementOffset
+- (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
+                                       inContainer:(EucCSSLayoutPositionedBlock *)container
+                              startingAtWordOffset:(uint32_t)wordOffset 
+                                     elementOffset:(uint32_t)elementOffset
+                            usingLayouterForFloats:(EucCSSLayouter *)layouter
 {    
     if(_componentsCount == 0) {
         return nil;
@@ -905,16 +942,27 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         textIndent = 0.0f;
     }
     
-    NSMutableArray *lines = nil;
+    NSMutableArray *lines = [[NSMutableArray alloc] init];
     CGPoint lineOrigin = CGPointZero;
     CGFloat lastLineMaxY = 0;
     
     BOOL firstTryAtLine = YES;
     CGFloat thisLineWidth = frame.size.width;
-    CGFloat lastLineUsedWidth;
     
+    uint8_t textAlign = [self _textAlign];
+    
+    NSUInteger floatComponentIndexesOffset = NSUIntegerMax;
+    NSUInteger nextFloatComponentOffset = NSUIntegerMax;
+    if(_floatComponentIndexes) {
+        floatComponentIndexesOffset = 0;
+        nextFloatComponentOffset = [[_floatComponentIndexes objectAtIndex:floatComponentIndexesOffset] integerValue];
+    } 
+       
+    BOOL widthChanged;
     do {
-        size_t startBreakOffset = 0;
+        widthChanged = NO;
+        
+        NSUInteger startBreakOffset = 0;
         for(;;) {
             EucCSSLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
             if(startBreakOffset < _potentialBreaksCount && 
@@ -924,11 +972,13 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 break;
             }
         }        
-        
         if(startBreakOffset >= _potentialBreaksCount) {
             return nil;
-        }        
+        }
+        int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
         
+        // Work out an offset to compensate the pre-calculated 
+        // line lengths in the breaks array.
         CGFloat indentationOffset;
         uint32_t lineStartComponent;
         if(startBreakOffset) {
@@ -945,22 +995,19 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
             indentationOffset = textIndent;
         }
         
-        int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
-                
         int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
         int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, thisLineWidth, 0, usedBreakIndexes);
-
-        uint8_t textAlign = [self _textAlign];
         
-        if(!lines) {
-            lines = [NSMutableArray arrayWithCapacity:usedBreakCount];
-        }
         EucCSSLayoutDocumentRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
-        lastLineUsedWidth = thisLineWidth;
-        for(int i = 0; i < usedBreakCount && thisLineWidth == lastLineUsedWidth; ++i) {
+        
+        for(int i = 0; i < usedBreakCount && !widthChanged; ++i) {
             EucCSSLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
             EucCSSLayoutPositionedLine *newLine = [[EucCSSLayoutPositionedLine alloc] init];
             newLine.parent = ret;
+            
+            EucCSSLayoutDocumentRunPoint lineStartPoint;
+            EucCSSLayoutDocumentRunPoint lineEndPoint;
+            
             if(lastLineBreakInfo.consumesComponent) {
                 EucCSSLayoutDocumentRunPoint point = lastLineBreakInfo.point;
                 uint32_t componentOffset = [self pointToComponentOffset:point];
@@ -970,17 +1017,62 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     // This must be an empty line at the end of a run.
                     // We remove this - the only way it can happen is if the last
                     // line ends in a newline (e.g. <br>), and we're about to add
-                    // an implicit newline at tee end of the block anyway.
+                    // an implicit newline at the end of the block anyway.
                     [newLine release];        
                     break;
                 } else {
-                    newLine.startPoint = _componentInfos[componentOffset].point;
+                    lineStartPoint = _componentInfos[componentOffset].point;
                 }
             } else {
-                newLine.startPoint = lastLineBreakInfo.point;
+                lineStartPoint = lastLineBreakInfo.point;
             }
-            newLine.endPoint = thisLineBreakInfo.point;
+            lineEndPoint = thisLineBreakInfo.point;
             
+            newLine.startPoint = lineStartPoint;
+            newLine.endPoint = lineEndPoint;
+            
+            if(nextFloatComponentOffset != NSUIntegerMax && 
+               nextFloatComponentOffset >= [self pointToComponentOffset:lineStartPoint] &&
+               nextFloatComponentOffset < [self pointToComponentOffset:lineEndPoint]) {
+                // A float is on this line.  Place the float.
+        
+                BOOL completed = NO;
+                EucCSSLayoutPoint returnedPoint = { 0 };
+
+                EucCSSIntermediateDocumentNode *floatNode = _componentInfos[nextFloatComponentOffset].documentNode;
+                
+                EucCSSLayoutPoint floatPoint = { floatNode.key, 0, 0 };
+                CGRect floatPotentialFrame = CGRectMake(0, 0, frame.size.width, CGFLOAT_MAX);
+                EucCSSLayoutPositionedBlock *floatBlock = [layouter _layoutFromPoint:floatPoint
+                                                                             inFrame:floatPotentialFrame
+                                                                  returningNextPoint:&returnedPoint
+                                                                  returningCompleted:&completed 
+                                                                    lastBlockNodeKey:floatPoint.nodeKey
+                                                               constructingAncestors:NO];
+                
+                [floatBlock shrinkToFit];       
+                
+                [container addFloatChild:floatBlock 
+                              atContentY:lineOrigin.y
+                                  onLeft:css_computed_float(floatNode.computedStyle) == CSS_FLOAT_LEFT];
+                
+                if(THWillLog()) {
+                    // Sanity check - was this consumed properly?
+                    NSParameterAssert(completed == YES);
+                    EucCSSIntermediateDocumentNode *afterFloat = [floatNode.parent displayableNodeAfter:floatNode
+                                                                                                  under:nil];
+                    NSParameterAssert(returnedPoint.nodeKey == afterFloat.key);
+                }    
+                
+                // This float is consumed!
+                ++floatComponentIndexesOffset;
+                if(floatComponentIndexesOffset >= _floatComponentIndexes.count) {
+                    nextFloatComponentOffset = NSUIntegerMax;
+                } else {
+                    nextFloatComponentOffset = [[_floatComponentIndexes objectAtIndex:floatComponentIndexesOffset] integerValue];
+                }
+            }
+        
             if(textIndent) {
                 newLine.indent = textIndent;
                 textIndent = 0.0f;
@@ -1027,11 +1119,13 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
             }
             
             // Is the available width != the used width?
-            if(availableWidth != thisLineWidth) { 
-                [newLine release];        
-                
+            if(availableWidth != thisLineWidth) {                 
                 THLogVerbose(@"Recalculating for float");
-                if(!firstTryAtLine) {
+                if(firstTryAtLine) {
+                    // We'll loop and try this line again with the real available width.
+                    thisLineWidth = availableWidth;
+                    firstTryAtLine = NO;
+                } else {
                     // We can't fit this line in the width.
                     // We'll loop and try this line again after the first float
                     // ends.
@@ -1054,30 +1148,27 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                         }
                     }
                     lineOrigin.y = nextY;
-                } else {
-                    // We'll loop and try this line again with the real available width.
-                    thisLineWidth = availableWidth;
+                    firstTryAtLine = YES;
                 }
+                
                 wordOffset = newLine.startPoint.word;
                 elementOffset = newLine.startPoint.element;
-                firstTryAtLine = NO;
+                
+                widthChanged = YES;
             } else {
-                lastLineUsedWidth = thisLineWidth;
                 lastLineMaxY = lineOrigin.y + newLine.frame.size.height;
                 [lines addObject:newLine];
-                [newLine release];        
-            
+                
                 lineOrigin.y = lastLineMaxY;
                 lastLineBreakInfo = thisLineBreakInfo;
                 if(!firstTryAtLine) {
                     firstTryAtLine = YES;
                 }
-            }
-        } 
-        
-        free(usedBreakIndexes);
-    } while(lastLineUsedWidth != thisLineWidth);
-    
+            } 
+            [newLine release];        
+        }
+    } while(widthChanged);
+
     if(lines.count) {
         ret.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY);
         ret.children = lines;
@@ -1085,7 +1176,14 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         [ret release];
         ret = nil;
     }
-        
+    
+    
+    [lines release];
+    
+    if(ret) {
+        [container addChild:ret];
+    }
+    
     return [ret autorelease];
 }
 

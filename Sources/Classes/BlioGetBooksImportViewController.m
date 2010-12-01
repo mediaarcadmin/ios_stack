@@ -25,6 +25,7 @@
 		self.title = NSLocalizedString(@"Import",@"\"Import\" view controller title");
 		UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Import",@"\"Import\" button title") image:[UIImage imageNamed:@"icon-import.png"] tag:kBlioGetBooksImportTag];
         self.tabBarItem = theItem;
+		[theItem release];
     }
     return self;
 }
@@ -45,7 +46,7 @@
 		return;
 	}
 	NSLog(@"%@", NSStringFromSelector(_cmd));	
-	self.importableBooks = [[[BlioImportManager sharedImportManager] importableBooks] mutableCopy];
+	self.importableBooks = [[[[BlioImportManager sharedImportManager] importableBooks] mutableCopy] autorelease];
 	[self.tableView reloadData];
 }
 -(void)onBlioFileSharingScanFinished:(NSNotification*)note {
@@ -55,7 +56,7 @@
 	}
 	NSLog(@"%@", NSStringFromSelector(_cmd));	
 	[self.activityIndicatorView stopAnimating];
-	self.importableBooks = [[[BlioImportManager sharedImportManager] importableBooks] mutableCopy];
+	self.importableBooks = [[[[BlioImportManager sharedImportManager] importableBooks] mutableCopy] autorelease];
 	[self.tableView reloadData];
 }
 
@@ -65,7 +66,7 @@
 -(void)loadView {
 	[super loadView];
 
-	self.importableBooks = [[[BlioImportManager sharedImportManager] importableBooks] mutableCopy];
+	self.importableBooks = [[[[BlioImportManager sharedImportManager] importableBooks] mutableCopy] autorelease];
 }
 - (void)viewDidLoad {
 	NSLog(@"%@", NSStringFromSelector(_cmd));

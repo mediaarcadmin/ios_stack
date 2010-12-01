@@ -73,7 +73,7 @@
 // document trees to parse for CSS etc.
 - (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree;
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
-- (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
+- (NSArray *)userCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
 
 // From the EucBook protocol - included here because it's useful for overriding
 // for covers etc.

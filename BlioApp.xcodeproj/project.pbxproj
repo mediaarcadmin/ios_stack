@@ -180,6 +180,9 @@
 		7DB7029F1248D38E00BC3272 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
+		7DBB2E1612A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DBB2E1512A6C30C0048D44A /* TextFlowXAMLOverrides.css */; };
+		7DBB2E1712A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DBB2E1512A6C30C0048D44A /* TextFlowXAMLOverrides.css */; };
+		7DBB2E1812A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DBB2E1512A6C30C0048D44A /* TextFlowXAMLOverrides.css */; };
 		7DBD0EDD12018E78009CD9DA /* TextFlowXAML.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DBD0EDC12018E78009CD9DA /* TextFlowXAML.css */; };
 		7DBD0EEB120191F8009CD9DA /* BlioTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */; };
 		7DBD0F751201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */; };
@@ -1437,6 +1440,7 @@
 		7DB9F57C10F345450010DF0B /* BlioBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookView.h; sourceTree = "<group>"; };
 		7DB9F95210F3A08C0010DF0B /* logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white.png"; sourceTree = "<group>"; };
 		7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scrubber-icon.png"; sourceTree = "<group>"; };
+		7DBB2E1512A6C30C0048D44A /* TextFlowXAMLOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = TextFlowXAMLOverrides.css; sourceTree = "<group>"; };
 		7DBD0EDC12018E78009CD9DA /* TextFlowXAML.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = TextFlowXAML.css; sourceTree = "<group>"; };
 		7DBD0EE9120191F8009CD9DA /* BlioTextFlowXAMLTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowXAMLTree.h; sourceTree = "<group>"; };
 		7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowXAMLTree.m; sourceTree = "<group>"; };
@@ -2309,6 +2313,7 @@
 				C9C546F110F7802F00ECE126 /* Blio.xcdatamodel */,
 				7DF2A589115381EF00FC2045 /* TextFlowFlow.css */,
 				7DBD0EDC12018E78009CD9DA /* TextFlowXAML.css */,
+				7DBB2E1512A6C30C0048D44A /* TextFlowXAMLOverrides.css */,
 				7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */,
 				7D529C101158DC1100548C00 /* TextFlowCover.xhtml */,
 				C9E5DC11117C741600950BA0 /* Localizable.strings */,
@@ -3513,6 +3518,7 @@
 				7D131D341295628300BCA583 /* icon-author.png in Resources */,
 				7D131D351295628300BCA583 /* icon-arbitrary@2x.png in Resources */,
 				7D131D361295628300BCA583 /* icon-arbitrary.png in Resources */,
+				7DBB2E1712A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3735,6 +3741,7 @@
 				7D131D3E1295628300BCA583 /* icon-author.png in Resources */,
 				7D131D3F1295628300BCA583 /* icon-arbitrary@2x.png in Resources */,
 				7D131D401295628300BCA583 /* icon-arbitrary.png in Resources */,
+				7DBB2E1812A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3958,6 +3965,7 @@
 				7D131D2A1295628300BCA583 /* icon-author.png in Resources */,
 				7D131D2B1295628300BCA583 /* icon-arbitrary@2x.png in Resources */,
 				7D131D2C1295628300BCA583 /* icon-arbitrary.png in Resources */,
+				7DBB2E1612A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

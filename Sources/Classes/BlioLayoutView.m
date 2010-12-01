@@ -1564,7 +1564,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			frame = [self.window.layer convertRect:frame fromLayer:self.pageTurningView.layer];
 
             nextPageTapZone.accessibilityFrame = frame;
-            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");
+            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility label for next page tap zone");
 			self.nextZone = nextPageTapZone;
             [accessibilityElements addObject:nextPageTapZone];            
             [nextPageTapZone release];
@@ -1588,7 +1588,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			frame = [self.window.layer convertRect:frame fromLayer:self.pageTurningView.layer];
 
             previousPageTapZone.accessibilityFrame = frame;
-            previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+            previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility label for previous page tap zone");
             [accessibilityElements addObject:previousPageTapZone];
 			self.prevZone = previousPageTapZone;
             [previousPageTapZone release];
@@ -1604,9 +1604,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 			
             UIAccessibilityElement *toolbarTapButton = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            toolbarTapButton.accessibilityTraits = UIAccessibilityTraitButton;
             toolbarTapButton.accessibilityFrame = frame;
-            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book Page", @"Accessibility title for book page tap zone");
-            toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone");
+            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book Page", @"Accessibility label for book page button");
+            toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility label for book page button");
             self.pageZone = toolbarTapButton;
             [accessibilityElements addObject:toolbarTapButton];
             [toolbarTapButton release];
