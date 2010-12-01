@@ -13,7 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
+@class EucCSSIntermediateDocument, EucCSSLayouter, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
 struct THBreak;
 
 typedef struct EucCSSLayoutDocumentRunPoint {
@@ -79,7 +79,8 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     BOOL _seenNonSpace;
     
     NSMutableArray *_sizeDependentComponentIndexes;
-    
+    NSMutableArray *_floatComponentIndexes;
+
     struct THBreak *_potentialBreaks;
     struct EucCSSLayoutDocumentRunBreakInfo *_potentialBreakInfos;
     int _potentialBreaksCount;
@@ -106,10 +107,11 @@ struct EucCSSLayoutDocumentRunBreakInfo;
              forId:(uint32_t)id
        scaleFactor:(CGFloat)scaleFactor;
 
-- (EucCSSLayoutPositionedRun *)positionedRunForFrame:(CGRect)frame
-                                         inContainer:(EucCSSLayoutPositionedBlock *)container
-                                          wordOffset:(uint32_t)wordOffset 
-                                       elementOffset:(uint32_t)elementOffset;
+- (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
+                                       inContainer:(EucCSSLayoutPositionedBlock *)container
+                              startingAtWordOffset:(uint32_t)wordOffset 
+                                     elementOffset:(uint32_t)elementOffset
+                            usingLayouterForFloats:(EucCSSLayouter *)layouter;
 
 - (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
 

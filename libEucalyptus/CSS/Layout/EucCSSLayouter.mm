@@ -21,6 +21,7 @@
 #import "EucCSSLayoutRunExtractor.h"
 
 #import "THStringRenderer.h"
+#import "THPair.h"
 #import "THLog.h"
 #import "th_just_with_floats.h"
 
@@ -426,8 +427,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         CGFloat nextAbsoluteY = [positionedRoot convertRect:positionedRoot.contentBounds toContainer:nil].origin.y;
         CGFloat maxAbsoluteY = CGRectGetMaxY(frame);
         
-        NSMutableArray *activeLeftFloats = nil;
-        NSMutableArray *activeRightFloats = nil;
+        THPair *activeFloats = nil;
         
         while(!reachedBottomOfFrame && !closedLastNode && currentDocumentNode) {            
             // Find the node's parent, closing open blocks until we reach it.
@@ -452,54 +452,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 
                 potentialFrame.origin.y = nextAbsoluteY - [currentPositionedBlock convertRect:potentialFrame 
                                                                                   toContainer:nil].origin.y;
-                
-                if(activeLeftFloats) {
-                    NSMutableIndexSet *toRemove = [[NSMutableIndexSet alloc] init];
-                    NSUInteger i = 0;
-                    for(EucCSSLayoutPositionedContainer *floatContainer in activeLeftFloats) {
-                        if(CGRectGetMaxY(floatContainer.absoluteFrame) < nextAbsoluteY) {
-                            [toRemove addIndex:i];
-                        }
-                        ++i;
-                    }
-                    [activeLeftFloats removeObjectsAtIndexes:toRemove];
-                    [toRemove release];
-                    if(activeLeftFloats.count == 0) {
-                        [activeLeftFloats release];
-                        activeLeftFloats = nil;
-                    }
-                }
-                
-                if(activeRightFloats) {
-                    NSMutableIndexSet *toRemove = [[NSMutableIndexSet alloc] init];
-                    NSUInteger i = 0;
-                    for(EucCSSLayoutPositionedContainer *floatContainer in activeRightFloats) {
-                        if(CGRectGetMaxY(floatContainer.absoluteFrame) < nextAbsoluteY) {
-                            [toRemove addIndex:i];
-                        }
-                        ++i;
-                    }
-                    [activeRightFloats removeObjectsAtIndexes:toRemove];
-                    [toRemove release];
-                    if(activeRightFloats.count == 0) {
-                        [activeRightFloats release];
-                        activeRightFloats = nil;
-                    }
-                }                
-                        
+
                 css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
                 
-                enum css_float_e floatprop;
-                enum css_display_e displayprop;
                 if(!currentNodeStyle || 
                    css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE ||
                    css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
                     //THLog(@"Inline: %@", [currentDocumentNode name]);
-                    
-                    if(currentNodeStyle) {
-                        floatprop = (enum css_float_e) css_computed_float(currentNodeStyle);
-                        displayprop = (enum css_display_e)css_computed_display(currentNodeStyle, false);
-                    }
                     
                     // This is an inline element - start a run.
                     EucCSSLayoutDocumentRun *documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
@@ -510,13 +469,12 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     CGRect frameWithMaxHeight = potentialFrame;
                     frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
                     // Position it.
-                    EucCSSLayoutPositionedRun *positionedRun = [documentRun positionedRunForFrame:frameWithMaxHeight
-                                                                                      inContainer:currentPositionedBlock
-                                                                                       wordOffset:wordOffset
-                                                                                    elementOffset:elementOffset];
+                    EucCSSLayoutPositionedRun *positionedRun = [documentRun positionRunForFrame:frameWithMaxHeight
+                                                                                    inContainer:currentPositionedBlock
+                                                                           startingAtWordOffset:wordOffset
+                                                                                  elementOffset:elementOffset
+                                                                         usingLayouterForFloats:self];
                     if(positionedRun) {
-                        [currentPositionedBlock addChild:positionedRun];
-                        
                         BOOL first = YES; // Break before first line doesn't count.
                         for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
                             if(!first) {
@@ -528,6 +486,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                             }
                         }
                         nextAbsoluteY = CGRectGetMaxY([positionedRun absoluteFrame]);
+                    
+                        activeFloats = [currentPositionedBlock floatsOverlappingYPoint:nextAbsoluteY height:0];
                     }
                                  
                     if(elementOffset) {
@@ -541,92 +501,35 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     nextRunNodeKey = currentDocumentNode.key;
                 } else {
                     //THLog(@"Block: %@", [currentDocumentNode name]);
-                    
-                    // This is a block-level element.
-                    
-                    uint8_t computedFloat = css_computed_float(currentNodeStyle);
-                    NSParameterAssert(computedFloat == CSS_FLOAT_NONE);
-                    switch(computedFloat) {
-                        case CSS_FLOAT_LEFT:
-                        case CSS_FLOAT_RIGHT: {
-                            BOOL completed = NO;
-                            EucCSSLayoutPoint returnedPoint = { 0 };
-                            EucCSSLayoutPoint fromPoint = { currentDocumentNode.key, 0, 0 };
-                            EucCSSLayoutPositionedBlock *floatedBlock = [self _layoutFromPoint:fromPoint
-                                                                                      inFrame:potentialFrame
-                                                                           returningNextPoint:&returnedPoint
-                                                                           returningCompleted:&completed 
-                                                                             lastBlockNodeKey:currentDocumentNode.key
-                                                                        constructingAncestors:NO];
-                            
-                            [floatedBlock shrinkToFit];       
-                            if(computedFloat == CSS_FLOAT_LEFT) {
-                                [currentPositionedBlock addFloatChild:floatedBlock 
-                                                           atContentY:potentialFrame.origin.y
-                                                               onLeft:YES];
-                                if(!activeLeftFloats) {
-                                    activeLeftFloats = [[NSMutableArray alloc] init];
-                                }
-                                [activeLeftFloats addObject:floatedBlock];
-                            } else {
-                                [currentPositionedBlock addFloatChild:floatedBlock 
-                                                           atContentY:potentialFrame.origin.y
-                                                               onLeft:NO];                                
-                                if(!activeRightFloats) {
-                                    activeRightFloats = [[NSMutableArray alloc] init];
-                                }
-                                [activeRightFloats addObject:floatedBlock];
-                            }
-
-                            if(THWillLog()) {
-                                NSParameterAssert(completed == YES);
-                                EucCSSIntermediateDocumentNode *afterFloat = [currentDocumentNode.parent displayableNodeAfter:currentDocumentNode
-                                                                                                                        under:nil];
-                                NSParameterAssert(returnedPoint.nodeKey == afterFloat.key);
-                            }    
-                                                        
-                            currentDocumentNode = [self.document nodeForKey:returnedPoint.nodeKey];
-                            break;
-                        }
-                        default: {
-                            THWarn(@"Unexpected uncomputed CSS_FLOAT, %ld", (long)computedFloat);
-                            // Fall through.
-                        }
-                        case CSS_FLOAT_NONE: {
-                            BOOL hasPreviousSibling = [currentPositionedBlock.children count] != 0;
-                            
-                            if(currentDocumentNode.isImageNode) {
-                                THLog(@"Image: %@", [currentDocumentNode.imageSource absoluteString]);
-                            }
-                            EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
-                            [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
-                            [currentPositionedBlock addChild:newBlock];
-                            if(activeLeftFloats) {
-                                NSArray *intrudingLeftFloats = [activeLeftFloats copy];
-                                newBlock.intrudingLeftFloats = intrudingLeftFloats;
-                                [intrudingLeftFloats release];
-                            }
-                            if(activeRightFloats) {
-                                NSArray *intrudingRightFloats = [activeRightFloats copy];
-                                newBlock.intrudingRightFloats = intrudingRightFloats;
-                                [intrudingRightFloats release];
-                            }
-                            
-                            nextAbsoluteY = [newBlock convertRect:newBlock.contentBounds toContainer:nil].origin.y;
-                            
-                            if(hasPreviousSibling) {
-                                EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
-                                pageBreaks.push_back(make_pair(breakPoint, newBlock));
-                            }                
-                            
-                            currentPositionedBlock = [newBlock autorelease];
-                            
-                            // First run in a block has the ID of the block it's in.
-                            nextRunNodeKey = currentDocumentNode.key;  
-                            
-                            currentDocumentNode = currentDocumentNode.nextDisplayable;
-                        }
+                    if(THWillLog()) {
+                        NSParameterAssert(css_computed_float(currentNodeStyle) == CSS_FLOAT_NONE);
                     }
+                    BOOL hasPreviousSibling = [currentPositionedBlock.children count] != 0;
+                    
+                    if(currentDocumentNode.isImageNode) {
+                        THLog(@"Image: %@", [currentDocumentNode.imageSource absoluteString]);
+                    }
+                    EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
+                    [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
+                    [currentPositionedBlock addChild:newBlock];
+                    if(activeFloats) {
+                        newBlock.intrudingLeftFloats = activeFloats.first;
+                        newBlock.intrudingRightFloats = activeFloats.second;
+                    }
+                    
+                    nextAbsoluteY = [newBlock convertRect:newBlock.contentBounds toContainer:nil].origin.y;
+                    
+                    if(hasPreviousSibling) {
+                        EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
+                        pageBreaks.push_back(make_pair(breakPoint, newBlock));
+                    }                
+                    
+                    currentPositionedBlock = [newBlock autorelease];
+                    
+                    // First run in a block has the ID of the block it's in.
+                    nextRunNodeKey = currentDocumentNode.key;  
+                    
+                    currentDocumentNode = currentDocumentNode.nextDisplayable;
                 }
             } else {
                 nextRunNodeKey = currentDocumentNode.key;
@@ -634,13 +537,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             }
             
             reachedBottomOfFrame = nextAbsoluteY >= maxAbsoluteY;
-        }
-        
-        if(activeLeftFloats) {
-            [activeLeftFloats release];
-        }
-        if(activeRightFloats) {
-            [activeRightFloats release];
         }
         
         if(!reachedBottomOfFrame) {
