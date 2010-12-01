@@ -31,24 +31,25 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 #pragma mark -
 #pragma mark Selector Menu Setup. 
 
-- (NSArray *)colorMenuItems {    
-    EucMenuItem *yellowItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorYellow:)] autorelease];
-    yellowItem.accessibilityLabel = NSLocalizedString(@"Yellow", "Accessibility label for yellow item in highlight color menu");
-    yellowItem.color = [UIColor yellowColor];
-    
-    EucMenuItem *redItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorRed:)] autorelease];
-    redItem.accessibilityLabel = NSLocalizedString(@"Red", "Accessibility label for yellow item in highlight color menu");
-    redItem.color = [UIColor redColor];
+- (NSArray *)colorMenuItems {     
+	
+    EucMenuItem *orangeItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorOrange:)] autorelease];
+    orangeItem.accessibilityLabel = NSLocalizedString(@"Orange", "Accessibility label for orange item in highlight color menu");
+    orangeItem.color = [UIColor orangeColor]; 
     
     EucMenuItem *blueItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorBlue:)] autorelease];
     blueItem.accessibilityLabel = NSLocalizedString(@"Blue", "Accessibility label for yellow item in highlight color menu");
     blueItem.color = [UIColor blueColor];
     
+    EucMenuItem *redItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorRed:)] autorelease];
+    redItem.accessibilityLabel = NSLocalizedString(@"Red", "Accessibility label for yellow item in highlight color menu");
+    redItem.color = [UIColor redColor];
+    
     EucMenuItem *greenItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorGreen:)] autorelease];
     greenItem.accessibilityLabel = NSLocalizedString(@"Green", "Accessibility label for yellow item in highlight color menu");
     greenItem.color = [UIColor greenColor];
     
-    NSArray *ret = [NSArray arrayWithObjects:yellowItem, redItem, blueItem, greenItem, nil];
+    NSArray *ret = [NSArray arrayWithObjects:orangeItem, blueItem, redItem, greenItem, nil];
     
     return ret;
 }
@@ -70,7 +71,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     
     return ret;
 }
-
+	
 - (NSArray *)highlightMenuItemsIncludingTextCpyItem:(BOOL)copy {
     EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu")                                                    
                                                             action:@selector(addNote:)] autorelease];
@@ -88,10 +89,23 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
                                                            action:@selector(removeHighlight:)] autorelease];
     
     NSArray *ret;
-    if (copy)
-        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWebToolsItem, colorItem, nil];
-    else
-        ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWebToolsItem, colorItem, nil];
+
+	BOOL color = YES;
+	if ([self.delegate respondsToSelector:@selector(hasNoteOverlappingSelectedRange)])  
+		if ([self.delegate hasNoteOverlappingSelectedRange]) 
+			color = NO;
+	if (copy) {
+		if (color)
+			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWebToolsItem, colorItem, nil];
+		else 
+			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWebToolsItem, nil];
+	}
+    else {
+		if (color)
+			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWebToolsItem, colorItem, nil];
+		else
+			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWebToolsItem, nil];
+	}
     
     return ret;
 }
@@ -136,7 +150,8 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
             lastHighlightColor = [[NSKeyedUnarchiver unarchiveObjectWithData:colorData] retain];
         }
         if (nil == lastHighlightColor) {
-            lastHighlightColor = [[UIColor yellowColor] retain];
+			// Default highlight color.
+			lastHighlightColor = [[UIColor orangeColor] retain];
         }
     }
     return lastHighlightColor;
@@ -178,6 +193,10 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     [self addHighlightWithColor:[UIColor yellowColor]];
 }
 
+- (void)highlightColorOrange:(id)sender {
+    [self addHighlightWithColor:[UIColor orangeColor]];
+}
+
 - (void)highlightColorRed:(id)sender {
     [self addHighlightWithColor:[UIColor redColor]];
 }
@@ -213,10 +232,11 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     if ([self.selector selectedRangeIsHighlight]) {
         BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
         if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:toRange:withColor:)])
-            [self.delegate updateHighlightNoteAtRange:highlightRange toRange:self.selectedRange withColor:nil];
+            [self.delegate updateHighlightNoteAtRange:highlightRange toRange:self.selectedRange withColor:nil]; 
     } else {
         if ([self.delegate respondsToSelector:@selector(addHighlightNoteWithColor:)])
-            [self.delegate addHighlightNoteWithColor:self.lastHighlightColor];
+            // Yellow is for notes.
+			[self.delegate addHighlightNoteWithColor:[UIColor yellowColor]]; 
     }
     
     // TODO - this probably doesn't want to deselect yet in case the note is cancelled
