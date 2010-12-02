@@ -4,7 +4,7 @@
 
 	Application Programming Interface for Pagemark XPS Rendering.
 
-	(c) Copyright 2008 Pagemark Technology, Inc.
+	(c) Copyright 2008,2009,2010,2011 Pagemark Technology, Inc.
 	All Rights Reserved Worldwide.
 
    ========================================================================== */
