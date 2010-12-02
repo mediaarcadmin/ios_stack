@@ -396,7 +396,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         CGRect bottomlessFrame = CGRectMake(frame.origin.x, frame.origin.x, frame.size.width, CGFLOAT_MAX);
         EucCSSLayoutPositionedBlock *currentPositionedBlock = nil;
         if(constructingAncestors) {
-            if(!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK) {
+            if(!currentNodeStyle || css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
                 EucCSSIntermediateDocumentNode *blockLevelParent = currentDocumentNode.blockLevelParent;
                 if(!blockLevelParent) {
                     blockLevelParent = document.rootNode;
