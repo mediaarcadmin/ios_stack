@@ -290,7 +290,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 {
     EucCSSIntermediateDocumentNode *prospectiveNode = self;
     css_computed_style *currentNodeStyle = self.computedStyle;
-    while(prospectiveNode && (!currentNodeStyle || (css_computed_display(currentNodeStyle, false) & CSS_DISPLAY_BLOCK) != CSS_DISPLAY_BLOCK)) {
+    while(prospectiveNode && (!currentNodeStyle || css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK)) {
         prospectiveNode = prospectiveNode.parent;
         currentNodeStyle = prospectiveNode.computedStyle;
     }  

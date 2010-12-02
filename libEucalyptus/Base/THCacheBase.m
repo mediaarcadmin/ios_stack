@@ -62,7 +62,7 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 {
     if((self = [super init])) {
         pthread_once(&sDontReallyCacheOnceControl, readDontReallyCacheDefault);
-        pthread_mutex_init(&_cacheMutex, NULL);
+        pthread_rwlock_init(&_cacheRWLock, NULL);
 #if TARGET_OS_IPHONE
         [[NSNotificationCenter defaultCenter] addObserver:self 
                                                  selector:@selector(_didReceiveMemoryWarning)
@@ -84,7 +84,7 @@ static const CFSetCallBacks THCacheSetCallBacks = {
     
     CFRelease(_cacheSet);
     
-    pthread_mutex_destroy(&_cacheMutex);
+    pthread_rwlock_destroy(&_cacheRWLock);
     
     [super dealloc];
 }
@@ -106,7 +106,7 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 {
     THLog(@"Cache had %ld items - emptying...", (long)CFSetGetCount(_cacheSet));
     
-    pthread_mutex_lock(&_cacheMutex);
+    pthread_rwlock_wrlock(&_cacheRWLock);
     
     if([self respondsToSelector:@selector(isItemInUse:)]) {
         CFIndex setCount = CFSetGetCount(_cacheSet);
@@ -123,7 +123,7 @@ static const CFSetCallBacks THCacheSetCallBacks = {
         _cacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
     }
 
-    pthread_mutex_unlock(&_cacheMutex);
+    pthread_rwlock_unlock(&_cacheRWLock);
     THLog(@"Cache has %ld items.", (long)CFSetGetCount(_cacheSet));
 }
 

@@ -424,16 +424,17 @@
                 if (matchKey) {
                     NSUInteger keyIndex = [shortKeys indexOfObject:matchKey];
                     [self goToUuid:[longKeys objectAtIndex:keyIndex] animated:YES];
-                    return !handled;
+                    handled = YES;
                 } else {
                     // Handle failure cases by going straight to the page
                     [self goToBookmarkPoint:bookmarkPoint animated:YES];
+                    handled = YES;
                 }
             }
         }
     }
         
-    return handled;
+    return !handled;
 }
 
 #pragma mark -
