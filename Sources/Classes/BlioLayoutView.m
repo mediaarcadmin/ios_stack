@@ -340,6 +340,10 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     return [self.dataSource thumbnailForPage:index + 1];
 }
 
+- (UIImage*)previewThumbnailForPageNumber:(NSInteger)page {
+	 return [self.dataSource thumbnailForPage:page];
+}
+
 #pragma mark -
 #pragma mark Visual Properties
 
