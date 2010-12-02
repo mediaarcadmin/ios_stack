@@ -220,7 +220,7 @@
     return ([self hasEPub] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
 }
 - (BOOL)hasTOC {
-    return ([self hasEPub] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
+    return ([self hasEPub] || [self hasPdf] || ([self hasXps] && [self manifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS]));
 }
 
 - (BOOL)isEncrypted {
@@ -586,9 +586,11 @@ static void sortedHighlightRangePredicateInit() {
 - (BOOL)componentExistsInXPSAtPath:(NSString *)path {
     // If the path is the drm header then flush the caches to refresh the xpsProvider
     BOOL exists = [[self xpsProvider] componentExistsAtPath:path];
+	
     if ([path isEqualToString:BlioXPSKNFBDRMHeaderFile]) {
         [self flushCaches];
     }
+	
     return exists;
 }
 
@@ -613,7 +615,13 @@ static void sortedHighlightRangePredicateInit() {
             filePath = [self fullPathOfFileSystemItemAtPath:path];
             exists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
         } else if ([location isEqualToString:BlioManifestEntryLocationXPS]) {
-            exists = [self componentExistsInXPSAtPath:path];
+			if ([path isEqualToString:BlioXPSMetaDataDir]) {
+				// Workaround for the fact that this mechanism doesn't work for directories
+				// Just check if the first page thumbnail is at that location
+				exists = [self componentExistsInXPSAtPath:[path stringByAppendingPathComponent:@"1.jpg"]];
+			} else {
+				exists = [self componentExistsInXPSAtPath:path];
+			}
         }
     }
     

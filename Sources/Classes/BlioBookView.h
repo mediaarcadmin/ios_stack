@@ -111,4 +111,6 @@
 - (BOOL)toolbarShowShouldBeSuppressed; 
 - (BOOL)toolbarHideShouldBeSuppressed; 
 
+- (UIImage*)previewThumbnailForPageNumber:(NSInteger)pageNumber;
+
 @end

@@ -44,16 +44,29 @@
                         } else if(elementCount == 4) {
                             [constructionString appendFormat:@"margin:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
                         }                    
+                    } else if([key isEqualToString:@"Padding"]) {
+                        // The padding attributes are in order left, top, right, bottom.
+                        // CSS padding are in order top, right, bottom, left...
+                        NSArray *elements = [[myAttributes objectForKey:key] componentsSeparatedByString:@","];
+                        NSUInteger elementCount = [elements count];
+                        if(elementCount == 1) {
+                            [constructionString appendFormat:@"padding:%@px;", [elements objectAtIndex:0]];
+                        } else if(elementCount == 2) {
+                            [constructionString appendFormat:@"padding:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
+                        } else if(elementCount == 4) {
+                            [constructionString appendFormat:@"padding:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
+                        }                    
                     } else if([key isEqualToString:@"FontSize"]) {
                         [constructionString appendFormat:@"font-size:%@px;", [myAttributes objectForKey:key]];
+                    } else if([key isEqualToString:@"LineHeight"]) {
+                        [constructionString appendFormat:@"line-height:%@px;", [myAttributes objectForKey:key]];
                     } else if([key isEqualToString:@"TextIndent"]) {
                         [constructionString appendFormat:@"text-indent:%@px;", [myAttributes objectForKey:key]];
-                    } else if([key isEqualToString:@"Stretch"]) {
-                        NSString *value = [myAttributes objectForKey:key];
-                        if([value isEqualToString:@"Fill"]) {
-                            [constructionString appendString:@"width:100%;height:100%;"];
-                        }
-                    }
+                    } else if([key isEqualToString:@"Width"]) {
+                        [constructionString appendFormat:@"width:%@px;", [myAttributes objectForKey:key]];
+                    } else if([key isEqualToString:@"Height"]) {
+                        [constructionString appendFormat:@"height:%@px;", [myAttributes objectForKey:key]];
+                    } 
                 }
                 if(constructionString.length) {
                     _constructedInlineStyle = constructionString;

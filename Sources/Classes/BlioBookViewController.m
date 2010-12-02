@@ -30,6 +30,11 @@
 #import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
 
+static const CGFloat kBlioBookSliderPreviewWidth = 150;
+static const CGFloat kBlioBookSliderPreviewHeight = 225;
+static const CGFloat kBlioBookSliderPreviewVerticalOffset = 10;
+static const CGFloat kBlioBookSliderPreviewPadding = 10;
+
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
@@ -69,18 +74,30 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) NSMutableArray *historyStack;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
+- (void)setPageJumpSliderPreview;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
 @end
 
+@interface BlioBookSliderPreview : UIView {
+	UIImage *thumb;
+}
+
+- (void)setThumb:(UIImage *)thumb;
+
+@end
+
 @interface BlioBookSlider : UISlider {
     BOOL touchInProgress;
     BlioBookViewController *bookViewController;
+	BlioBookSliderPreview *thumbPreview;
 }
 
 @property (nonatomic) BOOL touchInProgress;
 @property (nonatomic, assign) BlioBookViewController *bookViewController;
+
+- (void)setPreviewThumb:(UIImage *)thumb;
 
 @end
 
@@ -823,6 +840,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         _pageJumpSlider.maximumValue = self.bookView.pageCount;
         _pageJumpSlider.minimumValue = 1;
         [_pageJumpSlider setValue:pageNumber animated:animated];
+		[self setPageJumpSliderPreview];
+				
         [self _updatePageJumpLabelForPage:pageNumber];
     }    
 }
@@ -1495,6 +1514,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
+- (void)setPageJumpSliderPreview {
+	NSInteger page = _pageJumpSlider.value;
+	
+	if ([self.bookView respondsToSelector:@selector(previewThumbnailForPageNumber:)]) {
+		[_pageJumpSlider setPreviewThumb:[self.bookView previewThumbnailForPageNumber:page]];
+	} else {
+		[_pageJumpSlider setPreviewThumb:nil];
+	}
+}
+
 - (void)layoutPageJumpSlider {
     _pageJumpSlider.transform = CGAffineTransformIdentity;    
     [_pageJumpSlider sizeToFit];
@@ -1600,9 +1629,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         slider.maximumValue = self.bookView.pageCount;
         slider.minimumValue = 1;
         [slider setValue:self.bookView.pageNumber];
-        
         [self layoutPageJumpSlider];
         [_pageJumpView addSubview:slider];
+		[self setPageJumpSliderPreview];
         
         [self.view addSubview:_pageJumpView];
 	
@@ -1662,6 +1691,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     // When we come to set this later, after the page turn,
     // it's often a pixel out (due to rounding?), so set it here.
     [_pageJumpSlider setValue:page animated:NO];
+	[self setPageJumpSliderPreview];
 }
 
 - (void)goToPageNumberAnimated:(NSNumber *)pageNumber {
@@ -3059,21 +3089,58 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)dealloc {
     self.bookViewController = nil;
+	[thumbPreview release], thumbPreview = nil;
     [super dealloc];
+}
+
+- (id)initWithFrame:(CGRect)frame {
+	if ((self = [super initWithFrame:frame])) {
+		self.clipsToBounds = NO;
+		thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:CGRectZero];
+		thumbPreview.userInteractionEnabled = NO;
+		thumbPreview.alpha = 0;
+		thumbPreview.backgroundColor = [UIColor clearColor];
+		thumbPreview.layer.shadowOpacity = 1;
+		thumbPreview.layer.shadowRadius = 10;
+		[self addSubview:thumbPreview];
+	}
+	return self;
+}
+
+- (void)setFrame:(CGRect)newFrame {
+	[super setFrame:newFrame];
+	[thumbPreview setFrame: CGRectMake(0, CGRectGetHeight(newFrame) + kBlioBookSliderPreviewVerticalOffset, kBlioBookSliderPreviewWidth, kBlioBookSliderPreviewHeight)];
+}
+
+- (void)setPreviewThumb:(UIImage *)thumb {	 
+	 CGFloat sliderMin =  self.minimumValue;
+	 CGFloat sliderMax = self.maximumValue;
+	 CGFloat sliderMaxMinDiff = sliderMax - sliderMin;
+	 CGFloat sliderValue = self.value;
+	 
+	CGRect thumbFrame = thumbPreview.frame;
+	CGFloat xCoord = ((sliderValue-sliderMin)/sliderMaxMinDiff)*[self bounds].size.width -thumbFrame.size.width/2.0;
+	thumbFrame.origin.x = xCoord;
+	
+	[thumbPreview setFrame:thumbFrame];
+	[thumbPreview setThumb:thumb];
 }
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = YES;
+	[thumbPreview setAlpha:1];
     return [super beginTrackingWithTouch:touch withEvent:event];
 }
 
 - (void)cancelTrackingWithEvent:(UIEvent *)event {
     touchInProgress = NO;
+	[thumbPreview setAlpha:0];
     [super cancelTrackingWithEvent:event];
 }
 
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = NO;
+	[thumbPreview setAlpha:0];
     [super endTrackingWithTouch:touch withEvent:event];
 }
 
@@ -3086,3 +3153,77 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 @end
+
+@implementation BlioBookSliderPreview
+
+- (void)dealloc {
+	[thumb release], thumb = nil;
+	[super dealloc];
+}
+
+- (void)setAlpha:(CGFloat)alpha {
+	if (thumb) {
+		[super setAlpha:alpha];
+	} else {
+		[super setAlpha:0];
+	}
+}
+
+- (void)setThumb:(UIImage *)newThumb {
+	if (newThumb != thumb) {
+		
+		[newThumb retain];
+		[thumb release];
+		thumb = newThumb;
+		
+		[self setNeedsDisplay];
+		
+	}
+}
+
+- (void)drawRect:(CGRect)rect {
+	CGContextRef ctx = UIGraphicsGetCurrentContext();
+	
+	CGRect borderRect = CGRectInset(rect, 0.5f, 0.5f);
+	CGFloat radius = 5;
+	
+	CGContextBeginPath(ctx);
+	CGContextMoveToPoint(ctx, CGRectGetMinX(rect) + radius, CGRectGetMinY(rect));
+    CGContextAddArc(ctx, CGRectGetMaxX(borderRect) - radius, CGRectGetMinY(borderRect) + radius, radius, 3 * M_PI / 2, 0, 0);
+    CGContextAddArc(ctx, CGRectGetMaxX(borderRect) - radius, CGRectGetMaxY(borderRect) - radius, radius, 0, M_PI / 2, 0);
+    CGContextAddArc(ctx, CGRectGetMinX(borderRect) + radius, CGRectGetMaxY(borderRect) - radius, radius, M_PI / 2, M_PI, 0);
+    CGContextAddArc(ctx, CGRectGetMinX(borderRect) + radius, CGRectGetMinY(borderRect) + radius, radius, M_PI, 3 * M_PI / 2, 0);	
+    CGContextClosePath(ctx);
+	CGContextSetRGBFillColor(ctx, 0, 0, 0, 0.5f);
+	CGContextFillPath(ctx);
+	
+	CGContextSetRGBStrokeColor(ctx, 1, 1, 1, 0.7f);
+	CGContextSetLineWidth(ctx, 1);
+
+	CGContextBeginPath(ctx);
+	CGContextMoveToPoint(ctx, CGRectGetMinX(rect) + radius, CGRectGetMinY(rect));
+    CGContextAddArc(ctx, CGRectGetMaxX(borderRect) - radius, CGRectGetMinY(borderRect) + radius, radius, 3 * M_PI / 2, 0, 0);
+    CGContextAddArc(ctx, CGRectGetMaxX(borderRect) - radius, CGRectGetMaxY(borderRect) - radius, radius, 0, M_PI / 2, 0);
+    CGContextAddArc(ctx, CGRectGetMinX(borderRect) + radius, CGRectGetMaxY(borderRect) - radius, radius, M_PI / 2, M_PI, 0);
+    CGContextAddArc(ctx, CGRectGetMinX(borderRect) + radius, CGRectGetMinY(borderRect) + radius, radius, M_PI, 3 * M_PI / 2, 0);	
+    CGContextClosePath(ctx);
+	CGContextStrokePath(ctx);
+	
+	CGRect insetRect = CGRectInset(rect, kBlioBookSliderPreviewPadding, kBlioBookSliderPreviewPadding);
+	
+	if (thumb) {
+		CGSize imageSize = thumb.size;
+		CGFloat scale = MIN(CGRectGetWidth(insetRect) / imageSize.width, CGRectGetHeight(insetRect) / imageSize.height);
+		CGRect scaledImage = CGRectZero;
+		scaledImage.size.width = imageSize.width * scale;
+		scaledImage.size.height = imageSize.height * scale;
+
+		scaledImage.origin.x = roundf((CGRectGetWidth(rect) - CGRectGetWidth(scaledImage)) / 2.0f);
+		scaledImage.origin.y = roundf((CGRectGetHeight(rect) - CGRectGetHeight(scaledImage)) / 2.0f);
+		
+		[thumb drawInRect:scaledImage];
+	}
+}
+
+@end
+

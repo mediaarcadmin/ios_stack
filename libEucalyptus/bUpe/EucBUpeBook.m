@@ -646,9 +646,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];
 }
 
-- (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)userCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
-    return [[NSBundle mainBundle] pathForResource:@"EPubOverrides" ofType:@"css"];
+    return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"EPubOverrides" ofType:@"css"]];
 }
 
 - (NSString *)coverPath
@@ -1051,7 +1051,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                                                                          forURL:url
                                                                      dataSource:self
                                                                    baseCSSPaths:[self baseCSSPathsForDocumentTree:documentTree]
-                                                                    userCSSPath:[self userCSSPathForDocumentTree:documentTree]
+                                                                   userCSSPaths:[self userCSSPathsForDocumentTree:documentTree]
                                                                          isHTML:[self documentTreeIsHTML:documentTree]];
         }
     }

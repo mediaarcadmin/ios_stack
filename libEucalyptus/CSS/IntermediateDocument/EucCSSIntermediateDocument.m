@@ -109,9 +109,9 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 }
 
 
-- (void)_setupStylesheetWithUserAgentSheetPath:(NSArray *)basePaths
-                                 userSheetPath:(NSString *)userPath
-                                     parseHead:(BOOL)parseHead
+- (void)_setupStylesheetWithUserAgentCSSPaths:(NSArray *)basePaths
+                                 userCSSPaths:(NSArray *)userPaths
+                                    parseHead:(BOOL)parseHead
 {
     css_stylesheet *stylesheet;
     
@@ -142,7 +142,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         }        
     }
     
-    if(userPath) {
+    for(NSString *userPath in userPaths) {
         NSData *userSheet = [NSData dataWithContentsOfMappedFile:userPath];
         if(css_stylesheet_create(CSS_LEVEL_3, "UTF-8",
                                  "", "", CSS_ORIGIN_USER, 
@@ -320,7 +320,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
               baseCSSPaths:(NSArray *)baseCSSPaths
-               userCSSPath:(NSString *)userCSSPath
+              userCSSPaths:(NSArray *)userCSSPaths
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
                     isHTML:(BOOL)isHTML
@@ -334,7 +334,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
         _lwcContext = lwcContext;
         lwc_context_ref(_lwcContext);
         if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
-            [self _setupStylesheetWithUserAgentSheetPath:baseCSSPaths userSheetPath:userCSSPath parseHead:isHTML];
+            [self _setupStylesheetWithUserAgentCSSPaths:baseCSSPaths userCSSPaths:userCSSPaths parseHead:isHTML];
             success = YES;
         }
         
@@ -352,12 +352,12 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
               baseCSSPaths:(NSArray *)baseCSSPaths
-               userCSSPath:(NSString *)userCSSPath
+              userCSSPaths:(NSArray *)userCSSPaths
                     isHTML:(BOOL)isHTML
 {
     lwc_context *lwcContext;
     if(lwc_create_context(EucRealloc, NULL, &lwcContext) == lwc_error_ok) {
-        return [self initWithDocumentTree:documentTree baseCSSPaths:baseCSSPaths userCSSPath:userCSSPath forURL:url dataSource:dataSource isHTML:isHTML lwcContext:lwcContext];
+        return [self initWithDocumentTree:documentTree baseCSSPaths:baseCSSPaths userCSSPaths:userCSSPaths forURL:url dataSource:dataSource isHTML:isHTML lwcContext:lwcContext];
     } else {
         [self release];
         return nil;

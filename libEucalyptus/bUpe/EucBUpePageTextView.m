@@ -21,6 +21,7 @@
 #import "EucCSSLayoutPositionedLine.h"
 
 #import "THPair.h"
+#import "THLog.h"
 #import "THGeometryUtils.h"
 
 @interface EucBUpePageTextView ()
@@ -73,6 +74,8 @@
     EucCSSLayoutPositionedBlock *positionedBlock = nil;
     self.positionedBlock = nil;
     
+    //THLog(@"Laying Out From: %@", point);
+    
     if(document) {
         EucCSSLayoutPoint layoutPoint;
         layoutPoint.nodeKey = point.block ?: document.rootNode.key;
@@ -116,6 +119,8 @@
     }
     
     self.positionedBlock = positionedBlock;
+    
+    //THLog(@"Layed out to: %@", ret);
     
     return [ret autorelease];
 }

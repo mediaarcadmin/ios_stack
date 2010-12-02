@@ -8,15 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import "BlioLayoutDataSource.h"
+#import <libEucalyptus/EucBookContentsTableViewController.h>
 
-@interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource> {
+@interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource, EucBookContentsTableViewControllerDataSource> {
     NSData *data;
     NSInteger pageCount;
     CGPDFDocumentRef pdf;
     NSLock *pdfLock;
+	NSArray *tableOfContents;
 }
 
 @property (nonatomic, retain) NSData *data;
+@property (nonatomic, retain, readonly) NSArray *tableOfContents;
 
 - (id)initWithPath:(NSString *)aPath;
 

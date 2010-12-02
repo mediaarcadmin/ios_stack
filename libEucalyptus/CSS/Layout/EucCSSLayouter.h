@@ -39,17 +39,17 @@ typedef struct EucCSSLayoutPoint
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document
            scaleFactor:(CGFloat)scaleFactor;
 
+- (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
+                                         inFrame:(CGRect)frame
+                              returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
+                              returningCompleted:(BOOL *)returningCompleted;
+
 - (EucCSSLayoutPositionedBlock *)_layoutFromPoint:(EucCSSLayoutPoint)point
                                           inFrame:(CGRect)frame
                                returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
                                returningCompleted:(BOOL *)returningCompleted
                                  lastBlockNodeKey:(uint32_t)lastBlockNodeKey
                             constructingAncestors:(BOOL)constructingAncestors;
-
-- (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
-                                         inFrame:(CGRect)frame
-                              returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                              returningCompleted:(BOOL *)returningCompleted;
 
 - (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;
 

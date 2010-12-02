@@ -10,10 +10,21 @@
 #import "BlioLayoutGeometry.h"
 #import <libEucalyptus/THUIDeviceAdditions.h>
 #import <libEucalyptus/THPair.h>
+#import "BlioTOCEntry.h"
+#import <libEucalyptus/THPair.h>
+#import <libEucalyptus/EucChapterNameFormatting.h>
+#import "NSArray+BlioAdditions.h"
+
+@interface BlioLayoutPDFDataSource()
+
+@property (nonatomic, retain) NSArray *tableOfContents;
+
+@end
 
 @implementation BlioLayoutPDFDataSource
 
 @synthesize data;
+@synthesize tableOfContents; // Lazily loaded - see -(NSArray *)tableOfContents
 
 - (void)dealloc {
     [pdfLock lock];
@@ -165,7 +176,10 @@
     
     CGContextConcatCTM(ctx, transform);
     [pdfLock lock];
-    if (nil == pdf) return;
+    if (nil == pdf) {
+		[pdfLock unlock];
+		return;
+	}
     CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
     CGPDFPageRetain(aPage);
     CGContextDrawPDFPage(ctx, aPage);
@@ -199,6 +213,221 @@
 	if (!([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame)) {
 		[self closeDocument];
 	}
+}
+
+static NSInteger pageNumberFromPageDictionary(CGPDFDictionaryRef target) {
+	// there's nothing in the page dictionary to identify page number
+	// so we have to work it out by counting our elder siblings
+	// and the descendents of elder siblings of each ancestor
+	
+	NSInteger pageNumber = 0;
+	CGPDFDictionaryRef parent;
+	while (CGPDFDictionaryGetDictionary(target, "Parent", &parent))
+	{
+		CGPDFArrayRef kids;
+		if (CGPDFDictionaryGetArray(parent, "Kids", &kids))
+		{
+			size_t numKids = CGPDFArrayGetCount(kids);
+			size_t kidNum;
+			for (kidNum = 0; kidNum < numKids; ++kidNum)
+			{
+				CGPDFDictionaryRef kid;
+				if (CGPDFArrayGetDictionary(kids, kidNum, &kid))
+				{
+					if (kid == target)
+						break;
+					CGPDFInteger count;
+					if (CGPDFDictionaryGetInteger(kid, "Count", &count))
+						pageNumber += count;
+					else
+						pageNumber += 1;
+				}
+			}
+		}
+		target = parent;
+	}
+	return pageNumber + 1;
+}
+
+static NSInteger pageNumberFromDestArray(CGPDFArrayRef array) {
+	
+	CGPDFDictionaryRef page;
+	if (CGPDFArrayGetDictionary(array, 0, &page)) {		
+		return pageNumberFromPageDictionary(page);
+	}
+	
+	return -1;
+}
+
+static NSInteger pageNumberFromAction(CGPDFDictionaryRef action) {
+	const char *name;
+	CGPDFArrayRef dest;
+	
+	if (CGPDFDictionaryGetName(action, "S", &name)) {
+		if (strcmp(name, "GoTo") == 0) {
+			if (CGPDFDictionaryGetArray(action, "D", &dest)) {
+				return pageNumberFromDestArray(dest);
+			}
+		}
+	}
+	
+	return -1;
+}
+
+static void
+parse_outline_items(int indent, CGPDFDocumentRef document,
+					CGPDFDictionaryRef outline, void* context)
+{
+    bool isOpen;
+
+    CGPDFStringRef string;
+    CGPDFDictionaryRef first, action;
+	CGPDFArrayRef dest;
+    CGPDFInteger count;
+    NSString *title = nil;
+	
+	NSInteger num = -1;
+	
+    if (document == NULL || outline == NULL)
+		return;
+	
+	NSMutableArray *toc = (NSMutableArray *)context;
+	
+    do {
+		title = NULL;
+		if (CGPDFDictionaryGetString(outline, "Title", &string)) {
+			title = (NSString *)CGPDFStringCopyTextString(string);
+		}
+		
+		if (CGPDFDictionaryGetDictionary(outline, "A", &action)) {
+			num = pageNumberFromAction(action);
+		} else if (CGPDFDictionaryGetArray(outline, "Dest", &dest)) {
+			num = pageNumberFromDestArray(dest);
+		}
+		
+		isOpen = true;
+		if (CGPDFDictionaryGetInteger(outline, "Count", &count)) {
+			isOpen = (count < 0) ? false : true;
+		}
+				
+		
+		if (title && (num > -1)) {
+			BlioTOCEntry *tocEntry = [[BlioTOCEntry alloc] init];
+			tocEntry.level = indent;
+			tocEntry.name = [NSString stringWithString:(NSString *)title];
+			tocEntry.startPage = num - 1;
+	
+			[toc addObject:tocEntry];
+			[tocEntry release];		
+		}
+		
+		if (CGPDFDictionaryGetDictionary(outline, "First", &first))
+			parse_outline_items(indent + 1, document, first, context);
+		
+    } while (CGPDFDictionaryGetDictionary(outline, "Next", &outline));
+}
+
+- (NSArray *)parseTOC {
+	NSMutableArray *toc = [NSMutableArray array];
+	
+	[pdfLock lock];
+    if (nil == pdf) {
+        [self openDocumentWithoutLock];
+        if (nil == pdf) {
+            [pdfLock unlock];
+            return toc;
+        }
+    }
+	
+	
+	// Section 8.2.2 Document Outline in the 1.6 PDF spec:
+	// http://www.adobe.com/content/dam/Adobe/en/devnet/pdf/pdfs/pdf_reference_archives/PDFReference16.pdf
+	
+	CGPDFDictionaryRef catalog, outline, first;
+    catalog = CGPDFDocumentGetCatalog(pdf);
+    if (!CGPDFDictionaryGetDictionary(catalog, "Outlines", &outline)) {
+		[pdfLock unlock];
+		// No outline present
+		return toc;
+	}
+	
+    if (!CGPDFDictionaryGetDictionary(outline, "First", &first)) {
+		[pdfLock unlock];
+		// No first entry in outline
+		return toc;
+	}
+	
+
+    parse_outline_items(0, pdf, first, toc);
+
+    [pdfLock unlock];
+	
+	return toc;
+}
+
+- (NSArray *)tableOfContents {
+    if(!tableOfContents) {
+		self.tableOfContents = [self parseTOC];
+    }
+    return tableOfContents;
+}
+
+#pragma mark -
+#pragma mark EucBookContentsTableViewControllerDataSource
+
+- (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid {
+	NSUInteger sectionIndex = [sectionUuid integerValue];
+    return [[self.tableOfContents objectAtIndex:sectionIndex] level];
+}
+
+- (NSArray *)sectionUuids {
+	NSUInteger sectionCount = self.tableOfContents.count;
+    NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:sectionCount];
+    for(NSUInteger i = 0; i < sectionCount; ++i) {
+        [array addObject:[[NSNumber numberWithUnsignedInteger:i] stringValue]];
+    }
+    return [array autorelease];
+}
+
+- (NSString *)sectionUuidForPageNumber:(NSUInteger)page {
+	NSUInteger pageIndex = page - 1;
+    NSUInteger sectionIndex = 0;
+    NSUInteger nextSectionIndex = 0;
+    for(BlioTOCEntry *section in self.tableOfContents) {
+        if(section.startPage <= pageIndex) {
+            sectionIndex = nextSectionIndex;
+            ++nextSectionIndex;
+        } else {
+            break;
+        }
+    }
+    return [[NSNumber numberWithUnsignedInteger:sectionIndex] stringValue];
+}
+
+- (NSString *)displayPageNumberForPageNumber:(NSUInteger)aPageNumber {
+	return [NSString stringWithFormat:@"%ld", (long)aPageNumber];
+}
+
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
+	NSUInteger sectionIndex = [sectionUuid integerValue];
+    NSString *sectionName = [[self.tableOfContents objectAtIndex:sectionIndex] name];
+    if (sectionName) {
+        return [sectionName splitAndFormattedChapterName];
+    } else {
+        NSString *sectionString;
+        NSUInteger startPage = [[self.tableOfContents objectAtIndex:sectionIndex] startPage];
+        if (startPage < 1) {
+            sectionString = NSLocalizedString(@"Front of Book", @"TOC section string for missing section name without page");
+        } else {
+            sectionString = [NSString stringWithFormat:NSLocalizedString(@"Page %@", @"TOC section string for missing section name with page number"), [self displayPageNumberForPageNumber:startPage]];
+        }
+        return [sectionString splitAndFormattedChapterName];
+    }
+}
+
+- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid {
+	NSUInteger sectionIndex = [sectionUuid integerValue];
+    return [[self.tableOfContents objectAtIndex:sectionIndex] startPage] + 1;
 }
 
 @end

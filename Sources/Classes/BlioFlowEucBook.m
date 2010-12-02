@@ -83,7 +83,7 @@
                                                                   level:0]];
         }
         long index = 0;
-        for(BlioTextFlowTOCEntry *tocEntry in tocEntries) {
+        for(BlioTOCEntry *tocEntry in tocEntries) {
             [buildNavPoints addObject:[EucBookNavPoint navPointWithText:tocEntry.name
                                                                    uuid:[NSString stringWithFormat:@"textflowTOCIndex:%ld", index]
                                                                   level:tocEntry.level]];
@@ -93,6 +93,16 @@
     }
     
     return navPoints;
+}
+
+- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree
+{
+    if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]] ||
+       [documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
+        return NO;
+    } else {
+        return [super documentTreeIsHTML:documentTree];
+    }
 }
 
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
@@ -108,14 +118,14 @@
     }
 }
 
-- (NSString *)userCSSPathForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)userCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
         return nil;
     } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
-        return nil;
+        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowXAMLOverrides" ofType:@"css"]];
     } else {
-        return [super userCSSPathForDocumentTree:documentTree];
+        return [super userCSSPathsForDocumentTree:documentTree];
     }
 }
 
@@ -217,7 +227,7 @@
         NSString *identifier = navPoint.second;
         NSString *tocIndexString = [[identifier matchPOSIXRegex:@"^textflowTOCIndex:([[:digit:]]+)$"] match:1];
         if(tocIndexString) {
-            BlioTextFlowTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
+            BlioTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
             NSUInteger layoutPageIndex = entry.startPage;
             NSUInteger flowReferenceIndex = 0;
             for(BlioTextFlowFlowReference *flowReference in self.textFlow.flowReferences) {

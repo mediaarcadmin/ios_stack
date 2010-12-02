@@ -10,7 +10,7 @@
 #import <pthread.h>
 
 @interface THCacheBase : NSObject {
-    pthread_mutex_t _cacheMutex;
+    pthread_rwlock_t _cacheRWLock;
     CFMutableSetRef _cacheSet;
 }
 
