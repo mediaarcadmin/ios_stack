@@ -277,6 +277,7 @@
 - (void)dealloc {
     self.pageRanges = nil;
     self.flowReferences = nil;
+    self.tableOfContents = nil;
     self.references = nil;
     [pageBlocksCacheLock release];
     

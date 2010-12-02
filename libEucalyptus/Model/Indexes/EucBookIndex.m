@@ -133,7 +133,6 @@
                                                                 (unsigned long)pageSize.width, (unsigned long)pageSize.height, 
                                                                 (unsigned long)[[self class] indexVersion]]];
             
-            _pageIndexPointSizes = malloc(globValue.gl_pathc * sizeof(NSUInteger));
             for(size_t i = 0; i < globValue.gl_pathc; ++i) {
                 NSString *path = [NSString stringWithUTF8String:globValue.gl_pathv[i]];
                 if([indexRegex matchString:path]) {
@@ -168,6 +167,7 @@
 
 - (void)dealloc
 {
+//	[_indexesPath release];
     [_pageIndexes release];
     [_pageIndexPointSizes release];
     

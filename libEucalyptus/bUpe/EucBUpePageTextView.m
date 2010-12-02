@@ -52,6 +52,7 @@
     [_positionedBlock release];
     [_runs release];
     [_accessibilityElements release];
+	[_hyperlinkRectAndURLPairs release];
     [super dealloc];
 }
 

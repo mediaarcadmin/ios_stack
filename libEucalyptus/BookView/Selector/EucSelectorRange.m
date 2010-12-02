@@ -16,6 +16,13 @@
 @synthesize endBlockId = _endBlockId;
 @synthesize endElementId = _endElementId;
 
+-(void)dealloc {
+	self.startBlockId = nil;
+	self.startElementId = nil;
+	self.endBlockId = nil;
+	self.endElementId = nil;
+	[super dealloc];
+}
 
 - (BOOL)overlaps:(EucSelectorRange *)otherRange
 {
