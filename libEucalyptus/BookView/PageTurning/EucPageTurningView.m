@@ -1538,7 +1538,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
     // Clear the buffer, ready to draw.
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.8, 0.8, 0.8, 1.0);
+	// Experimenting for the moment...
+    glClearColor(0.0, 0.0, 0.0, 1.0);   // Black
+    //glClearColor(0.8, 0.8, 0.8, 1.0); // Gray
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Perform zooming, and finally actually set the model view matrix.
