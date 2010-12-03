@@ -507,6 +507,8 @@ typedef enum {
 	else mainLabel.text = NSLocalizedString(@"Undefined Bookmark",@"\"Undefined Bookmark\" text label for cell inside contents tab view");
     secondLabel.text = [currentBookmark valueForKey:@"bookmarkText"];
 	
+	[cell setAccessibilityTraits:UIAccessibilityTraitButton];
+	
     return cell;
 }
 
@@ -682,6 +684,8 @@ typedef enum {
         
     mainLabel.text = [NSString stringWithFormat:NSLocalizedString(@"p.%@",@"\"p.%@\" page number format"), displayPage];
     secondLabel.text = [currentNote valueForKey:@"noteText"];
+	
+	[cell setAccessibilityTraits:UIAccessibilityTraitButton];
 	
     return cell;
 }

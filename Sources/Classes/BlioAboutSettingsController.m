@@ -107,6 +107,7 @@
 		}	
 	}
 	[cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+	[cell setAccessibilityTraits:UIAccessibilityTraitButton];
 	return cell;
 }
 

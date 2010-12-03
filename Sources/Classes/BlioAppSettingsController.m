@@ -40,7 +40,7 @@
 	[super loadView];
 	
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
+		self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] 
 												   initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
 												   style:UIBarButtonItemStyleDone 
 												   target:self
@@ -153,6 +153,8 @@
 		default:
 			break;
 	}
+	
+	[cell setAccessibilityTraits:UIAccessibilityTraitButton];
 	
     return cell;
 }
