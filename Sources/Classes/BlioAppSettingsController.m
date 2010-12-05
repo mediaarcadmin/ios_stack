@@ -9,7 +9,6 @@
 #import "BlioAppSettingsController.h"
 #import "BlioReadingVoiceSettingsViewController.h"
 #import "BlioWebToolSettingsController.h"
-#import "BlioReadingNavigationSettingsController.h"
 #import "BlioHelpSettingsController.h"
 #import "BlioMyAccountViewController.h"
 #import "BlioStoreManager.h"
@@ -167,10 +166,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	BlioReadingVoiceSettingsViewController *audioController;
 	BlioWebToolSettingsController *webToolController;
-//	BlioReadingNavigationSettingsController *readingnavController;
 	BlioHelpSettingsController *helpController;
 	BlioVersionController *versionController;
-	//BlioAboutSettingsController *aboutController;
 	BlioMyAccountViewController *myAccountController;
 	BlioEULATextController *eulaController;
 	switch ( [indexPath section] ) {
@@ -215,10 +212,6 @@
 			versionController = [[BlioVersionController alloc] init];
 			[self.navigationController pushViewController:versionController animated:YES];
 			[versionController release];
-			/*
-			aboutController = [[BlioAboutSettingsController alloc] init];
-			[self.navigationController pushViewController:aboutController animated:YES];
-			[aboutController release];*/
 			break;
 		case 4:
 			eulaController = [[BlioEULATextController alloc] init];
