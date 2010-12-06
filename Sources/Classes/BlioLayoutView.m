@@ -593,6 +593,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     self.selector.selectionDisabled = YES;
     [self.delegate cancelPendingToolbarShow];
 	[self.selector removeTemporaryHighlight];
+    [self.delegate hideToolbars];
 	pageViewIsTurning = YES;
 }
 
