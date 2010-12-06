@@ -330,16 +330,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-        [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
-                                              authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
+        [self.processingDelegate enqueueBookWithTitle:@"Think Twice" 
+                                              authors:[NSArray arrayWithObjects:@"Scottoline, Lisa", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/New Italian Kitchen.xps"
+											  xpsPath:@"XPS/Think Twice.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"ThinkTwice" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
@@ -356,16 +356,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-        [self.processingDelegate enqueueBookWithTitle:@"Frommers Florida" 
-                                              authors:[NSArray arrayWithObjects:@"Rose, Lesley Anne", nil]
+        [self.processingDelegate enqueueBookWithTitle:@"The Color Companion to Walt Disney World" 
+                                              authors:[NSArray arrayWithObjects:@"Sehlinger, Bob", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Frommers Florida.xps"
+											  xpsPath:@"XPS/The Color Companion to Walt Disney World.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"FrommersFlorida" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"ColorCompanionToWaltDisneyWorld" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
@@ -441,16 +441,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-        [self.processingDelegate enqueueBookWithTitle:@"Grilling Basics" 
-                                              authors:[NSArray arrayWithObjects:@"Larsen, Linda Johnson", nil]
+        [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
+                                              authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Grilling Basics.xps"
+											  xpsPath:@"XPS/New Italian Kitchen.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"GrillingBasics" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
