@@ -13,6 +13,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+#import "EucCSSInternal.h"
 #import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayoutPositionedRun.h"
@@ -65,79 +66,205 @@
     [super dealloc];
 }
 
-- (void)sizeToFitInWidth:(CGFloat)width;
+static inline void halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight(CGFloat inlineBoxHeight, CGFloat emBoxHeight,
+                                                                             CGFloat *halfLeading, CGFloat *correctedLineHeight) 
+{
+    CGFloat prepareHalfLeadng = (inlineBoxHeight - emBoxHeight) * 0.5f;
+    CGFloat remainder = fmodf(prepareHalfLeadng, 1.0f);
+    if(remainder != 0.0f) {
+        prepareHalfLeadng += 1.0f - remainder;
+        inlineBoxHeight += 1.0f;
+    }
+    *halfLeading = prepareHalfLeadng;
+    *correctedLineHeight = inlineBoxHeight;
+}
+                                    
+typedef struct LineBoxInfo
+{
+    CGFloat width;
+    CGFloat height;
+    CGFloat baseline;
+    enum css_vertical_align_e verticalAlign;
+} LineBox;
+
+static void adjustLineBoxToContainLineBox(LineBox *containerLineBox, LineBox *containedLineBox)
+{
+    switch(containedLineBox->verticalAlign) {
+        default:
+        {
+            THWarn("Unexpected vertical-align: %ld", (long)containedLineBox->verticalAlign);
+            // Fall through
+        }
+        case CSS_VERTICAL_ALIGN_BASELINE:
+        {
+            CGFloat descenderAndLineHeightAddition = containedLineBox->height - containedLineBox->baseline;
+            if(containedLineBox->baseline > containerLineBox->baseline) {
+                containerLineBox->baseline = containedLineBox->baseline;
+            }
+            CGFloat baselineAdjustedLineHeight = containerLineBox->baseline + descenderAndLineHeightAddition;
+            if(baselineAdjustedLineHeight > containerLineBox->height) {
+                containerLineBox->height = baselineAdjustedLineHeight;
+            }
+            break;
+        }                                   
+        /*case CSS_VERTICAL_ALIGN_SUB:
+        {
+            break;
+        }
+        case CSS_VERTICAL_ALIGN_SUPER:
+        {
+            break;
+        }
+        case CSS_VERTICAL_ALIGN_TEXT_TOP:
+        case CSS_VERTICAL_ALIGN_MIDDLE:
+        case CSS_VERTICAL_ALIGN_TEXT_BOTTOM:
+        case CSS_VERTICAL_ALIGN_TOP:
+        case CSS_VERTICAL_ALIGN_BOTTOM:
+        {
+            CGFloat difference = lineBoxHeight - info->lineHeight;
+            if(difference > 0.0f) {
+                CGFloat halfDifference = ceil(difference * 0.5f); 
+                lineBoxHeight = halfDifference * 2.0f;
+                currentBaseline += halfDifference;
+            }
+            break;
+        }
+        case CSS_VERTICAL_ALIGN_SET:
+        {
+            if(scaleFactor == 0.0f) {
+                scaleFactor = documentRun.scaleFactor;
+            }
+            CGFloat pixelSet = EucCSSLibCSSSizeToPixels(style, verticalAlignSize, verticalAlignSizeUnit, info->lineHeight, scaleFactor);
+            if(pixelSet < 0.0f) {
+                
+            } else {
+                
+            }
+            break;
+        }*/
+    }
+}
+
+static LineBox lineBoxForComponentInfo(EucCSSLayoutDocumentRunComponentInfo *info)
+{
+    LineBox myLineBox = { 0 };
+        
+    css_computed_style *style = info->documentNode.computedStyle;
+    
+    css_fixed verticalAlignSize = verticalAlignSize;
+    css_unit verticalAlignSizeUnit = verticalAlignSizeUnit;
+    
+    myLineBox.verticalAlign = css_computed_vertical_align(style, &verticalAlignSize, &verticalAlignSizeUnit);
+    
+    CGFloat halfLeading;
+    halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight(info->lineHeight, info->pointSize,
+                                                              &halfLeading, &myLineBox.height);
+    myLineBox.baseline = info->ascender + halfLeading;
+    
+    return myLineBox;
+}
+
+static LineBox processNode(uint32_t *componentOffset, EucCSSLayoutDocumentRunComponentInfo **componentInfo, uint32_t afterEndComponentOffset) 
+{
+    
+    uint32_t i = *componentOffset;
+    EucCSSLayoutDocumentRunComponentInfo *info = *componentInfo;
+
+    LineBox myLineBox = lineBoxForComponentInfo(info);
+    
+    while(++i, ++info, 
+          i < afterEndComponentOffset) {
+        if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
+            LineBox subNodeBox = processNode(&i, &info, afterEndComponentOffset);
+            NSCParameterAssert(i == afterEndComponentOffset || info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode);
+            
+            adjustLineBoxToContainLineBox(&myLineBox, &subNodeBox);
+        } else if(info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode) {
+            break;
+        } else {
+            myLineBox.width += info->width;
+        }
+    }
+    
+    /// TODO:  Subtract the width vs hypenated width difference for first node if it's a hyphenation rule at the end.
+    
+    *componentOffset = i;
+    *componentInfo = info;
+    
+    return myLineBox;
+}
+
+- (void)sizeToFitInWidth:(CGFloat)width
 {
     if(!_componentWidth) {
-        EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
-        CGFloat lineBoxHeight = 0;
-        CGFloat currentBaseline = 0;
+        EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun; 
+        
+        // Initially, set up the line with the right values for this block's defaults.
+        CGFloat lineBoxHeight;
+        CGFloat currentBaseline;
+        CGFloat blockHalfLeading;
+        halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight(documentRun.blockLineHeight, documentRun.blockPointSize,
+                                                                  &blockHalfLeading, &lineBoxHeight);
+        currentBaseline = documentRun.blockAscender + blockHalfLeading;
         
         size_t componentsCount = documentRun.componentsCount;
         
-        uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
+        uint32_t componentOffset = [documentRun pointToComponentOffset:_startPoint];
         uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
-        EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
+        EucCSSLayoutDocumentRunComponentInfo *componentInfo = &(documentRun.componentInfos[componentOffset]);
 
-        if(afterEndComponentOffset == startComponentOffset) {
+        if(afterEndComponentOffset == componentOffset) {
             // This is a line with no components, ending in a hard break.
             // Set up to use the hard break itsself as the only component, so that
             // we pick up the line height.
             // This is a bit of a hack.
-            afterEndComponentOffset = startComponentOffset + 1;
+            afterEndComponentOffset = componentOffset + 1;
+        }
+        if(afterEndComponentOffset > componentsCount) {
+            afterEndComponentOffset = componentsCount;
         }
         
-        EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
-        uint32_t i;
-        EucCSSLayoutDocumentRunComponentInfo *info;
-        for(i = startComponentOffset, info = componentInfos;
-            i < componentsCount && i < afterEndComponentOffset; 
-            ++i, ++info) {
-            if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule 
-               || i == startComponentOffset || i == afterEndComponentOffset - 1) {
-                if(info->documentNode != currentDocumentNode) {
-                    CGFloat emBoxHeight = info->pointSize;
-                    CGFloat inlineBoxHeight = info->lineHeight;
-                    
-                    CGFloat halfLeading = (inlineBoxHeight - emBoxHeight) * 0.5f;
-                    if(halfLeading != floorf(halfLeading)) {
-                        halfLeading += 0.5f;
-                        inlineBoxHeight += 1.0f;
-                    }
-                    
-                    CGFloat baseline = info->ascender + halfLeading;
-                    CGFloat descenderAndLineHeightAddition = inlineBoxHeight - baseline;
-                    if(baseline > currentBaseline) {
-                        currentBaseline = baseline;
-                    }
-                    CGFloat baselineAdjustedLineHeight = currentBaseline + descenderAndLineHeightAddition;
-                    if(baselineAdjustedLineHeight > lineBoxHeight) {
-                        lineBoxHeight = baselineAdjustedLineHeight;
-                    }
-                    currentDocumentNode = info->documentNode;
-                }
-                if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                    if(i == startComponentOffset) {
-                        _componentWidth += info->widthAfterHyphen;
-                    }
-                } else {
-                    _componentWidth += info->width;
-                }
-            }
+        CGFloat leftmostHyphenCompensation;
+        if(componentInfo->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+            leftmostHyphenCompensation = componentInfo->width - componentInfo->widthAfterHyphen;
+        } else {
+            leftmostHyphenCompensation = 0.0f;
         }
+        
+        
+        LineBox lineBox = { 0 };
+        EucCSSIntermediateDocumentNode *node = info->documentNode;
+        css_computed_style *style;
+        while(style = node.computedStyle,
+              css_computed_display(style, NO) != CSS_DISPLAY_BLOCK) {
+            node = node.parent;
+            LineBox parentNodeBox = lineBoxForComponentInfo(info);
+
+        }
+        
+        
+        LineBox subnodeLineBox = processNode(&componentOffset, &componentInfo, afterEndComponentOffset);
+        NSCParameterAssert(componentOffset == afterEndComponentOffset || 
+                           componentInfo->kind == EucCSSLayoutDocumentRunComponentKindCloseNode);
+
+        adjustLineBoxToContainLineBox(&lineBox, &subnodeLineBox);
+        
+        lineBox.width -= leftmostHyphenCompensation;
         
         // Stopping 'just before' a hyphen component really means that we stop
         // after the first part of the hyphenated word.
-        if(i < documentRun.componentsCount) {
-            if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                _componentWidth -= info->width;
-                _componentWidth += info->widthBeforeHyphen;
+        if(componentOffset < componentsCount) {
+            if(componentInfo->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+                lineBox.width -= componentInfo->width;
+                lineBox.width += componentInfo->widthBeforeHyphen;
             }
         }
-        
-        _baseline = currentBaseline;
+
+        _componentWidth = lineBox.width;
+        _baseline = lineBox.baseline;
         
         CGRect frame = self.frame;
-        frame.size = CGSizeMake(width, lineBoxHeight);
+        frame.size = CGSizeMake(lineBox.width, lineBox.height);
         self.frame = frame;
     } else {
         CGRect frame = self.frame;

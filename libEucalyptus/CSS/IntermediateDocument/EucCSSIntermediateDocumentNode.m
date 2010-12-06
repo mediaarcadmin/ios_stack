@@ -7,6 +7,7 @@
 //
 
 #import "EucConfiguration.h"
+#import "EucCSSInternal.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
@@ -214,76 +215,120 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return stringRenderer;
 }
 
-- (THStringRenderer *)stringRenderer
+- (void)_setupTextIVars
 {
-    if(!_stringRenderer) {
-        css_computed_style *style;
-        if(self.isTextNode) {
-            style = self.parent.computedStyle;
-        } else {
-            style = self.computedStyle;
+    css_computed_style *style = self.computedStyle;
+    if(!style) {
+        EucCSSIntermediateDocumentNode *parent = self.parent;
+        _stringRenderer = [parent.stringRenderer retain];
+        _textPointSize = parent.textPointSize;
+        _textAscender = parent.textAscender;
+        _lineHeight = parent.lineHeight;
+    } else {
+        THStringRendererFontStyleFlags styleFlags = THStringRendererFontStyleFlagRegular;
+        
+        uint8_t fontStyle = css_computed_font_style(style);
+        if(fontStyle == CSS_FONT_STYLE_ITALIC ||
+           fontStyle == CSS_FONT_STYLE_OBLIQUE) {
+            styleFlags |= THStringRendererFontStyleFlagItalic;
         }
         
-        if(style) {
-            THStringRendererFontStyleFlags styleFlags = THStringRendererFontStyleFlagRegular;
-            
-            uint8_t fontStyle = css_computed_font_style(style);
-            if(fontStyle == CSS_FONT_STYLE_ITALIC ||
-               fontStyle == CSS_FONT_STYLE_OBLIQUE) {
-                styleFlags |= THStringRendererFontStyleFlagItalic;
-            }
-            
-            uint8_t fontWeight = css_computed_font_weight(style);
-            if(fontWeight == CSS_FONT_WEIGHT_BOLD ||
-               fontWeight == CSS_FONT_WEIGHT_BOLDER) {
-                styleFlags |= THStringRendererFontStyleFlagBold;
-            }
-            //// TODO: handle other weights.
-            
-            //// TODO: handle small caps
-            // uint8_t fontVariant = css_computed_font_variant(style);
-            
-            lwc_string **names = NULL;
-            uint8_t family = css_computed_font_family(style, &names);
-            
-            if(names) {
-                for(; *names && !_stringRenderer; ++names) {
-                    NSString *fontName = [NSString stringWithLWCString:*names];
-                    
-                    _stringRenderer = [self _cachedStringRendererWithFontName:fontName
-                                                                   styleFlags:styleFlags];
-                }
-            }
-            
-            if(!_stringRenderer) {
-                NSString *fontName;
-                switch(family) {
-                    case CSS_FONT_FAMILY_SERIF:
-                        fontName = [EucConfiguration objectForKey:EucConfigurationSerifFontFamilyKey];
-                        break;                            
-                    case CSS_FONT_FAMILY_SANS_SERIF:
-                        fontName = [EucConfiguration objectForKey:EucConfigurationSansSerifFontFamilyKey];
-                        break;
-                    case CSS_FONT_FAMILY_MONOSPACE:
-                        fontName = [EucConfiguration objectForKey:EucConfigurationMonospaceFontFamilyKey];
-                        break;
-                    case CSS_FONT_FAMILY_CURSIVE:
-                        fontName = [EucConfiguration objectForKey:EucConfigurationCursiveFontFamilyKey];
-                        break;
-                    case CSS_FONT_FAMILY_FANTASY:
-                        fontName = [EucConfiguration objectForKey:EucConfigurationFantasyFontFamilyKey];
-                        break;
-                    default:
-                        fontName = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
-                }
+        uint8_t fontWeight = css_computed_font_weight(style);
+        if(fontWeight == CSS_FONT_WEIGHT_BOLD ||
+           fontWeight == CSS_FONT_WEIGHT_BOLDER) {
+            styleFlags |= THStringRendererFontStyleFlagBold;
+        }
+        //// TODO: handle other weights.
+        
+        //// TODO: handle small caps
+        // uint8_t fontVariant = css_computed_font_variant(style);
+        
+        lwc_string **names = NULL;
+        uint8_t family = css_computed_font_family(style, &names);
+        
+        if(names) {
+            for(; *names && !_stringRenderer; ++names) {
+                NSString *fontName = [NSString stringWithLWCString:*names];
+                
                 _stringRenderer = [self _cachedStringRendererWithFontName:fontName
                                                                styleFlags:styleFlags];
             }
-            
-            [_stringRenderer retain];
         }
+        
+        if(!_stringRenderer) {
+            NSString *fontName;
+            switch(family) {
+                case CSS_FONT_FAMILY_SERIF:
+                    fontName = [EucConfiguration objectForKey:EucConfigurationSerifFontFamilyKey];
+                    break;                            
+                case CSS_FONT_FAMILY_SANS_SERIF:
+                    fontName = [EucConfiguration objectForKey:EucConfigurationSansSerifFontFamilyKey];
+                    break;
+                case CSS_FONT_FAMILY_MONOSPACE:
+                    fontName = [EucConfiguration objectForKey:EucConfigurationMonospaceFontFamilyKey];
+                    break;
+                case CSS_FONT_FAMILY_CURSIVE:
+                    fontName = [EucConfiguration objectForKey:EucConfigurationCursiveFontFamilyKey];
+                    break;
+                case CSS_FONT_FAMILY_FANTASY:
+                    fontName = [EucConfiguration objectForKey:EucConfigurationFantasyFontFamilyKey];
+                    break;
+                default:
+                    fontName = [EucConfiguration objectForKey:EucConfigurationDefaultFontFamilyKey];
+            }
+            _stringRenderer = [self _cachedStringRendererWithFontName:fontName
+                                                           styleFlags:styleFlags];
+        }
+        
+        [_stringRenderer retain];
+        
+        
+        css_fixed length = 0;
+        css_unit unit = (css_unit)0;
+        
+        css_computed_font_size(style, &length, &unit);
+        _textPointSize = EucCSSLibCSSSizeToPixels(style, length, unit, 0.0f, 1.0f);    
+        
+        _textAscender = [_stringRenderer ascenderForPointSize:_textPointSize];
+        
+        if(css_computed_line_height(style, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
+            _lineHeight = EucCSSLibCSSSizeToPixels(style, length, unit, _textPointSize, 1.0f);
+        } else {
+            _lineHeight = [_stringRenderer lineSpacingForPointSize:_textPointSize];
+        }
+    }    
+}    
+
+- (THStringRenderer *)stringRenderer
+{
+    if(!_stringRenderer) {
+        [self _setupTextIVars];
     }
     return _stringRenderer;
+}
+
+- (CGFloat)textPointSize
+{
+    if(!_stringRenderer) {
+        [self _setupTextIVars];
+    }
+    return _textPointSize;
+}
+
+- (CGFloat)textAscender
+{
+    if(!_stringRenderer) {
+        [self _setupTextIVars];
+    } 
+    return _textAscender;
+}
+
+- (CGFloat)lineHeight
+{
+    if(!_stringRenderer) {
+        [self _setupTextIVars];
+    }  
+    return _lineHeight;
 }
 
 - (EucCSSIntermediateDocumentNode *)blockLevelNode

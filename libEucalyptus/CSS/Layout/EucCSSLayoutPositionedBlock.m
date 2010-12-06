@@ -6,7 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucCSSLayouter_Package.h"
+#import "EucCSSInternal.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSIntermediateDocument.h"

@@ -34,18 +34,31 @@ typedef enum EucCSSLayoutDocumentRunComponentKind {
     EucCSSLayoutDocumentRunComponentKindFloat,
 } EucCSSLayoutDocumentRunComponentKind;
 
+typedef struct EucCSSLayoutDocumentRunHyphenationInfo {
+    NSString *beforeHyphen;
+    CGFloat widthBeforeHyphen;
+    NSString *afterHyphen;
+    CGFloat widthAfterHyphen;
+} EucCSSLayoutDocumentRunHyphenationInfo;
+
+
+typedef struct EucCSSLayoutDocumentRunImageInfo {
+    CGImageRef image;
+    CGSize scaledSize;
+    CGFloat scaledLineHeight;
+} EucCSSLayoutDocumentRunImageInfo;
+
+
 typedef struct EucCSSLayoutDocumentRunComponentInfo {
     EucCSSLayoutDocumentRunComponentKind kind;
-    void *component;
-    void *component2;
-    CGFloat pointSize;
-    CGFloat width;
-    CGFloat widthBeforeHyphen;
-    CGFloat widthAfterHyphen;
-    CGFloat ascender;
-    CGFloat lineHeight;
-    EucCSSIntermediateDocumentNode *documentNode;
     EucCSSLayoutDocumentRunPoint point;
+    EucCSSIntermediateDocumentNode *documentNode;
+    CGFloat width;
+    union {
+        NSString *string;
+        EucCSSLayoutDocumentRunHyphenationInfo hyphenationInfo;
+        EucCSSLayoutDocumentRunImageInfo imageInfo;
+    } contents;
 } EucCSSLayoutDocumentRunComponentInfo;
 
 struct EucCSSLayoutDocumentRunBreakInfo;
@@ -84,16 +97,16 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     struct THBreak *_potentialBreaks;
     struct EucCSSLayoutDocumentRunBreakInfo *_potentialBreakInfos;
     int _potentialBreaksCount;
-    
+
     EucSharedHyphenator *_sharedHyphenator;
 }
 
-@property (nonatomic, readonly) uint32_t id;
-@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *startNode;
-@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *underNode;
-@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextNodeUnderLimitNode;
-@property (nonatomic, readonly) EucCSSIntermediateDocumentNode *nextNodeInDocument;
-@property (nonatomic, readonly) CGFloat scaleFactor;
+@property (nonatomic, assign, readonly) uint32_t id;
+@property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *startNode;
+@property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *underNode;
+@property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *nextNodeUnderLimitNode;
+@property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *nextNodeInDocument;
+@property (nonatomic, assign, readonly) CGFloat scaleFactor;
 
 // This convenience constructor will return a cached node if one with the same
 // attibutes was requested recently.
