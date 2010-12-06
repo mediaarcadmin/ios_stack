@@ -252,7 +252,7 @@
 
 - (CGFloat)tapTurnMarginForView:(UIView *)view
 {
-    return [(EucPageView *)view margins].width;
+    return 0.25f * view.bounds.size.width;
 }
 
 

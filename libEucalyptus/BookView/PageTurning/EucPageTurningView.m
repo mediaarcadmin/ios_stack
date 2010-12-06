@@ -1538,7 +1538,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
     // Clear the buffer, ready to draw.
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.8, 0.8, 0.8, 1.0);
+	// Experimenting for the moment...
+    glClearColor(0.0, 0.0, 0.0, 1.0);   // Black
+    //glClearColor(0.8, 0.8, 0.8, 1.0); // Gray
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Perform zooming, and finally actually set the model view matrix.
@@ -2289,49 +2291,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }            
         }
     }
-
-    if(!_dragUnderway && _touch && [touches containsObject:_touch]) {
-        if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
-            BOOL turning = NO;
-            
-            CGPoint point = [_touch locationInView:self];
-            if(_pageContentsInformation[3].view) {
-                CGFloat tapTurnMargin = [self _tapTurnMarginForView:_pageContentsInformation[3].view];
-                if(point.x < tapTurnMargin && _pageContentsInformation[1].view) {
-                    [self turnToPageView:_pageContentsInformation[1].view forwards:NO pageCount:1 onLeft:NO];
-                    turning = YES;
-                } else if(point.x > (_pageContentsInformation[3].view.bounds.size.width - tapTurnMargin) && _pageContentsInformation[5].view) {
-                    [self turnToPageView:_pageContentsInformation[5].view forwards:YES pageCount:1 onLeft:NO];
-                    turning = YES;
-                }                
-            } else {
-                CGFloat tapTurnMargin = 0.1f * self.bounds.size.width;
-                if(point.x < tapTurnMargin) {
-                    if(_pageContentsInformation[1]) {
-                        [self turnToPageAtIndex:_pageContentsInformation[1].pageIndex animated:YES];
-                        turning = YES;
-                    } 
-                } else if(point.x > (self.bounds.size.width - tapTurnMargin)) {
-                    if(_pageContentsInformation[4]) {
-                        [self turnToPageAtIndex:_pageContentsInformation[4].pageIndex animated:YES];
-                        turning = YES;
-                    } else if(_pageContentsInformation[5]) {
-                        [self turnToPageAtIndex:_pageContentsInformation[5].pageIndex animated:YES];
-                        turning = YES;
-                    }
-                }                
-            }
-            
-            if(turning) {
-                [_pageContentsInformation[3].view touchesCancelled:[NSSet setWithObject:_touch] withEvent:event];
-                
-                if([unusedTouches containsObject:_touch]) {
-                    [unusedTouches removeObject:_touch];
-                }          
-            }
-            _touch = nil;
-        }
-    }
     
     if(unusedTouches.count) {
         [_pageContentsInformation[3].view touchesEnded:unusedTouches withEvent:event];
@@ -2376,8 +2335,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [super setUserInteractionEnabled:enabled];
 }
 
-
-
 - (CGFloat)_tapTurnMarginForView:(UIView *)view
 {
     CGFloat ret;
@@ -2385,7 +2342,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     if([delegate respondsToSelector:@selector(pageTurningView:tapTurnMarginForView:)]) {
         ret = [delegate pageTurningView:self tapTurnMarginForView:view];
     } else {
-        ret = 0.1f * view.bounds.size.width;
+        ret = 0.25f * view.bounds.size.width;
     }
     return ret;
 }

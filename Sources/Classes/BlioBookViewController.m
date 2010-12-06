@@ -2860,12 +2860,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         aWebToolController.topViewController.navigationItem.title = titleString;
 		
 		//NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", nil]; // until there's icons...
-		NSArray *buttonNames = [NSArray arrayWithObjects:[UIImage imageNamed:@"back-gray.png"], [UIImage imageNamed:@"forward-gray.png"], nil]; // until there's icons...
+		NSArray *buttonNames = [NSArray arrayWithObjects:[UIImage imageNamed:@"back-black.png"], [UIImage imageNamed:@"forward-black.png"], nil]; // until there's icons...
 		UISegmentedControl* segmentedControl = [[UISegmentedControl alloc] initWithItems:buttonNames];
 		segmentedControl.momentary = YES;
 		segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
 		segmentedControl.frame = CGRectMake(0, 0, 70, 30);
 		[segmentedControl addTarget:self action:@selector(webNavigate:) forControlEvents:UIControlEventValueChanged];
+		[segmentedControl setEnabled:NO forSegmentAtIndex:0];
+		[segmentedControl setEnabled:NO forSegmentAtIndex:1];
 		UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
 		[segmentedControl release];
 		aWebToolController.topViewController.navigationItem.leftBarButtonItem = segmentBarItem;

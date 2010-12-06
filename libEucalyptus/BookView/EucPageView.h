@@ -43,6 +43,8 @@ typedef enum EucPageViewTitleLineContents
     BOOL _fullBleed;
     
     UITouch *_touch;
+    BOOL _touchWasDownInPageTextView;
+    BOOL _touchHasMoved;
     
     NSArray *_accessibilityElements;
 }
@@ -76,5 +78,6 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 
 @optional
 - (void)pageView:(EucPageView *)pageView didReceiveTapOnHyperlinkWithURL:(NSURL *)url;
+- (void)pageView:(EucPageView *)pageView didReceiveTapAtLocation:(CGPoint)location;
 
 @end

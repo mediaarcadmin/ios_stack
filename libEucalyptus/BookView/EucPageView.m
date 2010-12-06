@@ -371,20 +371,15 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if(!_touch) {
-        UITouch *touch = [touches anyObject];
+        UITouch *touch = [touches anyObject];        
+        _touch = touch;
+        _touchHasMoved = NO;
+
         CGPoint location = [touch locationInView:touch.view];
+                
+        _touchWasDownInPageTextView = CGRectContainsPoint([_pageTextView frame], location);
         
-        /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-            if(!self.superview) {
-                CGFloat scaleFactor = self.contentScaleFactor;
-                location.x /= scaleFactor;
-                location.y /= scaleFactor;
-            }
-        }*/
-        
-        if(CGRectContainsPoint([_pageTextView frame], location)) {
-            _touch = touch;
-            
+        if(_touchWasDownInPageTextView) {
             CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
             [_pageTextView handleTouchBegan:_touch atLocation:locationInTextView];
         }
@@ -395,18 +390,14 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 {
     if([touches containsObject:_touch]) {
         UITouch *touch = _touch;
-        CGPoint location = [touch locationInView:touch.view];
+                
+        if(_touchWasDownInPageTextView) {
+            CGPoint location = [touch locationInView:touch.view];
+            CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
+            [_pageTextView handleTouchMoved:touch atLocation:locationInTextView];
+        }
         
-        /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-            if(!self.superview) {
-                CGFloat scaleFactor = self.contentScaleFactor;
-                location.x /= scaleFactor;
-                location.y /= scaleFactor;
-            }
-        }*/
-        CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
-        
-        [_pageTextView handleTouchMoved:touch atLocation:locationInTextView];
+        _touchHasMoved = YES;
     }
 }
 
@@ -414,18 +405,13 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 {
     if([touches containsObject:_touch]) {
         UITouch *touch = _touch;
-        CGPoint location = [touch locationInView:touch.view];
                 
-        /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-            if(!self.superview) {
-                CGFloat scaleFactor = self.contentScaleFactor;
-                location.x /= scaleFactor;
-                location.y /= scaleFactor;
-            }
-        }*/
-        CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
+        if(_touchWasDownInPageTextView) {
+            CGPoint location = [touch locationInView:touch.view];
+            CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
+            [_pageTextView handleTouchCancelled:touch atLocation:locationInTextView];
+        }
         
-        [_pageTextView handleTouchCancelled:touch atLocation:locationInTextView];
         _touch = nil;
     }
 }
@@ -433,21 +419,23 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if([touches containsObject:_touch]) {
+        BOOL handled = NO;
         UITouch *touch = _touch;
         _touch = nil;
         
         CGPoint location = [touch locationInView:touch.view];
+
+        if(_touchWasDownInPageTextView) {
+            CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
+            
+            handled = [_pageTextView handleTouchEnded:touch atLocation:locationInTextView];
+        }
         
-        /*if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-            if(!self.superview) {
-                CGFloat scaleFactor = self.contentScaleFactor;
-                location.x /= scaleFactor;
-                location.y /= scaleFactor;
-            }
-        }*/
-        CGPoint locationInTextView = [self convertPoint:location toView:_pageTextView];
-        
-        [_pageTextView handleTouchEnded:touch atLocation:locationInTextView];
+        if(!handled && !_touchHasMoved) {
+            if(_delegate && [_delegate respondsToSelector:@selector(pageView:didReceiveTapAtLocation:)]) {
+                [_delegate pageView:self didReceiveTapAtLocation:location];
+            }                        
+        }
     }
 }
 

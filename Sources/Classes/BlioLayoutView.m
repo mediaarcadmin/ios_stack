@@ -22,8 +22,8 @@
 #import "BlioAppSettingsConstants.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
-#define BLIOLAYOUT_LHSHOTZONE (1.0f/10*1)
-#define BLIOLAYOUT_RHSHOTZONE (1.0f/10*9)
+#define BLIOLAYOUT_LHSHOTZONE 0.25f
+#define BLIOLAYOUT_RHSHOTZONE 0.75f
 
 @interface BlioLayoutView()
 
@@ -593,6 +593,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     self.selector.selectionDisabled = YES;
     [self.delegate cancelPendingToolbarShow];
 	[self.selector removeTemporaryHighlight];
+    [self.delegate hideToolbars];
 	pageViewIsTurning = YES;
 }
 
@@ -1554,25 +1555,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if(!accessibilityElements) {
         accessibilityElements = [[NSMutableArray arrayWithArray:[self textBlockAccessibilityElements]] retain];
 
-        CGFloat tapZoneWidth = 0.1f * self.pageTurningView.bounds.size.width;
-		
-        {
-            UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if (self.pageTurningView.rightPageIndex >= (self.pageCount - 1))  {
-                nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-            }            
-            CGRect frame = self.pageTurningView.bounds;
-            frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
-            frame.size.width = tapZoneWidth;
-			frame = [self.window.layer convertRect:frame fromLayer:self.pageTurningView.layer];
-
-            nextPageTapZone.accessibilityFrame = frame;
-            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility label for next page tap zone");
-			self.nextZone = nextPageTapZone;
-            [accessibilityElements addObject:nextPageTapZone];            
-            [nextPageTapZone release];
-        }        
+        CGFloat tapZoneWidth = 0.1f * self.pageTurningView.bounds.size.width;      
         
         {
             UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
@@ -1616,6 +1599,24 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             [accessibilityElements addObject:toolbarTapButton];
             [toolbarTapButton release];
         }
+		
+        {
+            UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
+            if (self.pageTurningView.rightPageIndex >= (self.pageCount - 1))  {
+                nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+            }            
+            CGRect frame = self.pageTurningView.bounds;
+            frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
+            frame.size.width = tapZoneWidth;
+			frame = [self.window.layer convertRect:frame fromLayer:self.pageTurningView.layer];
+			
+            nextPageTapZone.accessibilityFrame = frame;
+            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility label for next page tap zone");
+			self.nextZone = nextPageTapZone;
+            [accessibilityElements addObject:nextPageTapZone];            
+            [nextPageTapZone release];
+        }  
 		
 	}
 	

@@ -840,6 +840,21 @@ typedef enum {
     [self _hyperlinkTapped:url];
 }
 
+- (void)pageView:(EucPageView *)pageTextView didReceiveTapAtLocation:(CGPoint)point
+{
+    if(_pageNumber > 0) {
+        CGFloat tapTurnMargin = [_pageLayoutController tapTurnMarginForView:pageTextView];
+        if(point.x < tapTurnMargin &&
+           _pageNumber > 0) {
+            [self goToPageNumber:_pageNumber - 1 animated:YES];
+        } else if(point.x > (pageTextView.bounds.size.width - tapTurnMargin) && 
+                  _pageNumber < _pageCount) {
+            [self goToPageNumber:_pageNumber + 1 animated:YES];
+        }                
+    } 
+}
+
+
 #pragma mark -
 #pragma mark PageTurningView Callbacks
 

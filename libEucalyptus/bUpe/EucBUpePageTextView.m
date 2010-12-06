@@ -399,22 +399,25 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
 
 - (void)handleTouchMoved:(UITouch *)touch atLocation:(CGPoint)location { }
 
-- (void)handleTouchEnded:(UITouch *)touch atLocation:(CGPoint)location 
+- (BOOL)handleTouchEnded:(UITouch *)touch atLocation:(CGPoint)location 
 {
+    BOOL ret = NO;
     if(touch == _touch)  {
         if(_touchHyperlinkIndex != NSUIntegerMax) {
             NSUInteger newTouchHyperlinkIndex = [self _hyperlinkIndexForPoint:location];
-            NSLog(@"%ld, %ld", (long)_touchHyperlinkIndex, (long)newTouchHyperlinkIndex);
             if(newTouchHyperlinkIndex == _touchHyperlinkIndex) {
                 id<EucPageTextViewDelegate> myDelegate = self.delegate;
                 if([myDelegate respondsToSelector:@selector(pageTextView:didReceiveTapOnHyperlinkWithURL:)]) {
                     [myDelegate pageTextView:self 
              didReceiveTapOnHyperlinkWithURL:((THPair *)[[self _hyperlinkRectAndURLPairs] objectAtIndex:_touchHyperlinkIndex]).second];
+                    
+                    ret = YES;
                 }
             }
         }
         _touch = nil;
     }
+    return ret;
 }
 
 - (void)handleTouchCancelled:(UITouch *)touch atLocation:(CGPoint)location 

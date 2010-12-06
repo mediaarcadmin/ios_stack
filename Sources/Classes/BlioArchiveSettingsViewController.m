@@ -17,7 +17,6 @@
 
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-		self.title = NSLocalizedString(@"Archive Settings",@"\"Archive Settings\" view controller title.");
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
