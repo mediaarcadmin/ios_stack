@@ -134,8 +134,11 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
 
 - (void)dealloc
 {
+	[self _clearSelectionCaches];
+
     self.selectedRange = nil;
-    
+    self.loupeBackgroundColor = nil;
+	
     if(self.temporaryHighlightLayers) {
         THWarn(@"Highlighter released with temporary highlight displayed.");
         [self removeTemporaryHighlight];

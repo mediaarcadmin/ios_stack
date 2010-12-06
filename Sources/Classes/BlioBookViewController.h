@@ -64,7 +64,7 @@ typedef enum BlioFontSize {
 - (BOOL)fixedViewEnabled;
 @end
 
-@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton, BlioModalPopoverController;
+@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton, BlioModalPopoverController, BlioBookSlider;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -121,7 +121,7 @@ typedef enum {
     UIBarButtonItem* _pageJumpButton;
     UIView* _pageJumpView;
     UILabel* _pageJumpLabel;
-    UISlider* _pageJumpSlider;
+    BlioBookSlider* _pageJumpSlider;
     BlioBookViewControllerProgressPieButton *_pieButton;
     NSManagedObjectContext *_managedObjectContext;
     BOOL rotationLocked;

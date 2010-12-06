@@ -357,6 +357,7 @@
 		// special "More Voices" cell
 		cell.textLabel.text = NSLocalizedString(@"Download Voices","\"Download Voices\" cell label");
 		[cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+		[cell setAccessibilityTraits:UIAccessibilityTraitButton];
 	}
 	else {
 		cell.textLabel.text = [self.availableVoices objectAtIndex:indexPath.row];

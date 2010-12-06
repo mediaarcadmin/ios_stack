@@ -629,7 +629,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [_manifestOverrides release];
     [_manifestUrlsToOverriddenUrls release];
     [_coverPath release];
-    
+	[_idToIndexPoint release];
+
     free(_indexSourceScaleFactors);
     
     [super dealloc];
@@ -1134,6 +1135,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                                    forKey:key];
             }
         }
+		if (_idToIndexPoint) [_idToIndexPoint release];
         _idToIndexPoint = idToIndexPoint;
     }
 }

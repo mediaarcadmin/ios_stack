@@ -15,6 +15,13 @@
 @synthesize endPoint = _endPoint;
 @synthesize color = _color;
 
+-(void)dealloc {
+	self.startPoint = nil;
+	self.endPoint = nil;
+	self.color = nil;
+	[super dealloc];
+}
+
 - (BOOL)intersects:(EucHighlightRange *)otherRange
 {
     return ([self.startPoint compare:otherRange.endPoint] != NSOrderedDescending &&

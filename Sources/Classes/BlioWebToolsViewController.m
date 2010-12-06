@@ -139,23 +139,23 @@
 	// Update navigation buttons
 	if ( [(UIWebView*)self.topViewController.view canGoBack] ) 
 		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
-			setImage:[UIImage imageNamed:@"back-black.png"] forSegmentAtIndex:0];		
-	else 
+		setEnabled:YES forSegmentAtIndex:0];	
+	else
 		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
-			setImage:[UIImage imageNamed:@"back-gray.png"] forSegmentAtIndex:0];		
-	if ( [(UIWebView*)self.topViewController.view canGoForward] ) 
+		 setEnabled:NO forSegmentAtIndex:0];
+	if ( [(UIWebView*)self.topViewController.view canGoForward] )
 		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
-			setImage:[UIImage imageNamed:@"forward-black.png"] forSegmentAtIndex:1];	
-	else 
+		 setEnabled:YES forSegmentAtIndex:1];	
+	else
 		[(UISegmentedControl*)[(UIBarButtonItem*)self.topViewController.navigationItem.leftBarButtonItem  customView] 
-			setImage:[UIImage imageNamed:@"forward-gray.png"] forSegmentAtIndex:1];
+		 setEnabled:NO forSegmentAtIndex:1];
 }
 
+/* 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 	// reintstate if we want to quit the webview when there's a loading error.
 	//[self.visibleViewController dismissModalViewControllerAnimated:YES];
-	[alertView release];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
@@ -168,5 +168,6 @@
 					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 					   otherButtonTitles:nil];
 }
+*/
 
 @end

@@ -15,7 +15,7 @@
 {
     NSMutableArray *contextStack = [[[NSThread currentThread] threadDictionary] objectForKey:@"THEAGLContextAdditionsContextStack"];
     if(!contextStack) {
-        contextStack = [[NSMutableArray alloc] init];
+        contextStack = [NSMutableArray arrayWithCapacity:1];
         [[[NSThread currentThread] threadDictionary] setObject:contextStack forKey:@"THEAGLContextAdditionsContextStack"];
     }
     [EAGLContext setCurrentContext:self];

@@ -9,11 +9,11 @@
 #import "BlioAppSettingsController.h"
 #import "BlioReadingVoiceSettingsViewController.h"
 #import "BlioWebToolSettingsController.h"
-#import "BlioReadingNavigationSettingsController.h"
-#import "BlioAboutSettingsController.h"
 #import "BlioHelpSettingsController.h"
 #import "BlioMyAccountViewController.h"
 #import "BlioStoreManager.h"
+#import "BlioEULATextController.h"
+#import "BlioVersionController.h"
 
 @implementation BlioAppSettingsController
 
@@ -40,7 +40,7 @@
 	[super loadView];
 	
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
+		self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] 
 												   initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
 												   style:UIBarButtonItemStyleDone 
 												   target:self
@@ -79,7 +79,7 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 5;
 }
 
 
@@ -150,9 +150,14 @@
 		case 3:
 			[cell.textLabel setText:NSLocalizedString(@"About",@"\"About\" text label for App Settings cell")];
 			break;
+		case 4:
+			[cell.textLabel setText:NSLocalizedString(@"Terms of Use",@"\"Terms of Use\" text label for App Settings cell")];
+			break;
 		default:
 			break;
 	}
+	
+	[cell setAccessibilityTraits:UIAccessibilityTraitButton];
 	
     return cell;
 }
@@ -161,10 +166,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	BlioReadingVoiceSettingsViewController *audioController;
 	BlioWebToolSettingsController *webToolController;
-//	BlioReadingNavigationSettingsController *readingnavController;
 	BlioHelpSettingsController *helpController;
-	BlioAboutSettingsController *aboutController;
+	BlioVersionController *versionController;
 	BlioMyAccountViewController *myAccountController;
+	BlioEULATextController *eulaController;
 	switch ( [indexPath section] ) {
 		case 0:
 			switch (indexPath.row)
@@ -204,9 +209,14 @@
 			[helpController release];
 			break;
 		case 3:
-			aboutController = [[BlioAboutSettingsController alloc] init];
-			[self.navigationController pushViewController:aboutController animated:YES];
-			[aboutController release];
+			versionController = [[BlioVersionController alloc] init];
+			[self.navigationController pushViewController:versionController animated:YES];
+			[versionController release];
+			break;
+		case 4:
+			eulaController = [[BlioEULATextController alloc] init];
+			[self.navigationController pushViewController:eulaController animated:YES];
+			[eulaController release];
 			break;
 		default:
 			break;

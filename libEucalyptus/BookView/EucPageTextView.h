@@ -35,7 +35,7 @@
 
 - (void)handleTouchBegan:(UITouch *)touch atLocation:(CGPoint)location;
 - (void)handleTouchMoved:(UITouch *)touch atLocation:(CGPoint)location;
-- (void)handleTouchEnded:(UITouch *)touch atLocation:(CGPoint)location;
+- (BOOL)handleTouchEnded:(UITouch *)touch atLocation:(CGPoint)location; // Returns whether the touch was handled.
 - (void)handleTouchCancelled:(UITouch *)touch atLocation:(CGPoint)location;
 
 @optional

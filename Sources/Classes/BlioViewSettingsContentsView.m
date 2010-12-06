@@ -303,8 +303,8 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         [aTabZoomsToBlockLabel release];
 		
 		NSArray *tapAdvanceTitles = [NSArray arrayWithObjects:
-                                    NSLocalizedString(@"Page",@"\"Page\" segment label (for Tap Advance SegmentedControl)"),
-                                    NSLocalizedString(@"Block",@"\"Block\" segment label (for Tap Advance SegmentedControl)"),
+                                    NSLocalizedString(@"By Page",@"\"By Page\" segment label (for Tap Advance SegmentedControl)"),
+                                    NSLocalizedString(@"By Block",@"\"By Block\" segment label (for Tap Advance SegmentedControl)"),
                                     nil];
 		
 		BlioAccessibilitySegmentedControl *aTapZoomsToBlockSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];

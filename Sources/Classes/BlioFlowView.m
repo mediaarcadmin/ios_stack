@@ -333,6 +333,7 @@
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
 {
     [_delegate cancelPendingToolbarShow];
+    [_delegate hideToolbars];
 
     _pageViewIsTurning = YES;
 	if (!_suppressHistory) {
