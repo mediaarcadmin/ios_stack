@@ -9,8 +9,47 @@
 #import "BlioStoreWebsiteViewController.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioAlertManager.h"
+#import "BlioStoreManager.h"
+
+
+@implementation BlioStoreWebsitePhoneContentView
+
+@synthesize screenshotView,headerLabel,subHeaderLabel;
+
+- (id)initWithFrame:(CGRect)aFrame {
+    if ((self = [super initWithFrame:aFrame])) {
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    }
+    return self;
+}
+-(void)dealloc {
+	self.screenshotView = nil;
+	self.headerLabel = nil;
+	self.subHeaderLabel = nil;
+	[super dealloc];
+}
+-(void)layoutSubviews {
+	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation]; 
+    
+    
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
+		self.screenshotView.frame = CGRectMake(33,10,112,210);
+		self.headerLabel.hidden = YES;
+		self.subHeaderLabel.hidden = YES;
+	}
+	else {
+		self.screenshotView.frame = CGRectMake(33,8,75,150);
+		self.headerLabel.hidden = NO;
+		self.subHeaderLabel.hidden = NO;
+	}
+		
+}
+@end
+
 
 @implementation BlioStoreWebsiteViewController
+
+@synthesize explanationLabel,phoneContentView;
 
 - (id)init {
     if ((self = [super init])) {
@@ -22,7 +61,11 @@
     }
     return self;
 }
-
+-(void)dealloc {
+	self.explanationLabel = nil;
+	self.phoneContentView = nil;
+	[super dealloc];
+}
 + (UILabel *)labelWithFrame:(CGRect)frame title:(NSString *)title
 {
     UILabel *label = [[[UILabel alloc] initWithFrame:frame] autorelease];
@@ -42,24 +85,69 @@
 - (void)loadView
 {	
 	// create a gradient-based content view	
-	self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
+	self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+	
+	
 	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-		self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
+//		self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];	// use the table view background color
+		self.view.backgroundColor = [UIColor whiteColor];	// use the table view background color
 		self.view.autoresizesSubviews = YES;
 		
+		self.phoneContentView = [[[BlioStoreWebsitePhoneContentView alloc] initWithFrame:self.view.bounds] autorelease];
+		[self.view addSubview:phoneContentView];
+
+		// screenshot image
+		UIImageView * screenshotView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"webstore-screenshot.png"]] autorelease];
+		screenshotView.frame = CGRectMake(33,8,75,150);
+		[self.phoneContentView addSubview:screenshotView];
+		self.phoneContentView.screenshotView = screenshotView;
+		
+		// Header
+		UILabel * headerLabel = [[[UILabel alloc] initWithFrame:CGRectMake(120,75,185,28)] autorelease];
+		headerLabel.font = [UIFont boldSystemFontOfSize:24.0f];
+		headerLabel.backgroundColor = [UIColor clearColor];
+		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
+		[self.phoneContentView addSubview:headerLabel];
+		self.phoneContentView.headerLabel = headerLabel;
+		
+		// sub-header
+		UILabel * subHeaderLabel = [[[UILabel alloc] initWithFrame:CGRectMake(120,100,185,42)] autorelease];
+		subHeaderLabel.font = [UIFont boldSystemFontOfSize:18.0f];
+		subHeaderLabel.textColor = [UIColor grayColor];
+		subHeaderLabel.backgroundColor = [UIColor clearColor];
+		subHeaderLabel.numberOfLines = 2;
+		subHeaderLabel.text = NSLocalizedString(@"Over 75,000 Books, Available Now",@"Buy Books View Sub-Header");
+		[self.phoneContentView addSubview:subHeaderLabel];
+		self.phoneContentView.subHeaderLabel = subHeaderLabel;
+
 		// Display instructions for website.
-		CGFloat yPlacement = kTopMargin;
+		
+		CGFloat yPlacement = 268;
 		CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
-		[self.view addSubview:[BlioStoreWebsiteViewController labelWithFrame:frame title:NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Archive for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.")]];
+		
+		self.explanationLabel = [BlioStoreWebsiteViewController labelWithFrame:frame title:@""];
+		self.explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+		[self updateExplanation];
+		[self.phoneContentView addSubview:self.explanationLabel];
 		
 		// blioreader.com button.
 		yPlacement += kTweenMargin + 5*kLabelHeight;
-		launchButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		launchButton.frame = CGRectMake(self.view.bounds.size.width/2 - ((2.6)*kStdButtonWidth)/2, yPlacement, (2.6)*kStdButtonWidth, kStdButtonHeight);
-		launchButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+		launchButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
 		launchButton.backgroundColor = [UIColor clearColor];
-		[self.view addSubview:launchButton];
+		[launchButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
+		[self.phoneContentView addSubview:launchButton];
 		
+		
+		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		CGRect createAccountButtonFrame = launchButton.frame;
+		createAccountButtonFrame.origin.y = launchButton.frame.origin.y + launchButton.frame.size.height + kTweenMargin;
+		createAccountButton.frame = createAccountButtonFrame;
+		createAccountButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+		createAccountButton.backgroundColor = [UIColor clearColor];
+		[createAccountButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
+		[self.phoneContentView addSubview:createAccountButton];
 	}
 	else {
 		self.view.backgroundColor = [UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f]; // the default background color of grouped tableview on iPad
@@ -72,8 +160,8 @@
 		contentView.autoresizesSubviews = NO;
 
 		// screenshot image
-		UIImageView * screenshotView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"store-screenshot.png"]] autorelease];
-		screenshotView.frame = CGRectMake(0,70,350,375);
+		UIImageView * screenshotView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"webstore-screenshot-ipad.png"]] autorelease];
+		screenshotView.frame = CGRectMake(35,100,300,382);
 		[contentView addSubview:screenshotView];
 		
 		// Header
@@ -91,32 +179,68 @@
 		subHeaderLabel.text = NSLocalizedString(@"Over 75,000 Books, Available Now",@"Buy Books View Sub-Header");
 
 		// explanation
-		UILabel * explanationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(360,140,285,230)] autorelease];
+		self.explanationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(360,120,285,230)] autorelease];
 		[contentView addSubview:explanationLabel];
 		explanationLabel.font = [UIFont boldSystemFontOfSize:12.0f];
 		explanationLabel.textColor = [UIColor blackColor];
 		explanationLabel.backgroundColor = [UIColor clearColor];
 		explanationLabel.numberOfLines = 320;
-		CGRect explanationFrame = explanationLabel.frame;
-		NSString * explanationText = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION_IPAD",nil,[NSBundle mainBundle],@"Enjoy a vast selection of cookbooks, travel guides, how-to books, schoolbooks, art books, children's stories, and magazines. Relax, learn, work, or play! The smart display lets you insert highlights, notes, videos, and even webpages. Selected books also go hands-free with Blio's read-aloud feature.\n\nFlexible & accessible. Shop endless titles, right from the Blio Bookstore, with access to over one million free books and a huge library of today's bestsellers. Then, take your library on the road by syncing to your favorite on-the-go mobile device.",@"Explanation text for how to buy books through the website/mobile Safari (for iPad)");
-		CGSize explanationSize = [explanationText sizeWithFont:explanationLabel.font constrainedToSize:explanationLabel.frame.size lineBreakMode:UILineBreakModeWordWrap];
-		explanationFrame.size.height = explanationSize.height;
-		explanationLabel.frame = explanationFrame;
-		explanationLabel.text = explanationText;
 		explanationLabel.textAlignment = UITextAlignmentCenter;
-		
+		[self updateExplanation];
 		// blioreader.com button.
 		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		launchButton.frame = CGRectMake(355,380,298,50);
+		launchButton.frame = CGRectMake(355,350,298,50);
 		launchButton.backgroundColor = [UIColor clearColor];
 		[launchButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
 		[contentView addSubview:launchButton];
+		
+		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		CGRect createAccountButtonFrame = launchButton.frame;
+		createAccountButtonFrame.origin.y = launchButton.frame.origin.y + launchButton.frame.size.height + kTweenMargin;
+		createAccountButton.frame = createAccountButtonFrame;
+		createAccountButton.backgroundColor = [UIColor clearColor];
+		[createAccountButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
+		[contentView addSubview:createAccountButton];
+		
 	}
-	[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
-	[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
-
+	[createAccountButton setTitle:NSLocalizedString(@"Create Account",@"\"Create Account\" text label for cell in Store Website View Controller") forState:UIControlStateNormal];
+	[createAccountButton addTarget:self action:@selector(openModalCreateAccount:) forControlEvents:UIControlEventTouchUpInside];
+	[self updateLogin];
 }
-
+-(void)updateLogin {	
+	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
+		[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
+		createAccountButton.hidden = YES;
+	}
+	else {
+		[launchButton addTarget:self action:@selector(openModalLogin:) forControlEvents:UIControlEventTouchUpInside];
+		[launchButton setTitle:NSLocalizedString(@"Login",@"Button label for opening login window.") forState:UIControlStateNormal];
+		createAccountButton.hidden = NO;
+	}
+}
+-(void)updateExplanation {
+	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Archive for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.");
+		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please login:",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
+			labelTitle = [NSString stringWithFormat:@"%@ %@",labelTitle,getStarted];
+		}
+		explanationLabel.text = labelTitle;
+	}
+	else {
+		CGRect explanationFrame = explanationLabel.frame;
+		NSString * explanationText = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION_IPAD",nil,[NSBundle mainBundle],@"Enjoy a vast selection of cookbooks, travel guides, how-to books, schoolbooks, art books, children's stories, and magazines. Relax, learn, work, or play! The smart display lets you insert highlights, notes, videos, and even webpages. Selected books also go hands-free with Blio's read-aloud feature.\n\nFlexible & accessible. Shop endless titles, right from the Blio Bookstore, with access to over one million free books and a huge library of today's bestsellers. Then, take your library on the road by syncing to your favorite on-the-go mobile device.",@"Explanation text for how to buy books through the website/mobile Safari (for iPad)");
+		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please login:",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
+			explanationText = [NSString stringWithFormat:@"%@ %@",explanationText,getStarted];
+		}			
+		CGSize explanationSize = [explanationText sizeWithFont:explanationLabel.font constrainedToSize:explanationLabel.frame.size lineBreakMode:UILineBreakModeWordWrap];
+		explanationFrame.size.height = explanationSize.height;
+		explanationLabel.frame = explanationFrame;
+		explanationLabel.text = explanationText;		
+	}
+}
 - (void)launchWebsite:(id)sender {	
 	// Open question whether we will go to a single top-level URL here for both iphone and ipad.
 //	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -137,11 +261,27 @@
 //					   otherButtonTitles:nil];
 //	}
 }
-
+- (void)openModalLogin:(id)sender {
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+	[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+}
+- (void)openModalCreateAccount:(id)sender {
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+	[[BlioStoreManager sharedInstance] showCreateAccountViewForSourceID:BlioBookSourceOnlineStore];
+}
+-(void)loginDismissed:(NSNotification*)note {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		[self updateLogin];
+		[self updateExplanation];
+	}
+}
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
     return YES;
 }
-
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+//	[self.phoneContentView layoutSubviews];
+}
 @end

@@ -191,7 +191,7 @@
 						   otherButtonTitles: nil];
 	// This will cause audio to go over to TTS.
 	// Would it be better to just disable audio??
-	[[BlioBookManager sharedBookManager] bookWithID:self.bookID].audiobook = NO;
+//	[[BlioBookManager sharedBookManager] bookWithID:self.bookID].audiobook = NO;
 	
 }
 

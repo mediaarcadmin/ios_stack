@@ -12,6 +12,7 @@
 #import "BlioAlertManager.h"
 #import "BlioDrmSessionManager.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioCreateAccountViewController.h"
 
 @implementation BlioStoreManager
 
@@ -93,6 +94,28 @@
 }
 -(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID {
 	self.loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
+	
+	UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
+	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+		modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+	}
+#endif	
+	
+	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
+	isShowingLoginView = YES;	
+}
+-(void)showCreateAccountViewForSourceID:(BlioBookSourceID)sourceID {
+	self.loginViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
+	
+//	self.loginViewController.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
+//											   initWithTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" bar button") 
+//											   style:UIBarButtonItemStyleDone 
+//											   target:self
+//											   action:@selector(dismissLoginView)]
+//											  autorelease];
 	
 	UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
 	

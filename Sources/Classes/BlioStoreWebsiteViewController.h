@@ -10,7 +10,27 @@
 
 static const NSInteger kBlioStoreBuyBooksTag = 5;
 
+@interface BlioStoreWebsitePhoneContentView : UIView
+{
+	UIView * screenshotView;
+	UILabel * headerLabel;
+	UILabel * subHeaderLabel;
+}
+@property (nonatomic, retain) UIView * screenshotView;
+@property (nonatomic, retain) UILabel * headerLabel;
+@property (nonatomic, retain) UILabel * subHeaderLabel;
+
+@end
+
+
 @interface BlioStoreWebsiteViewController : UIViewController {
 	UIButton* launchButton;
+	UIButton* createAccountButton;
+	UILabel * explanationLabel;
+	BlioStoreWebsitePhoneContentView * phoneContentView;
 }
+@property (nonatomic, retain) UILabel * explanationLabel;
+@property (nonatomic, retain) BlioStoreWebsitePhoneContentView * phoneContentView;
+-(void)updateLogin;
+-(void)updateExplanation;
 @end

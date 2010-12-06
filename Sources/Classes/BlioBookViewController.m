@@ -236,9 +236,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		else {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
-            if ([self.book hasAudiobook])
+            if ([self.book hasAudiobook]) {
 				if (_audioBookManager) [_audioBookManager release];
 				_audioBookManager = [[BlioAudioBookManager alloc] initWithBookID:self.book.objectID];        
+			}
 			// This is not an "else" because the above initialization could have discovered
 			// a corrupt audiobook, in which case hasAudiobook would now be false.
 			if ( ![self.book hasAudiobook] ) {			
@@ -895,7 +896,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     CGFloat buttonHeight = 30;
 
     // Toolbar buttons are 30 pixels high in portrait and 24 pixels high landscape
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
         buttonHeight = 24;
     }
     
@@ -907,6 +908,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [backArrow setAccessibilityLabel:NSLocalizedString(@"Library Back", @"Accessibility label for Book View Controller Library Back button")];
 
+	backArrow.autoresizingMask = UIViewAutoresizingNone;
+	
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backArrow];
     self.navigationItem.leftBarButtonItem = backItem;
     [backItem release];
@@ -914,9 +917,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:buttonFrame];
     [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
     
+	aPieButton.autoresizingMask = UIViewAutoresizingNone;
+
     if (_pageJumpButton) [_pageJumpButton release];
     _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
-    
+
     self.pieButton = aPieButton;
     [aPieButton release];
     
@@ -2551,7 +2556,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     // Doing this here instead of in the 'didRotate' callback results in smoother
     // animation that happens simultaneously with the rotate.
-    [self layoutNavigationToolbar];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) [self layoutNavigationToolbar];
     [self setNavigationBarButtons];
     if (_pageJumpView) {
         [self layoutPageJumpView];

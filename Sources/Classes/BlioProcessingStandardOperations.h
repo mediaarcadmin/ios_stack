@@ -96,6 +96,7 @@
 	NSMutableArray * audioFiles;
 	NSMutableArray * timingFiles;
 	NSDictionary * featureCompatibilityDictionary;
+	BOOL hasAudiobook;
 }
 @property (nonatomic, retain) NSXMLParser * audiobookReferencesParser;
 @property (nonatomic, retain) NSXMLParser * rightsParser;
