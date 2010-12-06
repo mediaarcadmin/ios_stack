@@ -164,6 +164,26 @@
 	return lastNameField;
 }
 
+- (void)receivedLoginResult:(BlioLoginResult)loginResult {
+//	NSString * loginErrorText = nil;
+	if ( loginResult == BlioLoginResultSuccess ) {
+		[self dismissModalViewControllerAnimated:YES];
+	}
+//	else if ( loginResult == BlioLoginResultInvalidPassword ) {
+//		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
+//		passwordField.text = @"";
+//	}
+//	else loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
+//	[activityIndicatorView stopAnimating];
+//	if (loginErrorText != nil) {
+//		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+//									 message:loginErrorText
+//									delegate:self 
+//						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+//						   otherButtonTitles:nil];
+//	}
+}
+
 
 #pragma mark -
 #pragma mark Table view data source

@@ -12,7 +12,7 @@
 #import "DigitalLockerGateway.h"
 #import "BlioRoundedRectActivityView.h"
 
-@interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate> {
+@interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate,BlioLoginResultReceiver> {
 	UITextField* emailField;
 	UITextField* passwordField;
 	BlioRoundedRectActivityView * activityIndicatorView;
@@ -27,7 +27,6 @@
 @property (nonatomic,retain) UIView * loginFooterView;
 
 
--(void)receivedLoginResult:(BlioLoginResult)loginResult;
 -(id)initWithSourceID:(BlioBookSourceID)bookSourceID;
 - (UITextField *)createEmailTextField;
 - (UITextField *)createPasswordTextField;

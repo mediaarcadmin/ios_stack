@@ -108,14 +108,14 @@
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
-		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertWelcome"];
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Welcome To Blio",@"\"Welcome To Blio\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"INTRO_WELCOME_ALERT",nil,[NSBundle mainBundle],@"If you have an account, you can log in to download books that you've purchased. Otherwise you can create an account.",@"Alert Text encouraging the end-user to either login or create a new account.")
-									delegate:nil
-						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-						   otherButtonTitles:nil];		
-	}
+//	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertWelcome"]) {
+//		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertWelcome"];
+//		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Welcome To Blio",@"\"Welcome To Blio\" alert message title") 
+//									 message:NSLocalizedStringWithDefaultValue(@"INTRO_WELCOME_ALERT",nil,[NSBundle mainBundle],@"If you have an account, you can log in to download books that you've purchased. Otherwise you can create an account.",@"Alert Text encouraging the end-user to either login or create a new account.")
+//									delegate:nil
+//						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+//						   otherButtonTitles:nil];		
+//	}
 
 }
 - (void)viewDidDisappear:(BOOL)animated {

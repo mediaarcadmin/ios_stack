@@ -812,13 +812,11 @@
 		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"]; 
 	}
 	
-	BOOL hasAudiobook = [self bookManifestPath:BlioXPSAudiobookMetadataFile existsForLocation:BlioManifestEntryLocationXPS];
+	hasAudiobook = [self bookManifestPath:BlioXPSAudiobookMetadataFile existsForLocation:BlioManifestEntryLocationXPS];
 	NSLog(@"self.cacheDirectory %@ hasAudiobook: %i,",self.cacheDirectory, hasAudiobook);
 	if (hasAudiobook) {
 		NSLog(@"setting Audiobook values in manifest...");
-		
-		[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"audiobook"]; 
-		
+				
 		manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
 		[manifestEntry setValue:BlioXPSAudiobookDirectory forKey:BlioManifestEntryPathKey];
@@ -844,10 +842,14 @@
 			[audiobookReferencesParser setDelegate:self];
 			[audiobookReferencesParser parse];
 		}
+		else {
+			hasAudiobook = NO;
+		}
 		//			NSLog(@"[book hasTTSRights]: %i",[book hasTTSRights]);
 		//			NSLog(@"[book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]: %i",[book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]);
 	}
-	
+	[self setBookValue:[NSNumber numberWithBool:hasAudiobook] forKey:@"audiobook"]; 
+
 	BOOL hasKNFBMetadata = [self bookManifestPath:BlioXPSKNFBMetadataFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasKNFBMetadata) {
 		NSLog(@"Metadata file is present. parsing XML...");
@@ -975,7 +977,7 @@
 		if ( [elementName isEqualToString:@"AudioReferences"]  ) {
 			if ( [self.timingFiles count] != [self.audioFiles count] ) {
 				NSLog(@"WARNING: Missing audio or timing file.");
-				// TODO: Disable audiobook playback.
+				hasAudiobook = NO;
 			}
 			else {
 				NSMutableDictionary * manifestEntry = nil;

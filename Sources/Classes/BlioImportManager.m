@@ -377,7 +377,7 @@
 	cachePath = [cachePath stringByAppendingPathComponent:importableBook.fileName];
 	
 	if ([importableBook.fileName.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-		
+		NSLog(@"unzipping epub...");
 		BOOL unzipSuccess = NO;
 		ZipArchive* aZipArchive = [[ZipArchive alloc] init];
 		if([aZipArchive UnzipOpenFile:importableBook.filePath] ) {
@@ -391,6 +391,7 @@
 			NSLog(@"Failed to open zipfile at path: %@", importableBook.filePath);
 		}
 		[aZipArchive release];
+		NSLog(@"unzip epub finished.");
 
 		if ([[NSFileManager defaultManager] fileExistsAtPath:[cachePath stringByAppendingPathComponent:@"rights.xml"]]) {
 			NSLog(@"Rights file exists for epub file, %@; cannot import!",importableBook.fileName);
@@ -449,7 +450,7 @@
 	}
 	else if ([importableBook.fileName.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 		NSLog(@"checking for XPS DRM: %@",[cachePath stringByAppendingPathComponent:BlioXPSKNFBDRMHeaderFile]);
-								
+		NSLog(@"unzipping xps...");						
 		BOOL unzipSuccess = NO;
 		ZipArchive* aZipArchive = [[ZipArchive alloc] init];
 		if([aZipArchive UnzipOpenFile:importableBook.filePath] ) {
@@ -463,7 +464,7 @@
 			NSLog(@"Failed to open zipfile at path: %@", importableBook.filePath);
 		}
 		[aZipArchive release];
-				
+		NSLog(@"unzip xps finished.");								
 		if ([[NSFileManager defaultManager] fileExistsAtPath:[cachePath stringByAppendingPathComponent:BlioXPSKNFBDRMHeaderFile]]) {
 			NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",importableBook.fileName);
 			importableBook.isDRM = YES;

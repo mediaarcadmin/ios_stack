@@ -10,8 +10,6 @@
 #import "BlioStoreHelperDelegate.h"
 #import "BlioProcessing.h"
 
-@class BlioLoginViewController;
-
 typedef enum  {
 	BlioLoginResultSuccess = 0,
     BlioLoginResultInvalidPassword,
@@ -28,13 +26,19 @@ static NSString * const BlioLoginFinished = @"BlioLoginFinished";
 static NSString * const BlioStoreRetrieveBooksStarted = @"BlioStoreRetrieveBooksStarted";
 static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBooksFinished";
 
+@protocol BlioLoginResultReceiver
+
+- (void)receivedLoginResult:(BlioLoginResult)loginResult;
+
+@end
+
 
 @interface BlioStoreManager : NSObject<BlioStoreHelperDelegate> {
 	BOOL isShowingLoginView;
 	NSMutableDictionary * storeHelpers;
 	NSMutableDictionary * deviceRegistrationPromptAlertViews;
 	UIViewController * rootViewController;
-	BlioLoginViewController *loginViewController;
+	UIViewController<BlioLoginResultReceiver> *loginViewController;
     id<BlioProcessingDelegate> _processingDelegate;
 	BlioStoreHelper * currentStoreHelper;
 }
@@ -42,7 +46,7 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;
 @property (nonatomic, retain) NSMutableDictionary* deviceRegistrationPromptAlertViews;
 @property (nonatomic, retain) UIViewController* rootViewController;
-@property (nonatomic, retain) BlioLoginViewController* loginViewController;
+@property (nonatomic, retain) UIViewController<BlioLoginResultReceiver> * loginViewController;
 @property (nonatomic) BOOL isShowingLoginView;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) BlioStoreHelper * currentStoreHelper;
@@ -78,6 +82,7 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 	@param sourceID The BlioBookSourceID to be used when the end-user attempts to login.
  */
 -(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID;
+-(void)showCreateAccountViewForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Returns a boolean login status indicated whether or not the manager is logged in for the given sourceID.
 	@param sourceID The BlioBookSourceID for which the login status is related.
