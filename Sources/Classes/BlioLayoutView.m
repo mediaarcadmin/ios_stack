@@ -40,6 +40,7 @@
 @property (nonatomic, retain) UIAccessibilityElement *prevZone;
 @property (nonatomic, retain) UIAccessibilityElement *nextZone;
 @property (nonatomic, retain) UIAccessibilityElement *pageZone;
+@property (nonatomic, assign) BOOL wasSelectionAtTouchStart;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -60,7 +61,6 @@
 - (void)hyperlinkTapped:(NSString *)link;
 
 - (BlioBookmarkRange *)noteBookmarkForPage:(NSInteger)page atPoint:(CGPoint)point;
-- (void)showNoteForBookmark:(BlioBookmarkRange *)bookmark;
 
 - (CGRect)visibleRectForPageAtIndex:(NSInteger)pageIndex;
 - (void)zoomAtPoint:(CGPoint)point;
@@ -91,6 +91,7 @@
 @synthesize delayedTouchesBeganTimer, delayedTouchesEndedTimer;
 @synthesize accessibilityElements, prevZone, nextZone, pageZone;
 @synthesize temporaryHighlightRange;
+@synthesize wasSelectionAtTouchStart;
 
 - (void)dealloc {
     [self.delayedTouchesBeganTimer invalidate];
@@ -1210,6 +1211,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             self.delayedTouchesBeganTimer = nil;
             
             startTouchPoint = [[touches anyObject] locationInView:self];
+            self.wasSelectionAtTouchStart = selector.selectedRange != nil;
             NSDictionary *touchesAndEvent = [NSDictionary dictionaryWithObjectsAndKeys:touches, @"touches", event, @"event", nil];
             self.delayedTouchesBeganTimer = [NSTimer scheduledTimerWithTimeInterval:0.31f target:self selector:@selector(delayedTouchesBegan:) userInfo:touchesAndEvent repeats:NO];
         }
@@ -1234,7 +1236,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	BlioBookmarkRange *noteBookmark = [touchesInfo valueForKey:@"noteBookmark"];
 	
 	if (noteBookmark != (id)[NSNull null]) {
-		[self showNoteForBookmark:noteBookmark];
+        [self.selector setSelectedRange:[self selectorRangeFromBookmarkRange:noteBookmark]];
+        [self.delegate hideToolbars];
 	} else if (link != (id)[NSNull null]) {
 		[self hyperlinkTapped:link];
 	} else {
@@ -1367,7 +1370,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             [self goToPageNumber:wantPageIndex + 1 animated:YES];
             return;
         } else {
-			[self.delegate toggleToolbars]; 
+            if(!wasSelectionAtTouchStart) {
+                [self.delegate toggleToolbars];
+            }
 			return;
 		}
 	}    
@@ -1383,7 +1388,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         [self zoomToNextBlock];
         [self.delegate hideToolbars];
     } else {
-        [self.delegate toggleToolbars]; 
+        if(!wasSelectionAtTouchStart) {
+            [self.delegate toggleToolbars];
+        }
     }    
     
 }
@@ -1405,11 +1412,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 #pragma mark -
 #pragma mark Actions
-
-- (void)showNoteForBookmark:(BlioBookmarkRange *)bookmarkRange {
-	EucSelectorRange *selectedRange = [self selectorRangeFromBookmarkRange:bookmarkRange];
-	[self.selector setSelectedRange:selectedRange];
-}
         
 #pragma mark -
 #pragma mark Hyperlinks

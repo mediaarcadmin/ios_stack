@@ -251,7 +251,7 @@
 
 - (BOOL)toolbarShowShouldBeSuppressed
 {
-    return _pageViewIsTurning || self.selector.tracking;
+    return _pageViewIsTurning || self.selector.tracking || self.selector.selectedRange;
 }
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
@@ -515,6 +515,7 @@
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
 {
     [_delegate cancelPendingToolbarShow];
+    [_delegate hideToolbars];
     return [_eucBookView eucSelector:selector willBeginEditingHighlightWithRange:selectedRange];
 }
 

@@ -753,12 +753,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [titleView setTitle:[self.book title]];
                 [titleView setAuthor:[self.book authorsWithStandardFormat]];              
                 
+                if ([_bookView wantsTouchesSniffed]) {
+                    [(THEventCapturingWindow *)self.view.window addTouchObserver:self forView:_bookView];            
+                }                
+                
                 [self.view addSubview:_bookView];
                 [self.view sendSubviewToBack:_bookView];
-                
-                if ([_bookView wantsTouchesSniffed]) {
-                    [(THEventCapturingWindow *)_bookView.window addTouchObserver:self forView:_bookView];            
-                }
             }
             
             // Pretend that we last saved this page number, so that we 
