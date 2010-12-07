@@ -373,12 +373,10 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
             bestParagraph = nextParagraph;
         }
         
-        NSUInteger indexes[2] = { flowIndex, bestParagraph.key };
-        *paragraphID = [NSIndexPath indexPathWithIndexes:indexes length:2];
-        
         uint32_t bestWordOffset = 0;
         BlioBookmarkPoint *comparisonPoint = [[BlioBookmarkPoint alloc] init];
-        for(BlioTextFlowPositionedWord *word in bestParagraph.paragraphWords.words) {
+        NSArray *words = bestParagraph.paragraphWords.words;
+        for(BlioTextFlowPositionedWord *word in words) {
             comparisonPoint.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:word.blockID] + 1;
             comparisonPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:word.blockID];
             comparisonPoint.wordOffset = word.wordIndex;
@@ -388,11 +386,19 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 break;
             }
         }
-        if(bestWordOffset) {
-            bestWordOffset--;
+        if(bestWordOffset == words.count) {
+            bestParagraph = nextParagraph; 
+            bestWordOffset = 0;
+        } else {
+            if(bestWordOffset) {
+                bestWordOffset--;
+            }
         }
         [comparisonPoint release];
         
+        
+        NSUInteger indexes[2] = { flowIndex, bestParagraph.key };
+        *paragraphID = [NSIndexPath indexPathWithIndexes:indexes length:2];
         *wordOffset = bestWordOffset;
     }
 }
