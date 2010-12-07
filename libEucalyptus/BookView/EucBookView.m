@@ -857,7 +857,7 @@ typedef enum {
 
 - (void)pageView:(EucPageView *)pageTextView didReceiveTapAtLocation:(CGPoint)point
 {
-    if(_pageNumber > 0) {
+    if(_pageNumber > 0 && !_selector.selectedRange) {
         CGFloat tapTurnMargin = [_pageLayoutController tapTurnMarginForView:pageTextView];
         if(point.x < tapTurnMargin &&
            _pageNumber > 0) {
