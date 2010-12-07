@@ -208,7 +208,8 @@
         aPageTurningView.bitmapDataSource = self;
         aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
-		
+		aPageTurningView.vibratesOnInvalidTurn = NO;
+        
         // Must do this here so that teh page aspect ration takes account of the twoUp property
         CGRect myBounds = self.bounds;
         if(myBounds.size.width > myBounds.size.height) {
