@@ -359,19 +359,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-        [self.processingDelegate enqueueBookWithTitle:@"The Color Companion to Walt Disney World" 
-                                              authors:[NSArray arrayWithObjects:@"Sehlinger, Bob", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/The Color Companion to Walt Disney World.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"ColorCompanionToWaltDisneyWorld" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-		
 #ifdef DEMO_MODE		
 		
         [self.processingDelegate enqueueBookWithTitle:@"Toy Story" 
@@ -820,7 +807,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 -(void)gridView:(MRGridView *)gridView confirmationForDeletionAtIndex:(NSInteger)index {
 	_keyValueOfCellToBeDeleted = index;
-	UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Please confirm...",@"\"Please confirm...\" alert message title")
+	UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Confirmation Request",@"\"Confirmation Request\" alert message title")
 													message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CONFIRM_DELETE_ACTION", nil,[NSBundle mainBundle],@"Are you sure you want to delete %@?",@"Message requesting to confirm delete action within MRGridView"), [self contentDescriptionForCellAtIndex:index] ]
 												   delegate:self
 										  cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" alert button")
@@ -1834,7 +1821,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			self.resumeButton.hidden = NO;
 			self.stateLabel.hidden = NO;
 			stateLabel.font = [UIFont boldSystemFontOfSize:10.0];
-			self.stateLabel.text = NSLocalizedString(@"Update App","\"Update App\" status indicator in BlioLibraryGridViewCell");
+			self.stateLabel.text = NSLocalizedString(@"Update Blio","\"Update Blio\" status indicator in BlioLibraryGridViewCell");
 			self.progressView.hidden = YES;
 			self.pauseButton.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
@@ -2161,7 +2148,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
 
-			self.authorLabel.text = NSLocalizedString(@"App Update Required","\"App Update Required\" status indicator in BlioLibraryListCell");
+			self.authorLabel.text = NSLocalizedString(@"Blio Update Required","\"Blio Update Required\" status indicator in BlioLibraryListCell");
 			progressView.isAccessibilityElement = NO;
 			[progressView removeFromSuperview];
 			progressView.hidden = YES;
