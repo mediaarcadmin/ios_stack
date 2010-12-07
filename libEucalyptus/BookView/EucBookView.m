@@ -108,6 +108,8 @@
          
         self.opaque = YES;
         self.backgroundColor = [UIColor blackColor];
+        
+        _vibratesOnInvalidTurn = YES;
     }
     return self;
 }
@@ -143,6 +145,8 @@
         _pageTurningView.delegate = self;
         _pageTurningView.viewDataSource = self;
         _pageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        _pageTurningView.vibratesOnInvalidTurn = _vibratesOnInvalidTurn;
+        
         UIImage *pageTexture = self.pageTexture;
         if(!pageTexture) {
             pageTexture = [[UIImage imageNamed:@"BookPaper.png"] retain];
@@ -298,6 +302,17 @@
 - (CGRect)contentRect
 {
     return [(EucPageView *)[_pageTurningView currentPageView] contentRect];
+}
+
+- (BOOL)vibratesOnInvalidTurn
+{
+    return _vibratesOnInvalidTurn;
+}
+
+- (void)setVibratesOnInvalidTurn:(BOOL)vibratesOnInvalidTurn
+{
+    _vibratesOnInvalidTurn = vibratesOnInvalidTurn;
+    _pageTurningView.vibratesOnInvalidTurn = vibratesOnInvalidTurn;
 }
 
 #pragma mark -

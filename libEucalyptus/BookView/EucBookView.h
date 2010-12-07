@@ -43,6 +43,8 @@ typedef struct EucRange {
     BOOL _undimAfterAppearance;
     BOOL _appearAtCoverThenOpen;
     
+    BOOL _vibratesOnInvalidTurn;
+    
     NSInteger _directionalJumpCount;
     NSInteger _savedJumpPage;
     BOOL _jumpShouldBeSaved;    
@@ -86,6 +88,8 @@ typedef struct EucRange {
 @property (nonatomic, assign) CGFloat dimQuotient;
 @property (nonatomic, assign) BOOL undimAfterAppearance;
 @property (nonatomic, assign) BOOL appearAtCoverThenOpen;
+
+@property (nonatomic, assign) BOOL vibratesOnInvalidTurn;
 
 @property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, readonly) NSInteger pageCount;

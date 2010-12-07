@@ -230,7 +230,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if (_TTSEnabled) {
         
-        if ((![self.book hasAudiobook]) && (![self.book hasTTSRights] || !self.book.paragraphSource)) {
+        if (![self.book hasAudiobook] && (![self.book hasTTSRights] || !([self.book hasTextFlow] || [self.book hasEPub]))) {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
         }
 		else {
@@ -2044,14 +2044,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void) getNextBlockForAudioManager:(BlioAudioManager*)audioMgr {
-    id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
-    
-    id newBlock  = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
+    id newBlock  = [_audioParagraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
 
     if(newBlock) {
         audioMgr.currentBlock = newBlock;
         audioMgr.currentWordOffset = 0;
-        audioMgr.blockWords = [paragraphSource wordsForParagraphWithID:audioMgr.currentBlock];
+        audioMgr.blockWords = [_audioParagraphSource wordsForParagraphWithID:audioMgr.currentBlock];
     } else {        
         // end of the book
         audioMgr.currentBlock = nil;
@@ -2067,10 +2065,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
 	else {
 		// Play button has just been pushed.
-        id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease]; // retain/autorelease to work around dealloc bug #235
         id blockId = nil;
         uint32_t wordOffset = 0;
-		[paragraphSource bookmarkPoint:point toParagraphID:&blockId wordOffset:&wordOffset]; 
+		[_audioParagraphSource bookmarkPoint:point toParagraphID:&blockId wordOffset:&wordOffset]; 
 		
 //		NSLog(@"prepareTextToSpeakWithAudioManager. CurrentBookmarkPoint is on page %d. blockId: %@ wordOffset: %d)", self.bookView.currentBookmarkPoint.layoutPage, blockId, wordOffset);
 
@@ -2080,7 +2077,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 // So we're starting speech for the first time, or for the first time since changing the 
                 // page or book after stopping speech the last time (whew).
                 [audioMgr setCurrentBlock:blockId];
-                [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:blockId]];
+                [audioMgr setBlockWords:[_audioParagraphSource wordsForParagraphWithID:blockId]];
 
 				if ( [audioMgr.blockWords count] && (wordOffset < [audioMgr.blockWords count] - 1 )) {
 					++wordOffset;
@@ -2171,9 +2168,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-			id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
-            BlioBookmarkPoint *point = [paragraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
-                                                                                   wordOffset:wordOffset];
+            BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
+                                                                                wordOffset:wordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
         [_acapelaAudioManager setCurrentWordOffset:wordOffset];
@@ -2196,6 +2192,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag { 
 	if (!flag) {
 		self.audioPlaying = NO;
+        [_audioParagraphSource release];
+        _audioParagraphSource = nil;
+        [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];        
         [self updatePauseButton];
 		NSLog(@"Audio player terminated because of error.");
 		return;
@@ -2223,6 +2222,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		if ( !loadedFilesAhead ) {
 			// End of book.
 			self.audioPlaying = NO;
+            [_audioParagraphSource release];
+            _audioParagraphSource = nil;
+            [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];            
             [self updatePauseButton];
 		}
 		else {
@@ -2305,9 +2307,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-			id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
-            BlioBookmarkPoint *point = [paragraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
-                                                                                    wordOffset:_audioBookManager.currentWordOffset];
+            BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
+                                                                                wordOffset:_audioBookManager.currentWordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
 		
@@ -2347,7 +2348,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (self.audioPlaying) {
         [self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
         self.audioPlaying = NO;  
-    } else { 
+        [_audioParagraphSource release];
+        _audioParagraphSource = nil;
+        [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];        
+    } else {
+        _audioParagraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.book.objectID] retain];
+        
 		NSLog(@"[self.book hasTTSRights]: %i",[self.book hasTTSRights]);
 		NSLog(@"[self.book hasAudiobook]: %i",[self.book hasAudiobook]);
 		
@@ -2399,7 +2405,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 											delegate:nil 
 								   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
 									otherButtonTitles:nil];
-				return;
 			}
         }
         else {
@@ -2408,7 +2413,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 										delegate:nil 
 							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
 							   otherButtonTitles:nil];
-			return;
+        }
+        if(!self.audioPlaying) {
+            [_audioParagraphSource release];
+            _audioParagraphSource = nil;
+            [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];
         }
     }    
     [self updatePauseButton];
@@ -2429,7 +2438,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)search:(id)sender {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         if (!self.searchViewController) {
-            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithBookID:self.book.objectID];
             [aBookSearchController setMaxPrefixAndMatchLength:20];
             [aBookSearchController setMaxSuffixLength:100];
             
@@ -2446,7 +2455,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.searchViewController showInController:self.navigationController animated:YES];
     } else {
         if (!self.searchPopover) {
-            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithBookID:self.book.objectID];
             [aBookSearchController setMaxPrefixAndMatchLength:20];
             [aBookSearchController setMaxSuffixLength:100];
             

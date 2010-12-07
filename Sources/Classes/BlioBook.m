@@ -123,13 +123,6 @@
     return xpsProvider;
 }
 
-- (id<BlioParagraphSource>)paragraphSource {
-    if(!paragraphSource) {
-        paragraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.objectID] retain];
-    }
-    return paragraphSource;
-}
-
 - (void)flushCaches
 {
     BlioBookManager *manager = [BlioBookManager sharedBookManager];
@@ -137,11 +130,6 @@
         [textFlow release];
         textFlow = nil;
         [manager checkInTextFlowForBookWithID:self.objectID];
-    }
-    if(paragraphSource) {
-        [paragraphSource release];
-        paragraphSource = nil;
-        [manager checkInParagraphSourceForBookWithID:self.objectID];
     }
     if(xpsProvider) {
         [xpsProvider release];

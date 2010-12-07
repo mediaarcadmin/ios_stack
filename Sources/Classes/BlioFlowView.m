@@ -67,7 +67,8 @@
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;
                 _eucBookView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
+                _eucBookView.vibratesOnInvalidTurn = NO;
+                
                 if (!animated) {
                     [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO saveToHistory:NO];
                 }

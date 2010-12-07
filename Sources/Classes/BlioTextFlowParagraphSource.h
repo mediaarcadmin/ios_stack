@@ -10,13 +10,15 @@
 #import <CoreData/CoreData.h>
 #import "BlioParagraphSource.h"
 
-@class BlioTextFlow, BlioTextFlowFlowTree, BlioFlowEucBook;
+@class BlioTextFlow, BlioTextFlowFlowTree, BlioFlowEucBook, BlioTextFlowParagraphSource;
 
 @interface BlioTextFlowParagraphSource : NSObject <BlioParagraphSource> {
     BlioTextFlow *textFlow;
     
     NSUInteger currentFlowTreeIndex;
     BlioTextFlowFlowTree *currentFlowTree;
+    
+    BlioFlowEucBook *xamlEucBook;
 }
 
 - (id)initWithBookID:(NSManagedObjectID *)bookID;

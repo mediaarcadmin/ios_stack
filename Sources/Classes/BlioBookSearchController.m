@@ -7,10 +7,13 @@
 //
 
 #import "BlioBookSearchController.h"
+#import "BlioBookManager.h"
 #import "UIDevice+BlioAdditions.h"
 
 @interface BlioBookSearchController()
 
+@property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 @property (nonatomic, getter=isSearching) BOOL searching;
 @property (nonatomic, retain) NSString *searchString;
 @property (nonatomic, retain) id startParagraphID;
@@ -24,22 +27,27 @@
 
 @implementation BlioBookSearchController
 
-@synthesize paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentCharacterOffset, currentParagraphWords, hasWrapped;
+@synthesize bookID, paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentCharacterOffset, currentParagraphWords, hasWrapped;
 
 - (void)dealloc {
     [self cancel];
-    self.paragraphSource = nil;
+    if(self.paragraphSource) {
+        self.paragraphSource = nil;
+        [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.bookID];
+    }
     self.delegate = nil;
     self.searchString = nil;
     self.startParagraphID = nil;
     self.currentParagraphID = nil;
     self.currentParagraphWords = nil;
+    self.bookID = nil;
     [super dealloc];
 }
 
-- (id)initWithParagraphSource:(id<BlioParagraphSource>)aParagraphSource {
+- (id)initWithBookID:(NSManagedObjectID *)aBookID {
     if ((self = [super init])) {
-        self.paragraphSource = aParagraphSource;
+        self.bookID = aBookID;
+        self.paragraphSource = [[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:aBookID];
         self.searchOptions = NSCaseInsensitiveSearch;
         searchInterval = [[UIDevice currentDevice] blioDeviceSearchInterval];
     }

@@ -7,12 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 #import "BlioParagraphSource.h"
 #import "BlioBookmark.h" // Only needed for debug
 
 @protocol BlioBookSearchDelegate;
 
 @interface BlioBookSearchController : NSObject {
+    NSManagedObjectID *bookID;
+    
     id<BlioParagraphSource> paragraphSource;
     id<BlioBookSearchDelegate> delegate;
     
@@ -34,7 +37,6 @@
     NSTimeInterval searchInterval;
 }
 
-@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 @property (nonatomic, assign) id<BlioBookSearchDelegate> delegate;
 @property (nonatomic, readonly, getter=isSearching) BOOL searching;
 @property (nonatomic, assign) NSUInteger maxPrefixAndMatchLength;
@@ -42,7 +44,7 @@
 @property (nonatomic, assign) NSStringCompareOptions searchOptions;
 @property (nonatomic, readonly) BOOL hasWrapped;
 
-- (id)initWithParagraphSource:(id<BlioParagraphSource>)aParagraphSource;
+- (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (BOOL)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint;
 - (void)findNextOccurrence;
 - (void)cancel;
