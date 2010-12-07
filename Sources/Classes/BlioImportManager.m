@@ -584,8 +584,8 @@
 	BlioImportableBook * importableBook = [BlioImportManager importableBookFromFilePath:aFilePath];
 	
 	if (importableBook.isDRM) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title")
-									 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOK_HAS_DRM",nil,[NSBundle mainBundle],@"The file %@ will not be imported because Digital Rights Management (DRM) was found.",@"Alert message informing the end-user that importing of book from another application will not occur because DRM was found."),importableBook.fileName]
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Book Protected",@"\"Book Protected\" alert message title")
+									 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOK_HAS_DRM",nil,[NSBundle mainBundle],@"The file %@ will not be imported because it is copy-protected.",@"Alert message informing the end-user that importing of book from another application will not occur because DRM was found."),importableBook.fileName]
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles: nil];
@@ -622,7 +622,7 @@
 		}
 		if ([results count] >= 1) {
 			NSLog(@"Found completed imported Book in context already- will not add to library. aborting..."); 
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title")
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Book Already Imported",@"\"Book Already Imported\" alert message title")
 										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOK_ALREADY_FOUND_IN_LIBRARY",nil,[NSBundle mainBundle],@"This book will not be imported because your library already has a book imported from the same file name: %@.",@"Alert message informing the end-user that importing of selected book will not occur because the library already has a book imported from the same file name."),importableBook.fileName]
 										delegate:nil 
 							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")

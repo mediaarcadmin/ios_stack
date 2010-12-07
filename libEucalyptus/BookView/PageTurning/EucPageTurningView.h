@@ -89,6 +89,8 @@ typedef enum EucPageTurningViewAnimationFlags {
     EucPageTurningVerletContstraint _constraints[CONSTRAINT_COUNT];
     int _constraintCount;
         
+    BOOL _vibratesOnInvalidTurn;
+    
     BOOL _pageTextureIsDark;
     GLuint _blankPageTexture;
 
@@ -185,6 +187,8 @@ typedef enum EucPageTurningViewAnimationFlags {
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
+
+@property (nonatomic, assign) BOOL vibratesOnInvalidTurn;
 
 // Only set one of these!
 @property (nonatomic, assign) id<EucPageTurningViewViewDataSource> viewDataSource;

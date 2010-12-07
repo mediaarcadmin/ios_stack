@@ -230,7 +230,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if (_TTSEnabled) {
         
-        if ((![self.book hasAudiobook]) && (![self.book hasTTSRights] || !self.book.paragraphSource)) {
+        if (![self.book hasAudiobook] && (![self.book hasTTSRights] || !([self.book hasTextFlow] || [self.book hasEPub]))) {
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
         }
 		else {
@@ -753,12 +753,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [titleView setTitle:[self.book title]];
                 [titleView setAuthor:[self.book authorsWithStandardFormat]];              
                 
+                if ([_bookView wantsTouchesSniffed]) {
+                    [(THEventCapturingWindow *)self.view.window addTouchObserver:self forView:_bookView];            
+                }                
+                
                 [self.view addSubview:_bookView];
                 [self.view sendSubviewToBack:_bookView];
-                
-                if ([_bookView wantsTouchesSniffed]) {
-                    [(THEventCapturingWindow *)_bookView.window addTouchObserver:self forView:_bookView];            
-                }
             }
             
             // Pretend that we last saved this page number, so that we 
@@ -2044,14 +2044,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void) getNextBlockForAudioManager:(BlioAudioManager*)audioMgr {
-    id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
-    
-    id newBlock  = [paragraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
+    id newBlock  = [_audioParagraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
 
     if(newBlock) {
         audioMgr.currentBlock = newBlock;
         audioMgr.currentWordOffset = 0;
-        audioMgr.blockWords = [paragraphSource wordsForParagraphWithID:audioMgr.currentBlock];
+        audioMgr.blockWords = [_audioParagraphSource wordsForParagraphWithID:audioMgr.currentBlock];
     } else {        
         // end of the book
         audioMgr.currentBlock = nil;
@@ -2067,10 +2065,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
 	else {
 		// Play button has just been pushed.
-        id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease]; // retain/autorelease to work around dealloc bug #235
         id blockId = nil;
         uint32_t wordOffset = 0;
-		[paragraphSource bookmarkPoint:point toParagraphID:&blockId wordOffset:&wordOffset]; 
+		[_audioParagraphSource bookmarkPoint:point toParagraphID:&blockId wordOffset:&wordOffset]; 
 		
 //		NSLog(@"prepareTextToSpeakWithAudioManager. CurrentBookmarkPoint is on page %d. blockId: %@ wordOffset: %d)", self.bookView.currentBookmarkPoint.layoutPage, blockId, wordOffset);
 
@@ -2080,7 +2077,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 // So we're starting speech for the first time, or for the first time since changing the 
                 // page or book after stopping speech the last time (whew).
                 [audioMgr setCurrentBlock:blockId];
-                [audioMgr setBlockWords:[paragraphSource wordsForParagraphWithID:blockId]];
+                [audioMgr setBlockWords:[_audioParagraphSource wordsForParagraphWithID:blockId]];
 
 				if ( [audioMgr.blockWords count] && (wordOffset < [audioMgr.blockWords count] - 1 )) {
 					++wordOffset;
@@ -2171,9 +2168,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-			id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
-            BlioBookmarkPoint *point = [paragraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
-                                                                                   wordOffset:wordOffset];
+            BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
+                                                                                wordOffset:wordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
         [_acapelaAudioManager setCurrentWordOffset:wordOffset];
@@ -2196,6 +2192,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag { 
 	if (!flag) {
 		self.audioPlaying = NO;
+        [_audioParagraphSource release];
+        _audioParagraphSource = nil;
+        [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];        
         [self updatePauseButton];
 		NSLog(@"Audio player terminated because of error.");
 		return;
@@ -2223,6 +2222,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		if ( !loadedFilesAhead ) {
 			// End of book.
 			self.audioPlaying = NO;
+            [_audioParagraphSource release];
+            _audioParagraphSource = nil;
+            [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];            
             [self updatePauseButton];
 		}
 		else {
@@ -2305,9 +2307,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-			id<BlioParagraphSource> paragraphSource = [[self.book.paragraphSource retain] autorelease];
-            BlioBookmarkPoint *point = [paragraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
-                                                                                    wordOffset:_audioBookManager.currentWordOffset];
+            BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
+                                                                                wordOffset:_audioBookManager.currentWordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
 		
@@ -2347,7 +2348,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (self.audioPlaying) {
         [self pauseAudio];  // For tts, try again with stopSpeakingAtBoundary when next RC comes.
         self.audioPlaying = NO;  
-    } else { 
+        [_audioParagraphSource release];
+        _audioParagraphSource = nil;
+        [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];        
+    } else {
+        _audioParagraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.book.objectID] retain];
+        
 		NSLog(@"[self.book hasTTSRights]: %i",[self.book hasTTSRights]);
 		NSLog(@"[self.book hasAudiobook]: %i",[self.book hasAudiobook]);
 		
@@ -2394,21 +2400,24 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 				self.audioPlaying = _acapelaAudioManager.startedPlaying;
 			}
 			else {
-				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Library Settings section and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"No Voices Available",@"\"No Voices Available\" alert message title")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"Please go to your voice settings to download a Text-To-Speech voice.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
 											delegate:nil 
 								   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
 									otherButtonTitles:nil];
-				return;
 			}
         }
         else {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"No Audio Rights",@"\"No Audio Rights\" alert message title")
 										 message:NSLocalizedStringWithDefaultValue(@"NO_AUDIO_PERMITTED_FOR_THIS_BOOK",nil,[NSBundle mainBundle],@"No audio is permitted for this book.",@"Alert message shown to end-user when the end-user attempts to hear a book read but no audiobook is present and TTS is not enabled.")
 										delegate:nil 
 							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
 							   otherButtonTitles:nil];
-			return;
+        }
+        if(!self.audioPlaying) {
+            [_audioParagraphSource release];
+            _audioParagraphSource = nil;
+            [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];
         }
     }    
     [self updatePauseButton];
@@ -2419,7 +2428,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[activityIndicator stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
 	NSLog(@"Error loading web page: %@",errorMsg);
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title")
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Loading Page",@"\"Error Loading Page\" alert message title")
 								 message:errorMsg
 								delegate:nil 
 					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
@@ -2429,7 +2438,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)search:(id)sender {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         if (!self.searchViewController) {
-            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithBookID:self.book.objectID];
             [aBookSearchController setMaxPrefixAndMatchLength:20];
             [aBookSearchController setMaxSuffixLength:100];
             
@@ -2446,7 +2455,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.searchViewController showInController:self.navigationController animated:YES];
     } else {
         if (!self.searchPopover) {
-            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithParagraphSource:[self.book paragraphSource]];
+            BlioBookSearchController *aBookSearchController = [[BlioBookSearchController alloc] initWithBookID:self.book.objectID];
             [aBookSearchController setMaxPrefixAndMatchLength:20];
             [aBookSearchController setMaxSuffixLength:100];
             
@@ -2801,8 +2810,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type { 
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_WEBTOOL",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to use this web tool.",@"Alert message when the user tries to download a book without an Internet connection.")
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Not Found",@"\"Internet Connection Not Found\" alert message title")
+									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_WEBTOOL",nil,[NSBundle mainBundle],@"An internet connection is required to perform this function.",@"Alert message when the user tries to download a book without an Internet connection.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
 						   otherButtonTitles:nil];		

@@ -8,13 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import <libEucalyptus/EucBookView.h>
+#import <CoreData/CoreData.h>
 #import "BlioBookView.h"
 #import "BlioBookViewController.h"
 
 @protocol BlioParagraphSource;
 
 
-@interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {    
+@interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {
+    NSManagedObjectID *bookId;
+    
     NSInteger pageNumber;
     NSInteger pageCount;
     

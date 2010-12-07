@@ -59,6 +59,8 @@
 
 @synthesize delegate = _delegate;
 
+@synthesize vibratesOnInvalidTurn = _vibratesOnInvalidTurn;
+
 @synthesize viewDataSource = _viewDataSource;
 @synthesize bitmapDataSource = _bitmapDataSource;
 
@@ -170,6 +172,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     _zoomFactor = 1.0f;
     _zoomMatrix = CATransform3DIdentity;
 	_animationIndex = -1;
+    
+    _vibratesOnInvalidTurn = YES;
     
     EAGLContext *eaglContext = self.eaglContext;
     _texturePool = [[THOpenGLTexturePool alloc] initWithMainThreadContext:eaglContext];
@@ -1886,7 +1890,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _isTurning = 1;
         } else {
             if(!_vibrated) {
-                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                if(_vibratesOnInvalidTurn) {
+                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                }
                 _vibrated = YES;
             }                
         }
@@ -1915,7 +1921,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _isTurning = -1;
         } else {
             if(!_vibrated) {
-                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                if(_vibratesOnInvalidTurn) {
+                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                }
                 _vibrated = YES;
             }
         }
