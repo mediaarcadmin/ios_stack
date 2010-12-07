@@ -777,9 +777,6 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         NSLog(@"Zero length data returned in dataForComponentAtPath: %@", path);
     }
 	
-	
-	[componentData writeToFile:[NSString stringWithFormat:@"\%@", [componentPath lastPathComponent]] atomically:YES];
-    
     return componentData;
     
 }
