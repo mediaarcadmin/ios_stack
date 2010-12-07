@@ -1566,7 +1566,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if(!accessibilityElements) {
         accessibilityElements = [[NSMutableArray arrayWithArray:[self textBlockAccessibilityElements]] retain];
 
-        CGFloat tapZoneWidth = 0.1f * self.pageTurningView.bounds.size.width;      
+        CGFloat tapZoneWidth = 0.25f * self.pageTurningView.bounds.size.width;      
         
         {
             UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
