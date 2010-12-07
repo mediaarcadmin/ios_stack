@@ -1366,7 +1366,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                         wantPageIndex = NSUIntegerMax;
                     }
                 }                
-				return;
 			}
 		} else if (focusedElement == self.nextZone) {
 			wantPageIndex = self.pageTurningView.rightPageIndex;
@@ -1527,7 +1526,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     NSMutableArray *elements = [NSMutableArray array];
 	
     NSInteger pageIndex = self.pageTurningView.leftPageIndex;
-    if(self.pageTurningView.twoUp && pageIndex != NSUIntegerMax) {
+    if(self.pageTurningView.isTwoUp && pageIndex != NSUIntegerMax) {
         CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
         NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
