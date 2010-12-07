@@ -1527,7 +1527,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     NSMutableArray *elements = [NSMutableArray array];
 	
     NSInteger pageIndex = self.pageTurningView.leftPageIndex;
-    if(pageIndex != NSUIntegerMax) {
+    if(self.pageTurningView.twoUp && pageIndex != NSUIntegerMax) {
         CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
         NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
