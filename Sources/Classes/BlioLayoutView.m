@@ -426,12 +426,19 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (NSString *)pageLabelForPageNumber:(NSInteger)page {
+	id myLabelProvider;
+	
+	if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+		myLabelProvider = self.dataSource;
+	} else {
+		myLabelProvider = self.textFlow;
+	}
+	
     NSString *ret = nil;
     
-    BlioTextFlow *myTextFlow = self.textFlow;
-    NSString* section = [myTextFlow sectionUuidForPageNumber:page];
-    THPair* chapter = [myTextFlow presentationNameAndSubTitleForSectionUuid:section];
-    NSString* pageStr = [myTextFlow displayPageNumberForPageNumber:page];
+    NSString* section = [myLabelProvider sectionUuidForPageNumber:page];
+    THPair* chapter = [myLabelProvider presentationNameAndSubTitleForSectionUuid:section];
+    NSString* pageStr = [myLabelProvider displayPageNumberForPageNumber:page];
 
     if (section && chapter.first) {
         if (pageStr) {
@@ -448,6 +455,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     } // of no section name
     
     return ret;
+	
 }
 
 #pragma mark -
