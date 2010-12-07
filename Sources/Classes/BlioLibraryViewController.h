@@ -112,6 +112,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	BlioAccessibilitySegmentedControl * sortSegmentedControl;
 	NSMutableArray * libraryItems;
 	NSMutableArray * sortLibraryItems;
+	UIColor * tintColor;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
 #endif
@@ -132,6 +133,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) BlioLibrarySortType librarySortType;
 @property (nonatomic, retain) UIButton * libraryVaultButton;
 @property (nonatomic, assign) BOOL showArchiveCell;
+@property (nonatomic, retain) UIColor * tintColor;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @property (nonatomic, retain) UIPopoverController * settingsPopoverController;

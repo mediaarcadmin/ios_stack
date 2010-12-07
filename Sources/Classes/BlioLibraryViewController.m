@@ -68,6 +68,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize openBookViewController;
 @synthesize libraryVaultButton;
 @synthesize showArchiveCell;
+@synthesize tintColor;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @synthesize settingsPopoverController;
@@ -94,6 +95,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.selectedLibraryBookView = nil;
     self.openBookViewController = nil;
 	self.libraryVaultButton = nil;
+	self.tintColor = nil;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	self.settingsPopoverController = nil;
 #endif
@@ -111,6 +113,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 #endif
 	
+
 	UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:libraryBackgroundFilename]];
 	backgroundImageView.frame = self.view.bounds;
     backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -177,10 +180,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)viewDidLoad {
     // N.B. on iOS 4.0 it is important to set the toolbar tint before adding the UIBarButtonItems
-	
+	self.tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
+
 	BlioLibraryLayout loadedLibraryLayout = [[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"];
 	
-    UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
     [self.navigationController setToolbarHidden:NO ];
     [self.navigationController.toolbar setTintColor:tintColor];
     [self.navigationController.navigationBar setTintColor:tintColor];
@@ -464,10 +467,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     // From http://stackoverflow.com/questions/3151549/uitoolbar-tint-on-ios4
     for (UIBarButtonItem * item in self.toolbarItems)
     {
+		NSLog(@"item: %@",item);
         item.style = UIBarButtonItemStylePlain;
         item.style = UIBarButtonItemStyleBordered;
     }
-    
+	sortSegmentedControl.tintColor = tintColor;
     [super viewWillAppear:animated];
 }
 
