@@ -115,12 +115,12 @@
 	{
 		case 0:
 		{
-			title = NSLocalizedString(@"You may register up to five devices for reading books purchased from the Blio book store.",@"\"Registration text\" table header in Paid Books Settings View");
+			title = NSLocalizedString(@"You may register up to five devices for reading books purchased from the Blio bookstore.",@"\"Registration text\" table header in Paid Books Settings View");
 			break;
 		}
 		//case 1:
 		//{
-			//	title = NSLocalizedString(@"You may register up to two devices for reading textbooks purchased from the Blio book store.",@"\"Textbook registration\" table header in Paid Books Settings View");
+			//	title = NSLocalizedString(@"You may register up to two devices for reading textbooks purchased from the Blio bookstore.",@"\"Textbook registration\" table header in Paid Books Settings View");
 		//	break;
 		//}
 	}
@@ -204,10 +204,10 @@
 	else {
 		registrationSwitch = (UISwitch*)sender;
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to de-register your device for this account? Doing so will remove all purchased books associated with this account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
+									 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
 									delegate:self
 						   cancelButtonTitle:nil
-						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"De-Register",@"\"De-Register\" button label within Confirm Deregistration alertview"), nil];
+						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
 		
 	}
 //	[self.navigationController popViewControllerAnimated:YES];

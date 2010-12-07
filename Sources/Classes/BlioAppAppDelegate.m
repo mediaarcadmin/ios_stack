@@ -382,11 +382,11 @@ static void *background_init_thread(void * arg) {
 		if ([[self.processingManager internetOperations] count] > 0)
 		{
 			// ALERT user to what just happened.
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-															message:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")
-														   delegate:nil
-												  cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-												  otherButtonTitles:nil];
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Lost",@"\"Internet Connection Lost\" Alert message title")
+										 message:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")
+										delegate:nil
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+							   otherButtonTitles:nil];
 		}
 		[self.processingManager stopInternetOperations];
 	}

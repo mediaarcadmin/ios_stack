@@ -320,7 +320,7 @@
 	}
 }
 - (NSString *)ttsBooksInLibraryDisclosure {
-	return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"TTS_BOOKS_IN_LIBRARY_DISCLOSURE",nil,[NSBundle mainBundle],@"%i of %i books in your library may be read aloud by Blio Text-To-Speech voices.",@"Message that discloses how many of the user's books can be read by TTS."),ttsBooks,totalBooks];
+	return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"TTS_BOOKS_IN_LIBRARY_DISCLOSURE",nil,[NSBundle mainBundle],@"%i of %i books in your library may be read aloud by Text-To-Speech voices.",@"Message that discloses how many of the user's books can be read by TTS."),ttsBooks,totalBooks];
 }
 #pragma mark UITableViewDataSource Methods
 

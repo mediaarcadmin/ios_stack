@@ -123,8 +123,8 @@
 }
 -(void)loginButtonPressed:(id)sender {
 	if (!emailField.text || [emailField.text isEqualToString:@""]) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your email address before logging in.",@"Alert Text informing the end-user that the email address must be entered to login.")
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Login Error",@"\"Login Error\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"EMAIL_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your email address.",@"Alert Text informing the end-user that the email address must be entered to login.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
@@ -132,8 +132,8 @@
 		return;
 	}
 	if (!passwordField.text || [passwordField.text isEqualToString:@""]) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your password before logging in.",@"Alert Text informing the end-user that the password must be entered to login.")
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Login Error",@"\"Login Error\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"PASSWORD_FIELD_MUST_BE_POPULATED",nil,[NSBundle mainBundle],@"Please enter your password.",@"Alert Text informing the end-user that the password must be entered to login.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];			
@@ -157,7 +157,7 @@
 	else loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
 	[activityIndicatorView stopAnimating];
 	if (loginErrorText != nil) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Login Error",@"\"Login Error\" alert message title") 
 									 message:loginErrorText
 									delegate:self 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
@@ -336,7 +336,7 @@
 -(void)forgotPassword:(id)sender {
 	if (!self.emailField.text || [self.emailField.text isEqualToString:@""]) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"ENTER_PASSWORD_IF_FORGOTTEN",nil,[NSBundle mainBundle],@"In order for Blio to send you your password, please first enter your email address.",@"Alert Text informing the end-user that his/her email address must be entered before Blio can send his/her password.")
+									 message:NSLocalizedStringWithDefaultValue(@"ENTER_PASSWORD_IF_FORGOTTEN",nil,[NSBundle mainBundle],@"Please enter your email address so your password can be sent.",@"Alert Text informing the end-user that his/her email address must be entered before Blio can send his/her password.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];	
@@ -373,7 +373,7 @@
 		if (aConnection.digitalLockerResponse.ReturnCode == 300) {
 			if (aConnection.digitalLockerResponse.Errors && [aConnection.digitalLockerResponse.Errors count] > 0) errorMessage = ((DigitalLockerResponseError*)[aConnection.digitalLockerResponse.Errors objectAtIndex:0]).ErrorText;
 		}
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Server Error",@"\"Server Error\" alert message title") 
 									 message:errorMessage
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")

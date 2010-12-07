@@ -41,8 +41,8 @@
 -(void) loadView {
 	[super loadView];
 	noResultsLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
-	noBooksText = NSLocalizedString(@"There are no books in your archive.",@"\"There are no books in your archive.\" indicator"); 
-	loadingBooksText = NSLocalizedString(@"Retrieving books into your archive...",@"\"Retrieving books into your archive.\" indicator"); 
+	noBooksText = NSLocalizedString(@"There are no books in your Archive.",@"\"There are no books in your Archive.\" indicator"); 
+	loadingBooksText = NSLocalizedString(@"Retrieving books into your Archive...",@"\"Retrieving books into your Archive.\" indicator"); 
 	noResultsLabel.textAlignment = UITextAlignmentCenter;
 	noResultsLabel.font = [UIFont systemFontOfSize:14.0];
 	noResultsLabel.textColor = [UIColor colorWithRed:108.0/255.0 green:108.0/255.0 blue:108.0/255.0 alpha:1.0];
@@ -173,7 +173,7 @@
 	}
 	else {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_FOR_VAULT",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to update your Vault.",@"Alert message when the user views the Vault screen without an Internet connection.")
+									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_FOR_VAULT",nil,[NSBundle mainBundle],@"An internet connection is required to update your Archive.",@"Alert message when the user views the Archive screen without an Internet connection.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];		
@@ -235,7 +235,7 @@
 	NSLog(@"reachability: %i",[[Reachability reachabilityForInternetConnection] currentReachabilityStatus]);
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_RESTORE_VAULT_BOOK",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to download this book.",@"Alert message when the user tries to download a Vault book without an Internet connection.")
+									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_TO_RESTORE_VAULT_BOOK",nil,[NSBundle mainBundle],@"An internet connection is required to download this book.",@"Alert message when the user tries to download a Vault book without an Internet connection.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];
@@ -243,7 +243,7 @@
 	}
 	if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] != BlioDeviceRegisteredStatusRegistered ) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"This device is not registered...",@"\"This device is not registered...\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for viewing paid content. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
+									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for reading purchased books. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
 									delegate:self 
 						   cancelButtonTitle:nil
 						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Register",@"\"Register\" button label within Confirm De/Registration alertview"), nil];
