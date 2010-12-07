@@ -13,6 +13,7 @@
 #import "BlioTextFlowFlowTree.h"
 #import "BlioTextFlowXAMLTree.h"
 #import "BlioXPSProvider.h"
+#import "BlioParagraphSource.h"
 
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucBookNavPoint.h>
@@ -26,7 +27,6 @@
 @property (nonatomic, assign) NSManagedObjectID *bookID;
 @property (nonatomic, assign) BOOL fakeCover;
 @property (nonatomic, retain) BlioTextFlow *textFlow;
-@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 
 @end
 
@@ -35,7 +35,6 @@
 @synthesize bookID;
 @synthesize fakeCover;
 @synthesize textFlow;
-@synthesize paragraphSource;
 
 - (id)initWithBookID:(NSManagedObjectID *)blioBookID
 {
@@ -44,7 +43,6 @@
     if(blioBook && (self = [super init])) {
         self.bookID = blioBookID;
         self.textFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
-        self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:blioBookID];
         self.fakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:BlioManifestCoverKey];
         
         self.title = blioBook.title;
@@ -57,8 +55,6 @@
 
 - (void)dealloc
 {
-    self.paragraphSource = nil;
-    [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.bookID];
     self.textFlow = nil;
     [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:self.bookID];
     
@@ -292,8 +288,13 @@
         ret = [[BlioBookmarkPoint alloc] init];
         
         NSUInteger indexes[2] = { eucIndexPoint.source , [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
-        NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];                         
-        BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
+        NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
+        
+        BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+        id<BlioParagraphSource> paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
+        BlioBookmarkPoint *bookmarkPoint = [paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
+        [bookManager checkInParagraphSourceForBookWithID:bookID];
+        
         [indexPath release];
         
         if(bookmarkPoint) {
@@ -319,10 +320,13 @@
         NSIndexPath *paragraphID = nil;
         uint32_t wordOffset = 0;
             
-        [self.paragraphSource bookmarkPoint:bookmarkPoint
-                              toParagraphID:&paragraphID 
-                                 wordOffset:&wordOffset];
-        
+        BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+        id<BlioParagraphSource> paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
+        [paragraphSource bookmarkPoint:bookmarkPoint
+                         toParagraphID:&paragraphID 
+                            wordOffset:&wordOffset];
+        [bookManager checkInParagraphSourceForBookWithID:bookID];
+
         eucIndexPoint.source = [paragraphID indexAtPosition:0];
         eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
         eucIndexPoint.word = wordOffset;

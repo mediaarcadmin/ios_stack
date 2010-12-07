@@ -21,6 +21,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 
 @interface BlioSpeedReadView ()
 
+@property (nonatomic, retain) NSManagedObjectID *bookID;
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, retain) id currentParagraphID;
 @property (nonatomic) uint32_t currentWordOffset;
@@ -30,7 +31,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 
 @implementation BlioSpeedReadView
 
-@synthesize pageNumber, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize bookID, pageNumber, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
 @synthesize delegate;
 
 - (void)dealloc {
@@ -40,7 +41,11 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     [bigTextLabel release]; bigTextLabel = nil;
     [fingerImageHolder release]; fingerImageHolder = nil;
     [currentParagraphID release]; currentParagraphID = nil;
+    
+    [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:bookID];
     [paragraphSource release]; paragraphSource = nil;
+    
+    [bookID release];
     
 	// Don't release as was not retained
 	delegate = nil;
@@ -48,11 +53,12 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 }
 
 - (id)initWithFrame:(CGRect)frame
-             bookID:(NSManagedObjectID *)bookID 
+             bookID:(NSManagedObjectID *)bookIDIn
            animated:(BOOL)animated {
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
-        BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:bookID];
-        paragraphSource = [aBook.paragraphSource retain];
+        self.bookID = bookIDIn;
+        
+        paragraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:bookID] retain];
         
         [self setMultipleTouchEnabled:YES];
         [self setBackgroundColor:[UIColor whiteColor]];
@@ -119,7 +125,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         [bigTextLabel setFont:font];
         [sampleTextLabel setFont:font];        
         
-        [self goToBookmarkPoint:aBook.implicitBookmarkPoint animated:NO];	
+        [self goToBookmarkPoint:[[BlioBookManager sharedBookManager] bookWithID:bookID].implicitBookmarkPoint animated:NO];	
         [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
         
         initialTouchDifference = 0;

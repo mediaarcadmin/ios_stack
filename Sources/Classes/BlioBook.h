@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "BlioTextFlow.h"
-#import "BlioParagraphSource.h"
 #import "BlioBookmark.h"
 
 @class BlioXPSProvider;
@@ -85,12 +84,11 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end
 
-@class BlioTextFlow, BlioParagraphSource;
+@class BlioTextFlow;
 
 @interface BlioBook : NSManagedObject <BlioBookText> {
     BlioTextFlow *textFlow;
     BlioXPSProvider *xpsProvider;
-    id<BlioParagraphSource> paragraphSource;
 }
 
 // Core data attribute-backed dynamic properties
@@ -118,10 +116,9 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 
 // Lazily convenience accessors
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
-// These convenience acessors are not guranteed to exists after a memory warning
+// Objects returned by this convenience acessors is not guranteed to exist after a memory warning
 // If you need to retain the result in your object use the checkout methods in BlioBookManager
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
-@property (nonatomic, retain, readonly) id<BlioParagraphSource> paragraphSource;
 
 // Core data attribute-backed convenience accessors
 @property (nonatomic, assign, readonly) NSString* bookCacheDirectory;

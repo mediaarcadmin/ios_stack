@@ -38,6 +38,8 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
 @property (nonatomic, assign) NSUInteger currentFlowTreeIndex;
 @property (nonatomic, retain) BlioTextFlowFlowTree *currentFlowTree;
 
+@property (nonatomic, retain) BlioFlowEucBook *xamlEucBook;
+
 @end
 
 
@@ -48,10 +50,16 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
 @synthesize currentFlowTreeIndex;
 @synthesize currentFlowTree;
 
+@synthesize xamlEucBook;
+
+
 - (id)initWithBookID:(NSManagedObjectID *)bookID
 {
     if((self = [super init])) {
         textFlow = [[[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:bookID] retain];
+        if(textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
+            xamlEucBook = (BlioFlowEucBook *)[[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID] retain];
+        }
     }
     return self;
 }
@@ -60,6 +68,10 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
 {
     NSManagedObjectID *myBookID = [textFlow.bookID retain];
     if(textFlow) {
+        if(xamlEucBook) {
+            [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:myBookID];
+            [xamlEucBook release];
+        }
         [textFlow release];
         [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:myBookID];
     }
@@ -210,12 +222,9 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         }
         */
         
-        NSManagedObjectID *bookID = self.textFlow.bookID;
-        BlioFlowEucBook *bUpeBook = (BlioFlowEucBook *)[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID];
-        
         EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
         eucIndexPoint.source = flowIndex;
-        EucCSSIntermediateDocument *document = [bUpeBook intermediateDocumentForIndexPoint:eucIndexPoint];
+        EucCSSIntermediateDocument *document = [self.xamlEucBook intermediateDocumentForIndexPoint:eucIndexPoint];
         [eucIndexPoint release];
         
         EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
@@ -354,7 +363,6 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         *wordOffset = bestWordOffset;
         
         [runExtractor release];
-        [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:bookID];
     } else {
         BlioTextFlowFlowTree *flowFlowTree = [self flowFlowTreeForIndex:flowIndex];
         BlioTextFlowParagraph *bestParagraph = flowFlowTree.firstParagraph;
@@ -430,12 +438,9 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         // between these hash arrays for both candidate windows, and choosing
         // the word in the center if the best matching window.
         
-        NSManagedObjectID *bookID = self.textFlow.bookID;
-        BlioFlowEucBook *bUpeBook = (BlioFlowEucBook *)[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID];
-        
         EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
         eucIndexPoint.source = [paragraphID indexAtPosition:0];
-        EucCSSIntermediateDocument *document = [bUpeBook intermediateDocumentForIndexPoint:eucIndexPoint];
+        EucCSSIntermediateDocument *document = [self.xamlEucBook intermediateDocumentForIndexPoint:eucIndexPoint];
         [eucIndexPoint release];
         
         EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
@@ -678,7 +683,6 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         [ret autorelease];
         
         [runExtractor release];
-        [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:bookID];
     } else {
         BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
         if(paragraph) {
@@ -707,12 +711,9 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
 {
     NSArray *ret = nil;
     if(self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
-        NSManagedObjectID *bookID = self.textFlow.bookID;
-        BlioFlowEucBook *bUpeBook = (BlioFlowEucBook *)[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID];
-        
         EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
         eucIndexPoint.source = [paragraphID indexAtPosition:0];
-        EucCSSIntermediateDocument *document = [bUpeBook intermediateDocumentForIndexPoint:eucIndexPoint];
+        EucCSSIntermediateDocument *document = [self.xamlEucBook intermediateDocumentForIndexPoint:eucIndexPoint];
         [eucIndexPoint release];
         
         EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
@@ -724,7 +725,6 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         ret = [wordsContainingDocumentRun words];
         
         [runExtractor release];
-        [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:bookID];
     } else {        
         BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
         ret =  paragraph.paragraphWords.wordStrings;
@@ -736,13 +736,10 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
 {
     NSIndexPath *ret = nil;
     
-    if(self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
-        NSManagedObjectID *bookID = self.textFlow.bookID;
-        BlioFlowEucBook *bUpeBook = (BlioFlowEucBook *)[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID];
-        
+    if(self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {        
         EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
         eucIndexPoint.source = [paragraphID indexAtPosition:0];
-        EucCSSIntermediateDocument *document = [bUpeBook intermediateDocumentForIndexPoint:eucIndexPoint];
+        EucCSSIntermediateDocument *document = [self.xamlEucBook intermediateDocumentForIndexPoint:eucIndexPoint];
         [eucIndexPoint release];
         
         EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
@@ -764,7 +761,6 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         }
 
         [runExtractor release];
-        [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:bookID];
     } else {
         BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
         paragraph = paragraph.nextSibling;

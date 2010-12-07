@@ -114,6 +114,8 @@ typedef enum {
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
     
+    id<BlioParagraphSource> _audioParagraphSource;
+    
     BOOL motionControlsEnabled;
     
     BlioPageColor _currentPageColor;

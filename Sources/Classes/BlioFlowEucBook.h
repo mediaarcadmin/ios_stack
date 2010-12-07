@@ -19,7 +19,6 @@
     NSManagedObjectID *bookID;
     BOOL fakeCover;
     BlioTextFlow *textFlow;
-    id <BlioParagraphSource> paragraphSource;
     NSArray *navPoints;
 }
 
