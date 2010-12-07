@@ -1921,7 +1921,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _isTurning = -1;
         } else {
             if(!_vibrated) {
-                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                if(_vibratesOnInvalidTurn) {
+                    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                }
                 _vibrated = YES;
             }
         }
