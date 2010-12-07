@@ -119,7 +119,15 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         NSString *lookForStrings[MATCHING_WINDOW_SIZE];
         char lookForHashes[MATCHING_WINDOW_SIZE];
 
-        NSArray *pageBlocks = [textFlow blocksForPageAtIndex:bookmarkPoint.layoutPage - 1 includingFolioBlocks:YES];
+        NSInteger lowerPageIndexBound = [[flowReferences objectAtIndex:flowIndex] startPage];
+        NSInteger upperPageIndexBound;
+        if(nextFlowIndex < flowReferences.count) {
+            upperPageIndexBound = [[flowReferences objectAtIndex:nextFlowIndex] startPage] - 1;
+        } else {
+            upperPageIndexBound = self.textFlow.lastPageIndex;
+        }
+        
+        NSArray *pageBlocks = [textFlow blocksForPageAtIndex:bookmarkPageIndex includingFolioBlocks:YES];
         NSArray *words;
         if(pageBlocks.count > bookmarkPoint.blockOffset) {
             words = ((BlioTextFlowBlock *)[pageBlocks objectAtIndex:bookmarkPoint.blockOffset]).wordStrings;
@@ -127,16 +135,17 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
             words = [NSArray array];
         }
         NSInteger middleWordOffset = bookmarkPoint.wordOffset;
+        
         {
-            NSInteger tryPageOffset = bookmarkPoint.layoutPage - 1;
+            NSInteger tryPageOffset = bookmarkPageIndex;
             NSInteger tryBlockOffset = bookmarkPoint.blockOffset;
                 
             while(middleWordOffset + MATCHING_WINDOW_SIZE / 2 + 1 > words.count) {
                 ++tryBlockOffset;
                 if(tryBlockOffset >= pageBlocks.count) {
-                    tryBlockOffset = 0;
+                    tryBlockOffset = -1; // We'll increment it back to 0 on the next iteration.
                     ++tryPageOffset;
-                    if(tryPageOffset > self.textFlow.lastPageIndex) {
+                    if(tryPageOffset > upperPageIndexBound) {
                         NSInteger needMore = middleWordOffset + MATCHING_WINDOW_SIZE / 2 + 1 - words.count;
                         NSMutableArray *newWords = [[NSMutableArray alloc] initWithCapacity:needMore];
                         for(NSInteger i = 0; i < needMore; ++i) {
@@ -157,25 +166,25 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         }
         
         {
-            NSInteger tryPageOffset = bookmarkPoint.layoutPage - 1;
+            NSInteger tryPageOffset = bookmarkPageIndex;
             NSInteger tryBlockOffset = bookmarkPoint.blockOffset;
             
-            while(middleWordOffset - MATCHING_WINDOW_SIZE / 2 <= 0) {
+            while(middleWordOffset < MATCHING_WINDOW_SIZE / 2) {
                 --tryBlockOffset;
                 if(tryBlockOffset < 0) {
                     --tryPageOffset;
-                    if(tryPageOffset < 0) {
-                        NSInteger needMore = MATCHING_WINDOW_SIZE / 2 - middleWordOffset + 1;
+                    if(tryPageOffset < lowerPageIndexBound) {
+                        NSInteger needMore = MATCHING_WINDOW_SIZE / 2 - middleWordOffset;
                         NSMutableArray *newWords = [[NSMutableArray alloc] initWithCapacity:needMore];
                         for(NSInteger i = 0; i < needMore; ++i) {
                             [newWords addObject:kNoWordPlaceholder];
                         }
-                        words = [newWords arrayByAddingObjectsFromArray:newWords];
+                        words = [newWords arrayByAddingObjectsFromArray:words];
                         [newWords release];
                         middleWordOffset += needMore;
                     } else {
                         pageBlocks = [textFlow blocksForPageAtIndex:tryPageOffset includingFolioBlocks:YES];
-                        tryBlockOffset = pageBlocks.count;
+                        tryBlockOffset = pageBlocks.count; // Will decrement to the index of the last block on the next iteration.
                     }
                 } else {
                     BlioTextFlowBlock *block = [pageBlocks objectAtIndex:tryBlockOffset];
@@ -212,7 +221,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
         EucCSSLayoutDocumentRun *documentRun = nil;
 
-        NSUInteger lookForPageIndex = bookmarkPoint.layoutPage - 1;
+        NSUInteger lookForPageIndex = bookmarkPageIndex;
         
         // Bound our search from the last XAML run that starts on a previous
         // page to the one we're looking for, to the first XAML run on a 
@@ -288,10 +297,10 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         uint32_t bestRunKey = examiningRunKey;
         uint32_t bestWordOffset = 0;
         
-        while(documentRun && examiningRunKey <= upperBoundRunKey) {
-            NSArray *words = documentRun.words;
+        NSArray *runWords = documentRun.words;
+        while(runWords && examiningRunKey <= upperBoundRunKey) {
             NSUInteger examiningWordOffset = 0;
-            for(NSString *word in words) {
+            for(NSString *word in runWords) {
                 memmove(blockHashes, blockHashes + 1, sizeof(char) * MATCHING_WINDOW_SIZE - 1);
                 blockHashes[MATCHING_WINDOW_SIZE - 1] = [word hash] % 256;
                 
@@ -319,8 +328,25 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 }
                 ++examiningWordOffset;
             }
-            documentRun = [runExtractor nextDocumentRunForDocumentRun:documentRun];
-            examiningRunKey = documentRun.id;
+            if(!documentRun) {
+                runWords = nil;
+            } else {
+                documentRun = [runExtractor nextDocumentRunForDocumentRun:documentRun];
+                examiningRunKey = documentRun.id;
+                if(!documentRun || examiningRunKey > upperBoundRunKey) {
+                    // Fake out some extra words at the end to aid in matching
+                    // runs at the end of sections.
+                    examiningRunKey = upperBoundRunKey;
+                    documentRun = nil;
+                    NSString *extraWords[MATCHING_WINDOW_SIZE / 2];
+                    for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE / 2; ++i) {
+                        extraWords[i] = kNoWordPlaceholder;
+                    }
+                    runWords = [NSArray arrayWithObjects:extraWords count:MATCHING_WINDOW_SIZE / 2];                        
+                } else {
+                    runWords = documentRun.words;
+                }
+            }
         }
         
         NSUInteger indexes[2] = { flowIndex, [EucCSSIntermediateDocument documentTreeNodeKeyForKey:bestRunKey] };
@@ -438,6 +464,8 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 endPageIndex = [[thisPageTag substringFromIndex:2] integerValue];
             }
         }
+        // Search onto the next page, so that we get our trailing overlap.
+        ++endPageIndex;
         
         // Find the page number of a /previous/ run in the XAML document
         // to bound our block search.
@@ -461,21 +489,31 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 startPageIndex = [[thisPageTag substringFromIndex:2] integerValue];
             }
         }
-        if(startPageIndex == 0) {
-            NSArray *flowReferences = textFlow.flowReferences;
-            NSUInteger thisFlow = [paragraphID indexAtPosition:0];
-            if(thisFlow < flowReferences.count) {
-                startPageIndex = ((BlioTextFlowFlowReference *)[textFlow.flowReferences objectAtIndex:thisFlow]).startPage;
-            }
+        if(startPageIndex > 0) {
+            // Search onto the previous page, so that we get our trailing overlap.
+            --startPageIndex;
         }
-        if(endPageIndex < startPageIndex) {
-            NSArray *flowReferences = textFlow.flowReferences;
-            NSUInteger nextFlow = [paragraphID indexAtPosition:0] + 1;
-            if(nextFlow < flowReferences.count) {
-                endPageIndex = ((BlioTextFlowFlowReference *)[textFlow.flowReferences objectAtIndex:nextFlow]).startPage - 1;
-            } else {
-                endPageIndex = textFlow.lastPageIndex;
-            }
+        
+        NSArray *flowReferences = textFlow.flowReferences;
+        
+        NSUInteger sectionStartIndex = 0;
+        NSUInteger thisFlow = [paragraphID indexAtPosition:0];
+        if(thisFlow < flowReferences.count) {
+            sectionStartIndex = ((BlioTextFlowFlowReference *)[textFlow.flowReferences objectAtIndex:thisFlow]).startPage;
+        }
+        if(startPageIndex < sectionStartIndex) {
+            startPageIndex = sectionStartIndex;
+        }
+        
+        NSUInteger sectionEndIndex = 0;
+        NSUInteger nextFlow = [paragraphID indexAtPosition:0] + 1;
+        if(nextFlow < flowReferences.count) {
+            sectionEndIndex = ((BlioTextFlowFlowReference *)[textFlow.flowReferences objectAtIndex:nextFlow]).startPage - 1;
+        } else {
+            sectionEndIndex = textFlow.lastPageIndex;
+        }
+        if(endPageIndex < startPageIndex || endPageIndex > sectionEndIndex) {
+            endPageIndex = sectionEndIndex;
         }        
         
         // Extract MATCHING_WINDOW_SIZE strings to look for from around the 
@@ -561,11 +599,34 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         // a window of MATCHING_WINDOW_SIZE that's most similar to the one
         // we're looking for.
         for(NSInteger examiningPage = startPageIndex; examiningPage <= endPageIndex; ++examiningPage) {
-            NSUInteger examiningBlockOffset = 0;
-            for(BlioTextFlowBlock *block in [textFlow blocksForPageAtIndex:examiningPage includingFolioBlocks:YES]) {
-                if(!block.folio) {
+            NSUInteger nextNonFlioBlockOffset = 0;
+            NSArray *blocks = [textFlow blocksForPageAtIndex:examiningPage includingFolioBlocks:YES];
+            NSUInteger blockCount = blocks.count;
+            for(NSUInteger blockOffset = 0; ; ++blockOffset) {
+                NSArray *words = nil;
+                if(blockOffset < blockCount) {
+                    BlioTextFlowBlock *block = [blocks objectAtIndex:blockOffset];
+                    if(!block.folio) {
+                        words = block.wordStrings;
+                        ++nextNonFlioBlockOffset;
+                    }
+                } else {
+                    if(blockOffset == blockCount && 
+                       examiningPage == endPageIndex) {
+                        // Pad out the end of the last page so that we can
+                        // correctly match the end of sections.
+                        NSString *extraWords[MATCHING_WINDOW_SIZE / 2];
+                        for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE / 2; ++i) {
+                            extraWords[i] = kNoWordPlaceholder;
+                        }
+                        words = [NSArray arrayWithObjects:extraWords count:MATCHING_WINDOW_SIZE / 2];                        
+                    } else {
+                        break;
+                    }
+                }
+                if(words) {
                     NSUInteger examiningWordOffset = 0;
-                    for(NSString *word in block.wordStrings) {
+                    for(NSString *word in words) {
                         //NSLog(@"%@", word);
                         memmove(blockHashes, blockHashes + 1, sizeof(char) * MATCHING_WINDOW_SIZE - 1);
                         blockHashes[MATCHING_WINDOW_SIZE - 1] = [word hash] % 256;
@@ -577,7 +638,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                         pageIndexes[MATCHING_WINDOW_SIZE - 1] = examiningPage;
                         
                         memmove(blockOffsets, blockOffsets + 1, sizeof(NSUInteger) * MATCHING_WINDOW_SIZE - 1);
-                        blockOffsets[MATCHING_WINDOW_SIZE - 1] = examiningBlockOffset;
+                        blockOffsets[MATCHING_WINDOW_SIZE - 1] = nextNonFlioBlockOffset - 1;
 
                         memmove(wordOffsets, wordOffsets + 1, sizeof(NSUInteger) * MATCHING_WINDOW_SIZE - 1);
                         wordOffsets[MATCHING_WINDOW_SIZE - 1] = examiningWordOffset;
@@ -585,12 +646,12 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                         int distance = levenshtein_distance_with_bytes(lookForHashes, MATCHING_WINDOW_SIZE, blockHashes, MATCHING_WINDOW_SIZE);
                         if(distance < bestDistance || 
                            (distance == bestDistance && [blockStrings[MATCHING_WINDOW_SIZE / 2] isEqualToString:lookForStrings[MATCHING_WINDOW_SIZE / 2]])) {
-                            
-                            /*NSLog(@"Found, distance %d:", distance);
+                            /*
+                            NSLog(@"Found, distance %d:", distance);
                             for(NSInteger i = 0;  i < MATCHING_WINDOW_SIZE; ++i) {
-                                NSLog(@"\t%@", blockStrings[i]);
-                            }*/
-                            
+                                NSLog(@"\t%@: %ld, %ld, %ld", blockStrings[i], (long)pageIndexes[i], (long)blockOffsets[i], (long)wordOffsets[i]);
+                            }
+                            */
                             bestDistance = distance;
                             bestPageIndex = pageIndexes[MATCHING_WINDOW_SIZE / 2];
                             bestBlockOffset = blockOffsets[MATCHING_WINDOW_SIZE / 2];
@@ -598,7 +659,6 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                         }
                         ++examiningWordOffset;
                     }
-                    ++examiningBlockOffset;
                 }
             }
         }
