@@ -24,8 +24,7 @@ struct css_computed_style;
     THStringRenderer *_stringRenderer;
     
     CGFloat _textPointSize;
-    CGFloat _textAscender;
-    CGFloat _lineHeight;
+    NSUInteger _lineHeightKind;
 }
 
 // Concrete:
@@ -48,9 +47,9 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 
-@property (nonatomic, readonly) CGFloat textPointSize;
-@property (nonatomic, readonly) CGFloat textAscender;
-@property (nonatomic, readonly) CGFloat lineHeight;
+- (CGFloat)textPointSizeAtScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)textAscenderAtScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor;
 
 // Overridable:
 @property (nonatomic, readonly) BOOL isTextNode;  // Default: NO

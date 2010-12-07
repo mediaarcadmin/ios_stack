@@ -221,9 +221,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     if(!style) {
         EucCSSIntermediateDocumentNode *parent = self.parent;
         _stringRenderer = [parent.stringRenderer retain];
-        _textPointSize = parent.textPointSize;
-        _textAscender = parent.textAscender;
-        _lineHeight = parent.lineHeight;
+        _textPointSize = parent->_textPointSize;
     } else {
         THStringRendererFontStyleFlags styleFlags = THStringRendererFontStyleFlagRegular;
         
@@ -282,20 +280,11 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
         
         [_stringRenderer retain];
         
-        
         css_fixed length = 0;
         css_unit unit = (css_unit)0;
         
         css_computed_font_size(style, &length, &unit);
         _textPointSize = EucCSSLibCSSSizeToPixels(style, length, unit, 0.0f, 1.0f);    
-        
-        _textAscender = [_stringRenderer ascenderForPointSize:_textPointSize];
-        
-        if(css_computed_line_height(style, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
-            _lineHeight = EucCSSLibCSSSizeToPixels(style, length, unit, _textPointSize, 1.0f);
-        } else {
-            _lineHeight = [_stringRenderer lineSpacingForPointSize:_textPointSize];
-        }
     }    
 }    
 
@@ -307,28 +296,52 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return _stringRenderer;
 }
 
-- (CGFloat)textPointSize
+- (CGFloat)textPointSizeAtScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     }
-    return _textPointSize;
+    return roundf(_textPointSize * scaleFactor);
 }
 
-- (CGFloat)textAscender
+- (CGFloat)textAscenderAtScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     } 
-    return _textAscender;
+    return [_stringRenderer ascenderForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
 }
 
-- (CGFloat)lineHeight
+- (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     }  
-    return _lineHeight;
+    
+    css_computed_style *style = NULL;
+    css_fixed size = size; 
+    css_unit units = units; 
+
+    if(!_lineHeightKind) {
+        style = self.computedStyle;
+        if(!style) {
+            style = self.parent.computedStyle;
+        }
+        _lineHeightKind = css_computed_line_height(style, &size, &units); 
+    }
+    
+    if(_lineHeightKind == CSS_LINE_HEIGHT_NORMAL) {
+        return [_stringRenderer lineSpacingForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
+    } else {
+        if(!style) {
+            style = self.computedStyle;
+            if(!style) {
+                style = self.parent.computedStyle;
+            }
+            css_computed_line_height(style, &size, &units);             
+        }
+        return EucCSSLibCSSSizeToPixels(style, size, units, [self textPointSizeAtScaleFactor:scaleFactor], scaleFactor);
+    }
 }
 
 - (EucCSSIntermediateDocumentNode *)blockLevelNode

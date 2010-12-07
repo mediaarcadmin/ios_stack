@@ -7,8 +7,6 @@
  *
  */
 
-#import "EucCSS.h"
-
 #import "EucCSSDocumentTree.h"
 #import "EucCSSDocumentTree_Package.h"
 #import "EucConfiguration.h"

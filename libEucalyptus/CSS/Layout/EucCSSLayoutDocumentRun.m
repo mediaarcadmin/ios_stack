@@ -507,6 +507,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                                   maxHeight:maxHeight
                                                   minHeight:minHeight];
         
+        _componentInfos[offset].width = calculatedSize.width;
         _componentInfos[offset].contents.imageInfo.scaledSize = CGSizeMake(calculatedSize.width, calculatedSize.height);
         
         if(css_computed_line_height(nodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
@@ -841,7 +842,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     break;
                 case EucCSSLayoutDocumentRunComponentKindHyphenationRule:
                     {
-                        breaks[breaksCount].x0 = lineSoFarWidth + _componentInfos[i].contents.hyphenationInfo.widthBeforeHyphen - _componentInfos[i].width;
+                        breaks[breaksCount].x0 = lineSoFarWidth + _componentInfos[i].contents.hyphenationInfo.widthBeforeHyphen - lastWordWidth;
                         breaks[breaksCount].x1 = lineSoFarWidth - _componentInfos[i].contents.hyphenationInfo.widthAfterHyphen;
                         breaks[breaksCount].penalty = 0;
                         breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN;

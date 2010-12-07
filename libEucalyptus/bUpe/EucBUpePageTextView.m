@@ -11,7 +11,7 @@
 
 #import "EucBookPageIndexPoint.h"
 
-#import "EucCSS.h"
+#import "EucConfiguration.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayouter.h"
@@ -43,7 +43,7 @@
 {
     if((self = [super initWithFrame:frame])) {
         _pointSize = pointSize;
-        _scaleFactor = pointSize / EUC_CSS_DEFAULT_POINT_SIZE;
+        _scaleFactor = pointSize / [[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey] floatValue];
     }
     return self;
 }
@@ -60,7 +60,7 @@
 - (void)setPointSize:(CGFloat)pointSize
 {
     _pointSize = pointSize;
-    _scaleFactor = pointSize / EUC_CSS_DEFAULT_POINT_SIZE;
+    _scaleFactor = pointSize / [[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey] floatValue];
 }
 
 - (EucBookPageIndexPoint *)layoutPageFromPoint:(EucBookPageIndexPoint *)point

@@ -49,14 +49,26 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
     NSString *altText;
 } EucCSSLayoutPositionedLineRenderItem;
 
+typedef struct LineBox
+{
+    CGFloat width;
+    CGFloat height;
+    CGFloat baseline;
+    NSUInteger verticalAlign;
+} LineBox;
+
+
 @interface EucCSSLayoutPositionedLine : EucCSSLayoutPositionedContainer {
     EucCSSLayoutPositionedRun *_positionedRun;
     
     EucCSSLayoutDocumentRunPoint _startPoint;
     EucCSSLayoutDocumentRunPoint _endPoint;
     
-    CGFloat _baseline;
     CGFloat _componentWidth;
+
+    LineBox _lineBox;
+    CGFloat _baseline;
+
     
     CGFloat _indent;
     uint8_t _align;
