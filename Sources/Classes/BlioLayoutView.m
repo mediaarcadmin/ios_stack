@@ -426,12 +426,19 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 }
 
 - (NSString *)pageLabelForPageNumber:(NSInteger)page {
+	id myLabelProvider;
+	
+	if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+		myLabelProvider = self.dataSource;
+	} else {
+		myLabelProvider = self.textFlow;
+	}
+	
     NSString *ret = nil;
     
-    BlioTextFlow *myTextFlow = self.textFlow;
-    NSString* section = [myTextFlow sectionUuidForPageNumber:page];
-    THPair* chapter = [myTextFlow presentationNameAndSubTitleForSectionUuid:section];
-    NSString* pageStr = [myTextFlow displayPageNumberForPageNumber:page];
+    NSString* section = [myLabelProvider sectionUuidForPageNumber:page];
+    THPair* chapter = [myLabelProvider presentationNameAndSubTitleForSectionUuid:section];
+    NSString* pageStr = [myLabelProvider displayPageNumberForPageNumber:page];
 
     if (section && chapter.first) {
         if (pageStr) {
@@ -448,6 +455,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
     } // of no section name
     
     return ret;
+	
 }
 
 #pragma mark -
@@ -1358,7 +1366,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                         wantPageIndex = NSUIntegerMax;
                     }
                 }                
-				return;
 			}
 		} else if (focusedElement == self.nextZone) {
 			wantPageIndex = self.pageTurningView.rightPageIndex;
@@ -1519,7 +1526,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     NSMutableArray *elements = [NSMutableArray array];
 	
     NSInteger pageIndex = self.pageTurningView.leftPageIndex;
-    if(pageIndex != NSUIntegerMax) {
+    if(self.pageTurningView.isTwoUp && pageIndex != NSUIntegerMax) {
         CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
         NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
@@ -1558,7 +1565,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if(!accessibilityElements) {
         accessibilityElements = [[NSMutableArray arrayWithArray:[self textBlockAccessibilityElements]] retain];
 
-        CGFloat tapZoneWidth = 0.1f * self.pageTurningView.bounds.size.width;      
+        CGFloat tapZoneWidth = 0.25f * self.pageTurningView.bounds.size.width;      
         
         {
             UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
