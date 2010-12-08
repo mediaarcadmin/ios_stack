@@ -287,34 +287,57 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     
     CGContextSaveGState(_cgContext);
 
-    css_color currentColor = 0x000000FF;
-    CGContextSetFillColorWithCSSColor(_cgContext, currentColor);
-    CGContextSetStrokeColorWithCSSColor(_cgContext, currentColor);
-    
     CGPoint currentAbsoluteOrigin = CGPointZero;
     
-    THStringRenderer *currentStringRenderer;
+    EucCSSIntermediateDocumentNode *currentDocumentNode;
     
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         switch(renderItem->kind) {
             case EucCSSLayoutPositionedLineRenderItemKindOpenNode: 
             {
-                // Italics
-                // Underline
-                // Color.
+                CGContextSaveGState(_cgContext);
+
+                currentDocumentNode = renderItem->item.openNodeInfo.node;  
+                
+                css_computed_style *style = currentDocumentNode.computedStyle;
+                if(style) {
+                    // Color.
+                    css_color color = color; 
+                    if(css_computed_color(style, &color) == CSS_COLOR_COLOR) {
+                        CGContextSetFillColorWithCSSColor(_cgContext, color);
+                        CGContextSetStrokeColorWithCSSColor(_cgContext, color);
+                    }
+                }
+                
                 currentAbsoluteOrigin.x += renderItem->origin.x;
                 currentAbsoluteOrigin.y += renderItem->origin.y;
-                currentStringRenderer = [renderItem->item.openNodeInfo.node stringRenderer];
                 break;    
             }
             case EucCSSLayoutPositionedLineRenderItemKindCloseNode:
             {
                 EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                
+                css_computed_style *style = currentDocumentNode.computedStyle;
+                if(style) {
+                    // Underline.
+                    enum css_text_decoration_e textDecoration = css_computed_text_decoration(style);
+                    if(textDecoration & CSS_TEXT_DECORATION_UNDERLINE) {
+                        CGPoint underlinePoints[2];
+                        underlinePoints[0].x = floorf(currentAbsoluteOrigin.x);
+                        underlinePoints[0].y = roundf(parentItem->lineBox.baseline + 1.0f) + 0.5f;
+                        underlinePoints[1].x = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
+                        underlinePoints[1].y = roundf(renderItem->lineBox.baseline + 1.0f) + 0.5f;
+                        CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
+                    }
+                }                    
+                
                 currentAbsoluteOrigin.x -= parentItem->origin.x;
                 currentAbsoluteOrigin.y -= parentItem->origin.y;
                 if(parentItem->parentIndex != NSUIntegerMax) {
-                    currentStringRenderer = [renderItems[parentItem->parentIndex].item.openNodeInfo.node stringRenderer];
+                    currentDocumentNode = renderItems[parentItem->parentIndex].item.openNodeInfo.node;
                 }
+                
+                CGContextRestoreGState(_cgContext);
                 break;    
             }
             case EucCSSLayoutPositionedLineRenderItemKindString: 
@@ -323,10 +346,10 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                                          currentAbsoluteOrigin.y + renderItem->origin.y, 
                                          renderItem->lineBox.width, 
                                          renderItem->lineBox.height);
-                [currentStringRenderer drawString:renderItem->item.stringItem.string
-                                        inContext:_cgContext 
-                                          atPoint:rect.origin
-                                        pointSize:renderItem->lineBox.height];
+                [currentDocumentNode.stringRenderer drawString:renderItem->item.stringItem.string
+                                                     inContext:_cgContext 
+                                                       atPoint:rect.origin
+                                                     pointSize:renderItem->lineBox.height];
                 lastMaxX = CGRectGetMaxX(rect);
                 break;
             }

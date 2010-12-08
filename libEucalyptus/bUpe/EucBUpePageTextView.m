@@ -274,7 +274,6 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
     EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
     uint32_t wantedWordId = [(NSNumber *)elementId intValue];
     
-    
     for(EucCSSLayoutPositionedLine *line in run.children) {
         EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
         size_t renderItemsCount = line.renderItemCount;
@@ -290,14 +289,14 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                         // is placed in the altText.
                         word = renderItem->altText;
                     }
-                    break;
+                    goto found;
                 } else if(wordId > wantedWordId) {
-                    break;   
+                    goto found;   
                 }
             }
         }
     }    
-    
+found:
     return word;
 }
 

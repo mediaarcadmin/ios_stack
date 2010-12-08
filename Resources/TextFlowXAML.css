@@ -1,9 +1,9 @@
 * { margin:0; padding:0; border:0; }
 Flow { text-align:justify; display:block }
 Section { display:block }
-Paragraph { display:block }
+Paragraph { display:block; text-decoration: underline;}
 
-LineBreak:before { content:"\A"; white-space:pre-line }
+LineBreak:before { content:"\A"; white-space:pre-line; }
 :link { color:blue }
 
 *[FontWeight="Bold"] { font-weight:bold }
