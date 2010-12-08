@@ -1211,11 +1211,16 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         if(animated) {
             [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 
+            // Set up the pages we're turning to
             if(_pageContentsInformation[forwards ? 5 : 1].pageIndex != rightPageIndex) {
+                // Set up the right-hand page (or only page in 1-up mode).
                 [self _setupBitmapPage:rightPageIndex forInternalPageOffset:forwards ? 5 : 1];
             } 
-            if(_pageContentsInformation[forwards ? 4 : 0].pageIndex != rightPageIndex - 1){
-                [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
+            if(twoUp) {
+                // Set up the left-hand page.
+                if(_pageContentsInformation[forwards ? 4 : 0].pageIndex != rightPageIndex - 1){
+                    [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
+                }
             }
             
             [self _prepareForTurnForwards:forwards];
