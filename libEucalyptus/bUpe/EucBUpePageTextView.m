@@ -245,9 +245,11 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                 currentAbsoluteOrigin.x += renderItem->origin.x;
                 currentAbsoluteOrigin.y += renderItem->origin.y;
             } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindCloseNode) {
-                EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
-                currentAbsoluteOrigin.x -= parentItem->origin.x;
-                currentAbsoluteOrigin.y -= parentItem->origin.y;
+                if(renderItem->parentIndex != NSUIntegerMax) {
+                    EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                    currentAbsoluteOrigin.x -= parentItem->origin.x;
+                    currentAbsoluteOrigin.y -= parentItem->origin.y;
+                }
             } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
                 uint32_t wordId = renderItem->item.stringItem.layoutPoint.word;
                 if(wordId == wantedWordId) {
@@ -327,53 +329,68 @@ found:
     if(!_hyperlinkRectAndURLPairs) {
         NSMutableArray *buildHyperlinkRectAndURLPairs = [[NSMutableArray alloc] init];
 
-        /*for(EucCSSLayoutPositionedRun *run in [self _runs]) {    
+        for(EucCSSLayoutPositionedRun *run in [self _runs]) {    
             CGPoint runOrigin = run.absoluteFrame.origin;
             for(EucCSSLayoutPositionedLine *line in run.children) {
-                EucCSSLayoutPositionedLineRenderItem* renderItem = line.renderItems;
+                EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
+                EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
                 size_t renderItemsCount = line.renderItemCount;
                 
                 CGPoint lineOffset = line.frame.origin;
                 lineOffset.x += runOrigin.x;
                 lineOffset.y += runOrigin.y;
                 
-                NSURL *currentHyperlinkURL = nil;
-                CGRect hyperlinkRect = CGRectZero;
+                CGPoint currentAbsoluteOrigin = CGPointZero;
+                
+                EucCSSIntermediateDocumentNode *currentHyperlinkNode = nil;
+                CGRect currentHyperlinkRect = CGRectZero;
                 for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
-                    if(currentHyperlinkURL) {
+                    if(currentHyperlinkNode) {
                         if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
-                            if(CGRectIsEmpty(hyperlinkRect)) {
-                                hyperlinkRect = CGRectOffset(renderItem->item.stringItem.rect, lineOffset.x, lineOffset.y);
+                            CGRect itemRect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                                         currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                         renderItem->lineBox.width, 
+                                                         renderItem->lineBox.height);                            
+                            if(CGRectIsEmpty(currentHyperlinkRect)) {
+                                currentHyperlinkRect = CGRectOffset(itemRect, lineOffset.x, lineOffset.y);
                             } else {
-                                hyperlinkRect = CGRectUnion(hyperlinkRect, 
-                                                            CGRectOffset(renderItem->item.stringItem.rect, lineOffset.x, lineOffset.y));
+                                currentHyperlinkRect = CGRectUnion(currentHyperlinkRect, CGRectOffset(itemRect, lineOffset.x, lineOffset.y));
                             }
                         } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindImage) {
-                            if(CGRectIsEmpty(hyperlinkRect)) {
-                                hyperlinkRect = CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y);
+                            CGRect itemRect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                                          currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                          renderItem->lineBox.width, 
+                                                          renderItem->lineBox.height);
+                            
+                            if(CGRectIsEmpty(currentHyperlinkRect)) {
+                                currentHyperlinkRect = CGRectOffset(itemRect, lineOffset.x, lineOffset.y);
                             } else {
-                                hyperlinkRect = CGRectUnion(hyperlinkRect, 
-                                                            CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y));
+                                currentHyperlinkRect = CGRectUnion(currentHyperlinkRect, CGRectOffset(itemRect, lineOffset.x, lineOffset.y));
                             }
-                        } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop) {
-                            NSParameterAssert([renderItem->item.hyperlinkItem.url isEqual:currentHyperlinkURL]);
-                            [buildHyperlinkRectAndURLPairs addPairWithFirst:[NSValue valueWithCGRect:hyperlinkRect]
-                                                                second:currentHyperlinkURL];
-                            currentHyperlinkURL = nil;
+                        } 
+                    }
+                    if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindCloseNode) {
+                        if(renderItem->item.closeNodeInfo.node == currentHyperlinkNode) {
+                            [buildHyperlinkRectAndURLPairs addPairWithFirst:[NSValue valueWithCGRect:currentHyperlinkRect]
+                                                                     second:currentHyperlinkNode.hyperlinkURL];
+                            currentHyperlinkNode = nil;
+                            currentHyperlinkRect = CGRectZero;
                         }
-                    } else {
-                        if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart) {
-                            currentHyperlinkURL = renderItem->item.hyperlinkItem.url;
+                        if(renderItem->parentIndex != NSUIntegerMax) {
+                            EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                            currentAbsoluteOrigin.x -= parentItem->origin.x;
+                            currentAbsoluteOrigin.y -= parentItem->origin.y;       
                         }
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindOpenNode) {
+                        if(renderItem->item.openNodeInfo.node.isHyperlinkNode) {
+                            currentHyperlinkNode = renderItem->item.openNodeInfo.node;
+                        }
+                        currentAbsoluteOrigin.x += renderItem->origin.x;
+                        currentAbsoluteOrigin.y += renderItem->origin.y;
                     }
                 }
-                if(currentHyperlinkURL) {
-                    // Line ended with unclosed hyperlink
-                    [buildHyperlinkRectAndURLPairs addPairWithFirst:[NSValue valueWithCGRect:hyperlinkRect]
-                                                        second:currentHyperlinkURL];
-                }
             }
-        }*/
+        }
         
         _hyperlinkRectAndURLPairs = buildHyperlinkRectAndURLPairs;
     } 
@@ -496,9 +513,11 @@ found:
                         currentAbsoluteOrigin.x += renderItem->origin.x;
                         currentAbsoluteOrigin.y += renderItem->origin.y;
                     } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindCloseNode) {
-                        EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
-                        currentAbsoluteOrigin.x -= parentItem->origin.x;
-                        currentAbsoluteOrigin.y -= parentItem->origin.y;
+                        if(renderItem->parentIndex != NSUIntegerMax) {
+                            EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                            currentAbsoluteOrigin.x -= parentItem->origin.x;
+                            currentAbsoluteOrigin.y -= parentItem->origin.y;
+                        }
                     } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
                         if(buildElementString.length) {
                             [buildElementString appendString:@" "];
