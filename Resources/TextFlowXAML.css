@@ -21,6 +21,7 @@ LineBreak:before { content:"\A"; white-space:pre-line; }
 *[BaselineAlignment="TextTop"] { vertical-align:text-top }
 *[BaselineAlignment="TextBottom"] { vertical-align:text-bottom }
 *[BaselineAlignment="Subscript"] { vertical-align:sub }
+*[BaselineAlignment="Superscript"] { vertical-align:super }
 
 /* 
    These are not fully semantically equivalant, but they work for the 
