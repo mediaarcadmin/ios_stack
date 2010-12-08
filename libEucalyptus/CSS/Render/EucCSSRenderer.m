@@ -289,7 +289,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 
     CGPoint currentAbsoluteOrigin = CGPointZero;
     
-    EucCSSIntermediateDocumentNode *currentDocumentNode;
+    EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
     
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         switch(renderItem->kind) {
