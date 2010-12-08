@@ -26,11 +26,11 @@ typedef enum EucCSSLayoutDocumentRunComponentKind {
     EucCSSLayoutDocumentRunComponentKindSpace,
     EucCSSLayoutDocumentRunComponentKindNonbreakingSpace,
     EucCSSLayoutDocumentRunComponentKindHardBreak,
-    EucCSSLayoutDocumentRunComponentKindOpenNode,
-    EucCSSLayoutDocumentRunComponentKindCloseNode,
     EucCSSLayoutDocumentRunComponentKindWord,
     EucCSSLayoutDocumentRunComponentKindHyphenationRule,
     EucCSSLayoutDocumentRunComponentKindImage,
+    EucCSSLayoutDocumentRunComponentKindOpenNode,
+    EucCSSLayoutDocumentRunComponentKindCloseNode,
     EucCSSLayoutDocumentRunComponentKindFloat,
 } EucCSSLayoutDocumentRunComponentKind;
 

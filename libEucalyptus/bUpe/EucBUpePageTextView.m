@@ -237,12 +237,24 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
         lineOffset.x += runOrigin.x;
         lineOffset.y += runOrigin.y;
         
+        CGPoint currentAbsoluteOrigin = CGPointZero;
+        
         EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
         for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
-            if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+            if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindOpenNode) {
+                currentAbsoluteOrigin.x += renderItem->origin.x;
+                currentAbsoluteOrigin.y += renderItem->origin.y;
+            } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindCloseNode) {
+                EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                currentAbsoluteOrigin.x -= parentItem->origin.x;
+                currentAbsoluteOrigin.y -= parentItem->origin.y;
+            } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
                 uint32_t wordId = renderItem->item.stringItem.layoutPoint.word;
                 if(wordId == wantedWordId) {
-                    CGRect itemRect = renderItem->item.stringItem.rect;
+                    CGRect itemRect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                                 currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                 renderItem->lineBox.width, 
+                                                 renderItem->lineBox.height);
                     itemRect.origin.x += lineOffset.x;
                     itemRect.origin.y += lineOffset.y;
                     [array addObject:[NSValue valueWithCGRect:itemRect]];
@@ -316,7 +328,7 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
     if(!_hyperlinkRectAndURLPairs) {
         NSMutableArray *buildHyperlinkRectAndURLPairs = [[NSMutableArray alloc] init];
 
-        for(EucCSSLayoutPositionedRun *run in [self _runs]) {    
+        /*for(EucCSSLayoutPositionedRun *run in [self _runs]) {    
             CGPoint runOrigin = run.absoluteFrame.origin;
             for(EucCSSLayoutPositionedLine *line in run.children) {
                 EucCSSLayoutPositionedLineRenderItem* renderItem = line.renderItems;
@@ -362,7 +374,7 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                                                         second:currentHyperlinkURL];
                 }
             }
-        }
+        }*/
         
         _hyperlinkRectAndURLPairs = buildHyperlinkRectAndURLPairs;
     } 
@@ -474,12 +486,21 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                 lineOffset.x += runOrigin.x;
                 lineOffset.y += runOrigin.y;                
                 
+                CGPoint currentAbsoluteOrigin = CGPointZero;
+                
                 EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
                 size_t renderItemsCount = line.renderItemCount;
                 
                 EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
-                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {                    
-                    if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {   
+                    if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindOpenNode) {
+                        currentAbsoluteOrigin.x += renderItem->origin.x;
+                        currentAbsoluteOrigin.y += renderItem->origin.y;
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindCloseNode) {
+                        EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                        currentAbsoluteOrigin.x -= parentItem->origin.x;
+                        currentAbsoluteOrigin.y -= parentItem->origin.y;
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
                         if(buildElementString.length) {
                             [buildElementString appendString:@" "];
                         }
@@ -490,7 +511,10 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                             // is placed in the altText.
                             [buildElementString appendString:renderItem->altText];
                         }
-                        itemFrame = renderItem->item.stringItem.rect;
+                        itemFrame = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                               currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                               renderItem->lineBox.width, 
+                                               renderItem->lineBox.height);
                     } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindImage) {
                         if(buildElementString.length) {
                             [self _addAccessibilityElementTo:buildAccessibilityElements
@@ -500,9 +524,15 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                             [buildElementString setString:@""];
                             buildElementFrame = CGRectZero;
                         }
+                        
+                        CGRect imageRect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                                      currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                      renderItem->lineBox.width, 
+                                                      renderItem->lineBox.height);
+                        
                         [self _addAccessibilityElementTo:buildAccessibilityElements
                                                   string:renderItem->altText
-                                                    rect:CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y)
+                                                    rect:CGRectOffset(imageRect, lineOffset.x, lineOffset.y)
                                                   traits:buildElementTraits | UIAccessibilityTraitImage];
                     }
                     

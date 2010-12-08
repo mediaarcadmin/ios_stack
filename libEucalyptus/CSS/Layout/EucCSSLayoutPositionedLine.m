@@ -43,23 +43,16 @@
         switch (renderItem->kind) {
             case EucCSSLayoutPositionedLineRenderItemKindString:
                 [renderItem->item.stringItem.string release];
-                [renderItem->item.stringItem.stringRenderer release];
                 break;
             case EucCSSLayoutPositionedLineRenderItemKindImage:
-                CFRelease(renderItem->item.imageItem.image);
+                CGImageRelease(renderItem->item.imageItem.image);
                 break;
-            case EucCSSLayoutPositionedLineRenderItemKindUnderlineStart:
-            case EucCSSLayoutPositionedLineRenderItemKindUnderlineStop:
-                break;
-            case EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart:
-            case EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop:
-                [renderItem->item.hyperlinkItem.url release];
+            default:
                 break;
         }
         if(renderItem->altText) {
             [renderItem->altText release];
         }
-
     }
     free(_renderItems);
     
@@ -80,9 +73,9 @@ static inline void halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight(CGF
     *correctedLineHeight = prepareBoxHeight;
 }
                                     
-static CGFloat adjustLineBoxToContainLineBox(LineBox *containerLineBox, LineBox *containedLineBox)
+static BOOL _adjustLineBoxToContainLineBox(EucCSSLayoutPositionedLineLineBox *containerLineBox, EucCSSLayoutPositionedLineLineBox *containedLineBox)
 {
-    CGFloat ret = 0.0f;
+    BOOL changed = NO;
     switch(containedLineBox->verticalAlign) {
         default:
         {
@@ -93,9 +86,15 @@ static CGFloat adjustLineBoxToContainLineBox(LineBox *containerLineBox, LineBox 
         {            
             CGFloat containerDescenderAndLineHeightAddition = containerLineBox->height - containerLineBox->baseline;
             CGFloat containedDescenderAndLineHeightAddition = containedLineBox->height - containedLineBox->baseline;
-            ret = containerLineBox->baseline - containedLineBox->baseline;
-            containerLineBox->baseline = MAX(containedLineBox->baseline, containerLineBox->baseline);
-            containerLineBox->height  = containerLineBox->baseline + MAX(containerDescenderAndLineHeightAddition, containedDescenderAndLineHeightAddition);
+            if(containedLineBox->baseline > containerLineBox->baseline) {
+                containerLineBox->baseline = containedLineBox->baseline;
+                changed = YES;
+            }
+            CGFloat newHeight = containerLineBox->baseline + MAX(containerDescenderAndLineHeightAddition, containedDescenderAndLineHeightAddition);
+            if(newHeight != containerLineBox->height) {
+                containerLineBox->height = newHeight;
+                changed = YES;
+            }
             break;
         }                                   
         /*case CSS_VERTICAL_ALIGN_SUB:
@@ -137,12 +136,12 @@ static CGFloat adjustLineBoxToContainLineBox(LineBox *containerLineBox, LineBox 
     
     containerLineBox->width += containedLineBox->width;
     
-    return ret;
+    return changed;
 }
 
-static LineBox lineBoxForDocumentNode(EucCSSIntermediateDocumentNode *node, CGFloat scaleFactor)
+static EucCSSLayoutPositionedLineLineBox lineBoxForDocumentNode(EucCSSIntermediateDocumentNode *node, CGFloat scaleFactor)
 {
-    LineBox myLineBox = { 0 };
+    EucCSSLayoutPositionedLineLineBox myLineBox = { 0 };
         
     css_computed_style *style = node.computedStyle;
     if(!style) {
@@ -163,10 +162,10 @@ static LineBox lineBoxForDocumentNode(EucCSSIntermediateDocumentNode *node, CGFl
     return myLineBox;
 }
 
-static LineBox lineBoxForComponentInfo(EucCSSLayoutDocumentRunComponentInfo *componentInfo, CGFloat scaleFactor)
+static EucCSSLayoutPositionedLineLineBox lineBoxForComponentInfo(EucCSSLayoutDocumentRunComponentInfo *componentInfo, CGFloat scaleFactor)
 {    
     if(componentInfo->kind == EucCSSLayoutDocumentRunComponentKindImage) {
-        LineBox imageLineBox = {
+        EucCSSLayoutPositionedLineLineBox imageLineBox = {
             componentInfo->contents.imageInfo.scaledSize.width,
             componentInfo->contents.imageInfo.scaledSize.height,
             componentInfo->contents.imageInfo.scaledSize.height,
@@ -174,34 +173,34 @@ static LineBox lineBoxForComponentInfo(EucCSSLayoutDocumentRunComponentInfo *com
         };
         return imageLineBox;
     } else {
-        LineBox componentLineBox = lineBoxForDocumentNode(componentInfo->documentNode, scaleFactor);
+        EucCSSLayoutPositionedLineLineBox componentLineBox = lineBoxForDocumentNode(componentInfo->documentNode, scaleFactor);
         componentLineBox.width = componentInfo->width;
         return componentLineBox;
     }
 }
 
-static LineBox processNode(uint32_t *componentOffset, EucCSSLayoutDocumentRunComponentInfo **componentInfo, uint32_t afterEndComponentOffset, CGFloat scaleFactor) 
+static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, EucCSSLayoutDocumentRunComponentInfo **componentInfo, uint32_t afterEndComponentOffset, CGFloat scaleFactor) 
 {
     
     uint32_t i = *componentOffset;
     EucCSSLayoutDocumentRunComponentInfo *info = *componentInfo;
     
-    LineBox myLineBox = lineBoxForComponentInfo(info, scaleFactor);
+    EucCSSLayoutPositionedLineLineBox myLineBox = lineBoxForComponentInfo(info, scaleFactor);
     ++i;
     ++info;
     
     while(info->kind != EucCSSLayoutDocumentRunComponentKindCloseNode && 
           i < afterEndComponentOffset) {
         if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
-            LineBox subNodeBox = processNode(&i, &info, afterEndComponentOffset, scaleFactor);
+            EucCSSLayoutPositionedLineLineBox subNodeBox = processNode(&i, &info, afterEndComponentOffset, scaleFactor);
             NSCParameterAssert(i == afterEndComponentOffset || info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode);
-            adjustLineBoxToContainLineBox(&myLineBox, &subNodeBox);
+            _adjustLineBoxToContainLineBox(&myLineBox, &subNodeBox);
             if(i == afterEndComponentOffset) {
                 break;
             }
         } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
-            LineBox imageLineBox = lineBoxForComponentInfo(info, scaleFactor);
-            adjustLineBoxToContainLineBox(&myLineBox, &imageLineBox);
+            EucCSSLayoutPositionedLineLineBox imageLineBox = lineBoxForComponentInfo(info, scaleFactor);
+            _adjustLineBoxToContainLineBox(&myLineBox, &imageLineBox);
         } else {
             if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
                 myLineBox.width += info->width;
@@ -235,7 +234,7 @@ static LineBox processNode(uint32_t *componentOffset, EucCSSLayoutDocumentRunCom
             afterEndComponentOffset = componentsCount;
         }
                 
-        LineBox lineBox = { 0 };
+        EucCSSLayoutPositionedLineLineBox lineBox = { 0 };
         
         while(componentOffset < afterEndComponentOffset) {
             // May not come in here if the line contains no components (e.g. 
@@ -255,11 +254,11 @@ static LineBox processNode(uint32_t *componentOffset, EucCSSLayoutDocumentRunCom
                 lineBox.width = componentInfo->contents.hyphenationInfo.widthAfterHyphen - componentInfo->width;
             }            
             
-            LineBox subnodeLineBox = processNode(&componentOffset, &componentInfo, afterEndComponentOffset, scaleFactor);
+            EucCSSLayoutPositionedLineLineBox subnodeLineBox = processNode(&componentOffset, &componentInfo, afterEndComponentOffset, scaleFactor);
             NSCParameterAssert(componentOffset == afterEndComponentOffset || 
                                componentInfo->kind == EucCSSLayoutDocumentRunComponentKindCloseNode);
             
-            adjustLineBoxToContainLineBox(&lineBox, &subnodeLineBox);
+            _adjustLineBoxToContainLineBox(&lineBox, &subnodeLineBox);
             
             if(componentOffset < afterEndComponentOffset) {
                 ++componentOffset;
@@ -282,8 +281,8 @@ static LineBox processNode(uint32_t *componentOffset, EucCSSLayoutDocumentRunCom
         css_computed_style *style;
         while(style = node.computedStyle,
               !style || css_computed_display(style, NO) != CSS_DISPLAY_BLOCK) {
-            LineBox parentNodeBox = lineBoxForDocumentNode(node, scaleFactor);
-            adjustLineBoxToContainLineBox(&lineBox, &parentNodeBox);
+            EucCSSLayoutPositionedLineLineBox parentNodeBox = lineBoxForDocumentNode(node, scaleFactor);
+            _adjustLineBoxToContainLineBox(&lineBox, &parentNodeBox);
             node = node.parent;
         }
               
@@ -329,19 +328,79 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
     }
 }
 
+static inline void _placeRenderItemInRenderItem(EucCSSLayoutPositionedLineRenderItem *child, EucCSSLayoutPositionedLineRenderItem *parent)
+{
+    enum css_vertical_align_e verticalAlign = child->lineBox.verticalAlign;
+    switch(verticalAlign) {
+        default:
+        {
+            THWarn("Unexpected vertical-align: %ld", (long)verticalAlign);
+            // Fall through
+        }
+        case CSS_VERTICAL_ALIGN_BASELINE:
+        {            
+            child->origin.y = parent->lineBox.baseline - child->lineBox.baseline;
+        }                                   
+    }    
+}
+
+static inline void _adjustParentsToContainRenderItem(EucCSSLayoutPositionedLineRenderItem *renderItems, size_t renderItemCount, NSUInteger childIndex) {
+    NSUInteger parentIndex = renderItems[childIndex].parentIndex;
+    if(parentIndex != NSUIntegerMax) {
+        // Expand the size of the parent, if necessary.
+        BOOL sizeChanged = _adjustLineBoxToContainLineBox(&renderItems[parentIndex].lineBox, &renderItems[childIndex].lineBox);
+        
+        // If the size or baseline of the parent changed.
+        if(sizeChanged) {
+            // (Re-)place all the children.
+            for(NSUInteger i = parentIndex + 1; i < renderItemCount; ++i) {
+                if(renderItems[i].parentIndex == parentIndex) {
+                    _placeRenderItemInRenderItem(renderItems + i, renderItems + parentIndex);
+                }
+            }
+            
+            // Recurse, to make sure our parent is placed properly in our parent 
+            // now it's changed size.
+            _adjustParentsToContainRenderItem(renderItems, renderItemCount, renderItems[childIndex].parentIndex);
+        } else {
+            _placeRenderItemInRenderItem(renderItems + childIndex, renderItems + parentIndex);   
+        }
+    }
+}
+
+static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode *node, CGFloat scaleFactor, EucCSSLayoutPositionedLineRenderItem **currentRenderItem, size_t *renderItemCount, size_t *renderItemCapacity, EucCSSLayoutPositionedLineRenderItem **renderItems)
+{
+    css_computed_style *style = node.computedStyle;
+    BOOL doParent = (!style || css_computed_display(style, NO) != CSS_DISPLAY_BLOCK);
+    if(doParent) {
+        _accumulateParentLineBoxesInto(node.parent, scaleFactor, currentRenderItem, renderItemCount, renderItemCapacity, renderItems);
+    }
+    (*currentRenderItem)->kind = EucCSSLayoutPositionedLineRenderItemKindOpenNode;
+    (*currentRenderItem)->parentIndex = doParent ? *currentRenderItem - *renderItems - 1 : NSUIntegerMax;
+    (*currentRenderItem)->lineBox = lineBoxForDocumentNode(node, scaleFactor);
+    (*currentRenderItem)->item.openNodeInfo.node = node;
+    (*currentRenderItem)->item.openNodeInfo.implicit = YES;
+    
+    if(doParent) {
+        _adjustParentsToContainRenderItem(*renderItems, *renderItemCount, *currentRenderItem - *renderItems);
+    }
+    _incrementRenderitemsCount(currentRenderItem, renderItemCount, renderItemCapacity, renderItems);
+}
+
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems
 {
     if(!_renderItems) {
         EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
         CGFloat scaleFactor = documentRun.scaleFactor;
-
+        
         size_t componentsCount = documentRun.componentsCount;
         uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
         uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
         
         _renderItems = calloc(sizeof(EucCSSLayoutPositionedLineRenderItem), componentsCount);
         size_t renderItemCapacity = componentsCount;
-        
+        EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
+
         CGRect contentBounds = self.contentBounds;
         CGSize size = contentBounds.size;
         CGFloat xPosition = contentBounds.origin.x;        
@@ -351,8 +410,6 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
         
         EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
         
-        uint32_t i;
-        EucCSSLayoutDocumentRunComponentInfo *info;
         
         switch(_align) {
             case CSS_TEXT_ALIGN_CENTER:
@@ -362,6 +419,9 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
                 xPosition += size.width - _componentWidth - _indent;
                 break;
             case CSS_TEXT_ALIGN_JUSTIFY:
+            {
+                uint32_t i;
+                EucCSSLayoutDocumentRunComponentInfo *info;
                 for(i = startComponentOffset, info = componentInfos;
                     i < componentsCount && i < afterEndComponentOffset; 
                     ++i, ++info) {
@@ -372,175 +432,229 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
                 }    
                 extraWidthNeeded = size.width - _indent - _componentWidth;
                 // Fall through.
+            }
             default:
                 xPosition += _indent;
         }
 
-        css_color color = 0x00000000;
-        BOOL currentUnderline = NO;
-        NSURL *currentHyperlink = nil;
-        BOOL checkNodeDependentStyles = YES;
-
-        while(startComponentOffset < afterEndComponentOffset && 
-              componentInfos->kind == EucCSSLayoutDocumentRunComponentKindFloat) {
-            ++startComponentOffset;
-            ++componentInfos;
-        }        
+        CGFloat pointSize = 0.0f;
+        CGFloat ascender = 0.0f;
         
-        if(startComponentOffset < afterEndComponentOffset) {
-            CGFloat yPosition = 0;
-            LineBox lineBox = _lineBox;
-            
-            CGFloat pointSize = pointSize;
-            CGFloat ascender = ascender;
-
-            EucCSSLayoutPositionedLineRenderItem *renderItem = _renderItems;
-            for(i = startComponentOffset, info = componentInfos;
-                i < componentsCount && i < afterEndComponentOffset; 
-                ++i, ++info) {
-                            
-                if(checkNodeDependentStyles && 
-                   info->kind != EucCSSLayoutDocumentRunComponentKindFloat) {
-                    pointSize = [info->documentNode textPointSizeAtScaleFactor:scaleFactor];
-                    ascender = [info->documentNode textAscenderAtScaleFactor:scaleFactor];
-
-                    css_computed_style *style = [info->documentNode computedStyle];
-                    if(!style) {
-                        style = [(info->documentNode).parent computedStyle];
-                    }
-                    
-                    css_color newColor;
-                    uint8_t colorRet = css_computed_color(style, &newColor);
-                    if(colorRet == CSS_COLOR_COLOR) {
-                        color = newColor;
-                    } else {
-                        THWarn(@"Unexpected color format %ld", (long)colorRet);
-                    }
-                    
-                    uint8_t decoration = css_computed_text_decoration(style);
-                    BOOL shouldUnderline = (decoration == CSS_TEXT_DECORATION_UNDERLINE);
-                    if(currentUnderline != shouldUnderline) {
-                        if(shouldUnderline) {
-                            //NSLog(@"Underline On");
-                            renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStart;
-                            renderItem->item.underlineItem.underlinePoint = CGPointMake(floorf(xPosition), ceilf(yPosition + lineBox.baseline + 1) + 0.5f);
-                        } else {
-                            //NSLog(@"Underline Off");
-                            renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindUnderlineStop;
-                            renderItem->item.underlineItem.underlinePoint = CGPointMake(ceilf(xPosition), ceilf(yPosition + lineBox.baseline + 1) + 0.55f);
-                        }
-                        _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
-                        currentUnderline = shouldUnderline;
-                    }
-
-                    NSURL *href = nil;
-                    EucCSSIntermediateDocumentNode *documentNode = info->documentNode;
-                    while(!href && documentNode) {
-                        if(documentNode.isHyperlinkNode) {
-                            href = documentNode.hyperlinkURL;
-                        }
-                        documentNode = documentNode.parent;
-                    }
-                    if(href) {
-                        if(currentHyperlink) {
-                            if(![currentHyperlink isEqual:href]) {
-                                renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
-                                renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
-                                _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
-                                [currentHyperlink release];
-                                //NSLog(@"Hyperlink Off");
-                                //NSLog(@"Hyperlink On");
-                                currentHyperlink = [href retain];
-                                renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
-                                renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
-                                _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
-                            }
-                        } else {
-                            //NSLog(@"Hyperlink On");
-                            currentHyperlink = [href retain];
-                            renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart;
-                            renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
-                            _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
-                        }
-                    } else {
-                        if(currentHyperlink) {
-                            //NSLog(@"Hyperlink Off");
-                            renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop;
-                            renderItem->item.hyperlinkItem.url = [currentHyperlink retain];
-                            _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
-                            [currentHyperlink release];
-                            currentHyperlink = nil;
-                        }
-                    }
-                            
-                    checkNodeDependentStyles = NO;
-                }
-                
-                if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
-                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
-                    renderItem->item.stringItem.string = [info->contents.string retain];
-                    renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + lineBox.baseline - ascender, info->width, pointSize);
-                    renderItem->item.stringItem.pointSize = pointSize;
-                    renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
-                    renderItem->item.stringItem.layoutPoint = info->point;
-                    renderItem->item.stringItem.color = color;                
-                    _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
-                    
-                    xPosition += info->width;
-                } else if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace || 
-                          info->kind == EucCSSLayoutDocumentRunComponentKindNonbreakingSpace) {
+        BOOL doParents;
+        
+        EucCSSIntermediateDocumentNode *node = componentInfos[0].documentNode;
+        if(componentInfos[0].kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
+            css_computed_style *style = node.computedStyle;
+            doParents = (!style || css_computed_display(style, NO) != CSS_DISPLAY_BLOCK);
+            if(doParents) {
+                node = node.parent;
+            }
+        } else {
+            if(componentInfos[0].kind == EucCSSLayoutDocumentRunComponentKindFloat) {
+                // We don't want the float's attributes!
+                node = node.parent;
+            }
+            pointSize = [node textPointSizeAtScaleFactor:scaleFactor];
+            ascender = [node textAscenderAtScaleFactor:scaleFactor];
+            doParents = YES;           
+        }
+        
+        if(doParents) {
+            _accumulateParentLineBoxesInto(node, scaleFactor, &renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
+            _renderItems[0].origin.x = xPosition;
+        }
+        
+        NSUInteger parentIndex = doParents ? _renderItemCount - 1 : NSUIntegerMax;
+        
+        CGFloat thisNodeAbsoluteX = xPosition;
+        
+        uint32_t i;
+        EucCSSLayoutDocumentRunComponentInfo *info;
+        for(i = startComponentOffset, info = componentInfos;
+            i < componentsCount && i < afterEndComponentOffset; 
+            ++i, ++info) {
+            switch(info->kind) {
+                case EucCSSLayoutDocumentRunComponentKindSpace:
+                case EucCSSLayoutDocumentRunComponentKindNonbreakingSpace:
+                {
                     if(extraWidthNeeded != 0.0f) {
                         CGFloat extraSpace = extraWidthNeeded / spacesRemaining;
                         xPosition += extraSpace;
                         extraWidthNeeded -= extraSpace;
                         --spacesRemaining;
                     }
-                    xPosition += info->width;
-                } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                    if(i == startComponentOffset) {
-                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
-                        renderItem->item.stringItem.string = [info->contents.hyphenationInfo.afterHyphen retain];
-                        renderItem->item.stringItem.rect = CGRectMake(xPosition, yPosition + lineBox.baseline - ascender, info->contents.hyphenationInfo.widthAfterHyphen, pointSize);
-                        renderItem->item.stringItem.pointSize = pointSize;
-                        renderItem->item.stringItem.stringRenderer = [info->documentNode.stringRenderer retain];
-                        renderItem->item.stringItem.layoutPoint = info->point;
-                        renderItem->item.stringItem.color = color;
-                        _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
-                        
-                        xPosition += info->contents.hyphenationInfo.widthAfterHyphen;
-                    }
-                } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
-                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindImage;
-                    renderItem->item.imageItem.image = CGImageRetain(info->contents.imageInfo.image);
-                    renderItem->item.imageItem.rect = CGRectMake(xPosition, yPosition + lineBox.baseline - info->contents.imageInfo.scaledSize.height, info->width, info->contents.imageInfo.scaledSize.height);
-                    renderItem->item.imageItem.layoutPoint = info->point;
-                    renderItem->altText = [[info->documentNode altText] retain];
+                    xPosition += info->width;                  
+                    break;   
+                }
+                case EucCSSLayoutDocumentRunComponentKindWord:
+                {
+                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
+                    renderItem->parentIndex = parentIndex;
+                    renderItem->origin.x = xPosition - thisNodeAbsoluteX;
+                    renderItem->origin.y = _renderItems[parentIndex].lineBox.baseline - ascender;
+                    
+                    renderItem->lineBox.width = info->width;
+                    renderItem->lineBox.height = pointSize;
+                    renderItem->lineBox.baseline = ascender;
+                    renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
+                    
+                    renderItem->item.stringItem.string = [info->contents.string retain];
+                    renderItem->item.stringItem.layoutPoint = info->point;
+
+                    _placeRenderItemInRenderItem(renderItem, _renderItems + parentIndex);
+                    
                     _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     
                     xPosition += info->width;
-                } else if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode || info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode) {
-                    checkNodeDependentStyles = YES;
+                    break;
+                }
+                case EucCSSLayoutDocumentRunComponentKindHyphenationRule:
+                {
+                    if(i == startComponentOffset) {
+                        renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
+                        renderItem->parentIndex = parentIndex;
+                        renderItem->origin.x = xPosition - thisNodeAbsoluteX;
+                        
+                        renderItem->lineBox.width = info->width;
+                        renderItem->lineBox.height = pointSize;
+                        renderItem->lineBox.baseline = ascender;
+                        renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
+                        
+                        renderItem->item.stringItem.string = [info->contents.hyphenationInfo.afterHyphen retain];
+                        renderItem->item.stringItem.layoutPoint = info->point;
+                        
+                        _placeRenderItemInRenderItem(renderItem, _renderItems + parentIndex);
+                        
+                        _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
+                        
+                        xPosition += info->contents.hyphenationInfo.widthAfterHyphen;
+                        break;                        
+                    }
+                    break;
+                }
+                case EucCSSLayoutDocumentRunComponentKindImage:
+                {
+                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindImage;
+                    renderItem->parentIndex = parentIndex;
+                    renderItem->origin.x = xPosition - thisNodeAbsoluteX;
+                    
+                    renderItem->lineBox.width = info->contents.imageInfo.scaledSize.width;
+                    renderItem->lineBox.height = info->contents.imageInfo.scaledSize.height;
+                    renderItem->lineBox.baseline = info->contents.imageInfo.scaledSize.height;
+                    renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
+                    
+                    renderItem->item.imageItem.image = CGImageRetain(info->contents.imageInfo.image);
+                    renderItem->item.imageItem.layoutPoint = info->point;
+
+                    renderItem->altText = [[info->documentNode altText] retain];
+                    
+                    _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
+
+                    _adjustParentsToContainRenderItem(_renderItems, _renderItemCount, _renderItemCount - 1);
+
+                    xPosition += info->width;                    
+                    break;
+                }
+                case EucCSSLayoutDocumentRunComponentKindOpenNode:
+                {
+                    EucCSSIntermediateDocumentNode *node = info->documentNode;
+
+                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindOpenNode;
+                    renderItem->origin.x = xPosition - thisNodeAbsoluteX; // is already 0.
+                    
+                    thisNodeAbsoluteX += renderItem->origin.x;
+                    
+                    renderItem->parentIndex = parentIndex;
+                    renderItem->lineBox = lineBoxForDocumentNode(node, scaleFactor);
+                    renderItem->item.openNodeInfo.node = node;
+                    
+                    parentIndex = _renderItemCount;
+                    
+                    _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
+                    
+                    _adjustParentsToContainRenderItem(_renderItems, _renderItemCount, _renderItemCount - 1);
+                    
+                    pointSize = [node textPointSizeAtScaleFactor:scaleFactor];
+                    ascender = [node textAscenderAtScaleFactor:scaleFactor];
+                    
+                    xPosition += info->width;                    
+                    break;
+                }
+                case EucCSSLayoutDocumentRunComponentKindCloseNode:
+                {
+                    EucCSSIntermediateDocumentNode *node = info->documentNode;
+
+                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindCloseNode;
+                    renderItem->origin.x = xPosition - thisNodeAbsoluteX;
+                    renderItem->lineBox = _renderItems[parentIndex].lineBox;
+                    renderItem->lineBox.width = info->width;
+                    
+                    renderItem->parentIndex = parentIndex;
+                    renderItem->item.closeNodeInfo.node = node;
+
+                    _renderItems[parentIndex].lineBox.width = xPosition - thisNodeAbsoluteX;
+                    
+                    _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
+                    
+                    thisNodeAbsoluteX -= _renderItems[parentIndex].origin.x;
+                    xPosition += info->width;                    
+                    parentIndex = _renderItems[parentIndex].parentIndex;
+
+                    pointSize = [node.parent textPointSizeAtScaleFactor:scaleFactor];
+                    ascender = [node.parent textAscenderAtScaleFactor:scaleFactor];                    
+                    break;
+                }
+                case EucCSSLayoutDocumentRunComponentKindFloat:
+                {
+                    renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindFloatPlaceholder;
+                    renderItem->parentIndex = parentIndex;
+                    _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
+                    break;
+                }
+                default:
+                {
+                    THWarn(@"Unexpected component in line, kind %ld", (long)info->kind);
                 }
             }
-            
-            // Stopping 'just before' a hyphen component really means that we stop
-            // after the first part of the hyphenated word.
-            if(i < documentRun.componentsCount) {
-                if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                    --renderItem;
-                    
-                    xPosition -= info->width;
-                    
-                    // Store the entire word in the alt text for accessibility.
-                    renderItem->altText = renderItem->item.stringItem.string;
-                    
-                    renderItem->item.stringItem.string = [info->contents.hyphenationInfo.beforeHyphen retain];
-                    renderItem->item.stringItem.rect.size.width = info->contents.hyphenationInfo.widthBeforeHyphen;
-                    renderItem->item.stringItem.layoutPoint = info->point;
-                }
+        }     
+        
+        // Stopping 'just before' a hyphen component really means that we stop
+        // after the first part of the hyphenated word.
+        if(i < componentsCount) {
+            if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+                --renderItem;
+                
+                xPosition -= info->width;
+                
+                // Store the entire word in the alt text for accessibility.
+                renderItem->altText = renderItem->item.stringItem.string;
+                
+                renderItem->lineBox.width = info->contents.hyphenationInfo.widthBeforeHyphen;
+
+                renderItem->item.stringItem.string = [info->contents.hyphenationInfo.beforeHyphen retain];
+                renderItem->item.stringItem.layoutPoint = info->point;
+                
+                ++renderItem;
             }
+        }        
+        
+        // Close up any open nodes.
+        while(parentIndex != NSUIntegerMax) {
+            renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindCloseNode;
+            renderItem->origin.x = xPosition - thisNodeAbsoluteX;
+            renderItem->lineBox = _renderItems[parentIndex].lineBox;
+            renderItem->lineBox.width = 0;
             
-            [currentHyperlink release];
+            renderItem->parentIndex = parentIndex;
+            renderItem->item.closeNodeInfo.node = _renderItems[parentIndex].item.openNodeInfo.node;
+            renderItem->item.closeNodeInfo.implicit = YES;
+
+            _renderItems[parentIndex].lineBox.width = xPosition - thisNodeAbsoluteX;
+            
+            _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
+
+            thisNodeAbsoluteX -= _renderItems[parentIndex].origin.x;
+            parentIndex = _renderItems[parentIndex].parentIndex;
         }
     }
     return _renderItems;

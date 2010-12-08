@@ -14,48 +14,51 @@
 
 typedef enum EucCSSLayoutPositionedLineRenderItemKind
 {
+    EucCSSLayoutPositionedLineRenderItemKindOpenNode,
+    EucCSSLayoutPositionedLineRenderItemKindCloseNode,
     EucCSSLayoutPositionedLineRenderItemKindString,
     EucCSSLayoutPositionedLineRenderItemKindImage,
-    EucCSSLayoutPositionedLineRenderItemKindUnderlineStart,
-    EucCSSLayoutPositionedLineRenderItemKindUnderlineStop,
-    EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart,
-    EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop
+    EucCSSLayoutPositionedLineRenderItemKindFloatPlaceholder,
 } EucCSSLayoutPositionedLineRenderItemKind;
 
-typedef struct EucCSSLayoutPositionedLineRenderItem
-{
-    EucCSSLayoutPositionedLineRenderItemKind kind;
-    union {
-        struct {
-            NSString *string;
-            CGRect rect;
-            CGFloat pointSize;
-            THStringRenderer *stringRenderer;
-            EucCSSLayoutDocumentRunPoint layoutPoint;
-            uint32_t color;
-        } stringItem;
-        struct {
-            CGImageRef image;
-            CGRect rect;
-            EucCSSLayoutDocumentRunPoint layoutPoint;
-        } imageItem;
-        struct {
-            CGPoint underlinePoint;
-        } underlineItem;
-        struct {
-            NSURL *url;
-        } hyperlinkItem;
-    } item;
-    NSString *altText;
-} EucCSSLayoutPositionedLineRenderItem;
-
-typedef struct LineBox
+typedef struct EucCSSLayoutPositionedLineLineBox
 {
     CGFloat width;
     CGFloat height;
     CGFloat baseline;
     NSUInteger verticalAlign;
-} LineBox;
+} EucCSSLayoutPositionedLineLineBox;
+
+typedef struct EucCSSLayoutPositionedLineRenderItem
+{
+    EucCSSLayoutPositionedLineRenderItemKind kind;
+    NSUInteger parentIndex;
+    CGPoint origin;
+    EucCSSLayoutPositionedLineLineBox lineBox;
+    union {
+        struct {
+            EucCSSIntermediateDocumentNode *node; // nonretained.
+            BOOL implicit;
+        } openNodeInfo;
+        struct {
+            EucCSSIntermediateDocumentNode *node; // nonretained.
+            BOOL implicit;
+        } closeNodeInfo;
+        struct {
+            NSString *string;
+            EucCSSLayoutDocumentRunPoint layoutPoint;
+        } stringItem;
+        struct {
+            CGImageRef image;
+            EucCSSLayoutDocumentRunPoint layoutPoint;
+        } imageItem;
+        struct {
+            uint32_t nodeKey;
+        } floatPlaceholderItem;
+    } item;
+    NSString *altText;
+} EucCSSLayoutPositionedLineRenderItem;
+
 
 
 @interface EucCSSLayoutPositionedLine : EucCSSLayoutPositionedContainer {
@@ -66,7 +69,7 @@ typedef struct LineBox
     
     CGFloat _componentWidth;
 
-    LineBox _lineBox;
+    EucCSSLayoutPositionedLineLineBox _lineBox;
     CGFloat _baseline;
 
     
