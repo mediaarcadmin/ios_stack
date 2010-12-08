@@ -1,7 +1,7 @@
 * { margin:0; padding:0; border:0; }
 Flow { text-align:justify; display:block }
 Section { display:block }
-Paragraph { display:block; text-decoration: underline;}
+Paragraph { display:block; }
 
 LineBreak:before { content:"\A"; white-space:pre-line; }
 :link { color:blue }
