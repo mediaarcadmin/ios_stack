@@ -97,41 +97,32 @@ static BOOL _adjustLineBoxToContainLineBox(EucCSSLayoutPositionedLineLineBox *co
             }
             break;
         }                                   
-        /*case CSS_VERTICAL_ALIGN_SUB:
-        {
-            break;
-        }
+        case CSS_VERTICAL_ALIGN_SUB:
         case CSS_VERTICAL_ALIGN_SUPER:
+        case CSS_VERTICAL_ALIGN_SET:
         {
+            CGFloat adjustedBaseline = containedLineBox->baseline - containedLineBox->verticalAlignSetOffset;
+            
+            CGFloat containerDescenderAndLineHeightAddition = containerLineBox->height - containerLineBox->baseline;
+            CGFloat containedDescenderAndLineHeightAddition = containedLineBox->height - containedLineBox->baseline + containedLineBox->verticalAlignSetOffset;            
+            
+            if(adjustedBaseline > containerLineBox->baseline) {
+                containerLineBox->baseline = adjustedBaseline;
+                changed = YES;
+            }
+            CGFloat newHeight = containerLineBox->baseline + MAX(containerDescenderAndLineHeightAddition, containedDescenderAndLineHeightAddition);
+            if(newHeight != containerLineBox->height) {
+                containerLineBox->height = newHeight;
+                changed = YES;
+            }
             break;
         }
-        case CSS_VERTICAL_ALIGN_TEXT_TOP:
+        /*case CSS_VERTICAL_ALIGN_TEXT_TOP:
         case CSS_VERTICAL_ALIGN_MIDDLE:
         case CSS_VERTICAL_ALIGN_TEXT_BOTTOM:
         case CSS_VERTICAL_ALIGN_TOP:
         case CSS_VERTICAL_ALIGN_BOTTOM:
-        {
-            CGFloat difference = lineBoxHeight - info->lineHeight;
-            if(difference > 0.0f) {
-                CGFloat halfDifference = ceil(difference * 0.5f); 
-                lineBoxHeight = halfDifference * 2.0f;
-                currentBaseline += halfDifference;
-            }
-            break;
-        }
-        case CSS_VERTICAL_ALIGN_SET:
-        {
-            if(scaleFactor == 0.0f) {
-                scaleFactor = documentRun.scaleFactor;
-            }
-            CGFloat pixelSet = EucCSSLibCSSSizeToPixels(style, verticalAlignSize, verticalAlignSizeUnit, info->lineHeight, scaleFactor);
-            if(pixelSet < 0.0f) {
-                
-            } else {
-                
-            }
-            break;
-        }*/
+            break;*/
     }
     
     containerLineBox->width += containedLineBox->width;
@@ -139,19 +130,56 @@ static BOOL _adjustLineBoxToContainLineBox(EucCSSLayoutPositionedLineLineBox *co
     return changed;
 }
 
+static inline void _placeRenderItemInRenderItem(EucCSSLayoutPositionedLineRenderItem *child, EucCSSLayoutPositionedLineRenderItem *parent)
+{
+    enum css_vertical_align_e verticalAlign = child->lineBox.verticalAlign;
+    switch(verticalAlign) {
+        default:
+        {
+            THWarn("Unexpected vertical-align: %ld", (long)verticalAlign);
+            // Fall through
+        }
+        case CSS_VERTICAL_ALIGN_BASELINE:
+        {            
+            child->origin.y = parent->lineBox.baseline - child->lineBox.baseline;
+            break;
+        }   
+        case CSS_VERTICAL_ALIGN_SUB:
+        case CSS_VERTICAL_ALIGN_SUPER:
+        case CSS_VERTICAL_ALIGN_SET:
+        {
+            child->origin.y = parent->lineBox.baseline - child->lineBox.baseline;
+            child->origin.y += child->lineBox.verticalAlignSetOffset;
+            break;            
+        }
+    }    
+}
+
+
 static EucCSSLayoutPositionedLineLineBox lineBoxForDocumentNode(EucCSSIntermediateDocumentNode *node, CGFloat scaleFactor)
 {
     EucCSSLayoutPositionedLineLineBox myLineBox = { 0 };
         
     css_computed_style *style = node.computedStyle;
-    if(!style) {
-        style = node.parent.computedStyle;
+    if(style) {        
+        css_fixed verticalAlignSize = verticalAlignSize;
+        css_unit verticalAlignSizeUnit = verticalAlignSizeUnit;
+        NSUInteger verticalAlign = css_computed_vertical_align(style, &verticalAlignSize, &verticalAlignSizeUnit);
+        myLineBox.verticalAlign = verticalAlign;
+        if(verticalAlign == CSS_VERTICAL_ALIGN_SUPER) {
+            myLineBox.verticalAlignSetOffset = -[node.parent xHeightAtScaleFactor:scaleFactor];
+        } else if(verticalAlign == CSS_VERTICAL_ALIGN_SUB) {
+            myLineBox.verticalAlignSetOffset = [node.parent xHeightAtScaleFactor:scaleFactor];
+        } else if(verticalAlign == CSS_VERTICAL_ALIGN_SET) {
+            myLineBox.verticalAlignSetOffset = EucCSSLibCSSSizeToPixels(style, verticalAlignSize, verticalAlignSizeUnit, [node lineHeightAtScaleFactor:scaleFactor], scaleFactor);
+        }
+    } else {
+        myLineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
     }
     
     css_fixed verticalAlignSize = verticalAlignSize;
     css_unit verticalAlignSizeUnit = verticalAlignSizeUnit;
     
-    myLineBox.verticalAlign = css_computed_vertical_align(style, &verticalAlignSize, &verticalAlignSizeUnit);
     
     CGFloat halfLeading = halfLeading;
     halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([node lineHeightAtScaleFactor:scaleFactor], 
@@ -328,21 +356,6 @@ static inline void _incrementRenderitemsCount(EucCSSLayoutPositionedLineRenderIt
     }
 }
 
-static inline void _placeRenderItemInRenderItem(EucCSSLayoutPositionedLineRenderItem *child, EucCSSLayoutPositionedLineRenderItem *parent)
-{
-    enum css_vertical_align_e verticalAlign = child->lineBox.verticalAlign;
-    switch(verticalAlign) {
-        default:
-        {
-            THWarn("Unexpected vertical-align: %ld", (long)verticalAlign);
-            // Fall through
-        }
-        case CSS_VERTICAL_ALIGN_BASELINE:
-        {            
-            child->origin.y = parent->lineBox.baseline - child->lineBox.baseline;
-        }                                   
-    }    
-}
 
 static inline void _adjustParentsToContainRenderItem(EucCSSLayoutPositionedLineRenderItem *renderItems, size_t renderItemCount, NSUInteger childIndex) {
     NSUInteger parentIndex = renderItems[childIndex].parentIndex;
@@ -439,6 +452,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
 
         CGFloat pointSize = 0.0f;
         CGFloat ascender = 0.0f;
+        CGFloat xHeight = 0.0f;
         
         BOOL doParents;
         
@@ -522,9 +536,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                         
                         renderItem->item.stringItem.string = [info->contents.hyphenationInfo.afterHyphen retain];
                         renderItem->item.stringItem.layoutPoint = info->point;
-                        
-                        
-                        
+                                                
                         _placeRenderItemInRenderItem(renderItem, _renderItems + parentIndex);
                         
                         _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
@@ -578,6 +590,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     
                     pointSize = [node textPointSizeAtScaleFactor:scaleFactor];
                     ascender = [node textAscenderAtScaleFactor:scaleFactor];
+                    xHeight = [node xHeightAtScaleFactor:scaleFactor];
                     
                     xPosition += info->width;                    
                     break;
@@ -603,7 +616,9 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     parentIndex = _renderItems[parentIndex].parentIndex;
 
                     pointSize = [node.parent textPointSizeAtScaleFactor:scaleFactor];
-                    ascender = [node.parent textAscenderAtScaleFactor:scaleFactor];                    
+                    ascender = [node.parent textAscenderAtScaleFactor:scaleFactor];     
+                    xHeight = [node.parent xHeightAtScaleFactor:scaleFactor];
+                    
                     break;
                 }
                 case EucCSSLayoutDocumentRunComponentKindFloat:

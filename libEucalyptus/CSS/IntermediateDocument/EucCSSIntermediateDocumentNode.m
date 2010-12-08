@@ -312,6 +312,14 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return [_stringRenderer ascenderForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
 }
 
+- (CGFloat)xHeightAtScaleFactor:(CGFloat)scaleFactor
+{
+    if(!_stringRenderer) {
+        [self _setupTextIVars];
+    } 
+    return [_stringRenderer xHeightForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
+}
+
 - (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {

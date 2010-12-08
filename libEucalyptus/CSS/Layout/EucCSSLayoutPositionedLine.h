@@ -27,6 +27,7 @@ typedef struct EucCSSLayoutPositionedLineLineBox
     CGFloat height;
     CGFloat baseline;
     NSUInteger verticalAlign;
+    CGFloat verticalAlignSetOffset;
 } EucCSSLayoutPositionedLineLineBox;
 
 typedef struct EucCSSLayoutPositionedLineRenderItem

@@ -50,6 +50,7 @@ struct css_computed_style;
 - (CGFloat)textPointSizeAtScaleFactor:(CGFloat)scaleFactor;
 - (CGFloat)textAscenderAtScaleFactor:(CGFloat)scaleFactor;
 - (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)xHeightAtScaleFactor:(CGFloat)scaleFactor;
 
 // Overridable:
 @property (nonatomic, readonly) BOOL isTextNode;  // Default: NO

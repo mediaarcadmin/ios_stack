@@ -356,6 +356,12 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     return -roundf(-GlyphSpaceToPixels(CGFontGetDescent(_font), pointSize, _unitsPerEm));
 }
 
+- (CGFloat)xHeightForPointSize:(CGFloat)pointSize
+{
+    return -roundf(-GlyphSpaceToPixels(CGFontGetXHeight(_font), pointSize, _unitsPerEm));
+}
+
+
 - (CGContextRef)measuringContext
 {
     CGContextRef measuringContext = (CGContextRef)pthread_getspecific(sGraphicsContextKey);
