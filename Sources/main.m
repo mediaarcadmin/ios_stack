@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     sranddev();
     THProcessLoggingDefaults();
     
-    int retVal = UIApplicationMain(argc, argv, nil, nil);
+    int retVal = UIApplicationMain(argc, argv, nil, @"BlioAppAppDelegate");
     [pool release];
     return retVal;
 }

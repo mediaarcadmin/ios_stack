@@ -1058,8 +1058,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
                 
             }
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
+        if(!animated) {
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+        } else {
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
+            [self.navigationController setNavigationBarHidden:NO animated:NO];
+        }
         [self.navigationController.toolbar setHidden:NO];
         [self.navigationController setToolbarHidden:NO animated:NO];
             if(!animated) {
