@@ -1045,6 +1045,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [titleView setAuthor:[self.book authorsWithStandardFormat]];
         
         [self setNavigationBarButtons];
+		
+		[self updatePageJumpPanelForPage:self.bookView.pageNumber animated:NO];
         
         if(animated) {
             CATransition *animation = [CATransition animation];
