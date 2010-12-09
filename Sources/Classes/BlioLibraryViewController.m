@@ -701,7 +701,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.gridView reloadData];	
 	}
 }
-#pragma mark - 
+#pragma mark -
 #pragma mark MRGridViewDataSource methods
 
 -(MRGridViewCell*)gridView:(MRGridView*)gridView cellForGridIndex: (NSInteger)index{
@@ -789,7 +789,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 }
 
-#pragma mark - 
+#pragma mark -
 #pragma mark MRGridViewDelegate methods
 
 - (void)gridView:(MRGridView *)gridView didSelectCellAtIndex:(NSInteger)index{
@@ -816,7 +816,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[alert show];
 	[alert release];	
 }
-#pragma mark - 
+#pragma mark -
 #pragma mark UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -834,7 +834,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[UIView commitAnimations];
 }
 
-#pragma mark - 
+#pragma mark -
 #pragma mark UITableViewDelegate methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -852,6 +852,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 }
 
+- (void)openBook:(BlioBook *)selectedBook  {
+    //if ([[selectedBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+    //	// cancel all other operations related to paid books.
+    //	[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
+    //}
+    BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
+    if (nil != aBookViewController) {
+        [aBookViewController setManagedObjectContext:self.managedObjectContext];
+        aBookViewController.toolbarsVisibleAfterAppearance = YES;
+        [self.navigationController pushViewController:aBookViewController animated:YES];
+        [aBookViewController release];
+    }
+}
+                  
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	NSArray *sections = [self.fetchedResultsController sections];
@@ -866,30 +880,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 	}
 
-		
-		
-		
     BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
-//		if ([[selectedBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-//			// cancel all other operations related to paid books.
-//			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
-//		}
-		BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
-		if (nil != aBookViewController) {
-			[aBookViewController setManagedObjectContext:self.managedObjectContext];
-			aBookViewController.toolbarsVisibleAfterAppearance = YES;
-			[self.navigationController pushViewController:aBookViewController animated:YES];
-			[aBookViewController release];
-		}
-		
+        [self openBook:selectedBook];
 		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	}    
 	else [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
 	
 }
 
-#pragma mark - 
+#pragma mark -
 #pragma mark UITableViewDataSource methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -1372,46 +1372,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         return;
     }
-    
-#if 0    
-    [UIView beginAnimations:@"popBook" context:coverView];
-    [UIView setAnimationDuration:0.65f];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(popBookDidStop:finished:context:)];
-    [UIView setAnimationWillStartSelector:@selector(popBookWillStart:context:)];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    
-    CGFloat widthRatio = (targetView.bounds.size.width)/aCoverImageView.frame.size.width;
-    CGFloat heightRatio = (targetView.bounds.size.height)/aCoverImageView.frame.size.height;
-    CGRect poppedRect;
-    
-    // If the targetView is landscape, use the widthRatio for both and top align if necessary
-    if (targetView.bounds.size.width > targetView.bounds.size.height) {
-        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * widthRatio);
-        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
-        CGPoint topLeft = [self.view convertPoint:CGPointZero fromView:targetView];
-        poppedRect.origin.y = topLeft.y;
-    } else {
-        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
-        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
-		
-    }
-	
-    [poppedImageView setFrame:poppedRect];
-    [self.tableView setAlpha:0.0f];
-    [aTextureView setAlpha:0.0f];
-    
-    [UIView commitAnimations];
-    
-    [aTextureView release];
-    [poppedImageView release];
-    
-    self.openBookViewController = aBookViewController;
-    self.currentBookView = bookView;
-    self.currentPoppedBookCover = aCoverImageView;
-    self.bookCoverPopped = NO;
-    self.firstPageRendered = NO;
-#endif
     
     [aBookViewController release];
     

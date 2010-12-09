@@ -34,10 +34,6 @@
 	<string>6.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
-	<key>NSMainNibFile~ipad</key>
-	<string>MainWindow-iPad</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
@@ -48,15 +44,32 @@
 	<array>
 		<string>opengles-2</string>
 	</array>
-	<key>UIStatusBarHidden</key>
-	<false/>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleBlackTranslucent</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<string>UIInterfaceOrientationPortrait</string>
-	<key>UISupportedInterfaceOrientations~ipad</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UIStatusBarStyle~iPad</key>
+	<string>UIStatusBarStyleBlackOpaque</string>
+	<key>UIInterfaceOrientation~iPad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~iPad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+	<key>UIInterfaceOrientation</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
