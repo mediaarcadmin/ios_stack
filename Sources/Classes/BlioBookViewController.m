@@ -79,6 +79,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
+- (void) togglePageJumpPanel;
+
 @end
 
 @interface BlioBookSliderPreview : UIView {
@@ -264,6 +266,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	thumbPreview.alpha = 0;
 	thumbPreview.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7f];
 	[self.view addSubview:thumbPreview];
+	
+}
+
+- (void)viewDidLoad {
+	[self togglePageJumpPanel];
 }
 
 - (void)initialiseBookView {
@@ -894,7 +901,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)layoutNavigationToolbar {
-    CGRect navFrame = self.navigationController.navigationBar.frame;
+	UIViewController *controller = [self.delegate coverViewViewControllerForOpening];
+    UINavigationBar *currentNavBar = [controller.navigationController navigationBar];
+    CGRect navFrame = currentNavBar.frame;
     navFrame.origin.y = 20;
     [self.navigationController.navigationBar setFrame:navFrame];
 }
@@ -931,6 +940,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
 
     self.pieButton = aPieButton;
+	
+	BOOL hidden = [_pageJumpView isHidden];
+    [self.pieButton setToggled:!hidden];
+	
     [aPieButton release];
     
     [self.navigationItem setRightBarButtonItem:_pageJumpButton];
@@ -1516,7 +1529,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [_pageJumpView setTransform:CGAffineTransformIdentity];
     
     ///CGSize viewBounds = [self.bookView bounds].size;
-    UINavigationBar *currentNavBar = self.navigationController.visibleViewController.navigationController.navigationBar;
+	UIViewController *controller = [self.delegate coverViewViewControllerForOpening];
+    UINavigationBar *currentNavBar = [controller.navigationController navigationBar];
     CGPoint navBarBottomLeft = CGPointMake(0.0, 20 + currentNavBar.frame.size.height);
     //CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:currentNavBar];
 

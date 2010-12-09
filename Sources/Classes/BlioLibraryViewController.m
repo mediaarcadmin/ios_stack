@@ -1373,46 +1373,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         return;
     }
     
-#if 0    
-    [UIView beginAnimations:@"popBook" context:coverView];
-    [UIView setAnimationDuration:0.65f];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(popBookDidStop:finished:context:)];
-    [UIView setAnimationWillStartSelector:@selector(popBookWillStart:context:)];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    
-    CGFloat widthRatio = (targetView.bounds.size.width)/aCoverImageView.frame.size.width;
-    CGFloat heightRatio = (targetView.bounds.size.height)/aCoverImageView.frame.size.height;
-    CGRect poppedRect;
-    
-    // If the targetView is landscape, use the widthRatio for both and top align if necessary
-    if (targetView.bounds.size.width > targetView.bounds.size.height) {
-        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * widthRatio);
-        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
-        CGPoint topLeft = [self.view convertPoint:CGPointZero fromView:targetView];
-        poppedRect.origin.y = topLeft.y;
-    } else {
-        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
-        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
-		
-    }
-	
-    [poppedImageView setFrame:poppedRect];
-    [self.tableView setAlpha:0.0f];
-    [aTextureView setAlpha:0.0f];
-    
-    [UIView commitAnimations];
-    
-    [aTextureView release];
-    [poppedImageView release];
-    
-    self.openBookViewController = aBookViewController;
-    self.currentBookView = bookView;
-    self.currentPoppedBookCover = aCoverImageView;
-    self.bookCoverPopped = NO;
-    self.firstPageRendered = NO;
-#endif
-    
     [aBookViewController release];
     
     return;    
