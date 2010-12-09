@@ -214,7 +214,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                     [self _collapseTopMarginUpwards];
                 }            
             }
-            frame.size.height = 0.0f;
+            frame.size.height = CGRectGetMaxY(_contentRect);
         } else {
             height += _borderRect.origin.y;
             height += bottomMarginHeight;

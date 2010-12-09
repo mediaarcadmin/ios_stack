@@ -376,13 +376,16 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         
         THPair *activeFloats = nil;
         
-        while(!reachedBottomOfFrame && !closedLastNode && currentDocumentNode) {            
+        BOOL pageBreakForced = NO;
+        
+        while(!pageBreakForced && !reachedBottomOfFrame && !closedLastNode && currentDocumentNode) {            
             // Find the node's parent, closing open blocks until we reach it.
             EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
             EucCSSIntermediateDocumentNode *currentPositionedBlockNode;
             while((currentPositionedBlockNode = currentPositionedBlock.documentNode) != currentDocumentNodeBlockLevelParent) {
                 CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
                                                                                          toContainer:nil].origin.y;
+
                 [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:NO];
                 nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
                 
@@ -485,16 +488,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             
             reachedBottomOfFrame = nextAbsoluteY >= maxAbsoluteY;
         }
-        
-        if(!reachedBottomOfFrame) {
-        }        
-        
+
         if(closedLastNode) {
             *returningCompleted = YES;
             EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
             *returningNextPoint = fakeNextPoint;
         } else {
-            if(reachedBottomOfFrame) {
+            if(reachedBottomOfFrame || pageBreakForced) {
                 *returningCompleted = NO;
                 EucCSSLayoutPoint nextPoint;
                 BOOL nextPointValid = [self _trimBlockToFrame:frame 
