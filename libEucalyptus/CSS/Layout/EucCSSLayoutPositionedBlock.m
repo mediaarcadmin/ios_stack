@@ -26,6 +26,7 @@
 @implementation EucCSSLayoutPositionedBlock
 
 @synthesize documentNode = _documentNode;
+@synthesize scaleFactor = _scaleFactor;
 
 @synthesize borderRect = _borderRect;
 @synthesize paddingRect = _paddingRect;

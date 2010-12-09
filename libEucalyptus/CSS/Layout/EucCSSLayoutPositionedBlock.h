@@ -36,6 +36,7 @@ struct css_computed_style;
 }
 
 @property (nonatomic, retain) EucCSSIntermediateDocumentNode *documentNode;
+@property (nonatomic, assign) CGFloat scaleFactor;
 
 @property (nonatomic, assign, readonly) struct css_computed_style *computedStyle;
 

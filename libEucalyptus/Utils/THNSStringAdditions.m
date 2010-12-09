@@ -108,6 +108,31 @@ static void objectBackedAllocatorRegisterPointerAsBelongingTo(const void *ptr, i
     return [(NSString *)string autorelease];
 }
 
+// From http://stackoverflow.com/questions/394574/code-golf-new-year-edition-integer-to-roman-numeral
+static char* i2r(int i, char* r) {
+    char t[20];
+    char* o=t+19;*o=0;
+    char* s="IVXLCDMM";
+    for (char*p=s+1;*p&&i;p+=2) {
+        int x=i%10;
+        if (x==9) {*--o=p[1];*--o=p[-1];}
+        else if (x==4) {*--o=*p;*--o=p[-1];}
+        else {
+            for(;x&&x!=5;--x)*--o=p[-1];
+            if(x)*--o=*p;
+        }
+        i/=10;
+    }
+    return strcpy(r,o);
+}
+
+
++ (id)stringWithRomanNumeralsFromInteger:(NSUInteger)integer
+{
+    char buf[20];
+    i2r((int)integer, buf);
+    return [self stringWithBytes:buf length:strlen(buf) encoding:NSUTF8StringEncoding];
+}
 
 + (id)stringWithRegMatch:(regmatch_t *)match fromBytes:(const char *)string encoding:(NSStringEncoding)encoding
 {

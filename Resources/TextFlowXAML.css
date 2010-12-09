@@ -36,9 +36,23 @@ LineBreak:before { content:"\A"; white-space:pre-line; }
 *[Stretch="Fill"] { width:100%;height:100%; }
 
 List { display:block; margin-left: 40px }
-ListItem { display:list-item }
+ListItem { display:list-item; }
 ListItem Paragraph { display:inline }
 
+List[MarkerStyle="None"] { list-style-type:none }
+List[MarkerStyle="Disc"] { list-style-type:disc }
+List[MarkerStyle="Circle"] { list-style-type:circle }
+List[MarkerStyle="Square"] { list-style-type:square }
+List[MarkerStyle="Box"] { list-style-type:square }
+List[MarkerStyle="LowerRoman"] { list-style-type:lower-roman }
+List[MarkerStyle="UpperRoman"] { list-style-type:upper-roman }
+List[MarkerStyle="LowerLatin"] { list-style-type:lower-latin }
+List[MarkerStyle="UpperLatin"] { list-style-type:upper-latin }
+List[MarkerStyle="Decimal"] { list-style-type:decimal }
+
+/* 
+    Tidy things up a bit until we properly support tables.
+*/
 Table { display:block }
 Table.Columns { display:block }
 TableRowGroup { display:block }

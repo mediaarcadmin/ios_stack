@@ -8,6 +8,7 @@
 
 #import "EucCSSInternal.h"
 #import "EucCSSRenderer.h"
+#import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayoutPositionedContainer.h"
 #import "EucCSSLayoutPositionedBlock.h"
@@ -16,6 +17,7 @@
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSRenderer.h"
+#import "THNSStringAdditions.h"
 #import "THStringRenderer.h"
 #import "THLog.h"
 
@@ -54,8 +56,10 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     CGContextSetStrokeColor(context, components);
 }
 
-- (void)render:(EucCSSLayoutPositionedContainer *)layoutEntity atPoint:(CGPoint)point
+- (void)render:(EucCSSLayoutPositionedBlock *)layoutEntity atPoint:(CGPoint)point
 {
+    _currentScaleFactor = layoutEntity.scaleFactor;
+    
     // External generic entry point
     CGContextSaveGState(_cgContext);
     
@@ -270,21 +274,165 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     THLogVerbose(@"Positioned Run End");
 }
 
+- (void)_renderListItemBulletForRenderItem:(EucCSSLayoutPositionedLineRenderItem *)renderItem atBaselinePoint:(CGPoint)baselinePoint
+{
+    // TODO: support
+    //css_computed_list_style_image(<#const css_computed_style *style#>, <#lwc_string **url#>);
+    
+    NSString *bulletString;
+    EucCSSIntermediateDocumentNode *documentNode = renderItem->item.openNodeInfo.node;
+
+    enum css_list_style_type_e listStyleType = css_computed_list_style_type(documentNode.computedStyle);
+    switch(listStyleType) {
+        case CSS_LIST_STYLE_TYPE_DISC:
+        {
+            bulletString = @"\u2022";
+            break;
+        }
+        case CSS_LIST_STYLE_TYPE_CIRCLE:
+        {
+            bulletString = @"\u25e6";
+            break;
+        }
+        case CSS_LIST_STYLE_TYPE_SQUARE:
+        {
+            bulletString = @"\u25a0";
+            break;
+        }        
+        default:
+        {
+            NSLog(@"Unsupported list style %ld", (long)listStyleType);
+            listStyleType = CSS_LIST_STYLE_TYPE_DECIMAL;
+            // Fall through.
+        }            
+        case CSS_LIST_STYLE_TYPE_DECIMAL:
+        case CSS_LIST_STYLE_TYPE_DECIMAL_LEADING_ZERO:
+        case CSS_LIST_STYLE_TYPE_LOWER_ROMAN:
+        case CSS_LIST_STYLE_TYPE_UPPER_ROMAN:
+        case CSS_LIST_STYLE_TYPE_LOWER_GREEK:
+        case CSS_LIST_STYLE_TYPE_LOWER_LATIN:
+        case CSS_LIST_STYLE_TYPE_UPPER_LATIN:
+        case CSS_LIST_STYLE_TYPE_ARMENIAN:
+        case CSS_LIST_STYLE_TYPE_GEORGIAN:
+        case CSS_LIST_STYLE_TYPE_LOWER_ALPHA:
+        case CSS_LIST_STYLE_TYPE_UPPER_ALPHA:
+        {
+            NSUInteger index = 0;
+            EucCSSIntermediateDocumentNode *parentNode = documentNode.parent;
+            EucCSSIntermediateDocument *document = parentNode.document;
+            uint32_t myKey = renderItem->item.openNodeInfo.node.key;
+            uint32_t childCount = parentNode.childCount;
+            uint32_t *childKeys = parentNode.childKeys;
+            for(uint32_t i = 0; i < childCount; ++i) {
+                uint32_t siblingKey = childKeys[i];
+                if(siblingKey == myKey) {
+                    break;
+                } 
+                EucCSSIntermediateDocumentNode *siblingNode = [document nodeForKey:siblingKey];
+                css_computed_style *siblingStyle = siblingNode.computedStyle;
+                if(siblingStyle) {
+                    if(css_computed_display(siblingStyle, false) == CSS_DISPLAY_LIST_ITEM) {
+                        ++index;
+                    }
+                }
+            }
+            switch(listStyleType) {
+                case CSS_LIST_STYLE_TYPE_DECIMAL_LEADING_ZERO:
+                {
+                    bulletString = [NSString stringWithFormat:@"%02ld.", index + 1];
+                    break;
+                }
+                case CSS_LIST_STYLE_TYPE_DECIMAL:
+                {
+                    bulletString = [NSString stringWithFormat:@"%ld.", index + 1];
+                    break;
+                }
+                case CSS_LIST_STYLE_TYPE_LOWER_ROMAN:
+                {
+                    bulletString = [[[NSString stringWithRomanNumeralsFromInteger:index + 1] lowercaseString] stringByAppendingString:@"."];
+                    break;
+                }
+                case CSS_LIST_STYLE_TYPE_UPPER_ROMAN:
+                {
+                    bulletString = [[NSString stringWithRomanNumeralsFromInteger:index + 1] stringByAppendingString:@"."];
+                    break;
+                }      
+                case CSS_LIST_STYLE_TYPE_LOWER_GREEK:
+                {
+                    UniChar ch[2];
+                    ch[0] = 0x03b1 + (index % 24);
+                    ch[1] = '.';
+                    bulletString = [NSString stringWithCharacters:ch length:2];
+                    break;
+                }                                        
+                case CSS_LIST_STYLE_TYPE_LOWER_LATIN:
+                case CSS_LIST_STYLE_TYPE_LOWER_ALPHA:
+                {
+                    UniChar ch[2];
+                    ch[0] = 'a' + (index % 26);
+                    ch[1] = '.';
+                    bulletString = [NSString stringWithCharacters:ch length:2];
+                    break;
+                }                    
+                case CSS_LIST_STYLE_TYPE_UPPER_LATIN:
+                case CSS_LIST_STYLE_TYPE_UPPER_ALPHA:
+                {
+                    UniChar ch[2];
+                    ch[0] = 'A' + (index % 26);
+                    ch[1] = '.';
+                    bulletString = [NSString stringWithCharacters:ch length:2];
+                    break;
+                }                    
+                case CSS_LIST_STYLE_TYPE_ARMENIAN:
+                {
+                    UniChar ch[2];
+                    ch[0] = 0x0531 + (index % 10);
+                    ch[1] = '.';
+                    bulletString = [NSString stringWithCharacters:ch length:2];
+                    break;
+                }
+                case CSS_LIST_STYLE_TYPE_GEORGIAN:
+                {
+                    UniChar ch[2];
+                    ch[0] = 0x10d0 + (index % 10);
+                    ch[1] = '.';
+                    bulletString = [NSString stringWithCharacters:ch length:2];
+                    break;
+                }                    
+                default:
+                    NSParameterAssert(false); // Shouldn't be possible to fall in here.
+            }
+            break;
+        }
+        case CSS_LIST_STYLE_TYPE_NONE:
+        {
+            return;
+        }
+    }
+    
+    THStringRenderer *stringRenderer = documentNode.stringRenderer;
+    
+    CGFloat pointSize = [documentNode textPointSizeAtScaleFactor:_currentScaleFactor];
+    CGFloat bulletWidth = [stringRenderer widthOfString:bulletString pointSize:pointSize];
+    
+    [stringRenderer drawString:bulletString 
+                     inContext:_cgContext
+                       atPoint:CGPointMake(baselinePoint.x - bulletWidth, 
+                                           baselinePoint.y - [stringRenderer ascenderForPointSize:pointSize])
+                     pointSize:pointSize];
+}
+
 - (void)_renderPositionedLine:(EucCSSLayoutPositionedLine *)line 
 {
     THLogVerbose(@"Positioned Line: %@", NSStringFromCGRect(line.absoluteFrame));
     
     //CGContextStrokeRectWithWidth(_cgContext, line.contentBounds, 0.5);
 
-    EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
+    EucCSSLayoutPositionedLineRenderItem *renderItems = line.renderItems;
     size_t renderItemsCount = line.renderItemCount;
     
-    EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
-    
-    //BOOL currentUnderline = NO;
-    //CGPoint underlinePoints[2] = { { 0 } };    
-    CGFloat lastMaxX = 0.0f;
-    
+    EucCSSLayoutPositionedLineRenderItem *renderItem = renderItems;
+
     CGContextSaveGState(_cgContext);
 
     CGPoint currentAbsoluteOrigin = CGPointZero;
@@ -306,6 +454,14 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                     if(css_computed_color(style, &color) == CSS_COLOR_COLOR) {
                         CGContextSetFillColorWithCSSColor(_cgContext, color);
                         CGContextSetStrokeColorWithCSSColor(_cgContext, color);
+                    }
+                    
+                    // List bullet
+                    if(css_computed_display(style, false) == CSS_DISPLAY_LIST_ITEM) {
+                        CGPoint baselinePoint = CGPointMake(currentAbsoluteOrigin.x + renderItem->origin.x - roundf(5.0f * _currentScaleFactor),
+                                                            renderItem->lineBox.baseline);
+                        [self _renderListItemBulletForRenderItem:renderItem 
+                                                 atBaselinePoint:baselinePoint];
                     }
                 }
                 
@@ -342,15 +498,12 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
             }
             case EucCSSLayoutPositionedLineRenderItemKindString: 
             {
-                CGRect rect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
-                                         currentAbsoluteOrigin.y + renderItem->origin.y, 
-                                         renderItem->lineBox.width, 
-                                         renderItem->lineBox.height);
+                CGPoint point = CGPointMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                            currentAbsoluteOrigin.y + renderItem->origin.y);
                 [currentDocumentNode.stringRenderer drawString:renderItem->item.stringItem.string
                                                      inContext:_cgContext 
-                                                       atPoint:rect.origin
+                                                       atPoint:point
                                                      pointSize:renderItem->lineBox.height];
-                lastMaxX = CGRectGetMaxX(rect);
                 break;
             }
             case EucCSSLayoutPositionedLineRenderItemKindImage: 
@@ -377,7 +530,6 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
                 CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), renderItem->item.imageItem.image);
                 CGContextRestoreGState(_cgContext);
-                lastMaxX = CGRectGetMaxX(rect);
                 break;
             }
             case EucCSSLayoutPositionedLineRenderItemKindFloatPlaceholder:
