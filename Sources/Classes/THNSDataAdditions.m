@@ -15,6 +15,10 @@
 
 @implementation NSData (THNSDataAdditions)
 
+// This is much faster to return than the regular save methods, because
+// it basically returns immedietly and relies on the OS to page out the file.
+// This can save a lot of time when trying to save things in the precious 
+// seconds available during application quit.
 - (BOOL)writeToMappedFile:(NSString *)path
 {
     BOOL ret = NO;
