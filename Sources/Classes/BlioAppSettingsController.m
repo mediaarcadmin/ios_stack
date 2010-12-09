@@ -79,13 +79,13 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 5;
+    return 4;
 }
 
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (section == 0) 
+	if (section == 0 || section == 3) 
 		return 2;
 	return 1;
 }
@@ -128,7 +128,8 @@
 //					[cell.textLabel setText:NSLocalizedString(@"Navigation",@"\"Navigation\" text label for App Settings cell")];
 //					break;
 				case 1:
-					[cell.textLabel setText:NSLocalizedString(@"Web Tools",@"\"Web Tools\" text label for App Settings cell")];
+					[cell.textLabel setText:NSLocalizedString(@"Reference Tools",@"\"Reference Tools\" text label for App Settings cell")];
+				default:
 					break;
 			}
 			break;
@@ -148,11 +149,19 @@
 			[cell.textLabel setText:NSLocalizedString(@"Help",@"\"Help\" text label for App Settings cell")];
 			break;
 		case 3:
-			[cell.textLabel setText:NSLocalizedString(@"About",@"\"About\" text label for App Settings cell")];
-			break;
-		case 4:
-			[cell.textLabel setText:NSLocalizedString(@"Terms of Use",@"\"Terms of Use\" text label for App Settings cell")];
-			break;
+			switch ([indexPath row])
+			{
+				case 0:
+					[cell.textLabel setText:NSLocalizedString(@"About",@"\"About\" text label for App Settings cell")];
+					break;
+				//				case 1:
+				//					[cell.textLabel setText:NSLocalizedString(@"Navigation",@"\"Navigation\" text label for App Settings cell")];
+				//					break;
+				case 1:
+					[cell.textLabel setText:NSLocalizedString(@"Terms of Use",@"\"Terms of Use\" text label for App Settings cell")];
+				default:
+					break;
+			}
 		default:
 			break;
 	}
@@ -209,14 +218,19 @@
 			[helpController release];
 			break;
 		case 3:
-			versionController = [[BlioVersionController alloc] init];
-			[self.navigationController pushViewController:versionController animated:YES];
-			[versionController release];
-			break;
-		case 4:
-			eulaController = [[BlioEULATextController alloc] init];
-			[self.navigationController pushViewController:eulaController animated:YES];
-			[eulaController release];
+			switch (indexPath.row)
+			{
+				case 0:
+					versionController = [[BlioVersionController alloc] init];
+					[self.navigationController pushViewController:versionController animated:YES];
+					[versionController release];
+					break;
+				case 1:
+					eulaController = [[BlioEULATextController alloc] init];
+					[self.navigationController pushViewController:eulaController animated:YES];
+					[eulaController release];
+					break;
+			}
 			break;
 		default:
 			break;

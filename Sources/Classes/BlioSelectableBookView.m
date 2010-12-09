@@ -82,7 +82,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     EucMenuItem *colorItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Color", "\"Color\" option in popup menu")
                                                           action:@selector(showColorMenu:)] autorelease];
    
-    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu")
+    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
                                                                  action:@selector(showWebTools:)] autorelease];
 
     EucMenuItem *removeItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Remove", "\"Remove Highlight\" option in popup menu")
@@ -117,7 +117,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
                                                             action:@selector(addNote:)] autorelease];
     EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu")
                                                          action:@selector(copy:)] autorelease];
-    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu")
+    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
                                                                  action:@selector(showWebTools:)] autorelease];
     
     NSArray *ret;
