@@ -1135,27 +1135,31 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         while(!isLastBlock && blockIdIndex < blockIdsCount) {
             id blockId = [blockIds objectAtIndex:blockIdIndex];
             
-            NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:blockId];
-            NSUInteger elementIdCount = elementIds.count;
-            NSUInteger elementIdIndex = 0;
-            
             isLastBlock = ([blockId compare:endBlockId] == NSOrderedSame);
             
-            id elementId;
-            if(isFirstBlock) {
-                while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
-                    ++elementIdIndex;
+            NSArray *elementIds = [self _identifiersForElementsOfBlockWithIdentifier:blockId];
+            NSUInteger elementIdCount = elementIds.count;
+            if(elementIdCount) {
+                NSUInteger elementIdIndex = 0;
+                
+                id elementId;
+                if(isFirstBlock) {
+                    while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                        ++elementIdIndex;
+                    }
+                    isFirstBlock = NO;
                 }
+                
+                do {
+                    elementId = [elementIds objectAtIndex:elementIdIndex];
+                    [nonCoalescedRects addObjectsFromArray:[self _rectsForElementWithIdentifier:elementId
+                                                                          ofBlockWithIdentifier:blockId]];
+                    ++elementIdIndex;
+                } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
+                         elementIdIndex < elementIdCount);
+            } else {
                 isFirstBlock = NO;
             }
-            
-            do {
-                elementId = [elementIds objectAtIndex:elementIdIndex];
-                [nonCoalescedRects addObjectsFromArray:[self _rectsForElementWithIdentifier:elementId
-                                                                      ofBlockWithIdentifier:blockId]];
-                ++elementIdIndex;
-            } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
-                     elementIdIndex < elementIdCount);
             ++blockIdIndex;
         }
         
