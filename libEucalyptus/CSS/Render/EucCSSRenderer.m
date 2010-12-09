@@ -457,7 +457,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                     }
                     
                     // List bullet
-                    if(css_computed_display(style, false) == CSS_DISPLAY_LIST_ITEM) {
+                    if(!renderItem->item.openNodeInfo.implicit &&
+                       css_computed_display(style, false) == CSS_DISPLAY_LIST_ITEM) {
                         CGPoint baselinePoint = CGPointMake(currentAbsoluteOrigin.x + renderItem->origin.x - roundf(5.0f * _currentScaleFactor),
                                                             renderItem->lineBox.baseline);
                         [self _renderListItemBulletForRenderItem:renderItem 
