@@ -459,6 +459,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         item.style = UIBarButtonItemStyleBordered;
     }
 	sortSegmentedControl.tintColor = tintColor;
+    [self.navigationController.toolbar setTintColor:tintColor];
+    [self.navigationController.navigationBar setTintColor:tintColor];    
     [super viewWillAppear:animated];
 }
 
