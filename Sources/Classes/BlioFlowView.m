@@ -310,6 +310,15 @@
 	}
 }
 
+- (UIImage *)dimPageImage
+{
+    UIImage *ret = nil;
+    _eucBookView.dimQuotient = 1.0f;
+    ret = _eucBookView.currentPageImage;
+    _eucBookView.dimQuotient = 0.0f;
+    return ret;
+}
+
 #pragma mark -
 #pragma mark Back Button History
 

@@ -319,6 +319,15 @@
 	[aSelector release];
 }
 
+- (UIImage *)dimPageImage
+{
+    UIImage *ret = nil;
+    self.pageTurningView.dimQuotient = 1.0f;
+    ret = self.pageTurningView.screenshot;
+    self.pageTurningView.dimQuotient = 0.0f;
+    return ret;
+}
+
 #pragma mark -
 #pragma mark EucPageTurningViewBitmapDataSource
 

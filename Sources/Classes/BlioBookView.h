@@ -84,6 +84,7 @@
 
 @optional
 @property (nonatomic, assign) CGFloat fontPointSize;
+@property (nonatomic, readonly) UIImage *dimPageImage;
 
 // Page texture-related properties are readony because
 // - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
@@ -112,5 +113,6 @@
 - (BOOL)toolbarHideShouldBeSuppressed; 
 
 - (UIImage*)previewThumbnailForPageNumber:(NSInteger)pageNumber;
+
 
 @end

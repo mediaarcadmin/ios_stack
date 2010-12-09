@@ -179,6 +179,8 @@ typedef enum {
 @property (nonatomic, assign) id <BlioCoverViewDelegate> delegate;
 @property (nonatomic, retain) BlioCoverView *coverView;
 
+@property (nonatomic, retain, readonly) UIImage *dimPageImage;
+
 - (void)stopAudio;
 - (void)pauseAudio;
 - (void)toggleAudio:(id)sender;

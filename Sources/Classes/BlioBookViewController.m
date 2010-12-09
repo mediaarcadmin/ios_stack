@@ -1751,6 +1751,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
+- (UIImage *)dimPageImage
+{
+    UIView<BlioBookView> *bookView = [self bookView];
+    if([bookView respondsToSelector:@selector(dimPageImage)]) {
+        return bookView.dimPageImage;
+    }
+    return nil;
+}
+
 #pragma mark -
 #pragma mark BookController State Methods
 
