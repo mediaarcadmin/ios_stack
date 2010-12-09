@@ -146,6 +146,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         BOOL reachedLimit = NO;
         
         EucCSSLayoutDocumentRunComponentInfo currentComponentInfo = { EucCSSLayoutDocumentRunComponentKindNone };
+        static const EucCSSLayoutDocumentRunComponentInfo hardBreakInfo = { EucCSSLayoutDocumentRunComponentKindHardBreak };
         
         BOOL wasFloat = NO;
         while(YES) {
@@ -164,6 +165,17 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     wasFloat = YES;
                 } else if(css_computed_display(inlineNodeStyle, false) != CSS_DISPLAY_BLOCK) {
                     // Open this node.
+                    if(inlineNodeStyle && 
+                       css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM &&
+                       (_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutDocumentRunComponentKindHardBreak)) {
+                        EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
+                        info.documentNode = inlineNode.parent;
+                        info.width = 0;
+                        [self _addComponent:&info];
+                        _previousInlineCharacterWasSpace = YES;
+                        _alreadyInsertedSpace = YES;
+                    }
+                    
                     currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
                     currentComponentInfo.documentNode = inlineNode;
                     [self _addComponent:&currentComponentInfo];
@@ -182,8 +194,6 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     if(!inlineNode.isTextNode && 
                        !inlineNode.isImageNode &&
                        (!inlineNodeStyle || css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE)) {
-                        // If the node /doesn't/ have children, it's already closed,
-                        // above.
                         if(currentComponentInfo.documentNode != inlineNode) {
                             // We can close nodes that we didn't start if we're in
                             // an inline node with block nodes within it, so we
@@ -193,6 +203,15 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                         }
                         currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
                         [self _addComponent:&currentComponentInfo];
+                        
+                        if(inlineNodeStyle && css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM) {
+                            EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
+                            info.documentNode = inlineNode.parent;
+                            info.width = 0;
+                            [self _addComponent:&info];
+                            _previousInlineCharacterWasSpace = YES;
+                            _alreadyInsertedSpace = YES;
+                        }
                     }                    
                     inlineNode = inlineNode.parent;
                     inlineNodeStyle = inlineNode.computedStyle;

@@ -35,6 +35,10 @@ LineBreak:before { content:"\A"; white-space:pre-line; }
 *[HorizontalAnchor="ContentRight"] { float:right }
 *[Stretch="Fill"] { width:100%;height:100%; }
 
+List { display:block; margin-left: 40px }
+ListItem { display:list-item }
+ListItem Paragraph { display:inline }
+
 Table { display:block }
 Table.Columns { display:block }
 TableRowGroup { display:block }
