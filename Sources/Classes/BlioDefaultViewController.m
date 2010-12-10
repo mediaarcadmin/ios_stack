@@ -53,12 +53,20 @@
     }
     NSString *deviceString;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        deviceString = @"Pad";
+        deviceString = @"ipad";
     } else {
-        deviceString = @"Phone";
+        deviceString = @"iphone";
+    }
+    NSString *scaleString = @"";
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    if([mainScreen respondsToSelector:@selector(scale)]) {
+        CGFloat scale = [mainScreen scale];
+        if(scale != 1.0f) {
+            scaleString = [NSString stringWithFormat:@"@%fx", (float)scale];
+        }
     }
     
-    return [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"BlioDynamicDefault-%@-%@.png", deviceString, orientationString]];
+    return [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"BlioDynamicDefault-%@%@~%@.png", orientationString, scaleString, deviceString]];
 }
 
 + (UIImage *)loadDynamicDefaultImageForOrientation:(UIInterfaceOrientation)orientation {
@@ -71,10 +79,27 @@
     // round!)
     unlink([dynamicDefaultPngPath fileSystemRepresentation]);
     
+    UIImage *ret = nil;
+    
     if(imageData) {
-        return [UIImage imageWithData:imageData];
+        if([UIImage respondsToSelector:@selector(imageWithCGImage:scale:orientation:)]) {
+            CGDataProviderRef pngProvider = CGDataProviderCreateWithCFData((CFDataRef)imageData);
+            if(pngProvider) {
+                CGImageRef image = CGImageCreateWithPNGDataProvider(pngProvider, nil, false, kCGRenderingIntentDefault);
+                if(image) {
+                    ret = [UIImage imageWithCGImage:image
+                                              scale:[[UIScreen mainScreen] scale] 
+                                        orientation:UIImageOrientationUp];
+                    CGImageRelease(image);
+                }
+                CGDataProviderRelease(pngProvider);
+            }
+        } else {
+            ret = [UIImage imageWithData:imageData];
+        }
     }
-    return nil;
+    
+    return ret;
 }
 
 + (void)saveDynamicDefaultImage:(UIImage *)image
