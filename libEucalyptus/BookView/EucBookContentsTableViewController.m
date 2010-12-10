@@ -272,7 +272,7 @@
             CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
             CGGradientRef gradient = CGGradientCreateWithColorComponents(rgbColorSpace, colorRefs, locationRefs, 2);   
             CGColorSpaceRelease(rgbColorSpace);
-            CGFloat height = [EucNameAndPageNumberView heightForWidth:TABLE_CONTENTS_CELL_WIDTH + TABLE_CONTENTS_CELL_INDENTATION_WIDTH * indentationLevel 
+            CGFloat height = [EucNameAndPageNumberView heightForWidth:TABLE_CONTENTS_CELL_WIDTH - TABLE_CONTENTS_CELL_INDENTATION_WIDTH * indentationLevel 
                                                                       // Seems like very bad form to be hard-coding these... 
                                                           withName:nameAndSubtitle.first 
                                                           subTitle:nameAndSubtitle.second 
@@ -308,6 +308,9 @@
 {
     NSString *uuid = [[_uuids objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     THPair *nameAndSubtitle = [_dataSource presentationNameAndSubTitleForSectionUuid:uuid];
+	if ([nameAndSubtitle.first isEqualToString:@"Campari-Blood Orange Sorbet"]) {
+		NSLog(@"found");
+	}
     NSUInteger pageNumber = [_dataSource pageNumberForSectionUuid:uuid];
     BOOL pageNumberIsValid = YES;
 
@@ -317,7 +320,7 @@
 	}    
     
     CGFloat ret = [EucNameAndPageNumberView heightForWidth:(pageNumberIsValid ? TABLE_CONTENTS_CELL_WIDTH : TABLE_CONTENTS_CELL_WIDTH_WITH_ACCESSORY)
-                                                           + TABLE_CONTENTS_CELL_INDENTATION_WIDTH * indentationLevel
+                                                           - TABLE_CONTENTS_CELL_INDENTATION_WIDTH * indentationLevel
                                                            // Seems like very bad form to be hard-coding these... 
                                                   withName:nameAndSubtitle.first 
                                                   subTitle:nameAndSubtitle.second 
