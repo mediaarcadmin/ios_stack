@@ -193,6 +193,8 @@
 }
 
 - (void)fadeOutDefaultImageIfDynamicImageAlsoAvailable  {
+    // Fade and slightly zoom the default image, revealing the dynamic
+    // image behind, if there is one.
     self.fadesBegun = YES;
     if(self.dynamicImageView) {
         UIImageView *imageView = self.nonDynamicImageView;
@@ -232,6 +234,10 @@
 - (void)fadeOutCompletly {
     self.fadesBegun = YES;
     if(self.dynamicImageView) {
+        // Fade the dynamic image (don't zoom it - idea is that the UI behind
+        // it will be similar to it).
+        // The default image should already have been removed by 
+        // -fadeOutDefaultImageIfDynamicImageAlsoAvailable, above.
         UIImageView *imageView = self.dynamicImageView;
         UIWindow *window = self.view.window;
         CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
@@ -250,6 +256,7 @@
         [UIView commitAnimations];
         [self retain];
     } else {
+        // Fade and slightly zoom the default image, revealing the UI.
         UIImageView *imageView = self.nonDynamicImageView;
         UIWindow *window = self.view.window;
         CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
