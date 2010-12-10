@@ -181,7 +181,7 @@
         imageView.center = windowCenter;
         if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
             imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else {
+        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
             imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
         }
         [window addSubview:imageView];
@@ -222,7 +222,7 @@
         imageView.center = windowCenter;
         if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
             imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else {
+        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
             imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
         }
         [window addSubview:imageView];
@@ -244,7 +244,7 @@
         imageView.center = windowCenter;
         if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
             imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else {
+        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
             imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
         }
         [window addSubview:imageView];        
