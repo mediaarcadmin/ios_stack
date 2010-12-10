@@ -1931,12 +1931,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     } else {
         if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
             UIImage *pageTexture = nil;
-            if ((newColor == kBlioPageColorWhite) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
-                pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"paper-white-ipad" ofType:@"png"]]];
+            if([[UIDevice currentDevice] compareSystemVersion:@"4"] >= NSOrderedSame) {
+                pageTexture = [UIImage imageNamed:kBlioFontPageTextureNamesArray[newColor]];
             } else {
-                NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
-                                                                  ofType:@""];
-                pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+                // iPad doesn't automatically look for its own images with < OS 4.0
+                if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                    NSString *name = kBlioFontPageTextureNamesArray[newColor];
+                    name = [[[name stringByDeletingPathExtension] stringByAppendingString:@"~ipad"] stringByAppendingPathExtension:[name pathExtension]];
+                    pageTexture = [UIImage imageNamed:name];
+                } else {
+                    pageTexture = [UIImage imageNamed:kBlioFontPageTextureNamesArray[newColor]];
+                }
             }
             [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
         }
