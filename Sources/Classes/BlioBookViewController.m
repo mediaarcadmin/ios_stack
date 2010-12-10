@@ -2834,6 +2834,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
      }
 }
 
+- (void)refreshHighlights {
+	if ([self.bookView respondsToSelector:@selector(refreshHighlights)]) {
+		[self.bookView refreshHighlights];
+	}
+}
+
 - (void)copyWithRange:(BlioBookmarkRange*)range {
 	NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
 	[[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[wordStrings componentsJoinedByString:@" "]]];

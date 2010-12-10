@@ -20,6 +20,7 @@
 - (void)addHighlightWithColor:(UIColor *)color;
 - (void)addHighlightNoteWithColor:(UIColor *)color;
 - (void)removeHighlightAtRange:(BlioBookmarkRange *)range;
+- (void)refreshHighlights;
 - (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor;
 - (BOOL)hasNoteOverlappingSelectedRange;
 
@@ -113,6 +114,6 @@
 - (BOOL)toolbarHideShouldBeSuppressed; 
 
 - (UIImage*)previewThumbnailForPageNumber:(NSInteger)pageNumber;
-
+- (void)refreshHighlights;
 
 @end
