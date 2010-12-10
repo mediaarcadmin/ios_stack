@@ -351,8 +351,14 @@ void addRoundedRectToPath(CGContextRef c, CGFloat radius, CGRect rect) {
 	// we didn't just save a new one.  (We can't just use "!self.note"
 	// because a note we just saved may not have yet been persisted.)
 	if (!self.note  && !self.noteSaved) {
-		if ([self.delegate respondsToSelector:@selector(removeHighlightAtRange:)])
+		if ([self.delegate respondsToSelector:@selector(removeHighlightAtRange:)]) {
 			[self.delegate performSelector:@selector(removeHighlightAtRange:) withObject:self.range]; 
+		}
+		
+		if ([self.delegate respondsToSelector:@selector(refreshHighlights)]) {
+			[self.delegate performSelector:@selector(refreshHighlights)]; 
+		}
+
 	}
 	self.noteSaved = NO;
     
