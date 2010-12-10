@@ -1,0 +1,463 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ch16.html#ch16">
+      <Paragraph Margin="0,80,0,28" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="16">
+        <Run Tag="__120">16</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Normal" FontSize="19" Tag="__120">Differing Client Types</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__120">O</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__120">NE OF THE DANGERS</Run>
+          <Run Tag="__120"> of writing, speaking, and teaching on the topic of trust building is the tendency to overgeneralize about clients and assume they are all alike. It&#x2019;s tempting, but it&#x2019;s dangerous and it&#x2019;s wrong. All of our work (and probably yours, too) shows just how different clients can be. In that vein, it&#x2019;s valuable to think about how to recognize and deal with the varying types of clients that one encounters.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__120">We offer a collection of guiding principles, provided in order to help you think through how best to interact with clients of varying types.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__120">&#xA0;1. &#xA0;Work in advance on what is different about this client, and what might be different about you in this situation.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__120">Think about how this client compares to others where you have been at your most successful and at your least successful. Take at least one lesson from each of those with you </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__120">every</Run>
+          <Run Tag="__120"> time you visit a client.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__120">Rob remembers attending the offsite meeting of a fast-growing consulting firm. After all, one of the firm&#x2019;s founding partners had invited him, hoping that Rob would offer some of his wisdom on delivering consulting advice at the firm&#x2019;s meeting. Rob happily prepared his ninety-minute session, added a catchy title (something along the lines of &#x201C;Even Streisand Gets Stage Fright, and Even Mick Jagger Has to Rehearse&#x201D;), and went in with spirits high.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__120">Unfortunately, the partner who had invited Rob had neglected to tell his two cofounders the reasons behind the invitation, and (equally unfortunately) had neglected to brief Rob. Rob had not been told that there was substantial internal disagreement on precisely how this firm should position itself in front of clients, precisely what its consulting end-product should look like, and precisely how it would deliver its messages. In addition, the inviting partner made only the most perfunctory of introductions at the start of the session, and then left the room.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__120">The two remaining founding partners took this opportunity to interrupt the session barely five minutes after it had started. One of them began (quite belligerently) to challenge the entire premise for the session itself, thereby opening a debate inside the meeting room that lasted for the better part of an hour.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__120">Needless to say, Rob&#x2019;s session on delivering advice to clients never got off the ground. Rob still remembers the shell-shocked feeling as it ended. One of the firm&#x2019;s less senior partners walked past him, shrugged his shoulders and said, &#x201C;Nice try.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__120">This story serves as a reminder to make sure that there is a </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__120">complete</Run>
+          <Run Tag="__120"> understanding of what you&#x2019;re supposed to be doing for the client before you walk in to a meeting.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__120">David had a similar experience with an ongoing client. He was hired to facilitate this firm&#x2019;s annual retreat for the third year in a row. Since he had extensive experience with this firm, he assumed that he knew all he needed to know. Alas, the meeting was a disaster because it emerged that the group was distinctly divided this year, and no one had briefed David on the new circumstances.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__121">Naturally, it was David&#x2019;s instinct to protect his own ego and say it was the client&#x2019;s fault, because the client should have briefed him. However, David quickly came to realize what should have been the obvious lesson: It was </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__121">his</Run>
+          <Run Tag="__121"> professional obligation to seek out such things beforehand. As we mentioned in our discussion on emotional framing, trusted advisors must avoid assigning blame and must assume responsibility for the success or failure of the process.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__121">What David should have done, even at the risk of being seen as pushy, is to have asked his primary contact a series of delicate questions:</Run>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__121">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">Are there any topics I should avoid because they are too delicate to discuss in a large forum?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">Are there any topics on which the views of your colleagues are significantly divided?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">Where are we likely to encounter the most resistance?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">Do you have any initiatives already going on that might interact with the discussion of this one?</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__121">The trusted advisor, to be effective, must ask questions of this sort in advance.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__121">&#xA0;2. &#xA0;As you look at a client, force yourself to ask three questions:</Run>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__121">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">What is the client&#x2019;s prevailing personal motivation?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">What is their personality?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">How does the state of their organization affect their worldview?</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__121">Having answered these questions, force yourself to address the question, &#x201C;How do I adapt my style and approach to deal with this person as he or she likes to be dealt with?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__121">&#xA0;3. &#xA0;When thinking about a client&#x2019;s prevailing personal motivation, which of the following comes first?</Run>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__121">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">the need to excel?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">the need to take action and achieve results?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">the need to understand and analyze before deciding?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__121">the need to drive consensus?</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__121">Depending on which comes first (or how they rank overall), you at least have the chance to tailor your conversation to a specific outcome (excellence, action, analysis, or organizational consensus).</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__121">When thinking about a client&#x2019;s personality, how do you match? While every kettle may have a cover, one size doesn&#x2019;t fit all. Some people are reflective; others enjoy faster-moving interactions. In other situations, the reverse is true. Sometimes we have a colleague we can play off of, and sometimes we need to make adjustments.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">It is said that good acting is not lying, but focusing on the one aspect of your own personality or character that is needed for the role, and then suppressing the other aspects of your own personality. This is good advice. Don&#x2019;t fake it, lie, or misrepresent, but find that part of you that can empathize in this situation.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">Even if we match the client&#x2019;s prevailing personal motivation as well as their personality, and even if we&#x2019;ve got the timing right, there&#x2019;s still one more issue that can trip advisors up. That has to do with taking the measure of the organization. People who have been optimists in one organization can change companies and get caught in an entirely different wind. We have all seen people undergo what seems a drastic personality change merely by changing roles.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">&#xA0;4. &#xA0;Figure out why you might truly like this client as a person.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">Try to find something that is special, fun, meaningful, or engaging about this person that you can relate to. You don&#x2019;t have to like everything about your client, but if you can find something to focus on, you will find it easier to behave appropriately.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">If nothing comes to mind easily, or if nothing about them reminds you of something you like (or someone you like), that&#x2019;s a very big hint that this is probably not the best type of client for you, and no amount of adjusting one&#x2019;s personality will help.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">This is not categorizing, or stereotyping, or suggesting that each client must fit into a particular box. Instead, it helps us focus on the most important client types of all: the ones with whom we are most likely to connect, to enjoy, and to whom we can be trusted advisors.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">&#xA0;5. &#xA0;Use the trust equation.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">Another approach to trying to figure out how to deal with clients of different types is to note their differences with respect to how they react to the key models of trust development.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">Not every potential client will place the same weight on each factor of the trust equation. The first broad cut is how much time or emphasis or experience the individual places on the first two components, credibility and reliability. For many clients, credibility and reliability will be &#x201C;entry factors&#x201D; at early stages of a trust interaction. They will deal with intimacy and self-orientation only after having been satisfied about credibility and reliability.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">For other clients, this initial phase will last much longer. It may be that their way of assessing intimacy and self-orientation is to &#x201C;buy time&#x201D; by talking about more conventional issues. It may be that their reason for focus on credibility and reliability is that they feel they &#x201C;should&#x201D; focus on the more objective features first; or it could be simply that they are more comfortable in the objective realm. The reasons don&#x2019;t matter.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">Clients who are comfortable with the intimacy and self-orientation factors will signal this early. Clients who are comfortable with the credibility and reliability factors may need to be led to the intimacy and self-orientation factors. Yet while they may not lead the way, it doesn&#x2019;t mean they don&#x2019;t need to go there; it just means you need to do the leading.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__122">What kinds of people are focused on each of the factors? We suggest you ask yourself the following questions about your particular clients; you probably know the answers for each individual. And, after all, that is what matters.</Run>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__123">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__123">How highly does my client value me for my objective, unbiased, clear opinions, considering me to be a haven of credibility?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__123">How highly does my client value me for my track record with him, my integrity in doing what I said I&#x2019;d do?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__123">How highly does my client value the fact that he can talk to me about just about anything, without fear of embarrassment or breach of confidentiality?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__123">How highly does my client value the fact that I am on his side, that I am in this for him or her?</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__123">There are individual differences that also cut across situations, and about which generalizations can be made. There are some clients who place a very high value on being understood. Such people may grant you considerable leeway in moving quickly through the remaining steps of the process.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__123">There are others who place disproportionate emphasis on listening, not out of hunger, but rather out of preference. These are typically people who themselves are adept at rich communication. If you find such people, get down to real issues quickly. Not only can you do so with low risk, but they will appreciate you for it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__123">Highly rational people place disproportionate emphasis on framing, whether it is rational or emotional. They use flip charts and (erasable) markers, the language of hypotheses and points of view, and verbal techniques that encourage bold thinking.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__123">Emotional framing is appropriate where people are feeling conflicted, frustrated, wildly happy, embarrassed, or carefree. It can be done directly, but it should often be done in private, with care. While a few people are chronically subject to emotional states that have business impacts and require framing, most people just </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__123">occasionally</Run>
+          <Run Tag="__123"> find themselves in such situations. So the appropriate approach is determined not just by the person, but by the situation the person is currently in.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__123">The people for whom structured envisioning is most useful are those who tend to be deductive, critical, structured, highly rational, and skeptical, as well as those who are adept at blue-sky thinking and are highly creative types.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__123">For the first type, this is partly because envisioning firms up benefits, thus addressing the skeptics and the critics. It is also because envisioning is an exercise that can leverage the talents of deductive and structured thinking, if it is set up right. Finally, it appeals to the rational because it strikes people as a &#x201C;sensible&#x201D; way to go about examining what might in other settings be perceived as &#x201C;soft.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__123">For the second type, envisioning works because it encourages a free-form, highly creative use of the imagination.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__123">We discourage the instincts of clients who are inclined to jump to action steps in the trust process. This is because action, as discussed before, is better viewed as a natural outcome of the earlier steps in the process.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__123">Some Difficult Client Types, and How to Respond</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__124">Having made quite a point of how clients differ, and how important it is that we focus on their differences, we will now take the risk of suggesting several broad patterns or types of behaviors we have observed in clients. These are archetypes or constructs built up to help us focus on what are admittedly always more complicated personalities.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__124">Type 1. The &#x201C;Just the Facts, Ma&#x2019;am&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__124">Client:</Run>
+          <Run Tag="__124"> &#x201C;Just give me the facts. Answer when asked. Don&#x2019;t sell me. Why is the price so damn high? I&#x2019;m the boss here.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__124">Response (clarify and confirm): Don&#x2019;t get fooled by the content of what this client is saying. This is a plea to be understood, like any other; for some, it is even masking a fear of being wrong or wronged. The trick is to speak in the client&#x2019;s language, not yours. Use clarifying and confirming statements. Affirm his values; then try to behave that way, every once in awhile checking again.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__124">Answer:</Run>
+          <Run Tag="__124"> &#x201C;OK, I get it. You don&#x2019;t want to mess around with niceties. You want to get straight to the point. You don&#x2019;t want to waste time. You want me to have content every time we talk. That&#x2019;s the kind of person you are. Have I got it?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__124">Type 2. The &#x201C;I&#x2019;ll Get Back to You&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__124">Client:</Run>
+          <Run Tag="__124"> &#x201C;That sounds fine, but I don&#x2019;t want to make any promises here. I don&#x2019;t want to get anyone&#x2019;s hopes up. I have to go back and think about it and talk about it with the boss. I&#x2019;ll speak with you later.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__124">Response (anticipate): This is typically a client who is nervous about making judgments, much less commitments, on the spot. They are conservative, concerned about being wrong, and prefer to have time to think things through. There is nothing wrong with that. Plan on them being that way, and plan to make it easier for them.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__124">Answer:</Run>
+          <Run Tag="__124"> &#x201C;I have prepared a one-page summary of the key points. You may want to take this back to the office (only if you want to) and kick it around a bit with the boss. That&#x2019;s fine. I&#x2019;ll be in my office, so if you want to sneak in an E-mail or catch me in between your meetings, I&#x2019;ll be sure to call you back.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__125">Legitimize his secretiveness and suggest that you can be confided in.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__125">Type 3. The &#x201C;You&#x2019;re the Expert, Dummy&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__125">Client:</Run>
+          <Run Tag="__125"> &#x201C;So, what do you think we should do? I can&#x2019;t spend all my time educating you. It&#x2019;s been a long time already. You&#x2019;re the expert. What&#x2019;s the answer?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__125">Response: This client is giving in to his or her inclination to dominate you. It&#x2019;s pointless to speculate why. It could be a fear, it could be resentment, or it could just be that he&#x2019;s having a bad day. Don&#x2019;t call his bluff, or you&#x2019;ll embarrass him as much as yourself. Instead, give back value in the form of a number of hypotheses.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__125">Answer:</Run>
+          <Run Tag="__125"> &#x201C;Well, I know what the answer has been for a number of other clients, but each was different. You&#x2019;ve got real choices available to you here. I would like to do a little more exploring on this because it could go a number of different ways. I think it depends on a few things; may we talk just a little more?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__125">Type 4. The &#x201C;Let Me Handle That&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__125">Client:</Run>
+          <Run Tag="__125"> &#x201C;This is good stuff, but you don&#x2019;t know the politics. You&#x2019;d get chewed up. They don&#x2019;t understand you yet. It&#x2019;s a little risky. Give me this stuff, I&#x2019;ll take care of it. I&#x2019;ll run interference on the politics. Let me handle that.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__125">Response: This is the language of a client who doesn&#x2019;t trust you. Your first route is to apply the trust skills and trust process, and see if you can earn the right to represent them in political as well as technical areas. However, this may also be the language of a client who doesn&#x2019;t trust </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__125">anyone</Run>
+          <Run Tag="__125">. So your second route may be to try naming and claiming, in a private conversation, about how secure the person feels in the job; security is a deep-seated reason for someone holding on to contacts rather than delegating them.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__125">Answer:</Run>
+          <Run Tag="__125"> &#x201C;That&#x2019;s really interesting; I can see much of what you&#x2019;re saying, but I&#x2019;m not sure about all of it. Can you take a few minutes to tell me more about it?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__126">Type 5. The &#x201C;Let&#x2019;s Go Through This Again&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__126">Client:</Run>
+          <Run Tag="__126"> &#x201C;The fifth draft is coming along well, but the nuances are what kill you. You know, the devil is in the details. These rehearsal drafts are really key, especially for the staff committees.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__126">Response (frame via alternatives): Clients like this are most comfortable in the detail realm. They have probably learned to add some reasonable value in that realm, so don&#x2019;t discard it completely. On the other hand, this detail orientation probably masks a desire to control things, which can get in the way of big-picture approaches. Your solution is to make the big picture &#x201C;feel&#x201D; controllable.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__126">Answer:</Run>
+          <Run Tag="__126"> &#x201C;Should we spend 40 percent on big picture and 60 percent on detail, or the reverse?&#x201D; or &#x201C;Let&#x2019;s use this well-known five-step model to walk through the big picture in detail.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__126">Type 6. The &#x201C;You Don&#x2019;t Understand&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__126">Client:</Run>
+          <Run Tag="__126"> &#x201C;You don&#x2019;t understand our business. You&#x2019;re from </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__126">East</Run>
+          <Run Tag="__126"> Slobovia, not </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__126">West</Run>
+          <Run Tag="__126"> Slobovia, so of course you wouldn&#x2019;t appreciate things. You haven&#x2019;t been around here for long, so you wouldn&#x2019;t get that.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__126">Response: This client, like any human being, wants to feel special. The truth is, the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__126">more</Run>
+          <Run Tag="__126"> clients perceive similarities with other businesses, the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__126">more</Run>
+          <Run Tag="__126"> confident they will become that their own experience serves them well in the world. But you can&#x2019;t argue. You&#x2019;ll have plenty of time to demonstrate the similarities during the relationship, but you have to start where this person is starting.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__126">Don&#x2019;t try to win this battle head-on. Acknowledge that you&#x2019;re from East Slobovia; you&#x2019;re sure it&#x2019;s different out here. You&#x2019;re not sure just how, but you hope the person will help you on that road, and in due time you will assess together how critically deficient your lack of knowledge is.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__126">Answer:</Run>
+          <Run Tag="__126"> &#x201C;I&#x2019;m sure that&#x2019;s exactly right. Would you be willing to help me understand what&#x2019;s different here? I&#x2019;m really keen to learn, so that I can at least try to be useful. Could you share with me a few of the things I need to know?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__126">Type 7. The &#x201C;My Enemy&#x2019;s Enemy Is My Friend&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__127">Client:</Run>
+          <Run Tag="__127"> &#x201C;So, what does this mean for Alison? And you know it&#x2019;s not going to play in Richmond. Don&#x2019;t mention this to the folks in legal, what they don&#x2019;t know can&#x2019;t hurt them. And what did Bill think about this recommendation?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__127">Response: These clients love politics. Perhaps this is their way of seeking out an internal area of power or leverage in which there is less competition than in the content area. Regardless, you can speak their language and serve both them and you well.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__127">Don&#x2019;t debate the value of what they say, and don&#x2019;t criticize it. Instead, make politics a content issue. Talk about it freely, albeit with the door closed, with an agenda, objectives, pros and cons, all the trappings of investment or marketing discussions. If it is in fact inappropriate to discuss such and such an issue, then they will be forced to shut down the conversation, but without you having forced them to, and without overtly shaming them.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__127">Answer:</Run>
+          <Run Tag="__127"> &#x201C;OK, that sounds important; let&#x2019;s go through it. What stake does Alison have in this? Please help me understand precisely what won&#x2019;t play in Richmond. Could you please give me some guidelines on what can and can&#x2019;t go to legal? Bill was fine with this. Why do you ask?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__127">Type 8. The &#x201C;Just Like, You Know, Come On&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__127">Client:</Run>
+          <Run Tag="__127"> &#x201C;I want you to, uh, you know, make it happen. A clear statement of it. It&#x2019;s a simple proposition. We just need help to make it work, manage it, make it happen, you know. Write that up, what I just said.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__127">Response: Some people&#x2019;s strengths just aren&#x2019;t in the verbal arena. Such clients often have counterbalancing strengths in clarity of insight, or have communication skills that are far less verbal.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__127">Join and help them. Don&#x2019;t force them to work in </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__127">your</Run>
+          <Run Tag="__127"> comfort zone. Give them alternatives. Write </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__127">something</Run>
+          <Run Tag="__127"> up. People who can&#x2019;t articulate their needs have a logjam of needs to express. You need to give them voice. Write up options they can react to by ranking or rating. Don&#x2019;t expect open-ended questions to work. If they can&#x2019;t explain in open-ended terms what they want, why should more open questions help? Don&#x2019;t get frustrated. You have a great opportunity to add value by reducing their lifelong frustration, and make yourself invaluable in the process.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__127">Answer:</Run>
+          <Run Tag="__127"> &#x201C;I took a stab at writing up something on what we talked about the other day. This is a full outline, though it&#x2019;s only a draft; I wanted to bounce it off you before we start going final on it. Which part do you like best? Least?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__128">Type 9. The &#x201C;Oh, By the Way&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__128">Client:</Run>
+          <Run Tag="__128"> &#x201C;Oh, by the way, I probably should have invited you to that meeting we just had. Did you read the piece? I probably should have sent it to you. You probably should have been involved in that project, but hey, do the best you can.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__128">Response: Are you consistently missing out on key initiatives, meetings, memos, or data? One of two things is going on. Either the client has some kind of personal issue with you, or you are unaware that the client sees you as carrying around a very large label on your forehead, proclaiming you to be an expert in XYZ area but having not a clue outside it. Either way, you are likely to feel insulted. Don&#x2019;t be.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__128">Ask for a private meeting. Assume that you are being labeled, not that the client doesn&#x2019;t like you. Use all the best naming and claiming techniques. Ask the client to help you stand in his shoes. Edit your language to make sure that not a single phrase enters it that sounds like &#x201C;we really think&#x201D; or &#x201C;I&#x2019;d like to&#x201D; or &#x201C;we&#x2019;re good at&#x201D; or &#x201C;we want.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__128">This client doesn&#x2019;t care what you think, or like, or want. And he won&#x2019;t, and shouldn&#x2019;t, until he has some reason to believe that you have a clue about non-XYZ issues. This client needs to be engaged (see Chapter 10). If the issue really is that the client doesn&#x2019;t like you, he&#x2019;s likely to tell you, rather than leaving you twisting in the wind. Even a client who doesn&#x2019;t like you isn&#x2019;t likely to continue lying to you if you&#x2019;re sincere.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__128">Answer:</Run>
+          <Run Tag="__128"> &#x201C;Thanks for meeting me. I asked for this brief time together because I&#x2019;m missing some data, without which I can&#x2019;t be of much help. There have been five occasions of my missing a meeting, document, or study, and I&#x2019;m not clear why that is. What would I have to do to get in the loop? I really want to help make a difference around here, and I would like to work together with you and support your efforts. I am prepared to do whatever it takes. I apologize if this is a difficult conversation (it is for me as well), but my guess is we&#x2019;ll all be better off if we&#x2019;re candid. Does that make sense to you? If so, can you help me understand what I can do to be sure I&#x2019;m being effective?&#x201D;</Run>
+        </Span>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

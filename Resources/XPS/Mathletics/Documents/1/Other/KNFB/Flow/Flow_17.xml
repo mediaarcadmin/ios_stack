@@ -1,0 +1,250 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__84">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__84">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part01chapter09.html#part01chapter09" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part01chapter09.html#page_79">&#xA0;&#xA0;9&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__84">THE VALUE OF REPLACEMENT PLAYERS</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="19">
+      <Run Tag="xhtml/part01chapter09.html#part01chapter09section01">Evaluating Trades and Fair Salary</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__84">I</Run>
+      <Run Tag="__84">n this chapter we will learn how to use the Player Win Averages discussed in </Run>
+      <Hyperlink NavigateUri="part01chapter08.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__84">chapter 8</Run>
+      </Hyperlink>
+      <Run Tag="__84"> to evaluate trade offers and calculate a player&#x2019;s fair salary (based on his previous year&#x2019;s performance).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__84">VORPP: Value of a Replacement Player Points</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__84">The key tool involved in our analysis will be the Value of a Replacement Player Points (VORPP), which was developed by Keith Woolner, formerly of the </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__84">Baseball Prospectus</Run>
+      <Run Tag="__84"> and now an executive for the Cleveland Indians. You may recall in several earlier chapters we compared a player&#x2019;s batting, pitching, and/or fielding performance to that of an average player. Although such comparisons are interesting, they do not really help us determine the true value of a player. We know that players create value by doing good things. Woolner appears to be the first person to have realized that players also create value by keeping bad players out of the lineup. Woolner asked what a team would do if a player were injured. The team often brings up from the minor leagues a player whose salary is very low (let&#x2019;s say 0). In theory there is a near inexhaustible supply of such players (called replacement players). To define a replacement player for, say, second basemen, Woolner would put the second basemen in descending order of plate appearances and define the replacement second basemen to be those who rank in the bottom 20% of this list. Woolner calculated that a lineup consisting totally of replacement players would generate a season record of 44&#x2013;118 (winning four more games than the 1962 New York Mets).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter09.html#page_80">Recall from </Run>
+      <Hyperlink NavigateUri="part01chapter08.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter09.html#page_80">chapter 8</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter09.html#page_80"> that for each game a team finishes below .500 they will earn &#x2013;2,000 SAGWIN points. Therefore, a team of replacement players should end the season with &#x2013;74,000 points. Ignoring the relatively small impact of fielding,</Run>
+      <Run Tag="xhtml/part01chapter09.html#rfnpage_80" xml:space="preserve"/>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter09.html#fnpage_80">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter09.html#page_80">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter09.html#page_80"> it seems reasonable to assume that the replacement pitchers and batters should share equally the &#x201C;blame&#x201D; for a team&#x2019;s poor performance. This implies that a team of replacement batters would generate &#x2013;37,000 points for the season as would a team of replacement pitchers. An average major league team has around 6,200 plate appearances during a season. This means per plate appearance a replacement hitter averages &#x2013;37,000/6,200 = &#x2013;5.97 points per plate appearance. Similarly, a replacement pitcher averages &#x2013;5.97 points per batter faced (BFP). Now we see how an &#x201C;average&#x201D; hitter or pitcher has value. Consider an average hitter, Joe Hardy, with 500 plate appearances. Through his 500 plate appearances, however, Joe saved 5.97(500) = 2,985 points, or almost 1.5 games, A similar analysis applies to each pitcher. For each hitter we may now define VORPP as the following:</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__85">VORPP = SAGWIN points + 5.97 &#xD7; (plate appearances).&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;(1)</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">For each pitcher we may define VORPP as</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__85">SAGWIN points + 5.97 &#xD7; (BFP).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">For example, during 2006 Albert Pujols earned 18,950 points in 653 plate appearances. Thus, Pujols&#x2019;s VORPP = 18,950 + 653(5.97) = 22,848. Thus Pujols&#x2019;s 2006 performance earned the Cardinals around 11.4 more wins than a replacement player.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__85">Using VORPP to Evaluate Trades</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">In 2006 San Diego Padre relief pitcher Trevor Hoffman earned 7,963 points in 255 BFP, and Padre starting pitcher Chris Young earned 6,117 points in 781 BFP. Their VORPP are as follows.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__85">Hoffman VORPP = 7,963 + 5.97(255) = 9,485.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__85">Young VORPP = 6,117 + 5.97(781) = 10,780.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">Thus Hoffman and Yong each added around five more wins than a replacement pitcher would have added.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter09.html#page_81">Let&#x2019;s assume that Pujols makes the same salary as Young and Hoffman combined. Based on our VORPP information, the Cardinals would be making a bad deal if they traded Pujols for Hoffman and Young. The Cardinals would be giving up over 11 wins for 10 wins. This assumes, of course, that the player&#x2019;s past performance is a perfect predictor of future performance. The beauty of this approach is that we have a single metric that allows us to compare the value of relief pitchers and starting pitchers to the value of batters.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__85">Using VORPP to Determine a Fair Player Salary</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">We can also use VORPP to set a fair salary value for a player. In 2006 the average team payroll was $77 million. An average team goes 81&#x2013;81. A &#x201C;costless&#x201D; team of replacement players would go 44&#x2013;118. Therefore, 74,000 VORPP would bring our replacement team to a.500 level of play. This implies that $77 million &#x201C;buys&#x201D; 74,000 VORPP. Therefore, 1 VORPP is worth $77 million/74,000 = $1,040. We therefore estimate that the &#x201C;value&#x201D; generated during 2006 by these players is as follows:</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">Pujols 2006 value = 22,848 &#xD7; 1,040 = $23.8 million.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">Hoffman 2006 value = 9,485 &#xD7; 1,040 = $9.9 million.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__85">Young 2006 value = 10,780 &#xD7; 1,040 = $11.1 million.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__86">Is Alex Rodriguez (A-Rod) Overpaid?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__86">In November 2007, Alex Rodriguez signed a new contract with the New York Yankees that will pay him approximately $275 million for ten years. Given A-Rod&#x2019;s past productivity, was this a good deal for the Yankees? We can use A-Rod&#x2019;s 2003&#x2013;6 SAGWIN statistics and the fact that each VORPP is &#x201C;worth&#x201D; $1,040 to determine what a fair salary for A-Rod would have been (in 2006 dollars) for his batting performance during the 2003&#x2013;7 seasons.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Hyperlink NavigateUri="xhtml/part01chapter09.html#chapter09figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__86">Figure 9.1</Run>
+      </Hyperlink>
+      <Run Tag="__86"> indicates that A-Rod generated around $14 million per year in value. In 2007 dollars his new contract is equivalent to $202 million (assuming salaries increase 5% per year). Therefore, for A-Rod to generate fair value over the next ten years he would need to continue to produce at the level of his phenomenal 2007 season for the 2008&#x2013;16 seasons.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/867ccebc-8332-42f3-a761-2a07101197d1.jpg" Stretch="Uniform" Width="332" Height="140" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter09.html#chapter09figure01">Figure 9.1. What is A-Rod worth? See file Arod.xls.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter09.html#page_82">In our computation of a fair salary for A-Rod, we are assuming each win generated by a major league team is of equal value. As pointed out in Vince Gennaro&#x2019;s book </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter09.html#page_82">Diamond Dollars</Run>
+      <Run Tag="xhtml/part01chapter09.html#page_82">, this is probably not true for two reasons.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__86">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__86">An extra win generates more revenue for a large market team like the Yankees than it would for a small market team like the Kansas City Royals.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="xhtml/part01chapter09.html#rfnpage_82">Even for two teams in a market of identical size, an extra win generates much more value for a team that has a good chance to make the playoffs than for a team that has a small chance of making the playoffs. This is because a playoff appearance generates $14 million in value to a major league team.</Run>
+          <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+            <Hyperlink NavigateUri="xhtml/part01chapter09.html#fnpage_82">
+              <Hyperlink.TextDecorations>
+                <TextDecorationCollection/>
+              </Hyperlink.TextDecorations>
+              <Run Tag="xhtml/part01chapter09.html#rfnpage_82">2</Run>
+            </Hyperlink>
+          </Span>
+          <Run Tag="xhtml/part01chapter09.html#rfnpage_82"> Therefore, A-Rod is of much more value to a team like the Yankees, which has a good chance of making the playoffs each year, than he is to a team that is either a playoff lock or has a small chance of making the playoffs.</Run>
+          <Run Tag="xhtml/part01chapter09.html#rfnpage_82-01" xml:space="preserve"/>
+          <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+            <Hyperlink NavigateUri="xhtml/part01chapter09.html#fnpage_82-01">
+              <Hyperlink.TextDecorations>
+                <TextDecorationCollection/>
+              </Hyperlink.TextDecorations>
+              <Run Tag="xhtml/part01chapter09.html#rfnpage_82">3</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__86">Extra Plate Appearances Create Value</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__86">A player who performs relatively poorly in many plate appearances may have a better VORPP than a player who performs very well in fewer plate appearances. For example, in 2006 Detroit Tiger third baseman Brandon Inge earned only 15 points in 617 plate appearances while Cubs shortstop Ryan Therriot generated a whopping 2,480 points in only 174 plate appearances. Per plate appearance, Inge generated roughly 0 points while Therriot generated 14 points per plate appearance. Despite this fact, Inge comes out better on VORPP because he replaces 617 potentially &#x201C;bad&#x201D; plate appearances.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__87">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__87">Inge VORPP = 15 + 5.97(617) = 3,699.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__87">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__87">Therriot VORPP = 2,480 + 5.97(174) = 3,519.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__87">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__87">As we&#x2019;ve seen, an average player creates value by keeping bad players from playing.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter09.html#page_83">A good example of how VORPP works is presented in </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter09.html#page_83">Mind Game</Run>
+      <Run Tag="xhtml/part01chapter09.html#page_83"> by Steven Goldman, which details how the Boston Red Sox, led by savvy GM Theo Epstein, used VORPP to evaluate many of the player transactions that led to the Red Sox 2004 World Series title. For example, Goldman describes how Keith Foulke&#x2019;s high VORPP for the 1999&#x2013;2003 seasons led the Red Sox to sign Foulke (a relief pitcher) for 2004. Foulke recorded 32 saves during the 2004 season. For example, in 2003 Foulke had a VORPP of 10,998, while the more highly touted Yankee reliever Mariano Rivera had a VORPP of only 9,021.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter09.html#rfnpage_80">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter09.html#fnpage_80">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter09.html#fnpage_80"> According to </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter09.html#fnpage_80">The Fielding Bible</Run>
+      <Run Tag="xhtml/part01chapter09.html#fnpage_80">, in 2005 substitute fielders had almost the same average rating as did starting fielders.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter09.html#rfnpage_82">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter09.html#fnpage_82">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter09.html#fnpage_82"> Baseball Prospectus Team of Experts, Keri, and Click, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter09.html#fnpage_82">Baseball between the Numbers</Run>
+      <Run Tag="xhtml/part01chapter09.html#fnpage_82">, 186.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter09.html#rfnpage_82-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter09.html#fnpage_82-01">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter09.html#fnpage_82-01"> See Gennaro&#x2019;s </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter09.html#fnpage_82-01">Diamond Dollars</Run>
+      <Run Tag="xhtml/part01chapter09.html#fnpage_82-01"> for more details about how to incorporate pennant race likelihoods and market size into salary determination.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

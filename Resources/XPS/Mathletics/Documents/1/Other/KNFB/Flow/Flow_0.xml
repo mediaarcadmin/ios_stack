@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="0,0,0,0" TextAlignment="Center" BreakPageBefore="True" BreakColumnBefore="False">
+    <Paragraph Margin="0,0,0,0" TextAlignment="Center">
+      <Image Source="/Resources/03b69aef-b87c-4f14-85a0-b8c0e3c01b03.jpg" Stretch="Fill"/>
+    </Paragraph>
+  </Section>
+  <Section BreakPageBefore="True" BreakColumnBefore="True" Tag="file:xhtml/halftitle.html">
+    <Paragraph Margin="128,80,128,0" Padding="4,0,4,0" BorderThickness="1,1,1,1" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="28" Foreground="#FFFFFFFF" Background="#FF000000">
+      <Run Tag="xhtml/halftitle.html#page_i">MATHLETICS</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center">
+      <Run Tag="__1">___________________________________________________</Run>
+    </Paragraph>
+  </Section>
+</Flow>

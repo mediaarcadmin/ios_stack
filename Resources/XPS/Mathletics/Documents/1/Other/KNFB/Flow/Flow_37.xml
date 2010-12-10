@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__177">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__177">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,48,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="27">
+      <Run Tag="xhtml/part03.html#part03" xml:space="preserve"/>
+      <Run Tag="xhtml/part03.html#page_185">PART III</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center">
+      <Image Source="/Resources/282e4e99-461c-48cd-9e3c-fc6fc9056630.jpg" Stretch="Uniform" Width="70" Height="122" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,0,0,48" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="29">
+      <Run Tag="__177">BASKETBALL</Run>
+    </Paragraph>
+  </Section>
+</Flow>

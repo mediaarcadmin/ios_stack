@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c40_r1.htm#c40">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__204">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__204">40 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__204">What&#x2019;s taking</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__204">Trish so long?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">Katherine Solomon checked her watch again. She&#x2019;d forgotten to warn Dr. Abaddon about the bizarre commute to her lab, but she couldn&#x2019;t imagine the darkness had slowed them down this much. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__204">They should have arrived by now.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">Katherine walked over to the exit and heaved open the lead-lined door, staring out into the void. She listened for a moment, but heard nothing.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">&#x201C;Trish?&#x201D; she called out, her voice swallowed by the darkness.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">Silence.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">Puzzled, she closed the door, took out her cell phone, and called the lobby. &#x201C;This is Katherine. Is Trish out there?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">&#x201C;No, ma&#x2019;am,&#x201D; the lobby guard said. &#x201C;She and your guest headed back about ten minutes ago.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">&#x201C;Really? I don&#x2019;t think they&#x2019;re even inside Pod Five yet.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">&#x201C;Hold on. I&#x2019;ll check.&#x201D; Katherine could hear the guard&#x2019;s fingers clicking on his computer keyboard. &#x201C;You&#x2019;re right. According to Ms. Dunne&#x2019;s key-card logs, she has not yet opened the Pod Five door. Her last access event was about eight minutes ago . . . at Pod Three. I guess she&#x2019;s giving your guest a little tour on his way in.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">Katherine frowned. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__204">Apparently</Run>
+        <Run Tag="__204">. The news was a bit odd, but at least she knew Trish wouldn&#x2019;t be long in Pod 3. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__204">The smell in there is terrible.</Run>
+        <Run Tag="__204"> &#x201C;Thanks. Has my brother arrived yet?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">&#x201C;No, ma&#x2019;am, not yet.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">&#x201C;Thank you.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__204">As Katherine hung up, she felt an unexpected twinge of trepidation. The uneasy feeling made her pause, but only for a moment. It was the same exact disquiet she&#x2019;d felt earlier when she stepped into Dr. Abaddon&#x2019;s house. Embarrassingly, her feminine intuition had failed her there. Badly.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__205">It&#x2019;s nothing,</Run>
+        <Run Tag="__205"> Katherine told herself.</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

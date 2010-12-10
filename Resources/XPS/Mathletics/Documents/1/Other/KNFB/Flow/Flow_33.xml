@@ -1,0 +1,1471 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__161">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__161">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part02chapter24.html#part02chapter24" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part02chapter24.html#page_165">&#xA0;&#xA0;24&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__161">SHOULD WE GO FOR A ONE-POINT</Run>
+      <LineBreak/>
+      <Run Tag="__161">OR TWO-POINT CONVERSION?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="xhtml/part02chapter24.html#rfnpage_165">S</Run>
+      <Run Tag="xhtml/part02chapter24.html#rfnpage_165">ince 1994, when the NFL began allowing teams to go for a two-point conversion after a touchdown, it has become important for NFL coaches to determine whether to go for one or two points after a touchdown. The success rate for a one-point conversion is over 99%, so we will assume that there is a 100% chance that a one-point conversion will be successful. The success rate for two-point conversions is around 47%.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#fnpage_165">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#rfnpage_165">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#rfnpage_165"> On average, a one-point conversion try earns one point and a two-point conversion attempt earns 0(.6) + 2(.47) = .94 points. So, on average, a one-point conversion earns more points but in some situations it is clear that going for two is the proper choice. For example, if a team scores a touchdown with thirty seconds to go and they were down by eight points before the touchdown, the team needs to go for two to tie the game. Most coaches have a &#x201C;chart&#x201D; that tells them whether they should go for one or two points based on the score of the game. The idea of the &#x201C;chart&#x201D; is believed to have originated with UCLA assistant coach Dick Vermeil during the early 1970s.</Run>
+      <Run Tag="xhtml/part02chapter24.html#rfnpage_165-01" xml:space="preserve"/>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#fnpage_165-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#rfnpage_165">2</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter24.html#page_166">The coach&#x2019;s decision should depend on the amount of time left in the game as well as the score. For example, if there is a lot of time remaining in the game, then if the team scores a touchdown and is down by eight points they may not want to choose a play (the two-point conversion) over a play with higher expected scoring (the one-point conversion). To determine how the optimal strategy depends on the score of the game and time remaining we need to use a sophisticated technique, dynamic programming, which allows us to work backward from the end of the game toward the beginning of the game. Dynamic programming was developed during the 1950s by Richard Bellman.</Run>
+      <Run Tag="xhtml/part02chapter24.html#rfnpage_166" xml:space="preserve"/>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#fnpage_166">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#page_166">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#page_166"> Using statistics from the 2006 season, we assume that on any possession there is a .19 chance of scoring a touchdown, a .13 chance of scoring a field goal, and a .68 chance of not scoring. We assume two equally matched teams are playing (our model can easily handle teams of different abilities). We ignore the possibility of a safety or that the defensive team scores on a possession. The less mathematically sophisticated reader may (without loss of continuity) now skip to the section of this chapter titled &#x201C;The Chart.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__161">We define F</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__161">n</Run>
+      <Run Tag="__161">(i) = probability the team wins the game if they are i points ahead, they have just gotten the ball, and n possessions remain. We define G</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__161">n</Run>
+      <Run Tag="__161">(i) = probability the team wins the game if they are i points ahead, their opponent has just gotten the ball, and n possessions remain. N = 0 means the game has ended. If the game is tied, we assume each team has a 0.50 chance of winning in overtime. We will assume that i is always between &#x2013;30 and +30 points inclusive. (The calculations are in the file two-points.xls.) Although past data assume that on average, 47% of two-point conversions are successful, we will proceed pessimistically and assume only 42% of all two-point conversion attempts succeed. In our spreadsheet we can change the chance of a successful two-point conversion, if desired. Clearly</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="80,16,0,16" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__162">G</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+      <Run Tag="__162">(i) = F</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+      <Run Tag="__162">(i) = 1 for i &gt; 0, G</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+      <Run Tag="__162">(i) = F</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+      <Run Tag="__162">(i) 0 for i &lt; 0,</Run>
+      <LineBreak/>
+      <Run Tag="__162">and G</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+      <Run Tag="__162">(0) = F</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+      <Run Tag="__162">(0) = .5.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__162">Now that we know what happens when the game is over we can work backward and determine what happens with one possession left.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__162">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__162">
+      <Table.Columns>
+        <TableColumn Width="1.9538188277087*"/>
+        <TableColumn Width="6.03907637655417*"/>
+        <TableColumn Width="60.0355239786856*"/>
+        <TableColumn Width="31.9715808170515*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">1</Run>
+              <Run Tag="__162">(i) =</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">.13G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(min(i + 3,30))</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">+ .19max(G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(min(i + 7,30), .42G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(min(i + 8,30))</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">(1)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">+ .58G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(min(i + 6,30)) + .68G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(i)).</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">1</Run>
+              <Run Tag="__162">(i) =</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">.13F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(max(i &#x2013; 3, &#x2013;30))</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">+ .19min(F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(max(i &#x2013; 7, &#x2013;30), .42F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(max(i &#x2013; 8, &#x2013; 30))</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">(2)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">+.58F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(max(i &#x2013; 6, &#x2013; 30)) +.68F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__162">0</Run>
+              <Run Tag="__162">(i)).</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__162">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__162">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter24.html#page_167">Equation (1) uses the Law of Conditional Expectation (see </Run>
+      <Hyperlink NavigateUri="part01chapter06.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter24.html#page_167">chapter 6</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter24.html#page_167">). We simply multiply the probability of each possible outcome on the game&#x2019;s last possession (field goal, touchdown, or no score) by the probability of winning given each possible outcome of the possession.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__162">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__162">With probability .13 the team kicks a field goal and is now ahead by min(i + 3,30) points. They win the game with probability G</Run>
+          <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+          <Run Tag="__162">(min (i + 3,30)). (Note we truncate the maximum amount the team can be ahead at 30 points.)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__162">With probability .19 the team scores a touchdown and is now ahead by min (i + 7,30) points. They win the game with probability max(G</Run>
+          <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+          <Run Tag="__162">(min(i + 7,30)),.42G</Run>
+          <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+          <Run Tag="__162">(min(i + 8,30)) + .58G</Run>
+          <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+          <Run Tag="__162">(min (i + 6,30)).</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__162">(This assumes the team chooses the strategy [go for 1 or go for 2] that maximizes their chance of winning the game.)</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__162">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__162">With probability .68 the team does not score. Their probability of winning the game is now G</Run>
+          <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__162">0</Run>
+          <Run Tag="__162">(i).</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__162">Equation (2) is derived in a similar fashion. Note that the opposition chooses the strategy (one-point or two-point attempt) that minimizes the first team&#x2019;s chance of winning the game. Again we truncate the maximum score differential in the game at 30 points.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__163">Note that if the max in (1) is attained by choosing a one-point conversion, the team should go for one point with one possession left, and if the max in (1) is attained by choosing a two-point conversion, the team should go for two points.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__163">Once we have determined F</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__163">n</Run>
+      <Run Tag="__163">(i) and G</Run>
+      <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="11" Tag="__163">n</Run>
+      <Run Tag="__163">(i) for i = &#x2013;30, &#x2013;29,.&#xA0;.&#xA0;., 39, 30 we can compute the probability of winning with n + 1 possessions remaining using the following recursions:</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__163">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__163">
+      <Table.Columns>
+        <TableColumn Width="1.9538188277087*"/>
+        <TableColumn Width="7.99289520426288*"/>
+        <TableColumn Width="60.0355239786856*"/>
+        <TableColumn Width="30.0177619893428*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n+1</Run>
+              <Run Tag="__163">(i) =</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">.13G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(min(i + 3,30))</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">+ .19max(G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(min(i + 7,30), .42G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(min(i + 8,30))</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">(3)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">+ .58G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(min(i + 6,30)) + .68G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(i)).</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">G</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n+1</Run>
+              <Run Tag="__163">(i) =</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">.13F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(max(i &#x2013; 3, &#x2013;30))</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">+ .19min(F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(max(i &#x2013; 7, &#x2013;30), .42F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(max(i &#x2013; 8, &#x2013; 30))</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">(4)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">+.58F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(max(i &#x2013; 6, &#x2013; 30)) +.68F</Run>
+              <Run BaselineAlignment="Subscript" FontFamily="times new roman" FontSize="9" Tag="__163">n</Run>
+              <Run Tag="__163">(i)).</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__163">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__163">Again the optimal strategy for the team is to choose a one-point conversion when they have the ball with n + 1 possessions remaining if going for one point attains the maximum in (3). Otherwise, they choose a two-point conversion try.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter24.html#page_168">We terminated our calculations with twenty-five possessions remaining the game. On average, a possession consumes 2.6 minutes,</Run>
+      <Run Tag="xhtml/part02chapter24.html#rfnpage_168" xml:space="preserve"/>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#fnpage_168">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#page_168">4</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#page_168"> so we would expect on average twenty-three possessions per game.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__163">The &#x201C;Chart&#x201D;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Hyperlink NavigateUri="xhtml/part02chapter24.html#chapter24table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter24.html#rfnpage_168-01">Table 24.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter24.html#rfnpage_168-01"> summarizes a team&#x2019;s optimal conversion attempt strategy based on the number of points the team is ahead. We can determine approximately how many possessions remain by dividing the time left by 2.6 (the average number of minutes in a possession). Thus, at the beginning of the fourth quarter we can assume n = 5 or 6. We note that in the &#x2013;22, &#x2013;19, &#x2013;16, &#x2013;11, &#x2013;8, &#x2013;5, and &#x2013;1 scenarios NFL coaches try a two-point conversion over 50% of the time.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#fnpage_168-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#rfnpage_168-01">5</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#rfnpage_168-01"> For all these scores </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter24.html#chapter24table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter24.html#rfnpage_168-01">table 24.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter24.html#rfnpage_168-01"> indicates that the team should go for two points near the end of the game. Also, NFL coaches try for two points less than 5% of the time in the first three quarters and try for two points 15% of the time in the fourth quarter. Again the logic of trying more two-point conversions near the end of the game is supported by our chart.</Run>
+    </Paragraph>
+    <Table Tag="__163">
+      <Table.Columns>
+        <TableColumn Width="25*"/>
+        <TableColumn Width="25*"/>
+        <TableColumn Width="25*"/>
+        <TableColumn Width="25*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell ColumnSpan="3" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Run FontFamily="times new roman" FontWeight="Bold" FontSize="9" Tag="xhtml/part02chapter24.html#chapter24table01">TABLE 24.1</Run>
+              <LineBreak/>
+              <Run Tag="xhtml/part02chapter24.html#chapter24table01">The Chart</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">Point Differential at</Run>
+              <LineBreak/>
+              <Run Tag="__163">Decision</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__163">Go for Two Points if</Run>
+              <LineBreak/>
+              <Run Tag="__163">Fewer Than This Many</Run>
+              <LineBreak/>
+              <Run Tag="__163">Possessions Remain</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#x2013;30</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&lt;=13</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#x2013;29</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&lt;=17</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#x2013;28</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&lt;=18</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__163">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;27</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;26</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;25</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=22</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;24</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;23</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=15</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;22</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;21</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph/>
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;20</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;19</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=14</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;18</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=19</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;17</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;16</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;15</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=16</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;14</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=12</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;13</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;12</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;11</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=10</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;10</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=20</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=11</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&gt;=5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#x2013;1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=14</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">0&#x2013;5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=17</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">7&#x2013;12</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">13</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&lt;=13</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">14&#x2013;30</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="80,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">never</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__164">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__164">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="xhtml/part02chapter24.html#page_170">Intuition behind the Chart</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__164">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__164">Some of these results are intuitively obvious. For example, suppose it is relatively late in the game and a team is down one point and scores a touch-down. They are now up five points. Going for two points and succeeding ensures that a touchdown will not put the team behind, while if they go for one point, a touchdown will put them behind.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__164">Some of the results are counterintuitive. Suppose a team is down fourteen points late in the game and scores a touchdown. Virtually all NFL coaches play it safe and kick a one-point conversion because they wager that they will score again, kick another one-point conversion, and win in overtime. Suppose the team has the ball with three possessions left and is down fourteen points. If the team follows the one-point conversion strategy, they will win the game only by scoring a touchdown on two successive possessions, holding their opponent scoreless on a single possession and winning in overtime. The probability of winning in this fashion is (.19)</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__164">2</Run>
+      <Run Tag="__164">(.68)(.5) = .012274.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__165">If the team goes for two points (as </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter24.html#chapter24table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__165">table 24.1</Run>
+      </Hyperlink>
+      <Run Tag="__165"> indicates), after scoring with three possessions left they can win the game in one of two ways:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__165">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__165">The first two-point conversion try succeeds, and the team holds the opponent scoreless, scores a touchdown, and makes a one-point conversion.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__165">The first two-point conversion fails, and the team holds its opponent scoreless, scores a touchdown, makes a two-point conversion, and wins in overtime.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__165">The sum of these two probabilities of winning is</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="80,16,0,16" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__165">0.19 &#xD7; 0.19 &#xD7; 0.42 &#xD7; 0.68 &#xD7; 0.19 &#xD7; 0.19</Run>
+      <LineBreak/>
+      <Run Tag="__165">&#xD7; 0.42 &#xD7; 0.58 &#xD7; 0.68 &#xD7; 0.5 =.0133 &gt; .012274.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__165">The probability of multiple in de pen dent events occurring is simply the product of the probabilities of each individual event (see </Run>
+      <Hyperlink NavigateUri="part01chapter16.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__165">chapter 16</Run>
+      </Hyperlink>
+      <Run Tag="__165">). Thus, teams should go for two points when down by fourteen points and there is little time left in the game.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter24.html#page_171">Suppose there are at least five possessions remaining and our team is down by four points and scores a touchdown. Most coaches reason that going for three points puts us ahead by one point, so a field goal will not beat us. If there is little time left in the game this logic is correct. If enough time remains, however, the following scenario has a reasonable chance of occurring: the opposition scores a touchdown and a one-point conversion. Then our team is down by four points and scoring a field goal will not allow us to tie the game. If our team is down four points and goes for two points, however, a successful two-point conversion ensures that if the opposition scores a touch-down and a one-point conversion then our team can still tie the game with a field goal.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#rfnpage_165">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#fnpage_165">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_165"> Schatz, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part02chapter24.html#fnpage_165">Football Prospectus</Run>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_165">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#rfnpage_165-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#fnpage_165-01">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_165-01"> Vermeil later became a successful NFL coach and NFL TV commentator. Sackrowitz&#x2019;s &#x201C;Refining the Point(s)-After-Touchdown Scenario&#x201D; appears to be the first mathematical study of the one- or two-point conversion decision.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#rfnpage_166">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#fnpage_166">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_166"> Richard Bellman, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part02chapter24.html#fnpage_166">Dynamic Programming</Run>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_166"> (Princeton University Press, 1957).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#rfnpage_168">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#fnpage_168">4</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_168"> See the Drive Statistics in Schatz, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part02chapter24.html#fnpage_168">Football Prospectus</Run>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_168">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter24.html#rfnpage_168-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter24.html#fnpage_168-01">5</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_168-01"> See Schatz, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part02chapter24.html#fnpage_168-01">Football Prospectus</Run>
+      <Run Tag="xhtml/part02chapter24.html#fnpage_168-01">.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

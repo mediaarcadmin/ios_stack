@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page79" xml:space="preserve"/>
+      <Image Source="/Resources/ba8b35ff-7a2d-4ae5-ab75-b068964b3b7d.jpg" Stretch="Uniform" Width="186" Height="86" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__47">April 9, 2008</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Figure HorizontalAnchor="ColumnLeft" HorizontalOffset="16" VerticalOffset="0" CanDelayPlacement="False" Height="42.6318367346939" Margin="0,0,1,0" Padding="0,0,0,0" TextAlignment="Justify" FontFamily="Charis SIL" FontSize="50" Tag="KNFBDropCap">
+        <Paragraph LineHeight="50" LineStackingStrategy="BlockLineHeight">
+          <Run FontFamily="Charis SIL" FontSize="50" Tag="__47">W</Run>
+        </Paragraph>
+      </Figure>
+      <Run Tag="__47">ith her cell phone glued to her ear, Shada is pacing up and down the courthouse hall.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__47">&#x201C;We need to do everything we can to get Nujood out of the clutches of her husband. We must alert the press, the women&#x2019;s groups. &#x2026;&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__47">After she finishes her call, she leans down to me, crouching to put herself at my height.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__47">&#x201C;Don&#x2019;t be afraid, Nujood. I&#x2019;ll help you get your divorce.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__47">No one has ever shown so much concern for me before.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#nts11a">Shada is a lawyer. People say she&#x2019;s a very important lawyer, one of the best lady lawyers in Yemen, </Run>
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_nts_r1.htm#nts11">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#nts11a">who fights for women&#x2019;s rights</Run>
+      </Hyperlink>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#nts11a">. I look at her, my eyes wide with admiration. She&#x2019;s beautiful, and so sweet. Her voice is a little shrill, and if she talks quickly, it&#x2019;s </Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page80" xml:space="preserve"/>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#nts11a">only because she&#x2019;s in a great hurry. She smells of nice perfume, with the scent of jasmine. As soon as I saw her, I liked her. Unlike the women in my family, she doesn&#x2019;t cover her face, and that&#x2019;s rare in Yemen, not wearing the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#nts11a">niqab</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#nts11a">. Shada wears a long, black, silky coat, with just a colored scarf on her head. Her skin glows, and her lipstick makes her look chic, like ladies in films. And when she wears her sunglasses, she looks like a movie star. What a contrast to all those veiled women out in the streets!</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__47">&#x201C;With me, you&#x2019;ve nothing to fear,&#x201D; she says, patting my face reassuringly.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__47">Shada approached me this morning as soon as she spotted me. When everyone returned to work at the courthouse after the weekend, she heard all about me, and was very upset by my story. She decided that she absolutely had to meet me. I was in the courtyard when she called out to me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__48">&#x201C;Excuse me, are you the little girl who came looking for a divorce?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__48">&#x201C;Yes, that&#x2019;s me.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__48">&#x201C;Heavens! Follow me; we simply have to talk,&#x201D; she said.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page81">So much has happened these last few days that my head is still in a whirl. During the entire weekend&#x2014; Thursday and Friday, in Yemen&#x2014;Judge Abdel Wahed and his wife were especially good to me. I was treated to toys, tasty food, hot showers, and good-night kisses, like a real child. Inside the house, I even had permission to take off my married woman&#x2019;s veil, the one my mother-in-law makes me adjust as soon as it starts to slip. What happiness, not to fear blows from a stick, or tremble at the thought of going to bed, or flinch at the slightest sound of a door closing. Yet in spite of all this kind attention, my nights are still very uneasy, because as soon as I fall asleep, I feel as though the storm were lying in wait for me, and if I close my eyes for too long, the door might fly open again, and the monster return. What terror, what suffering! Judge Abdel Wahed says that this is normal, that I&#x2019;ll need time to forget all my pain.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__48">When he brought me back to the courthouse on Saturday morning, it was hard to return to reality. At nine o&#x2019;clock we were already sitting in his office, along with the other two judges, Abdo and Mohammad al-Ghazi, who smiled kindly at me when I came in. But here&#x2019;s the thing: Mohammad al-Ghazi was very worried.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__48">&#x201C;According to Yemeni law, it is difficult for you to file a complaint against your husband and your father,&#x201D; he told me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__48">&#x201C;Why is that?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page82">&#x201C;It&#x2019;s a little complicated for a child your age, and hard to explain,&#x201D; he answered. Then he talked about several obstacles. Like many children born in Yemeni villages, I didn&#x2019;t have any identification documents&#x2014;not even a birth certificate. And I was too young to initiate proceedings against anyone. Such reasons were easy for a learned man like Mohammad al-Ghazi to understand, but not me. Still, I felt, I ought to keep a positive outlook; at least I had found some nice judges who wanted to help me. After all, they were not obliged to take up my case and could have ignored my plight, as many others had, and advised me to go home to fulfill my duties as a wife. A contract had been signed, and unanimously approved by the men of my family. According to Yemeni tradition, it was therefore valid.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__49">&#x201C;For the moment,&#x201D; Mohammad al-Ghazi told his colleagues, &#x201C;we must act quickly. So I suggest that we place Nujood&#x2019;s father and husband under temporary arrest. If we want to protect her, it&#x2019;s better to have them in prison than at liberty.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page83">Prison! That&#x2019;s very serious punishment. Would Aba ever forgive me? I was suddenly consumed with shame and guilt. And I felt dreadful when they asked me to go with the soldier who would arrest them, to make sure he found the right address. My family hadn&#x2019;t seen me all weekend and must certainly have thought that, like my brother Fares, I had run away forever. I didn&#x2019;t even want to imagine what my mother must have wondered when my brothers and sisters started clamoring for the bread I&#x2019;d been sent to buy for breakfast. Besides, I was thinking about how my father had recently fallen ill, and had even begun coughing up blood. Could he survive imprisonment? If he were to die, I&#x2019;d never forgive myself.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__49">But I had no choice. Abdo had explained to me that when people are suffering, the evildoers must be punished. So I got into the car with the soldier. When we arrived at my parents&#x2019; house, however, the door was locked. I felt strangely relieved, and a few hours later, when the soldier went back there, he no longer needed me to show him the way.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__49">That very evening, the judges decided to find a safe place for me to stay. In Yemen there are no shelters for girls like me, but I couldn&#x2019;t very well remain forever with Abdel Wahed and his family, who had already done so much for me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__50">&#x201C;Who is your favorite uncle?&#x201D; one of the judges asked.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page84">My favorite uncle? I thought the best choice would be Shoyi, Omma&#x2019;s brother, a former soldier in the Yemeni army, now retired: a big, strong man with a certain prestige in my family. He lived in Beit Boss, a neighborhood far from ours, with his two wives and seven children. True, he hadn&#x2019;t opposed my marriage, but he represented the forces of order, in a way&#x2014;and he, at least, did not beat his daughters.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__50">Shoyi was not very talkative, which suited me fine. He didn&#x2019;t ask me too many questions, and he let me play with my cousins. That evening, before falling asleep, I thanked God for not allowing Shoyi to reproach me for my boldness, or even mention my running away. Basically, I think my uncle was as discomfited as I was by the whole thing.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page85">The next three days seemed long to me, full of the same tedious things. I spent most of my time at the courthouse, hoping for a miracle, some unforeseen solution. Unfortunately, the future wasn&#x2019;t clear. The judges had promised to do their utmost to grant me a divorce, but they needed time. It&#x2019;s funny, but going every day to that big, bustling courtyard, I finally became used to the tremendous crowd that had so impressed me at first. I could recognize the young tea and juice vendors even at a distance. The boy with the scale was always busy weighing visitors who had time to kill, and now I sometimes smiled encouragingly at him. As for me, though, whenever I returned to the courtyard I felt a pang of discouragement. How many times would I have to go there before I could again become just an ordinary little girl? Abdo had warned me that my case was most unusual. But what do judges do when faced with one like that? I had no idea.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__50">But I believe I am learning the answer from Shada, the beautiful lawyer with sunglasses. When she came up to me for the first time, I saw how she looked at me with great emotion before exclaiming &#x201C;Heavens!&#x201D; Then she checked her watch, opened her appointment book, and completely rearranged her heavy schedule. She began calling her family, friends, and colleagues; several times I heard her say, &#x201C;I have to take on an important case, a very important case.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">This woman seems to have endless determination. Abdel Wahed is right: she&#x2019;s an impressive lawyer. She must have lots of power; her cell phone never stops ringing, and everyone she encounters always greets her very politely.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;Nujood, you&#x2019;re like a daughter to me. I won&#x2019;t abandon you,&#x201D; she whispers to me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page86">I&#x2019;m beginning to believe it. She has no reason to lie to me. I feel at ease with Shada, and I feel safe with her. She knows how to find exactly the right words, and her lilting voice comforts me. If the world came tumbling down, I know that she would stand by me. With her, I feel for the first time the maternal tenderness my mother, too preoccupied by all her family worries, did not know how&#x2014;or rather, had no time&#x2014;to give me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">But there&#x2019;s still one nagging question.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;Shada?&#x201D; I ask timidly.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;Yes, Nujood?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;May I ask you something?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;Of course.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;Can you promise me that I will never return to my husband&#x2019;s house?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;</Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__51">Insha&#x2019;Allah</Run>
+      <Run Tag="__51">, Nujood. I&#x2019;ll do my very best to keep him from hurting you again. All will be well. All will be well. But &#x2026;&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;But what?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;You must be strong, because it may take some time.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;How much time?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;Don&#x2019;t think about that right now. Tell yourself that the hardest part is over. The hardest part was having the strength to escape, and you carried that off beautifully.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">When I sigh, Shada gives me a little smile and pats me on the head. She&#x2019;s so tall and slender. She impresses me a lot.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;And now, may I ask you a question?&#x201D; she says.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page87">&#x201C;Yes.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__51">&#x201C;How did you find the courage to run away&#x2014;all the way to the courthouse?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__52">&#x201C;The courage to run away? I couldn&#x2019;t bear </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__52">his</Run>
+      <Run Tag="__52"> meanness anymore. I couldn&#x2019;t.&#x201D;</Run>
+    </Paragraph>
+  </Section>
+</Flow>

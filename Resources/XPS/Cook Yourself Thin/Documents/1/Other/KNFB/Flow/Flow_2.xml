@@ -1,0 +1,811 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,52" Tag="cookyourselfthin_toc.html#toc">
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,43,0,43" TextAlignment="Left" FontWeight="Bold" FontSize="19">
+        <Run Tag="__2">Contents</Run>
+      </Paragraph>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#fm_03">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_fm03.html#fm03" Foreground="#FF0000FF">
+            <Run Tag="__2">Philosophy</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#ch_01">
+        <Paragraph Margin="0,17,0,9" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#ch01" Foreground="#FF0000FF">
+            <Run Tag="__2">Breakfast</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_01">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha01" Foreground="#FF0000FF">
+            <Run Tag="__2">The Better for You Breakfast Sandwich</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_02">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha02" Foreground="#FF0000FF">
+            <Run Tag="__2">Eggs Benedict on a Muffin with Garlic A&#xEF;oli</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_03">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha03" Foreground="#FF0000FF">
+            <Run Tag="__2">Sweet &#x2019;N&#x2019; Spicy Breakfast Hash with Tofu</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_04">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha04" Foreground="#FF0000FF">
+            <Run Tag="__2">Stuffed French Toast Sundaes</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_05">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha05" Foreground="#FF0000FF">
+            <Run Tag="__2">Portobello Mushroom Benedict with Roasted Red Pepper Sauce</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_06">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha06" Foreground="#FF0000FF">
+            <Run Tag="__2">Banana Chocolate Chip Muffins</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_07">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha07" Foreground="#FF0000FF">
+            <Run Tag="__2">Raspberry, Orange, and Banana Smoothie</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_08">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha08" Foreground="#FF0000FF">
+            <Run Tag="__2">Lemon and Poppyseed Muffins</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_09">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha09" Foreground="#FF0000FF">
+            <Run Tag="__2">Homemade Granola</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_10">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha10" Foreground="#FF0000FF">
+            <Run Tag="__2">Omelets with Roasted Tomatoes</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_11">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch01.html#cha11" Foreground="#FF0000FF">
+            <Run Tag="__2">Cheese, Vegetable, and Bacon Frittata</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#ch_02">
+        <Paragraph Margin="0,17,0,9" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#ch02" Foreground="#FF0000FF">
+            <Run Tag="__2">Mains</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_12">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha12" Foreground="#FF0000FF">
+            <Run Tag="__2">Southwestern Turkey Burgers with Sweet Potato Fries</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_13">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha13" Foreground="#FF0000FF">
+            <Run Tag="__2">Penne alla &#x201C;Not-ka&#x201D;</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_14">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha14" Foreground="#FF0000FF">
+            <Run Tag="__2">French Onion Soup</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_15">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha15" Foreground="#FF0000FF">
+            <Run Tag="__2">Oven-Baked Crispy Chicken Tenders with Coleslaw</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_16">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha16" Foreground="#FF0000FF">
+            <Run Tag="__3">Chicken Caesar Salad</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_17">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha17" Foreground="#FF0000FF">
+            <Run Tag="__3">Spinach and Mushroom Veggie Lasagna</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_18">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha18" Foreground="#FF0000FF">
+            <Run Tag="__3">Pasta Bake with Sausage, Broccoli, and Beans</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_19">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha19" Foreground="#FF0000FF">
+            <Run Tag="__3">Healthy Potato Skins</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_20">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha20" Foreground="#FF0000FF">
+            <Run Tag="__3">Easy Herb-Roasted Chicken with Roasted Veggies</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_21">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha21" Foreground="#FF0000FF">
+            <Run Tag="__3">Pasta Primavera</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_22">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha22" Foreground="#FF0000FF">
+            <Run Tag="__3">Turkey Chili Crunch</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_23">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha23" Foreground="#FF0000FF">
+            <Run Tag="__3">Scrumptious Skinny Spaghetti and Meatballs</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_24">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha24" Foreground="#FF0000FF">
+            <Run Tag="__3">Mushroom and Spinach Quiche with Potato Crust</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_25">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha25" Foreground="#FF0000FF">
+            <Run Tag="__3">Spring Rolls with Lemongrass Dipping Sauce and Cucumber Salad</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_26">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha26" Foreground="#FF0000FF">
+            <Run Tag="__3">Sesame Peanut Noodles</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_27">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha27" Foreground="#FF0000FF">
+            <Run Tag="__3">Chicken and Bean Burritos with Pineapple Salsa</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_28">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha28" Foreground="#FF0000FF">
+            <Run Tag="__3">Ultimate Sausage Cheese Pizza</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_29">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha29" Foreground="#FF0000FF">
+            <Run Tag="__3">Cobb Salad</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_30">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha30" Foreground="#FF0000FF">
+            <Run Tag="__3">Saut&#xE9;ed Tequila Lime Shrimp Tacos with Mango and Pineapple Salsa and Spicy Black Beans</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_31">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha31" Foreground="#FF0000FF">
+            <Run Tag="__3">Mango-Glazed Salmon with Spinach Salad</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_32">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha32" Foreground="#FF0000FF">
+            <Run Tag="__3">Steak with Cauliflower &#x201C;Mash&#x201D; Potatoes</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_33">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha33" Foreground="#FF0000FF">
+            <Run Tag="__3">Breaded Not Fried Panko-Crusted Shrimp</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Paragraph/>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_34">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha34" Foreground="#FF0000FF">
+            <Run Tag="__3">Saut&#xE9;ed Spinach with Grilled Turkey Sausage and Red Pepper and Rosemary Corn Bread</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_35">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha35" Foreground="#FF0000FF">
+            <Run Tag="__3">Skinny Down-Home Chicken Pot Pie</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_36">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha36" Foreground="#FF0000FF">
+            <Run Tag="__4">Mediterranean Chicken</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_37">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha37" Foreground="#FF0000FF">
+            <Run Tag="__4">Cheezy Chicken Parmesan with Zucchini &#x201C;Pasta&#x201D;</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_38">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha38" Foreground="#FF0000FF">
+            <Run Tag="__4">Spaghetti Carbonara</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_39">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha39" Foreground="#FF0000FF">
+            <Run Tag="__4">Supreme Quesadilla with Poblano Peppers</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_40">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha40" Foreground="#FF0000FF">
+            <Run Tag="__4">Stuffed Shells</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_41">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha41" Foreground="#FF0000FF">
+            <Run Tag="__4">Eggplant Stacks</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_42">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha42" Foreground="#FF0000FF">
+            <Run Tag="__4">Turkey Mini-Meatloaves with Roasted Root Veggies</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_43">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha43" Foreground="#FF0000FF">
+            <Run Tag="__4">Mac and Cheese</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_44">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha44" Foreground="#FF0000FF">
+            <Run Tag="__4">Sweet and Sour Pork Chops</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_45">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha45" Foreground="#FF0000FF">
+            <Run Tag="__4">Green Chile Chicken Enchiladas</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_46">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha46" Foreground="#FF0000FF">
+            <Run Tag="__4">Tomato Fennel Soup and Turkey BLT</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_47">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha47" Foreground="#FF0000FF">
+            <Run Tag="__4">Portobello Mushroom Tuna Melt</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_48">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha48" Foreground="#FF0000FF">
+            <Run Tag="__4">Chicken Tetrazzini</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_49">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha49" Foreground="#FF0000FF">
+            <Run Tag="__4">Buffalo Chicken Wings</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_50">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha50" Foreground="#FF0000FF">
+            <Run Tag="__4">Risotto with Spring Vegetables</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_51">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha51" Foreground="#FF0000FF">
+            <Run Tag="__4">Stuffed Portobello Mushrooms</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_52">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha52" Foreground="#FF0000FF">
+            <Run Tag="__4">Marinated Lamb Kebabs with Yogurt Sauce</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_53">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha53" Foreground="#FF0000FF">
+            <Run Tag="__4">Buffalo Chicken Salad</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_54">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha54" Foreground="#FF0000FF">
+            <Run Tag="__4">Tuna Salad Rolls with Edamame</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_55">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha55" Foreground="#FF0000FF">
+            <Run Tag="__4">Huevos Rancheros</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_56">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch02.html#cha56" Foreground="#FF0000FF">
+            <Run Tag="__4">Asian Beef Noodle Soup</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#ch_03">
+        <Paragraph Margin="0,17,0,9" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#ch03" Foreground="#FF0000FF">
+            <Run Tag="__4">Sweets</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_57">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha57" Foreground="#FF0000FF">
+            <Run Tag="__5">Deep Dark Chocolate Cake</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_58">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha58" Foreground="#FF0000FF">
+            <Run Tag="__5">Oatmeal Parfait</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_59">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha59" Foreground="#FF0000FF">
+            <Run Tag="__5">Peanut Butter Dream Bars</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_60">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha60" Foreground="#FF0000FF">
+            <Run Tag="__5">Vanilla Cupcakes</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_61">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha61" Foreground="#FF0000FF">
+            <Run Tag="__5">Chocolate Pudding</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_62">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha62" Foreground="#FF0000FF">
+            <Run Tag="__5">Red Velvet Cupcakes</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_63">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha63" Foreground="#FF0000FF">
+            <Run Tag="__5">Chocolate Brownie with Raspberries and White Chocolate Chips</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_64">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha64" Foreground="#FF0000FF">
+            <Run Tag="__5">Mint Chocolate Cupcakes</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_65">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha65" Foreground="#FF0000FF">
+            <Run Tag="__5">Roasted Peach Crisp</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_66">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha66" Foreground="#FF0000FF">
+            <Run Tag="__5">Chewy Oatmeal Raisin Cookies</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_67">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha67" Foreground="#FF0000FF">
+            <Run Tag="__5">Iced Cappuccino Delight</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_68">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha68" Foreground="#FF0000FF">
+            <Run Tag="__5">Chocolate and Cranberry Biscotti</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_69">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha69" Foreground="#FF0000FF">
+            <Run Tag="__5">Apple Cinnamon Cake</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_70">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha70" Foreground="#FF0000FF">
+            <Run Tag="__5">Carrot Cake</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_71">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha71" Foreground="#FF0000FF">
+            <Run Tag="__5">Orange and Lemon Cake</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_72">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha72" Foreground="#FF0000FF">
+            <Run Tag="__5">Chocolate Pavlova</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_73">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha73" Foreground="#FF0000FF">
+            <Run Tag="__5">Chocolate and Raspberry Roulade with Raspberry Sauce</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_74">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha74" Foreground="#FF0000FF">
+            <Run Tag="__5">Vanilla and Strawberry Sponge Cake</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,17,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cha_75">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ch03.html#cha75" Foreground="#FF0000FF">
+            <Run Tag="__5">Cookies and Cream Milkshake</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+        <Run Tag="__5">&#xA0;</Run>
+      </Paragraph>
+      <Section Margin="0,9,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#ack_01">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ack01.html#ack01" Foreground="#FF0000FF">
+            <Run Tag="__5">Acknowledgments</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,9,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#ind_01">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_ind01.html#ind01" Foreground="#FF0000FF">
+            <Run Tag="__5">Searchable Terms</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,9,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#bm_02">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_bm02.html#bm02" Foreground="#FF0000FF">
+            <Run Tag="__5">Credits</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,9,0,0" TextAlignment="Left" FontSize="16" Tag="cookyourselfthin_toc.html#cop_01">
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left" FontSize="16">
+          <Hyperlink NavigateUri="cookyourselfthin_cop01.html#cop01" Foreground="#FF0000FF">
+            <Run Tag="__6">Copyright</Run>
+          </Hyperlink>
+        </Paragraph>
+      </Section>
+    </Section>
+  </Section>
+  <Section BreakPageBefore="True" BreakColumnBefore="True" Tag="file:cookyourselfthin_dum01.html">
+    <Section Margin="0,0,0,0" Tag="cookyourselfthin_dum01.html#dum01">
+      <Section Margin="0,0,0,0" Tag="__7">
+        <Paragraph TextIndent="0" Margin="0,43,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="19">
+          <Run Tag="__7">&#xA0;</Run>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,0,0,0" Tag="__7">
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__7">Potential results will vary. Consult with your healthcare professional for health and nutritional information and before undertaking any new diet.</Run>
+        </Paragraph>
+      </Section>
+    </Section>
+  </Section>
+  <Section BreakPageBefore="True" BreakColumnBefore="True" Tag="file:cookyourselfthin_fm01.html">
+    <Section Margin="0,0,0,0" Tag="__8">
+      <Paragraph/>
+      <Section Margin="0,0,0,0" Tag="__8">
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/85486d26-993c-4639-8b01-2a425e7435a6.jpg" Stretch="Uniform" Width="312" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left">
+          <Run Tag="__8">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,43,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="19">
+          <Run FontWeight="Bold" FontSize="19" Tag="cookyourselfthin_fm01.html#fm01">Have your cake and eat it too!</Run>
+        </Paragraph>
+        <Section Margin="0,43,0,43" Tag="__8">
+          <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Left">
+            <Run Tag="__8">This book will help you lose weight. But it&#x2019;s not a diet book. Think of it more as a guide to stop starving yourself and start loving food, because you really can lose the bulge and still indulge.</Run>
+          </Paragraph>
+        </Section>
+      </Section>
+      <Section Margin="0,0,0,0" Tag="__9">
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__10">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__10">Cook Yourself Thin</Run>
+          </Span>
+          <Run Tag="__10"> is for normal women, just like you. We know that you love to eat but we are realistic enough to know that you can&#x2019;t eat anything and everything and expect to look hot in a bikini. It was created for busy people, people like you, who are not prepared to give up social lives or favorite treats to become slaves to a strict diet. The CYT philosophy figures out the solutions, so you don&#x2019;t have to.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__10">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__10">You may have tried most of the diets out there&#x2014;and failed. And you&#x2019;re not the only one. One major weight-loss study has found that up to two-thirds of dieters put all the weight they lost back on within five years&#x2014;and most end up even heavier! No matter what the diet, the study found, it&#x2019;s unlikely to lead to lasting weight loss.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__10">Sure, you will lose weight if you follow a diet to the letter. But how many of us stay on a diet&#x2014;is that any way to enjoy life? Most diet food tastes awful and the portions are tiny, which means you fall off the wagon in spectacular style. Then follows the guilt, shame, feeling bad about yourself, and the almost inevitable overeating. It&#x2019;s a bad cycle. It&#x2019;s no good for your mind, body, or soul.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__10">You&#x2019;ve probably gone to all sorts of lengths to feel thinner. We&#x2019;ve all subjected ourselves to the grapefruit diets, Weight Watchers-style clubs, and years of yo-yo dieting. Some even flit from feast to famine, never quite finding a happy balance. And yet denial is the fastest way to find yourself up to your eyeballs in chocolate.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__10">Quick fixes won&#x2019;t work and there&#x2019;s only one simple way to lose weight and keep it off without losing your mind: cook yourself thin.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__11">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,43,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Run FontWeight="Bold" FontSize="16" Tag="__11">Step Away from the Scales</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__11">The fact is, most of us don&#x2019;t need to change our eating habits completely. We just need to make smart but simple changes. Dieticians and nutri-tionists agree that low-fat, low-calorie cooking skills, along with a basic knowledge of food labels and portion sizes, are the key to keeping slim. It has been suggested that consuming just 100 fewer calories a day (about one cookie&#x2019;s worth) will prevent the average yearly weight gain of 2 pounds. That&#x2019;s not exactly starving yourself.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__11">Another study showed that most of us are used to eating just that little bit too much. It found that women who consumed 800 fewer calories a day than normal felt just as full and satisfied. They did it by making </Run>
+          <Run FontStyle="Italic" Tag="__11">small</Run>
+          <Run Tag="__11"> changes&#x2014;for example, skim milk instead of whole, eating half as much cheese, more vegetables, and less fat overall. Small changes like these are easier to stick to and harder to go back on. But they add up to a significant drop in calories&#x2014;and dress size.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__11">The CYT approach takes a positive attitude toward food. No denial or guilt&#x2014;just the promise of mouthwatering delights instead of dull food. In this book, you&#x2019;ll be able to quickly and easily figure out how and why you&#x2019;re consuming a few too many calories, and learn the secret to cutting down without losing out. CYT takes up the challenge and does all the homework to make it easy for you. You don&#x2019;t have to become a culinary queen, you just need to cook more and cook </Run>
+          <Run FontStyle="Italic" Tag="__11">smarter.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__11">Here are tried, tested, and tasted favorite recipes with all the cheats, tips, tricks, and swaps worked out to make your calories vanish into thin air. At </Run>
+          <Run FontStyle="Italic" Tag="__11">Cook Yourself Thin</Run>
+          <Run Tag="__11"> we have really high standards, so you won&#x2019;t find any recipe or suggestion that we&#x2019;re not convinced is better than the calorie-laden original. We all love a challenge, and we&#x2019;ve created recipes that use flavors and ingredients that will leave you speechless. All it takes is a little effort and you can learn to re-create your beloved takeout food, comfort meals, snacks and desserts. And that&#x2019;s all there is to it: no weird foods or diet supplements, no denial, no sweaty exercise regime&#x2014;just flavor, satisfaction, and no more clothes that just fit; they flaunt your better body.</Run>
+        </Paragraph>
+        <Paragraph Margin="144,43,0,17" TextAlignment="Right" FontStyle="Normal" FontWeight="Normal">
+          <Run Tag="__12">&gt; So get ready to Cook Yourself Thin!</Run>
+        </Paragraph>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/a10c0eeb-64ba-4e32-840b-dbdec8ac62b5.jpg" Stretch="Uniform" Width="305" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+      </Section>
+    </Section>
+  </Section>
+  <Section BreakPageBefore="True" BreakColumnBefore="True" Tag="file:cookyourselfthin_fm02.html">
+    <Section Margin="0,0,0,0" Tag="cookyourselfthin_fm02.html#fm02">
+      <Paragraph/>
+      <Section Margin="0,0,0,0" Tag="__13">
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,43,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="19">
+          <Run FontWeight="Bold" FontSize="19" Tag="__13">Meet the Cook Yourself Thin Team</Run>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,0,0,0" Tag="__13">
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/1a3b496d-d66d-4fe2-9d35-ca7902257238.jpg" Stretch="Uniform" Width="435" Height="209" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+      </Section>
+    </Section>
+  </Section>
+  <Section BreakPageBefore="True" BreakColumnBefore="True" Tag="file:cookyourselfthin_fmm01.html">
+    <Section Margin="0,0,0,0" Tag="cookyourselfthin_fmm01.html#fmm01">
+      <Paragraph/>
+      <Section Margin="0,0,0,0" Tag="__14">
+        <Paragraph TextIndent="0" Margin="0,43,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="19">
+          <Run FontWeight="Bold" FontSize="19" Tag="__14">Harry Eastwood</Run>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,0,0,0" Tag="__14">
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/596af059-4636-468c-8305-65b5b8028921.jpg" Stretch="Uniform" Width="230" Height="288" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__15">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__15">Harry</Run>
+          </Span>
+          <Run Tag="__15"> has lived in Qatar, France, and London, as well as Sydney for a spell, and has been exposed to a colorful mix of cuisines and cultures. She loves making food from scratch and inventing new dishes. For the past seven years, she&#x2019;s worked as both a food stylist and writer, with a flair for sourcing the most beautiful ingredients around and interpreting every recipe under the sun. She is also a co-host of the original, British hit version of </Run>
+          <Run FontStyle="Italic" Tag="__15">Cook Yourself Thin</Run>
+          <Run Tag="__15">.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__15">Just to prove that appearances can be deceiving, Harry is into pink, sparkly earrings, all things pretty, and oh, butchery. That&#x2019;s right, she loves to prepare meat from field to plate so she knows exactly where her dishes have come from and what&#x2019;s gone into them. And forget fashion labels, Harry&#x2019;s into food labels&#x2014;the higher quality the ingredients, the better. But censoring her ingredients is as far as food restrictions go. Her philosophy is that if you crave something, it usually means your body (and soul) deserves it. She genuinely considers chocolate to be good for the soul and feels that it completes a meal the way a period completes a sentence.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__15">It&#x2019;ll come as no surprise, then, that Harry most definitely does not believe in restrictive diets. Food, she says, has been the joyful background to her life and learning to cook is the best weight-loss tool there is.</Run>
+        </Paragraph>
+      </Section>
+    </Section>
+  </Section>
+  <Section BreakPageBefore="True" BreakColumnBefore="True" Tag="file:cookyourselfthin_fmm02.html">
+    <Section Margin="0,0,0,0" Tag="cookyourselfthin_fmm02.html#fmm02">
+      <Paragraph/>
+      <Section Margin="0,0,0,0" Tag="__16">
+        <Paragraph TextIndent="0" Margin="0,43,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="19">
+          <Run FontWeight="Bold" FontSize="19" Tag="__16">Candice Kumai</Run>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,0,0,0" Tag="__16">
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/3358e627-fb53-4996-b1c7-7dec8d245d21.jpg" Stretch="Uniform" Width="232" Height="290" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__17">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__17">Candice</Run>
+          </Span>
+          <Run Tag="__17"> is from San Diego and grew up living the life of a true California girl&#x2014;surfing, sunshine, hanging at the beach, and having fun. As a teen, she became a fashion model and spent eight years traveling the nation and the world on assignments. But despite the glamour of modeling, she always felt deep down that her true calling in life was cooking.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__17">Her mother, a graduate of Tokyo Gakugei University, was born in southern Japan and her father is a Naval veteran of Polish-American descent. She learned the essentials of those culinary traditions from her mother and grandmothers. After earning a bachelor&#x2019;s degree she decided to pursue cooking professionally and did so at the prestigious Le Cordon Bleu California School of Culinary Arts Program, where she won honors as &#x201C;Top of the Class,&#x201D; President&#x2019;s List, and Dean&#x2019;s List.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__17">Candice has since cooked at several well-respected restaurants in Los Angeles and Orange County, such as the Ritz Carlton Laguna Niguel, and she worked for Chef Wolfgang Puck. She has appeared on Bravo&#x2019;s </Run>
+          <Run FontStyle="Italic" Tag="__17">Top Chef</Run>
+          <Run Tag="__17">, where her upbeat personality, charm, and cooking talents won her many fans. Her dream is to follow in the footsteps of her idols Julia Child and Martha Stewart and become the food/lifestyle guru of her generation. She brings as much passion and flair to cooking as she does to everything in life&#x2014;her ideal is to bring together all of the things she loves: fashion, friends, and great food.</Run>
+        </Paragraph>
+      </Section>
+    </Section>
+  </Section>
+  <Section BreakPageBefore="True" BreakColumnBefore="True" Tag="file:cookyourselfthin_fmm03.html">
+    <Section Margin="0,0,0,0" Tag="cookyourselfthin_fmm03.html#fmm03">
+      <Paragraph/>
+      <Section Margin="0,0,0,0" Tag="__18">
+        <Paragraph TextIndent="0" Margin="0,43,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="19">
+          <Run FontWeight="Bold" FontSize="19" Tag="__18">Allison Fishman</Run>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,0,0,0" Tag="__18">
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/7831800a-3a58-48e2-a8c2-efc88d4e03c0.jpg" Stretch="Uniform" Width="231" Height="291" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__19">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__19">Allison</Run>
+          </Span>
+          <Run Tag="__19"> is passionate about food&#x2014;not just cooking and eating it, but also writing about and studying it. She understands the joy and pleasure of food from every angle&#x2014;as an academic, writer, trained chef, and food lover.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__19">To share this passion she created a cooking school called The Wooden Spoon, where she and her team of instructors come to people&#x2019;s homes, demonstrating for them the techniques and deliciousness of home cooking. She loves being able to help people become excited about food and confident and creative in their own kitchens.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__19">She has lent her talents as a recipe developer and food stylist to various magazines and television projects, including Martha Stewart, the Food Network, </Run>
+          <Run FontStyle="Italic" Tag="__19">Real Simple</Run>
+          <Run Tag="__19">, and </Run>
+          <Run FontStyle="Italic" Tag="__19">Glamour</Run>
+          <Run Tag="__19"> magazines. As a former co-host of TLC&#x2019;s </Run>
+          <Run FontStyle="Italic" Tag="__19">Home Made Simple</Run>
+          <Run Tag="__19">, Allison traveled the country showing families how to cook confidently in their own kitchens.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="29" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__19">Allison has a B.S. in human development and family studies from Cornell University, and a culinary degree from the Institute for Culinary Education. She&#x2019;s currently pursuing a master&#x2019;s degree in food studies from New York University, just a subway stop away from her home in Brooklyn.</Run>
+        </Paragraph>
+      </Section>
+    </Section>
+  </Section>
+</Flow>

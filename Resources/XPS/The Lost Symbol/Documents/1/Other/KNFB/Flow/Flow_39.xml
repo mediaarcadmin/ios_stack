@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c32_r1.htm#c32">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__172">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__172">32 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__172">&#x201C;Almost there,&#x201D;</Run>
+        <Run Tag="__172"> Anderson said, guiding Langdon and Sato down the seemingly endless corridor that ran the entire length of the Capitol&#x2019;s eastern foundation. &#x201C;In Lincoln&#x2019;s day, this passage had a dirt floor and was filled with rats.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">Langdon felt grateful the floor had been tiled; he was not a big fan of rats. The group continued on, their footfalls drumming up an eerie, uneven echo in the long passageway. Doorways lined the long hallway, some closed but many ajar. Many of the rooms down on this level looked abandoned. Langdon noticed the numbers on the doors were now descending and, after a while, seemed to be running out.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">SB4 . . . SB3 . . . SB2 . . . SB1 . . .</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">They continued past an unmarked door, but Anderson stopped short when the numbers began ascending again.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">HB1 . . . HB2 . . .</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__172">&#x201C;Sorry,&#x201D; Anderson said. &#x201C;Missed it. I almost never come down this deep.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">The group backed up a few yards to an old metal door, which Langdon now realized was located at the hallway&#x2019;s central point&#x2014;the meridian that divided the Senate Basement (SB) and the House Basement (HB). As it turned out, the door was indeed marked, but its engraving was so faded, it was almost imperceptible.</Run>
+      </Paragraph>
+      <Section Margin="48,16,48,16" BorderThickness="0,2,0,2" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="27" LineStackingStrategy="BlockLineHeight" Tag="__172">
+        <Paragraph Margin="0,0,0,0" TextAlignment="Center" LineHeight="20" LineStackingStrategy="BlockLineHeight" FontSize="12">
+          <Span FontWeight="Bold" FontSize="12">
+            <Run FontWeight="Bold" FontSize="16" Tag="__172">SBB</Run>
+          </Span>
+        </Paragraph>
+      </Section>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">&#x201C;Here we are,&#x201D; Anderson said. &#x201C;Keys will be arriving any moment.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">Sato frowned and checked her watch.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">Langdon eyed the SBB marking and asked Anderson, &#x201C;Why is this space associated with the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__172">Senate</Run>
+        <Run Tag="__172"> side even though it&#x2019;s in the middle?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__172">Anderson looked puzzled. &#x201C;What do you mean?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">&#x201C;It says SBB, which begins with an </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__173">S,</Run>
+        <Run Tag="__173"> not an </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__173">H</Run>
+        <Run Tag="__173">.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">Anderson shook his head. &#x201C;The </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__173">S</Run>
+        <Run Tag="__173"> in SBB doesn&#x2019;t stand for Senate. It&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">&#x201C;Chief?&#x201D; a guard called out in the distance. He came jogging up the hallway toward them, holding out a key. &#x201C;Sorry, sir, it took a few minutes. We couldn&#x2019;t locate the main SBB key. This is a spare from an auxiliary box.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">&#x201C;The original is missing?&#x201D; Anderson said, sounding surprised.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">&#x201C;Probably lost,&#x201D; the guard replied, arriving out of breath. &#x201C;Nobody has requested access down here for ages.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">Anderson took the key. &#x201C;No secondary key for SBB Thirteen?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">&#x201C;Sorry, so far we&#x2019;re not finding keys for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__173">any</Run>
+        <Run Tag="__173"> of the rooms in the SBB. MacDonald&#x2019;s on it now.&#x201D; The guard pulled out his radio and spoke into it. &#x201C;Bob? I&#x2019;m with the chief. Any additional info yet on the key for SBB Thirteen?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">The guard&#x2019;s radio crackled, and a voice replied, &#x201C;Actually, yeah. It&#x2019;s strange. I&#x2019;m seeing no entries since we computerized, but the hard logs indicate all the storage rooms in the SBB were cleaned out and abandoned more than twenty years ago. They&#x2019;re now listed as unused space.&#x201D; He paused. &#x201C;All except for SBB Thirteen.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">Anderson grabbed the radio. &#x201C;This is the chief. What do you mean, all </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__173">except</Run>
+        <Run Tag="__173"> SBB Thirteen?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">&#x201C;Well, sir,&#x201D; the voice replied, &#x201C;I&#x2019;ve got a handwritten notation here that designates SBB Thirteen as &#x2018;private.&#x2019; It was a long time ago, but it&#x2019;s written and initialed by the Architect himself.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">The term </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__173">Architect</Run>
+        <Run Tag="__173">, Langdon knew, was not a reference to the man who had designed the Capitol, but rather to the man who </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__173">ran</Run>
+        <Run Tag="__173"> it. Similar to a building manager, the man appointed as Architect of the Capitol was in charge of everything including maintenance, restoration, security, hiring personnel, and assigning offices.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__173">&#x201C;The strange thing . . .&#x201D; the voice on the radio said, &#x201C;is that the Architect&#x2019;s notation indicates that this &#x2018;private space&#x2019; was set aside for the use of Peter Solomon.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__174">Langdon, Sato, and Anderson all exchanged startled looks. </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">&#x201C;I&#x2019;m guessing, sir,&#x201D; the voice continued, &#x201C;that Mr. Solomon has our primary key to the SBB as well as any keys to SBB Thirteen.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">Langdon could not believe his ears. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__174">Peter has a private room in the basement of the Capitol?</Run>
+        <Run Tag="__174"> He had always known Peter Solomon had secrets, but this was surprising even to Langdon.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__174">&#x201C;Okay,&#x201D; Anderson said, clearly unamused. &#x201C;We&#x2019;re hoping to get access to SBB Thirteen specifically, so keep looking for a secondary key.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">&#x201C;Will do, sir. We&#x2019;re also working on the digital image that you requested&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">&#x201C;Thank you,&#x201D; Anderson interrupted, pressing the talk button and cutting him off. &#x201C;That will be all. Send that file to Director Sato&#x2019;s BlackBerry as soon as you have it.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">&#x201C;Understood, sir.&#x201D; The radio went silent.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">Anderson handed the radio back to the guard in front of them.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">The guard pulled out a photocopy of a blueprint and handed it to his chief. &#x201C;Sir, the SBB is in gray, and we&#x2019;ve notated with an </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__174">X</Run>
+        <Run Tag="__174"> which room is SBB Thirteen, so it shouldn&#x2019;t be hard to find. The area is quite small.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">Anderson thanked the guard and turned his focus to the blueprint as the young man hurried off. Langdon looked on, surprised to see the astonishing number of cubicles that made up the bizarre maze beneath the U.S. Capitol.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__174">Anderson studied the blueprint for a moment, nodded, and then stuffed it into his pocket. Turning to the door marked </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__174">SBB</Run>
+        <Run Tag="__174">, he raised the key, but hesitated, looking uneasy about opening it. Langdon felt similar misgivings; he had no idea what was behind this door, but he was quite certain that whatever Solomon had hidden down here, he wanted to keep private. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__174">Very private.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__175">Sato cleared her throat, and Anderson got the message. The chief took a deep breath, inserted the key, and tried to turn it. The key didn&#x2019;t move. For a split second, Langdon felt hopeful the key was wrong. On the second try, though, the lock turned, and Anderson heaved the door open.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__175">As the heavy door creaked outward, damp air rushed out into the corridor.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__175">Langdon peered into the darkness but could see nothing at all.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__175">&#x201C;Professor,&#x201D; Anderson said, glancing back at Langdon as he groped blindly for a light switch. &#x201C;To answer your question, the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__175">S</Run>
+        <Run Tag="__175"> in SBB doesn&#x2019;t stand for Senate. It stands for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__175">sub.</Run>
+        <Run Tag="__175">&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__175">&#x201C;Sub?&#x201D; Langdon asked, puzzled.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__175">Anderson nodded and flicked the switch just inside the door. A single bulb illuminated an alarmingly steep staircase descending into inky blackness. &#x201C;SBB is the Capitol&#x2019;s subbasement.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/111c1b8f-fc89-4722-8a8c-8ce1127d4af1.jpg" Stretch="Uniform" Width="432" Height="730" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

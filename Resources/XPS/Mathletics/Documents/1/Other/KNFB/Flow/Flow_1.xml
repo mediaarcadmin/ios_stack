@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,48,0,8" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="70" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Normal" FontSize="40">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/title.html#page_iii">MATHLETICS</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,32,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="19">
+      <Run Tag="__2">How Gamblers, Managers, and Sports Enthusiasts Use</Run>
+      <LineBreak/>
+      <Run Tag="__2">Mathematics in Baseball, Basketball, and Football</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,88,0,88" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="19">
+      <Run Tag="__2">WAYNE WINSTON</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__2">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__2">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,1,0,0" TextAlignment="Center" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontSize="11" Tag="__2">PRINCETON UNIVERSITY PRESS&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;PRINCETON AND OXFORD</Run>
+    </Paragraph>
+  </Section>
+</Flow>

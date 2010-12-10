@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__125">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__125">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part01chapter17.html#part01chapter17" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part01chapter17.html#page_123">&#xA0;&#xA0;17&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__125">MAJOR LEAGUE EQUIVALENTS</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__125">M</Run>
+      <Run Tag="__125">ajor league general managers must decide every year whether a promising minor league player is ready to be brought up to the major league team. Of course, the minor league player faces inferior pitching in the minors, so he is not expected to duplicate his minor league statistics when he is brought up to the majors. In 1985 Bill James developed Major League Equivalents to help major league front office personnel determine whether a minor leaguer is ready for the majors.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__125">The Excel file mle.xls gives the OBP for a set of hitters whose last minor league year was played at the AAA level. These hitters played in either the American Association (AA), International League (INT), or Pacific Coast League (PCL). The file also gives their OBP during their first major league season.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__125">Suppose we know a batter, Joe Hardy, had an OBP of 0.360 in AAA. If we bring Joe up to the major leagues, what OBP can we expect? Using the available data for the INT, we learn that batters had an OBP that averaged 90% of their last minor league OBP during their first year in the majors after their last year (or part of year) in the INT. Batters who had played in the PCL averaged 88% of their last minor league OBP during their first year in the majors. Thus, the major league equivalent of an AAA minor league OBP would be roughly 0.89 times the minor league OBP. We would therefore predict that Joe would achieve a &#x201C;major league equivalent&#x201D; OBP of .89 &#xD7; (.360) = .320 in the major leagues.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter17.html#page123fn01">Expert sabermetricians know that major league equivalents should be adjusted for the minor league park, the major league park, and the quality of pitching faced in the minor league. For example, Tucson and Albuquerque are known to be hitters&#x2019; parks, so batters who play for these teams would have their major league equivalent OBPs reduced.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter17.html#fn01page123">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter17.html#page123fn01">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter17.html#page123fn01"> Similarly, if a </Run>
+      <Run Tag="xhtml/part01chapter17.html#page_124" xml:space="preserve"/>
+      <Run Tag="xhtml/part01chapter17.html#page123fn01">batter were being called up to a team like the Dodgers, who play in a park in which it is more difficult than average to reach base, their projected major league equivalent should be reduced as well.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__125">I did not collect data on slugging percentages, but let&#x2019;s suppose slugging percentage also drops off around 11% when a player goes from AAA to the major leagues. Recall from </Run>
+      <Hyperlink NavigateUri="part01chapter02.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__125">chapter 2</Run>
+      </Hyperlink>
+      <Run Tag="__125"> that Bill James&#x2019;s original Runs Created Formula is (for all intents and purposes) computed by multiplying OBP and SLG. Thus we would expect an AAA minor leaguer to retain .89</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__125">2</Run>
+      <Run Tag="__125"> = .78, or 78% of their minor league Runs Creating ability and lose around 22%.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter17.html#page123fn01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter17.html#fn01page123">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter17.html#fn01page123"> See </Run>
+      <Hyperlink NavigateUri="http://www.basebaUamerica.conVtoday/featxires/040408parkfactors.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter17.html#fn01page123">http://www.basebaUamerica.conVtoday/featxires/040408parkfactors.html</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter17.html#fn01page123">.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

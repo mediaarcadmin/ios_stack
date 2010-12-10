@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Metadata PackagerVersion="1.1.937.0" FormatVersion="1.0.2.0" Source="399350cdaf2edbe987252927dda1133b">
+  <Edition Name="" />
+  <Identifier ISBN="9780385533133" />
+  <Features />
+  <PageStatistics MaxWidth="576" MaxHeight="864" />
+  <Source Type="EPUB" />
+  <View Default="REFLOW" />
+  <KNFBConv Build="937" When="11/1/2010 9:17:04 AM" CommandLine="C:\Dev_r937/KNFBConv.exe -A -x=n -F=&quot;C:\Users\Kurt\Desktop\For Converter/9780385533133.epub&quot; -ISBN=file -v=10 -NoInCoverSub -rights" />
+  <Dimensions Height="" Width="" Depth="" />
+  <Language Text="ENG" />
+  <Contributor Author="Brown, Dan" />
+  <Title Main="The Lost Symbol" />
+  <Subject Keyword="FICTION / Thrillers" />
+</Metadata>

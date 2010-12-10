@@ -1,0 +1,319 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__114">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__114">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part01chapter14.html#part01chapter14" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part01chapter14.html#page_110">&#xA0;&#xA0;14&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__114">PITCH COUNT AND PITCHER EFFECTIVENESS</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="xhtml/part01chapter14.html#rfnpage_110-01">I</Run>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_110-01">n October 2003 the Red Sox were leading the Yankees 5&#x2013;2 after seven innings of the seventh and deciding game of the American League Championship Series. Pitcher Pedro Martinez was cruising along and had allowed only two runs. At the start of the eighth inning Martinez got the first batter out, but then Derek Jeter hit a double. Red Sox manager Grady Little went to the mound and talked to Martinez, and then left him in the game. The Yankees promptly tied the game and went on to win in the eleventh inning on a dramatic walk-off home run by Aaron Boone. Grady Little was fired later that week. Most baseball analysts think that one reason Little was fired was that he ignored Martinez&#x2019;s tendency to become, after throwing 100 pitches, a much less effective pitcher. Going into the eighth inning, Martinez was well over the 100-pitch count. Batters facing Martinez after he had thrown fewer than 100 pitches had an OBP of 0.256.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter14.html#fnpage_110-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter14.html#rfnpage_110-01">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_110-01"> This meant that before Martinez had thrown 100 pitches, a batter had a 26% chance of reaching base. After Martinez had thrown more than 100 pitches, batters had a 0.364 OBP, or a 36% chance of reaching base. Since the average OBP is 34%, when Martinez has thrown a lot of pitches he becomes less effective. Grady Little ignored this record, and in all likelihood (since the Yankees had only a 10% chance of winning the game at the start of the eighth inning) his decision cost the Red Sox the 2003 American League championship.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_110-02">Teams whose front offices&#x2019; philosophy is data-driven keep records of changes to a pitcher&#x2019;s effectiveness as he throws more pitches. In </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter14.html#rfnpage_110-02">The Book</Run>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_110-02">, TLD cleverly analyzed how a pitcher&#x2019;s effectiveness varies with the number of pitches thrown. Using every plate appearance for the 1999&#x2013;2002 seasons, they analyzed how each hitter performed (after adjusting for the individual abilities of the hitter and pitcher) for every time a pitcher worked through the nine-man batting order.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter14.html#fnpage_110-02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter14.html#rfnpage_110-02">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_110-02"> This measure of hitting performance was identified as Weighted On-Base Average (WOBA) and was defined by the calculation</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__114">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="xhtml/part01chapter14.html#page_111">&#xA0;</Run>
+      <Image Source="/Resources/5cb139ff-8726-41dd-bc18-2b05db27cfdf.jpg" Stretch="Uniform" Width="300" Height="96" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__114">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__114">WOBA is a form of Linear Weights (see </Run>
+      <Hyperlink NavigateUri="part01chapter03.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__114">chapter 3</Run>
+      </Hyperlink>
+      <Run Tag="__114">) that is scaled to reflect the average hitter&#x2019;s WOBA of 0.340 (matching the average MLB OBP). </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter14.html#chapter14table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__114">Table 14.1</Run>
+      </Hyperlink>
+      <Run Tag="__114"> shows the resulting TLD scale.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__115">Therefore, the first time through the order hitters performed eight points below the expected WOBA, while the third time through the order hitters performed eight points better than expected. A pitcher usually finishes going through the order the third time during innings five through seven. The fact that pitchers perform better earlier in the game can be attributed to several factors, including pitcher fatigue and the fact that hitters know what to expect from a pitcher as the game progresses. The fourth time through the batting order hitters performed virtually as expected. This may indicate that any pitcher who makes it to the seventh or eighth inning must have really good stuff, thereby counterbalancing the fatigue effect.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__115">In short, teams would be wise to keep results like those presented in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter14.html#chapter14table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__115">table 14.1</Run>
+      </Hyperlink>
+      <Run Tag="__115"> for all hitters each starting pitcher faces, and on an individual basis determine whether a pitcher&#x2019;s performance deteriorates when his pitch count exceeds a certain level.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__115">Pitch Count and Pitcher Injuries</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_111">In 1999 Kerry Wood developed a sore elbow, which broke the hearts of Cub fans. During his rookie year in 1998 Wood averaged 112 pitches per game, and during one start he threw 137 pitches. It seems reasonable to assume that starting pitchers who throw a lot of pitches are more likely to develop a sore arm. In </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter14.html#rfnpage_111">Mind Game</Run>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_111">, Steven Goldman describes the link between pitch count and the likelihood a pitcher will develop a sore arm. Keith Woolner and Rany Jazayerli defined Pitcher Abuse Points (PAP for short) for a single start as PAP = max(0,(number of pitches &#x2013; 100)</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="xhtml/part01chapter14.html#rfnpage_111">3</Run>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_111">).</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter14.html#fnpage_111">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter14.html#rfnpage_111">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_111"> For example, in any start in which a pitcher throws 100 or fewer pitches, PAP = 0. If a pitcher throws 110 pitches, PAP = 1,000; if a pitcher throws 130 pitches, PAP = 30</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="xhtml/part01chapter14.html#rfnpage_111">3</Run>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_111"> = 27,000 (see </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter14.html#chapter14figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter14.html#rfnpage_111">figure 14.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter14.html#rfnpage_111">).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__115">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part01chapter14.html#chapter14table01">TABLE 14.1</Run>
+      <LineBreak/>
+      <Run Tag="xhtml/part01chapter14.html#chapter14table01">WOBA vs. Time through Batting Order</Run>
+    </Paragraph>
+    <Table Tag="__115">
+      <Table.Columns>
+        <TableColumn Width="10"/>
+        <TableColumn Width="206"/>
+        <TableColumn Width="121"/>
+        <TableColumn Width="142"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph/>
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__115">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">Expected WOBA (Based</Run>
+              <LineBreak/>
+              <Run Tag="__115">on Hitters&#x2019; WOBA)</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">Actual WOBA</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">Actual versus</Run>
+              <LineBreak/>
+              <Run Tag="__115">Expected WOBA</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__115">1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">.353</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">.345</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">&#x2212;8 points</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__115">2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">.353</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">.354</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">+1 point</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__115">3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">.354</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">.362</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">+8 points</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__115">4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">.353</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">.354</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__115">+1 point</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__115">Source</Run>
+      <Run Tag="__115">: Tom Tango, Mitchell Lichtman, and Andrew Dolphin, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__115">The Book: Playing the Percentages in Baseball</Run>
+      <Run Tag="__115"> (Potomac Books, 2007), 186.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/2f1cf576-88b2-4345-94dc-afa352ade488.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter14.html#chapter14figure01">Figure 14.1. Pitcher abuse points as a function of game pitch count. PAP is not a linear function of pitch count.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__116">Woolner and Jazayerli found that pitchers with a career value of PAP/total pitches exceeding 30 are nearly twice as likely to develop a sore arm as pitchers whose career PAP/total pitches does not exceed 30. For example, a pitcher with five starts throwing 100 pitches in three games and 120 and 130 pitches in the other two games would be a candidate for a sore arm:</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__116">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__116">PAP/total pitches = (20</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontWeight="Normal" FontSize="11" Tag="__116">3</Run>
+      <Run Tag="__116"> + 30</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontWeight="Normal" FontSize="11" Tag="__116">3</Run>
+      <Run Tag="__116">)/550 = 63.6.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__116">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__116">PAP/total pitches is a tool managers can use to monitor the pitch counts of their starting pitchers to reduce the likelihood of pitcher injury.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter14.html#rfnpage_110-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter14.html#fnpage_110-01">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter14.html#fnpage_110-01"> Adler, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter14.html#fnpage_110-01">Baseball Hacks</Run>
+      <Run Tag="xhtml/part01chapter14.html#fnpage_110-01">, 358.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter14.html#rfnpage_110-02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter14.html#fnpage_110-02">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter14.html#fnpage_110-02"> Tango, Lichtman, and Dolphin, The Book, 30.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter14.html#rfnpage_111">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter14.html#fnpage_111">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter14.html#fnpage_111"> See Rany Jazayerli, &#x201C;Pitcher Abuse Points: A New Way to Measure Pitcher Abuse,&#x201D; June 19, 1998, </Run>
+      <Hyperlink NavigateUri="http://www.baseballprospectus.com/article.php?articleid=148">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter14.html#fnpage_111">http://www.baseballprospectus.com/article.php?articleid=148</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter14.html#fnpage_111">.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

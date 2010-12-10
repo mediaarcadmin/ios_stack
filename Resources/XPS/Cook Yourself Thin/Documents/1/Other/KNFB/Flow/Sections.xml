@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BookContents ReadOutLoudFlow="True" NoTextFlowView="False">
+  <PageLocations>
+    <PageRange Start="0" End="70" Source="Pages_0_70.xml"/>
+    <PageRange Start="71" End="151" Source="Pages_71_151.xml"/>
+    <PageRange Start="152" End="219" Source="Pages_152_219.xml"/>
+    <PageRange Start="220" End="291" Source="Pages_220_291.xml"/>
+  </PageLocations>
+  <Sections>
+    <Section PageIndex="0" Name="Cover" Level="0">
+      <FlowReference Source="Flow_0.xml" PageIndices="0"/>
+    </Section>
+    <Section PageIndex="1" Name="Title Page" Level="0">
+      <FlowReference Source="Flow_1.xml" PageIndices="1"/>
+    </Section>
+    <Section PageIndex="2" Name="Contents" Level="0">
+      <FlowReference Source="Flow_2.xml" PageIndices="2-0"/>
+    </Section>
+    <Section PageIndex="20" Name="Philosophy" Level="0">
+      <FlowReference Source="Flow_3.xml" PageIndices="20-0"/>
+    </Section>
+    <Section PageIndex="77" Name="Breakfast" Level="0">
+      <FlowReference Source="Flow_4.xml" PageIndices="77-104"/>
+    </Section>
+    <Section PageIndex="78" Name="The Better for You Breakfast Sandwich" Level="1"/>
+    <Section PageIndex="81" Name="Eggs Benedict on a Muffin with Garlic Aïoli" Level="1"/>
+    <Section PageIndex="83" Name="Sweet ’N’ Spicy Breakfast Hash with Tofu" Level="1"/>
+    <Section PageIndex="85" Name="Stuffed French Toast Sundaes" Level="1"/>
+    <Section PageIndex="87" Name="Portobello Mushroom Benedict with Roasted Red Pepper Sauce" Level="1"/>
+    <Section PageIndex="90" Name="Banana Chocolate Chip Muffins" Level="1"/>
+    <Section PageIndex="92" Name="Raspberry, Orange, and Banana Smoothie" Level="1"/>
+    <Section PageIndex="94" Name="Lemon and Poppyseed Muffins" Level="1"/>
+    <Section PageIndex="96" Name="Homemade Granola" Level="1"/>
+    <Section PageIndex="98" Name="Omelets with Roasted Tomatoes" Level="1"/>
+    <Section PageIndex="102" Name="Cheese, Vegetable, and Bacon Frittata" Level="1"/>
+    <Section PageIndex="105" Name="Mains" Level="0">
+      <FlowReference Source="Flow_5.xml" PageIndices="105-233"/>
+    </Section>
+    <Section PageIndex="107" Name="Southwestern Turkey Burgers with Sweet Potato Fries" Level="1"/>
+    <Section PageIndex="110" Name="Penne alla “Not-ka”" Level="1"/>
+    <Section PageIndex="112" Name="French Onion Soup" Level="1"/>
+    <Section PageIndex="115" Name="Oven-Baked Crispy Chicken Tenders with Coleslaw" Level="1"/>
+    <Section PageIndex="118" Name="Chicken Caesar Salad" Level="1"/>
+    <Section PageIndex="122" Name="Spinach and Mushroom Veggie Lasagna" Level="1"/>
+    <Section PageIndex="124" Name="Pasta Bake with Sausage, Broccoli, and Beans" Level="1"/>
+    <Section PageIndex="127" Name="Healthy Potato Skins" Level="1"/>
+    <Section PageIndex="129" Name="Easy Herb-Roasted Chicken with Roasted Veggies" Level="1"/>
+    <Section PageIndex="132" Name="Pasta Primavera" Level="1"/>
+    <Section PageIndex="135" Name="Turkey Chili Crunch" Level="1"/>
+    <Section PageIndex="138" Name="Scrumptious Skinny Spaghetti and Meatballs" Level="1"/>
+    <Section PageIndex="141" Name="Mushroom and Spinach Quiche with Potato Crust" Level="1"/>
+    <Section PageIndex="144" Name="Spring Rolls with Lemongrass Dipping Sauce and Cucumber Salad" Level="1"/>
+    <Section PageIndex="147" Name="Sesame Peanut Noodles" Level="1"/>
+    <Section PageIndex="149" Name="Chicken and Bean Burritos with Pineapple Salsa" Level="1"/>
+    <Section PageIndex="153" Name="Ultimate Sausage Cheese Pizza" Level="1"/>
+    <Section PageIndex="155" Name="Cobb Salad" Level="1"/>
+    <Section PageIndex="157" Name="Sautéed Tequila Lime Shrimp Tacos with Mango and Pineapple Salsa and Spicy Black Beans" Level="1"/>
+    <Section PageIndex="160" Name="Mango-Glazed Salmon with Spinach Salad" Level="1"/>
+    <Section PageIndex="162" Name="Steak with Cauliflower “Mash” Potatoes" Level="1"/>
+    <Section PageIndex="166" Name="Breaded Not Fried Panko-Crusted Shrimp" Level="1"/>
+    <Section PageIndex="168" Name="Sautéed Spinach with Grilled Turkey Sausage and Red Pepper and Rosemary Corn Bread" Level="1"/>
+    <Section PageIndex="171" Name="Skinny Down-Home Chicken Pot Pie" Level="1"/>
+    <Section PageIndex="173" Name="Mediterranean Chicken" Level="1"/>
+    <Section PageIndex="177" Name="Cheezy Chicken Parmesan with Zucchini “Pasta”" Level="1"/>
+    <Section PageIndex="180" Name="Spaghetti Carbonara" Level="1"/>
+    <Section PageIndex="182" Name="Supreme Quesadilla with Poblano Peppers" Level="1"/>
+    <Section PageIndex="185" Name="Stuffed Shells" Level="1"/>
+    <Section PageIndex="188" Name="Eggplant Stacks" Level="1"/>
+    <Section PageIndex="191" Name="Turkey Mini-Meatloaves with Roasted Root Veggies" Level="1"/>
+    <Section PageIndex="194" Name="Mac and Cheese" Level="1"/>
+    <Section PageIndex="196" Name="Sweet and Sour Pork Chops" Level="1"/>
+    <Section PageIndex="199" Name="Green Chile Chicken Enchiladas" Level="1"/>
+    <Section PageIndex="202" Name="Tomato Fennel Soup and Turkey BLT" Level="1"/>
+    <Section PageIndex="205" Name="Portobello Mushroom Tuna Melt" Level="1"/>
+    <Section PageIndex="207" Name="Chicken Tetrazzini" Level="1"/>
+    <Section PageIndex="210" Name="Buffalo Chicken Wings" Level="1"/>
+    <Section PageIndex="213" Name="Risotto with Spring Vegetables" Level="1"/>
+    <Section PageIndex="216" Name="Stuffed Portobello Mushrooms" Level="1"/>
+    <Section PageIndex="218" Name="Marinated Lamb Kebabs with Yogurt Sauce" Level="1"/>
+    <Section PageIndex="222" Name="Buffalo Chicken Salad" Level="1"/>
+    <Section PageIndex="224" Name="Tuna Salad Rolls with Edamame" Level="1"/>
+    <Section PageIndex="227" Name="Huevos Rancheros" Level="1"/>
+    <Section PageIndex="230" Name="Asian Beef Noodle Soup" Level="1"/>
+    <Section PageIndex="234" Name="Sweets" Level="0">
+      <FlowReference Source="Flow_6.xml" PageIndices="234-288"/>
+    </Section>
+    <Section PageIndex="236" Name="Deep Dark Chocolate Cake" Level="1"/>
+    <Section PageIndex="239" Name="Oatmeal Parfait" Level="1"/>
+    <Section PageIndex="241" Name="Peanut Butter Dream Bars" Level="1"/>
+    <Section PageIndex="244" Name="Vanilla Cupcakes" Level="1"/>
+    <Section PageIndex="246" Name="Chocolate Pudding" Level="1"/>
+    <Section PageIndex="247" Name="Red Velvet Cupcakes" Level="1"/>
+    <Section PageIndex="250" Name="Chocolate Brownie with Raspberries and White Chocolate Chips" Level="1"/>
+    <Section PageIndex="252" Name="Mint Chocolate Cupcakes" Level="1"/>
+    <Section PageIndex="255" Name="Roasted Peach Crisp" Level="1"/>
+    <Section PageIndex="257" Name="Chewy Oatmeal Raisin Cookies" Level="1"/>
+    <Section PageIndex="259" Name="Iced Cappuccino Delight" Level="1"/>
+    <Section PageIndex="261" Name="Chocolate and Cranberry Biscotti" Level="1"/>
+    <Section PageIndex="264" Name="Apple Cinnamon Cake" Level="1"/>
+    <Section PageIndex="266" Name="Carrot Cake" Level="1"/>
+    <Section PageIndex="269" Name="Orange and Lemon Cake" Level="1"/>
+    <Section PageIndex="272" Name="Chocolate Pavlova" Level="1"/>
+    <Section PageIndex="274" Name="Chocolate and Raspberry Roulade with Raspberry Sauce" Level="1"/>
+    <Section PageIndex="279" Name="Vanilla and Strawberry Sponge Cake" Level="1"/>
+    <Section PageIndex="282" Name="Cookies and Cream Milkshake" Level="1"/>
+    <Section PageIndex="289" Name="Acknowledgments" Level="0">
+      <FlowReference Source="Flow_8.xml" PageIndices="289"/>
+    </Section>
+    <Section PageIndex="284" Name="Searchable Terms" Level="0">
+      <FlowReference Source="Flow_7.xml" PageIndices="284-289"/>
+    </Section>
+    <Section PageIndex="290" Name="Credits" Level="0">
+      <FlowReference Source="Flow_9.xml" PageIndices="290"/>
+    </Section>
+    <Section PageIndex="291" Name="Copyright" Level="0">
+      <FlowReference Source="Flow_10.xml" PageIndices="291"/>
+    </Section>
+  </Sections>
+  <References>
+    <Reference Id="toc:Cover|file:cookyourselfthin_cov.html" PageIndex="0"/>
+    <Reference Id="cookyourselfthin_cov.html" PageIndex="0"/>
+    <Reference Id="toc:Title Page|file:cookyourselfthin_tp01.html" PageIndex="1"/>
+    <Reference Id="cookyourselfthin_tp01.html" PageIndex="1"/>
+    <Reference Id="cookyourselfthin_tp01.html#tp01" PageIndex="1"/>
+    <Reference Id="cookyourselfthin_tp01.html#pageii" PageIndex="1"/>
+    <Reference Id="cookyourselfthin_tp01.html#pageiii" PageIndex="1"/>
+    <Reference Id="toc:Contents|file:cookyourselfthin_toc.html" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#toc" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#page06" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#fm_03" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#ch_01" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_01" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_02" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_03" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_04" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_05" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_06" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_07" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_08" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_09" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_10" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_11" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#ch_02" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_12" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_13" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_14" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_15" PageIndex="2"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_16" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_17" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_18" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_19" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_20" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_21" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_22" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_23" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_24" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_25" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_26" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_27" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_28" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_29" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_30" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_31" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_32" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_33" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#page07" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_34" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_35" PageIndex="3"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_36" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_37" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_38" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_39" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_40" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_41" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_42" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_43" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_44" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_45" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_46" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_47" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_48" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_49" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_50" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_51" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_52" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_53" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_54" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_55" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_56" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#ch_03" PageIndex="4"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_57" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_58" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_59" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_60" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_61" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_62" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_63" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_64" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_65" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_66" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_67" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_68" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_69" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_70" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_71" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_72" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_73" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_74" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cha_75" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#ack_01" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#ind_01" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#bm_02" PageIndex="5"/>
+    <Reference Id="cookyourselfthin_toc.html#cop_01" PageIndex="6"/>
+    <Reference Id="file:cookyourselfthin_dum01.html" PageIndex="7"/>
+    <Reference Id="cookyourselfthin_dum01.html" PageIndex="7"/>
+    <Reference Id="cookyourselfthin_dum01.html#dum01" PageIndex="7"/>
+    <Reference Id="file:cookyourselfthin_fm01.html" PageIndex="8"/>
+    <Reference Id="cookyourselfthin_fm01.html" PageIndex="8"/>
+    <Reference Id="cookyourselfthin_fm01.html#page08" PageIndex="8"/>
+    <Reference Id="cookyourselfthin_fm01.html#page09" PageIndex="8"/>
+    <Reference Id="cookyourselfthin_fm01.html#fm01" PageIndex="8"/>
+    <Reference Id="cookyourselfthin_fm01.html#page10" PageIndex="9"/>
+    <Reference Id="cookyourselfthin_fm01.html#page11" PageIndex="10"/>
+    <Reference Id="file:cookyourselfthin_fm02.html" PageIndex="13"/>
+    <Reference Id="cookyourselfthin_fm02.html" PageIndex="13"/>
+    <Reference Id="cookyourselfthin_fm02.html#fm02" PageIndex="13"/>
+    <Reference Id="cookyourselfthin_fm02.html#page12" PageIndex="13"/>
+    <Reference Id="cookyourselfthin_fm02.html#page13" PageIndex="13"/>
+    <Reference Id="file:cookyourselfthin_fmm01.html" PageIndex="14"/>
+    <Reference Id="cookyourselfthin_fmm01.html" PageIndex="14"/>
+    <Reference Id="cookyourselfthin_fmm01.html#fmm01" PageIndex="14"/>
+    <Reference Id="cookyourselfthin_fmm01.html#page14" PageIndex="14"/>
+    <Reference Id="cookyourselfthin_fmm01.html#page15" PageIndex="14"/>
+    <Reference Id="file:cookyourselfthin_fmm02.html" PageIndex="16"/>
+    <Reference Id="cookyourselfthin_fmm02.html" PageIndex="16"/>
+    <Reference Id="cookyourselfthin_fmm02.html#fmm02" PageIndex="16"/>
+    <Reference Id="cookyourselfthin_fmm02.html#page16" PageIndex="16"/>
+    <Reference Id="cookyourselfthin_fmm02.html#page17" PageIndex="16"/>
+    <Reference Id="file:cookyourselfthin_fmm03.html" PageIndex="18"/>
+    <Reference Id="cookyourselfthin_fmm03.html" PageIndex="18"/>
+    <Reference Id="cookyourselfthin_fmm03.html#fmm03" PageIndex="18"/>
+    <Reference Id="cookyourselfthin_fmm03.html#page18" PageIndex="18"/>
+    <Reference Id="cookyourselfthin_fmm03.html#page19" PageIndex="18"/>
+    <Reference Id="toc:Philosophy|file:cookyourselfthin_fm03.html" PageIndex="20"/>
+    <Reference Id="cookyourselfthin_fm03.html" PageIndex="20"/>
+    <Reference Id="cookyourselfthin_fm03.html#fm03" PageIndex="20"/>
+    <Reference Id="cookyourselfthin_fm03.html#page20" PageIndex="20"/>
+    <Reference Id="cookyourselfthin_fm03.html#page21" PageIndex="20"/>
+    <Reference Id="file:cookyourselfthin_fm04.html" PageIndex="21"/>
+    <Reference Id="cookyourselfthin_fm04.html" PageIndex="21"/>
+    <Reference Id="cookyourselfthin_fm04.html#fm04" PageIndex="21"/>
+    <Reference Id="cookyourselfthin_fm04.html#page22" PageIndex="21"/>
+    <Reference Id="cookyourselfthin_fm04.html#page23" PageIndex="21"/>
+    <Reference Id="cookyourselfthin_fm04.html#page24" PageIndex="23"/>
+    <Reference Id="cookyourselfthin_fm04.html#page25" PageIndex="24"/>
+    <Reference Id="cookyourselfthin_fm04.html#page26" PageIndex="25"/>
+    <Reference Id="cookyourselfthin_fm04.html#page27" PageIndex="26"/>
+    <Reference Id="file:cookyourselfthin_fm05.html" PageIndex="28"/>
+    <Reference Id="cookyourselfthin_fm05.html" PageIndex="28"/>
+    <Reference Id="cookyourselfthin_fm05.html#fm05" PageIndex="28"/>
+    <Reference Id="cookyourselfthin_fm05.html#page28" PageIndex="28"/>
+    <Reference Id="cookyourselfthin_fm05.html#page29" PageIndex="28"/>
+    <Reference Id="cookyourselfthin_fm05.html#__ignore__" PageIndex="29"/>
+    <Reference Id="cookyourselfthin_fm05.html#page30" PageIndex="30"/>
+    <Reference Id="cookyourselfthin_fm05.html#page31" PageIndex="31"/>
+    <Reference Id="file:cookyourselfthin_fm06.html" PageIndex="33"/>
+    <Reference Id="cookyourselfthin_fm06.html" PageIndex="33"/>
+    <Reference Id="cookyourselfthin_fm06.html#fm06" PageIndex="33"/>
+    <Reference Id="cookyourselfthin_fm06.html#page32" PageIndex="33"/>
+    <Reference Id="cookyourselfthin_fm06.html#page33" PageIndex="33"/>
+    <Reference Id="cookyourselfthin_fm06.html#page34" PageIndex="33"/>
+    <Reference Id="cookyourselfthin_fm06.html#page35" PageIndex="34"/>
+    <Reference Id="cookyourselfthin_fm06.html#__ignore__" PageIndex="35"/>
+    <Reference Id="file:cookyourselfthin_fm07.html" PageIndex="37"/>
+    <Reference Id="cookyourselfthin_fm07.html" PageIndex="37"/>
+    <Reference Id="cookyourselfthin_fm07.html#fm07" PageIndex="37"/>
+    <Reference Id="cookyourselfthin_fm07.html#page36" PageIndex="37"/>
+    <Reference Id="cookyourselfthin_fm07.html#page37" PageIndex="37"/>
+    <Reference Id="cookyourselfthin_fm07.html#page38" PageIndex="37"/>
+    <Reference Id="cookyourselfthin_fm07.html#page39" PageIndex="38"/>
+    <Reference Id="cookyourselfthin_fm07.html#__ignore__" PageIndex="39"/>
+    <Reference Id="file:cookyourselfthin_fm08.html" PageIndex="40"/>
+    <Reference Id="cookyourselfthin_fm08.html" PageIndex="40"/>
+    <Reference Id="cookyourselfthin_fm08.html#fm08" PageIndex="40"/>
+    <Reference Id="cookyourselfthin_fm08.html#page40" PageIndex="40"/>
+    <Reference Id="cookyourselfthin_fm08.html#page41" PageIndex="40"/>
+    <Reference Id="cookyourselfthin_fm08.html#page42" PageIndex="43"/>
+    <Reference Id="cookyourselfthin_fm08.html#page43" PageIndex="45"/>
+    <Reference Id="file:cookyourselfthin_fm09.html" PageIndex="48"/>
+    <Reference Id="cookyourselfthin_fm09.html" PageIndex="48"/>
+    <Reference Id="cookyourselfthin_fm09.html#fm09" PageIndex="48"/>
+    <Reference Id="cookyourselfthin_fm09.html#page44" PageIndex="48"/>
+    <Reference Id="cookyourselfthin_fm09.html#page45" PageIndex="48"/>
+    <Reference Id="cookyourselfthin_fm09.html#page46" PageIndex="48"/>
+    <Reference Id="cookyourselfthin_fm09.html#page47" PageIndex="49"/>
+    <Reference Id="cookyourselfthin_fm09.html#page48" PageIndex="51"/>
+    <Reference Id="cookyourselfthin_fm09.html#page49" PageIndex="52"/>
+    <Reference Id="file:cookyourselfthin_fm10.html" PageIndex="54"/>
+    <Reference Id="cookyourselfthin_fm10.html" PageIndex="54"/>
+    <Reference Id="cookyourselfthin_fm10.html#fm10" PageIndex="54"/>
+    <Reference Id="cookyourselfthin_fm10.html#page50" PageIndex="54"/>
+    <Reference Id="cookyourselfthin_fm10.html#page51" PageIndex="54"/>
+    <Reference Id="cookyourselfthin_fm10.html#page52" PageIndex="54"/>
+    <Reference Id="cookyourselfthin_fm10.html#page53" PageIndex="55"/>
+    <Reference Id="file:cookyourselfthin_fm11.html" PageIndex="57"/>
+    <Reference Id="cookyourselfthin_fm11.html" PageIndex="57"/>
+    <Reference Id="cookyourselfthin_fm11.html#fm11" PageIndex="57"/>
+    <Reference Id="cookyourselfthin_fm11.html#page54" PageIndex="57"/>
+    <Reference Id="cookyourselfthin_fm11.html#page55" PageIndex="57"/>
+    <Reference Id="cookyourselfthin_fm11.html#page56" PageIndex="57"/>
+    <Reference Id="cookyourselfthin_fm11.html#page57" PageIndex="58"/>
+    <Reference Id="cookyourselfthin_fm11.html#__ignore__" PageIndex="58"/>
+    <Reference Id="file:cookyourselfthin_fm12.html" PageIndex="61"/>
+    <Reference Id="cookyourselfthin_fm12.html" PageIndex="61"/>
+    <Reference Id="cookyourselfthin_fm12.html#fm12" PageIndex="61"/>
+    <Reference Id="cookyourselfthin_fm12.html#page58" PageIndex="61"/>
+    <Reference Id="cookyourselfthin_fm12.html#page59" PageIndex="61"/>
+    <Reference Id="cookyourselfthin_fm12.html#page60" PageIndex="61"/>
+    <Reference Id="cookyourselfthin_fm12.html#page61" PageIndex="62"/>
+    <Reference Id="cookyourselfthin_fm12.html#page62" PageIndex="63"/>
+    <Reference Id="cookyourselfthin_fm12.html#page63" PageIndex="64"/>
+    <Reference Id="cookyourselfthin_fm12.html#page64" PageIndex="65"/>
+    <Reference Id="cookyourselfthin_fm12.html#page65" PageIndex="66"/>
+    <Reference Id="file:cookyourselfthin_fm13.html" PageIndex="68"/>
+    <Reference Id="cookyourselfthin_fm13.html" PageIndex="68"/>
+    <Reference Id="cookyourselfthin_fm13.html#fm13" PageIndex="68"/>
+    <Reference Id="cookyourselfthin_fm13.html#page66" PageIndex="68"/>
+    <Reference Id="cookyourselfthin_fm13.html#page67" PageIndex="68"/>
+    <Reference Id="cookyourselfthin_fm13.html#page68" PageIndex="68"/>
+    <Reference Id="cookyourselfthin_fm13.html#page69" PageIndex="69"/>
+    <Reference Id="cookyourselfthin_fm13.html#page70" PageIndex="70"/>
+    <Reference Id="cookyourselfthin_fm13.html#page71" PageIndex="71"/>
+    <Reference Id="file:cookyourselfthin_fm14.html" PageIndex="73"/>
+    <Reference Id="cookyourselfthin_fm14.html" PageIndex="73"/>
+    <Reference Id="cookyourselfthin_fm14.html#fm14" PageIndex="73"/>
+    <Reference Id="cookyourselfthin_fm14.html#page72" PageIndex="73"/>
+    <Reference Id="cookyourselfthin_fm14.html#page73" PageIndex="73"/>
+    <Reference Id="file:cookyourselfthin_pt01.html" PageIndex="75"/>
+    <Reference Id="cookyourselfthin_pt01.html" PageIndex="75"/>
+    <Reference Id="cookyourselfthin_pt01.html#pt01" PageIndex="75"/>
+    <Reference Id="cookyourselfthin_pt01.html#ph01" PageIndex="75"/>
+    <Reference Id="cookyourselfthin_pt01.html#page74" PageIndex="75"/>
+    <Reference Id="cookyourselfthin_pt01.html#page75" PageIndex="75"/>
+    <Reference Id="toc:Breakfast|file:cookyourselfthin_ch01.html" PageIndex="77"/>
+    <Reference Id="cookyourselfthin_ch01.html" PageIndex="77"/>
+    <Reference Id="cookyourselfthin_ch01.html#ch01" PageIndex="77"/>
+    <Reference Id="cookyourselfthin_ch01.html#page76" PageIndex="77"/>
+    <Reference Id="cookyourselfthin_ch01.html#page77" PageIndex="77"/>
+    <Reference Id="cookyourselfthin_ch01.html#page78" PageIndex="78"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha01" PageIndex="78"/>
+    <Reference Id="cookyourselfthin_ch01.html#page79" PageIndex="79"/>
+    <Reference Id="cookyourselfthin_ch01.html#page80" PageIndex="79"/>
+    <Reference Id="cookyourselfthin_ch01.html#page81" PageIndex="80"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha02" PageIndex="81"/>
+    <Reference Id="cookyourselfthin_ch01.html#__ignore__" PageIndex="82"/>
+    <Reference Id="cookyourselfthin_ch01.html#page82" PageIndex="82"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha03" PageIndex="83"/>
+    <Reference Id="cookyourselfthin_ch01.html#page83" PageIndex="84"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha04" PageIndex="85"/>
+    <Reference Id="cookyourselfthin_ch01.html#page84" PageIndex="86"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha05" PageIndex="87"/>
+    <Reference Id="cookyourselfthin_ch01.html#page85" PageIndex="88"/>
+    <Reference Id="cookyourselfthin_ch01.html#page86" PageIndex="89"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha06" PageIndex="90"/>
+    <Reference Id="cookyourselfthin_ch01.html#page87" PageIndex="91"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha07" PageIndex="92"/>
+    <Reference Id="cookyourselfthin_ch01.html#page88" PageIndex="93"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha08" PageIndex="94"/>
+    <Reference Id="cookyourselfthin_ch01.html#page89" PageIndex="95"/>
+    <Reference Id="cookyourselfthin_ch01.html#page90" PageIndex="95"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha09" PageIndex="96"/>
+    <Reference Id="cookyourselfthin_ch01.html#page91" PageIndex="97"/>
+    <Reference Id="cookyourselfthin_ch01.html#page92" PageIndex="97"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha10" PageIndex="98"/>
+    <Reference Id="cookyourselfthin_ch01.html#page93" PageIndex="99"/>
+    <Reference Id="cookyourselfthin_ch01.html#page94" PageIndex="100"/>
+    <Reference Id="cookyourselfthin_ch01.html#page95" PageIndex="101"/>
+    <Reference Id="cookyourselfthin_ch01.html#cha11" PageIndex="102"/>
+    <Reference Id="toc:Mains|file:cookyourselfthin_ch02.html" PageIndex="105"/>
+    <Reference Id="cookyourselfthin_ch02.html" PageIndex="105"/>
+    <Reference Id="cookyourselfthin_ch02.html#ch02" PageIndex="105"/>
+    <Reference Id="cookyourselfthin_ch02.html#page96" PageIndex="105"/>
+    <Reference Id="cookyourselfthin_ch02.html#page97" PageIndex="105"/>
+    <Reference Id="cookyourselfthin_ch02.html#page98" PageIndex="105"/>
+    <Reference Id="cookyourselfthin_ch02.html#page99" PageIndex="106"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha12" PageIndex="107"/>
+    <Reference Id="cookyourselfthin_ch02.html#page100" PageIndex="108"/>
+    <Reference Id="cookyourselfthin_ch02.html#__ignore__" PageIndex="108"/>
+    <Reference Id="cookyourselfthin_ch02.html#page101" PageIndex="109"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha13" PageIndex="110"/>
+    <Reference Id="cookyourselfthin_ch02.html#page102" PageIndex="111"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha14" PageIndex="112"/>
+    <Reference Id="cookyourselfthin_ch02.html#page103" PageIndex="113"/>
+    <Reference Id="cookyourselfthin_ch02.html#page104" PageIndex="113"/>
+    <Reference Id="cookyourselfthin_ch02.html#page105" PageIndex="114"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha15" PageIndex="115"/>
+    <Reference Id="cookyourselfthin_ch02.html#page106" PageIndex="116"/>
+    <Reference Id="cookyourselfthin_ch02.html#page107" PageIndex="117"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha16" PageIndex="118"/>
+    <Reference Id="cookyourselfthin_ch02.html#page108" PageIndex="119"/>
+    <Reference Id="cookyourselfthin_ch02.html#page109" PageIndex="120"/>
+    <Reference Id="cookyourselfthin_ch02.html#page110" PageIndex="121"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha17" PageIndex="122"/>
+    <Reference Id="cookyourselfthin_ch02.html#page111" PageIndex="123"/>
+    <Reference Id="cookyourselfthin_ch02.html#page112" PageIndex="123"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha18" PageIndex="124"/>
+    <Reference Id="cookyourselfthin_ch02.html#page113" PageIndex="125"/>
+    <Reference Id="cookyourselfthin_ch02.html#page114" PageIndex="126"/>
+    <Reference Id="cookyourselfthin_ch02.html#page115" PageIndex="126"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha19" PageIndex="127"/>
+    <Reference Id="cookyourselfthin_ch02.html#page116" PageIndex="128"/>
+    <Reference Id="cookyourselfthin_ch02.html#page117" PageIndex="128"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha20" PageIndex="129"/>
+    <Reference Id="cookyourselfthin_ch02.html#page118" PageIndex="130"/>
+    <Reference Id="cookyourselfthin_ch02.html#page119" PageIndex="130"/>
+    <Reference Id="cookyourselfthin_ch02.html#page120" PageIndex="131"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha21" PageIndex="132"/>
+    <Reference Id="cookyourselfthin_ch02.html#page121" PageIndex="133"/>
+    <Reference Id="cookyourselfthin_ch02.html#page122" PageIndex="134"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha22" PageIndex="135"/>
+    <Reference Id="cookyourselfthin_ch02.html#page123" PageIndex="136"/>
+    <Reference Id="cookyourselfthin_ch02.html#page124" PageIndex="136"/>
+    <Reference Id="cookyourselfthin_ch02.html#page125" PageIndex="137"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha23" PageIndex="138"/>
+    <Reference Id="cookyourselfthin_ch02.html#page126" PageIndex="139"/>
+    <Reference Id="cookyourselfthin_ch02.html#page127" PageIndex="139"/>
+    <Reference Id="cookyourselfthin_ch02.html#page128" PageIndex="140"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha24" PageIndex="141"/>
+    <Reference Id="cookyourselfthin_ch02.html#page129" PageIndex="142"/>
+    <Reference Id="cookyourselfthin_ch02.html#page130" PageIndex="142"/>
+    <Reference Id="cookyourselfthin_ch02.html#page131" PageIndex="143"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha25" PageIndex="144"/>
+    <Reference Id="cookyourselfthin_ch02.html#page132" PageIndex="145"/>
+    <Reference Id="cookyourselfthin_ch02.html#page133" PageIndex="146"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha26" PageIndex="147"/>
+    <Reference Id="cookyourselfthin_ch02.html#page134" PageIndex="148"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha27" PageIndex="149"/>
+    <Reference Id="cookyourselfthin_ch02.html#page135" PageIndex="150"/>
+    <Reference Id="cookyourselfthin_ch02.html#page136" PageIndex="150"/>
+    <Reference Id="cookyourselfthin_ch02.html#page137" PageIndex="152"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha28" PageIndex="153"/>
+    <Reference Id="cookyourselfthin_ch02.html#page138" PageIndex="154"/>
+    <Reference Id="cookyourselfthin_ch02.html#page139" PageIndex="154"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha29" PageIndex="155"/>
+    <Reference Id="cookyourselfthin_ch02.html#page140" PageIndex="156"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha30" PageIndex="157"/>
+    <Reference Id="cookyourselfthin_ch02.html#page141" PageIndex="158"/>
+    <Reference Id="cookyourselfthin_ch02.html#page142" PageIndex="158"/>
+    <Reference Id="cookyourselfthin_ch02.html#page143" PageIndex="159"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha31" PageIndex="160"/>
+    <Reference Id="cookyourselfthin_ch02.html#page144" PageIndex="161"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha32" PageIndex="162"/>
+    <Reference Id="cookyourselfthin_ch02.html#page145" PageIndex="163"/>
+    <Reference Id="cookyourselfthin_ch02.html#page146" PageIndex="164"/>
+    <Reference Id="cookyourselfthin_ch02.html#page147" PageIndex="165"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha33" PageIndex="166"/>
+    <Reference Id="cookyourselfthin_ch02.html#page148" PageIndex="167"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha34" PageIndex="168"/>
+    <Reference Id="cookyourselfthin_ch02.html#page149" PageIndex="169"/>
+    <Reference Id="cookyourselfthin_ch02.html#page150" PageIndex="170"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha35" PageIndex="171"/>
+    <Reference Id="cookyourselfthin_ch02.html#page151" PageIndex="172"/>
+    <Reference Id="cookyourselfthin_ch02.html#page152" PageIndex="172"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha36" PageIndex="173"/>
+    <Reference Id="cookyourselfthin_ch02.html#page153" PageIndex="174"/>
+    <Reference Id="cookyourselfthin_ch02.html#page154" PageIndex="175"/>
+    <Reference Id="cookyourselfthin_ch02.html#page155" PageIndex="176"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha37" PageIndex="177"/>
+    <Reference Id="cookyourselfthin_ch02.html#page156" PageIndex="178"/>
+    <Reference Id="cookyourselfthin_ch02.html#page157" PageIndex="179"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha38" PageIndex="180"/>
+    <Reference Id="cookyourselfthin_ch02.html#page158" PageIndex="181"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha39" PageIndex="182"/>
+    <Reference Id="cookyourselfthin_ch02.html#page159" PageIndex="183"/>
+    <Reference Id="cookyourselfthin_ch02.html#page160" PageIndex="183"/>
+    <Reference Id="cookyourselfthin_ch02.html#page161" PageIndex="184"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha40" PageIndex="185"/>
+    <Reference Id="cookyourselfthin_ch02.html#page162" PageIndex="186"/>
+    <Reference Id="cookyourselfthin_ch02.html#page163" PageIndex="187"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha41" PageIndex="188"/>
+    <Reference Id="cookyourselfthin_ch02.html#page164" PageIndex="189"/>
+    <Reference Id="cookyourselfthin_ch02.html#page165" PageIndex="190"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha42" PageIndex="191"/>
+    <Reference Id="cookyourselfthin_ch02.html#page166" PageIndex="192"/>
+    <Reference Id="cookyourselfthin_ch02.html#page167" PageIndex="193"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha43" PageIndex="194"/>
+    <Reference Id="cookyourselfthin_ch02.html#page168" PageIndex="195"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha44" PageIndex="196"/>
+    <Reference Id="cookyourselfthin_ch02.html#page169" PageIndex="197"/>
+    <Reference Id="cookyourselfthin_ch02.html#page170" PageIndex="198"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha45" PageIndex="199"/>
+    <Reference Id="cookyourselfthin_ch02.html#page171" PageIndex="200"/>
+    <Reference Id="cookyourselfthin_ch02.html#page172" PageIndex="200"/>
+    <Reference Id="cookyourselfthin_ch02.html#page173" PageIndex="201"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha46" PageIndex="202"/>
+    <Reference Id="cookyourselfthin_ch02.html#page174" PageIndex="203"/>
+    <Reference Id="cookyourselfthin_ch02.html#page175" PageIndex="204"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha47" PageIndex="205"/>
+    <Reference Id="cookyourselfthin_ch02.html#page176" PageIndex="206"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha48" PageIndex="207"/>
+    <Reference Id="cookyourselfthin_ch02.html#page177" PageIndex="208"/>
+    <Reference Id="cookyourselfthin_ch02.html#page178" PageIndex="209"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha49" PageIndex="210"/>
+    <Reference Id="cookyourselfthin_ch02.html#page179" PageIndex="211"/>
+    <Reference Id="cookyourselfthin_ch02.html#page180" PageIndex="212"/>
+    <Reference Id="cookyourselfthin_ch02.html#page181" PageIndex="212"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha50" PageIndex="213"/>
+    <Reference Id="cookyourselfthin_ch02.html#page182" PageIndex="214"/>
+    <Reference Id="cookyourselfthin_ch02.html#page183" PageIndex="215"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha51" PageIndex="216"/>
+    <Reference Id="cookyourselfthin_ch02.html#page184" PageIndex="217"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha52" PageIndex="218"/>
+    <Reference Id="cookyourselfthin_ch02.html#page185" PageIndex="219"/>
+    <Reference Id="cookyourselfthin_ch02.html#page186" PageIndex="220"/>
+    <Reference Id="cookyourselfthin_ch02.html#page187" PageIndex="221"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha53" PageIndex="222"/>
+    <Reference Id="cookyourselfthin_ch02.html#page188" PageIndex="223"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha54" PageIndex="224"/>
+    <Reference Id="cookyourselfthin_ch02.html#page189" PageIndex="225"/>
+    <Reference Id="cookyourselfthin_ch02.html#page190" PageIndex="226"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha55" PageIndex="227"/>
+    <Reference Id="cookyourselfthin_ch02.html#page191" PageIndex="228"/>
+    <Reference Id="cookyourselfthin_ch02.html#page192" PageIndex="229"/>
+    <Reference Id="cookyourselfthin_ch02.html#cha56" PageIndex="230"/>
+    <Reference Id="cookyourselfthin_ch02.html#page193" PageIndex="231"/>
+    <Reference Id="toc:Sweets|file:cookyourselfthin_ch03.html" PageIndex="234"/>
+    <Reference Id="cookyourselfthin_ch03.html" PageIndex="234"/>
+    <Reference Id="cookyourselfthin_ch03.html#ch03" PageIndex="234"/>
+    <Reference Id="cookyourselfthin_ch03.html#page194" PageIndex="234"/>
+    <Reference Id="cookyourselfthin_ch03.html#page195" PageIndex="234"/>
+    <Reference Id="cookyourselfthin_ch03.html#page196" PageIndex="234"/>
+    <Reference Id="cookyourselfthin_ch03.html#page197" PageIndex="235"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha57" PageIndex="236"/>
+    <Reference Id="cookyourselfthin_ch03.html#page198" PageIndex="237"/>
+    <Reference Id="cookyourselfthin_ch03.html#__ignore__" PageIndex="237"/>
+    <Reference Id="cookyourselfthin_ch03.html#page199" PageIndex="238"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha58" PageIndex="239"/>
+    <Reference Id="cookyourselfthin_ch03.html#page200" PageIndex="240"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha59" PageIndex="241"/>
+    <Reference Id="cookyourselfthin_ch03.html#page201" PageIndex="242"/>
+    <Reference Id="cookyourselfthin_ch03.html#page202" PageIndex="242"/>
+    <Reference Id="cookyourselfthin_ch03.html#page203" PageIndex="243"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha60" PageIndex="244"/>
+    <Reference Id="cookyourselfthin_ch03.html#page204" PageIndex="245"/>
+    <Reference Id="cookyourselfthin_ch03.html#page205" PageIndex="245"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha61" PageIndex="246"/>
+    <Reference Id="cookyourselfthin_ch03.html#page206" PageIndex="246"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha62" PageIndex="247"/>
+    <Reference Id="cookyourselfthin_ch03.html#page207" PageIndex="248"/>
+    <Reference Id="cookyourselfthin_ch03.html#page208" PageIndex="249"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha63" PageIndex="250"/>
+    <Reference Id="cookyourselfthin_ch03.html#page209" PageIndex="251"/>
+    <Reference Id="cookyourselfthin_ch03.html#page210" PageIndex="251"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha64" PageIndex="252"/>
+    <Reference Id="cookyourselfthin_ch03.html#page211" PageIndex="253"/>
+    <Reference Id="cookyourselfthin_ch03.html#page212" PageIndex="254"/>
+    <Reference Id="cookyourselfthin_ch03.html#page213" PageIndex="254"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha65" PageIndex="255"/>
+    <Reference Id="cookyourselfthin_ch03.html#page214" PageIndex="256"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha66" PageIndex="257"/>
+    <Reference Id="cookyourselfthin_ch03.html#page215" PageIndex="258"/>
+    <Reference Id="cookyourselfthin_ch03.html#page216" PageIndex="258"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha67" PageIndex="259"/>
+    <Reference Id="cookyourselfthin_ch03.html#page217" PageIndex="260"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha68" PageIndex="261"/>
+    <Reference Id="cookyourselfthin_ch03.html#page218" PageIndex="262"/>
+    <Reference Id="cookyourselfthin_ch03.html#page219" PageIndex="262"/>
+    <Reference Id="cookyourselfthin_ch03.html#page220" PageIndex="263"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha69" PageIndex="264"/>
+    <Reference Id="cookyourselfthin_ch03.html#page221" PageIndex="265"/>
+    <Reference Id="cookyourselfthin_ch03.html#page222" PageIndex="265"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha70" PageIndex="266"/>
+    <Reference Id="cookyourselfthin_ch03.html#page223" PageIndex="267"/>
+    <Reference Id="cookyourselfthin_ch03.html#page224" PageIndex="268"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha71" PageIndex="269"/>
+    <Reference Id="cookyourselfthin_ch03.html#page225" PageIndex="270"/>
+    <Reference Id="cookyourselfthin_ch03.html#page226" PageIndex="271"/>
+    <Reference Id="cookyourselfthin_ch03.html#page227" PageIndex="271"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha72" PageIndex="272"/>
+    <Reference Id="cookyourselfthin_ch03.html#page228" PageIndex="273"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha73" PageIndex="274"/>
+    <Reference Id="cookyourselfthin_ch03.html#page229" PageIndex="275"/>
+    <Reference Id="cookyourselfthin_ch03.html#page230" PageIndex="276"/>
+    <Reference Id="cookyourselfthin_ch03.html#page231" PageIndex="277"/>
+    <Reference Id="cookyourselfthin_ch03.html#page232" PageIndex="278"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha74" PageIndex="279"/>
+    <Reference Id="cookyourselfthin_ch03.html#page233" PageIndex="280"/>
+    <Reference Id="cookyourselfthin_ch03.html#page234" PageIndex="281"/>
+    <Reference Id="cookyourselfthin_ch03.html#cha75" PageIndex="282"/>
+    <Reference Id="cookyourselfthin_ch03.html#page235" PageIndex="282"/>
+    <Reference Id="toc:Searchable Terms|file:cookyourselfthin_ind01.html" PageIndex="284"/>
+    <Reference Id="cookyourselfthin_ind01.html" PageIndex="284"/>
+    <Reference Id="cookyourselfthin_ind01.html#ind01" PageIndex="284"/>
+    <Reference Id="cookyourselfthin_ind01.html#page236" PageIndex="284"/>
+    <Reference Id="cookyourselfthin_ind01.html#page237" PageIndex="284"/>
+    <Reference Id="cookyourselfthin_ind01.html#page239" PageIndex="286"/>
+    <Reference Id="cookyourselfthin_ind01.html#page240" PageIndex="288"/>
+    <Reference Id="toc:Acknowledgments|file:cookyourselfthin_ack01.html" PageIndex="289"/>
+    <Reference Id="cookyourselfthin_ack01.html" PageIndex="289"/>
+    <Reference Id="cookyourselfthin_ack01.html#ack01" PageIndex="289"/>
+    <Reference Id="cookyourselfthin_ack01.html#page04" PageIndex="289"/>
+    <Reference Id="cookyourselfthin_ack01.html#page05" PageIndex="289"/>
+    <Reference Id="toc:Credits|file:cookyourselfthin_bm02.html" PageIndex="290"/>
+    <Reference Id="cookyourselfthin_bm02.html" PageIndex="290"/>
+    <Reference Id="cookyourselfthin_bm02.html#bm02" PageIndex="290"/>
+    <Reference Id="toc:Copyright|file:cookyourselfthin_cop01.html" PageIndex="291"/>
+    <Reference Id="cookyourselfthin_cop01.html" PageIndex="291"/>
+    <Reference Id="cookyourselfthin_cop01.html#cop01" PageIndex="291"/>
+  </References>
+</BookContents>

@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c09_r1.htm#c09">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__54">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__54">9 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__54">Inside the</Run>
+        <Run Tag="__54"> Statuary Hall, Robert Langdon clutched his cell phone to his ear and paced in a tight circle. &#x201C;Who the hell are you?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">The man&#x2019;s reply was a silky calm whisper. &#x201C;Do not be alarmed, Professor. You have been summoned here for a reason.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">&#x201C;Summoned?&#x201D; Langdon felt like a caged animal. &#x201C;Try kidnapped!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">&#x201C;Hardly.&#x201D; The man&#x2019;s voice was eerily serene. &#x201C;If I wanted to harm you, you would be dead in your Town Car right now.&#x201D; He let the words hang for a moment. &#x201C;My intentions are purely noble, I assure you. I would simply like to offer you an invitation.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__54">No thanks.</Run>
+        <Run Tag="__54"> Ever since his experiences in Europe over the last several years, Langdon&#x2019;s unwanted celebrity had made him a magnet for nut-cases, and this one had just crossed a very serious line. &#x201C;Look, I don&#x2019;t know what the hell is going on here, but I&#x2019;m hanging up&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">&#x201C;Unwise,&#x201D; said the man. &#x201C;Your window of opportunity is very small if you want to save Peter Solomon&#x2019;s soul.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">Langdon drew a sharp breath. &#x201C;What did you say?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">&#x201C;I&#x2019;m sure you heard me.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">The way this man had uttered Peter&#x2019;s name had stopped Langdon cold. &#x201C;What do you know about Peter?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">&#x201C;At this point, I know his deepest secrets. Mr. Solomon is my guest, and I can be a persuasive host.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__54">This can&#x2019;t be happening.</Run>
+        <Run Tag="__54"> &#x201C;You don&#x2019;t have Peter.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">&#x201C;I answered his private cell phone. That should give you pause.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">&#x201C;I&#x2019;m calling the police.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__54">&#x201C;No need,&#x201D; the man said. &#x201C;The authorities will join you momentarily.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">What is this lunatic talking about?</Run>
+        <Run Tag="__55"> Langdon&#x2019;s tone hardened. &#x201C;If you have Peter, put him on the phone right now.&#x201D; &#x201C;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">&#x201C;That&#x2019;s impossible. Mr. Solomon is trapped in an unfortunate place.&#x201D; The man paused. &#x201C;He is in the Araf.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">&#x201C;Where?&#x201D;</Run>
+        <Run Tag="__55"> Langdon realized he was clutching his phone so tightly his fingers were going numb.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">&#x201C;The Araf? Hamistagan? That place to which Dante devoted the canticle immediately following his legendary </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">Inferno</Run>
+        <Run Tag="__55">?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">The man&#x2019;s religious and literary references solidified Langdon&#x2019;s suspicion that he was dealing with a madman. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">The second canticle.</Run>
+        <Run Tag="__55"> Langdon knew it well; nobody escaped Phillips Exeter Academy without reading Dante. &#x201C;You&#x2019;re saying you think Peter Solomon is . . . in </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">purgatory</Run>
+        <Run Tag="__55">?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">&#x201C;A crude word you Christians use, but yes, Mr. Solomon is in the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">in-between</Run>
+        <Run Tag="__55">.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">The man&#x2019;s words hung in Langdon&#x2019;s ear. &#x201C;Are you saying Peter is . . . </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">dead</Run>
+        <Run Tag="__55">?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">&#x201C;Not exactly, no.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">&#x201C;Not exactly?!&#x201D; Langdon yelled, his voice echoing sharply in the hall. A family of tourists looked over at him. He turned away and lowered his voice. &#x201C;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">Death</Run>
+        <Run Tag="__55"> is usually an all-or-nothing thing!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">&#x201C;You surprise me, Professor. I expected you to have a better understanding of the mysteries of life and death. There </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__55">is</Run>
+        <Run Tag="__55"> a world in between&#x2014;a world in which Peter Solomon is hovering at the moment. He can either return to your world, or he can move on to the next . . . depending on your actions right now.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">Langdon tried to process this. &#x201C;What do you want from me?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">&#x201C;It&#x2019;s simple. You have been given access to something quite ancient. And tonight, you will share it with me.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__55">&#x201C;I have no idea what you&#x2019;re talking about.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">&#x201C;No? You pretend not to understand the ancient secrets that have been entrusted to you?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">Langdon felt a sudden sinking sensation, now guessing what this was probably about. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__56">Ancient secrets.</Run>
+        <Run Tag="__56"> He had not uttered a word to anyone about his experiences in Paris several years earlier, but Grail fanatics had followed the media coverage closely, some connecting the dots and believing Langdon was now privy to secret information regarding the Holy Grail&#x2014;perhaps even its location.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">&#x201C;Look,&#x201D; Langdon said, &#x201C;if this is about the Holy Grail, I can assure you I know nothing more than&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">&#x201C;Don&#x2019;t insult my intelligence, Mr. Langdon,&#x201D; the man snapped. &#x201C;I have no interest in anything so frivolous as the Holy Grail or mankind&#x2019;s pathetic debate over whose version of history is correct. Circular arguments over the semantics of faith hold no interest for me. Those are questions answered only through death.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">The stark words left Langdon confused. &#x201C;Then what the hell is this about?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">The man paused for several seconds. &#x201C;As you may know, there exists within this city an ancient portal.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__56">An ancient portal?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">&#x201C;And tonight, Professor, you will unlock it for me. You should be honored I contacted you&#x2014;this is the invitation of your lifetime. You alone have been chosen.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__56">And you have lost your mind.</Run>
+        <Run Tag="__56"> &#x201C;I&#x2019;m sorry, but you&#x2019;ve chosen poorly,&#x201D; Langdon said. &#x201C;I don&#x2019;t know anything about any ancient portal.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">&#x201C;You don&#x2019;t understand, Professor. It was not </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__56">I</Run>
+        <Run Tag="__56"> who chose you . . . it was </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__56">Peter Solomon</Run>
+        <Run Tag="__56">.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">&#x201C;What?&#x201D; Langdon replied, his voice barely a whisper.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__56">&#x201C;Mr. Solomon told me how to find the portal, and he confessed to me that only one man on earth could unlock it. And he said that man is </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__56">you</Run>
+        <Run Tag="__56">.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">&#x201C;If Peter said that, he was mistaken . . . or lying.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">&#x201C;I think not. He was in a fragile state when he confessed that fact, and I am inclined to believe him.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">Langdon felt a stab of anger. &#x201C;I&#x2019;m warning you, if you hurt Peter in any&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">&#x201C;It&#x2019;s far too late for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__57">that,</Run>
+        <Run Tag="__57">&#x201D; the man said in an amused tone. &#x201C;I&#x2019;ve already taken what I need from Peter Solomon. But for his sake, I suggest you provide what I need from </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__57">you.</Run>
+        <Run Tag="__57"> Time is of the essence . . . for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__57">both</Run>
+        <Run Tag="__57"> of you. I suggest you find the portal and unlock it. Peter will point the way.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__57">Peter?</Run>
+        <Run Tag="__57"> &#x201C;I thought you said Peter was in &#x2018;purgatory.&#x2019;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">&#x201C;As above, so below,&#x201D; the man said.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">Langdon felt a deepening chill. This strange response was an ancient Hermetic adage that proclaimed a belief in the physical connection between heaven and earth. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__57">As above, so below.</Run>
+        <Run Tag="__57"> Langdon eyed the vast room and wondered how everything had veered so suddenly out of control tonight. &#x201C;Look, I don&#x2019;t know how to find any ancient portal. I&#x2019;m calling the police.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">&#x201C;It really hasn&#x2019;t dawned on you yet, has it? Why you were chosen?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">&#x201C;No,&#x201D; Langdon said.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">&#x201C;It </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__57">will,</Run>
+        <Run Tag="__57">&#x201D; he replied, chuckling. &#x201C;Any moment now.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">Then the line went dead.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">Langdon stood rigid for several terrifying moments, trying to process what had just happened.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">Suddenly, in the distance, he heard an unexpected sound.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">It was coming from the Rotunda.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__57">Someone was screaming.</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

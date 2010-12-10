@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="0,0,0,0" TextAlignment="Center" BreakPageBefore="True" BreakColumnBefore="False" FontFamily="Charis SIL" FontSize="16" Background="#FF000007">
+    <Paragraph Margin="0,1,0,0" TextAlignment="Center" FontFamily="Charis SIL" FontSize="16">
+      <Image Source="/Resources/e1b998d2-af50-4864-ad52-9ccc0dc38bc2.jpg" Stretch="Fill"/>
+    </Paragraph>
+  </Section>
+</Flow>

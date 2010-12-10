@@ -1,0 +1,3204 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="cookyourselfthin_ch03.html#ch03">
+      <Paragraph/>
+      <Section Margin="0,0,0,0" Tag="__234">
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,216,0,69" TextAlignment="Left" FontWeight="Bold" FontSize="19">
+          <Span FontWeight="Bold" FontSize="19">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#ch_03" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="19" Foreground="#FF0000FF" Tag="__234">Sweets</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+      </Section>
+      <Section Margin="0,0,0,0" Tag="__234">
+        <Paragraph/>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/44a183ac-9caf-4447-af9e-c22e72657361.jpg" Stretch="Uniform" Width="313" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__236">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_57" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha57">Deep Dark Chocolate Cake</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">A little black coffee, ground almond, and tangy buttermilk add an air of mystery to this deeply chocolate cake. Grated beet (surprise!) is this cake&#x2019;s special secret, and is a healthy way to push the sweetness and cut the calories.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__236">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">SERVES 10</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">Calories per serving: 222</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__236">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__236">For the cake:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">cooking spray</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">1 &#xBD; cups self-rising flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__236">1</Run>
+          <Run Tag="__236">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__236">4</Run>
+          <Run Tag="__236"> cup finely ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">5 tablespoons cocoa powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">1 teaspoon baking soda</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__236">1</Run>
+          <Run Tag="__236">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__236">4</Run>
+          <Run Tag="__236"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">4 ounces beets, peeled and finely grated</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">4 ounces low-fat buttermilk</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">2 tablespoons strong black coffee</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">3 large eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__236">3</Run>
+          <Run Tag="__236">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__236">4</Run>
+          <Run Tag="__236"> cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__236">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__236">For the icing:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">&#xBD; cup dark chocolate, cut into small pieces</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">2 tablespoons strong black coffee</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__236">2 tablespoons honey</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__236">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__236">For the top (optional):</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__237">Organic, unsprayed rose petals</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">PREHEAT</Run>
+          </Span>
+          <Run Tag="__237"> the oven to 350 degrees.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">LIGHTLY SPRAY</Run>
+          </Span>
+          <Run Tag="__237"> an 8&#x201D; springform baking pan with cooking spray.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">IN A SMALL BOWL</Run>
+            <Run Tag="__237">,</Run>
+          </Span>
+          <Run Tag="__237"> combine the flour, cocoa powder, ground almonds, salt, and baking soda onto a plate and set aside.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">USING A STANDING OR HANDHELD MIXER</Run>
+          </Span>
+          <Run Tag="__237"> using a medium speed, beat the eggs and sugar for 4 full minutes until pale and fluffy. On low speed, beat the beets, followed by dry ingredients. Add the buttermilk and coffee until the batter is smooth.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">POUR</Run>
+          </Span>
+          <Run Tag="__237"> into the pan and place in the middle of a hot oven and bake for 30 minutes. Test with a toothpick inserted for doneness, it should come clean. Bake for an additional 5 minutes if needed.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">COOL</Run>
+          </Span>
+          <Run Tag="__237"> for 10 minutes or so in the pan and unmold onto cooling rack. Cool on a wire rack until cold.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">TO MAKE THE ICING</Run>
+            <Run Tag="__237">,</Run>
+          </Span>
+          <Run Tag="__237"> prepare a double boiler.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">8. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">COMBINE</Run>
+          </Span>
+          <Run Tag="__237"> all the ingredients and gently stir until the chocolate is smooth. Stir occasionally until the mixture thickens.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__237">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__237">9. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__237">WITH THE CAKE</Run>
+          </Span>
+          <Run Tag="__237"> still on the wire rack, pour the icing liberally over the top of the cake and let it drip down the sides. Transfer onto a plate or cake stand for serving and garnish with rose petals.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__237">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__237"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__238">Tip</Run>
+          </Paragraph>
+          <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+            <Run Tag="__238">If you can&#x2019;t purchase finely ground almonds, pulse blanched almonds in a food processor until they resemble cornmeal. Do not over process or they will turn into nut butter.</Run>
+          </Paragraph>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__238"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__239">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_58" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha58">Oatmeal Parfait</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">Versatile oatmeal takes a decidedly desserty turn in this fruity, sweet and cinnamony parfait that feels a lot like cheating&#x2014;but isn&#x2019;t. Light yogurt reins in the fat without compromising your need for something creamy and satisfying.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__239">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">SERVES 4</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">Calories per serving: 473</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__239">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">1 pound peaches, pitted, and cut into eighths</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">1 pound (6) plums, pitted and quartered</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">6 ounces blueberries</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">&#xBD; teaspoon ground cinnamon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">Salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">2 tablespoons maple syrup, plus</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">4 teaspoons, for drizzling</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">1 tablespoon orange juice</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">1 </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__239">1</Run>
+          <Run Tag="__239">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__239">4</Run>
+          <Run Tag="__239"> cups quick-cooking McCann&#x2019;s steel-cut oatmeal</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__239">1</Run>
+          <Run Tag="__239">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__239">4</Run>
+          <Run Tag="__239"> cup nonfat or low-fat yogurt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__239">2 tablespoons chopped pecans</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__239">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__239">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__239">PREHEAT</Run>
+          </Span>
+          <Run Tag="__239"> the oven to 450 degrees. Arrange rack in top third of the oven.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__239">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__239">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__239">PLACE THE PEACHES</Run>
+            <Run Tag="__239">,</Run>
+          </Span>
+          <Run Tag="__239"> plums, and blueberries in a 9-by-13-inch baking dish. Sprinkle with the cinnamon and a pinch of salt. Add the maple syrup and orange juice; toss with a rubber spatula to coat. Roast until the fruit is tender, 25 to 30 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__239">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__240">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__240">MEANWHILE</Run>
+            <Run Tag="__240">,</Run>
+          </Span>
+          <Run Tag="__240"> cook the oatmeal according to package directions.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__240">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__240">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__240">TO ASSEMBLE</Run>
+            <Run Tag="__240">,</Run>
+          </Span>
+          <Run Tag="__240"> using about half of the total quantity of oatmeal, spoon a layer of oatmeal into the bottoms of four serving bowls. Using about half of the fruit, spoon warm fruit and juices over the oatmeal. Top with the rest of the oatmeal, and then the rest of the fruit. Spoon a dollop of yogurt on top of each, drizzle with a little more maple syrup, and sprinkle with pecans.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__241">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_59" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha59">Peanut Butter Dream Bars</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">Put down that jar! Go ahead and pinch yourself if you&#x2019;d like, but you&#x2019;re not dreaming. These tasty peanut butter bars will satisfy several cravings at once and do it without breaking the fat bank.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__241">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">SERVES 8</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">Calories per serving: 157</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__241">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">&#xBD; cup low-calorie thin chocolate wafers, finely ground in a food processor</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">&#xBD; cup old-fashioned oats</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__241">1</Run>
+          <Run Tag="__241">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__241">3</Run>
+          <Run Tag="__241"> cup confectioners&#x2019; sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">&#xBD; teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">3 tablespoons unsalted butter, melted and cooled</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__241">1</Run>
+          <Run Tag="__241">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__241">4</Run>
+          <Run Tag="__241"> cup creamy reduced-fat peanut butter</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">1 &#xBD; ounces reduced-fat cream cheese, room temperature</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">2 teaspoons pure vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__241">2 tablespoons semi-sweet chocolate chips, melted</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__241">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__241">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__241">LINE</Run>
+          </Span>
+          <Run Tag="__241"> a 9-by-4-inch loaf pan with wax paper or baking parchment leaving a 2-inch overhang on the long sides.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__241">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__241">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__241">COMBINE</Run>
+          </Span>
+          <Run Tag="__241"> the ground wafers, oats, sugar, and </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__241">1</Run>
+          <Run Tag="__241">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__241">4</Run>
+          <Run Tag="__241"> teaspoon salt in a medium bowl. Stir in the butter until everything is evenly moistened. Stir in 1 tablespoon peanut butter until mixture forms large clumps. Transfer mixture to lined loaf pan and press into an even layer. Refrigerate until firm, about 10 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__241">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__242">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__242">MEANWHILE</Run>
+            <Run Tag="__242">,</Run>
+          </Span>
+          <Run Tag="__242"> beat cream cheese with an electric mixer on medium speed until smooth and fluffy, about 2 minutes. Add vanilla, remaining 3 tablespoons peanut butter, and remaining </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__242">1</Run>
+          <Run Tag="__242">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__242">4</Run>
+          <Run Tag="__242"> teaspoon salt, and beat on medium speed until pale and nearly doubled in volume, about 7 minutes. Transfer to the loaf pan and spread in an even layer over cookie crust. Freeze until firm, about 10 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__242">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__242">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__242">SPREAD</Run>
+          </Span>
+          <Run Tag="__242"> the chocolate in a thin, even layer over the chilled peanut butter layer. Refrigerate until firm, about 10 minutes. When ready to serve, lift bars out of the pan using the wax paper overhang. Cut crosswise into 8 bars and serve cold.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/e72e9f35-f545-44d9-a0c1-20d7ff9f972f.jpg" Stretch="Uniform" Width="313" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/3f4b8161-64f5-495c-b326-d2a1d2dbc4fd.jpg" Stretch="Uniform" Width="313" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__244">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_60" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha60">Vanilla Cupcakes</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">Zucchini wins the award for most unlikely appearance in a delicious treat, and gets glowing reviews for the texture and no-fat heft it brings to these sweet beauties. Go ahead, grab a cupcake&#x2014;you deserve it!</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__244">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">MAKES 12 CUPCAKES</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">Calories per serving: 204</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__244">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__244">For the frosting:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">3 large egg whites</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">1 cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">Pinch salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__244">3</Run>
+          <Run Tag="__244">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__244">4</Run>
+          <Run Tag="__244"> teaspoon vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">Finely grated zest of &#xBD; lemon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__244">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__244">For the cupcakes:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">1 </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__244">1</Run>
+          <Run Tag="__244">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__244">4</Run>
+          <Run Tag="__244"> cups all-purpose flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">&#xBD; cup finely ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">1 &#xBD; teaspoons baking powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__244">1</Run>
+          <Run Tag="__244">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__244">4</Run>
+          <Run Tag="__244"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">2 large eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__244">3</Run>
+          <Run Tag="__244">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__244">4</Run>
+          <Run Tag="__244"> cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">2 teaspoons vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__244">1 </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__244">1</Run>
+          <Run Tag="__244">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__244">4</Run>
+          <Run Tag="__244"> cups peeled zucchini, finely grated</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__244">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__244">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__244">PREHEAT</Run>
+          </Span>
+          <Run Tag="__244"> the oven to 350 degrees.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__244">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__245">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__245">TO MAKE THE FROSTING:</Run>
+          </Span>
+          <Run Tag="__245"> Combine the egg whites, sugar, salt, and vanilla extract in a heatproof bowl set over (not in) a pan of simmering water. Stir continuously over heat until the mixture is warm and the sugar is completely dissolved, 1 to 2 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__245">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__245">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__245">REMOVE</Run>
+          </Span>
+          <Run Tag="__245"> the bowl from the heat. Using a handheld electric or standing mixer set on high, beat until the mixture is entirely cooled, glossy, and stiff, about 7 minutes. Blend in the lemon zest until smooth&#x2014;once smooth, take care not to over beat or the mixture will get lumpy. Let frosting set and cool in the refrigerator (at least 30 minutes), while making the cupcakes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__245">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__245">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__245">TO MAKE THE CUPCAKES:</Run>
+          </Span>
+          <Run Tag="__245"> Arrange a rack in the center of the oven. Line a 12-muffin pan with cupcake liners.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__245">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__245">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__245">IN A BOWL</Run>
+            <Run Tag="__245">,</Run>
+          </Span>
+          <Run Tag="__245"> whisk together the flour, almonds, and baking powder; set aside. In another bowl, beat the eggs, sugar, salt, and vanilla with a handheld or standing mixer until thick and light colored, about 4 minutes. Beat in the zucchini on low speed until fully incorporated.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__245">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__245">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__245">ADD</Run>
+          </Span>
+          <Run Tag="__245"> the dry ingredients and beat on low speed until fully incorporated, scraping down the bowl once with a spatula during beating. Use a </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__245">1</Run>
+          <Run Tag="__245">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__245">3</Run>
+          <Run Tag="__245">-cup measure to spoon into the muffin cups.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__245">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__245">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__245">BAKE</Run>
+          </Span>
+          <Run Tag="__245"> until a toothpick inserted into the center comes out clean, about 20 to 25 minutes, turning the pan midway through baking. Transfer cupcakes out onto a wire rack and cool completely before icing with the chilled frosting.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__246">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_61" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha61">Chocolate Pudding</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__246">Try this simple chocolate pudding once and it will never leave your dessert repertoire. 1% milk keeps things on the right path and lets you enjoy this moment of quintessential decadence without guilt.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__246">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__246">SERVES 4</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__246">Calories per serving: 199 </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__246">1</Run>
+          <Run Tag="__246">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__246">4</Run>
+          <Run Tag="__246"> cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__246">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__246">1</Run>
+          <Run Tag="__246">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__246">4</Run>
+          <Run Tag="__246"> cup Dutch process cocoa powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__246">3 tablespoons cornstarch</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__246">1</Run>
+          <Run Tag="__246">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__246">4</Run>
+          <Run Tag="__246"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__246">2 cups 1% milk</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__246">1 &#xBD; ounces bittersweet chocolate</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__246">1 teaspoon pure vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__246">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__246">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__246">WHISK</Run>
+          </Span>
+          <Run Tag="__246"> together sugar, cocoa, cornstarch, and salt in a medium saucepan. Set over medium heat and add the milk in a slow, steady stream, whisking constantly.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__246">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__246">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__246">CONTINUE WHISKING</Run>
+          </Span>
+          <Run Tag="__246"> while bringing the mixture to a bare simmer, about 5 minutes. Add the chocolate and whisk until melted, about 3 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__246">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__246">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__246">REMOVE</Run>
+          </Span>
+          <Run Tag="__246"> from the heat, whisk in the vanilla extract, and divide among 4 serving dishes. Chill, uncovered, until set, about 3 hours. Serve cold.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__247">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_62" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha62">Red Velvet Cupcakes</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">We think red velvet cake is the most alluring and mysterious of all sweets, and we really love the way it looks. Beets and red food coloring send the hue of these moist cupcakes into the stratosphere, and a touch of cocoa adds an intriguing hint of chocolate.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__247">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">MAKES 12 CUPCAKES</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">Calories per serving: 212</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__247">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__247">For the cupcakes:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">3 large eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__247">3</Run>
+          <Run Tag="__247">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__247">4</Run>
+          <Run Tag="__247"> cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">&#xBD; cup beets, raw, peeled and finely grated</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">1 cup white flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">&#xBD; cup ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">2 teaspoons baking powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">1 teaspoon red food coloring</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">2 teaspoons cocoa powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__247">1</Run>
+          <Run Tag="__247">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__247">3</Run>
+          <Run Tag="__247"> cup buttermilk</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__247">1</Run>
+          <Run Tag="__247">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__247">4</Run>
+          <Run Tag="__247"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__247">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__247">For the icing:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">1 &#xBD; cups confectioners&#x2019; sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">4 teaspoons water</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">2 teaspoons vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__247">1</Run>
+          <Run Tag="__247">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__247">4</Run>
+          <Run Tag="__247"> teaspoon cream of tartar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">1 medium egg white</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__247">Small pinch salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">PREHEAT</Run>
+          </Span>
+          <Run Tag="__248"> the oven to 350 degrees. Line a 12-hole muffin tray with cupcake liners.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">IN A LARGE MIXING BOWL</Run>
+            <Run Tag="__248">,</Run>
+          </Span>
+          <Run Tag="__248"> add the eggs, sugar, and salt, and using a handheld or standing mixer, beat on medium high for about 5 minutes, until pale and doubled in size.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">ADD</Run>
+          </Span>
+          <Run Tag="__248"> the grated beets, flour, ground almonds, cocoa powder, and baking powder. Stir to combine.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">ADD</Run>
+          </Span>
+          <Run Tag="__248"> the buttermilk and food coloring and beat again to make sure that all the ingredients are well incorporated.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">SPOON</Run>
+          </Span>
+          <Run Tag="__248"> into the cupcake liners, taking care not to fill more than two-thirds of the way up or it will overflow when cooking.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">BAKE</Run>
+          </Span>
+          <Run Tag="__248"> for 30 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">WHILE THE CUPCAKES ARE COOKING, MAKE THE ICING:</Run>
+          </Span>
+          <Run Tag="__248"> Prepare a double boiler.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">8. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">PLACE</Run>
+          </Span>
+          <Run Tag="__248"> all the ingredients in the bowl, and stir to dissolve the sugar with a clean metal spoon for exactly 4 minutes; the mixture should be warm.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">9. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">REMOVE</Run>
+          </Span>
+          <Run Tag="__248"> the bowl from the heat and beat with a hand or standing mixer on high speed, until cool and the mixture has turned into a meringue, no more than 5 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__248">10. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__248">THE MIXTURE IS READY</Run>
+          </Span>
+          <Run Tag="__248"> to use when it has formed stiff peaks.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__248">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__249">11. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__249">PIPE OR SPREAD</Run>
+          </Span>
+          <Run Tag="__249"> 1 heaping tablespoon of the icing over the cooled cupcakes, and take care to ice the cakes very quickly as the icing will start to set and is best when just made.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__249">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__249"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__249">Tips</Run>
+          </Paragraph>
+          <List MarkerStyle="None" Margin="0,0,29,43" TextAlignment="Left" Tag="__249">
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__249">1.</Run>
+                <Run Tag="__249"> To keep cupcakes fresh a few days, store them in an airtight container.</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__249">2.</Run>
+                <Run Tag="__249"> Don&#x2019;t allow the water in the double boiler to boil. It must be simmering or it will overcook the eggs in the icing.</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__249"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__250">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_63" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha63">Chocolate Brownie with Raspberries and White Chocolate Chips</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">These gorgeous brownies are both sophisticated and elegant with 2 types of chocolate and colorful raspberries. Butternut squash is the fat reducing secret ingredient.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__250">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">SERVES 9</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">Calories per serving: 291</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__250">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__250">For the brownie:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">1 heaping cup fresh raspberries</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">2 cups butternut squash, peeled and finely grated</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">&#xBD; cup white chocolate, chopped into small chunks</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">1 cup ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">1 </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__250">1</Run>
+          <Run Tag="__250">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__250">4</Run>
+          <Run Tag="__250"> cups sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">3 large eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__250">1</Run>
+          <Run Tag="__250">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__250">4</Run>
+          <Run Tag="__250"> cup self-rising flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">&#xBD; cup Dutch process cocoa powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">1 teaspoon baking powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__250">1</Run>
+          <Run Tag="__250">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__250">4</Run>
+          <Run Tag="__250"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__250">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__250">For the icing:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__250">Cocoa powder, for garnish</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__250">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__250">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__250">PREHEAT</Run>
+          </Span>
+          <Run Tag="__250"> the oven to 400 degrees.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__250">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__250">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__250">LINE</Run>
+          </Span>
+          <Run Tag="__250"> the pan with parchment paper. A big square placed over the top is enough, if you then cut into each corner to make a neat pleat. It&#x2019;s also a good idea to dot a tiny bit of oil on the base and sides to help the paper stick down.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__251">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__251">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__251">ADD</Run>
+          </Span>
+          <Run Tag="__251"> the eggs and sugar into a large bowl, and using a handheld or standing mixer, beat on medium high speed 4&#x2013;5 minutes until pale, fluffy and quadrupled in size.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__251">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__251">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__251">ADD</Run>
+          </Span>
+          <Run Tag="__251"> the grated butternut squash and the flour, ground almonds, cocoa powder, salt and baking powder. Beat until well incorporated. Pour half of this mixture into the prepared tin. Scatter the raspberries and chocolate chips over the top. Top with remaining batter.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__251">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__251">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__251">BAKE</Run>
+          </Span>
+          <Run Tag="__251"> for 20 minutes until just cooked.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__251">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__251">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__251">LET COOL</Run>
+          </Span>
+          <Run Tag="__251"> in the pan for 20 minutes and garnish with sifted cocoa powder before serving.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__251">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__251"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__251">Tips</Run>
+          </Paragraph>
+          <List MarkerStyle="None" Margin="0,0,29,43" TextAlignment="Left" Tag="__251">
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__251">1.</Run>
+                <Run Tag="__251"> Don&#x2019;t be alarmed that the brownie is quite undercooked when it comes out of the oven. The 20 minutes&#x2019; cooling down time is just enough to set the cake to that perfect squidgy brownie-ness.</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__251">2.</Run>
+                <Run Tag="__251"> By all means, swap the white chocolate for milk or dark if you would prefer. This will by no means tamper with the method for this recipe.</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__251"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__252">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_64" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha64">Mint Chocolate Cupcakes</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">Mint and chocolate collide with delicious results in these easy low-fat cupcakes. We love the playfulness of shocking green icing contrasting with the sophisticated dark chocolate shavings in these cupcakes that feel at home on linen or in a lunch box.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__252">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">MAKES 12 CUPCAKES</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">Calories per serving: 336</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__252">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__252">For the cupcakes:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">2 large eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__252">3</Run>
+          <Run Tag="__252">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__252">4</Run>
+          <Run Tag="__252"> cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">1 heaped cup peeled and finely grated sweet potato</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">&#xBD; cup finely ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__252">3</Run>
+          <Run Tag="__252">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__252">4</Run>
+          <Run Tag="__252"> cup plain flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">1 teaspoon peppermint extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__252">1</Run>
+          <Run Tag="__252">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__252">4</Run>
+          <Run Tag="__252"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">1 tablespoon Dutch process cocoa powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">2 teaspoons baking powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__252">3</Run>
+          <Run Tag="__252">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__252">4</Run>
+          <Run Tag="__252"> cup dark chocolate chips or mint chocolate bar cut into chunks</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__252">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__252">For the icing:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">2 cups confectioners&#x2019; sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">2 ounces unsalted butter, room temperature</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">&#xBD; teaspoon green food coloring</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">1 teaspoon peppermint extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__252">2 tablespoons cold water</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__252">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__253">For the top:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__253">Shavings of dark chocolate</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__253">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__253">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__253">PREHEAT</Run>
+          </Span>
+          <Run Tag="__253"> the oven to 350 degrees. Line a 12-hole muffin pan with paper liners.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__253">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__253">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__253">USING A HANDHELD OR STANDING MIXER</Run>
+            <Run Tag="__253">,</Run>
+          </Span>
+          <Run Tag="__253"> whisk the eggs and sugar for 5 minutes, until pale and quadrupled in size. Add the grated sweet potato and whisk again. Whisk in the ground almonds, flour, peppermint extract, salt, cocoa powder, and baking powder until they are well combined. Add the chocolate chunks or chips and using a spatula, mix so that they are evenly distributed.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__253">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__253">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__253">DIVIDE</Run>
+          </Span>
+          <Run Tag="__253"> the batter evenly between the cupcake liners so that each liner is half-filled. This will give them enough space to puff up and rise to the top while baking.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__253">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__253">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__253">BAKE</Run>
+          </Span>
+          <Run Tag="__253"> at 350 degrees for 20 minutes. They will be somewhat flat on top rather than dome shaped.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__253">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__253">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__253">ONCE COOKED</Run>
+            <Run Tag="__253">,</Run>
+          </Span>
+          <Run Tag="__253"> remove from the oven and cool for 15 minutes. Transfer to the refrigerator until the cupcakes are cold. The cupcakes will need to be cold to keep the icing from sliding off.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__253">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__253">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__253">WHILE THE CUPCAKES ARE BAKING, MAKE THE ICING:</Run>
+          </Span>
+          <Run Tag="__253"> With a wooden spoon or mixer, beat the butter with one heaped tablespoon of the sugar, the peppermint extract and coloring for a minute until they are all incorporated and the butter has softened slightly. Add the confectioners&#x2019; sugar one heaped tablespoon at a time, with half a teaspoon of water each time you add the sugar, and beat between each addition. Once all the sugar is added, you should have a soft green paste.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__253">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__253">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__253">ICE</Run>
+          </Span>
+          <Run Tag="__253"> each cold cupcake, using just over a tablespoon of frosting per cupcake. Finish by sprinkling dark chocolate shavings over the top of each one.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/a12c1352-95c9-47f2-908d-d22366e3cd1b.jpg" Stretch="Uniform" Width="314" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__255">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_65" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha65">Roasted Peach Crisp</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">Ground cardamom is the real secret to this dessert. Its mysterious essence imbues the peaches with complex and haunting notes you really don&#x2019;t expect to find. Makes this crisp a real revelation.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__255">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">SERVES 4</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">Calories per serving: 179</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__255">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">2 ripe peaches, halved and pitted</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">2 tablespoons honey</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">1 large egg white</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">2 tablespoons sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">2 teaspoons vegetable oil</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__255">1</Run>
+          <Run Tag="__255">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__255">4</Run>
+          <Run Tag="__255"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__255">Pinch of ground cardamom</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__255">1</Run>
+          <Run Tag="__255">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__255">3</Run>
+          <Run Tag="__255"> cup slivered almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__255">1</Run>
+          <Run Tag="__255">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__255">4</Run>
+          <Run Tag="__255"> cup old-fashioned oats</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__255">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__255">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__255">PREHEAT</Run>
+          </Span>
+          <Run Tag="__255"> oven to 425 degrees.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__255">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__255">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__255">ARRANGE</Run>
+          </Span>
+          <Run Tag="__255"> the peaches, cut side up, in a small glass or ceramic baking dish, and drizzle with honey. Pour 2 tablespoons water in the dish. Bake until tender and tops are caramelized, 30 to 40 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__255">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__255">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__255">MEANWHILE</Run>
+            <Run Tag="__255">,</Run>
+          </Span>
+          <Run Tag="__255"> whisk together egg white, sugar, oil, salt, and cardamom until well blended. Stir in almonds and oats until evenly coated. Spread mixture in an even layer on a small, rimmed baking sheet. Place in the oven alongside the peaches and bake until golden brown, about 10 minutes. Remove from the oven and cool completely. (The mixture will crisp as it cools.)</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__256">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__256">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__256">TRANSFER</Run>
+          </Span>
+          <Run Tag="__256"> each peach half to individual serving dishes. Break the almond mixture into large pieces, and arrange decoratively on peaches. Serve immediately.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__256">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__256"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__256">Tip</Run>
+          </Paragraph>
+          <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+            <Run Tag="__256">Serve with low-fat vanilla ice cream or yogurt.</Run>
+          </Paragraph>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__256"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__257">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_66" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha66">Chewy Oatmeal Raisin Cookies</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">These aren&#x2019;t the same old oatmeal cookies you grew up with. Not by a long shot. The whiskey and dark brown sugar guarantee that. Plus you lose a lot of the fat by replacing it with an all-fruit substitute, keeping the cookies moist without the usual compromises.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__257">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">MAKES ABOUT 40 (2 &#xBD;-INCH) COOKIES</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">Calories per cookie: 116</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__257">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">2 tablespoons whiskey, or rum</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__257">2</Run>
+          <Run Tag="__257">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__257">3</Run>
+          <Run Tag="__257"> cup raisins</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">8 tablespoons unsalted butter, at room temperature</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__257">1</Run>
+          <Run Tag="__257">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__257">4</Run>
+          <Run Tag="__257"> cup natural unsweetened applesauce</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__257">3</Run>
+          <Run Tag="__257">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__257">4</Run>
+          <Run Tag="__257"> cup firmly packed dark brown sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__257">3</Run>
+          <Run Tag="__257">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__257">4</Run>
+          <Run Tag="__257"> cup granulated sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">&#xBD; teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">1 large egg</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">1 large egg white</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__257">1</Run>
+          <Run Tag="__257">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__257">4</Run>
+          <Run Tag="__257"> cup milk</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">2 teaspoons pure vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">2 cups all-purpose flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">1 teaspoon baking soda</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">&#xBD; teaspoon cinnamon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__257">2 cups oats (not instant)</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__257">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__257">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__257">SET</Run>
+          </Span>
+          <Run Tag="__257"> the oven rack in the middle position. Preheat the oven to 350 degrees. Line 2 baking sheets with parchment paper or spray with nonstick cooking spray; set aside.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__258">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__258">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__258">SPRINKLE</Run>
+          </Span>
+          <Run Tag="__258"> the whiskey or rum over the raisins in a bowl and let stand while you assemble the batter.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__258">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__258">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__258">USING A HANDHELD OR STANDING MIXER</Run>
+            <Run Tag="__258">,</Run>
+          </Span>
+          <Run Tag="__258"> beat the butter, applesauce, brown sugar, granulated sugar, and salt on medium-high speed until light and fluffy, 2 to 3 minutes, scraping down the sides of the bowl halfway through. Beat in the egg and egg white, milk, and vanilla.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__258">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__258">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__258">IN A MEDIUM BOWL</Run>
+            <Run Tag="__258">,</Run>
+          </Span>
+          <Run Tag="__258"> whisk together the flour, baking soda, and cinnamon, add to the batter, and beat just until the flour is absorbed. Gently fold in the oats with a rubber scraper.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__258">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__258">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__258">USE</Run>
+          </Span>
+          <Run Tag="__258"> 2 spoons to scoop out the batter by rounded teaspoonfuls onto the prepared baking sheets, 1 &#xBD; inches apart. Bake until the cookies are set but still soft in the centers, and beginning to brown on the edges, 17 to 20 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__258">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__258">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__258">LET</Run>
+          </Span>
+          <Run Tag="__258"> cool on a wire rack.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__258">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__258"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__258">Tip</Run>
+          </Paragraph>
+          <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+            <Run Tag="__258">Line the baking sheet with parchment paper instead of greasing with butter or oil; the paper adds no calories, keeps the cookies from sticking, and gets rid of the need to clean the baking sheet.</Run>
+          </Paragraph>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__258"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__259">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_67" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha67">Iced Cappuccino Delight</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">Think a frothy iced cappuccino topped with sweet whipped cream is totally out of the question? Think again! All you have to do is bolster that healthy skim milk with a little fat-free yogurt and you&#x2019;ve got something thick, delicious, and ready to dollop.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__259">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">SERVES 4</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">Calories per serving: 110</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__259">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__259">For the cappuccino:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">1 cup coffee, cooled or 2 shots espresso</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">1 cup skim milk</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">3 tablespoons fat-free plain Greek yogurt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">5 tablespoons fat-free chocolate syrup</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">1 cup ice</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__259">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__259">For the whipped cream:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">&#xBD; cup heavy cream</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__259">1 teaspoon confectioners&#x2019; sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__259">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__259">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__259">FOR THE CAPPUCCINO:</Run>
+          </Span>
+          <Run Tag="__259"> Place the coffee, milk, yogurt, syrup, and ice in a blender and blend until desired.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__259">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__259">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__259">FOR THE WHIPPED CREAM:</Run>
+          </Span>
+          <Run Tag="__259"> In a large mixing bowl, beat the cream until soft peaks form. Add the confectioners&#x2019; sugar. Continue to beat until stiff peaks form. At this point, you may add extracts or any additional flavorings you may like.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__259">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__260">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__260">FOR THE ASSEMBLY:</Run>
+          </Span>
+          <Run Tag="__260"> Pour the cappuccino in a glass and top with whipped cream. Garnish with a sprig of fresh mint.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__261">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_68" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha68">Chocolate and Cranberry Biscotti</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__261">Delightful with coffee or just on their own, these crunchy cookies blend almond and cranberry with vanilla and a hint of chocolate for a sophisticated not-too-sweet treat. Best part&#x2014;you can eat two without any guilt.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__261">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__261">MAKES ABOUT 1 &#xBD; DOZEN</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__261">Calories per biscotti: 76</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__261">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__261">3</Run>
+          <Run Tag="__261">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__261">4</Run>
+          <Run Tag="__261"> cup all-purpose flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__261">1</Run>
+          <Run Tag="__261">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__261">4</Run>
+          <Run Tag="__261"> cup finely ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__261">3 tablespoons Dutch-process cocoa powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__261">3</Run>
+          <Run Tag="__261">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__261">4</Run>
+          <Run Tag="__261"> teaspoon baking powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__261">1</Run>
+          <Run Tag="__261">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__261">4</Run>
+          <Run Tag="__261"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__261">1 large egg</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__261">1</Run>
+          <Run Tag="__261">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__261">3</Run>
+          <Run Tag="__261"> cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__261">2 teaspoons pure vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__261">&#xBD; teaspoon almond extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__261">1</Run>
+          <Run Tag="__261">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__261">3</Run>
+          <Run Tag="__261"> cup dried cranberries melted chocolate for drizzling</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__261">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__261">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__261">PREHEAT</Run>
+          </Span>
+          <Run Tag="__261"> oven to 350 degrees and arrange a rack in the center of the oven. Line a baking sheet with parchment paper.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__261">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__261">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__261">WHISK</Run>
+          </Span>
+          <Run Tag="__261"> together flour, ground almonds, cocoa powder, baking powder, and salt in a medium bowl.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__261">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__262">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__262">BEAT</Run>
+          </Span>
+          <Run Tag="__262"> egg and sugar with a handheld or standing mixer on medium-high speed until pale and thick, about 5 minutes. Beat in vanilla and almond extracts. Reduce speed to low, and gradually add flour mixture. Beat until no traces of flour remain. Stir in cranberries. The dough will be very wet and sticky.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__262">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="cookyourselfthin_ch03.html#page218">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="cookyourselfthin_ch03.html#page218">SCRAPE</Run>
+          </Span>
+          <Run Tag="cookyourselfthin_ch03.html#page218"> the dough in a thick line in the center of the prepared baking sheet. Wet your hands and pat dough into a 9-by-3-inch rectangle. Bake until puffed and dry to the touch, about 25 minutes. Cool on pan for 15 minutes; keep oven on. Peel off parchment and </Run>
+          <Run Tag="cookyourselfthin_ch03.html#page219" xml:space="preserve"/>
+          <Run Tag="cookyourselfthin_ch03.html#page218">carefully transfer rectangle to a cutting board. Cut crosswise into </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="cookyourselfthin_ch03.html#page218">1</Run>
+          <Run Tag="cookyourselfthin_ch03.html#page218">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="cookyourselfthin_ch03.html#page218">3</Run>
+          <Run Tag="cookyourselfthin_ch03.html#page218">-inch-thick slices.</Run>
+        </Paragraph>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/37b46008-a8dc-449c-99e4-9acaa52e25df.jpg" Stretch="Uniform" Width="312" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__262">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__262">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__262">LAY</Run>
+          </Span>
+          <Run Tag="__262"> slices flat on unlined baking sheet, and bake until dry, about 10 minutes. Flip slices and bake for 10 minutes more. Let cool completely. Cookies will crisp as they cool.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__263">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__263">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__263">DRIZZLE</Run>
+          </Span>
+          <Run Tag="__263"> with melted chocolate if desired.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__263">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__263"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__263">Tips</Run>
+          </Paragraph>
+          <List MarkerStyle="None" Margin="0,0,29,43" TextAlignment="Left" Tag="__263">
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__263">1.</Run>
+                <Run Tag="__263"> Serve with low-fat vanilla ice cream or yogurt.</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__263">2.</Run>
+                <Run Tag="__263"> These cookies are very crisp, perfect for dunking in coffee or tea.</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__263">3.</Run>
+                <Run Tag="__263"> Cocoa powder gives the cookies the rich taste of chocolate with far fewer calories than chocolate chips or pieces, and virtually no fat.</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__263"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__264">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_69" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha69">Apple Cinnamon Cake</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">These traditional, comforting flavors come together in a wonderful way in this delicious and nutritious cake. Your friends won&#x2019;t believe you when you say the secret to this cake&#x2019;s fantastic texture is healthy white sweet potato. Healthy cake? They&#x2019;ll never suspect a thing.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__264">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">SERVES 12</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">Calories per serving: 243</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__264">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__264">For the cake:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">1 large apple (about 10 ounces) juice of 1 lemon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">1 </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__264">1</Run>
+          <Run Tag="__264">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__264">4</Run>
+          <Run Tag="__264"> cups finely ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">1 cup self-rising flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">1 teaspoon baking soda</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__264">1</Run>
+          <Run Tag="__264">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__264">4</Run>
+          <Run Tag="__264"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">1 tablespoon ground cinnamon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">3 large eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__264">3</Run>
+          <Run Tag="__264">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__264">4</Run>
+          <Run Tag="__264"> cup superfine sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">2 cups peeled sweet potato, finely grated (the white variety), grated at the very last minute to prevent discoloration</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">2 teaspoons vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__264">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__264">For the icing:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">1 cup confectioners&#x2019; sugar, sifted</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__264">4 tablespoons fresh lemon juice</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__264">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__264">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__264">PREHEAT</Run>
+          </Span>
+          <Run Tag="__264"> the oven to 350 degrees. Grease the base and sides of an 8-inch springform pan with a little vegetable oil and a pastry brush. Line the pan with parchment paper.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__265">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__265">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__265">PEEL</Run>
+            <Run Tag="__265">,</Run>
+          </Span>
+          <Run Tag="__265"> core and chop the apple into </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__265">1</Run>
+          <Run Tag="__265">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__265">4</Run>
+          <Run Tag="__265"> inch cubes. Toss them in a small bowl with some lemon juice to prevent oxidation.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__265">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__265">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__265">IN A SEPARATE BOWL</Run>
+            <Run Tag="__265">,</Run>
+          </Span>
+          <Run Tag="__265"> combine the ground almonds, flour, baking soda, salt and cinnamon. Set aside.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__265">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__265">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__265">IN A LARGE MIXING BOWL</Run>
+          </Span>
+          <Run Tag="__265"> using a handheld or standing mixer, whisk together the eggs and sugar until pale and tripled in size, about 3 minutes on high speed. Add the grated sweet potato and whisk to combine. Lower the speed and add the dry ingredients to the bowl. Add the vanilla extract and mix. Using a rubber spatula, gently fold in the apple cubes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__265">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__265">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__265">POUR</Run>
+          </Span>
+          <Run Tag="__265"> the batter into the prepared pan and bake for 30 minutes. Cover the top with aluminium foil and bake for an additional 30 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__265">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__265">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__265">ONCE COOKED</Run>
+            <Run Tag="__265">,</Run>
+          </Span>
+          <Run Tag="__265"> cool on a wire rack for 10 minutes and make the icing.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__265">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__265">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__265">TO MAKE THE ICING</Run>
+            <Run Tag="__265">,</Run>
+          </Span>
+          <Run Tag="__265"> stir the sifted sugar with the lemon juice. Drizzle liberally over the top of the cake, spreading with a knife to even out, and serve.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__266">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_70" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha70">Carrot Cake</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">You always think carrot cake will be good for you until you taste the tons of fat in each bite. Well, here&#x2019;s a cake that actually lives up to the promise by being super low in fat. Sweet golden raisins, orange juice, and nuts team up to take this cake&#x2019;s spicy flavors over the top while classic cream cheese icing delivers a taste that screams &#x201C;carrot cake.&#x201D;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__266">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">SERVES 9</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">Calories per serving: 310</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__266">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__266">For the cake:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">1 orange</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">1 lemon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__266">3</Run>
+          <Run Tag="__266">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__266">4</Run>
+          <Run Tag="__266"> cup golden raisins</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">3 medium eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">1 </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__266">1</Run>
+          <Run Tag="__266">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__266">4</Run>
+          <Run Tag="__266"> cups light brown sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">2 &#xBD; cups carrots, finely grated</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">1 cup self-rising flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">1 teaspoon cinnamon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">&#xBD; teaspoon ground ginger</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">1 teaspoon baking soda</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__266">1</Run>
+          <Run Tag="__266">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__266">4</Run>
+          <Run Tag="__266"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">1 cup ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__266">1</Run>
+          <Run Tag="__266">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__266">4</Run>
+          <Run Tag="__266"> cup walnuts, roughly chopped</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__266">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__266">For the icing:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">3 cups confectioners&#x2019; sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__266">&#xBD; cup full-fat cream cheese</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__267">1 teaspoon fresh lemon juice finely grated zest of &#xBD; lemon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">PREHEAT</Run>
+          </Span>
+          <Run Tag="__267"> the oven to 350 degrees.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">LINE</Run>
+          </Span>
+          <Run Tag="__267"> the base of an 8-inch square pan with parchment paper. Lightly brush over the base and sides with a little vegetable oil.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">GRATE</Run>
+          </Span>
+          <Run Tag="__267"> the zest of the orange and the lemon and set aside. Squeeze the orange juice into a bowl and add the golden raisins to the juice. Set aside.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">WHISK</Run>
+          </Span>
+          <Run Tag="__267"> the eggs and sugar with the orange and lemon zest using a handheld or standing mixer for five minutes until pale and full of air. Add the grated carrot and beat to incorporate.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">SLOWLY ADD</Run>
+          </Span>
+          <Run Tag="__267"> in the spices, salt, ground almonds, baking soda and flour, then quickly mix until all the ingredients are combined.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">USING A SPATULA</Run>
+            <Run Tag="__267">,</Run>
+          </Span>
+          <Run Tag="__267"> mix in the golden raisins, along with any orange juice left in the bowl, along with the walnuts until they are evenly distributed.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">POUR</Run>
+          </Span>
+          <Run Tag="__267"> into the prepared pan and bake for 40 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">8. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">WHEN A TOOTHPICK INSERTED</Run>
+          </Span>
+          <Run Tag="__267"> into the center of the cake is removed and comes clean, remove from the oven. Cool in the pan for 15 minutes, then remove from the pan. Chill in refrigerator for an hour once cooled.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__267">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__267">9. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__267">TO MAKE THE ICING:</Run>
+          </Span>
+          <Run Tag="__267"> In a large bowl, beat the first cup of sugar with the cream cheese using a wooden spoon. Once you reach a paste, add the remaining sugar along with the lemon juice and zest. Beat vigorously to combine. Refrigerate at least a half hour. Ice all over the top of the cold cake, slice into 9 portions and serve.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__268">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__268"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__268">Tips</Run>
+          </Paragraph>
+          <List MarkerStyle="None" Margin="0,0,29,43" TextAlignment="Left" Tag="__268">
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__268">1.</Run>
+                <Run Tag="__268"> Tilting the cake from the cooling rack onto a plate and then back prevents the cake from forming lines while cooling.</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__268">2.</Run>
+                <Run Tag="__268"> The icing needs to be refrigerated for at least &#xBD; hour before spreading it onto a chilled cold cake, which is not the same as a cool cake.</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__268"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__269">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_71" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha71">Orange and Lemon Cake</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">A seam of bright yellow lemon curd holds together layers of this orange and lemon cake with the hidden addition of grated squash for texture and fat replacement. The orange icing keeps the whole thing from floating straight up to heaven, where your first bite will surely transport you.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__269">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">SERVES 10</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">Calories per serving: 222</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__269">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__269">For the cake:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">3 large eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">&#xBD; cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">2 cups peeled butternut squash, finely grated</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">1 cup self-rising flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">1 </Run>
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__269">1</Run>
+          <Run Tag="__269">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__269">4</Run>
+          <Run Tag="__269"> cups finely ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">1 teaspoon baking soda</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__269">1</Run>
+          <Run Tag="__269">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__269">4</Run>
+          <Run Tag="__269"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">2 oranges</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">2 lemons</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__269">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__269">For the middle:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">3 tablespoons store-bought</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">lemon curd</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__269">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__269">For the icing:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__269">3</Run>
+          <Run Tag="__269">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__269">4</Run>
+          <Run Tag="__269"> cup confectioners&#x2019; sugar, sifted</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__269">2 tablespoons butter, at room temperature</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__270">2 tablespoons fresh orange juice</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">PREHEAT</Run>
+          </Span>
+          <Run Tag="__270"> the oven to 350 degrees.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">GREASE</Run>
+          </Span>
+          <Run Tag="__270"> the base and sides of two 7-inch spring form pans with a little vegetable oil. Place a circle of baking paper into the bottom of the tins and grease again.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">IN A LARGE MIXING BOWL</Run>
+            <Run Tag="__270">,</Run>
+          </Span>
+          <Run Tag="__270"> using a handheld or standing mixer, beat the eggs and the sugar for a full 3 minutes until pale and light. Add the grated butternut squash and mix until well combined.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">ZEST</Run>
+          </Span>
+          <Run Tag="__270"> the oranges and lemons with a microplane and add to the flour, ground almonds, baking soda, and salt. Whisk to combine the mixture.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">DIVIDE</Run>
+          </Span>
+          <Run Tag="__270"> the batter between the prepared pans and bake for 30 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">WHILE THE CAKES ARE COOKING, MAKE THE ICING:</Run>
+          </Span>
+          <Run Tag="__270"> Beat the softened butter with the sugar using the back of a wooden spoon until it has the consistency of a stiff paste. Add the orange juice and beat again to combine and smooth. Refrigerate until needed.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">COOL</Run>
+          </Span>
+          <Run Tag="__270"> the cake in the pan for 10 minutes. Run a knife all around the edge of both cakes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">8. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">UNMOLD</Run>
+          </Span>
+          <Run Tag="__270"> the cakes onto a wire rack and remove the paper on the base. Flip them back onto their bases again so that they can cool right side up on the wire rack and avoid getting any lines.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__270">9. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__270">CHILL</Run>
+          </Span>
+          <Run Tag="__270"> the cakes in the refrigerator for 20 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__270">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__271">10. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__271">TOP</Run>
+          </Span>
+          <Run Tag="__271"> one layer of cake with lemon curd, top with other cake layer.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__271">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__271">11. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__271">SPREAD</Run>
+          </Span>
+          <Run Tag="__271"> the icing over the top of the cake and decorate with a little orange and lemon zest.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/53bba762-8a7b-4629-b3da-6256f6be3fa7.jpg" Stretch="Uniform" Width="312" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__272">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_72" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha72">Chocolate Pavlova</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">It&#x2019;s like tasting a sweet cloud when you grab a forkful of this lighter-than-air dessert, dolloped with cream, raspberries, or your favorite berries such as blackberries or strawberries.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__272">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">SERVES 6</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">Calories per serving: 337</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__272">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__272">For the pavlova:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">4 egg whites</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__272">1</Run>
+          <Run Tag="__272">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__272">4</Run>
+          <Run Tag="__272"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">1 cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">&#xBD; teaspoon lemon juice</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">1 tablespoon cocoa powder</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__272">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__272">For the topping:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">1 cup whipping cream</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__272">1 cup fresh raspberries</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__272">1</Run>
+          <Run Tag="__272">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__272">4</Run>
+          <Run Tag="__272"> cup shaved dark chocolate</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__272">1</Run>
+          <Run Tag="__272">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__272">4</Run>
+          <Run Tag="__272"> cup melted chocolate for drizzling</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__272">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__272">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__272">PREHEAT</Run>
+          </Span>
+          <Run Tag="__272"> the oven to 300 degrees and line a baking sheet with parchment paper.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__272">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__272">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__272">WHISK</Run>
+          </Span>
+          <Run Tag="__272"> the egg whites and salt on high speed until they hold their shape. Add the sugar gradually until the mixture stands in firm peaks. Add the lemon juice and whisk just to incorporate. Sift the cocoa powder into a small corner of the bowl and lightly fold it into the meringue using a plastic spatula. Do not overmix or you will lose the rippled effect. Pour the meringue onto the parchment-lined sheet pan in an oval shape, roughly 3-inches by 5-inches and 2-inches high. Place into the bottom of the oven and bake for 1 hour and 15 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__273">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__273">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__273">SWITCH OFF</Run>
+          </Span>
+          <Run Tag="__273"> the oven without opening the door and leave the pavlova in the turned-off oven for one hour. Remove and set aside.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__273">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__273">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__273">FOR THE TOPPING:</Run>
+          </Span>
+          <Run Tag="__273"> Whisk the whipping cream into semi-stiff peaks and spoon on top of the pavlova. Sprinkle with raspberries and shaved chocolate before serving. Finish with drizzled chocolate.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__273">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__273"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__273">Tips</Run>
+          </Paragraph>
+          <List MarkerStyle="None" Margin="0,0,29,43" TextAlignment="Left" Tag="__273">
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__273">1.</Run>
+                <Run Tag="__273"> When mixing meringue, make sure your bowl and beaters are completely clean. Fat will deflate the meringue.</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__273">2.</Run>
+                <Run Tag="__273"> Pavlova is easiest to cut and serve with a serrated knife.</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem Margin="17,0,0,0" TextAlignment="Left">
+              <Paragraph>
+                <Run FontWeight="Bold" Tag="__273">3.</Run>
+                <Run Tag="__273"> To ensure a crisp outside and a gooey inside, do not open the oven door during baking.</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__273"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__274">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_73" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha73">Chocolate and Raspberry Roulade with Raspberry Sauce</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">Tender chocolate cake gets invited to a rocking raspberry party in this fruity dessert. Filled, rolled, and topped with a sweet raspberry sauce, we love the way it goes with tea and caps off a meal.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__274">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">SERVES 9</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">Calories per serving, roulade: 190</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">Calories per serving, raspberry sauce: 26</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__274">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__274">For the roulade:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">Confectioners&#x2019; sugar, for dusting the pan</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">4 large eggs, separated</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">&#xBD; cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__274">1</Run>
+          <Run Tag="__274">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__274">4</Run>
+          <Run Tag="__274"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">3 tablespoons Dutch-process cocoa powder, sifted, plus more for serving</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__274">3</Run>
+          <Run Tag="__274">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__274">4</Run>
+          <Run Tag="__274"> cup peeled and finely grated carrots</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__274">3</Run>
+          <Run Tag="__274">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__274">4</Run>
+          <Run Tag="__274"> cup self-rising flour, sifted</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__274">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__274">For the filling:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__274">3</Run>
+          <Run Tag="__274">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__274">4</Run>
+          <Run Tag="__274"> cup heavy cream</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">2 tablespoons confectioners&#x2019; sugar, sifted</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">1 teaspoon vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">1 cup raspberries</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__274">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__274">For the raspberry sauce:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__274">1 &#xBD; cups raspberries</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__274">1</Run>
+          <Run Tag="__274">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__274">3</Run>
+          <Run Tag="__274"> cup confectioners&#x2019; sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__275">1</Run>
+          <Run Tag="__275">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__275">4</Run>
+          <Run Tag="__275"> cup water</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__275">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__275">1 9-by-13-inch jelly roll pan</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__275">Parchment paper, cut to size</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__275">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__275">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__275">PREHEAT</Run>
+          </Span>
+          <Run Tag="__275"> oven to 375 degrees.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__275">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__275">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__275">CUT</Run>
+          </Span>
+          <Run Tag="__275"> a piece of parchment paper to the size of the jelly roll pan and dust with some sifted confectioners&#x2019; sugar. Set aside.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__275">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__275">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__275">REMOVE</Run>
+          </Span>
+          <Run Tag="__275"> 2 tablespoons of sugar and add to a bowl with egg whites, along with the salt. Using a handheld or standing mixer, whip the egg whites until stiff peaks form, about 5 minutes. Take care not to over-mix as the egg whites will become grainy. Set aside.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/4ee87c5a-2172-42c2-b2a5-f7a4e9725a96.jpg" Stretch="Uniform" Width="312" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__276">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__276">ADD</Run>
+          </Span>
+          <Run Tag="__276"> the remaining sugar to the egg yolks and whisk about 3 minutes, until it is pale and fluffy and holds a ribbon trail when you lift the blades. Add the sifted cocoa powder to the yolk/sugar mixture one tablespoon at a time, whisking it until fully incorporated before adding the next. Once all the cocoa powder is well combined, add the grated carrots and mix well to incorporate.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__276">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__276">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__276">USING A RUBBER SPATULA</Run>
+            <Run Tag="__276">,</Run>
+          </Span>
+          <Run Tag="__276"> fold the egg white mixture, one-third at a time, into the yolk mixture, taking care not to deflate the mix. Add the sifted flour into the mixture as you add the last third of the egg whites. Fold as before until all the elements are well combined with no pockets of flour left.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__276">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__276">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__276">POUR</Run>
+          </Span>
+          <Run Tag="__276"> the batter into the center of the jelly roll pan and tilt it to spread the batter evenly all over the pan, making sure it goes all the way into the corners. Do not pat or knock on the pan as this will deflate the batter. Bake for 10 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__277">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__277">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__277">WHILE THE CAKE IS BAKING</Run>
+            <Run Tag="__277">,</Run>
+          </Span>
+          <Run Tag="__277"> make the filling. Using a handheld or standing mixer, beat the heavy cream for about 30 seconds. Add the confectioners&#x2019; sugar and vanilla extract and continue to beat until you get stiff peaks. Once ready, refrigerate until needed.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__277">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__277">8. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__277">TO ASSEMBLE THE CAKE</Run>
+            <Run Tag="__277">,</Run>
+          </Span>
+          <Run Tag="__277"> lay a clean kitchen towel on a flat, even surface and place a piece of parchment paper the size of the cake on top of the towel. Once the cake is cooked, working quickly, remove it from the oven and run a paring knife along the edges of the jelly roll pan to help unmold the cake. Take the cake from the edges and flip it onto the parchment paper set on top of the kitchen towel. Peel off the parchment paper.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__277">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__277">9. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__277">STARTING</Run>
+          </Span>
+          <Run Tag="__277"> at one end of the towel, roll the cake into a cigar shape, rolling it tightly into a classic jelly roll shape. Continue rolling until the cake is rolled and tucked inside the kitchen towel. Let it stand for 15 to 20 minutes to cool and semi-set in a snail shape while you make the raspberry sauce.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__277">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__277">10. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__277">TO MAKE THE RASPBERRY SAUCE:</Run>
+          </Span>
+          <Run Tag="__277"> Add the raspberries, confectioners&#x2019; sugar and water to a nonstick saut&#xE9; pan and cook over medium heat, until the raspberries begin to break down and become liquid. Let simmer for about 5 minutes and strain through a sieve into a small saucepan and reduce until thick and syrupy.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__277">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__277">11. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__277">ONCE THE CAKE HAS COOLED</Run>
+            <Run Tag="__277">,</Run>
+          </Span>
+          <Run Tag="__277"> unroll it from the kitchen towel and remove the parchment paper. Spread the whipped cream evenly over the interior of the cake and sprinkle the raspberries. Roll the roulade snugly once again, making sure to tuck in the raspberries as you go along. It may seem like not all of them will fit, but continue to tuck the fruits in generously as you go and they will. Place the roulade on a tray or platter and sprinkle some confectioners&#x2019; sugar over it. Refrigerate until ready to serve, at least 30 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__277">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__278">12. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__278">TO SERVE</Run>
+            <Run Tag="__278">,</Run>
+          </Span>
+          <Run Tag="__278"> cut the roll into nine slices and serve with some raspberry sauce.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__278">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__279">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_74" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha74">Vanilla and Strawberry Sponge Cake</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">The yin and yang of strawberry and vanilla play out on a sweet sponge cake stage. It&#x2019;s a fresh light sweet you&#x2019;ll find a good reason to linger over.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__279">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">SERVES 10</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">Calories per serving: 314</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__279">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__279">For the cake:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">1 &#xBD; cups self-rising flour</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">1 cup finely ground almonds</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">1 teaspoon baking soda</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">3 large eggs</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">1 cup sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">Zest of &#xBD; lemon</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">1 vanilla bean, split lengthways with seeds scraped out and reserved</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">2 &#xBD; cups zucchini, peeled and finely grated</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__279">1</Run>
+          <Run Tag="__279">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__279">4</Run>
+          <Run Tag="__279"> teaspoon salt</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__279">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__279">For the filling:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">10 strawberries, washed and hulled</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">4 tablespoons of icing (recipe below)</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__279">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run FontWeight="Bold" Tag="__279">For the icing:</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">2 tablespoons butter, cut into small cubes and at room temperature</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">1 &#xBD; cups confectioners&#x2019; sugar</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">1 teaspoon vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">2 tablespoons heavy cream</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__279">8 washed strawberries, halved</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">PREHEAT</Run>
+          </Span>
+          <Run Tag="__280"> the oven to 350 degrees.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">2. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">USING A PASTRY BRUSH</Run>
+            <Run Tag="__280">,</Run>
+          </Span>
+          <Run Tag="__280"> lightly oil the base and sides of two 7 x 2-inch high springform cake pans. Line the bottoms with parchment paper and brush again with a little more oil.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">3. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">COMBINE</Run>
+          </Span>
+          <Run Tag="__280"> the flour, ground almonds, baking soda, and salt in a small bowl.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">4. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">USING A HANDHELD OR STANDING MIXER</Run>
+            <Run Tag="__280">,</Run>
+          </Span>
+          <Run Tag="__280"> whisk the eggs, sugar, lemon zest, and scraped out vanilla seeds until light and fluffy.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">5. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">ADD</Run>
+          </Span>
+          <Run Tag="__280"> the grated zucchini and whisk to incorporate.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">6. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">WHISK</Run>
+          </Span>
+          <Run Tag="__280"> in the dry ingredients until they are just combined.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">7. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">DIVIDE</Run>
+          </Span>
+          <Run Tag="__280"> this mixture between the two springform pans and bake for 30 minutes.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">8. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">COOL</Run>
+          </Span>
+          <Run Tag="__280"> on a wire rack while you make the icing.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">9. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">TO MAKE THE ICING</Run>
+            <Run Tag="__280">,</Run>
+          </Span>
+          <Run Tag="__280"> using a handheld or standing mixer, beat the butter until it is softened and pale. Add the sugar a spoonful at a time to form a creamy paste. Add the cream and vanilla extract and mix well. Refrigerate for at least 20 minutes before icing.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__280">10. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__280">SPREAD</Run>
+          </Span>
+          <Run Tag="__280"> a thin layer of icing on the top of one cake. Top with half the strawberries. Flip over the other cake and ice the bottom, then place this icing side down to sandwich the strawberries.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__280">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__281">11. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__281">ICE</Run>
+          </Span>
+          <Run Tag="__281"> the top of the cake and arrange the remaining strawberries on top and serve.</Run>
+        </Paragraph>
+        <Section Margin="29,43,29,43" Tag="__281">
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__281"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+          <Paragraph TextIndent="0" Margin="0,17,0,9" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+            <Run FontWeight="Bold" FontSize="16" Tag="__281">Tip</Run>
+          </Paragraph>
+          <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+            <Run Tag="__281">You can substitute 1 teaspoon vanilla extract for the vanilla bean.</Run>
+          </Paragraph>
+          <Table Margin="0,5,0,5" Tag="cookyourselfthin_ch03.html#__ignore__">
+            <TableRowGroup>
+              <TableRow>
+                <TableCell BorderThickness="0,1,0,0" BorderBrush="#FF000000">
+                  <Paragraph>
+                    <Run FontSize="1" xml:space="preserve" Tag="__281"/>
+                  </Paragraph>
+                </TableCell>
+              </TableRow>
+            </TableRowGroup>
+          </Table>
+        </Section>
+        <Paragraph/>
+        <Paragraph Margin="0,43,0,130" TextAlignment="Left" BreakPageBefore="True">
+          <Run Tag="__282">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,86,0,26" TextAlignment="Left" FontWeight="Bold" FontSize="16">
+          <Span FontWeight="Bold" FontSize="16">
+            <Hyperlink NavigateUri="cookyourselfthin_toc.html#cha_75" Foreground="#FF0000FF">
+              <Run FontWeight="Bold" FontSize="16" Foreground="#FF0000FF" Tag="cookyourselfthin_ch03.html#cha75">Cookies and Cream Milkshake</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__282">Old time malt shop flavor without the guilt. Slimmed down dairy and pure vanilla extract may fool you into thinking you&#x2019;re sinning when you&#x2019;re really being good.</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__282">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__282">SERVES 4</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Run Tag="__282">Calories per serving: 169</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__282">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__282">1 pint low-fat chocolate ice cream, slightly softened</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__282">2 packages low-calorie chocolate wafers (about 30 total)</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run BaselineAlignment="Superscript" FontSize="13" Tag="__282">1</Run>
+          <Run Tag="__282">/</Run>
+          <Run BaselineAlignment="Subscript" FontSize="13" Tag="__282">3</Run>
+          <Run Tag="__282"> cup 1% milk</Run>
+        </Paragraph>
+        <Paragraph TextIndent="-29" Margin="29,0,0,0" TextAlignment="Left">
+          <Run Tag="__282">1 teaspoon pure vanilla extract</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,17" TextAlignment="Center">
+          <Run Tag="__282">&#xA0;</Run>
+        </Paragraph>
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Left">
+          <Span FontWeight="Bold">
+            <Run Tag="__282">1. </Run>
+            <Run FontWeight="Bold" FontSize="14" Tag="__282">IN A BLENDER</Run>
+            <Run Tag="__282">,</Run>
+          </Span>
+          <Run Tag="__282"> place the ice cream, about 30 thin low calorie wafer cookies, and 1% milk. Add the pure vanilla extract and blend until most of the wafers are broken, leaving a few larger chunks. Pour into 4 glasses and enjoy.</Run>
+        </Paragraph>
+        <Paragraph/>
+        <Paragraph Margin="0,26,0,26" TextAlignment="Center">
+          <Image Source="/Resources/7f54115c-82cc-46be-8e4e-ef4db2dd1bda.jpg" Stretch="Uniform" Width="311" Height="400" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Paragraph>
+      </Section>
+    </Section>
+  </Section>
+</Flow>

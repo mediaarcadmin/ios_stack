@@ -1,0 +1,684 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__236">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__236">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part04chapter38.html#part04chapter38" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part04chapter38.html#page_255">&#xA0;&#xA0;38&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__236">SPORTS GAMBLING 101</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__236">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__236">I</Run>
+      <Run Tag="__236">n this chapter we will review (largely through a question-and-answer format) the basic definitions and concepts involved in football, basketball, and baseball gambling.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__236">Betting on the Odds</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__236">In the 2007 Super Bowl the Colts were favored by 7 points over the Bears and the predicted total points for the game was 48. How could someone have bet on these odds? Theoretically the fact that the Colts were favored by 7 points meant the bookies thought there was an equal chance that the Colts would win by more than 7 or less than 7 points (in the next chapter we will see this may not be the case). We often express this line as Colts &#x2013;7 or Bears +7, because if the Colts&#x2019; &#x2013;7 points is greater than 0, a Colts&#x2019; bettor wins, while if the Bears&#x2019; +7 is greater than 0, a Bears&#x2019; bettor wins.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__236">Most bookmakers give 11&#x2013;10 odds. This means that if we bet &#x201C;a unit&#x201D; on the Colts to cover the point spread, then we win $10 if the Colts win by more than 7 points. If the Colts win by fewer than 7 points we pay the bookmaker $11. If the Colts win by exactly 7 points, the game is considered a &#x201C;push&#x201D; and no money changes hands. A total points bet works in a similar fashion. If we bet the &#x201C;over&#x201D; on a totals bet we win $10 if more than 48 points are scored, while we lose $11 if the total points scored is fewer than 48. If exactly 48 points are scored the totals is a push and no money changes hands. Similarly, if a bettor takes the under he wins if the total points scored are fewer than 48 and he loses if the total points scored are greater than 48. Most gamblers believe the Total Line (in this case, 48 points) is the most likely value of the total points scored in the game. Basketball point spread betting and totals betting work in an identical fashion to football betting.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="xhtml/part04chapter38.html#page_256">How Do Bettors Make Money Gambling?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__236">Let p = probability that a gambler wins a point spread bet. If 10p &#x2013; 11(1 &#x2013; p) = 0, our expected profit on a bet equals 0. We find that p = 11/21 = .524 makes our expected profit per bet equal to 0. Therefore, if we can beat the spread or totals more than 52.4% of the time we can make money. Suppose we are really good at picking games and can win 57% of our bets. What would be our expected profit per dollar invested? Our expected return per dollar invested is (.57(10) + .43( &#x2212;11))/11 = 8.8%. Thus if we can pick winners 57% of the time we can make a pretty good living betting. However, doing this against the spread in the long run is virtually impossible. If we believe we have a probability p &gt; .524 of winning a bet, what percentage of our bankroll should we bet on each gamble? In </Run>
+      <Hyperlink NavigateUri="part04chapter44.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__236">chapter 44</Run>
+      </Hyperlink>
+      <Run Tag="__236"> we will use the famous Kelly growth criteria to answer this question.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__237">How Do Bookmakers Make Money?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__237">Until Steven Levitt&#x2019;s brilliant article on NFL betting (discussed in </Run>
+      <Hyperlink NavigateUri="part04chapter39.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__237">chapter 39</Run>
+      </Hyperlink>
+      <Run Tag="__237">) was published in 2004, the prevailing wisdom was that bookmakers tried to set the line so half the money was bet on each side.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="xhtml/part04chapter38.html#rfnpage_256-01">
+        <Hyperlink NavigateUri="xhtml/part04chapter38.html#fnpage_256-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__237">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="__237"> If this is the case, the bookmaker cannot lose! For example, suppose one person bets $10 on the Colts &#x2212;7 (Colts to win by 7 points) and one person bets $10 on the Bears +7 (this means if the Bears&#x2019; +7 points is larger than the Colts&#x2019; points, the underdog bettor wins). Then unless the game is a push, the bookie pays one bettor $10 and collects $11 from the other bettor and is guaranteed a profit of $1. The bookmaker&#x2019;s mean profit per dollar bet is called vigorish or &#x201C;the vig.&#x201D; In our example, 11 + 11 = $22 is bet, and the bookmaker wins $1 so the vig is 1/22 = 4.5%. In our example the bookmaker makes a riskless profit of 4.5%. We will see in the next chapter that a smart bookmaker can take advantage of gambler biases and make an expected profit (with some risk, however) that exceeds 4.5%.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__237">How Does the Money Line Work?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter38.html#page_257">The money line enables a bettor to bet on who wins a game or an event, not the margin of victory. For example, the money line on the 2007 NBA Finals was Spurs &#x2212;450, Cavaliers +325. For any money line the team with the negative number is the favorite and the team with the positive number is the underdog. The meaning of this money line is that to win $100 on the Spurs you must bet $450. Thus if the Spurs win the series I win $100 but if the Spurs lose I lose $450. If you bet $100 on the Cavaliers you win $325 if the Cavs win and lose $100 if the Cavs lose. Let p = probability that the Spurs win the series. A gambler who believes that 100p &#x2013; 450(1 &#x2013; p) &gt; 0 would bet on the Spurs while a gambler who believes that 325(1 &#x2013; p) 100p &gt; 0 would bet on the Cavaliers. Solving for the value of p that satisfies each in equality, we find that gamblers who feel the Spurs have a chance greater than 9/11 = 82% of winning would bet on the Spurs, while gamblers who feel that the Spurs have a p &lt; 13/17 = 76% chance of winning would bet on the Cavs. If we assume that the true probability of the Spurs winning was the average of 76% and 82% (79%) and also assume that bettor estimates of the Spurs&#x2019; chances of winning are symmetrically distributed about 79%, then we would expect an equal number of bettors to bet on Cleveland and San Antonio. Suppose one gambler bets on the Spurs and one on the Cavs. If the Spurs win the bookmaker breaks even by paying the Spurs bettor $100 and collects $100 from the Cavs bettor. If the Cavs win the bookmaker wins $125 by collecting $450 from the Spurs bettor and paying $325 to the Cavs bettor. If the Spurs&#x2019; true chance of winning the series is 79%, then the gambler&#x2019;s expected profit per dollar bet is given by (.79(0) + .21(125))/(450 + 100) = 4.8%. We will learn in </Run>
+      <Hyperlink NavigateUri="part04chapter40.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part04chapter38.html#page_257">chapter 40</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part04chapter38.html#page_257"> how to use point spreads to estimate probabilities of a team winning a game, an NBA playoff series, or the NCAA tournament.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__238">The 2007 Super Bowl provides another example of how the money line works. For this game the money line with one Internet bookmaker was Colts &#x2013; 250 and Bears + 200. That means if you bet the Colts to win and they lose you lose $250, and if the Colts win you win $100. If you bet the Bears to win and they win you win $200, but if the Bears lose you lose $100.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__238">How Does Baseball Betting Work?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter38.html#page_258">The starting pitchers play a critical role in determining the winner of a game. Therefore, the baseball gambling line is only valid as long as the listed starting pitchers actually start the game. A sample baseball betting line might look like the one illustrated in </Run>
+      <Hyperlink NavigateUri="xhtml/part04chapter38.html#chapter38table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part04chapter38.html#page_258">table 38.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part04chapter38.html#page_258">. In this example, the Yankees are playing the Red Sox at Fenway Park with Mike Mussina starting for the Yankees and Josh Beckett for the Red Sox. Again the team with the negative entry in the money line is the favorite and the team with the positive entry is the underdog. If you bet $145 on the Red Sox and they win you win $100, while if you bet $100 on the Yankees to win and they win you win $135. Following the logic in our Spurs-Cavs example, the interested reader can show that a gambler would bet on the Red Sox if she believes the Red Sox&#x2019;s chance of winning exceeds 29/49 = 59%, and a gambler would bet on the Yankees if she believes the Red Sox&#x2019;s chance of winning is less than 135/235 = 57%.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__238">&#xA0;</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__238">
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part04chapter38.html#chapter38table01">TABLE 38.1</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part04chapter38.html#chapter38table01">Sample Baseball Betting Line</Run>
+      </Paragraph>
+      <Table Tag="__238">
+        <Table.Columns>
+          <TableColumn Width="85"/>
+          <TableColumn Width="114"/>
+          <TableColumn Width="96"/>
+          <TableColumn Width="81"/>
+          <TableColumn Width="88"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Date and Time</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Teams (Away First</Run>
+                <LineBreak/>
+                <Run Tag="__238">Then Home)</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Starting</Run>
+                <LineBreak/>
+                <Run Tag="__238">Pitchers</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Money Line</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Total</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__238">July 12, 1 </Run>
+                <Run FontFamily="times new roman" FontSize="9" Foreground="#FFFF0000" Tag="__238">P.M.</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Yankees</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Mike Mussina</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">+135</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">over 7.5, &#x2013;115</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,8,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">&#xA0;</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,8,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Red Sox</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,8,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">Josh Beckett</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,8,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">&#x2212;145</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,8,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__238">under 7.5, +105</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+    </Section>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__238">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__238">The Total column is analogous to the Total Line in football or basketball. Over 7.5 runs plays the role of favorite. If we bet $115 on the Over we win $100 if 8 or more total runs are scored in the game. If 7 or fewer runs are scored, then we lose $115. If we bet the under side of the bet we lose $100 if 8 or more runs are scored. If 7 or fewer runs are scored we win $105.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__238">What Is an Arbitrage Betting Opportunity?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__238">Often different bookmakers and Internet betting sites have lines on games that differ slightly. In rare cases, a combination of bets exists (called an arbitrage opportunity) that guarantees you a riskless profit. For example, suppose two different bookies had the following lines on the 2007 Super Bowl:</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__238">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__239">
+      <Table.Columns>
+        <TableColumn Width="27.5310834813499*"/>
+        <TableColumn Width="35.5239786856128*"/>
+        <TableColumn Width="36.9449378330373*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="48,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__239">Bookie 1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="48,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__239">Colts &#x2212; 122</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="48,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__239">Bears + 112</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="48,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__239">Bookie 2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="48,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__239">Colts &#x2212; 135</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="48,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__239">Bears + 125</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__239">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter38.html#page_259">Since Bookie 1 offers better odds on the Colts and Bookie 2 offers better odds on the Bears, we will bet on the Colts with Bookie 1 and the Bears with Bookie 2. Suppose we bet x with Bookie 1 on the Colts and suppose you bet $100 with Bookie 2 on the Bears. If the Colts win your profit is 100&#xD7;(x/122)&#x2212;100. This will be greater than 0 if x&gt;$122. If the Bears win your profit is 125&#x2212;x, which is greater than 0 if x&lt;125. Therefore, by betting $100 on the Bears and between $122 and $125 on the Colts, we can lock in a sure profit. For example, betting $123.50 on the Colts and $100 on the Bears locks in a sure profit of $1.23. The problem with an arbitrage opportunity is that the line can move before you finish placing all the needed bets. For example, if after betting $100 on the Bears with Bookie 2 the Colts line with Bookie 1 moves to &#x2212;130 before we can place our bet, then an arbitrage opportunity no longer exists.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__239">What Is a Parlay?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__239">A parlay is a selection of two or more bets, all of which must win for the parlay to pay off. If any of the bets result in a push, no money changes hands. An example of a two-bet parlay would be taking the Colts &#x2212;4 to beat the Patriots and the Bears &#x2212;6 to beat the Saints. You can combine total bets with point spreads and even combine bets involving different sports.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__239">The true odds and the typical payout on parlays are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part04chapter38.html#chapter38table02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__239">table 38.2</Run>
+      </Hyperlink>
+      <Run Tag="__239">. For example, in a two-team parlay we have a 1/2 chance of winning each bet so our chance of winning the parlay (ignoring a push on either bet) is (1/2)</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__239">2</Run>
+      <Run Tag="__239"> = .25. Three-to-one odds would be fair because then our expected profit on a $100 bet would be .25(300)&#x2013;.75(100)=$0. With an actual payout of 2.6&#x2013;1 our expected profit on a $100 bet is .25(260)&#x2013;.75(100)=&#x2013;$10, which is an average house edge of &#x2212;10%. The more teams in the parlay, the larger the house edge.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__239">Our calculation of the house edge assumes that the bets are independent, that is, the outcome of one bet does not affect the outcome of the other bet.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__239">&#xA0;</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__239">
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part04chapter38.html#chapter38table02">TABLE 38.2</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part04chapter38.html#chapter38table02">Parlay Betting Payoffs</Run>
+      </Paragraph>
+      <Table Tag="__239">
+        <Table.Columns>
+          <TableColumn Width="103"/>
+          <TableColumn Width="85"/>
+          <TableColumn Width="131"/>
+          <TableColumn Width="145"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">Number of Bets</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">Actual Odds</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">Standard Payout Odds</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">House Percentage Edge</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__239">2</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">&#xA0;&#xA0;3&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">2.6&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">10&#xA0;&#xA0;&#xA0;&#xA0;</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__239">3</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">&#xA0;&#xA0;7&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">&#xA0;&#xA0;&#xA0;6&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">12.50</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__239">4</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">15&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">&#xA0;12&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">18.75</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__239">5</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">31&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">&#xA0;25&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">18.75</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__239">6</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">63&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">&#xA0;35&#x2013;1</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__239">43.75</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__239">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter38.html#page_260">For example, the results of bets on the point spreads of two different games would be independent. If we were to choose a two-bet parlay involving the Colts &#x2013; 7 points over the Titans and the total points over on a line of 44 points, these bets might not be independent. Our logic might be that if the Colts cover the point spread, then Peyton Manning must have had a good day and the total points is more likely to go over 44. Looking at it another way, if the Colts fail to cover, it was probably a bad day for Manning and our over bet has little chance of winning. This is an example of a correlated parlay, because the outcomes of the bets composing the parlay are correlated. Suppose that if the Colts cover there is a 70% chance the total will go over 44 points, while if the Colts do not cover there is only a 30% chance that the total will go over 44 points. Then our chance of winning the parlay is .5(.7) = .35, which is far better than our chance of winning a two-bet parlay composed of independent bets. For this reason, most bookmakers will not take correlated parlays.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__240">What Are Teasers?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__240">To illustrate a teaser bet, suppose that in one game the San Diego Chargers are an eight-point favorite and in another game the Tennessee Titans are a three-point underdog. A two-team 7-point teaser involving these games makes your point spread 7 points &#x201C;better&#x201D; on each game but you need to win both bets to collect. Thus if we place a 7-point teaser bet on these games and take the Chargers and Titans, we win if and only if the Chargers win by more than one point and the Titans lose by nine or fewer points. If either game ends with a tie against the revised point spread the teaser is called off and no money changes hands. Otherwise we lose the teaser bet. Here are some examples of how this teaser might play out:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__240">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__240">Chargers win by two and Titans lose by three&#x2014;we win the teaser.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__240">Chargers win by three and Titans lose by twelve&#x2014;we lose the teaser.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__240">Chargers win by one&#x2014;the teaser is a push and no money changes hands.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__240">Chargers lose by one and Titans win by five&#x2014;we lose the teaser.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter38.html#page_261">Teasers usually involve 6, 6.5, or 7 points. </Run>
+      <Hyperlink NavigateUri="xhtml/part04chapter38.html#chapter38table03">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part04chapter38.html#page_261">Table 38.3</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part04chapter38.html#page_261"> shows some typical teaser payoffs. For example, if we bet a two-team 7-point teaser and we win the teaser, then we win $100. If we lose the teaser we lose $130. If we bet a four-team 6-point teaser and all four teams cover their revised points, we win $300. If no games push and we do not cover all four revised spreads we lose $100. During the years 2000&#x2013;2005 teams covered 7-point teasers 70.6% of the time, pushed 1.5% of the time, and lost 27.9% of the time.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__240">&#xA0;</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__240">
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part04chapter38.html#chapter38table03">TABLE 38.3</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part04chapter38.html#chapter38table03">Teaser Payoffs</Run>
+      </Paragraph>
+      <Table Tag="__240">
+        <Table.Columns>
+          <TableColumn Width="128"/>
+          <TableColumn Width="108"/>
+          <TableColumn Width="119"/>
+          <TableColumn Width="108"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__240">Number of Teams</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__240">6-Point Teaser</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__240">6.5-Point Teaser</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,0" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,6,0,4" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__240">7-Point Teaser</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__240">2</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__240">&#x2013;110</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__240">&#x2013;120</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__240">&#x2013;130</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__241">3</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+180</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+160</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+150</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__241">4</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+300</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+250</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+200</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__241">5</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+450</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+400</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+350</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__241">6</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+700</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+600</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__241">+500</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__241">&#xA0;&#xA0;</Run>
+        <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__241">Source:</Run>
+        <Run Tag="__241"> Stanford Wong, Sharp Sports Betting (Pi Yee Press, 2001).</Run>
+      </Paragraph>
+    </Section>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__241">Let&#x2019;s determine our expected profit on a two-team teaser with a $100 bet. We begin by figuring the probability that we win the teaser, push, or lose the teaser. We assume that the outcomes of the individual teaser bets are independent events. That is, if we cover one game involved in the teaser, this does not affect our probability of covering any other game involved in the teaser. Now we can compute the probability of winning a two-team teaser bet.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__241">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__241">We win the teaser with probability .706</Run>
+          <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__241">2</Run>
+          <Run Tag="__241"> = .498436.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__241">We push if exactly one game is a push or both games push. This occurs with probability (.015)&#xD7;(1 &#x2013; .985) + (.985)&#xD7;(.015) + (.015)</Run>
+          <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__241">2</Run>
+          <Run Tag="__241"> = .043516.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__241">We lose the teaser with probability 1 .498436 .043516 0.458048.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__241">Our expected profit on the teaser is (100)(.498436) +0(.043516) &#x2013; 130(.458048) = &#x2013;9.7.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__241">Therefore a two-team teaser is favorable to the bookmaker and unfavorable to the bettor. A little algebra shows that (assuming the push probability remains the same) we need the probability of covering a game involved in the teaser to increase by 3% (to 73.6%) in order to break even. The interested reader can show that the bookie&#x2019;s edge increases as more teams are involved in the teaser.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part04chapter38.html#rfnpage_256-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part04chapter38.html#fnpage_256-01">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part04chapter38.html#fnpage_256-01"> Levitt, &#x201C;Why Are Gambling Markets Organised So Differently from Financial Markets?&#x201D;</Run>
+    </Paragraph>
+  </Section>
+</Flow>

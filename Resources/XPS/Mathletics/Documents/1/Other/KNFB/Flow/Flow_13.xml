@@ -1,0 +1,650 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__50">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__50">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part01chapter05.html#part01chapter05" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part01chapter05.html#page_41">&#xA0;&#xA0;5&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__50">EVALUATING BASEBALL PITCHERS AND</Run>
+      <LineBreak/>
+      <Run Tag="__50">FORECASTING FUTURE PERFORMANCE</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__50">I</Run>
+      <Run Tag="__50">n chapters 2&#x2013;4 we discussed three methods that can be used to evaluate the performance of a baseball hitter: Runs Created, Linear Weights, and Monte Carlo simulation. Let&#x2019;s turn our attention to evaluating the performance of baseball pitchers. As we will see, evaluating their performance is no easy matter.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__50">Until recently, the most frequently used technique for evaluating the performance of pitchers was earned run average (ERA). Let&#x2019;s consider a pitcher, again named Joe Hardy. Consider all the runners Joe allows to reach base. Any of the base runners who score or would have scored if Joe&#x2019;s team made no fielding miscues (such as an error, passed ball, and so forth) causes Joe to be charged with an earned run. For example, if Joe gives up a triple with two outs in an inning and the next batter hits a single and a run is scored, Joe is charged with an earned run. Now suppose instead of a single the next batter hits a ball to the shortstop, who misplays the ball and is charged with an error. If the runner scores, this is an unearned run because without the error the runner would not have scored. A pitcher&#x2019;s ERA is the number of earned runs he gives up per nine innings. For example, if Joe gives up 20 earned runs in 45 innings, he has given up </Run>
+      <Image Source="/Resources/1668527e-d015-4f7d-9703-da880b8e36ea.jpg" Stretch="Uniform" Width="70" Height="40" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__50"> runs per nine innings and thus his ERA is 4. In general, a pitcher&#x2019;s ERA is computed as </Run>
+      <Image Source="/Resources/3169525d-61df-48f0-9bc5-d04322423c85.jpg" Stretch="Uniform" Width="180" Height="40" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__50">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__50">Problems with ERA</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__50">There are several problems with evaluating pitchers by their ERA.</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__50">
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="xhtml/part01chapter05.html#page_42">1. Errors are subjective. Some official scorers are more reluctant than others to call a batted ball an error. David Kalist and David Spurr have found slight evidence that official scorers are biased in favor of the home team.</Run>
+        <Run Tag="xhtml/part01chapter05.html#rfnpage_42" xml:space="preserve"/>
+        <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+          <Hyperlink NavigateUri="xhtml/part01chapter05.html#fnpage_42">
+            <Hyperlink.TextDecorations>
+              <TextDecorationCollection/>
+            </Hyperlink.TextDecorations>
+            <Run Tag="xhtml/part01chapter05.html#page_42">1</Run>
+          </Hyperlink>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__50">2. When a starting pitcher is pulled from the game and there is at least one base runner, the number of earned runs he gives up depends greatly on the performance of the relief pitcher. For example, suppose that Joe leaves the game with two outs and the bases loaded. If the relief pitcher gets the next out, Joe is charged with no earned runs, but if the relief pitcher gives up a grand slam, then Joe is charged with three earned runs.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">3. A pitcher with good fielders behind him will clearly give up fewer earned runs than a pitcher with a leaky defense. (We will discuss the evaluation of fielders in </Run>
+        <Hyperlink NavigateUri="part01chapter07.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__51">chapter 7</Run>
+        </Hyperlink>
+        <Run Tag="__51">.)</Run>
+      </Paragraph>
+    </Section>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__51">Starting pitchers are often evaluated on the basis of their win-loss record. This clearly depends on the batting support the pitcher receives. For example, in 2006 the great Roger Clemens had an ERA of 2.30 (approximately half the league average), but he had a 7&#x2013;6 record because he received poor batting support from the Houston Astros.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__51">Relief pitchers are often evaluated on the basis of how many saves they have in a given season. Most saves credited to relief pitchers are given to a relief pitcher who faces a batter representing the tying run. The following extract provides the official definition of a save.</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__51">
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">The official scorer shall credit a pitcher with a save when such pitcher meets all four of the following conditions:</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">&#xA0;</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">(1) He is the finishing pitcher in a game won by his team;</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">(2) He is not the winning pitcher;</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">(3) He is credited with at least a third of an inning pitched; and</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">(4) He satisfies one of the following conditions:</Run>
+      </Paragraph>
+      <Paragraph Margin="20,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">(a) He enters the game with a lead of no more than three runs and pitches at least one inning;</Run>
+      </Paragraph>
+      <Paragraph Margin="20,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__51">(b) He enters the game, regardless of the count, with the potential tying run either on base, or AB or on deck; or</Run>
+      </Paragraph>
+      <Paragraph Margin="20,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="xhtml/part01chapter05.html#rfnpage_42-01">(c) He pitches for at least three innings.</Run>
+        <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+          <Hyperlink NavigateUri="xhtml/part01chapter05.html#fnpage_42-01">
+            <Hyperlink.TextDecorations>
+              <TextDecorationCollection/>
+            </Hyperlink.TextDecorations>
+            <Run Tag="xhtml/part01chapter05.html#rfnpage_42-01">2</Run>
+          </Hyperlink>
+        </Span>
+      </Paragraph>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#page_43">To paraphrase George Orwell, &#x201C;All saves are created equal, but some saves are more equal than others.&#x201D; In looking at a relief pitcher&#x2019;s published statistics, all we see is the number of saves, so all saves seem equal. However, consider a relief pitcher who comes in with his team ahead 3&#x2013;2 during the top of the ninth inning and other team has bases loaded and none out. If this pitcher holds the lead, he has done a fabulous job. Consider a second relief pitcher who enters the game with two outs in the ninth and a runner on first and a 4&#x2013;2 lead. He strikes out the next batter and receives a save. Clearly the first relief pitcher deserves much more credit, but each pitcher receives a save.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__51">In </Run>
+      <Hyperlink NavigateUri="part01chapter08.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__51">chapter 8</Run>
+      </Hyperlink>
+      <Run Tag="__51"> we will show how Player Win Averages resolve many of the problems involved in evaluating pitcher performance. Player Win Averages also allow us to compare the value of relief pitchers and starting pitchers.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__51">Using Past ERA to Predict Future ERA</Run>
+        <LineBreak/>
+        <Run Tag="__51">Does Not Work Well</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__51">Despite the problems with ERA, it seems important to be able to predict a pitcher&#x2019;s future ERA from his past performance. This would aid baseball management in their quest to improve their team&#x2019;s future pitching performance.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__52">It seems logical to try to predict a pitcher&#x2019;s ERA for the next season from his previous season&#x2019;s ERA. For a long time the baseball community thought that this approach would yield good predictions of the following year&#x2019;s ERA. Let&#x2019;s check out this hypothesis. For all pitchers who pitched at least 100 innings during two consecutive seasons in 2002&#x2013;6, </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__52">figure 5.1</Run>
+      </Hyperlink>
+      <Run Tag="__52"> plots on the x axis the pitcher&#x2019;s ERA during a given season and on the y axis the pitcher&#x2019;s ERA during the following season. I used Excel&#x2019;s Trend Curve Feature to plot the line (see the chapter appendix for details on how to use the Trend Curve feature) that best fits these data.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter05.html#rfnpage_43">Figure 5.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_43"> indicates that the best-fitting</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#fnpage_43">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#rfnpage_43">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_43"> straight line that can be used to predict the following year&#x2019;s ERA by using the previous year&#x2019;s ERA is the equation</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__52">
+      <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__52">
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+          <Run Tag="__52">(next year&#x2019;s ERA) = 2.8484 + .353(last year&#x2019;s ERA).&#xA0;&#xA0;&#xA0;&#xA0;(1)</Run>
+        </Paragraph>
+      </Section>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__52">For example, a pitcher who had an ERA of 4.0 in a given year would be predicted to have an ERA the following year of 2.8484 + .353(4) = 4.26.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#page_44">We can see from </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter05.html#page_44">figure 5.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter05.html#page_44"> that the best-fitting line does not fit the data very well. Many pitchers with predicted ERAs of around 4.0 actually have ERAs the following year of over 6.0 or less than 2.0. Statisticians quantify how well a line fits a set of data using the R Squared value (RSQ) and correlation as well as the mean absolute deviation of the regression forecasts.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__52">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/31ecd809-67d6-4bfe-ac74-37a2888a1c85.jpg" Stretch="Uniform" Width="420" Height="300" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter05.html#chapter05figure01">Figure 5.1. Predicting a given year&#x2019;s ERA from the previous year&#x2019;s ERA.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__52">R</Run>
+        <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontWeight="Bold" FontSize="11" Tag="__52">2</Run>
+        <Run Tag="__52"> and Correlation</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__53">From </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__53">figure 5.1</Run>
+      </Hyperlink>
+      <Run Tag="__53"> we find that the RSQ for predicting the next year&#x2019;s ERA from the previous year&#x2019;s ERA is .116. This indicates that the previous year&#x2019;s ERA explains only 11.6% of the variation in the following year&#x2019;s ERA. In other words, 88% of the variation in the following year&#x2019;s ERA is unexplained by the previous year&#x2019;s ERA. Statisticians also measure linear association by looking at the square root of RSQ, which is often called r or the correlation coefficient. We find that the correlation between the two years&#x2019; ERA is </Run>
+      <Image Source="/Resources/279c4610-fb8e-4f97-bd01-0391dbb4a18c.jpg" Stretch="Uniform" Width="80" Height="27" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_44">The correlation (usually denoted by r) between two variables (X and Y) is a unit-free measure of the strength of the linear relationship between X and Y. The correlation between any two variables is always between &#x2013;1 and +1. The exact formula used to compute the correlation between two variables is not very important.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#fnpage_44">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#rfnpage_44">4</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_44"> It is important, however, to be able to interpret the correlation between X and Y.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#page_45">A correlation near +1 means that there is a strong positive linear relationship between X and Y. That is, when X is larger than average Y tends to be larger than average, and when X is smaller than average Y tends to be smaller than average. Alternatively, when a straight line is fit to the data, there will be a straight line with positive slope that does a good job of fitting the points. As an example, for the data shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter05.html#page_45">figure 5.2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter05.html#page_45"> (here X = units produced and Y = cost), X and Y have a correlation of +0.90.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__53">A correlation near &#x2013;1 means that there is a strong negative linear relationship between X and Y. That is, when X is larger than average Y tends to be smaller than average, and when X is smaller than average Y tends to be larger than average. Alternatively, when a straight line is fit to the data, there will be a straight line with negative slope that does a good job of fitting the points. For the data shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure03">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__53">figure 5.3</Run>
+      </Hyperlink>
+      <Run Tag="__53"> (X = price and Y = demand), X and Y have a correlation of &#x2013;0.94.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#page_46">A correlation near 0 means that there is a weak linear relationship between X and Y. That is, knowing whether X is larger or smaller than its mean tells you little about whether Y will be larger or smaller than its mean. </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure04">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter05.html#page_46">Figure 5.4</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter05.html#page_46"> shows the dependence of Y (sales) on X (years of experience). Years of experience and unit sales have a correlation of .003. In our data set average experience is 10 years. We see that when a person has more than 10 years of sales experience, his sales can either be low or high. We also see that when a person has less than 10 years of sales experience, sales can be low or high. Although there is little or no linear relationship between experience and sales, we see there is a strong non-linear relationship (see fitted curve) between years of experience and sales. Correlation does not measure the strength of non-linear relationships.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__53">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/56b2c1ef-930d-4190-8ce6-9c5f8cd72e17.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter05.html#chapter05figure02">Figure 5.2. Strong positive linear relationship.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__54">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/cf57bb16-6808-4251-adb0-29efb23b1072.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter05.html#chapter05figure03">Figure 5.3. Strong negative linear relationship.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__54">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/67907cf0-154d-4e39-8389-5a1aeab177c3.jpg" Stretch="Uniform" Width="450" Height="220" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter05.html#chapter05figure04">Figure 5.4. Weak linear relationship.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__55">Mean Absolute Deviation of Forecasts</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__55">The average absolute deviation (MAD for short) of the forecast errors is a commonly used measure of forecast accuracy. For each pitcher we compute the predicted ERA from (1) and take the absolute value of (predicted ERA) &#x2013; (actual ERA). We find the MAD for predicting the following year&#x2019;s ERA from the previous year&#x2019;s ERA to be 0.68 runs. In other words, our error on average in predicting the following year&#x2019;s ERA from the previous year&#x2019;s ERA is 0.68 runs.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__55">Voros McCracken Stuns the Baseball World</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_46">Voros McCracken appears to be the first person to successfully explain why future ERAs are hard to predict from past ERAs.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#fnpage_46">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#rfnpage_46">5</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_46"> McCracken observed that a pitcher&#x2019;s effectiveness is primarily based on the following:</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__55">
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="xhtml/part01chapter05.html#page_47">1. The fraction of BFP (Batters Faced by Pitchers) that result in balls in play (a ball in play is a plate appearance that results in a ground out, error, single, double, triple, fly out, or line out).</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__55">2. The fraction of balls in play that result in hits (referred to as BABIP, or Batting Average on Balls in Play).</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__55">3. The outcome of BFP that do not result in balls in play. What fraction of BFP that do not yield a ball in play result in strikeouts, walks, HBP, or home runs?</Run>
+      </Paragraph>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_47">McCracken&#x2019;s brilliant insight was that a pitcher&#x2019;s future performance with regard to the situations outlined in (1) and (3) can be predicted fairly well from past performance, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter05.html#rfnpage_47">but it is very difficult to predict (2) from past performance</Run>
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_47">. Suppose we try to predict the percentage of BFP resulting in strike-outs for a pitcher using the percentage of BFP resulting in strikeouts during his previous season. We find r = .78. For BB, r = .66 and for HR, r = .34. McCracken called SO, BB, HBP, and HR Defense In de pen dent Pitching Statistics (DIPS for short) because these results are in de pen dent of the team&#x2019;s fielding ability. DIPS seem to be fairly predictable from season to season. However, the fraction of balls in play resulting in an out or a hit seems to be very hard to predict.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#fnpage_47">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#rfnpage_47">6</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_47"> For example, a pitcher&#x2019;s BABIP has only a .24 correlation with a pitcher&#x2019;s BABIP for his previous season. The unpredictability of BABIP is what makes it so difficult to predict a pitcher&#x2019;s ERA in a given season using his ERA from the previous year. McCracken sums things up in the following way: &#x201C;The pitchers who are the best at preventing hits on balls in play one year are often the worst at it the next. In 1998, Greg Maddux had one of the best rates in baseball, then in 1999 he had one of the worst. In 2000, he had one of the better ones again. In 1999, Pedro Martinez had one of the worst; in 2000, he had the best. This happens a lot.&#x201D;</Run>
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_47-01" xml:space="preserve"/>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#fnpage_47-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#rfnpage_47">7</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__55">I believe that luck and season-to-season differences in team fielding quality are major factors in the lack of predictability of BABIP. Much research needs to be done in this area, however.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__56">DICE: A Better Model for Predicting</Run>
+        <LineBreak/>
+        <Run Tag="__56">a Pitcher&#x2019;s Future performance</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#page_48">So how can we use McCracken&#x2019;s insights to better predict a pitcher&#x2019;s future ERA? McCracken came up with a very complex method to predict future ERA. Since DIPS are fairly predictable from year to year, it seems reasonable that there should be some simple combination of DIPS (BB, SO, HBP, and HR) that can be used to predict ERA more accurately than our previous approach. In 2000 Clay Dreslogh came up with a simpler formula, known as Defense-Independent Component ERA (DICE), to predict ERA.</Run>
+      <Run Tag="xhtml/part01chapter05.html#rfnpage_48" xml:space="preserve"/>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#fnpage_48">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#page_48">8</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__56">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center">
+      <Image Source="/Resources/3fdcfc81-8f59-48a4-b84b-17361369ca04.jpg" Stretch="Uniform" Width="400" Height="40" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__56">As we can see from equation (2), DICE predicts ERA by plugging in a pitcher&#x2019;s HR, K, BB, HBP, and Innings Pitched (IP) from the previous year. For example, in 1997 Roger Clemens had the following statistics:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__56">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__56">68 BB</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__56">7 HBP</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__56">292 K</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__56">9 HR</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__56">264 IP</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__56">Using these statistics in equation (2), we predict Clemens&#x2019;s ERA for 1998 to be</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__56">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__56">DICE = 3.00 + (3(68 + 7) + (13 &#xD7; 9) &#x2013; (2 &#xD7; 292) / 264) = 2.08.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__56">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__56">Clemens&#x2019;s actual ERA in 1998 was 2.05.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__56">For the years 2001&#x2013;6 for all pitchers who completed 100 or more innings in consecutive seasons, I computed each pitcher&#x2019;s DICE for year x and used this to try and predict the ERA for year x + 1. For example, for a pitcher who pitched over 100 innings in 2003 and 2004, we would use the pitcher&#x2019;s 2003 DICE to predict the pitcher&#x2019;s 2004 ERA. The results are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure05">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__56">figure 5.5</Run>
+      </Hyperlink>
+      <Run Tag="__56">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#page_49">Therefore, we predict a given year&#x2019;s ERA as .56(last season&#x2019;s DICE) + 1.975. The previous year&#x2019;s DICE explains 19% of the variation in the following year&#x2019;s ERA (compared to the previous year&#x2019;s ERA, which explained only 11% of the following year&#x2019;s ERA). The correlation between the previous year&#x2019;s DICE and the following year&#x2019;s ERA is .44 (the previous year&#x2019;s ERA had only a .34 correlation with the following year&#x2019;s ERA). On average, our predictions of a given year&#x2019;s ERA from the previous year&#x2019;s DICE were off by only 0.51 runs (predictions based on last year&#x2019;s ERA were off by 0.68 runs).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__57">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/5b2d9846-d1c0-40cc-96b7-f087acdbf6aa.jpg" Stretch="Uniform" Width="420" Height="280" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter05.html#chapter05figure05">Figure 5.5. Predicting future ERA using DICE.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__57">To sum up, we can more accurately predict a given year&#x2019;s ERA from HR, BB, HBP, and K than from a previous year&#x2019;s ERA. In </Run>
+      <Hyperlink NavigateUri="part01chapter08.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__57">chapter 8</Run>
+      </Hyperlink>
+      <Run Tag="__57"> we will use Player Win Averages to come up with a better way to evaluate a pitcher&#x2019;s performance.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__57">A Holy Grail of Mathletics</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__57">In this chapter we have briefly discussed the problems involved in developing a model to predict a baseball pitcher&#x2019;s future performance. There are many other important sports problems that involve predicting a player&#x2019;s or team&#x2019;s future performance from past performance. These include predicting</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__57">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__57">the performance of an NBA, NFL, or MLB draft pick from his high school, college, or international performance;</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__57">a batter&#x2019;s future Runs Created;</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__57">a running back&#x2019;s, quarterback&#x2019;s, or wide receiver&#x2019;s future performance from his past professional performance;</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__57">a team&#x2019;s record for a given season based on past-season performance and player trades.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#page_50">Many people have developed such forecasting models. For example, each season Ron Shandler&#x2019;s </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter05.html#page_50">Baseball Forecaster</Run>
+      <Run Tag="xhtml/part01chapter05.html#page_50">, Bill James&#x2019;s annual </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter05.html#page_50">Baseball Handbook</Run>
+      <Run Tag="xhtml/part01chapter05.html#page_50">, and Baseball Prospectus&#x2019;s </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter05.html#page_50">Baseball Annual</Run>
+      <Run Tag="xhtml/part01chapter05.html#page_50"> issue projections for each MLB team regarding their performance in the following season. Each year Aaron Schatz&#x2019;s </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter05.html#page_50">Football Prospectus</Run>
+      <Run Tag="xhtml/part01chapter05.html#page_50"> (and dozens of fantasy football magazines) predict NFL team and player performance for the following season. Each year </Run>
+      <Hyperlink NavigateUri="http://ESPN.com">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter05.html#page_50">ESPN.com</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter05.html#page_50">&#x2019;s John Hollinger predicts NBA team and player perfor mance for the following season.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__58">Though these forecasts are fascinating, what is really needed is a comparison of the forecasting accuracy of various methods. Then we can judge which forecasts to use in our fantasy leagues, draft decisions, or player personnel decisions. For example, who predicts future baseball performance better: Ron Shandler or Bill James? Perhaps in the future databases of accuracy of sports forecasts (and stock pickers) will be commonplace on the Internet.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="19">
+      <Run Tag="__58">APPENDIX</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__58">Using the Excel Trend Curve</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__58">The Excel Trend Curve feature enables us to plot the line that best fits a set of data. In the file trendcurveexample.xls we are given the ERA of pitchers who pitched over 100 innings during both the 2005 and 2006 seasons. We would like to plot on the x axis each pitcher&#x2019;s 2005 ERA and on the y axis the same pitcher&#x2019;s 2006 ERA. Then we want to graph the line (and obtain the equation of the line) that best fits this relationship.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="times new roman" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__58">Excel 2003 or Earlier</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__58">Select the data to be graphed (cell range D4:E98). Then select the Chart Wizard icon (it looks like a chart) and choose XY scatter and select the first option. Then click on the graphed points until they turn yellow. After right clicking on any of the points, select Add Trendline and choose the Linear Option. Then check the Display Equation and Display R Sq options. You will then see the graph shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure06">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__58">figure 5.6</Run>
+      </Hyperlink>
+      <Run Tag="__58">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__58">We find that the straight-line relationship that best predicts a pitcher&#x2019;s ERA during 2006 is 2006 ERA = .3802(2005 ERA) + 2.75. This equation explains 11.1% of the variation in 2006 ERA.</Run>
+    </Paragraph>
+    <Paragraph Margin="64,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter05.html#page_51">y=0.3802x+2.7502</Run>
+    </Paragraph>
+    <Paragraph Margin="64,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__58">R</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__58">2</Run>
+      <Run Tag="__58">=0.1119</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/33322e22-a31f-40b8-b21b-b7ade17d127a.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter05.html#chapter05figure06">Figure 5.6. Example of creating a trend line.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="times new roman" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__59">Excel 2007</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__59">Select the data to be graphed (cell range D4:E98). Then select Insert and choose the first option from Scatter. Then click on the graphed points until they turn blue. After right clicking on any of the points, select Add Trendline and choose the Linear Option. Then check the Display Equation and Display R Sq options. You will then see the graph shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter05.html#chapter05figure06">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__59">figure 5.6</Run>
+      </Hyperlink>
+      <Run Tag="__59">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__59">We find that the straight-line relationship that best predicts a pitcher&#x2019;s ERA during 2006 is 2006 ERA .3802(2005 ERA) + 2.75. This equation explains 11.1% of the variation in 2006 ERA.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#rfnpage_42">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#fnpage_42">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_42"> Kalist and Spurr, &#x201C;Baseball Errors.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#rfnpage_42-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#fnpage_42-01">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_42-01"> The official definition of a save has been reprinted by special permission of the Office of the Commissioner of Baseball from the </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter05.html#fnpage_42-01">Official Baseball Rules</Run>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_42-01">. The copyright in the </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter05.html#fnpage_42-01">Official Baseball Rules</Run>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_42-01"> is owned and has been registered by the Commissioner of Baseball.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#rfnpage_43">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#fnpage_43">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_43"> Excel chooses the line as best fitting which minimizes the sum of the squared vertical distances of the points to the fitted line. This is called the least squares line.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#rfnpage_44">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#fnpage_44">4</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_44"> If you wish, however, you can use Excel to compute correlations between two columns of numbers with the </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter05.html#fnpage_44">CORREL</Run>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_44"> function. See the chapter appendix for details.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#rfnpage_46">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#fnpage_46">5</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_46"> See Voros McCracken, &#x201C;Pitching and Defense: How Much Control Do Hurlers Have?&#x201D; January 23, 2001, </Run>
+      <Hyperlink NavigateUri="http://www.baseballprospectus.com/article.php?articleid=878">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter05.html#fnpage_46">http://www.baseballprospectus.com/article.php?articleid=878</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_46">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#rfnpage_47">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#fnpage_47">6</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_47"> Later researchers found that for certain types of pitchers (particularly knuckle ball pitchers) the outcome of balls in play is much easier to predict.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#rfnpage_47-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#fnpage_47-01">7</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_47-01"> McCracken, &#x201C;Pitching and Defense.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter05.html#rfnpage_48">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter05.html#fnpage_48">8</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_48"> Clay Dreslogh, &#x201C;DICE: A New Pitching Stat,&#x201D; July 19, 2000, </Run>
+      <Hyperlink NavigateUri="http://www.sportsmogul.com/content/dice.htm">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter05.html#fnpage_48">http://www.sportsmogul.com/content/dice.htm</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter05.html#fnpage_48">.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

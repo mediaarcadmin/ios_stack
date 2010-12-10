@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_how.html#how">
+      <Paragraph Margin="0,64,0,56" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="14">
+        <Run Tag="__11">HOW TO USE THIS BOOK</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__11">T</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__11">HE</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" xml:space="preserve" Tag="__11"> TERMS</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">trust</Run>
+          <Run Tag="__11"> and </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">advisor</Run>
+          <Run Tag="__11"> are seemingly small words, but they have meanings that have many layers and complexities. Accordingly, this book approaches our topic from a number of perspectives.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__11">The book is like an hourglass: broad and diverse in Parts One and Three, focused and more tightly integrated in Part Two.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__11">The chapters in Part One are full of anecdotes, practical suggestions, illustrations, and stories. They are designed to stimulate your thinking about a variety of interrelated issues, concepts, and skills that trusted advisors must consider.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__11">The chapters in Part Two represent our attempt to bring structure to the topic, and are more formal in approach, if not in language.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__11">Part Three contains chapters that build on Parts One and Two and apply the concepts and techniques introduced previously. The chapters in this section contain some new content as well.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__11">You will quickly discover that we like to use lists. Not only do they convey information concisely, but they also (we hope) invite you to react and modify the lists based on your own thinking and ongoing experience.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__11">For your convenience, we have duplicated all of the lists in the book in the Appendix. You might find it helpful to use it in any of three ways:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__11">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__11">Begin your reading of this book by skimming the Appendix, which will give you a flavor of what the book contains and where it is going.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__11">Use the collected lists therein to quickly identify a topic of particular interest to you and go directly to the relevant portion of the book.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__11">Use it after you have finished reading the book as a quick ready reference (now and in the future), modifying the lists based on your own ongoing experience.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__11">&#x201C;This book is engaging, enjoyable, and absolutely on target. It is packed with truth. </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">The Trusted Advisor</Run>
+          <Run Tag="__11"> will guide success not just in the advisory professions, but in leadership and life as well.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">&#x2014;William F. Stasior, Senior Chairman and Former CEO, Booz&#xB7;Allen &amp; Hamilton</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__11">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">The Trusted Advisor</Run>
+          <Run Tag="__11"> is right on the mark. Required reading for all professionals.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">&#x2014;Hobson Brown, Jr., President and CEO, Russell Reynolds Associates</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__11">&#x201C;This book provides specific, practical, and valuable guidance that will make professional advisors of all types reassess their approach to winning client trust.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">&#x2014;John Reeve, Executive Chairman, Willis Group Ltd</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__11">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">The Trusted Advisor</Run>
+          <Run Tag="__11"> will help advisors everywhere learn how to take their client relationships to a higher level.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__11">&#x2014;Dale Gifford, Chief Executive, Hewitt Associates</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__12">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">The Trusted Advisor</Run>
+          <Run Tag="__12"> gets to the heart and soul of the advice business. This path-breaking book is a must read.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">&#x2014;Professor Charles Fombrun, Leonard N. Stern School of Business, New York University</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__12">&#x201C;Maister, Green, and Galford have put their fingers on the core objective of the professional services practitioner, and show effectively how that objective may be achieved.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">&#x2014;Jon Moynihan, Executive Chairman, PA Consulting Group (UK)</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__12">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">The Trusted Advisor</Run>
+          <Run Tag="__12"> is a masterful work with valuable examples, constructs, and recommendations. The authors should be lauded for sharing their wealth of experience and advice on this critical topic.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">&#x2014;David C. Munn, President and CEO, Information Technology Services Marketing Association</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__12">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">The Trusted Advisor</Run>
+          <Run Tag="__12"> will be invaluable to all professionals, young and old. Anyone who earns his or her living by giving advice should read this book.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">&#x2014;Professor John Quelch, Dean, London Business School</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__12">&#x201C;This book will inspire all its readers to re-examine their approach to clients and potential clients. With numerous examples and illustrations, the authors give practical guidance for establishing the sort of relationship with clients that all advisors aspire to achieve. I will be urging all my colleagues to read this book&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">&#x2014;John Bishop, Senior Partner, Masons</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__12">&#x201C;Maister, Green, and Galford present a remarkably subtle and multifaceted exploration of a complex and amorphous phenomenon: the trust that lies at the heart of any successful consultant/client relationship.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__12">&#x2014;Dr. Laura Empson, Said Business School, University of Oxford</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

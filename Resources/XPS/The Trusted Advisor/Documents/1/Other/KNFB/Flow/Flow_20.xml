@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ch10.html#ch10">
+      <Paragraph Margin="0,80,0,28" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="16">
+        <Run Tag="__79">10</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Normal" FontSize="19" Tag="__79">Engagement</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__79">E</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__79">NGAGEMENT</Run>
+          <Run Tag="__79">, </Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__79">THE FIRST STEP</Run>
+          <Run Tag="__79"> in trust building, is the stage where it first occurs to the client that maybe, perhaps, somehow, the person standing here in front of him or her might be able to help in finding a solution to a (specific) problem. This can happen in either a new or existing client situation.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__79">Many advisors believe that the trust-building process begins with listening. But something else must come first, before a (new or existing) client will actually start to talk about a need. That something involves an initial connection between the advisor and the client. We call it engaging.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__79">For a client, engagement is a nontrivial decision. Whatever issue the client faces, it will require some emotional energy, and personal risk, just to put it forth. This is not done unless a decision is made to invest time and energy, and to take a risk, which isn&#x2019;t taken unless the potential client sees some likelihood of good results.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__79">Clients have lots of people who want their time. We recently heard a prominent chief financial officer talk to a group of accounting partners about what he seeks in an advisor. He started off by saying that people from accounting and consulting firms were constantly trying to get on his calendar, and that they had better have something valuable to offer. Unfortunately, too many come in &#x201C;just asking me what my problems are and wanting to listen. They bring nothing of value to the meeting.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__79">Clients don&#x2019;t open up just because we listen, not even existing clients. They have to think we&#x2019;re worth talking to </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__79">on this issue</Run>
+          <Run Tag="__79">. Some trigger has to be pulled in the mind of the client so that he or she will open up to </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__79">us</Run>
+          <Run Tag="__79">, in particular. Think about your own experiences. To whom do you open up? Who opens up to you?</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__79">How can we get a client to engage? Shock or surprise can be used to alter the ongoing perceptions and expectations that have become habitual in the relationship. Service firms in recent years have become slightly more daring in their willingness to use surprises, or to alter expectations, albeit quite within socially acceptable bounds.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__79">Engaging with New Clients</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__79">We referred in Chapter 3 to the use of saddlebags and pizza boxes as a way of getting the client&#x2019;s attention and demonstrating initiative and creativity. Without wishing to overstress these examples, they illustrate the principle that being seen as </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__79">visibly trying to customize</Run>
+          <Run Tag="__79"> our activities to this specific client, doing something a little different to communicate a message and gain attention, is potentially very powerful.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__79">We don&#x2019;t just mean powerful in a self-oriented sales sense, but in the sense of building the beginnings of trust. By showing we are willing to enter the client&#x2019;s world, however symbolically, we create a feeling in the client of:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__80">&#x201C;Maybe these people aren&#x2019;t like all the others. These people are really trying to earn and deserve my attention. They&#x2019;ve earned the right, at least, for me to proceed to the next step of speaking with them.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__80">That&#x2019;s (the beginnings of) trust building.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__80">Other methods of visibly customizing include presenting your messages in the format used on the client&#x2019;s Internet or Web site. Perhaps you could incorporate clients&#x2019; products in interesting ways into your communications. We have heard of the successful use of videos, audios, and even live acting performances by professionals, all techniques to shake up the existing patterns of perception, ways to get the client to engage anew.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__80">If you have the time, or a research department to back you up, you can learn a great deal about prospective clients and their issues from trade magazines, trade associations, and, of course, the Internet. This approach works wonderfully with new clients. One major consulting firm built its success on a strategy of carefully selecting the target new clients it pursued, and before making even the first contact with the target client, it did a thorough analysis of the industry. It did not just collect the facts, but truly did an analysis and developed insights and a point of view. They would then approach their target and say:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__80">&#x201C;We have some unique insights into your industry and we&#x2019;d like to come and share them with you, for free. We don&#x2019;t pretend to know your business as well as you do, but we think we&#x2019;ve got some information and views that are a little different. May we come and discuss them with you?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__80">This is another example of earning sales by earning trust, and earning trust by the principles set forth in Chapter 5 on relationship building: Go first, illustrate, and don&#x2019;t assert.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__80">In the book </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__80">You&#x2019;re Working Too Hard to Make the Sale</Run>
+          <Run Tag="__80">, Bill Brooks and Tom Travesano suggest that advisors need to indicate quickly that they understand the buyer&#x2019;s wants. Not needs. Wants. And not even deliver, just understand. In other words, we must engage quickly around something that is really meaningful to the client.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__80">Why does this work as an attention getter? Because it is so rare that an advisor truly succeeds in getting out of his or her own internally based worldview to put forth a client-focused view of the world.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__80">We are too often worried about ourselves, and it shows. We worry about our lines, we rehearse our presentation, we check our appearance, and we fine-tune our proposal&#x2019;s text. All are activities that are self-oriented, not focused on the other person. When an advisor succeeds in breaking through the clutter and clearly articulating something that is genuinely and accurately aimed at the client&#x2019;s wants, it is striking. Striking enough to create engagement.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__81">(Re-)Engaging with Existing Clients</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__81">In an interesting parallel to our earlier discussion on romance and relationship building, questions arise as to the engagement process with clients of long standing. How does one reengage with an existing client? How can we be fresh and captivating over longer periods of time, or after multiple assignments? How do we do this and not be perceived as being too predictable (and our motives being distrusted)?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__81">In the early stages of relationship building (in business or personal life), it is partially the new, the intriguing, and the exciting things that got the relationship started. In an ongoing relationship, being able to get clients to open up means doing or saying things that are still sufficiently new, intriguing, and exciting.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__81">Existing clients generally give us the opportunity for an audience. They&#x2019;ll give us a chance, they&#x2019;ll hear us out, they&#x2019;ll nod appropriately. The deeper question, however, is whether they&#x2019;ll engage and open. They don&#x2019;t always do so. We&#x2019;ve all had the slightly unnerving experience of having gone to a client to talk about what we believe could be a hot issue or of great interest to them only to be met by blank stares.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__81">With an existing client, you might say:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__81">&#x201C;Susan, I&#x2019;ve been looking at your Web site and those of your competitors, and I notice that many of your competitors are making some very significant moves. I certainly don&#x2019;t have the answers, but I do have some thoughts about how you might respond. Would you, or your team, like to get together to bat around some ideas? No charge, of course. I don&#x2019;t want to stick my nose in where it&#x2019;s not wanted, but if you&#x2019;d like my thoughts I&#x2019;d be happy to share them.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__81">Successful approaches often (but not always) derive from the prior knowledge you have gained on preceding client work or in earlier client conversations. Here are some examples, and some specific phrasings that accompany them. Note the emphases, and what they connote:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__81">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__81">Approaches that demonstrate concern about competitive developments</Run>
+            <LineBreak/>
+            <Run Tag="__81"> &#xA0;&#xA0;&#xA0;&#xA0;&#x201C;I&#x2019;m a little </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__81">worried</Run>
+            <Run Tag="__81"> about how your competitor is raising its profile in the marketplace, and wanted to talk to you about it.&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__81">Approaches that signal an understanding of career challenges facing a particular individual</Run>
+            <LineBreak/>
+            <Run Tag="__81"> &#xA0;&#xA0;&#xA0;&#xA0;&#x201C;I&#x2019;ve been watching what&#x2019;s been going on here with [for example] succession and succession planning, and how that might </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__81">affect your decision-making</Run>
+            <Run Tag="__81">.&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__82">Approaches that might offer a solution to a specific managerial issue</Run>
+            <LineBreak/>
+            <Run Tag="__82"> &#xA0;&#xA0;&#xA0;&#xA0;&#x201C;A while ago, you mentioned </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__82">you were concerned</Run>
+            <Run Tag="__82"> about how [for example] the two groups would integrate, and I wanted to share some observations.&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__82">Approaches that demonstrate continuity and development</Run>
+            <LineBreak/>
+            <Run Tag="__82"> &#xA0;&#xA0;&#xA0;&#xA0;&#x201C;I&#x2019;ve thought a lot about </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__82">something you said</Run>
+            <Run Tag="__82"> four weeks ago.&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__82">These are competitive, career, or personal issues. They contrast with more content- or expertise-driven approaches, most of which prevail in the earlier stages of client relationships. In those earlier stages, advisors have not yet earned the right (nor might they have the knowledge) to go in and start discussing the career challenges of a particular client. Later on, however, it is a more appropriate topic for conversation.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__82">Engaging with existing clients is not just about topic. It&#x2019;s also about timing. After we have gathered information that may be valuable in helping craft a new client discussion, it&#x2019;s essential to further evaluate the attempt to engage on the bases of urgency and importance.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__82">Steven Covey has long made use of the critical differences between urgency and importance in much of his work on personal effectiveness. It also has great relevance here. We all know how annoying it is to be asked to address topics of great importance when we don&#x2019;t have the time to consider them.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__82">Engaging with existing clients is about picking the right topic at the right time. We have limited opportunities for time with them, and if we choose poorly, our opportunities get even fewer. Here are two quick rules of thumb that we have found useful:</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__82">First, introduce the topics in an order that relates to the amount of time available with the client. (Its always amazing that some people don&#x2019;t even check to see how much time the client has available.) If you have only a limited amount of time (a pass-in-the-hall, or five minutes), lay out the agenda, start with the urgent, and end with the important (even if it&#x2019;s just a phrase or thought to come back to at some later point). If you have somewhat more time, start with the important, and save five minutes at the end of the conversation for the urgent. Either way, it will buy you more client time.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__82">Second, don&#x2019;t hold back in raising a topic. Even if you can&#x2019;t cover it all or show how brilliant you are, it&#x2019;s still worthwhile to raise it. We never have enough time to show how much we know or how much we care, but offering even an indication of our caring for a client can put us in very good stead, even years later.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__82">Engaging New Clients</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__82">Engaging a new client isn&#x2019;t just luck. You can improve your luck considerably by doing the following:</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__82">Find out absolutely everything you can about your new potential client. Anybody who doesn&#x2019;t do a fairly extensive Internet and literature search (not a snoop, mind you, but a search) on both the entity and the individual is missing an easy bet. Follow that up with second-stage research, or the &#x201C;six degrees of separation&#x201D; approach: Do you know somebody who knows somebody who might know somebody who used to work with this person?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__83">Make sure that you have at least two or three things that you&#x2019;d like to talk about with them. Not questions, but topics. The danger here is making sure you haven&#x2019;t picked an overused or stale topic. Some information or a point of view (especially an unpublished one) on competitors or adversaries is almost always of interest.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__83">Figure out whether you might have (or be) something of interest to them, something that they might want to discuss.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__83">You can drop facts or hints about where you&#x2019;ve been, or what you&#x2019;ve worked on that might be of interest to them, as long as you don&#x2019;t come across as a name-dropper. Just because your brother-in-law&#x2019;s cousin painted Michael Jordan&#x2019;s portrait doesn&#x2019;t qualify, unless you&#x2019;re talking to a sports artist. Make sure it&#x2019;s of interest to them.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__83">Don&#x2019;t make early interactions purely transactional. If you focus strictly on the content, you&#x2019;ll be pegged more as a technician than as an advisor. Talk to them as if they are a </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__83">new</Run>
+          <Run Tag="__83"> friend, not an old friend. There&#x2019;s a difference. There&#x2019;s nothing worse than someone pretending to be overly familiar. Make it conversational enough so they&#x2019;d want to spend more time together, not less.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__83">Just having a meeting isn&#x2019;t enough. If you can&#x2019;t add value, postpone the meeting. Wait until you </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__83">can</Run>
+          <Run Tag="__83"> add value. It will be worth the wait.</Run>
+        </Span>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

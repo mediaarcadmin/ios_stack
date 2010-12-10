@@ -1,0 +1,475 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__39">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__39">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part01chapter04.html#part01chapter04" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part01chapter04.html#page_30">&#xA0;&#xA0;4&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__39">EVALUATING HITTERS BY</Run>
+      <LineBreak/>
+      <Run Tag="__39">MONTE CARLO SIMULATION</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__39">I</Run>
+      <Run Tag="__39">n chapters 2 and 3 we showed how to use Runs Created and Linear Weights to evaluate a hitter&#x2019;s effectiveness. These metrics were primarily developed to &#x201C;fit&#x201D; the relationship between runs scored by a team during a season and team statistics such as walks, singles, doubles, triples, and home runs. We pointed out that for players whose event frequencies differ greatly from typical team frequencies, these metrics might do a poor job of evaluating a hitter&#x2019;s effectiveness.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter04.html#rfnpage_30">A simple example will show how Runs Created and Linear Weights can be very inaccurate.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter04.html#fnpage_30">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter04.html#rfnpage_30">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter04.html#rfnpage_30"> Consider a player (let&#x2019;s call him Joe Hardy after the hero of the wonderful movie and play </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter04.html#rfnpage_30">Damn Yankees</Run>
+      <Run Tag="xhtml/part01chapter04.html#rfnpage_30">) who hits a home run at 50% of his plate appearances and makes an out at the other 50% of his plate appearances. Since Joe hits as many home runs as he makes outs, you would expect Joe &#x201C;on average&#x201D; to alternate HR, OUT, HR, OUT, HR, OUT, for an average of 3 runs per inning. In the appendix to </Run>
+      <Hyperlink NavigateUri="part01chapter06.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#rfnpage_30">chapter 6</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#rfnpage_30"> we will use the principle of conditional expectation to give a mathematical proof of this result.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__39">In 162 nine-inning games Joe Hardy will make, on average, 4,374 outs (162 &#xD7; 27 = 4,374) and hit 4,374 home runs. As shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__39">figure 4.1</Run>
+      </Hyperlink>
+      <Run Tag="__39">, we find that Runs Created predicts that Joe Hardy would generate 54 runs per game (or 6 per inning) and Linear Weights predicts Joe Hardy to generate 36.77 runs per game (or 4.08 runs per inning). Both estimates are far from the true value of 27 runs per game.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__39">Introduction to Monte Carlo Simulation</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter04.html#page_31">How can we show that our player generates 3 runs per inning, or 27 runs per game? We can do so by programming the computer to play out many innings and averaging the number of runs scored per inning. Developing a computer model to repeatedly play out an uncertain situation is called Monte Carlo simulation.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__39">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/ec7bacf7-f59c-448e-a475-1ea654b918ba.jpg" Stretch="Uniform" Width="420" Height="104" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure01">Figure 4.1. Runs Created and Linear Weights predicted runs per game for Joe Hardy. See file simulationmotivator.xls.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__40">Physicists and astronomers use this model to simulate the evolution of the universe. Biologists use the model to simulate the evolution of life on earth. Corporate financial analysts use Monte Carlo simulation to evaluate the likelihood that a new GM vehicle or a new Proctor &amp; Gamble shampoo will be profitable. Wall Street rocket scientists use Monte Carlo simulation to price exotic or complex financial derivatives. The term &#x201C;Monte Carlo simulation&#x201D; was coined by the Polish-born physicist Stanislaw Ulam, who used Monte Carlo simulation in the 1930s to determine the chance of success for the chain reaction needed for an atom bomb to detonate successfully. Ulam&#x2019;s simulation was given the military code name Monte Carlo, and the name Monte Carlo simulation has been used ever since.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter04.html#page_32">How can we play out an inning? Simply flip a coin and assign a toss of heads to an out and a toss of tails to a home run. Or we could draw from a deck of cards and assign a red card to an out and a black card to a home run. Both the coin toss and the card-drawing method will assign a 0.5 chance to a home run and a 0.5 chance to an out. We keep flipping the coin or drawing a card (with replacement) until we obtain 3 outs. Then we record the number of home runs. We repeat this procedure about 1,000 times and average the number of runs scored per inning. This average should closely approximate the average runs per inning scored by our hypothetical player. We will get very close to 3,000 total runs, which yields an estimate of 3 runs per inning. I implemented the simple Monte Carlo simulation using Microsoft Excel. (See </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_32">figure 4.2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_32">.) Excel contains a function RAND(). If you type = RAND() in any cell and hit the F9 key, the number in the cell will change. The RAND() function yields any number between 0 and 1 with equal probability. This means, for example, that half the time RAND() yields a number between 0 and 0.5, and half the time RAND() yields a number between 0.5 and 1. The results generated by the RAND() function are called random numbers. Therefore, we can simulate an inning for our player by assigning an outcome of a home run to a random number less than or equal to 0.5 and assigning an outcome of an out to a random number between 0.5 and 1. By hitting F9 in spreadsheet simulationmotivator.xls, you can see the results of a simulated inning (see </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_32">figure 4.2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_32">). For our simulated inning, each random number less than or equal to 0.5 yielded a home run and any other random number yielded an out. For our simulated inning, 2 runs were scored.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/14c746b8-034a-4cef-ba4d-449f2ba843ee.jpg" Stretch="Uniform" Width="477" Height="140" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure02">Figure 4.2. Simulating one inning for Joe Hardy. See file simulationmotivator.xls.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__41">Cells J6:J1005 contain the results of 1,000 simulated innings, while cell J3 contains the average runs per inning generated during our 1,000 hypothetical innings. The chapter appendix explains how Excel&#x2019;s Data Table feature was used to perform the simulation 1,000 times. Whenever you hit F9, you will see cell J3 is very close to 3, indicating that our player will generate around 3 runs per inning, or 27 runs per game (not 54 runs per game as Runs Created predicts).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__41">Simulating Runs Scored by a Team of Nine Ichiros</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__41">Buoyed by the success of our simple simulation model, we can now simulate the number of runs that would be scored by a team of, say, nine Ichiro 2004s. We need to follow through the progress of an inning and track the runners on base, runs scored, and number of outs. In our model the events that can occur at each plate appearance are displayed in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure03">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__41">figure 4.3</Run>
+      </Hyperlink>
+      <Run Tag="__41">.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__41">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__41">We assume each error advances all base runners a single base.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__41">A long single advances each runner two bases.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__41">A medium single scores a runner from second base but advances a runner on first only one base.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__41">A short single advances all runners one base.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__41">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part01chapter04.html#page_33">&#xA0;</Run>
+      <Image Source="/Resources/ed49b7a0-c6e4-4c10-8d8c-ecb872c2a8b6.jpg" Stretch="Uniform" Width="270" Height="340" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure03">Figure 4.3. Event codes for baseball simulations. See file Ichiro04may28.xls.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__42">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__42">A short double advances each runner two bases.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__42">A long double scores a runner from first.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__42">GIDP is a ground ball double play if there is a runner on first, first and second, or first and third, or if the bases are loaded. In other situations the batter is out and the other runners stay where they are.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__42">Normal GO is a ground out that results in a force out with a runner on first, first and second, or first and third, or if the bases are loaded. We assume that with runners on second and third the runners stay put; with a runner on third the runner scores; and with a runner on second the runner advances to third.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__42">A long fly ball advances (if there are fewer than two outs) a runner on second or third one base.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__42">A medium fly ball (if there are fewer than two outs) scores a runner from third.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__42">A short fly or line drive infield fly does not advance any runners.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__42">Next we need to assign probabilities to each of these events. During recent seasons approximately 1.8% of all AB have resulted in an error. Each player&#x2019;s information is input in cells E3 and E6:E12. Let&#x2019;s input Ichiro&#x2019;s 2004 statistics. (See </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure04">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__42">figure 4.4</Run>
+      </Hyperlink>
+      <Run Tag="__42">.) For Ichiro, AB + SB + SF = 704 + 2 + 3 = 709. He walked 49 times, hit 225 singles, etc.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__43">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part01chapter04.html#page_34">&#xA0;</Run>
+      <Image Source="/Resources/e596a8ca-582a-4288-a82d-bd744fdda8da.jpg" Stretch="Uniform" Width="408" Height="267" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure04">Figure 4.4. Inputs to Ichiro simulation. The simulation omits relatively infrequent baseball events such as steals, caught stealing, passed balls, wild pitches, balks, and so forth.</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__43">
+      <Paragraph TextIndent="-16" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__43">Outs (in play) are plate appearances that result in non-strikeout outs: outs (in play) = (AB + SF + SB)&#x2013;hits&#x2013;errors &#x2013; strikeouts.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__43">Historically, errors are 1.8% of AB + SB + SF, so we compute errors = .018 &#xD7; (AB SB SF).</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__43">Also, total plate appearances = BB + HBP + (AB + SB + SF), or 709 + 49 + 4 = 762.</Run>
+      </Paragraph>
+    </Section>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__43">We can now compute the probability of various events as (frequency of event)/(total plate appearances). For example, we estimate the probability of an Ichiro single as 225/762 = .295.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__43">We also need to estimate probabilities for all possible types of singles, doubles, and outs in play. For example, what fraction of outs in play are GIDP? Using data from Earnshaw Cook&#x2019;s </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__43">Percentage Baseball</Run>
+      <Run Tag="__43"> (1966) and discussions with Jeff Sagarin (who has built many accurate baseball simulation models), we estimated these fractions as follows:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__43">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__43">30% of singles are long singles, 50% are medium singles, and 20% are short singles.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__43">80% of doubles are short doubles and 20% are long doubles.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__43">53.8% of outs in play are ground balls, 15.3% are infield flies or line drives, and 30.9% are fly balls.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__43">50% of ground outs are GIDP and 50% are Normal GOs.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__43">20% of all fly balls are long fly balls, 50% are medium fly balls, and 30% are short fly balls.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter04.html#page_35">To verify that these parameters are accurate, I simulated 50,000 innings using the composite MLB statistics for the 2006 season from the teams.xls file. The results showed that simulated runs per game were within 1% of the actual runs per game.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__44">Let&#x2019;s use the Excel simulation add-in @RISK to &#x201C;play out&#x201D; an inning thousands (or millions) of times. Basically @Risk generates the event for each plate appearance based on the probabilities that are input (of course, these probabilities are based on the player we wish to evaluate). For each plate appearance, @RISK generates a random number between 0 and 1. For example, for Ichiro a random number less than or equal to 0.295 would yield a single. This will cause 29.5% of Ichiro&#x2019;s plate appearances (as happened during the actual 2004 season) to result in a single. In a similar fashion the other possible batter outcomes will occur in the simulation with the same probability as they actually occurred.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__44">Two sample innings of our Ichiro 2004 simulation are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure05">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__44">figure 4.5</Run>
+      </Hyperlink>
+      <Run Tag="__44">. The Entering State column tracks the runners on base; for example, 101 means runner on first and third while 100 means runner on first. The Outcome column tracks the outcome of each plate appearance using the codes shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure03">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__44">figure 4.3</Run>
+      </Hyperlink>
+      <Run Tag="__44">. For example, event code 6 represents a medium single.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__44">In the first inning shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure05">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__44">figure 4.5</Run>
+      </Hyperlink>
+      <Run Tag="__44">, our team of nine Ichiros scored three runs. In the second inning shown, the team scored no runs. Playing out thousands of innings with @RISK enables us to estimate the average number of runs scored per inning by a team of nine Ichiros. Then we multiply the average number of innings a team bats during a game (26.72/3) to estimate the number of Runs Created per game by Ichiro. Since we are playing out each inning using the actual probabilities corresponding to a given player, our Monte Carlo estimate of the runs per inning produced by nine Ichiros (or nine of any other player) should be a far better estimate than Runs Created or Linear Weights. The Monte Carlo estimate of runs per game should be accurate for </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__44">any player, no matter how good or bad</Run>
+      <Run Tag="__44">. As we have shown with our Joe Hardy example, the accuracy of Runs Created and Linear Weights as measures of hitting effectiveness breaks down for extreme cases.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__44">Simulation Results for Ichiro, Nomar, and Bonds</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__44">For Ichiro 2004, Nomar 1997, and Bonds 2004 our simulation yields the following estimates for Runs Created per game.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__44">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__44">Ichiro 2004: 6.92 runs per game</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__44">Nomar 1997: 5.91 runs per game</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__44">Bonds 2004: 21.02 runs per game</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__44">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part01chapter04.html#page_36">&#xA0;</Run>
+      <Image Source="/Resources/dca746bd-4d30-4e8e-a693-8d13f6eee348.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure05">Figure 4.5. Two sample innings of Ichiro 2004 simulation.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__45">There is a problem with our Bonds 2004 result, however. Barry Bonds received 232 walks during 2004. However, 120 of those were intentional because pitchers would rather pitch to the other players, who were not as good at hitting as Bonds. For a team consisting of nine Bonds 2004s there would be no point in issuing an intentional walk. Therefore, we reran our simulation after eliminating the intentional walks from Bonds&#x2019;s statistics and found that Bonds created 15.98 runs per game.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__45">How Many Runs Did Albert Pujols Add</Run>
+        <LineBreak/>
+        <Run Tag="__45">to the St. Louis Cardinals in 2006?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter04.html#page_37">Of course, there will never be team of nine Ichiros, nine Bonds, or nine Nomars. What we really want to know is how many runs a player adds to his team. Let&#x2019;s try and determine how many runs Albert Pujols added to the 2006 St. Louis Cardinals (let&#x2019;s call him Pujols 2006). The hitting statistics for the 2006 Cardinals (excluding Pujols) are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure06">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_37">figure 4.6</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_37"> and those for Pujols are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure07">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_37">figure 4.7</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_37">.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__46">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/c7d9f689-eb97-4abd-b897-e73eb371912a.jpg" Stretch="Uniform" Width="293" Height="229" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure06">Figure 4.6. St. Louis Cardinal statistics (without Pujols), 2006. See file Pujolsmay26.xls.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__46">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/e1c5dc5b-b77a-4cbd-a067-6526eb8feccf.jpg" Stretch="Uniform" Width="408" Height="267" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure07">Figure 4.7. Albert Pujols&#x2019;s 2006 statistics. See file Pujolsmay26.xls.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter04.html#page_38">Using both figures, note that 7.7% of Pujols&#x2019;s plate appearances resulted in home runs, but for the 2006 Cardinals without Pujols, only 2.4% of all plate appearances resulted in home runs. We can now estimate how many runs Pujols added to the St. Louis Cardinals. Without Pujols we assume that each hitter&#x2019;s probabilities are governed by the data in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure06">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_38">figure 4.6</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_38">. Playing out 25,000 innings (based on the runs per inning from our simulation), the Cardinals were projected to score an average of 706 runs without Pujols. With Pujols, the Cardinals actually scored 781 runs. How many wins can we estimate that Pujols added, compared to what an average Cardinal hitter adds? Let&#x2019;s use the Pythagorean Theorem from </Run>
+      <Hyperlink NavigateUri="part01chapter01.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_38">chapter 1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_38">. During 2006 the Cardinals gave up 762 runs. This yields a scoring ratio of 781/762 = 1.025. Since the Cardinals played only 161 games during 2006, the Pythagorean Theorem predicts they should have won </Run>
+      <Image Source="/Resources/5e520824-47e8-4d15-b86b-607217bd75cc.jpg" Stretch="Uniform" Width="150" Height="46" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="xhtml/part01chapter04.html#page_38"> games.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__47">Without Pujols our simulation yielded a scoring ratio of 706/762 = .927. Therefore, with Pujols the Pythagorean Theorem predicts that the Cardinals would have won </Run>
+      <Image Source="/Resources/510a3e88-4f6d-478c-93e8-7403c900f8b6.jpg" Stretch="Uniform" Width="150" Height="47" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__47"> games. Thus our model estimates that Pujols added 82.48 &#x2013; 74.36 = 8.12 wins for the Cardinals (assuming that Pujols&#x2019;s plate appearances were replaced by an average non-Pujols Cardinal hitter).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__47">Pujols vs. the Average Major Leaguer</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__47">In his </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__47">Historical Baseball Abstract</Run>
+      <Run Tag="__47"> Bill James advocates comparing a player to an &#x201C;average major leaguer.&#x201D; Let&#x2019;s try to determine how many extra runs an &#x201C;average 2006&#x201D; team would score if we replaced 634 of the average team&#x2019;s plate appearances with Pujols&#x2019;s statistics (shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure07">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__47">figure 4.7</Run>
+      </Hyperlink>
+      <Run Tag="__47">). The file Pujolsoveraverage.xls allows us to input two sets of player statistics. We input Pujols&#x2019;s 2006 statistics in cells B2:B12. Then we input the average 2006 MLB team&#x2019;s statistics in H2:I12. See </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure08">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__47">figure 4.8</Run>
+      </Hyperlink>
+      <Run Tag="__47">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter04.html#page_39">We can see that Pujols hit many more home runs, had many more walks, and had fewer strikeouts per plate appearance than the average 2006 batter. When simulating an inning, each batter&#x2019;s probabilities will be generated using either the player data from column D or the team data in column J. Since Pujols had 634 plate appearances and the average team had 6,236 plate appearances, we choose each batter to be Pujols (column D data) with probability 634/6,236 = .102, and choose each batter to be an &#x201C;average batter&#x201D; (column J data) with probability 1 &#x2013; .102 = .898. After running 50,000 innings for the average team and the team replacing 10.2% of the average team&#x2019;s at bats by Pujols, we find the marginal impact is that Pujols would increase the number of runs scored for an average team from 783 to 853. How many wins is that worth? With Pujols our scoring ratio is 853/783 = 1.089. Using the Pythagorean Theorem from </Run>
+      <Hyperlink NavigateUri="part01chapter02.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_39">chapter 2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_39"> we predict that the team with Pujols would win </Run>
+      <Image Source="/Resources/fdaae583-9fd0-4ded-861a-80d9f2faf9a0.jpg" Stretch="Uniform" Width="170" Height="50" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="xhtml/part01chapter04.html#page_39"> games. Therefore, we would estimate that adding Pujols to an average team would lead to 87.38 &#x2013; 81 = 6.38 wins. We will see in </Run>
+      <Hyperlink NavigateUri="part01chapter09.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_39">chapter 9</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_39"> that an alternative analysis of Pujols&#x2019;s 2006 batting record indicates that he added around 9.5 wins more than an average player would have.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__47">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/a9fe6808-904e-4019-b08b-e9cdc5e251bb.jpg" Stretch="Uniform" Width="408" Height="267" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure08">Figure 4.8. Average team statistics for the MLB, 2006. See file Pujolsoveraverage.xls.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="19">
+      <Run Tag="__48">APPENDIX</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__48">Using a Data Table to Perform a Simulation in Excel</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__48">In the cell range B2:H22 of the file simulationmotivator.xls we have programmed Excel to &#x201C;play out&#x201D; an inning for a team in which each hitter has a 50% chance of striking out or hitting a home run. Hit F9 and the number of runs scored by the team is recorded in cell H3. Note that whenever the Excel RAND() function returns a value less than 0.5 the batter hits a home run; otherwise the batter strikes out. To record the number of runs scored during many (say, 1,000) innings, we enter the numbers 1 through 1,000 in the cell range I6:I1005. Next we enter in cell J3 the formula (=H3) that we want to play out or simulate 1,000 times. Now we select the cell range I5:J1005 (this is called the Table Range). In Excel 2003 or earlier select Data Table. In Excel 2007 select Data and then choose the What-If icon (the one with a question mark) and choose Data Table.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter04.html#page_40">Next leave the row input cell blank and choose any blank cell as your column input cell. Then Excel puts the numbers 1, 2, .&#xA0;.&#xA0;. 1,000 successively in your selected blank cell. Each time cell H3 (runs in the inning) is recalculated as the RAND() functions in column C recalculate. Entering the formula =AVERAGE (I6:I1005) in cell J3 calculates the average number of runs scored per inning during our 1,000 simulated innings. For the 1,000 innings simulated in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter04.html#chapter04figure09">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter04.html#page_40">figure 4.9</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter04.html#page_40">, the mean number of runs scored per inning was 3.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__48">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/16b10a69-b3a9-431d-b3f3-9dd4530c9be6.jpg" Stretch="Uniform" Width="251" Height="378" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter04.html#chapter04figure09">Figure 4.9. Simulating 1,000 innings of Joe Hardy hitting.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter04.html#rfnpage_30">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter04.html#fnpage_30">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter04.html#fnpage_30"> This was described to me by Jeff Sagarin, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter04.html#fnpage_30">USA Today</Run>
+      <Run Tag="xhtml/part01chapter04.html#fnpage_30"> sports statistician.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

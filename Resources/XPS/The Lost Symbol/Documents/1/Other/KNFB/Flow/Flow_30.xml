@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c23_r1.htm#c23">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__125">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__125">23 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__125">Another tattoo.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">Langdon crouched anxiously beside Peter&#x2019;s open palm and examined the seven tiny symbols that had been hidden beneath the lifeless clenched fingers.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/0505d69a-9d5e-4355-a609-6fe8646cf353.jpg" Stretch="Uniform" Width="100" Height="39" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">&#x201C;They appear to be numbers,&#x201D; Langdon said, surprised. &#x201C;Although I don&#x2019;t recognize them.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">&#x201C;The first is a Roman numeral,&#x201D; Anderson said.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">&#x201C;Actually, I don&#x2019;t think so,&#x201D; Langdon corrected. &#x201C;The Roman numeral I-I-I-X doesn&#x2019;t exist. It would be written V-I-I.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">&#x201C;How about the rest of it?&#x201D; Sato asked.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">&#x201C;I&#x2019;m not sure. It looks like eight-eight-five in Arabic numbers.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">&#x201C;Arabic?&#x201D; Anderson asked. &#x201C;They look like </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__125">normal</Run>
+        <Run Tag="__125"> numbers.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">&#x201C;Our normal numbers </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__125">are</Run>
+        <Run Tag="__125"> Arabic.&#x201D; Langdon had become so accustomed to clarifying this point for his students that he&#x2019;d actually prepared a lecture about the scientific advances made by early Middle Eastern cultures, one of them being our modern numbering system, whose advantages over Roman numerals included &#x2018;positional notation&#x2019; and the invention of the number zero. Of course, Langdon always ended this lecture with a reminder that Arab culture had </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__125">also</Run>
+        <Run Tag="__125"> given mankind the word </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__125">al-kuhl</Run>
+        <Run Tag="__125">&#x2014;the favorite beverage of Harvard freshmen&#x2014;known as </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__125">alcohol</Run>
+        <Run Tag="__125">.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">Langdon scrutinized the tattoo, feeling puzzled. &#x201C;And I&#x2019;m not even sure about the eight-eight-five. The rectilinear writing looks unusual. Those may not be numbers.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__125">&#x201C;Then what are they? Sato asked.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">&#x201C;I&#x2019;m not sure. The whole tattoo looks almost . . . runic.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">&#x201C;Meaning?&#x201D; Sato asked.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">&#x201C;Runic alphabets are composed solely of straight lines. Their letters are called runes and were often used for carving in stone because curves were too difficult to chisel.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">&#x201C;If these are runes,&#x201D; Sato said, &#x201C;what is their meaning?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">Langdon shook his head. His expertise extended only to the most rudimentary runic alphabet&#x2014;Futhark&#x2014;a third-century Teutonic system, and this was not Futhark. &#x201C;To be honest, I&#x2019;m not even sure these are runes. You&#x2019;d need to ask a specialist. There are dozens of different forms&#x2014;H&#xE4;lsinge, Manx, the &#x2018;dotted&#x2019; Stungnar&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__126">&#x201C;Peter Solomon is a Mason, is he not?&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">Langdon did a double take. &#x201C;Yes, but what does that have to do with this?&#x201D; He stood up now, towering over the tiny woman.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">&#x201C;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__126">You</Run>
+        <Run Tag="__126"> tell me. You just said that runic alphabets are used for stone carvings, and it is my understanding that the original Freemasons were stone craftsmen. I mention this only because when I asked my office to search for a connection between the Hand of the Mysteries and Peter Solomon, their search returned one link in particular.&#x201D; She paused, as if to emphasize the importance of her finding. &#x201C;The Masons.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">Langdon exhaled, fighting the impulse to tell Sato the same thing he constantly told his students: </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__126">&#x201C;Google&#x201D; is not a synonym for &#x201C;research.&#x201D;</Run>
+        <Run Tag="__126"> In these days of massive, worldwide keyword searches, it seemed everything was linked to everything. The world was becoming one big entangled web of information that was getting denser every day.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">Langdon maintained a patient tone. &#x201C;I&#x2019;m not surprised the Masons appeared in your staff&#x2019;s search. Masons are a very obvious link between Peter Solomon and any number of esoteric topics.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__126">&#x201C;Yes,&#x201D; Sato said, &#x201C;which is another reason I have been surprised this evening that you have not yet mentioned the Masons. After all, you&#x2019;ve been talking about secret wisdom protected by an enlightened few. That sounds very Masonic, does it not?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__127">&#x201C;It does . . . and it also sounds very Rosicrucian, Kabbalistic, Alumbradian, and any number of other esoteric groups.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__127">&#x201C;But Peter Solomon is a Mason&#x2014;a very powerful Mason, at that. It seems the Masons would come to mind if we were talking about secrets. Heaven knows the Masons love their secrets.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__127">Langdon could hear the distrust in her voice, and he wanted no part of it. &#x201C;If you want to know anything about the Masons, you would be far better served to ask a Mason.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__127">&#x201C;Actually,&#x201D; Sato said, &#x201C;I&#x2019;d prefer to ask someone I can trust.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c23_r1.htm#page99">Langdon found the comment both ignorant and offensive. &#x201C;For the record, ma&#x2019;am, the entire Masonic philosophy is built on honesty and integrity. Masons are among the most trustworthy men you could ever hope to meet.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__127">&#x201C;I have seen persuasive evidence to the contrary.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__127">Langdon was liking Director Sato less and less with each passing moment. He had spent years writing about the Masons&#x2019; rich tradition of metaphorical iconography and symbols, and knew that Masons had always been one of the most unfairly maligned and misunderstood organizations in the world. Regularly accused of everything from devil worship to plotting a one-world government, the Masons also had a policy of never responding to their critics, which made them an easy target.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__127">&#x201C;Regardless,&#x201D; Sato said, her tone biting, &#x201C;we are again at an impasse, Mr. Langdon. It seems to me there is either something you are missing . . . or something you are not telling me. The man we&#x2019;re dealing with said that Peter Solomon chose you specifically.&#x201D; She leveled a cold stare at Langdon. &#x201C;I think it&#x2019;s time we move this conversation to CIA headquarters. Maybe we&#x2019;ll have more luck there.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__127">Sato&#x2019;s threat barely registered with Langdon. She had just said something that had lodged in his mind. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__127">Peter Solomon chose you</Run>
+        <Run Tag="__127">. The comment, combined with the mention of Masons, had hit Langdon strangely. He looked down at the Masonic ring on Peter&#x2019;s finger. The ring was one of Peter&#x2019;s most prized possessions&#x2014;a Solomon family heirloom that bore the symbol of the double-headed phoenix&#x2014;the ultimate mystical icon of Masonic wisdom. The gold glinted in the light, sparking an unexpected memory.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__128">Langdon gasped, recalling the eerie whisper of Peter&#x2019;s captor: </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__128">It really hasn&#x2019;t dawned on you yet, has it? Why you were chosen?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__128">Now, in one terrifying moment, Langdon&#x2019;s thoughts snapped into focus and the fog lifted.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__128">All at once, Langdon&#x2019;s purpose here was crystal clear.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__128">Ten miles away, driving south on Suitland Parkway, Mal&#x2019;akh heard a distinctive vibration on the seat beside him. It was Peter Solomon&#x2019;s iPhone, which had proven a powerful tool today. The visual caller ID now displayed the image of an attractive middle-aged woman with long black hair.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14"/>
+      <Paragraph Margin="0,17,0,17" TextAlignment="Left" FontSize="16">
+        <Run Tag="__128">INCOMING CALL&#x2014;KATHERINE SOLOMON</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__128">Mal&#x2019;akh smiled, ignoring the call. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__128">Destiny pulls me closer.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__128">He had lured Katherine Solomon to his home this afternoon for one reason only&#x2014;to determine if she had information that could assist him . . . perhaps a family secret that might help Mal&#x2019;akh locate what he sought. Clearly, however, Katherine&#x2019;s brother had told her nothing of what he had been guarding all these years.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__128">Even so, Mal&#x2019;akh had learned something else from Katherine. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__128">Something that has earned her a few extra hours of life today.</Run>
+        <Run Tag="__128"> Katherine had confirmed for him that all of her research was in </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__128">one</Run>
+        <Run Tag="__128"> location, safely locked inside her lab.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__128">I must destroy it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__128">Katherine&#x2019;s research was poised to open a new door of understanding, and once the door was opened even a crack, others would follow. It would just be a matter of time before everything changed. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__128">I cannot let that happen. The world must stay as it is . . . adrift in ignorant darkness.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__129">The iPhone beeped, indicating Katherine had left a voice mail. Mal&#x2019;akh retrieved it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__129">&#x201C;Peter, it&#x2019;s me again.&#x201D; Katherine&#x2019;s voice sounded concerned. &#x201C;Where are you? I&#x2019;m still thinking about my conversation with Dr. Abaddon . . . and I&#x2019;m worried. Is everything okay? Please call me. I&#x2019;m at the lab.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__129">The voice mail ended.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__129">Mal&#x2019;akh smiled. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__129">Katherine should worry less about her brother, and more about herself.</Run>
+        <Run Tag="__129"> He turned off Suitland Parkway onto Silver Hill Road. Less than a mile later, in the darkness, he spotted the faint outline of the SMSC nestled in the trees off the highway to his right. The entire complex was surrounded by a high razor-wire fence.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__129">A secure building?</Run>
+        <Run Tag="__129"> Mal&#x2019;akh chuckled to himself. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__129">I know someone who will open the door for me.</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

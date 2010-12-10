@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__219">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__219">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part03chapter33.html#part03chapter33" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part03chapter33.html#page_233">&#xA0;&#xA0;33&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__219">NBA PLAYERS&#x2019; SALARIES AND THE DRAFT</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__219">I</Run>
+      <Run Tag="__219">n </Run>
+      <Hyperlink NavigateUri="part01chapter09.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__219">chapter 9</Run>
+      </Hyperlink>
+      <Run Tag="__219"> we determined salaries for baseball players based on how many wins a player generated over and above the number of wins that would be achieved with a team of &#x201C;replacement players.&#x201D; Using the WINVAL point ratings we can use the same approach to come up with an estimate of a fair salary for an NBA player.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__219">During the 2006&#x2013;7 season the average team payroll was $66 million. The minimum player salary was around $400,000. We will define the point value of a &#x201C;replacement player&#x201D; as &#x2013;6. This is the usual point value for a player in the bottom 10% of the league point values. A team made up of replacement players would lose by 5 &#xD7; (6) = 30 points per game to an average NBA team. After noting that an average NBA team scored 98.7 points per game during 2006&#x2013;7, we find that our team of replacement players would have a scoring ratio of 68.7/98.7 = .696. Using the Pythagorean Theorem as we did in </Run>
+      <Hyperlink NavigateUri="part01chapter01.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__219">chapter 1</Run>
+      </Hyperlink>
+      <Run Tag="__219">, we find that our team of replacement players would be expected to win a fraction </Run>
+      <Image Source="/Resources/481e8e82-45e7-4fb6-8afb-aec914aa585d.jpg" Stretch="Uniform" Width="150" Height="43" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__219"> of their games. This means our team of replacement players would not win one game during an 82-game season.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__219">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__219">Calculating a Fair Player Salary Based</Run>
+        <LineBreak/>
+        <Run Tag="__219">on Minutes Played and Points Rating</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__219">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__219">During an 82-game season, an NBA team plays 82 &#xD7; 48 = 3,936 minutes (excluding overtime). To win 41 games, the team would need a scoring ratio of 1, which means that for 3,936 &#xD7; 5 = 19,680 minutes the team would have to play 6 points better per 48 minutes of player time than a team made up of replacement players. Define Points over Replacement Player (PORP) by player point rating &#x2013; (&#x2013;6) = player point rating of +6.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter33.html#page_234">If the sum of all players on a team of PORP &#xD7; minutes played = 19,680 &#xD7; 6 = 118,080, the team should have a scoring ratio of 1 and be projected to win half their games. Since playing at a &#x2013;6 point level per player requires 5 &#xD7; (400,000) = $2,000,000 and generates no wins, we find that $64 million/41 = $1,560,976 (salary) equates to one win. We have just seen that if sum of PORP &#xD7; minutes is 118,080, then the team wins 41 games. Thus a player with PORP &#xD7; minutes equal to 118,080/41 = 2,880 generates 1 win. This implies that</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__219">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__220">wins generated by player = (point rating + 6) &#xD7; (minutes played)/2,880.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__220">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__220">Since each win is worth $1,560,976 of salary we can conclude that</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__220">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__220">fair salary for player = (wins generated by player) &#xD7; 1,560,976.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__220">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__220">As an example, in 2006&#x2013;7 Kevin Garnett had a 18.98 point rating and played 2,995 minutes. We estimate that he generated </Run>
+      <Image Source="/Resources/5524e7ae-4827-4d67-b9b1-4bd7d8305488.jpg" Stretch="Uniform" Width="200" Height="41" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__220"> wins. A fair salary for him would have been 25.98 &#xD7; (1,560,976) = $40,550,000. His actual 2006&#x2013;7 salary was the highest in the league ($21,000,000), but he was vastly underpaid. </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter33.html#chapter33figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__220">Figure 33.1</Run>
+      </Hyperlink>
+      <Run Tag="__220"> shows estimated and actual salaries for several other NBA players as well as Garnett. Note Vince Carter and Darko Millicic are vastly overpaid. LeBron James and Kevin Garnett are vastly underpaid, and Jason Kidd and Kobe Bryant are paid about what they are worth.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter33.html#page_235">Each year NBA teams are penalized $1 for each dollar their payroll exceeds the salary cap. The tax level for the 2006&#x2013;7 season was set at $65.42 million. Any team whose team salary exceeded that figure paid a $1 &#x201C;luxury&#x201D; tax for each $1 by which it exceeded $65.42 million. The luxury tax makes it essential for NBA teams to manage their payroll well. Trading for players whose value exceeds what they will be paid is a good step in that direction.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/9b2c793c-d25c-4892-b12c-e0d69276de4d.jpg" Stretch="Uniform" Width="450" Height="156" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter33.html#chapter33figure01">Figure 33.1. Estimated and actual salaries for the 2006&#x2013;7 season.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__220">Is the NBA Draft Efficient?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter33.html#rfnpage_235-01">In </Run>
+      <Hyperlink NavigateUri="part02chapter27.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter33.html#rfnpage_235-01">chapter 27</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter33.html#rfnpage_235-01"> we reviewed the Thaler-Massey (TM) study of the NFL draft. TM found that the NFL draft was inefficient in that later draft picks created more value than earlier picks. We viewed the TM results as flawed, however, because they lacked an accurate measure for player value. Winston and Medland</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part03chapter33.html#fnpage_235-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter33.html#rfnpage_235-01">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter33.html#rfnpage_235-01"> studied the efficiency of the NBA draft. For players drafted during the 1998&#x2013;2002 period, we computed (using the method described earlier in the chapter) a fair salary for each of the player&#x2019;s first three seasons based on their point rating and minutes played. For their first three years in the league we defined the player&#x2019;s surplus value as (sum of player salary for first three years)&#x2013;(salary paid for first three years (based on draft position). We averaged the surplus values over all draft picks by position in the draft. </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter33.html#chapter33table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter33.html#rfnpage_235-01">Table 33.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter33.html#rfnpage_235-01"> illustrates the dependence of surplus value on </Run>
+      <Run Tag="xhtml/part03chapter33.html#page_236" xml:space="preserve"/>
+      <Run Tag="xhtml/part03chapter33.html#rfnpage_235-01">draft position. Therefore, all first-round draft positions create value, with picks 1&#x2013;10 creating the most value. These data indicate that NBA draft selectors do get fair value for the players chosen.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part03chapter33.html#chapter33table01">TABLE 33.1</Run>
+      <LineBreak/>
+      <Run Tag="xhtml/part03chapter33.html#chapter33table01">Three- Year Surplus Value of Players as a Function of Draft Position</Run>
+    </Paragraph>
+    <Table Tag="__221">
+      <Table.Columns>
+        <TableColumn Width="91"/>
+        <TableColumn Width="106"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,5,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">Draft Position</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__221">Average Surplus</Run>
+              <LineBreak/>
+              <Run Tag="__221">(in millions)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">1&#x2013;5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">&#xA0;&#xA0;&#xA0;&#xA0;$8.9</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">6&#x2013;10</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">&#xA0;&#xA0;&#xA0;&#xA0;$9.45</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">11&#x2013;15</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">&#xA0;&#xA0;&#xA0;&#xA0;$2.29</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">16&#x2013;20</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">&#xA0;&#xA0;&#xA0;&#xA0;$5.23</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">21&#x2013;25</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">&#xA0;&#xA0;&#xA0;&#xA0;$2.97</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">26&#x2013;30</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__221">&#xA0;&#xA0;&#xA0;&#xA0;$3.05</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__221">Note:</Run>
+      <Run Tag="__221"> The 6&#x2013;10 average surplus is &#x201C;pumped up&#x201D; by the phenomenal success of #10 draft picks Paul Pierce, Jason Terry, Joe Johnson, and Caron Butler.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__221">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__221">Winston and Medland also evaluated whether college, high school, or international players were systematically over-or undervalued by draft selectors. For high school players, for example, we added up the predicted salaries for their first three years in the NBA based on the draft position (using </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter33.html#chapter33table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__221">table 33.1</Run>
+      </Hyperlink>
+      <Run Tag="__221">) of all high school players. Then we looked at the actual player surplus value of the high school players drafted and compared the results. We found that NBA teams on average overvalued high school draft picks by 31%. International players and players with two years of college experience were on average valued exactly correctly. Players with one year of college experience were on average overvalued by 28%. Players with three years of college experience were on average undervalued by 8%. Players with four years of college experience were undervalued by 13%. Therefore it appears that NBA teams overvalue younger draftees and undervalue older draftees.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12" xml:space="preserve">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9" Tag="xhtml/part03chapter33.html#fnpage_235-01">
+        <Hyperlink NavigateUri="xhtml/part03chapter33.html#rfnpage_235-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__221">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="__221">Leonhardt, &#x201C;It&#x2018;s Not Where NBA Teams Draft, But Whom They Draft.&#x201D; </Run>
+    </Paragraph>
+  </Section>
+</Flow>

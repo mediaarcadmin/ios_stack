@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c70_r1.htm#c70">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__321">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__321">70 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__321">A magic square.</Run>
+        <Run Tag="__321"> Katherine nodded as she eyed the numbered square in D&#xFC;rer&#x2019;s engraving. Most people would have thought Langdon had lost his mind, but Katherine had quickly realized he was right.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__321">The term </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__321">magic square</Run>
+        <Run Tag="__321"> referred not to something mystical but to something mathematical&#x2014;it was the name given to a grid of consecutive numbers arranged in such a way that all the rows, columns, and diagonals added up to the same thing. Created some four thousand years ago by mathematicians in Egypt and India, magic squares were still believed by some to hold magical powers. Katherine had read that even nowadays devout Indians drew special three-by-three magic squares called the Kubera Kolam on their pooja altars. Primarily, though, modern man had relegated magic squares to the category of &#x201C;recreational mathematics,&#x201D; some people still deriving pleasure from the quest to discover new &#x201C;magical&#x201D; configurations. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__321">Sudoku for geniuses.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__321">Katherine quickly analyzed D&#xFC;rer&#x2019;s square, adding up the numbers in several rows and columns.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/1c8fdedf-d351-4f8a-bfbd-362e1fe50b9c.jpg" Stretch="Uniform" Width="150" Height="135" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__321">&#x201C;Thirty-four,&#x201D; she said. &#x201C;Every direction adds up to thirty-four.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c70_r1.htm#page264">&#x201C;Exactly,&#x201D; Langdon said. &#x201C;But did you know that </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c70_r1.htm#page264">this</Run>
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c70_r1.htm#page264"> magic square is famous because D&#xFC;rer accomplished the seemingly impossible?&#x201D; He quickly showed Katherine that in addition to making the rows, columns, and diagonals add up to thirty-four, D&#xFC;rer had also found a way to make the four quadrants, the four center squares, and even the four corner squares add up to that number. &#x201C;Most amazing, though, was D&#xFC;rer&#x2019;s ability to position the numbers 15 and 14 together in the bottom row as an indication of the year in which he accomplished this incredible feat!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">Katherine scanned the numbers, amazed by all the combinations.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">Langdon&#x2019;s tone grew more excited now. &#x201C;Extraordinarily, </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__322">Melencolia I</Run>
+        <Run Tag="__322"> represents the very first time in history that a magic square appeared in </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__322">European</Run>
+        <Run Tag="__322"> art. Some historians believe this was D&#xFC;rer&#x2019;s encoded way of indicating that the Ancient Mysteries had traveled outside the Egyptian Mystery Schools and were now held by the European secret societies.&#x201D; Langdon paused. &#x201C;Which brings us back to . . . </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__322">this</Run>
+        <Run Tag="__322">.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">He motioned to the slip of paper bearing the grid of letters from the stone pyramid.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/5cfbd2db-b7c0-4d99-bac9-dd9c39f0e533.jpg" Stretch="Uniform" Width="160" Height="179" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14"/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">&#x201C;I assume the layout looks familiar now?&#x201D; Langdon asked.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">&#x201C;Four-by-four square.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">Langdon picked up the pencil and carefully transcribed D&#xFC;rer&#x2019;s numbered magic square onto the slip of paper, directly beside the lettered square. Katherine was now seeing just how easy this was going to be. He stood poised, pencil in hand, and yet . . . strangely, after all this enthusiasm, he seemed to hesitate.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">&#x201C;Robert?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">He turned to her, his expression one of trepidation. &#x201C;Are you </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__322">sure</Run>
+        <Run Tag="__322"> we want to do this? Peter expressly&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__322">&#x201C;Robert, if </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__322">you</Run>
+        <Run Tag="__322"> don&#x2019;t want to decipher this engraving, then </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__322">I</Run>
+        <Run Tag="__322"> will.&#x201D; She held out her hand for the pencil.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__323">Langdon could tell there would be no deterring her and so he acquiesced, turning his attention back to the pyramid. Carefully, he superimposed the magic square over the pyramid&#x2019;s grid of letters and assigned each letter a number. Then he created a new grid, placing the Masonic cipher&#x2019;s letters in the new order as defined by the sequence in D&#xFC;rer&#x2019;s magic square.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__323">When Langdon was finished, they both examined the result.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/4a334c81-1746-436a-8999-36f7b9391ded.jpg" Stretch="Uniform" Width="150" Height="170" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__323">Katherine immediately felt confused. &#x201C;It&#x2019;s still gibberish.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__323">Langdon remained silent a long moment. &#x201C;Actually, Katherine, it&#x2019;s not gibberish.&#x201D; His eyes brightened again with the thrill of discovery. &#x201C;It&#x2019;s . . . Latin.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__323">In a long, dark corridor, an old blind man shuffled as quickly as he could toward his office. When he finally arrived, he collapsed in his desk chair, his old bones grateful for the reprieve. His answering machine was beeping. He pressed the button and listened.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__323">&#x201C;It&#x2019;s Warren Bellamy,&#x201D; said the hushed whisper of his friend and Masonic brother. &#x201C;I&#x2019;m afraid I have alarming news . . .&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__323">Katherine Solomon&#x2019;s eyes shot back to the grid of letters, reexamining the text. Sure enough, a Latin word now materialized before her eyes. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__323">Jeova.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/4a334c81-1746-436a-8999-36f7b9391ded.jpg" Stretch="Uniform" Width="150" Height="170" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14"/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__324">Katherine had not studied Latin, but this word was familiar from her reading of ancient Hebrew texts. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__324">Jeova. Jehovah.</Run>
+        <Run Tag="__324"> As her eyes continued to trace downward, reading the grid like a book, she was surprised to realize she could read the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__324">entire</Run>
+        <Run Tag="__324"> text of the pyramid.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__324">Jeova Sanctus Unus.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c70_r1.htm#page266">She knew its meaning at once. This phrase was ubiquitous in modern translations of Hebrew scripture. In the Torah, the God of the Hebrews was known by many names&#x2014;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c70_r1.htm#page266">Jeova, Jehovah, Jeshua, Yahweh, the Source, the Elohim&#x2014;</Run>
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c70_r1.htm#page266">but many Roman translations had consolidated the confusing nomenclature into a single Latin phrase: </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c70_r1.htm#page266">Jeova Sanctus Unus.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__324">&#x201C;One true God?&#x201D; she whispered to herself. The phrase certainly did not seem like something that would help them find her brother. &#x201C;That&#x2019;s this pyramid&#x2019;s secret message? One true God? I thought this was a map.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__324">Langdon looked equally perplexed, the excitement in his eyes evaporating. &#x201C;This decryption obviously is correct, but . . .&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__324">&#x201C;The man who has my brother wants to know a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__324">location</Run>
+        <Run Tag="__324">.&#x201D; She tucked her hair behind her ear. &#x201C;This is not going to make him very happy.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__324">&#x201C;Katherine,&#x201D; Langdon said, heaving a sigh. &#x201C;I&#x2019;ve been afraid of this. All night, I&#x2019;ve had a feeling we&#x2019;re treating as reality a collection of myths and allegories. Maybe this inscription is pointing to a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__324">metaphorical</Run>
+        <Run Tag="__324"> location&#x2014;telling us that the true potential of man can be accessed only through the one true God.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">&#x201C;But that makes no </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__325">sense</Run>
+        <Run Tag="__325">!&#x201D; Katherine replied, her jaw now clenched in frustration. &#x201C;My family protected this pyramid for generations! One true God? </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__325">That&#x2019;s</Run>
+        <Run Tag="__325"> the secret? And the CIA considers this an issue of national security? Either they&#x2019;re lying or we&#x2019;re missing something!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">Langdon shrugged in accord.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">Just then, his phone began to ring.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">In a cluttered office lined with old books, the old man hunched over his desk, clutching a phone receiver in his arthritic hand.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">The line rang and rang.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">At last, a tentative voice answered. &#x201C;Hello?&#x201D; The voice was deep but uncertain.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__325">The old man whispered, &#x201C;I was told you require sanctuary.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">The man on the line seemed startled. &#x201C;Who is this? Did Warren Bell&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">&#x201C;No names, please,&#x201D; the old man said. &#x201C;Tell me, have you successfully protected the map that was entrusted to you?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">A startled pause. &#x201C;Yes . . . but I don&#x2019;t think it matters. It doesn&#x2019;t say much. If it is a map, it seems to be more </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__325">metaphorical</Run>
+        <Run Tag="__325"> than&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">&#x201C;No, the map is quite real, I assure you. And it points to a very </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__325">real</Run>
+        <Run Tag="__325"> location. You must keep it safe. I cannot impress upon you enough how important this is. You are being pursued, but if you can travel unseen to my location, I will provide sanctuary . . . and answers.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">The man hesitated, apparently uncertain.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">&#x201C;My friend,&#x201D; the old man began, choosing his words carefully. &#x201C;There is a refuge in Rome, north of the Tiber, which contains ten stones from Mount Sinai, one from heaven itself, and one with the visage of Luke&#x2019;s dark father. Do you know my location?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__325">There was a long pause on the line, and then the man replied, &#x201C;Yes, I do.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__326">The old man smiled</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__326">. I thought you might, Professor. &#x201C;</Run>
+        <Run Tag="__326">Come at once. Make sure you&#x2019;re not followed.&#x201D;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

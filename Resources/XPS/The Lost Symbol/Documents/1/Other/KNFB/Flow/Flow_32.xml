@@ -1,0 +1,373 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c25_r1.htm#c25">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__135">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__135">25 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__135">My God,</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__135">Katherine was right. As usual.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">Trish Dunne stared in amazement at the search-spider results that were materializing on the plasma wall before her. She had doubted the search would turn up </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__135">any</Run>
+        <Run Tag="__135"> results at all, but in fact, she now had over a dozen hits. And they were still coming in.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">One entry in particular looked quite promising.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">Trish turned and shouted in the direction of the library. &#x201C;Katherine? I think you&#x2019;ll want to see this!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">It had been a couple of years since Trish had run a search spider like this, and tonight&#x2019;s results astounded her. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__135">A few years ago, this search would have been a dead end.</Run>
+        <Run Tag="__135"> Now, however, it seemed that the quantity of searchable digital material in the world had exploded to the point where someone could find literally anything. Incredibly, one of the keywords was a word Trish had never even heard before . . . and the search even found </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__135">that</Run>
+        <Run Tag="__135">.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">Katherine rushed through the control-room door. &#x201C;What have you got?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">&#x201C;A </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__135">bunch</Run>
+        <Run Tag="__135"> of candidates.&#x201D; Trish motioned to the plasma wall. &#x201C;Every one of these documents contains all of your key phrases verbatim.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">Katherine tucked her hair behind her ear and scanned the list.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">&#x201C;Before you get too excited,&#x201D; Trish added, &#x201C;I can assure you that most of these documents are </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__135">not</Run>
+        <Run Tag="__135"> what you&#x2019;re looking for. They&#x2019;re what we call black holes. Look at the file sizes. Absolutely enormous. They&#x2019;re things like compressed archives of millions of e-mails, giant unabridged encyclopedia sets, global message boards that have been running for years, and so forth. By virtue of their size and diverse content, these files contain so many potential keywords that they suck in any search engine that comes anywhere near them.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__135">Katherine pointed to one of the entries near the top of the list. &#x201C;How about </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__135">that</Run>
+        <Run Tag="__135"> one?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c25_r1.htm#page106">Trish smiled. Katherine was a step ahead, having found the sole file on the list that had a small file size. &#x201C;Good eyes. Yeah, that&#x2019;s really our only candidate so far. In fact, </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c25_r1.htm#page106">that</Run>
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c25_r1.htm#page106"> file&#x2019;s so small it can&#x2019;t be more than a page or so.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__136">&#x201C;Open it.&#x201D; Katherine&#x2019;s tone was intense.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__136">Trish could not imagine a one-page document containing </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__136">all</Run>
+        <Run Tag="__136"> the strange search strings Katherine had provided. Nonetheless, when she clicked and opened the document, the key phrases were there . . . crystal clear and easy to spot in the text.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__136">Katherine strode over, eyes riveted to the plasma wall. &#x201C;This document is . . . </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__136">redacted</Run>
+        <Run Tag="__136">?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__136">Trish nodded. &#x201C;Welcome to the world of digitized text.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__136">Automatic redaction had become standard practice when offering digitized documents. Redaction was a process wherein a server allowed a user to search the entire text, but then revealed only a small portion of it&#x2014;a teaser of sorts&#x2014;only that text immediately flanking the requested keywords. By omitting the vast majority of the text, the server avoided copyright infringement and also sent the user an intriguing message: </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__136">I have the information you&#x2019;re searching for, but if you want the rest of it, you&#x2019;ll have to buy it from me.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__136">&#x201C;As you can see,&#x201D; Trish said, scrolling through the heavily abridged page, &#x201C;the document contains all of your key phrases.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__136">Katherine stared up at the redaction in silence.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__136">Trish gave her a minute and then scrolled back to the top of the page. Each of Katherine&#x2019;s key phrases was underlined in capital letters and accompanied by a small sample of teaser text&#x2014;the two words that appeared on either side of the requested phrase.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/6e41d1d2-0a8a-41af-8977-019ebf8edc85.jpg" Stretch="Uniform"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/a85a959b-8bfb-49f5-873d-146ab484c23a.jpg" Stretch="Uniform"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__137">Trish could not imagine what this document was referring to. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__137">And what the heck is a &#x201C;symbolon&#x201D;?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">Katherine stepped eagerly toward the screen. &#x201C;Where did this document come from? Who wrote it?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">Trish was already working on it. &#x201C;Give me a second. I&#x2019;m trying to chase down the source.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">&#x201C;I need to know who wrote this,&#x201D; Katherine repeated, her voice intense. &#x201C;I need to see the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__138">rest</Run>
+        <Run Tag="__138"> of it.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">&#x201C;I&#x2019;m trying,&#x201D; Trish said, startled by the edge in Katherine&#x2019;s tone.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">Strangely, the file&#x2019;s location was not displaying as a traditional Web address but rather as a numeric Internet Protocol address. &#x201C;I can&#x2019;t unmask the IP,&#x201D; Trish said. &#x201C;The domain name&#x2019;s not coming up. Hold on.&#x201D; She pulled up her terminal window. &#x201C;I&#x2019;ll run a traceroute.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">Trish typed the sequence of commands to ping all the &#x201C;hops&#x201D; between her control room&#x2019;s machine and whatever machine was storing this document.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">&#x201C;Tracing now,&#x201D; she said, executing the command.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">Traceroutes were extremely fast, and a long list of network devices appeared almost instantly on the plasma wall. Trish scanned down . . . down . . . through the path of routers and switches that connected her machine to . . .</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c25_r1.htm#page108">What the hell?</Run>
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c25_r1.htm#page108"> Her trace had stopped before reaching the document&#x2019;s server. Her ping, for some reason, had hit a network device that swallowed it rather than bouncing it back. &#x201C;It looks like my traceroute got blocked,&#x201D; Trish said. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c25_r1.htm#page108">Is that even possible?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">&#x201C;Run it again.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">Trish launched another traceroute and got the same result. &#x201C;Nope. Dead end. It&#x2019;s like this document is on a server that is untraceable.&#x201D; She looked at the last few hops before the dead end. &#x201C;I </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__138">can</Run>
+        <Run Tag="__138"> tell you, though, it&#x2019;s located somewhere in the D.C. area.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">&#x201C;You&#x2019;re kidding.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__138">&#x201C;Not surprising,&#x201D; Trish said. &#x201C;These spider programs spiral out geographically, meaning the first results are always local. Besides, one of your search strings was &#x2018;Washington, D.C.&#x2019; &#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__139">&#x201C;How about a &#x2018;who is&#x2019; search?&#x201D; Katherine prompted. &#x201C;Wouldn&#x2019;t that tell you who owns the domain?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__139">A bit lowbrow, but not a bad idea.</Run>
+        <Run Tag="__139"> Trish navigated to the &#x201C;who is&#x201D; database and ran a search for the IP, hoping to match the cryptic numbers to an actual domain name. Her frustration was now tempered by rising curiosity. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__139">Who has this document?</Run>
+        <Run Tag="__139"> The &#x201C;who is&#x201D; results appeared quickly, showing no match, and Trish held up her hands in defeat. &#x201C;It&#x2019;s like this IP address doesn&#x2019;t exist. I can&#x2019;t get any information about it at all.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__139">&#x201C;Obviously the IP </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__139">exists</Run>
+        <Run Tag="__139">. We&#x2019;ve just searched a document that&#x2019;s stored there!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__139">True.</Run>
+        <Run Tag="__139"> And yet whoever had this document apparently preferred not to share his or her identity. &#x201C;I&#x2019;m not sure what to tell you. Systems traces aren&#x2019;t really my thing, and unless you want to call in someone with hacking skills, I&#x2019;m at a loss.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__139">&#x201C;Do you know someone?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__139">Trish turned and stared at her boss. &#x201C;Katherine, I was kidding. It&#x2019;s not exactly a great idea.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__139">&#x201C;But it </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__139">is</Run>
+        <Run Tag="__139"> done?&#x201D; She checked her watch. </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__139">&#x201C;Um, yeah . . . all the time. Technically it&#x2019;s pretty easy.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__139">&#x201C;Who do you know?&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__139">&#x201C;Hackers?&#x201D; Trish laughed nervously. &#x201C;Like half the guys at my old job.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__139">&#x201C;Anyone you trust?&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__139">Is she serious?</Run>
+        <Run Tag="__139"> Trish could see Katherine was dead serious. &#x201C;Well, yeah,&#x201D; she said hurriedly. &#x201C;I know this one guy we could call. He was our systems security specialist&#x2014;serious computer geek. He wanted to date me, which kind of sucked, but he&#x2019;s a good guy, and I&#x2019;d trust him. Also, he does freelance.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__139">&#x201C;Can he be discreet?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">&#x201C;He&#x2019;s a hacker. Of course he can be discreet. That&#x2019;s what he does. But I&#x2019;m sure he&#x2019;d want at least a thousand bucks to even look&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">&#x201C;Call him. Offer him double for fast results.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">Trish was not sure what made her more uncomfortable&#x2014;helping Katherine Solomon hire a hacker . . . or calling a guy who probably still found it impossible to believe a pudgy, redheaded metasystems analyst would rebuff his romantic advances. &#x201C;You&#x2019;re sure about this?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">&#x201C;Use the phone in the library,&#x201D; Katherine said. &#x201C;It&#x2019;s got a blocked number. And obviously don&#x2019;t use my name.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">&#x201C;Right.&#x201D; Trish headed for the door but paused when she heard Katherine&#x2019;s iPhone chirp. With luck, the incoming text message might be information that would grant Trish a reprieve from this distasteful task. She waited as Katherine fished the iPhone from her lab coat&#x2019;s pocket and eyed the screen.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">Katherine Solomon felt a wave of relief to see the name on her iPhone.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__140">At last.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14"/>
+      <Paragraph Margin="0,17,0,17" TextAlignment="Left" FontSize="16">
+        <Run Tag="__140">PETER SOLOMON</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__140">&#x201C;It&#x2019;s a text message from my brother,&#x201D; she said, glancing over at Trish. </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">Trish looked hopeful. &#x201C;So maybe we should ask him about all this . . . before we call a hacker?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">Katherine eyed the redacted document on the plasma wall and heard Dr. Abaddon&#x2019;s voice. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__140">That which your brother believes is hidden in D.C. . . . it can be found.</Run>
+        <Run Tag="__140"> Katherine had no idea what to believe anymore, and this document represented information about the far-fetched ideas with which Peter had apparently become obsessed.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__140">Katherine shook her head. &#x201C;I want to know who wrote this and where it&#x2019;s located. Make the call.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__141">Trish frowned and headed for the door.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__141">Whether or not this document would be able to explain the mystery of what her brother had told Dr. Abaddon, there was at least </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__141">one</Run>
+        <Run Tag="__141"> mystery that had been solved today. Her brother had finally learned how to use the text-messaging feature on the iPhone Katherine had given him.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__141">&#x201C;And alert the media,&#x201D; Katherine called after Trish. &#x201C;The great Peter Solomon just sent his first text message.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14"/>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__141">In a strip-mall parking lot across the street from the SMSC, Mal&#x2019;akh stood beside his limo, stretching his legs and waiting for the phone call he knew would be coming. The rain had stopped, and a winter moon had started to break through the clouds. It was the same moon that had shone down on Mal&#x2019;akh through the oculus of the House of the Temple three months ago during his initiation.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__141">The world looks different tonight.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__141">As he waited, his stomach growled again. His two-day fast, although uncomfortable, was critical to his preparation. Such were the ancient ways. Soon all physical discomforts would be inconsequential.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__141">As Mal&#x2019;akh stood in the cold night air, he chuckled to see that </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__141">fate</Run>
+        <Run Tag="__141"> had deposited him, rather ironically, directly in front of a tiny church. Here, nestled between Sterling Dental and a minimart, was a tiny sanctuary.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__141">LORD&#x2019;S HOUSE OF GLORY.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__141">Mal&#x2019;akh gazed at the window, which displayed part of the church&#x2019;s doctrinal statement: </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__141">WE BELIEVE THAT JESUS CHRIST WAS BEGOTTEN BY THE HOLY SPIRIT, AND BORN OF THE VIRGIN MARY, AND IS BOTH TRUE MAN AND GOD.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__141">Mal&#x2019;akh smiled. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__141">Yes, Jesus is indeed both&#x2014;man</Run>
+        <Run Tag="__141"> and </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__141">God&#x2014;but a virgin birth is not the prerequisite for divinity. That is not how it happens.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">The ring of a cell phone cut the night air, quickening his pulse. The phone that was now ringing was Mal&#x2019;akh&#x2019;s </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__142">own</Run>
+        <Run Tag="__142">&#x2014;a cheap disposable phone he had purchased yesterday. The caller ID indicated it was the call he had been anticipating.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__142">A local call,</Run>
+        <Run Tag="__142"> Mal&#x2019;akh mused, gazing out across Silver Hill Road toward the faint moonlit outline of a zigzag roofline over the treetops. Mal&#x2019;akh flipped open his phone.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;This is Dr. Abaddon,&#x201D; he said, tuning his voice deeper.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;It&#x2019;s Katherine,&#x201D; the woman&#x2019;s voice said. &#x201C;I finally heard from my brother.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;Oh, I&#x2019;m relieved. How is he?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;He&#x2019;s on his way to my lab right now,&#x201D; Katherine said. &#x201C;In fact, he suggested you join us.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;I&#x2019;m sorry?&#x201D; Mal&#x2019;akh feigned hesitation. &#x201C;In your . . . lab?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;He must trust you deeply. He never invites </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__142">anyone</Run>
+        <Run Tag="__142"> back there.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;I suppose maybe he thinks a visit might help our discussions, but I feel like it&#x2019;s an intrusion.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;If my </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__142">brother</Run>
+        <Run Tag="__142"> says you&#x2019;re welcome, then you&#x2019;re welcome. Besides, he said he has a lot to tell us both, and I&#x2019;d love to get to the bottom of what&#x2019;s going on.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__142">&#x201C;Very well, then. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__142">Where</Run>
+        <Run Tag="__142"> exactly is your lab?&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;At the Smithsonian Museum Support Center. Do you know where that is?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;No,&#x201D; Mal&#x2019;akh said, staring across the parking lot at the complex. &#x201C;I&#x2019;m actually in my car right now, and I have a guidance system. What&#x2019;s the address?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__142">&#x201C;Forty-two-ten Silver Hill Road.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__143">&#x201C;Okay, hold on. I&#x2019;ll type it in.&#x201D; Mal&#x2019;akh waited for ten seconds and then said, &#x201C;Ah, good news, it looks like I&#x2019;m closer than I thought. The GPS says I&#x2019;m only about ten minutes away.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__143">&#x201C;Great. I&#x2019;ll phone the security gate and tell them you&#x2019;re coming through.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__143">&#x201C;Thank you.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__143">&#x201C;I&#x2019;ll see you shortly.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__143">Mal&#x2019;akh pocketed the disposable phone and looked out toward the SMSC. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__143">Was I rude to invite myself?</Run>
+        <Run Tag="__143"> Smiling, he now pulled out Peter Solomon&#x2019;s iPhone and admired the text message he had sent Katherine several minutes earlier.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph Margin="48,16,48,16" TextAlignment="Left" FontFamily="sans-serif" FontSize="14">
+        <Run Tag="__143">Got your messages. All&#x2019;s fine. Busy day. Forgot appointment with Dr. Abaddon. Sorry not to mention him sooner. Long story. Am headed to lab now. If available, have Dr. Abaddon join us inside. I trust him fully, and I have much to tell you both. &#x2014;Peter</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__143">Not surprisingly, Peter&#x2019;s iPhone now pinged with an incoming reply from Katherine.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph Margin="48,16,48,16" TextAlignment="Left" FontFamily="sans-serif" FontSize="14">
+        <Run Tag="__143">peter, congrats on learning to text! relieved you&#x2019;re okay. spoke to dr. A., and he is coming to lab. see you shortly! &#x2014;k</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__143">Clutching Solomon&#x2019;s iPhone, Mal&#x2019;akh crouched down under his limousine and wedged the phone between the front tire and the pavement. This phone had served Mal&#x2019;akh well . . . but now it was time it became untraceable. He climbed behind the wheel, put the car in gear, and crept forward until he heard the sharp crack of the iPhone imploding.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__144">Mal&#x2019;akh put the car back in park and stared out at the distant silhouette of the SMSC. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__144">Ten minutes.</Run>
+        <Run Tag="__144"> Peter Solomon&#x2019;s sprawling warehouse housed over thirty million treasures, but Mal&#x2019;akh had come here tonight to obliterate only the two most valuable.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__144">All of Katherine Solomon&#x2019;s research.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__144">And Katherine Solomon herself.</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

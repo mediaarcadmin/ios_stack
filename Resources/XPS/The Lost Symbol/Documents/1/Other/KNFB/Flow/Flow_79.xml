@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c72_r1.htm#c72">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__329">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__329">72 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__329">The CIA</Run>
+        <Run Tag="__329"> field agent was in a foul mood as he descended from the reading-room balcony. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__329">Bellamy lied to us.</Run>
+        <Run Tag="__329"> The agent had seen no heat signatures whatsoever upstairs near the Moses statue, nor anywhere else upstairs for that matter.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__329">So where the hell did Langdon go?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__329">The agent retraced his steps now to the only place they&#x2019;d spotted any heat signatures at all&#x2014;the library&#x2019;s distribution hub. He descended the stairs again, moving beneath the octagonal console. The noise of the rumbling conveyors was grating. Advancing into the space, he flipped down his thermal goggles and scanned the room. Nothing. He looked toward the stacks, where the mangled door still showed hot from the explosion. Other than that, he saw no&#x2014;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__329">Holy shit!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__329">The agent jumped back as an unexpected luminescence drifted into his field of vision. Like a pair of ghosts, the dimly glowing imprints of two humanoids had just emerged from the wall on a conveyor belt. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__329">Heat signatures.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__329">Stunned, the agent watched as the two apparitions circled the room on the conveyor loop and then disappeared headfirst into a narrow hole in the wall</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__329">. They rode the conveyor out? That&#x2019;s insanity.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__329">In addition to realizing they had just lost Robert Langdon through a hole in the wall, the field agent was now aware that he had another problem. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__329">Langdon&#x2019;s not alone?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__329">He was just about to switch on his transceiver and call the team leader, but the team leader beat him to it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__329">&#x201C;All points, we&#x2019;ve got an abandoned Volvo on the plaza in front of the library. Registered to one Katherine Solomon. Eyewitness says she entered the library not long ago. We suspect she&#x2019;s with Robert Langdon. Director Sato has ordered that we find them both immediately.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__329">&#x201C;I&#x2019;ve got heat signatures for both of them!&#x201D; shouted the field agent in the distribution room. He explained the situation.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__330">&#x201C;For Christ&#x2019;s sake!&#x201D; the team leader replied. &#x201C;Where the hell does the conveyor go?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__330">The field agent was already consulting the employee reference schematic on the bulletin board. &#x201C;Adams Building,&#x201D; he replied. &#x201C;One block from here.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__330">&#x201C;All points. Redirect to the Adams Building! NOW!&#x201D;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

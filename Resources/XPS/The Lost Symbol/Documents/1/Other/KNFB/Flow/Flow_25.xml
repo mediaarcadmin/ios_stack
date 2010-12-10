@@ -1,0 +1,377 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#c18">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__91">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__91">18 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__91">Katherine Solomon</Run>
+        <Run Tag="__91"> donned her white lab coat and began her usual arrival routine&#x2014;her &#x201C;rounds&#x201D; as her brother called them.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__91">Like a nervous parent checking on a sleeping baby, Katherine poked her head into the mechanical room. The hydrogen fuel cell was running smoothly, its backup tanks all safely nestled in their racks.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__91">Katherine continued down the hall to the data-storage room. As always, the two redundant holographic backup units hummed safely within their temperature-controlled vault. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__91">All of my research,</Run>
+        <Run Tag="__91"> she thought, gazing in through the three-inch-thick shatterproof glass. Holographic data-storage devices, unlike their refrigerator-size ancestors, looked more like sleek stereo components, each perched atop a columnar pedestal.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__91">Both of her lab&#x2019;s holographic drives were synchronized and identical&#x2014;serving as redundant backups to safeguard identical copies of her work. Most backup protocols advocated a secondary backup system </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__91">off-site</Run>
+        <Run Tag="__91"> in case of earthquake, fire, or theft, but Katherine and her brother agreed that secrecy was paramount; once this data left the building to an off-site server, they could no longer be certain it would stay private.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__91">Content that everything was running smoothly here, she headed back down the hallway. As she rounded the corner, however, she spotted something unexpected across the lab. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__91">What in the world?</Run>
+        <Run Tag="__91"> A muted glow was glinting off all the equipment. She hurried in to have a look, surprised to see light emanating from behind the Plexiglas wall of the control room.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__91">He&#x2019;s here.</Run>
+        <Run Tag="__91"> Katherine flew across the lab, arriving at the control-room door and heaving it open. &#x201C;Peter!&#x201D; she said, running in. The plump woman seated at the control room&#x2019;s terminal jumped up. &#x201C;Oh my God! Katherine! You scared me!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#page70">Trish Dunne&#x2014;the only other person on earth allowed back here&#x2014;was Katherine&#x2019;s metasystems analyst and seldom worked weekends. The twenty-six-year-old redhead was a genius data modeler and had signed a nondisclosure document worthy of the KGB. Tonight, she was apparently analyzing data on the control room&#x2019;s plasma wall&#x2014;a huge flat-screen display that looked like something out of NASA mission control.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">&#x201C;Sorry,&#x201D; Trish said. &#x201C;I didn&#x2019;t know you were here yet. I was trying to finish up before you and your brother arrived.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">&#x201C;Have you spoken to him? He&#x2019;s late and he&#x2019;s not answering his phone.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">Trish shook her head. &#x201C;I bet he&#x2019;s still trying to figure out how to use that new iPhone you gave him.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">Katherine appreciated Trish&#x2019;s good humor, and Trish&#x2019;s presence here had just given her an idea. &#x201C;Actually, I&#x2019;m glad you&#x2019;re in tonight. You might be able to help me with something, if you don&#x2019;t mind?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">&#x201C;Whatever it is, I&#x2019;m sure it beats football.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">Katherine took a deep breath, calming her mind. &#x201C;I&#x2019;m not sure how to explain this, but earlier today, I heard an unusual story . . .&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">Trish Dunne didn&#x2019;t know what story Katherine Solomon had heard, but clearly it had her on edge. Her boss&#x2019;s usually calm gray eyes looked anxious, and she had tucked her hair behind her ears three times since entering the room&#x2014;a nervous &#x201C;tell,</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__92">&#x201D;</Run>
+        <Run Tag="__92"> as Trish called it. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__92">Brilliant scientist. Lousy poker player.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">&#x201C;To me,&#x201D; Katherine said, &#x201C;this story sounds like fiction . . . an old legend. And yet . . .&#x201D; She paused, tucking a wisp of hair behind her ears once again.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">&#x201C;And yet?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">Katherine sighed. &#x201C;And yet I was told today by a trusted source that the legend is true.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">&#x201C;Okay . . .&#x201D; </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__92">Where is she going with this?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__92">&#x201C;I&#x2019;m going to talk to my brother about it, but it occurs to me that maybe you can help me shed some light on it before I do. I&#x2019;d love to know if this legend has ever been corroborated anywhere else in history.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__93">&#x201C;In all of history?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__93">Katherine nodded. &#x201C;Anywhere in the world, in any language, at any point in history.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__93">Strange request,</Run>
+        <Run Tag="__93"> Trish thought, </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__93">but certainly feasible.</Run>
+        <Run Tag="__93"> Ten years ago, the task would have been impossible. Today, however, with the Internet, the World Wide Web, and the ongoing digitization of the great libraries and museums in the world, Katherine&#x2019;s goal could be achieved by using a relatively simple search engine equipped with an army of translation modules and some well-chosen keywords.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__93">&#x201C;No problem,&#x201D; Trish said. Many of the lab&#x2019;s research books contained passages in ancient languages, and so Trish was often asked to write specialized Optical Character Recognition translation modules to generate English text from obscure languages. She had to be the only metasystems specialist on earth who had built OCR translation modules in Old Frisian, Maek, and Akkadian.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__93">The modules would help, but the trick to building an effective search spider was all in choosing the right key words</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__93">. Unique but not overly restrictive.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__93">Katherine looked to be a step ahead of Trish and was already jotting down possible keywords on a slip of paper. Katherine had written down several when she paused, thought a moment, and then wrote several more. &#x201C;Okay,&#x201D; she finally said, handing Trish the slip of paper.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__93">Trish perused the list of search strings, and her eyes grew wide. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__93">What kind of crazy legend is Katherine investigating?</Run>
+        <Run Tag="__93"> &#x201C;You want me to search for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__93">all</Run>
+        <Run Tag="__93"> of these key phrases?&#x201D; One of the words Trish didn&#x2019;t even recognize. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__93">Is that even English?</Run>
+        <Run Tag="__93"> &#x201C;Do you really think we&#x2019;ll find all of these in one place? Verbatim?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__93">&#x201C;I&#x2019;d like to try.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__93">Trish would have said </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__93">impossible,</Run>
+        <Run Tag="__93"> but the I-word was banned here. Katherine considered it a dangerous mind-set in a field that often transformed preconceived falsehoods into confirmed truths. Trish Dunne seriously doubted this key-phrase search would fall into that category.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__94">&#x201C;How long for results?&#x201D; Katherine asked.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__94">&#x201C;A few minutes to write the spider and launch it. After that, maybe fifteen for the spider to exhaust itself.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__94">&#x201C;So fast?&#x201D; Katherine looked encouraged. </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__94">Trish nodded. Traditional search engines often required a full day to crawl across the entire online universe, find new documents, digest their content, and add it to their searchable database. But this was not the kind of search spider Trish would write.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__94">&#x201C;I&#x2019;ll write a program called a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__94">delegator,</Run>
+        <Run Tag="__94">&#x201D; Trish explained. &#x201C;It&#x2019;s not entirely kosher, but it&#x2019;s fast. Essentially, it&#x2019;s a program that orders other people&#x2019;s search engines to do our work. Most databases have a search function built in&#x2014;libraries, museums, universities, governments. So I write a spider that finds </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__94">their</Run>
+        <Run Tag="__94"> search engines, inputs your keywords, and asks them to search. This way, we harness the power of thousands of engines, working in unison.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__94">Katherine looked impressed. &#x201C;Parallel processing.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__94">A kind of metasystem.</Run>
+        <Run Tag="__94"> &#x201C;I&#x2019;ll call you if I get anything.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__94">&#x201C;I appreciate it,Trish.&#x201D; Katherine patted her on the back and headed for the door. &#x201C;I&#x2019;ll be in the library.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__94">Trish settled in to write the program. Coding a search spider was a menial task far below her skill level, but Trish Dunne didn&#x2019;t care. She would do anything for Katherine Solomon. Sometimes Trish still couldn&#x2019;t believe the good fortune that had brought her here.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__94">You&#x2019;ve come a long way, baby.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__94">Just over a year ago, Trish had quit her job as a metasystems analyst in one of the high-tech industry&#x2019;s many cubicle farms. In her off-hours, she did some freelance programming and started an industry blog&#x2014;&#x201C;Future Applications in Computational Metasystem Analysis&#x201D;&#x2014;although she doubted anyone read it. Then one evening her phone rang.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__94">&#x201C;Trish Dunne?&#x201D; a woman&#x2019;s voice asked politely.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">&#x201C;Yes, who&#x2019;s calling, please?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">&#x201C;My name is Katherine Solomon.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">Trish almost fainted on the spot. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__95">Katherine Solomon?</Run>
+        <Run Tag="__95"> &#x201C;I just read your book&#x2014;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__95">Noetic Science: Modern Gateway to Ancient Wisdom&#x2014;and</Run>
+        <Run Tag="__95"> I wrote about it on my blog!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">&#x201C;Yes, I know,&#x201D; the woman replied graciously. &#x201C;That&#x2019;s why I&#x2019;m calling.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__95">Of course it is,</Run>
+        <Run Tag="__95"> Trish realized, feeling dumb. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__95">Even brilliant scientists Google themselves.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__95">&#x201C;Your blog intrigues me,&#x201D; Katherine told her. &#x201C;I wasn&#x2019;t aware metasystems modeling had come so far.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">&#x201C;Yes, ma&#x2019;am,&#x201D; Trish managed, starstruck. &#x201C;Data models are an exploding technology with far-reaching applications.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">For several minutes, the two women chatted about Trish&#x2019;s work in metasystems, discussing her experience analyzing, modeling, and predicting the flow of massive data fields.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">&#x201C;Obviously, your book is way over my head,&#x201D; Trish said, &#x201C;but I understood enough to see an intersection with my metasystems work.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">&#x201C;Your blog said you believe metasystems modeling can </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__95">transform</Run>
+        <Run Tag="__95"> the study of Noetics?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">&#x201C;Absolutely. I believe metasystems could turn Noetics into real science</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__95">.</Run>
+        <Run Tag="__95">&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">&#x201C;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__95">Real</Run>
+        <Run Tag="__95"> science?&#x201D; Katherine&#x2019;s tone hardened slightly. &#x201C;As opposed to . . . ?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__95">Oh shit, that came out wrong.</Run>
+        <Run Tag="__95"> &#x201C;Um, what I meant is that Noetics is more . . . esoteric.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__95">Katherine laughed. &#x201C;Relax, I&#x2019;m kidding. I get that all the time.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#page74">I&#x2019;m not surprised,</Run>
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#page74"> Trish thought</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#page74">.</Run>
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#page74"> Even the Institute of Noetic Sciences in California described the field in arcane and abstruse language, defining it as the study of mankind&#x2019;s &#x201C;direct and immediate access to knowledge beyond what is available to our normal senses and the power of reason.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">The word </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__96">noetic,</Run>
+        <Run Tag="__96"> Trish had learned, derived from the ancient Greek </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__96">nous</Run>
+        <Run Tag="__96">&#x2014;translating roughly to &#x201C;inner knowledge&#x201D; or &#x201C;intuitive consciousness.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">&#x201C;I&#x2019;m interested in your metasystems work,&#x201D; Katherine said, &#x201C;and how it might relate to a project I&#x2019;m working on. Any chance you&#x2019;d be willing to meet? I&#x2019;d love to pick your brain.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__96">Katherine Solomon wants to pick</Run>
+        <Run Tag="__96"> my </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__96">brain?</Run>
+        <Run Tag="__96"> It felt like Maria Sharapova had called for tennis tips.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">The next day a white Volvo pulled into Trish&#x2019;s driveway and an attractive, willowy woman in blue jeans got out. Trish immediately felt two feet tall. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__96">Great,</Run>
+        <Run Tag="__96"> she groaned. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__96">Smart, rich, and thin&#x2014;and I&#x2019;m supposed to believe God is good?</Run>
+        <Run Tag="__96"> But Katherine&#x2019;s unassuming air set Trish instantly at ease.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">The two of them settled in on Trish&#x2019;s huge back porch overlooking an impressive piece of property.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">&#x201C;Your house is amazing,&#x201D; Katherine said.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">&#x201C;Thanks. I got lucky in college and licensed some software I&#x2019;d written.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">&#x201C;Metasystems stuff?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">&#x201C;A precursor to metasystems. Following 9/11, the government was intercepting and crunching enormous data fields&#x2014;civilian e-mail, cell phone, fax, text, Web sites&#x2014;sniffing for keywords associated with terrorist communications. So I wrote a piece of software that let them process their data field in a second way . . . pulling from it an additional intelligence product.&#x201D; She smiled. &#x201C;Essentially, my software let them take America&#x2019;s temperature.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">&#x201C;I&#x2019;m sorry?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__96">Trish laughed. &#x201C;Yeah, sounds crazy, I know. What I mean is that it quantified the nation&#x2019;s </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__96">emotional</Run>
+        <Run Tag="__96"> state. It offered a kind of cosmic consciousness barometer, if you will.&#x201D; Trish explained how, using a data field of the nation&#x2019;s communications, one could assess the nation&#x2019;s </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__96">mood</Run>
+        <Run Tag="__96"> based on the &#x201C;occurrence density&#x201D; of certain keywords and emotional indicators in the data field. Happier times had happier language, and stressful times vice versa. In the event, for example, of a terrorist attack, the government could use data fields to measure the shift in America&#x2019;s psyche and better advise the president on the emotional impact of the event.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">&#x201C;Fascinating,&#x201D; Katherine said, stroking her chin. &#x201C;So essentially you&#x2019;re examining a population of individuals . . . as if it were a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__97">single</Run>
+        <Run Tag="__97"> organism.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#page75">&#x201C;Exactly. A </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#page75">metasystem</Run>
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c18_r1.htm#page75">. A single entity defined by the sum of its parts. The human body, for example, consists of millions of individual cells, each with different attributes and different purposes, but it functions as a single entity.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">Katherine nodded enthusiastically. &#x201C;Like a flock of birds or a school of fish moving as one. We call it convergence or entanglement.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">Trish sensed her famous guest was starting to see the potential of metasystem programming in her own field of Noetics. &#x201C;My software,&#x201D; Trish explained, &#x201C;was designed to help government agencies better evaluate and respond appropriately to wide-scale crises&#x2014;pandemic diseases, national tragedies, terrorism, that sort of thing.&#x201D; She paused. &#x201C;Of course, there&#x2019;s always the potential that it could be used in other directions . . . perhaps to take a snapshot of the national mind-set and predict the outcome of a national election or the direction the stock market will move at the opening bell.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">&#x201C;Sounds powerful.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">Trish motioned to her big house. &#x201C;The </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__97">government</Run>
+        <Run Tag="__97"> thought so.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">Katherine&#x2019;s gray eyes focused in on her now. &#x201C;Trish, might I ask about the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__97">ethical</Run>
+        <Run Tag="__97"> dilemma posed by your work?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">&#x201C;What do you mean?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">&#x201C;I mean you created a piece of software that can easily be abused. Those who possess it have access to powerful information not available to everyone. You didn&#x2019;t feel any hesitation creating it?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__97">Trish didn&#x2019;t blink. &#x201C;Absolutely not. My software is no different than say . . . a flight simulator program. Some users will practice flying first-aid missions into underdeveloped countries. Some users will practice flying passenger jets into skyscrapers. Knowledge is a tool, and like all tools, its impact is in the hands of the user.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">Katherine sat back, looking impressed. &#x201C;So let me ask you a hypothetical question.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">Trish suddenly sensed their conversation had just turned into a job interview.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">Katherine reached down and picked up a tiny speck of sand off the deck, holding it up for Trish to see. &#x201C;It occurs to me,&#x201D; she said, &#x201C;that your metasystems work essentially lets you calculate the weight of an entire sandy beach . . . by weighing one grain at a time.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">&#x201C;Yes, basically that&#x2019;s right.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">&#x201C;As you know, this little grain of sand has </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">mass</Run>
+        <Run Tag="__98">. A very small mass, but mass nonetheless.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">Trish nodded.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">&#x201C;And </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">because</Run>
+        <Run Tag="__98"> this grain of sand has mass, it therefore exerts </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">gravity</Run>
+        <Run Tag="__98">. Again, too small to feel, but there.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">&#x201C;Right.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">&#x201C;Now,&#x201D; Katherine said, &#x201C;if we take trillions of these sand grains and let them attract one another to form . . . say, the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">moon,</Run>
+        <Run Tag="__98"> then their combined gravity is enough to move entire oceans and drag the tides back and forth across our planet.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">Trish had no idea where this was headed, but she liked what she was hearing.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">&#x201C;So let&#x2019;s take a hypothetical,&#x201D; Katherine said, discarding the sand grain. &#x201C;What if I told you that a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">thought</Run>
+        <Run Tag="__98"> . . . any tiny idea that forms in your mind . . . actually has </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">mass</Run>
+        <Run Tag="__98">? What if I told you that a thought is an actual </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">thing,</Run>
+        <Run Tag="__98"> a measurable entity, with a measurable mass? A minuscule mass, of course, but </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">mass</Run>
+        <Run Tag="__98"> nonetheless. What are the implications?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__98">&#x201C;Hypothetically speaking</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__98">?</Run>
+        <Run Tag="__98"> Well, the obvious implications are . . . if a thought has mass, then a thought exerts gravity and can pull things toward it.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__99">Katherine smiled. &#x201C;You&#x2019;re good. Now take it a step further. What happens if many people start focusing on the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__99">same</Run>
+        <Run Tag="__99"> thought? All the occurrences of that same thought begin to merge into one, and the cumulative mass of this thought begins to grow. And therefore, its gravity grows.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__99">&#x201C;Okay.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__99">&#x201C;Meaning . . . if enough people begin thinking the same thing, then the gravitational force of that thought becomes tangible . . . and it exerts actual force.&#x201D; Katherine winked. &#x201C;And it can have a measurable effect in our physical world.&#x201D;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

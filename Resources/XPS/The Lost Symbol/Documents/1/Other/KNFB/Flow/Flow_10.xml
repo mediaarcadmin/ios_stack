@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c03_r1.htm#c03">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__26">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__26">3 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__26">Robert Langdon</Run>
+        <Run Tag="__26"> was busy reviewing his note cards when the hum of the Town Car&#x2019;s tires changed pitch on the road beneath him. Langdon glanced up, surprised to see where they were.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__26">Memorial Bridge already?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__26">He put down his notes and gazed out at the calm waters of the Potomac passing beneath him. A heavy mist hovered on the surface. Aptly named, Foggy Bottom had always seemed a peculiar site on which to build the nation&#x2019;s capital. Of all the places in the New World, the forefathers had chosen a soggy riverside marsh on which to lay the cornerstone of their utopian society.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__26">Langdon gazed left, across the Tidal Basin, toward the gracefully rounded silhouette of the Jefferson Memorial&#x2014;America&#x2019;s Pantheon, as many called it. Directly in front of the car, the Lincoln Memorial rose with rigid austerity, its orthogonal lines reminiscent of Athens&#x2019;s ancient Parthenon. But it was farther away that Langdon saw the city&#x2019;s centerpiece&#x2014;the same spire he had seen from the air. Its architectural inspiration was far, far older than the Romans or the Greeks.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__26">America&#x2019;s Egyptian obelisk.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__26">The monolithic spire of the Washington Monument loomed dead ahead, illuminated against the sky like the majestic mast of a ship. From Langdon&#x2019;s oblique angle, the obelisk appeared ungrounded tonight . . . swaying against the dreary sky as if on an unsteady sea. Langdon felt similarly ungrounded. His visit to Washington had been utterly unexpected. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__26">I woke up this morning anticipating a quiet Sunday at home . . . and now I&#x2019;m a few minutes away from the U.S. Capitol.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__26">This morning at four forty-five, Langdon had plunged into dead-calm water, beginning his day as he always did, swimming fifty laps in the deserted Harvard Pool. His physique was not quite what it had been in his college days as a water-polo all-American, but he was still lean and toned, respectable for a man in his forties. The only difference now was the amount of effort it took Langdon to keep it that way.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__27">When Langdon arrived home around six, he began his morning ritual of hand-grinding Sumatra coffee beans and savoring the exotic scent that filled his kitchen. This morning, however, he was surprised to see the blinking red light on his voice-mail display. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__27">Who calls at six A.M. on a Sunday?</Run>
+        <Run Tag="__27"> He pressed the button and listened to the message.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__27">&#x201C;Good morning, Professor Langdon, I&#x2019;m terribly sorry for this early-morning call.&#x201D; The polite voice was noticeably hesitant, with a hint of a southern accent. &#x201C;My name is Anthony Jelbart, and I&#x2019;m Peter Solomon&#x2019;s executive assistant. Mr. Solomon told me you&#x2019;re an early riser . . . he has been trying to reach you this morning on short notice. As soon as you receive this message, would you be so kind as to call Peter directly? You probably have his new private line, but if not, it&#x2019;s 202-329-5746.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__27">Langdon felt a sudden concern for his old friend. Peter Solomon was impeccably well-bred and courteous, and certainly not the kind of man to call at daybreak on a Sunday unless something was very wrong.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__27">Langdon left his coffee half made and hurried toward his study to return the call.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__27">I hope he&#x2019;s okay.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__27">Peter Solomon had been a friend, mentor, and, although only twelve years Langdon&#x2019;s senior, a father figure to him ever since their first meeting at Princeton University. As a sophomore, Langdon had been required to attend an evening guest lecture by the well-known young historian and philanthropist. Solomon had spoken with a contagious passion, presenting a dazzling vision of semiotics and archetypal history that had sparked in Langdon what would later become his lifelong passion for symbols. It was not Peter Solomon&#x2019;s brilliance, however, but the humility in his gentle gray eyes that had given Langdon the courage to write him a thank-you letter. The young sophomore had never dreamed that Peter Solomon, one of America&#x2019;s wealthiest and most intriguing young intellectuals, would ever write back. But Solomon did. And it had been the beginning of a truly gratifying friendship.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c03_r1.htm#page15">A prominent academic whose quiet manner belied his powerful heritage, Peter Solomon came from the ultrawealthy Solomon family, whose names appeared on buildings and universities all over the nation. Like the Rothschilds in Europe, the surname Solomon had always carried the mystique of American royalty and success. Peter had inherited the mantle at a young age after the death of his father, and now, at fifty-eight, he had held numerous positions of power in his life. He currently served as the head of the Smithsonian Institution. Langdon occasionally ribbed Peter that the lone tarnish on his sterling pedigree was his diploma from a second-rate university&#x2014;Yale.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__28">Now, as Langdon entered his study, he was surprised to see that he had received a fax from Peter as well.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__28">Peter Solomon</Run>
+        <LineBreak/>
+        <Run Tag="__28"> </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__28">OFFICE OF THE SECRETARY</Run>
+        <LineBreak/>
+        <Run Tag="__28"> </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__28">THE SMITHSONIAN INSTITUTION</Run>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph Margin="48,16,48,16" TextAlignment="Left" FontFamily="sans-serif" FontSize="14" xml:space="preserve">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="14" Tag="__28">Good morning, Robert,</Run>
+        <LineBreak/>
+        <LineBreak/>
+        <Run Tag="__28"> </Run>
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="14" Tag="__28">I need to speak with you at once. Please call me this morning as soon as you can at 202-329-5746.</Run>
+        <LineBreak/>
+        <LineBreak/>
+        <Run Tag="__28"> </Run>
+        <Span FontFamily="sans-serif" FontWeight="Bold" FontSize="14">
+          <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__28">Peter</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__28">Langdon immediately dialed the number, sitting down at his hand-carved oak desk to wait as the call went through.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__28">&#x201C;Office of Peter Solomon,&#x201D; the familiar voice of the assistant answered. &#x201C;This is Anthony. May I help you?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__28">&#x201C;Hello, this is Robert Langdon. You left me a message earlier&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__28">&#x201C;Yes, Professor Langdon!&#x201D; The young man sounded relieved. &#x201C;Thank you for calling back so quickly. Mr. Solomon is eager to speak to you. Let me tell him you&#x2019;re on the line. May I put you on hold?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__28">&#x201C;Of course.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__28">As Langdon waited for Solomon to get on the line, he gazed down at Peter&#x2019;s name atop the Smithsonian letterhead and had to smile. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__28">Not many slackers in the Solomon clan.</Run>
+        <Run Tag="__28"> Peter&#x2019;s ancestral tree burgeoned with the names of wealthy business magnates, influential politicians, and a number of distinguished scientists, some even fellows of London&#x2019;s Royal Society. Solomon&#x2019;s only living family member, his younger sister, Katherine, had apparently inherited the science gene, because she was now a leading figure in a new cutting-edge discipline called Noetic Science.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__29">All Greek to me,</Run>
+        <Run Tag="__29"> Langdon thought, amused to recall Katherine&#x2019;s unsuccessful attempt to explain Noetic Science to him at a party at her brother&#x2019;s home last year. Langdon had listened carefully and then replied, &#x201C;Sounds more like magic than science.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">Katherine winked playfully. &#x201C;They&#x2019;re closer than you think, Robert.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">Now Solomon&#x2019;s assistant returned to the phone. &#x201C;I&#x2019;m sorry, Mr. Solomon is trying to get off a conference call. Things are a little chaotic here this morning.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">&#x201C;That&#x2019;s not a problem. I can easily call back.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">&#x201C;Actually, he asked me to fill you in on his reason for contacting you, if you don&#x2019;t mind?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">&#x201C;Of course not.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">The assistant inhaled deeply. &#x201C;As you probably know, Professor, every year here in Washington, the board of the Smithsonian hosts a private gala to thank our most generous supporters. Many of the country&#x2019;s cultural elite attend.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">Langdon knew his own bank account had too few zeros to qualify him as culturally elite, but he wondered if maybe Solomon was going to invite him to attend nonetheless.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">&#x201C;This year, as is customary,&#x201D; the assistant continued, &#x201C;the dinner will be preceded by a keynote address. We&#x2019;ve been lucky enough to secure the National Statuary Hall for that speech.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__29">The best room in all of D.C.,</Run>
+        <Run Tag="__29"> Langdon thought, recalling a political lecture he had once attended in the dramatic semicircular hall. It was hard to forget five hundred folding chairs splayed in a perfect arc, surrounded by thirty-eight life-size statues, in a room that had once served as the nation&#x2019;s original House of Representatives chamber.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__29">&#x201C;The problem is this,&#x201D; the man said. &#x201C;Our speaker has fallen ill and has just informed us she will be unable to give the address.&#x201D; He paused awkwardly. &#x201C;This means we are desperate for a replacement speaker. And Mr. Solomon is hoping you would consider filling in.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">Langdon did a double take. &#x201C;Me?&#x201D; This was not at all what he had expected. &#x201C;I&#x2019;m sure Peter could find a far better substitute.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">&#x201C;You&#x2019;re Mr. Solomon&#x2019;s first choice, Professor, and you&#x2019;re being much too modest. The institution&#x2019;s guests would be thrilled to hear from you, and Mr. Solomon thought you could give the same lecture you gave on Bookspan TV a few years back? That way, you wouldn&#x2019;t have to prepare a thing. He said your talk involved symbolism in the architecture of our nation&#x2019;s capital&#x2014;it sounds absolutely perfect for the venue.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">Langdon was not so sure. &#x201C;If I recall, that lecture had more to do with the Masonic history of the building than&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">&#x201C;Exactly! As you know, Mr. Solomon is a Mason, as are many of his professional friends who will be in attendance. I&#x2019;m sure they would love to hear you speak on the topic.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__30">I admit it would be easy.</Run>
+        <Run Tag="__30"> Langdon had kept the lecture notes from every talk he&#x2019;d ever given. &#x201C;I suppose I could consider it. What date is the event?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">The assistant cleared his throat, sounding suddenly uncomfortable. &#x201C;Well, actually, sir, it&#x2019;s tonight.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">Langdon laughed out loud. &#x201C;Tonight?!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">&#x201C;That&#x2019;s why it&#x2019;s so hectic here this morning. The Smithsonian is in a deeply embarrassing predicament . . .&#x201D; The assistant spoke more hurriedly now. &#x201C;Mr. Solomon is ready to send a private jet to Boston for you. The flight is only an hour, and you would be back home before midnight. You&#x2019;re familiar with the private air terminal at Boston&#x2019;s Logan Airport?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">&#x201C;I am,&#x201D; Langdon admitted reluctantly. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__30">No wonder Peter always gets his way.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">&#x201C;Wonderful! Would you be willing to meet the jet there at say . . . five o&#x2019;clock?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__30">&#x201C;You haven&#x2019;t left me much choice, have you?&#x201D; Langdon chuckled.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__31">&#x201C;I just want to make Mr. Solomon happy, sir.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__31">Peter has that effect on people.</Run>
+        <Run Tag="__31"> Langdon considered it a long moment, seeing no way out. &#x201C;All right. Tell him I can do it.&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__31">&#x201C;Outstanding!&#x201D; the assistant exclaimed, sounding deeply relieved. He gave Langdon the jet&#x2019;s tail number and various other information. </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__31">When Langdon finally hung up, he wondered if Peter Solomon had ever been told no.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__31">Returning to his coffee preparation, Langdon scooped some additional beans into the grinder. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__31">A little extra caffeine this morning,</Run>
+        <Run Tag="__31"> he thought. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__31">It&#x2019;s going to be a long day.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14"/>
+    </Section>
+  </Section>
+</Flow>

@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__212">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__212">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part03chapter31.html#part03chapter31" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part03chapter31.html#page_224">&#xA0;&#xA0;31&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__212">NBA LINEUP ANALYSIS</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__212">I</Run>
+      <Run Tag="__212">n </Run>
+      <Hyperlink NavigateUri="part03chapter30.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__212">chapter 30</Run>
+      </Hyperlink>
+      <Run Tag="__212"> we described the methodology for creating Adjusted + / &#x2013; ratings. These are helpful to teams in making decisions involving players such as trades and salaries. During the season, however, few players are traded and a team&#x2019;s major concern is how to win more games with their current roster. The most important decisions coaches make during the season are which lineups to play when. For example, should a team try to go small against the 2006&#x2013;7 Suns&#x2019; &#x201C;small ball,&#x201D; or should they go big and push the ball inside?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__212">On average a team plays 300&#x2013;600 different lineups during the course of a season. Is there any rhyme or reason to coaches&#x2019; lineup choices? Lineup ratings can help a team win more games: play better lineups more and worse lineups less.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter31.html#page_225">Once we have player ratings it is easy to develop lineup ratings. Suppose we want to rate the Indiana Pacers&#x2019; lineup of Jermaine O&#x2019;Neal, Danny Granger, Jamaal Tinsley, Troy Murphy, and Mike Dunleavy. Let&#x2019;s call this lineup Pacers 1A. During the 2006&#x2013;7 season this lineup played 326 minutes (more than any other Pacer lineup). They outscored their opponents by 11 points. This means that Pacers 1A played 326/48 = 6.79 games and has a Pure + / &#x2013; of 11/6.79 = 1.61 points per 48 minutes. Then we look at each minute Pacer 1A was on the court and average the total abilities of the opponents (adjusting, of course, for the league home edge of 3.2 points). We find this lineup played against opposition lineups averaging in ability 1.89 points better than league average. This means that Pacers&#x2019; 1A should have an Adjusted + / &#x2013; rating of 1.61 + 1.89 = 3.5 points. In short, this means that Pacers 1A would beat an average NBA lineup (a lineup where the sum of the five player ratings is 0) by 3.5 points per 48 minutes. The amazing thing is that many teams play inferior lineups many more minutes than they do their better lineups. For example, in 2006&#x2013;7 the Charlotte Hornets played the lineup of Raymond Felton, Emeka Okafor, Adam Morrison, Brevin Knight, and Gerald Wallace 167 minutes at a &#x2013; 5 level and lost by 44 points to their opponents. This is not a good performance, yet this was the lineup used the most by Charlotte during the season. Substituting Matt Carroll for Brevin Knight in this lineup yields a lineup that played 144 minutes at a + 20 level and beat its opponents by 58 points. Why not play the second lineup more often?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__212">The Cleveland Cavaliers played Drew Gooden, Larry Hughes, LeBron James, Eric Snow, and Anderson Varejo 156 minutes during the 2006&#x2013;7 season. This lineup played at a &#x2013; 14 level and was beaten soundly by 56 points. The lineup resulting from simply substituting Sasha Pavlovic for Eric Snow played 124 minutes and played at a + 25 level and outscored the Cavs&#x2019; opponents by 58 points. Why not play the better lineup more?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__213">For seven years the Dallas Mavericks have factored these lineup ratings into their coaching decisions. Over the course of these seven years the Mavs have won more games than any team except for the Spurs. We cannot prove the link between our lineup ratings and the Mavs&#x2019; performance, but playing good lineups more and worse lineups less makes perfect sense.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__213">Critics might say that lineups do not play many minutes, so there must be a lot of variability in the lineup ratings. What is the probability that a given lineup is really better than another lineup? The spreadsheet Lineupssuperiority.xls answers this question. Enter the minutes played and lineup rating for the better lineup in row 4 and the same data for the inferior lineup in row 5. Cell E8 indicates the chance that the lineup with the higher rating is truly better. There is over a 99% chance that the Cavs&#x2019; lineup with Pavlovic is actually superior to the lineup with Snow. This should convince the Cavs that the inferior lineup should play little, if at all.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__213">How did we determine the true probability of lineup 1 being better than lineup 2? Data indicate that the actual performance of a lineup over 48 minutes is normally distributed with a mean equal to the lineup rating and a standard deviation of 12 points. The standard deviation of a lineup&#x2019;s rating is</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/0911a0c3-3fd6-41e0-9c72-b842bdade37d.jpg" Stretch="Uniform" Width="149" Height="57" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__213">For example, for a lineup that plays 192 minutes, our rating has a standard deviation of 12/2 = 6 points. A basic theorem in statistics tells us the variance of the difference of in de pen dent random variables is the sum of the random variable variances. Since the standard deviation of a random variable is simply the square root of the random variable&#x2019;s variance, the standard deviation of the difference in the rating of two lineups is</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part03chapter31.html#page_226">&#xA0;</Run>
+      <Image Source="/Resources/f3662ecb-7b22-469c-8105-28907b6627ab.jpg" Stretch="Uniform" Width="475" Height="206" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter31.html#chapter31figure01">Figure 31.1. Lineup superiority calculator.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/808c0d56-3383-4b42-9cfc-25e1671224ae.jpg" Stretch="Uniform" Width="461" Height="61" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__214">Here games played = minutes played/48.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__214">Then we find the probability that lineup 1 is actually better equals the probability that a random variable with mean lineup 1 rating &#x2013; lineup 2 rating, and standard deviation &#x3C3; is greater than 0. This probability may be found with the EXCEL formula</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__214">1 &#x2013; NORMDIST(0,lineup 1 rating &#x2013; lineup 2 rating, &#x3C3;, True).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Hyperlink NavigateUri="xhtml/part03chapter31.html#chapter31figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__214">Figure 31.1</Run>
+      </Hyperlink>
+      <Run Tag="__214"> shows that there is over a 99% chance that the Pavlovic lineup is better than the Snow lineup.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__214">Lineup Chemistry 101</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__214">Coaches often say that a given lineup has great &#x201C;on-court chemistry&#x201D; when it really clicks. When a lineup plays poorly coaches say these guys play &#x201C;like they have never seen each other before.&#x201D; We can easily identify lineups with good or bad chemistry. We define the lineup&#x2019;s chemistry value as (lineup rating) &#x2013; (sum of individual player ratings). A positive chemistry rating indicates that a team played better than expected and exhibits positive chemistry, while a negative chemistry rating indicates that a team played worse than expected and exhibits negative synergy.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__214">Some examples of team chemistry are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter31.html#chapter31figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__214">figure 31.2</Run>
+      </Hyperlink>
+      <Run Tag="__214">. For example, Chauncey Billups, Rick Hamilton, Jason Maxiell, Tayshaun Prince, and Chris Webber played 25.6 points better per 48 minutes than expected, while Pau Gasol, Eddie Jones, Mike Miller, Lawrence Roberts, and Damon Stoudamire played 20.1 points worse than expected. It would be helpful to discover what factors lead to positive and negative chemistry. For example, if a lineup has too many scorers and not enough effective defensive players, does that tend to lead to negative lineup chemistry?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part03chapter31.html#page_227">&#xA0;</Run>
+      <Image Source="/Resources/3704839c-81b2-4da3-83f2-bb8eaeb6c958.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter31.html#chapter31figure02">Figure 31.2. Examples of good and bad lineup chemistry.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__215">Coaches often say how well a lineup plays depends on who the opposition puts on the court. We will analyze matchups in the next chapter.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

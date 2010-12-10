@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="16,16,32,0" LineHeight="19" LineStackingStrategy="BlockLineHeight" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16">
+    <Section Margin="0,64,0,0" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14" Tag="OEBPS/Ali_9780307589682_epub_cop_r1.htm#cop">
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Run Tag="__117">Translation copyright &#xA9; 2010 by Nujood Ali and Delphine Minoui</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Run Tag="__117">Reading Group Guide copyright &#xA9; 2010 by Three Rivers Press, an imprint of the Crown Publishing Group, a division of Random House, Inc.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Run Tag="__117">All right reserved.</Run>
+        <LineBreak/>
+        <Run Tag="__117">Published in the United States by Three Rivers Press, an imprint of the Crown Publishing Group, a division of Random House, Inc., New York.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Hyperlink NavigateUri="http://www.crownpublishing.com" Foreground="#FF008000">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__117">www.crownpublishing.com</Run>
+        </Hyperlink>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Run Tag="__117">Three Rivers Press and the Tugboat design are registered trademarks of Random House, Inc.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Run Tag="__117">Originally published in France as </Run>
+        <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="14" Tag="__117">Moi Nojoud, 10 Ans, Divorc&#xE9;e</Run>
+        <Run Tag="__117"> by Michel Lafon Publishing, Paris, in 2009. Copyright &#xA9; 2009 by &#xC9;ditions Michel Lafon.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Run Tag="__117">Library of Congress Cataloging-in-Publication Data</Run>
+        <LineBreak/>
+        <Run Tag="__117">Ali, Nujood.</Run>
+        <LineBreak/>
+        <Run Tag="__117">[Moi Nojoud, 10 ans, divorc&#xE9;e. English]</Run>
+        <LineBreak/>
+        <Run Tag="__117">I am Nujood, age 10 and divorced / Nujood Ali, with Delphine Minoui;</Run>
+        <LineBreak/>
+        <Run Tag="__117">translated by Linda Coverdale. &#x2014; 1st ed.</Run>
+        <LineBreak/>
+        <Run Tag="__117">p. cm.</Run>
+        <LineBreak/>
+        <Run Tag="__117">1. Child marriage&#x2014;Yemen (Republic). 2. Ali, Nujood. 3. Girls&#x2014;Yemen</Run>
+        <LineBreak/>
+        <Run Tag="__117">(Republic)&#x2014;Social conditions. 4. Yemen (Republic)&#x2014;Social life and customs.</Run>
+        <LineBreak/>
+        <Run Tag="__117">I. Minoui, Delphine. II. Title.</Run>
+        <LineBreak/>
+        <Run Tag="__117">HQ784.C55A45 2010</Run>
+        <LineBreak/>
+        <Run Tag="__117">306.872&#x2032;3092&#x2014;dc22</Run>
+        <LineBreak/>
+        <Run Tag="__117">[B]</Run>
+        <LineBreak/>
+        <Run Tag="__117">2009033063</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Run Tag="__117">eISBN: 978-0-307-58968-2</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center" LineHeight="16" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="14">
+        <Run Tag="__117">v3.0</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ch9.html#ch9">
+      <Paragraph Margin="0,80,0,28" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="16">
+        <Run Tag="__74">9</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Normal" FontSize="19" Tag="__74">The Development of Trust</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__74">I</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__74">N THIS CHAPTER</Run>
+          <Run Tag="__74">, we introduce a new set of concepts that build on (but are different from) those we have discussed thus far. Starting here, we begin an in-depth, multichapter investigation of the stages of building trust, in an attempt to provide a structure for understanding trust development.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__74">We suggest that there are five distinct steps in the development of a trusted relationship. In this chapter we will define each of these stages. In the succeeding chapters, we will explore each stage in detail.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__74">Expressed in their simplest form, the five stages are:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/bd6b98a9-c4d1-4033-a209-2e80a4eb8de5.jpg" Stretch="Uniform" Width="300" Height="55" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__74"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__74">Figure 9-1 on page 86 summarizes, at each stage in the trust process, what the client is primarily feeling, and what the advisor gains at the successful completion of each step.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__74">Engage</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__74">Engagement, the first stage of building trust, is the point in the process where the client begins to feel two things: (1) There is an issue worth talking about; and (2) This person is worth talking to on that issue.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__74">Fig. 9.1 Summary of the Trust Process</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/210df1b6-ec4e-4b76-adc2-d9c62ddd4d8c.jpg" Stretch="Uniform" Width="340" Height="262" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__75"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__75">There must be both elements to create engagement. We have all had experiences where clients are willing to talk to us but will not acknowledge the issue as important to them. We have also had clients, even long-term clients, who acknowledged new issues but thought we were not the people to speak to about them. Obviously, neither situation represented successful &#x201C;engagement.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__75">Note that engaging is not just a process that you use when meeting new client prospects for the first time. It is just as important, if not even more so, to reengage in relationships that grow to cover new client needs. In both cases, new and existing, we as advisors must demonstrate to the client that we are worthy of being spoken to in an open, truthful manner about the issue at hand.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__75">Listen</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__75">Listening, when successful, is the stage in the process where the client comes to believe that the advisor understands him or her. The purpose of listening in building trust is to </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__75">earn the right</Run>
+          <Run Tag="__75"> to engage in a mutual exploration of ideas.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__75">Good listening must be active, incisive, conscious, involved, and interactive. But good listening only begins with these things.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__75">The successful professional will listen for what is said </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__75">and</Run>
+          <Run Tag="__75"> what is unspoken. In addition, it is necessary to confirm and validate what we have heard. We must not only listen; we must do something to give the client the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__75">experience</Run>
+          <Run Tag="__75"> of having been listened to. This is vital to earning the right to move forward.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__75">Frame</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__75">Successful framing, which is simultaneously a means of building trust and an essential part of giving advice, is the process by which the advisor helps the client crystallize and clarify the many issues involved in the client&#x2019;s problem. Framing consists of formulating problem statements, hypotheses, and points of view, built around what is important to the client. Framing is usually the point in the process where the client becomes consciously aware of value being added by the advisor, and hence where significant levels of trust can be built.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__76">As we shall see in Chapter 12, the advisor&#x2019;s clarification of the issues may be rational or may involve redefining the client&#x2019;s issues in a political or emotional framework. Framing is rarely an </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__76">exclusively</Run>
+          <Run Tag="__76"> logical or rational process. The purpose of framing is to reveal and organize the client&#x2019;s issues and to help the understanding of the problem (by all parties involved) coalesce into a common view, so that the process can move forward with greater clarity and solidarity.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__76">Envision</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__76">Having defined the problem, some might think that the next logical step is to solve it. We don&#x2019;t think so. Any problem can have many solutions, depending upon what the client wants to achieve, or for which future state he or she wants to aim. The role of joint envisioning in the trust development process is to concretize a specific vision (and choice) among possible future states.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__76">By jointly envisioning, the advisor and the client imagine (in rich detail) how the end result might look, without prematurely giving in to the temptation to solve the problem.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__76">Envisioning entails addressing (at least) the following questions?</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__76">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__76">What are we </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__76">really</Run>
+            <Run Tag="__76"> aiming for here?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__76">What will it look like when we get there?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__76">How will we know we are there?</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__76">In the envisioning process, the advisor might say:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__76">&#x201C;I know you want to live a healthier life, and we can certainly help, but how much exercise do you envision doing? Do you want to lose ten pounds or thirty pounds? What&#x2019;s the expectation here? We can&#x2019;t help you until we have explored all the implications of your choice, and understand which vision you want to pursue. Do you really want to aim to both lose thirty pounds and give up smoking? Are you certain that&#x2019;s what your goal is? Are you </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__76">ready</Run>
+          <Run Tag="__76"> to achieve it? Do you wish to lower the bar before making a commitment? Make sure you are not setting yourself up to fail.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__76">Notice that sometimes the advisor may add value by getting the client to expand his or her dreams (aim high), but sometimes envisioning requires the advisor to manage down the client&#x2019;s expectations, based on the knowledge of the advisor about what is and is not achievable.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__77">When done successfully, envisioning is usually the point in the process where the client begins to understand his or her own true goals and defines them so that he or she can realistically be committed to achieving them. It should be recognized that sometimes, even acknowledged problems remain unresolved, as a matter of the client&#x2019;s choice. The client may determine that the benefits of the future state are not worth the effort, and that she or he can live with the problem. (We&#x2019;re not all fit and slim!)</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__77">Commit</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__77">Just as in losing weight, a client may understand the problem, urgently desire the end state, but be unsure not only about what it takes to get there, but whether or not he or she has the will to do what it takes to achieve the vision.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__77">The purpose of the commitment stage of trust building (and advice giving) is to ensure that the client understands (in all of its rational, emotional, and political complexity) what it will take to achieve the vision, and to help the client find the determination to do what is necessary.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__77">What follows from commitment is action (by the client or the advisor). The advisor must make sure that expectations have been managed thoroughly. Only through a detailed commitment process can the advisor know what to do. Only when there is commitment will the client have the trust and confidence that the advisor is doing what the client wants.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__77">The added value of this stage is to help the client understand what it will take to solve the problem, and the trust building comes from the candor with which the advisor lays out the challenges and risks involved. (&#x201C;These people are being straight with me, unlike those other people who promise the moon and pretend they can solve everything.&#x201D;)</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__77">Another Look</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__77">Here&#x2019;s another way of looking at the five stages:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__77">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__77">Engage: Uses language of interest and concern</Run>
+            <LineBreak/>
+            <Run Tag="__77"> &#x201C;I&#x2019;ve been thinking about your competitors, and . . .&#x201D;</Run>
+            <LineBreak/>
+            <Run Tag="__77"> &#x201C;Your people have been telling me about . . .&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__77">Listen: Uses language of understanding and empathy</Run>
+            <LineBreak/>
+            <Run Tag="__77"> &#x201C;Tell me more about . . .&#x201D;</Run>
+            <LineBreak/>
+            <Run Tag="__77"> &#x201C;What&#x2019;s behind that?&#x201D;</Run>
+            <LineBreak/>
+            <Run Tag="__77"> &#x201C;Gosh, that must feel . . .&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__77">Frame: Uses language of perspective and candor</Run>
+            <LineBreak/>
+            <Run Tag="__77"> &#x201C;I see three key themes emerging here . . .&#x201D;</Run>
+            <LineBreak/>
+            <Run Tag="__77"> &#x201C;You know, what&#x2019;s tough to do here is . . .&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__77">Envision: Uses language of possibility</Run>
+            <LineBreak/>
+            <Run Tag="__77"> &#x201C;Wouldn&#x2019;t it be great if . . .&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__78">Commit: Uses language of joint exploration</Run>
+            <LineBreak/>
+            <Run Tag="__78"> &#x201C;What would it take, for each of us, to . . .&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__78">Skills Required</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__78">The five stages of trust building have very different emotional overtones, and they require different skills on the part of the trustee to accomplish.</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__78">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__78">Engaging requires the skill of being (credibly) noticed.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__78">Listening requires an ability to </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__78">understand</Run>
+            <Run Tag="__78"> another human being.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__78">Framing requires creative insight and emotional courage.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__78">Envisioning requires a spirit of collaboration and creativity.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__78">Commitment requires the ability to generate enthusiasm, and sometimes the ability to manage down overenthusiasm.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__78">It is natural for all of us to have a tendency to lead with our particular strengths. This tendency also holds true of people&#x2019;s view of the trust development process. One of our clients (a strategy consulting firm) when presented with the five-step, trust-building model, said, &#x201C;You know, the highest-payoff, highest-probability step in that process (the one that results in increasing trust more than all the other steps) is the framing step.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__78">A different firm (for example, one in the change management business) might point to listening and envisioning as being the key steps. Still another firm might point to engagement, getting the client&#x2019;s focused attention around an issue, as the magic button.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__78">However, no one step is &#x201C;key.&#x201D; All are essential to the trust-development process. The point in the process at which a client might articulate a &#x201C;key moment&#x201D; depends very much on the issue being discussed, and especially on the approach of the advisor.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__78">In the following chapters, we shall examine each of the five steps in more detail, and offer suggestions on how to execute each of them.</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>
