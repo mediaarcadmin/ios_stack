@@ -3158,7 +3158,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)setPreviewThumb:(UIImage *)thumb {
 	[thumbPreview setThumb:thumb];
 	
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+	if (thumb && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
 		CGFloat sliderMin = _pageJumpSlider.minimumValue;
 		CGFloat sliderMax = _pageJumpSlider.maximumValue;
 		CGFloat sliderMaxMinDiff = sliderMax - sliderMin;
