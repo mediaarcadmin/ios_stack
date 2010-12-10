@@ -118,31 +118,33 @@
 }
 
 - (void)setUpImageForOrientation:(UIInterfaceOrientation)orientation {
-    [self.dynamicImageView removeFromSuperview];
-    self.dynamicImageView = nil;
-    
-    UIImage *image = [self dynamicDefaultImageForOrientation:orientation];
-    if(image) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        imageView.contentMode = UIViewContentModeBottom;
-        imageView.image = image;
-        self.dynamicImageView = imageView;
-        [self.view addSubview:imageView];
-    }
-    
-    
-    [self.nonDynamicImageView removeFromSuperview];
-    self.nonDynamicImageView = nil;
+    if(!fadesBegun) {
+        [self.dynamicImageView removeFromSuperview];
+        self.dynamicImageView = nil;
+        
+        UIImage *image = [self dynamicDefaultImageForOrientation:orientation];
+        if(image) {
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+            imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            imageView.contentMode = UIViewContentModeBottom;
+            imageView.image = image;
+            self.dynamicImageView = imageView;
+            [self.view addSubview:imageView];
+        }
+        
+        
+        [self.nonDynamicImageView removeFromSuperview];
+        self.nonDynamicImageView = nil;
 
-    image = [self nonDynamicDefaultImageForOrientation:orientation];
-    if(image) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        imageView.contentMode = UIViewContentModeBottom;
-        imageView.image = image;
-        self.nonDynamicImageView = imageView;
-        [self.view addSubview:imageView];
+        image = [self nonDynamicDefaultImageForOrientation:orientation];
+        if(image) {
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+            imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            imageView.contentMode = UIViewContentModeBottom;
+            imageView.image = image;
+            self.nonDynamicImageView = imageView;
+            [self.view addSubview:imageView];
+        }
     }
 }
 
@@ -171,6 +173,25 @@
     [self release];
 }
 
+- (CGFloat)rotationForOrientation:(UIInterfaceOrientation)orientation
+{
+    CGFloat rotation = 0.0f;
+    switch(orientation) {
+        case UIInterfaceOrientationPortraitUpsideDown:
+            rotation = (CGFloat)M_PI;
+            break;
+        case UIInterfaceOrientationLandscapeLeft:
+            rotation = -(CGFloat)M_PI_2;
+            break;
+        case UIInterfaceOrientationLandscapeRight:
+            rotation = (CGFloat)M_PI_2;
+            break;
+        default:
+            break;
+    }
+    return rotation;
+}
+
 - (void)fadeOutDefaultImageIfDynamicImageAlsoAvailable  {
     self.fadesBegun = YES;
     if(self.dynamicImageView) {
@@ -179,11 +200,7 @@
         CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
         [imageView removeFromSuperview];
         imageView.center = windowCenter;
-        if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-            imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-            imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
-        }
+        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
         [window addSubview:imageView];
         
         [UIView beginAnimations:@"FadeOutRealDefault" context:nil];
@@ -220,11 +237,7 @@
         CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
         [imageView removeFromSuperview];
         imageView.center = windowCenter;
-        if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-            imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-            imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
-        }
+        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
         [window addSubview:imageView];
         
         [UIView beginAnimations:@"FadeOutDynamicDefault" context:nil];
@@ -242,11 +255,7 @@
         CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
         [imageView removeFromSuperview];
         imageView.center = windowCenter;
-        if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-            imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-            imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
-        }
+        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
         [window addSubview:imageView];        
 
         [UIView beginAnimations:@"FadeOutDynamicDefault" context:nil];
