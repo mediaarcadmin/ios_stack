@@ -65,6 +65,8 @@ typedef enum EucPageTurningViewAnimationFlags {
     CGRect _rightPageRect;
     CGRect _leftPageRect;
     
+    CGFloat _minPageTurnX;
+    
     CGRect _unzoomedLeftPageFrame;
     CGRect _unzoomedRightPageFrame;
     
