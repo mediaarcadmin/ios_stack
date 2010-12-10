@@ -30,11 +30,13 @@
 #import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
 
-static const CGFloat kBlioBookSliderPreviewWidthPad = 220;
-static const CGFloat kBlioBookSliderPreviewHeightPad = 220;
+static const CGFloat kBlioBookSliderPreviewWidthPad = 180;
+static const CGFloat kBlioBookSliderPreviewHeightPad = 180;
 static const CGFloat kBlioBookSliderPreviewWidthPhone = 180;
 static const CGFloat kBlioBookSliderPreviewHeightPhone = 180;
 static const CGFloat kBlioBookSliderPreviewAnchorOffset = 20;
+static const CGFloat kBlioBookSliderPreviewShadowRadius = 20;
+static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -1642,6 +1644,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         // the slider
         BlioBookSlider* slider = [[BlioBookSlider alloc] initWithFrame: CGRectZero];
         slider.bookViewController = self;
+		slider.exclusiveTouch = YES;
+
         slider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         [slider setAccessibilityLabel:NSLocalizedString(@"Page Chooser", @"Accessibility label for Book View Controller Progress slider")];
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
@@ -3155,8 +3159,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		CGFloat sliderMaxMinDiff = sliderMax - sliderMin;
 		CGFloat sliderValue = _pageJumpSlider.value;
 	
-		CGRect sliderFrame = [self.view convertRect:_pageJumpSlider.frame fromView:_pageJumpSlider];
-		CGFloat xCoord = CGRectGetMinX(sliderFrame) + ((sliderValue-sliderMin)/sliderMaxMinDiff) * CGRectGetWidth(sliderFrame);		
+		CGRect sliderFrame = [_pageJumpView convertRect:_pageJumpSlider.frame toView:self.view];
+		CGFloat xCoord = CGRectGetMinX(sliderFrame) + ((sliderValue-sliderMin)/sliderMaxMinDiff) * CGRectGetWidth(sliderFrame);	
 		CGFloat yCoord = CGRectGetMidY(sliderFrame);
 		
 		[thumbPreview setThumbAnchorPoint:CGPointMake(xCoord, yCoord)];
@@ -3233,6 +3237,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		thumbImage.contentMode = UIViewContentModeScaleAspectFit;
 		thumbImage.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 		[self addSubview:thumbImage];
+		
+		thumbImage.layer.shadowRadius = kBlioBookSliderPreviewShadowRadius;
+		thumbImage.layer.shadowOpacity = 0.7f;
+		thumbImage.layer.shouldRasterize = YES;
+		thumbImage.layer.shadowOffset = CGSizeZero;
+		thumbImage.layer.zPosition = 1000; // to raise it's shadow above the slider
 	}
 	return self;
 }
@@ -3252,21 +3262,31 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (CGRect)thumbBounds {
 	CGSize thumbSize = thumbImage.image.size;
-	CGFloat scale = MAX(thumbSize.width / CGRectGetWidth(thumbImage.bounds), thumbSize.height / CGRectGetHeight(thumbImage.bounds));
-	return CGRectMake(0, 0, thumbSize.height * scale, thumbSize.width * scale);
+	CGFloat scale = MIN(CGRectGetWidth(thumbImage.bounds) / thumbSize.width, CGRectGetHeight(thumbImage.bounds) / thumbSize.height);
+	CGRect thumbBounds = CGRectMake(0, 0, thumbSize.width * scale, thumbSize.height * scale);
+	thumbBounds.origin.x = (CGRectGetWidth(thumbImage.bounds) - CGRectGetWidth(thumbBounds))/2.0f;
+	thumbBounds.origin.y = (CGRectGetHeight(thumbImage.bounds) - CGRectGetHeight(thumbBounds))/2.0f;
+	return thumbBounds;
 }
 
 - (void)setThumb:(UIImage *)newThumb {
 	[thumbImage setImage:newThumb];
+	
+	CGMutablePathRef shadowPath = CGPathCreateMutable();
+	CGPathAddRect(shadowPath, NULL, [self thumbBounds]);
+	[thumbImage.layer setShadowPath:shadowPath];
+	CGPathRelease(shadowPath);
 }
 
 - (void)setThumbAnchorPoint:(CGPoint)anchor {
 	CGRect thumbBounds = [self thumbBounds];
 	
-	CGPoint center = CGPointMake(anchor.x, anchor.y + kBlioBookSliderPreviewAnchorOffset + CGRectGetMidY(thumbBounds));
-	CGPoint superCenter = [self convertPoint:center toView:[self superview]];
+	CGPoint center = CGPointMake(anchor.x, anchor.y + kBlioBookSliderPreviewAnchorOffset + CGRectGetHeight(thumbBounds)/2.0f);
 	
-	[thumbImage setCenter:superCenter];
+	center.x = MAX(center.x, CGRectGetWidth(thumbBounds)/2.0f + kBlioBookSliderPreviewEdgeInset);
+	center.x = MIN(center.x, CGRectGetWidth(self.superview.frame) - CGRectGetWidth(thumbBounds)/2.0f - kBlioBookSliderPreviewEdgeInset);
+	
+	[thumbImage setCenter:center];
 
 }
 
