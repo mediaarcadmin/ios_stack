@@ -716,13 +716,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
-- (GLuint)_createTextureFromRGBABitmapContext:(CGContextRef)context
+- (GLuint)_createTextureFromRGBABitmapContext:(CGContextRef)context storeAsRGB565:(BOOL)storeAsRGB565
 {
     size_t contextWidth = CGBitmapContextGetWidth(context);
     size_t contextHeight = CGBitmapContextGetHeight(context);
     
     CGContextRef textureContext = NULL;
-    void *textureData;
+    uint8_t *textureData;
     BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(context) != contextWidth * 4;
     if(dataIsNonContiguous || (textureData = CGBitmapContextGetData(context)) == NULL) {
         // We need to generate contiguous data to upload, and we need to be
@@ -739,6 +739,26 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGColorSpaceRelease(colorSpace);
     }
     
+    uint16_t *RGB565TextureData = NULL;
+    if(storeAsRGB565) {
+        THTimer *timer = [THTimer timerWithName:@"Convert to RGB565"];
+        size_t bufferLength = contextWidth * contextHeight * 4;
+        
+        // Convert in-place.
+        uint16_t *RGB565TextureData = (uint16_t *)textureData;        
+        for(int i = 0; i < bufferLength; i += 4) {
+            uint16_t result = 0;
+            result |= textureData[i] >> 3;
+            result <<= 6;
+            result |= textureData[i+1] >> 2; 
+            result <<= 5; 
+            result |= textureData[i+2] >> 3;
+            RGB565TextureData[i / 4] = result;
+        }
+        
+        [timer report];
+    }
+    
     EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
     [eaglContext thPush];
     
@@ -746,10 +766,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
     glBindTexture(GL_TEXTURE_2D, textureRef); 
 
-    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, contextWidth, contextHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
-
+    if(storeAsRGB565) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, contextWidth, contextHeight, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, textureData);
+    } else {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, contextWidth, contextHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+    }
+    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
     
@@ -758,10 +782,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     [eaglContext thPop];
     [_texturePool checkInEAGLContext];
-
+    
     if(textureContext) {
         CGContextRelease(textureContext);
         free(textureData);
+    }
+    if(RGB565TextureData) {
+        free(RGB565TextureData);
     }
     
     THLog(@"Created Texture of size (%ld, %ld)", (long)contextWidth, (long)contextHeight);
@@ -769,7 +796,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return textureRef;
 }
 
-- (GLuint)_createTextureFrom:(id)viewOrImage invertingLuminance:(BOOL)invertingLuminance
+- (GLuint)_createTextureFrom:(id)viewOrImage invertingLuminance:(BOOL)invertingLuminance storeAsRGB565:(BOOL)storeAsRGB565
 {   
     CGFloat scaleFactor = 1.0f;
     CGSize scaledSize, rawSize;
@@ -858,7 +885,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     CGColorSpaceRelease(colorSpace);
     
-    GLuint ret = [self _createTextureFromRGBABitmapContext:textureContext];
+    GLuint ret = [self _createTextureFromRGBABitmapContext:textureContext storeAsRGB565:storeAsRGB565];
 
     CGContextRelease(textureContext);
     free(textureData);
@@ -870,13 +897,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (GLuint)_createTextureFrom:(id)viewOrImage
 {
-    return [self _createTextureFrom:viewOrImage invertingLuminance:NO];
+    return [self _createTextureFrom:viewOrImage invertingLuminance:NO storeAsRGB565:NO];
 }
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
     _blankPageTexture = [self _createTextureFrom:pageTexture
-                              invertingLuminance:isDark];
+                              invertingLuminance:isDark
+                                   storeAsRGB565:YES];
     _pageTextureIsDark = isDark;
 }
 
@@ -1152,7 +1180,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             }
             
             if(fastImage) {
-                _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage];
+                _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage invertingLuminance:NO storeAsRGB565:YES];
             }
         }
         
@@ -3314,13 +3342,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 THAddRoundedRectToPath(textureContext, highlightRect, cornerRadius, cornerRadius);
                 CGContextFillPath(textureContext);
             }
+            CGContextRelease(textureContext);
+            
             
             THTimer *timer = [THTimer timerWithName:@"Convert to RGBA4444"];
-
-            size_t newBufferLength = minSize.width * minSize.height * 2;
-            uint16_t *newTextureData = calloc(newBufferLength, 1);
             
             // Unpremultiply, and convert to RGBA4444 to save RAM.
+            // Do the conversion in-place.
+            uint16_t *newTextureData = (uint16_t *)textureData;
             for(int i = 0; i < bufferLength; i += 4) {
                 uint16_t result = 0;
                 uint32_t alpha = textureData[i+3];
@@ -3338,8 +3367,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             
             [timer report];
             
-            free(textureData);
-            CGContextRelease(textureContext);
             
             EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
             [eaglContext thPush];
@@ -3350,7 +3377,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             
             glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
             
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, minSize.width, minSize.height, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, newTextureData);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, minSize.width, minSize.height, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, textureData);
             
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
@@ -3364,7 +3391,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _pageContentsInformation[index].highlightTexture = textureRef;
             gotHighlights = YES;
             
-            free(newTextureData);
+            free(textureData);
         }
     }
     if(!gotHighlights) {
