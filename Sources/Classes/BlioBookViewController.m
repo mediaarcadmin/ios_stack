@@ -1315,8 +1315,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)delayedToggleToolbars:(NSNumber *)toolbarStateNumber
 {
     BlioLibraryToolbarsState toolbarState = [toolbarStateNumber integerValue];
-    
-    if(_fadeState != BookViewControlleUIFadeStateNone) return;
+ 
+    if(_fadeState != BookViewControlleUIFadeStateNone) {
+		// Immediately toggle the pause button if required, without animation, before returning
+		switch (toolbarState) {
+			case kBlioLibraryToolbarsStatePauseButtonVisible:
+				self.pauseButton.alpha = 1;
+				break;
+			default:
+				self.pauseButton.alpha = 0;
+				break;
+		}
+		return;
+	}
     
     // Set the fade state
     switch (toolbarState) {
