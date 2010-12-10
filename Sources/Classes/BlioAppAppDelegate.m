@@ -27,6 +27,8 @@
 
 @interface BlioAppAppDelegate ()
 
+- (void)saveBookSnapshotIfAppropriate;
+
 @property (nonatomic, assign) BOOL delayedDidFinishLaunchingLaunchComplete;
 @property (nonatomic, retain) NSMutableArray *delayedURLOpens;
 
@@ -184,8 +186,9 @@ static void *background_init_thread(void * arg) {
     self.window = [[[THEventCapturingWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     [self setUpDefaultImage];
     [window makeKeyAndVisible];    
-
-    [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
+    
+    
+    [self performSelector:@selector(delayedApplicationDidFinishLaunchingStep1:) withObject:application afterDelay:0];
     
     NSURL *launchURL = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
     if(launchURL) {
@@ -237,7 +240,17 @@ static void *background_init_thread(void * arg) {
 	return [self application:application handleOpenURL:url];
 }
 
-- (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
+
+- (void)delayedApplicationDidFinishLaunchingStep1:(UIApplication *)application {
+    // Now that the view is loaded, and in the correct orientation, show the
+    // book page if one was available.
+    [realDefaultImageViewController fadeOutDefaultImageIfDynamicImageAlsoAvailable];
+    
+    // Defer again to allow the animation to start.
+    [self performSelector:@selector(delayedApplicationDidFinishLaunchingStep2:) withObject:application afterDelay:0];
+}
+
+- (void)delayedApplicationDidFinishLaunchingStep2:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
     [[NSBundle mainBundle] loadNibNamed:@"MainWindow" owner:self options:nil];
@@ -288,6 +301,9 @@ static void *background_init_thread(void * arg) {
 		[self.processingManager resumeProcessing];
 	}	
 	
+    
+    BOOL openedBook;
+    
     NSArray *openBookIDs = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioOpenBookKey];
     if(openBookIDs.count == 2) {
 		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -299,6 +315,7 @@ static void *background_init_thread(void * arg) {
 		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
         if(!errorExecute && results.count == 1) {
             [libraryController openBook:[results objectAtIndex:0]];
+            openedBook = YES;
         }
     }
     
@@ -307,11 +324,14 @@ static void *background_init_thread(void * arg) {
     [realDefaultImageViewController.view removeFromSuperview];
     [window addSubview:navigationController.view];
     [window addSubview:realDefaultImageViewController.view];
-
-    [realDefaultImageViewController fadeOutDefaultImage];
+    [window sendSubviewToBack:navigationController.view];
+    
+    [realDefaultImageViewController fadeOutCompletly];
     [realDefaultImageViewController release];
     
-    [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
+    if(!openedBook) {
+        [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
+    }
     
     for(NSURL *url in self.delayedURLOpens) {
         [self application:[UIApplication sharedApplication] handleOpenURL:url];
@@ -325,6 +345,7 @@ static void *background_init_thread(void * arg) {
     NSError *error;
     if (![[self managedObjectContext] save:&error])
         NSLog(@"[BlioAppAppDelegate applicationWillTerminate] Save failed with error: %@, %@", error, [error userInfo]);
+    [self saveBookSnapshotIfAppropriate];
 }
 
 -(void)loginDismissed:(NSNotification*)note {
@@ -352,6 +373,7 @@ static void *background_init_thread(void * arg) {
     NSError *error;
     if (![[self managedObjectContext] save:&error])
         NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);
+    [self saveBookSnapshotIfAppropriate];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -508,6 +530,22 @@ static void *background_init_thread(void * arg) {
     return processingManager;
 }
 
+#pragma mark -
+#pragma mark State saving for restoration on launch.
+
+- (void)saveBookSnapshotIfAppropriate
+{
+    BlioBookViewController *bookViewController = nil;
+    for(UIViewController *potentialController in navigationController.viewControllers) {
+        if([potentialController isKindOfClass:[BlioBookViewController class]]) {
+            bookViewController = (BlioBookViewController *)potentialController;
+        }
+    }
+    UIImage *pageImage = bookViewController.dimPageImage;
+    if(pageImage) {
+        [BlioDefaultViewController saveDynamicDefaultImage:pageImage];
+    }
+}
 
 - (void)navigationController:(UINavigationController *)theNavigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated;
 {
@@ -522,7 +560,9 @@ static void *background_init_thread(void * arg) {
     } else {
         BOOL containsBook = NO;
         for(UIViewController *potentialController in theNavigationController.viewControllers) {
-            [potentialController isKindOfClass:[BlioBookViewController class]];
+            if([potentialController isKindOfClass:[BlioBookViewController class]]) {
+                containsBook = NO;
+            }
         }
         if(!containsBook) {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

@@ -11,8 +11,19 @@
 
 @interface BlioDefaultViewController : UIViewController {
     BOOL viewOnScreen;
+    
+    UIImage *dynamicDefault;
+    UIInterfaceOrientation dynamicDefaultOrientation;
+    
+    UIImageView *dynamicImageView;
+    UIImageView *nonDynamicImageView;
+    
+    BOOL fadesBegun;
 }
 
-- (void)fadeOutDefaultImage;
++ (void)saveDynamicDefaultImage:(UIImage *)image;
+
+- (void)fadeOutDefaultImageIfDynamicImageAlsoAvailable;
+- (void)fadeOutCompletly;
 
 @end

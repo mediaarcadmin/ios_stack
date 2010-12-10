@@ -179,6 +179,9 @@
 		7DB195B112B14CA20087E61F /* BlioDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */; };
 		7DB195B212B14CA20087E61F /* BlioDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */; };
 		7DB195B312B14CA20087E61F /* BlioDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */; };
+		7DB349A812B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
+		7DB349A912B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
+		7DB349AA12B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
 		7DB5F71111EC65BF00D33185 /* logo-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */; };
 		7DB6493C12B12AC100F42F87 /* DRM-iPad in Resources */ = {isa = PBXBuildFile; fileRef = 7DB6493812B12AC100F42F87 /* DRM-iPad */; };
 		7DB6493D12B12AC100F42F87 /* DRM-iPad in Resources */ = {isa = PBXBuildFile; fileRef = 7DB6493812B12AC100F42F87 /* DRM-iPad */; };
@@ -1435,6 +1438,8 @@
 		7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+BlioAdditions.h"; sourceTree = "<group>"; };
 		7DB195AF12B14CA20087E61F /* BlioDefaultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDefaultViewController.h; sourceTree = "<group>"; };
 		7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDefaultViewController.m; sourceTree = "<group>"; };
+		7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSDataAdditions.m; sourceTree = "<group>"; };
+		7DB349AB12B1956200BCE8DF /* THNSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSDataAdditions.h; sourceTree = "<group>"; };
 		7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white@2x.png"; sourceTree = "<group>"; };
 		7DB6493812B12AC100F42F87 /* DRM-iPad */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "DRM-iPad"; sourceTree = "<group>"; };
 		7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+BlioAdditions.h"; sourceTree = "<group>"; };
@@ -3018,6 +3023,8 @@
 		DC8BB5881278E7060044580E /* Additions */ = {
 			isa = PBXGroup;
 			children = (
+				7DB349AB12B1956200BCE8DF /* THNSDataAdditions.h */,
+				7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */,
 				7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */,
 				7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */,
 				7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */,
@@ -4101,6 +4108,7 @@
 				DC8BB2481277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33712A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				7DB195B212B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
+				7DB349A912B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4235,6 +4243,7 @@
 				DC8BB2491277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33812A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				7DB195B312B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
+				7DB349AA12B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4369,6 +4378,7 @@
 				DC8BB2471277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33612A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				7DB195B112B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
+				7DB349A812B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

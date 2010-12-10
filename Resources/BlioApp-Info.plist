@@ -45,7 +45,7 @@
 		<string>opengles-2</string>
 	</array>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleDefault</string>
+	<string>UIStatusBarStyleBlackTranslucent</string>
 	<key>UIStatusBarStyle~iPad</key>
 	<string>UIStatusBarStyleBlackOpaque</string>
 	<key>UIInterfaceOrientation~iPad</key>
@@ -57,9 +57,9 @@
 	<key>UISupportedInterfaceOrientations~iPad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIInterfaceOrientation</key>
 	<array>
@@ -68,7 +68,7 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIFileSharingEnabled</key>

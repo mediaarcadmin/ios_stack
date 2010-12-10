@@ -269,10 +269,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	
 }
 
-- (void)viewDidLoad {
-	[self togglePageJumpPanel];
-}
-
 - (void)initialiseBookView {
    
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && ![[NSUserDefaults standardUserDefaults] objectForKey:kBlioLandscapeTwoPagesDefaultsKey]) {
@@ -495,6 +491,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			
 		return;
 	}
+    
+    [self.view addSubview:self.coverView];
 			
 	CGRect coverRect = [[self bookView] firstPageRect];
     CGFloat coverRectXScale = CGRectGetWidth(coverRect) / CGRectGetWidth(self.coverView.frame);
@@ -901,8 +899,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)layoutNavigationToolbar {
-	UIViewController *controller = [self.delegate coverViewViewControllerForOpening];
-    UINavigationBar *currentNavBar = [controller.navigationController navigationBar];
+    UINavigationBar *currentNavBar = [self.navigationController navigationBar];
     CGRect navFrame = currentNavBar.frame;
     navFrame.origin.y = 20;
     [self.navigationController.navigationBar setFrame:navFrame];
@@ -1101,6 +1098,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 //                    [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
 //            }            
 //        }
+        [self togglePageJumpPanel];
     }
     _firstAppearance = NO;
 }
@@ -1546,11 +1544,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)layoutPageJumpView {
     [_pageJumpView setTransform:CGAffineTransformIdentity];
     
-    ///CGSize viewBounds = [self.bookView bounds].size;
-	UIViewController *controller = [self.delegate coverViewViewControllerForOpening];
-    UINavigationBar *currentNavBar = [controller.navigationController navigationBar];
+    UINavigationController *controller = [self navigationController];
+    UINavigationBar *currentNavBar = [controller navigationBar];
     CGPoint navBarBottomLeft = CGPointMake(0.0, 20 + currentNavBar.frame.size.height);
-    //CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:currentNavBar];
 
     [_pageJumpView setFrame:CGRectMake(navBarBottomLeft.x, navBarBottomLeft.y, currentNavBar.frame.size.width, currentNavBar.frame.size.height)];
     if (![_pageJumpView isHidden]) {
@@ -1579,11 +1575,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [_pageJumpSlider setBounds:sliderBounds];
     
     CGFloat scale = 1;
-    
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
+
+    CGRect _pageJumpViewBounds = _pageJumpView.bounds;
+
+    if(_pageJumpViewBounds.size.height < 40)
         scale = 0.75f;
     
-    CGRect _pageJumpViewBounds = _pageJumpView.bounds;
     CGPoint center = CGPointMake(CGRectGetMidX(_pageJumpView.bounds), 
                                  CGRectGetHeight(_pageJumpViewBounds) - (CGRectGetHeight(sliderBounds) / 2.0f + 2.0f) * scale);
     _pageJumpSlider.center = center;
@@ -1679,8 +1676,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [_pageJumpView addSubview:slider];
 		[self setPageJumpSliderPreview];
         
+        _pageJumpView.layer.zPosition = 5;
         [self.view addSubview:_pageJumpView];
-	
     }
     
     CGSize sz = _pageJumpView.bounds.size;
@@ -1776,6 +1773,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
         }
     }
+}
+
+- (UIImage *)dimPageImage
+{
+    UIView<BlioBookView> *bookView = [self bookView];
+    if([bookView respondsToSelector:@selector(dimPageImage)]) {
+        return bookView.dimPageImage;
+    }
+    return nil;
 }
 
 #pragma mark -
@@ -2606,7 +2612,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     // Doing this here instead of in the 'didRotate' callback results in smoother
     // animation that happens simultaneously with the rotate.
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) [self layoutNavigationToolbar];
+    [self layoutNavigationToolbar];
     [self setNavigationBarButtons];
     if (_pageJumpView) {
         [self layoutPageJumpView];
