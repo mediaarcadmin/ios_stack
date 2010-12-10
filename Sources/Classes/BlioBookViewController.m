@@ -900,6 +900,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aPauseButton setAlpha:0];
     [self.view addSubview:aPauseButton];
     self.pauseButton = aPauseButton;
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+
 }
 
 - (void)layoutNavigationToolbar {
@@ -907,6 +910,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     CGRect navFrame = currentNavBar.frame;
     navFrame.origin.y = 20;
     [self.navigationController.navigationBar setFrame:navFrame];
+}
+
+- (void)didBecomeActive:(NSNotification *)notification {	
+	// Layout the navigation toolbars once we have comleted this run loop.
+	// This is teh equivalent of calling in viewDidAppear (which doesn't get called when returning from background
+	// If we did layout now, the navigation bar would get adjusted before appearing and fit under the status bar
+	[self performSelector:@selector(layoutNavigationToolbar) withObject:nil afterDelay:0.1f];
 }
 
 - (void)setNavigationBarButtons {
@@ -1316,6 +1326,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)delayedToggleToolbars:(NSNumber *)toolbarStateNumber
 {
+	
     BlioLibraryToolbarsState toolbarState = [toolbarStateNumber integerValue];
  
     if(_fadeState != BookViewControlleUIFadeStateNone) {
