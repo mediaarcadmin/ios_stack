@@ -32,8 +32,8 @@
 
 static const CGFloat kBlioBookSliderPreviewWidthPad = 220;
 static const CGFloat kBlioBookSliderPreviewHeightPad = 220;
-static const CGFloat kBlioBookSliderPreviewWidthPhone = 220;
-static const CGFloat kBlioBookSliderPreviewHeightPhone = 220;
+static const CGFloat kBlioBookSliderPreviewWidthPhone = 180;
+static const CGFloat kBlioBookSliderPreviewHeightPhone = 180;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -1313,8 +1313,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)delayedToggleToolbars:(NSNumber *)toolbarStateNumber
 {
     BlioLibraryToolbarsState toolbarState = [toolbarStateNumber integerValue];
-    
-    if(_fadeState != BookViewControlleUIFadeStateNone) return;
+ 
+    if(_fadeState != BookViewControlleUIFadeStateNone) {
+		// Immediately toggle the pause button if required, without animation, before returning
+		switch (toolbarState) {
+			case kBlioLibraryToolbarsStatePauseButtonVisible:
+				self.pauseButton.alpha = 1;
+				break;
+			default:
+				self.pauseButton.alpha = 0;
+				break;
+		}
+		return;
+	}
     
     // Set the fade state
     switch (toolbarState) {
@@ -3151,19 +3162,31 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = YES;
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.2f];
 	[self.bookViewController.thumbPreview setAlpha:1];
+	[UIView commitAnimations];
     return [super beginTrackingWithTouch:touch withEvent:event];
 }
 
 - (void)cancelTrackingWithEvent:(UIEvent *)event {
     touchInProgress = NO;
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.2f];
 	[self.bookViewController.thumbPreview setAlpha:0];
+	[UIView commitAnimations];
     [super cancelTrackingWithEvent:event];
 }
 
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = NO;
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.2f];
 	[self.bookViewController.thumbPreview setAlpha:0];
+	[UIView commitAnimations];
     [super endTrackingWithTouch:touch withEvent:event];
 }
 
