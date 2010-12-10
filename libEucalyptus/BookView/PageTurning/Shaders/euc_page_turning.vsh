@@ -18,6 +18,7 @@ uniform Light uLight;
 uniform Material uMaterial;
 
 uniform lowp float uColorFade;
+uniform highp vec2 uContentsScale;
 
 uniform bool uFlipContentsX;
 
@@ -76,6 +77,8 @@ void main()
     vContentsCoordinate = vec2(abs(float(uFlipContentsX) - aTextureCoordinate.x), aTextureCoordinate.y);
     vZoomedContentsCoordinate = vec2((vContentsCoordinate.x - uZoomedTextureRect.x) / uZoomedTextureRect.z,
                                      (vContentsCoordinate.y - uZoomedTextureRect.y) / uZoomedTextureRect.w);
-        
+  
+    vContentsCoordinate *= uContentsScale;
+   
     gl_Position = uProjectionMatrix * projectedPosition;
 }
