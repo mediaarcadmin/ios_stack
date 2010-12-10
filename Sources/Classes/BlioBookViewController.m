@@ -32,8 +32,8 @@
 
 static const CGFloat kBlioBookSliderPreviewWidthPad = 220;
 static const CGFloat kBlioBookSliderPreviewHeightPad = 220;
-static const CGFloat kBlioBookSliderPreviewWidthPhone = 220;
-static const CGFloat kBlioBookSliderPreviewHeightPhone = 220;
+static const CGFloat kBlioBookSliderPreviewWidthPhone = 180;
+static const CGFloat kBlioBookSliderPreviewHeightPhone = 180;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
