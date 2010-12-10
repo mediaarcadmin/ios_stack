@@ -279,7 +279,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     // TODO: support
     //css_computed_list_style_image(<#const css_computed_style *style#>, <#lwc_string **url#>);
     
-    NSString *bulletString;
+    NSString *bulletString = @"";
     EucCSSIntermediateDocumentNode *documentNode = renderItem->item.openNodeInfo.node;
 
     enum css_list_style_type_e listStyleType = css_computed_list_style_type(documentNode.computedStyle);
