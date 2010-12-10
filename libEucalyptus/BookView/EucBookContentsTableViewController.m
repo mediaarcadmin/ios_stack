@@ -308,9 +308,6 @@
 {
     NSString *uuid = [[_uuids objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     THPair *nameAndSubtitle = [_dataSource presentationNameAndSubTitleForSectionUuid:uuid];
-	if ([nameAndSubtitle.first isEqualToString:@"Campari-Blood Orange Sorbet"]) {
-		NSLog(@"found");
-	}
     NSUInteger pageNumber = [_dataSource pageNumberForSectionUuid:uuid];
     BOOL pageNumberIsValid = YES;
 
