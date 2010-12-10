@@ -300,9 +300,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     
-    _grayThumbnail = [_texturePool unusedTexture];
-    glBindTexture(GL_TEXTURE_2D, _grayThumbnail);
-    uint32_t graySquare[4] = { 0xff888888, 0xffffffff, 0xffffffff, 0xff888888 };
+    _checkerboardTexture = [_texturePool unusedTexture];
+    glBindTexture(GL_TEXTURE_2D, _checkerboardTexture);
+    uint32_t graySquare[4] = { 0xffaaaaaa, 0xffdddddd, 0xffdddddd, 0xffaaaaaa };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &graySquare);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -403,8 +403,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_bookEdgeTexture) {
         glDeleteTextures(1, &_bookEdgeTexture);
     }
-    if(_grayThumbnail) {
-        glDeleteTextures(1, &_grayThumbnail);
+    if(_checkerboardTexture) {
+        glDeleteTextures(1, &_checkerboardTexture);
     }
     if(_alphaWhiteZoomedContent) {
         glDeleteTextures(1, &_alphaWhiteZoomedContent);
@@ -1643,15 +1643,22 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     
     glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
     glUniform1f(glGetUniformLocation(_program, "uColorFade"), 1.0f);
+    glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
 
+    THVec2 contentsScaleForCheckerboard = THVec2Make(_minZoomFactor * _unzoomedRightPageFrame.size.width / 10.0f, _minZoomFactor * _unzoomedRightPageFrame.size.height / 10.0f);
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
-    
     
     // Draw the right-hand (or only) flat page.
     if(_pageContentsInformation[_rightFlatPageContentsIndex]) {
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex].texture ?: _grayThumbnail);    
+        if(_pageContentsInformation[_rightFlatPageContentsIndex].texture) {
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex].texture); 
+        } else {
+            glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+            glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
+        }
         if(_pageContentsInformation[_rightFlatPageContentsIndex].zoomedTexture && _zoomFactor > 1.0f) {
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex].zoomedTexture); 
@@ -1677,6 +1684,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
         }
+        if(!_pageContentsInformation[_rightFlatPageContentsIndex].texture) {
+            glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
+        }
     }
     
     if(_twoUp && _rightPageFrame.origin.x > 0.0f) {
@@ -1697,7 +1707,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageContentsIndex].texture ?: _grayThumbnail);
+            if(_pageContentsInformation[leftFlatPageContentsIndex].texture) {
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageContentsIndex].texture); 
+            } else {
+                glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+                glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
+            }
             if(_pageContentsInformation[leftFlatPageContentsIndex].zoomedTexture && _zoomFactor > 1.0f) {
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageContentsIndex].zoomedTexture);    
@@ -1725,7 +1740,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
-            }                                        
+            }         
+            if(!_pageContentsInformation[leftFlatPageContentsIndex].texture) {
+                glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
+            }            
             
             if(_twoUp) {
                 glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
@@ -1761,7 +1779,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, pageVertexNormals);
         
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-2].texture ?: _grayThumbnail);
+        if(_pageContentsInformation[_rightFlatPageContentsIndex-2].texture) {
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-2].texture); 
+        } else {
+            glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+            glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
+        }
         if(_pageContentsInformation[_rightFlatPageContentsIndex-2].zoomedTexture && _zoomFactor > 1.0f) {
             CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageContentsIndex - 2].zoomedTextureRect;
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
@@ -1779,9 +1802,18 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
         
+        if(!_pageContentsInformation[_rightFlatPageContentsIndex-2].texture) {
+            glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
+        }            
+
         if(_twoUp) {
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-1].texture ?: _grayThumbnail);
+            if(_pageContentsInformation[_rightFlatPageContentsIndex-1].texture) {
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-1].texture); 
+            } else {
+                glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+                glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
+            }
             if(_zoomFactor > 1.0f) {
                 if(_pageContentsInformation[_rightFlatPageContentsIndex-1].zoomedTexture) {
                     CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageContentsIndex-1].zoomedTextureRect;
@@ -1818,6 +1850,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
             glUniform1f(glGetUniformLocation(_program, "uColorFade"), 1.0f);
         }
+        glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
         
         glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                      (GLfloat *)&invisibleZoomedTextureRect);
