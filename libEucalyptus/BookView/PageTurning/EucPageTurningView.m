@@ -27,6 +27,29 @@
 
 #define FOV_ANGLE ((GLfloat)10.0f)
 
+
+// With a little help from http://www.anima-entertainment.de/?p=252:
+// assuming :
+// t is a value between 0 and 1
+// b is an offset
+// c is the height
+/*
+static CGFloat easeIn (CGFloat t, CGFloat b, CGFloat c) {
+    return c*powf(t, 3.0f) + b;
+}
+
+static CGFloat easeOut (CGFloat t, CGFloat b, CGFloat c) {
+    return c*(powf(t-1, 3.0f) + 1) + b;
+}
+*/
+static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
+    if ( (t*2.0f) < 1.0f)
+        return c*0.5f*powf(t*2.0f, 3.0f) + b;
+    else
+        return c*0.5f*(powf(t*2.0f-2.0f, 3.0f) + 2.0f) + b;
+}
+
+
 @interface EucPageTurningView ()
 
 @property (nonatomic, assign, readonly) CATransform3D zoomMatrix;
@@ -1591,7 +1614,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, _stablePageVertexNormals);
     
     glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
-    
+    glUniform1f(glGetUniformLocation(_program, "uColorFade"), 1.0f);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
     
@@ -1695,6 +1719,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         // Clear the depth buffer so that this page wins if it has coordinates 
         // that conincide with the flat page.
         glClear(GL_DEPTH_BUFFER_BIT);
+        
+        CGFloat midpointX = _pageVertices[Y_VERTEX_COUNT / 2][X_VERTEX_COUNT - 1].x;
+        if(!_twoUp && midpointX < 0.0f) {
+            glUniform1f(glGetUniformLocation(_program, "uColorFade"), MIN(1.0f, (_rightPageRect.size.width + midpointX) / _rightPageRect.size.width));
+        }
 		                        
         const THVec3 *pageVertices, *pageVertexNormals;        
         pageVertices = (THVec3 *)_pageVertices;
@@ -1759,6 +1788,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
         } else {
             glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
+            glUniform1f(glGetUniformLocation(_program, "uColorFade"), 1.0f);
         }
         
         glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
@@ -2886,27 +2916,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 	[self _setZoomMatrixFromTranslation:translation zoomFactor:zoomFactor];
 }
 
-// With a little help from http://www.anima-entertainment.de/?p=252:
-// assuming :
-// t is a value between 0 and 1
-// b is an offset
-// c is the height
-/*
-static CGFloat easeIn (CGFloat t, CGFloat b, CGFloat c) {
-    return c*pow(t, 3.0f) + b;
-}
-
-static CGFloat easeOut (CGFloat t, CGFloat b, CGFloat c) {
-    return c*(pow(t-1, 3.0f) + 1) + b;
-}
-*/
-static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
-    if ( (t*2.0f) < 1.0f)
-        return c*0.5f*powf(t*2.0f, 3.0f) + b;
-    else
-        return c*0.5f*(powf(t*2.0f-2.0f, 3.0f) + 2.0f) + b;
-}
-
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated
 {	
     if(animated) {
@@ -3284,6 +3293,7 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
             CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
                                                                 colorSpace, kCGImageAlphaPremultipliedLast);
+            
             CGColorSpaceRelease(colorSpace);
             CGContextScaleCTM(textureContext, 1.0f, -1.0f);
             CGContextTranslateCTM(textureContext, 0, -minSize.height);
@@ -3305,21 +3315,56 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
                 CGContextFillPath(textureContext);
             }
             
-            // Unpremultiply the alpha for OpenGL.
+            THTimer *timer = [THTimer timerWithName:@"Convert to RGBA4444"];
+
+            size_t newBufferLength = minSize.width * minSize.height * 2;
+            uint16_t *newTextureData = calloc(newBufferLength, 1);
+            
+            // Unpremultiply, and convert to RGBA4444 to save RAM.
             for(int i = 0; i < bufferLength; i += 4) {
-                int alpha = textureData[i+3];
-                if(alpha > 0) {
-                    textureData[i] = (255 * (int)textureData[i]) / alpha;
-                    textureData[i+1] = (255 * (int)textureData[i+1]) / alpha;
-                    textureData[i+2] = (255 * (int)textureData[i+2]) / alpha;
+                uint16_t result = 0;
+                uint32_t alpha = textureData[i+3];
+                if(alpha) {
+                    result |= ((255 * (uint32_t)textureData[i]) / alpha) >> 4;
+                    result <<= 4;
+                    result |= ((255 * (uint32_t)textureData[i+1]) / alpha) >> 4; 
+                    result <<= 4; 
+                    result |= ((255 * (uint32_t)textureData[i+2]) / alpha) >> 4;
+                    result <<= 4;
+                    result |= alpha >> 4;
                 }
+                newTextureData[i / 4] = result;
             }
             
-            _pageContentsInformation[index].highlightTexture = [self _createTextureFromRGBABitmapContext:textureContext];
+            [timer report];
+            
+            free(textureData);
+            CGContextRelease(textureContext);
+            
+            EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
+            [eaglContext thPush];
+            
+            GLuint textureRef = [_texturePool unusedTexture];
+            
+            glBindTexture(GL_TEXTURE_2D, textureRef); 
+            
+            glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+            
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, minSize.width, minSize.height, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, newTextureData);
+            
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+            
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
+            
+            [eaglContext thPop];
+            [_texturePool checkInEAGLContext];
+            
+            _pageContentsInformation[index].highlightTexture = textureRef;
             gotHighlights = YES;
             
-            CGContextRelease(textureContext);
-            free(textureData);
+            free(newTextureData);
         }
     }
     if(!gotHighlights) {

@@ -17,6 +17,8 @@ uniform mat4 uNormalMatrix;
 uniform Light uLight;
 uniform Material uMaterial;
 
+uniform lowp float uColorFade;
+
 uniform bool uFlipContentsX;
 
 uniform vec4 uZoomedTextureRect;
@@ -68,7 +70,7 @@ void main()
     vec4 projectedNormal = uNormalMatrix * aNormal;
         
     vColor = lightingEquation(projectedPosition.xyz / projectedPosition.w, 
-                              normalize(projectedNormal.xyz / projectedNormal.w));
+                              normalize(projectedNormal.xyz / projectedNormal.w)) * uColorFade;
     
     vPaperCoordinate = aTextureCoordinate;
     vContentsCoordinate = vec2(abs(float(uFlipContentsX) - aTextureCoordinate.x), aTextureCoordinate.y);
