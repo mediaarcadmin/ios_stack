@@ -34,6 +34,7 @@ static const CGFloat kBlioBookSliderPreviewWidthPad = 220;
 static const CGFloat kBlioBookSliderPreviewHeightPad = 220;
 static const CGFloat kBlioBookSliderPreviewWidthPhone = 180;
 static const CGFloat kBlioBookSliderPreviewHeightPhone = 180;
+static const CGFloat kBlioBookSliderPreviewAnchorOffset = 20;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -88,6 +89,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)setThumb:(UIImage *)thumb;
+- (void)setThumbAnchorPoint:(CGPoint)anchor;
 
 @end
 
@@ -3144,9 +3146,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
-- (void)setPreviewThumb:(UIImage *)thumb {	 
-
+- (void)setPreviewThumb:(UIImage *)thumb {
 	[thumbPreview setThumb:thumb];
+	
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		CGFloat sliderMin = _pageJumpSlider.minimumValue;
+		CGFloat sliderMax = _pageJumpSlider.maximumValue;
+		CGFloat sliderMaxMinDiff = sliderMax - sliderMin;
+		CGFloat sliderValue = _pageJumpSlider.value;
+	
+		CGRect sliderFrame = [self.view convertRect:_pageJumpSlider.frame fromView:_pageJumpSlider];
+		CGFloat xCoord = CGRectGetMinX(sliderFrame) + ((sliderValue-sliderMin)/sliderMaxMinDiff) * CGRectGetWidth(sliderFrame);		
+		CGFloat yCoord = CGRectGetMidY(sliderFrame);
+		
+		[thumbPreview setThumbAnchorPoint:CGPointMake(xCoord, yCoord)];
+	}
 }
 
 @end
@@ -3236,8 +3250,24 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
 }
 
+- (CGRect)thumbBounds {
+	CGSize thumbSize = thumbImage.image.size;
+	CGFloat scale = MAX(thumbSize.width / CGRectGetWidth(thumbImage.bounds), thumbSize.height / CGRectGetHeight(thumbImage.bounds));
+	return CGRectMake(0, 0, thumbSize.height * scale, thumbSize.width * scale);
+}
+
 - (void)setThumb:(UIImage *)newThumb {
 	[thumbImage setImage:newThumb];
+}
+
+- (void)setThumbAnchorPoint:(CGPoint)anchor {
+	CGRect thumbBounds = [self thumbBounds];
+	
+	CGPoint center = CGPointMake(anchor.x, anchor.y + kBlioBookSliderPreviewAnchorOffset + CGRectGetMidY(thumbBounds));
+	CGPoint superCenter = [self convertPoint:center toView:[self superview]];
+	
+	[thumbImage setCenter:superCenter];
+
 }
 
 @end
