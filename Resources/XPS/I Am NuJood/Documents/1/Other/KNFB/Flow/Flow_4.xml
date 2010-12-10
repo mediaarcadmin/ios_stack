@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page12" xml:space="preserve"/>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page13" xml:space="preserve"/>
+      
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__6">April 2, 2008</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Figure HorizontalAnchor="ColumnLeft" HorizontalOffset="16" VerticalOffset="0" CanDelayPlacement="False" Height="42.6318367346939" Margin="0,0,1,0" Padding="0,0,0,0" TextAlignment="Justify" FontFamily="Charis SIL" FontSize="50" Tag="KNFBDropCap">
+        <Paragraph LineHeight="50" LineStackingStrategy="BlockLineHeight">
+          <Run FontFamily="Charis SIL" FontSize="50" Tag="__6">M</Run>
+        </Paragraph>
+      </Figure>
+      <Run Tag="__6">y head is spinning&#x2014;I&#x2019;ve never seen so many people in my whole life. In the yard outside the courthouse, a crowd is bustling around in every direction: men in suits and ties with bunches of yellowed files tucked under their arms; other men wearing the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__6">zanna</Run>
+      <Run Tag="__6">, the traditional ankle-length tunic of the villages of northern Yemen; and then all these women, shouting and weeping so loudly that I can&#x2019;t understand a word.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#nts2a">I&#x2019;d love to read their lips to find out what they&#x2019;re saying, but the </Run>
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_nts_r1.htm#nts2">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#nts2a"><Run.TextDecorations><TextDecorationCollection/></Run.TextDecorations>niqab</Run>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#nts2a">s that match their long black robes</Run>
+      </Hyperlink>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#nts2a"> hide everything except their big, round eyes. The women seem furious, as if a tornado had just destroyed their houses. I try to listen closely.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page14">I can catch only a few words&#x2014;</Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page14">childcare, justice, human rights</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page14">&#x2014;and I&#x2019;m not really sure what they mean. Not far away from me is a broad-shouldered giant wearing his turban jammed down to his eyes; he&#x2019;s carrying a plastic bag full of documents and telling anyone who will listen that he has come here to try to get back some land that was stolen from him. He&#x2019;s dashing around like a frantic rabbit, and he almost runs right into me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__6">What chaos &#x2026; It must be like Al-Qa Square, the one in the heart of Sana&#x2019;a where out-of-work laborers go, the place Aba&#x2014;Papa&#x2014;often talks about. There it&#x2019;s every man for himself, and they all want to be the first to snag a job for the day at dawn, just after the first </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__6">azaan</Run>
+      <Run Tag="__6">, the traditional summons to prayer called out five times a day by the muezzins from the minarets of their mosques. Poor people are so hungry they&#x2019;ve got stones where their hearts should be, and no time to feel pity for the fates of others. Still, I&#x2019;d like so much for someone here to take my hand, to look at me with kindness. Won&#x2019;t anyone listen to me, for once? It&#x2019;s as if I were invisible. No one sees me: I&#x2019;m too small for them; I barely come up to their tummies. I&#x2019;m only ten years old, maybe not even that. Who knows?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page15">I&#x2019;d imagined the courthouse differently: a calm, clean place, the great house where Good battles Evil, where you can fix all the problems of the world. I&#x2019;d already seen some courtrooms on my neighbors&#x2019; television, with judges in long robes. People say they&#x2019;re the ones who can help people in need. So I have to find one and tell him my story. I&#x2019;m exhausted. It&#x2019;s hot under my veil, I have a headache, and I&#x2019;m so ashamed. &#x2026; Am I strong enough to keep going? No. Yes. Maybe. &#x2026; I tell myself it&#x2019;s too late to turn back; the hardest part is over, and I have to go on.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__7">When I left my parents&#x2019; house early this morning, I promised myself not to set foot there again until I&#x2019;d gotten what I wanted.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__7">&#x201C;Off you go&#x2014;buy some bread for breakfast,&#x201D; my mother told me, giving me 150 Yemeni rials, worth about 75 cents.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__7">As a matter of course, I pinned up my long, curly brown hair under my black head scarf and covered my body with a black coat, which is what all Yemeni women wear out in public. Trembling, feeling faint, I walked only a short way before catching the first minibus that passed along the wide avenue leading into town, where I got off at the end of the line. Then, in spite of my fear, for the first time in my life I climbed all alone into a yellow taxi.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page16">Now this endless waiting in the courtyard. To whom should I speak? Unexpectedly, over by the steps leading up to the entrance hall of the big concrete building, I spot what look like a few friendly faces in the crowd: their cheeks dark with dust, three boys in plastic sandals are studying me carefully. They remind me of my little brothers.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__7">&#x201C;Your weight, ten rials!&#x201D; one of them calls out to me, shaking a battered old scale.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__8">&#x201C;Some refreshing tea?&#x201D; asks another, holding up a small basket full of steaming glasses.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__8">&#x201C;Fresh carrot juice?&#x201D; suggests the third boy, breaking into his nicest smile as he stretches out his right hand in the hope of earning a small coin.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__8">No thanks, I&#x2019;m not thirsty, and what&#x2019;s on my mind has nothing to do with how much I weigh</Run>
+      <Run Tag="__8">. If they only knew what brings me here &#x2026;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__8">Bewildered, helpless, I look up again into the faces of the many grown-ups hurrying past me. In their long veils, the women all look the same. What kind of a mess have I gotten myself into?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__8">Then I notice a man in a white shirt and black suit walking toward me. A judge, perhaps, or a lawyer? Well, it&#x2019;s an opportunity, so here goes.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__8">&#x201C;Excuse me, mister, I want to see the judge.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__8">&#x201C;The judge? Over that way, up the steps,&#x201D; he replies, with hardly a glance at me, before vanishing back into the throng.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page17">I have no choice anymore: I must tackle the staircase now looming before me; it&#x2019;s my last and only chance to get help. I feel dirty and ashamed, but I have to climb these steps, one by one, to go tell my story, to wade through this human flood that grows even bigger the closer I get to the vast entrance hall. I almost fall down, but I catch myself. I&#x2019;ve cried so much that my eyes are dry. I&#x2019;m tired. My feet feel like lead when I finally step onto the marble floor. But I mustn&#x2019;t collapse, not now.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__8">On the white walls, like the ones in a hospital, I can see writing in Arabic, but no matter how I try, I can&#x2019;t manage to read the inscriptions. I was forced to leave school during my second year, right before my life became a nightmare, and aside from my first name, Nujood, I can&#x2019;t write much, which really embarrasses me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__8">Looking around, I spy a group of men in olive-green uniforms and kepis. They must be policemen, or else soldiers; one of them has a Kalashnikov slung over his shoulder. I&#x2019;m shaking&#x2014;if they see me, they might arrest me. A little girl running away from home, that just isn&#x2019;t done. Trembling, I discreetly latch on to the first passing veil, hoping to get the attention of the unknown woman it conceals. A tiny voice inside me whispers, </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__8">Go on, Nujood! It&#x2019;s true you&#x2019;re only a girl, but you&#x2019;re also a woman, and a real one, even though you&#x2019;re still having trouble accepting that</Run>
+      <Run Tag="__8">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">&#x201C;I want to talk to the judge.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page18">Two big eyes framed in black stare at me in surprise; the lady in front of me hadn&#x2019;t seen me approach her.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">&#x201C;What?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">&#x201C;I want to talk to the judge.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">Is she not understanding me on purpose, so she can ignore me more easily, like the others?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">&#x201C;Which judge are you looking for?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">&#x201C;I just want to speak to a judge, that&#x2019;s all!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">&#x201C;But there are lots of judges in this courthouse.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">&#x201C;Take me to a judge&#x2014;it doesn&#x2019;t matter which one!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">She stares at me in silence, astonished by my determination. Unless it&#x2019;s my shrill little cry that has frozen her solid.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">I&#x2019;m a simple village girl whose family had to move to the capital, and I have always obeyed the orders of my father and brothers. Since forever, I have learned to say yes to everything.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">Today I have decided to say no.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page19">Inside of me I have been soiled, contaminated&#x2014;it&#x2019;s as if part of myself has been stolen from me. No one has the right to keep me from seeking justice. It&#x2019;s my last chance, so I&#x2019;m not going to give up easily. And this surprised stare, which feels as cold as the marble of the great hall where my cry now echoes strangely, will not make me keep quiet. It&#x2019;s almost noon; I&#x2019;ve been wandering desperately in this labyrinth of a courthouse for hours. I want to see the judge!</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__9">&#x201C;Follow me,&#x201D; the woman finally says, gesturing for me to walk along behind her.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__10">The door opens onto a room with brown carpeting. It&#x2019;s full of people, and at the far end, behind a desk, a thin-faced man with a mustache busily replies to the barrage of questions coming at him from all directions. It&#x2019;s the judge, at last.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__10">The atmosphere is noisy, but reassuring. I feel safe. I recognize, in a place of honor on a wall, a framed photograph of Amm Ali, &#x201C;Uncle Ali&#x201D;: that&#x2019;s what I&#x2019;ve been taught in school to call the president of our country, Ali Abdullah al-Saleh, who was elected more than thirty years ago.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__10">Outside, the muezzin issues the midday call to prayer as I sit down, like everyone else, in one of the brown armchairs lined up along the wall. Around me I catch glimpses of familiar faces&#x2014;or, rather, familiar eyes&#x2014;from the angry crowd in the courtyard. Certain faces lean toward me in a strange way. They&#x2019;ve finally realized that I exist! It&#x2019;s about time. Comforted, I rest my head against the back of the chair and patiently await my turn.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page20">If God exists</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page20">, I say to myself, </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page20">then let Him come save me</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page20">. I have always recited the five required daily prayers. During Eid al-Fitr, when we celebrate the end of Ramadan, the Islamic holy month of fasting, I dutifully help my mother and sisters with all the cooking. I&#x2019;m basically a very good girl. </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page20">Oh, God, have pity on me!</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page20"> My mind is dizzy with images that come and go. &#x2026; I&#x2019;m swimming; the sea is calm. Then the water becomes choppy. I catch sight of my brother Fares off in the distance, but I can&#x2019;t go to him. When I call to him, he doesn&#x2019;t hear me, so I begin shouting his name. Then gusts of wind blow me backward toward the shore. I struggle, whirling my hands around like propellers&#x2014;I&#x2019;m not going to let myself be driven all the way back to where I started, but I&#x2019;m so close to the shore now, and I&#x2019;ve lost sight of Fares. &#x2026; Help! I don&#x2019;t want to go back to Khardji, no, I don&#x2019;t want to go back there!</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__10">&#x201C;And what can I do for you?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page21">A man&#x2019;s voice rouses me from my dozing. It is a curiously gentle voice, with no need to be loud to attract my attention, simply whispering a few words: &#x201C;And what can I do for you?&#x201D; At last someone has come to my rescue. I rub my face and recognize, standing tall there in front of me, the judge with the mustache. The crowd has gone, the eyes have disappeared, and the room is almost empty. I have not replied, so the man tries again.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__11">&#x201C;What do you want?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__11">This time I answer promptly.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__11">&#x201C;I want a divorce!&#x201D;</Run>
+    </Paragraph>
+  </Section>
+</Flow>

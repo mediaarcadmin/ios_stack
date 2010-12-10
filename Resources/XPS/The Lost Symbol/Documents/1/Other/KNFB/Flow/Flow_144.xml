@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_cop_r1.htm#cop">
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/f979bf14-601f-4f18-85df-c7496527c401.jpg" Stretch="Uniform" Width="130" Height="66" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Center" FontFamily="serif" FontSize="12">
+        <Run Tag="__613">This book is a work of fiction. Names, characters, businesses, organizations, places, events, and incidents either are the product of the author&#x2019;s imagination or are used fictitiously. Any resemblance to actual persons, living or dead, or actual events is entirely coincidental.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Center" FontFamily="serif" FontSize="12">
+        <Run Tag="__613">Copyright &#xA9; 2009 by Dan Brown</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Center" FontFamily="serif" FontSize="12">
+        <Run Tag="__613">All rights reserved. Published in the United States by Doubleday, a division of Random House, Inc., New York, and in Canada by Random House of Canada Limited, Toronto.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Center" FontFamily="serif" FontSize="12">
+        <Hyperlink NavigateUri="http://www.doubleday.com">
+          <Run Tag="__613">www.doubleday.com</Run>
+        </Hyperlink>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Center" FontFamily="serif" FontSize="12">
+        <Run Tag="__613">DOUBLEDAY and the DD colophon are registered trademarks of Random House, Inc.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Center" FontFamily="serif" FontSize="12">
+        <Run Tag="__613">Cataloging-in-Publication Data is on file with the Library of Congress.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Center" FontFamily="serif" FontSize="12">
+        <Run Tag="__613">eISBN: 978-0-385-53313-3</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,17,0,17" TextAlignment="Center" FontFamily="serif" FontSize="12">
+        <Run Tag="__613">v3.0.180</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

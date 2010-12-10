@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c63_r1.htm#c63">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__302">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__302">63 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__302">In a quiet</Run>
+        <Run Tag="__302"> neighborhood just west of Embassy Row in Washington, there exists a medieval-style walled garden whose roses, it is said, spring from twelfth-century plants. The garden&#x2019;s Carderock gazebo&#x2014;known as Shadow House&#x2014;sits elegantly amid meandering pathways of stones dug from George Washington&#x2019;s private quarry.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">Tonight the silence of the gardens was broken by a young man who rushed through the wooden gate, shouting as he came.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">&#x201C;Hello?&#x201D; he called out, straining to see in the moonlight. &#x201C;Are you in here?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">The voice that replied was frail, barely audible. &#x201C;In the gazebo . . . just taking some air.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">The young man found his withered superior seated on the stone bench beneath a blanket. The hunched old man was tiny, with elfin features. The years had bent him in two and stolen his eyesight, but his soul remained a force to be reckoned with.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">Catching his breath, the young man told him, &#x201C;I just . . . took a call . . . from your friend . . . Warren Bellamy.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">&#x201C;Oh?&#x201D; The old man perked up. &#x201C;About what?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">&#x201C;He didn&#x2019;t say, but he sounded like he was in a big hurry. He told me he left you a message on your voice mail, which you need to listen to right away.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">&#x201C;That&#x2019;s all he said?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">&#x201C;Not quite.&#x201D; The young man paused. &#x201C;He told me to ask you a question.&#x201D; </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__302">A very strange question.</Run>
+        <Run Tag="__302"> &#x201C;He said he needed your response right away.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">The old man leaned closer. &#x201C;What question?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__302">As the young man spoke Mr. Bellamy&#x2019;s question, the pall that crossed the old man&#x2019;s face was visible even in the moonlight. Immediately, he threw off his blanket and began struggling to his feet.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__303">&#x201C;Please help me inside. Right away.&#x201D;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

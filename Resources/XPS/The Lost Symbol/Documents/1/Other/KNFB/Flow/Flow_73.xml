@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c66_r1.htm#c66">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__310">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__310">66 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__310">&#x201C;We should</Run>
+        <Run Tag="__310"> get out of here,&#x201D; Langdon said to Katherine. &#x201C;It&#x2019;s only a matter of time before they figure out where we are.&#x201D; He hoped Bellamy had managed to escape.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__310">Katherine still seemed fixated on the gold capstone, looking incredulous that the inscription was so unhelpful. She had taken the capstone out of the box, examined every side, and was now carefully putting it back in the box.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__310">The secret hides within The Order,</Run>
+        <Run Tag="__310"> Langdon thought. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__310">Big help.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__310">Langdon found himself wondering now if perhaps Peter had been misinformed about the contents of the box. This pyramid and capstone had been created long before Peter was born, and Peter was simply doing as his forefathers had told him, keeping a secret that was probably as much a mystery to him as it was to Langdon and Katherine.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__310">What did I expect?</Run>
+        <Run Tag="__310"> Langdon wondered. The more he learned tonight about the Legend of the Masonic Pyramid, the less plausible it all seemed. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__310">I&#x2019;m searching for a hidden spiral staircase covered by a huge stone?</Run>
+        <Run Tag="__310"> Something told Langdon he was chasing shadows. Nonetheless, deciphering this pyramid seemed his best chance at saving Peter.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__310">&#x201C;Robert, does the year 1514 mean anything to you?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__310">Fifteen-fourteen?</Run>
+        <Run Tag="__310"> The question seemed apropos of nothing. Langdon shrugged. &#x201C;No. Why?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__310">Katherine handed him the stone box. &#x201C;Look. The box is dated. Have a look under the light.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__310">Langdon took a seat at the desk and studied the cube-shaped box beneath the light. Katherine put a soft hand on his shoulder, leaning in to point out the tiny text she had found carved on the exterior of the box, near the bottom corner of one side.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__310">&#x201C;Fifteen-fourteen A.D.,&#x201D; she said, pointing into the box. </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__311">Sure enough, the carving depicted the number 1514, followed by an unusual stylization of the letters </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__311">A</Run>
+        <Run Tag="__311"> and </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__311">D.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/e5b04fd5-7aad-41ba-90fa-0e11472ce739.jpg" Stretch="Uniform" Width="115" Height="35" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__311">&#x201C;This date,&#x201D; Katherine was saying, sounding suddenly hopeful, &#x201C;maybe it&#x2019;s the link we&#x2019;re missing? This dated cube looks a lot like a Masonic cornerstone, so maybe it&#x2019;s pointing to a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__311">real</Run>
+        <Run Tag="__311"> cornerstone? Maybe to a building built in 1514 A.D.?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__311">Langdon barely heard her.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__311">Fifteen-fourteen A.D. is not a date.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__311">The symbol </Run>
+        <Image Source="/Resources/6b6fcc8f-4d8b-4ebb-a0c6-29b6d2a74096.jpg" Stretch="Uniform" Width="26" Height="24" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run Tag="__311">, as any scholar of medieval art would recognize, was a well-known symbature&#x2014;a symbol used in place of a signature. Many of the early philosophers, artists, and authors signed their work with their own unique symbol or monogram rather than their name. This practice added a mysterious allure to their work and also protected them from persecution should their writings or artwork be deemed counterestablishment.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__311">In the case of this symbature, the letters </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__311">A.D.</Run>
+        <Run Tag="__311"> did not stand for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__311">Anno Domini</Run>
+        <Run Tag="__311"> . . . they were German for something else entirely.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__311">Langdon instantly saw all the pieces fall into place. Within seconds, he was certain he knew exactly how to decipher the pyramid. &#x201C;Katherine, you did it,&#x201D; he said, packing up. &#x201C;That&#x2019;s all we needed. Let&#x2019;s go. I&#x2019;ll explain on the way.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__311">Katherine looked amazed. &#x201C;The date 1514 A.D. actually </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__311">means</Run>
+        <Run Tag="__311"> something to you?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__311">Langdon winked at her and headed for the door. &#x201C;A.D. isn&#x2019;t a date, Katherine. It&#x2019;s a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__311">person.</Run>
+        <Run Tag="__311">&#x201D;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

@@ -1,0 +1,397 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__283">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__283">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part04chapter45.html#part04chapter45" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part04chapter45.html#page_303">&#xA0;&#xA0;45&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__283">RANKING GREAT SPORTS COLLAPSES</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="xhtml/part04chapter45.html#rfnpage_303">W</Run>
+      <Run Tag="xhtml/part04chapter45.html#rfnpage_303">ith seventeen games left in the 2007 baseball season the New York Mets held a seemingly comfortable seven-game lead in the National League East over the second-place Philadelphia Phillies. The Mets collapsed and the Phillies won the division. This collapse inspired Fox News sportswriter Todd Behrendt to write an article ranking the &#x201C;all-time great sports collapses.&#x201D;</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part04chapter45.html#fnpage_303">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part04chapter45.html#rfnpage_303">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part04chapter45.html#rfnpage_303"> In this chapter we will make some simple assumptions and then use basic probability to try and determine the probability of each collapse occurring. The &#x201C;greatest collapse&#x201D; would then be the collapse that had the smallest probability of occurring.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__283">A List of Great Collapses</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__283">We now describe the great baseball, basketball, and football collapses listed by Behrendt. (I added the last three collapses on the list.)</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__283">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__283">The 2007 Mets (described above).</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__283">On September 20, 1964, the Philadelphia Phillies held a 6.5-game lead over both the St. Louis Cardinals and the Cincinnati Reds. The Phillies went 3&#x2013;9 down the stretch and the St. Louis Cardinals won the National League title.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__283">On August 12, 1951, the Brooklyn Dodgers had a 72&#x2013;36 record and the New York Giants had a 62&#x2013;51 record. The two teams had seven head-to-head contests remaining. The Giants wiped out the Dodgers&#x2019; 13.5-game lead and beat the Dodgers in a three-game playoff capped off by Bobby Thompson&#x2019;s amazing home run (see </Run>
+          <Hyperlink NavigateUri="part01chapter08.html">
+            <Hyperlink.TextDecorations>
+              <TextDecorationCollection/>
+            </Hyperlink.TextDecorations>
+            <Run Tag="__283">chapter 8</Run>
+          </Hyperlink>
+          <Run Tag="__283">).</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__283">The L.A. Lakers trailed the Portland Trailblazers by 15 points with 10:28 left in the fourth quarter of the deciding game 7 of the 2000 NBA Western Conference Finals. The Lakers came back to win.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="xhtml/part04chapter45.html#page_304">The Houston Oilers led the Buffalo Bills 35&#x2013;3 with 28 minutes left in the 1992 AFC Wild Card Game. The Oilers came back to win.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__283">The Red Sox were down 3 games to 0 to the New York Yankees during the 2004 American League Championship Series. The Red Sox rallied and won four straight games to take the American League title.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__283">With two men out and nobody on base, the Mets trailed the Red Sox 5&#x2013;3 in the bottom of the tenth inning of game 6 of the 1986 World Series. Mookie Wilson&#x2019;s ground ball went through Bill Buckner&#x2019;s legs at first base and the rest is history.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__284">During game 4 of the 1929 World Series the Philadelphia Athletics trailed the Chicago Cubs 8&#x2013;0 at the start of the bottom of the seventh inning. The Athletics rallied and won the game.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__284">With 4:05 left in the Illinois&#x2013;Arizona 2005 NCAA basketball tournament game, the Arizona Wildcats had a 75&#x2013;60 lead. Illinois won the game.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__284">During the 2001 college basketball season Maryland led Duke by 10 points with around a minute left. Duke came back to win the game.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__284">We will now lay out some reasonable assumptions and compute the probability of each &#x201C;collapse.&#x201D; By far the &#x201C;winner&#x201D; as the greatest collapse is the last one, in which Maryland blew a ten-point lead to Duke. (See the file Collapses.xls.)</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__284">What Were the Chances the Phillies Would</Run>
+        <LineBreak/>
+        <Run Tag="__284">Catch the Mets in 2007?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__284">On September 12, 2007, the Mets had an 83&#x2013;62 record and the Phillies had a 76&#x2013;69 record. There were three games remaining between the Mets and Phillies. What were the chances that the Phillies would finish ahead of the Mets and win the National League East? To date the two teams had won the same percentage of their games: (83 + 76)/(83 + 76 + 62 + 69) = 0.55. We will therefore assume that in each non-head-to-head game both the Phillies and Mets had a .55 chance of winning, while in head-to-head games both team had a .5 chance of winning. Assuming that the outcomes of successive games are independent events, we used Monte Carlo simulation (see </Run>
+      <Hyperlink NavigateUri="part01chapter04.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__284">chapter 4</Run>
+      </Hyperlink>
+      <Run Tag="__284">) to play out the last 17 games of the season 50,000 times and found the Mets finished in second place 1.2% of the time. In case of the regular season ending in a tie, we assumed each team had a .5 chance to win the playoff.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__284">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="xhtml/part04chapter45.html#page_305">What Were the Chances the 1964 Phillies</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part04chapter45.html#page_305">Would Lose the Pennant?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__284">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__284">On September 20, 1964, the Phillies had a 90&#x2013;60 record and held a 6.5-game lead over the Cardinals and Reds, each of whom had an 83&#x2013;66 record. The Phillies had five games remaining with the Reds and three with the Cardinals. The Cardinals and Reds did not have to play each other. Again we used Monte Carlo simulation to play out the rest of the season. Since all three teams had each won around 57% of their games through September 20, we assumed they all had a .57 chance of winning any non-head-to-head game. We assumed each team also had an equal chance of winning a head-to-head game. In case of a two-way tie we assumed each team had a .5 chance of winning the pennant, and in case of a three-way tie we assumed each team had a 1 in 3 chance of winning the pennant. After using Monte Carlo simulation to play out the remainder of the season 40,000 times, we found that the Phillies had a 1.8% chance of not winning the pennant. This probability may seem higher than expected, but note that the Phillies had a much harder schedule than the Reds or Cardinals.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__285">What Were the Chances the 1951</Run>
+        <LineBreak/>
+        <Run Tag="__285">Giants Would Overtake the 1951 Dodgers?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__285">On August 12, 1951, the Brooklyn Dodgers had a 72&#x2013;36 record and the New York Giants had a 62&#x2013;51 record. The two teams had seven head-to-head contests remaining. Since the two teams had each won 60% of their games to date, we assumed that each team had a .6 chance of winning a non-head-to-head-game and a .5 chance of winning a head-to-head game. We found the Giants won the pennant during a fraction 0.0025 (or 1 in 400) of our 40,000 simulations.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__285">What Were the Chances the Blazers Would Blow a</Run>
+        <LineBreak/>
+        <Run Tag="__285">15-Point Fourth-Quarter Lead to the Lakers?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter45.html#page_306">In </Run>
+      <Hyperlink NavigateUri="part04chapter43.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part04chapter45.html#page_306">chapter 43</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part04chapter45.html#page_306"> we stated that the final scoring margin of an NBA game follows a normal random variable with mean = prediction for game outcome and standard deviation = 12 points. If we assume that the changes in margins during different parts of the game are independent and follow the same distribution (the technical term is identically distributed), then the standard deviation of the margin during n minutes of an NBA game is</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/18319856-c2cb-4e65-b333-79d3cb9ad6d4.jpg" Stretch="Uniform" Width="250" Height="59" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Hyperlink NavigateUri="xhtml/part04chapter45.html#fnpage_306">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+      </Hyperlink>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__285">In general, the standard deviation of the margin of victory during an n minute portion of a game is simply</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/14ad98fa-e916-4f98-9f48-8f82906ddd01.jpg" Stretch="Uniform" Width="250" Height="42" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__285">Therefore, with 10.43 minutes left the standard deviation of the change in game margin is found by substituting n = 10.43 in (1). This yields sigma = 5.6.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__285">Assuming two equally matched teams, we can assume the change in margin has a mean of 0. Then the chance that the Lakers win the game can be approximated with the formula</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__285">=NORMDIST(&#x2013;15.5,0,5.6,TRUE) + 0.5</Run>
+      <LineBreak/>
+      <Run Tag="__285">&#xD7; (&#x2013;NORMDIST(&#x2013;15.5,0,5.6,TRUE)</Run>
+      <LineBreak/>
+      <Run Tag="__285">+ NORMDIST(&#x2013;14.5,0,5.6,TRUE)).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__285">The first term gives the probability the Blazers &#x201C;win&#x201D; the last ten minutes by 15.5 points or fewer (and lose the game outright), while the final term computes the probability that the Blazers win the last ten minutes by &#x2013;15 points and then lose in overtime with probability .5. We find the chance of a successful Lakers comeback was around .004, or one chance in 250.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="xhtml/part04chapter45.html#page_307">What Were the Chances That Houston Would Blow a 35&#x2013;3</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part04chapter45.html#page_307">Lead to Buffalo with 28 Minutes Left?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__286">In </Run>
+      <Hyperlink NavigateUri="part04chapter43.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__286">chapter 43</Run>
+      </Hyperlink>
+      <Run Tag="__286"> we stated the outcome of an NFL game follows a normal random variable with mean = game prediction and a standard deviation of 14 points.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__286">Assuming two evenly matched teams, we assume the mean = 0. Then analogous to (1) for an NBA game, we find the standard deviation of the margin during n minutes of an NFL game is</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/7b3b2d83-11f8-4fa5-b667-3c60382485f2.jpg" Stretch="Uniform" Width="250" Height="55" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__286">For n = 28 we find a standard deviation of 9.56 points. Then assuming the two teams are evenly matched, the chance that Buffalo would come back to win is approximated by =NORMDIST(&#x2013;32.5,0,9.56,TRUE) + 0.5 &#xD7; (NORMDIST(&#x2013;32.5,0,9.56,TRUE) &#x2013; NORMDIST(&#x2013;31.5,0,9.56, TRUE)). This yields 3 chances in 10,000, or 1 chance in 3,000, that the Bills would come back and win.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__286">What Were the Chances the Red Sox Would Come Back</Run>
+        <LineBreak/>
+        <Run Tag="__286">from Being Down 3 Games to 0 to Win the 2004</Run>
+        <LineBreak/>
+        <Run Tag="__286">American League Championship Series?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__286">If we assume the Red Sox and Yankees to be evenly matched teams and that the outcomes of each game are independent, then the chance of the Red Sox winning four straight games is simply (.5)</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__286">4</Run>
+      <Run Tag="__286"> = .0625. This means that given our assumptions, there is a 6% chance that a team will come back and win after they trail a best-of-seven series 3&#x2013;0. Let&#x2019;s assume the team down 3&#x2013;0 is down 3&#x2013;0 because they are inferior. For example, assume the Red Sox have only a 0.25 chance of winning each game. Then their chance of coming back to win the series is (.25)</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__286">4</Run>
+      <Run Tag="__286"> = .004, or 4 chances in 1,000. This analysis indicates that the Red Sox comeback was not that unexpected. Behrendt picked this as his #1 collapse. From a probability standpoint, the Yankee collapse was not that unusual, but the breaking of the Red Sox &#x201C;curse&#x201D; and the sheer interest in this series may justify the fact that it topped the collapse &#x201C;charts.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="xhtml/part04chapter45.html#page_308">What Were the Chances the Mets Would Win Game 6 of</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part04chapter45.html#page_308">the 1986 World Series before Buckner&#x2019;s Error?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Hyperlink NavigateUri="xhtml/part04chapter45.html#chapter45figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__286">Figure 45.1</Run>
+      </Hyperlink>
+      <Run Tag="__286"> shows that by using the Win Expectancy Finder (see </Run>
+      <Hyperlink NavigateUri="part01chapter08.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__286">chapter 8</Run>
+      </Hyperlink>
+      <Run Tag="__286">), with two outs and nobody on in the bottom of the ninth inning the Mets had about a 1.4% chance of winning the game. We used the bottom of ninth inning even though the Mets were batting in the bottom of the tenth inning, because a team batting in the bottom of the ninth has the same chance of winning as a team batting in the bottom of the tenth.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/af3c7e9d-6f40-499b-8ca7-082c67c41b51.jpg" Stretch="Uniform" Width="300" Height="309" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part04chapter45.html#chapter45figure01">Figure 45.1. The chance the Mets come back to win game 6 of the 1986 World Series.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__287">What Is the Probability That the Athletics Would Come</Run>
+        <LineBreak/>
+        <Run Tag="__287">Back from Being down 8&#x2013;0 to Beat the Cubs during</Run>
+        <LineBreak/>
+        <Run Tag="__287">Game 4 of the 1929 World Series?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__287">Again we consult the Win Expectancy Finder. </Run>
+      <Hyperlink NavigateUri="xhtml/part04chapter45.html#chapter45figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__287">Figure 45.2</Run>
+      </Hyperlink>
+      <Run Tag="__287"> shows that with a 7-run deficit in the bottom of the seventh inning, there are roughly 6 chances in a 1,000 of winning the game. Of course, an 8-run deficit would have a slightly smaller chance of being erased.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part04chapter45.html#page_309">&#xA0;</Run>
+      <Image Source="/Resources/dd1f54b4-86c1-496e-a391-d93b76fbf57d.jpg" Stretch="Uniform" Width="300" Height="309" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part04chapter45.html#chapter45figure02">Figure 45.2. The chance the Cubs blow an 8&#x2013;0 lead in game 4 of the 1929 World Series.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__288">What Is the Probability That Illinois Would</Run>
+        <LineBreak/>
+        <Run Tag="__288">Come Back to Beat Arizona?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__288">In </Run>
+      <Hyperlink NavigateUri="part04chapter43.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__288">chapter 43</Run>
+      </Hyperlink>
+      <Run Tag="__288"> we stated that the outcome of an NCAA basketball game follows a normal random variable with mean = game prediction and a standard deviation of 10 points.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__288">Assuming two evenly matched teams, we assume the mean = 0. Then analogous to (1) for an NBA game, we find the standard deviation of the margin during n minutes of an NCAA game is</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/14fa420a-cd24-4290-903a-114054a9cf4e.jpg" Stretch="Uniform" Width="250" Height="58" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter45.html#page_310">The standard deviation from (3) for a 4:05 time segment is 3.2 points. Therefore, the probability of Illinois coming back to win can be approximated by</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__288">NORMDIST(&#x2013;15.5,0,3.20,TRUE) + 0.5</Run>
+      <LineBreak/>
+      <Run Tag="__288">&#xA0;&#xA0;&#xA0;&#xA0;&#xD7; (&#x2013;NORMDIST(&#x2013;15.5,0,3.20,TRUE)</Run>
+      <LineBreak/>
+      <Run Tag="__288">&#xA0;&#xA0;&#xA0;+ NORMDIST(&#x2013;14.5,0,3.20,TRUE)).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__288">This works out to 4 in 10,000,000.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__289">What Is the Probability That Duke Would</Run>
+        <LineBreak/>
+        <Run Tag="__289">Come Back to Beat Maryland?</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__289">We will assume the teams are evenly matched. Then in one minute the change in game margin will follow a normal distribution with mean = 0 and a standard deviation of </Run>
+      <Image Source="/Resources/508207f5-0163-4f39-a00d-501f9b0afeae.jpg" Stretch="Uniform" Width="80" Height="18" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__289"> points. The probability Duke will win given they trail by 10 points with a minute left can be computed as</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__289">1 &#x2013; NORMDIST(10.5,0,1.58,TRUE) + 0.5</Run>
+      <LineBreak/>
+      <Run Tag="__289">&#xD7; (NORMDIST(10.5,0,1.58,TRUE)</Run>
+      <LineBreak/>
+      <Run Tag="__289">&#x2013; NORMDIST (9.5,0,1.58,TRUE)),</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__289">with</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__289">1 &#x2013; NORMDIST(10.5,0,1.58,TRUE)</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__289">is the chance Duke outscores Maryland by more than 10 points in the last minute and</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run Tag="__289">0.5 &#xD7; (NORMDIST(10.5,0,1.58,TRUE)</Run>
+      <LineBreak/>
+      <Run Tag="__289">&#x2013; NORMDIST(9.5,0,1.58,TRUE))</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__289">is the probability that Duke outscores Maryland by 10 points in the last minute and wins in overtime. This calculates out to less than one chance in a billion.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__289">Our analysis shows that Maryland&#x2019;s collapse had the smallest chance of occurring. As great collapses continue to amaze us, entertain us, and break our hearts, you are now equipped to estimate the likelihood of a collapse.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part04chapter45.html#rfnpage_303">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part04chapter45.html#fnpage_303">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part04chapter45.html#fnpage_303"> See </Run>
+      <Hyperlink NavigateUri="http://msn.foxsports.com/mlb/story/7286840">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part04chapter45.html#fnpage_303">http://msn.foxsports.com/mlb/story/7286840</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part04chapter45.html#fnpage_303">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part04chapter45.html#rfnpage_306">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part04chapter45.html#fnpage_306">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part04chapter45.html#fnpage_306"> Final margin = margin for minute 1 + margin for minute 2 + .&#xA0;.&#xA0;. margin for minute 48. Assuming independence of these random variables, then the variance of the sum is the sum of individual variances so 48 &#xD7; (variance for one minute) = 12</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9" Tag="xhtml/part04chapter45.html#fnpage_306">2</Run>
+      <Run Tag="xhtml/part04chapter45.html#fnpage_306">, or the standard deviation for one minute </Run>
+      <Image Source="/Resources/4e9db90f-fdc4-4b4c-9097-a6388a92da88.jpg" Stretch="Uniform" Width="50" Height="35" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="xhtml/part04chapter45.html#fnpage_306"> Then the variance of margin for n minutes </Run>
+      <Image Source="/Resources/d72d3ad3-e0ae-45cb-81d6-c9ec6c5cf627.jpg" Stretch="Uniform" Width="130" Height="29" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="xhtml/part04chapter45.html#fnpage_306"> Finally, the standard deviation of margin for n minutes equals </Run>
+      <Image Source="/Resources/062f0206-d3a6-4045-9106-ba9885237433.jpg" Stretch="Uniform" Width="38" Height="55" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+  </Section>
+</Flow>

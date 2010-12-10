@@ -253,7 +253,7 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunchingStep2:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
-    [[NSBundle mainBundle] loadNibNamed:@"MainWindow" owner:self options:nil];
+    [[NSBundle mainBundle] loadNibNamed:@"MainNavControllerAndLibraryView" owner:self options:nil];
     
     NSError * audioError = nil;
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError];

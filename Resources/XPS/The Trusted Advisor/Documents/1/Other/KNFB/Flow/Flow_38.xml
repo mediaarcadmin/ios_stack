@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_about.html#about">
+      <Paragraph Margin="0,64,0,56" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="14">
+        <Run Tag="__193">A B O U T &#xA0;T H E &#xA0;A U T H O R S</Run>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Italic" FontWeight="Normal" FontSize="14">
+            <Run FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__193">David H. Maister</Run>
+          </Span>
+          <Run Tag="__193"> is widely acknowledged as the world&#x2019;s leading authority on the management of professional service firms. For nearly two decades he has advised firms in a broad spectrum of professions, covering all strategic and managerial issues.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">David has a global practice, spending about 40 percent of his time in North America, 30 percent in Western Europe, and 30 percent in the rest of the world.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">Anative of Great Britain, David holds degrees from the University of Birmingham, the London School of Economics, and the Harvard Business School, where he was a professor for seven years.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__193">He is the author of the best-selling books </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__193">Managing the Professional Service Firm</Run>
+          <Run Tag="__193"> (1993) and </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__193">True Professionalism</Run>
+          <Run Tag="__193"> (1997), which are his eighth and ninth books. Many of his articles have been translated into the major European languages (including Russian), and his books are available in Dutch, Spanish, Indonesian, Korean, Polish, Serbo-Croatian, and Chinese (Mandarin.)</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">He lives in Boston, Massachusetts. He may be reached at:</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">Tel: 617-262-5968</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">E-mail: David_Maister@msn.com</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">Web site: www.davidmaister.com</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Italic" FontWeight="Normal" FontSize="14">
+            <Run FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__193">Charles H. Green</Run>
+          </Span>
+          <Run Tag="__193"> is an executive educator and business strategy consultant to the professional services industry. Charlie has taught in executive education programs for the Kellogg Graduate School of Management at Northwestern University, and for Columbia University Graduate School of Business, as well as independently through his firm, Trusted Advisor Associates. His current work centers on the nature of trust-based relationships within organizations, and on the management of professional service firms.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__193">Charlie is a graduate of Columbia and of the Harvard Business School. He spent the first twenty years of his career with The MAC Group and its successor, Gemini Consulting, where his roles included strategy consulting (in Europe and the United States), VP Strategic Planning, and a variety of other firm leadership roles. He is the author of numerous papers, with articles published in the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__193">Harvard Business Review</Run>
+          <Run Tag="__193"> and </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__193">Management Horizons.</Run>
+          <Run Tag="__193"> He founded Trusted Advisor Associates with Rob Galford. He resides in Morristown, New Jersey. He may be reached at:</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">Tel: 973-898-1579</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">E-mail: cgreen@trustedadvisor.com</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__193">Web site: www.trustedadvisor.com</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Italic" FontWeight="Normal" FontSize="14">
+            <Run FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__194">Robert M. Galford</Run>
+          </Span>
+          <Run Tag="__194"> is currently the executive vice president and chief people officer of Digitas, Inc., a leading Internet professional services firm with over 1,400 employees. He taught for many years on executive programs at the Columbia Graduate School of Business and the Kellogg Graduate School of Management at Northwestern University, in addition to consulting to professional services firms, technology companies, and financial institutions.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__194">Rob has lived and worked in both Western Europe and North America as a vice president of The MAC Group and its successor firm, Gemini Consulting. He has practiced law with the international firm of Curtis, Mallet-Prevost, Colt &amp; Mosle in New York and Washington, and has also worked in investment management for Citicorp.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__194">Rob&#x2019;s writing and commentaries on management have been published in the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__194">Boston Globe</Run>
+          <Run Tag="__194"> and he is a three-time contributor to the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__194">Harvard Business Review.</Run>
+          <Run Tag="__194"> He currently sits on the boards of directors of Forrester Research, Inc., and Access Data Corporation. He also hosts the business video, </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__194">Talk About Change!</Run>
+          <Run Tag="__194"> with the popular cartoon character Dilbert.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__194">His educational background includes Liceo Segre, Turin, Italy; a B.A. in economics and Italian literature from Haverford College; an M.B.A. from Harvard, and a J.D. from Georgetown University Law Center, where he was an associate editor of </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__194">The Tax Lawyer.</Run>
+          <Run Tag="__194"> Rob lives with his family in Concord, Massachusetts. He may be reached at:</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__194">E-mail: rgalford@tiac.net</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

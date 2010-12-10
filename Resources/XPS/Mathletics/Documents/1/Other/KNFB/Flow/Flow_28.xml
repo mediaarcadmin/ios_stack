@@ -1,0 +1,345 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__132">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__132">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part02chapter19.html#part02chapter19" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part02chapter19.html#page_132">&#xA0;&#xA0;19&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__132">WHO&#x2019;S BETTER, TOM BRADY</Run>
+      <LineBreak/>
+      <Run Tag="__132">OR PEYTON MANNING?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__132">M</Run>
+      <Run Tag="__132">ost American men spend a good deal of time arguing about who are the best quarterbacks in the NFL. For example, is Tom Brady better than Peyton Manning? The NFL quarterback rating system works as follows.</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__132">
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="xhtml/part02chapter19.html#page132fn01">First one takes a quarterback&#x2019;s completion percentage, then subtracts 0.3 from this number and divides by 0.2. You then take yards per attempts subtract 3 and divide by 4. After that, you divide touchdowns per attempt by 0.05. For interceptions per attempt, you start with 0.095, subtract from this number interceptions per attempt, and then divide this result by 0.04. To get the quarterback rating, you add the values created from your first four steps, multiply this sum by 100, and divide the result by 6. The sum from each of your first four steps cannot exceed 2.375 or be less than zero.</Run>
+        <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+          <Hyperlink NavigateUri="xhtml/part02chapter19.html#fn01page132">
+            <Hyperlink.TextDecorations>
+              <TextDecorationCollection/>
+            </Hyperlink.TextDecorations>
+            <Run Tag="xhtml/part02chapter19.html#page132fn01">1</Run>
+          </Hyperlink>
+        </Span>
+      </Paragraph>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__132">This formula makes quantum mechanics or Fermat&#x2019;s Last Theorem seem simple. (The NCAA also has its own incomprehensible system for ranking quarterbacks.)</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__132">To summarize, a quarterback&#x2019;s rating is based on four statistics:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__132">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__132">completion percentage (completions per passing attempts)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__132">yards gained per pass attempt (yards gained by passes) per (passing attempts)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__132">interception percentage (interceptions per passing attempts)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="xhtml/part02chapter19.html#page132fn02">TD pass percentage (TD passes per passing attempts).</Run>
+          <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+            <Hyperlink NavigateUri="xhtml/part02chapter19.html#fn02page132">
+              <Hyperlink.TextDecorations>
+                <TextDecorationCollection/>
+              </Hyperlink.TextDecorations>
+              <Run Tag="xhtml/part02chapter19.html#page132fn02">2</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter19.html#page_133">Like the antiquated </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part02chapter19.html#page_133">Fielding</Run>
+      <Run Tag="xhtml/part02chapter19.html#page_133"> percentage metric in baseball, this formula makes no sense. Note that all four statistics are given equal weight in the ranking formula. There is no reason why, for example, completion percentage and yards per pass attempt should be given equal weight. In fact, because an incomplete pass gains 0 yards, completion percentage is partially accounted for by yards per pass attempt. In the TD per pass attempt percentage portion of the formula, a TD pass of 1 yard is given as much weight as a touchdown pass of 99 yards. (The 99-yard pass pumps up yards per pass attempt, but it is obvious how arbitrary the system is.) Of course, any system for rating quarterbacks based on individual passing statistics is actually reflecting the entire team&#x2019;s passing game, which is influenced by the quality of the team&#x2019;s receivers and its offensive line. With this caveat, however, we can try to develop a simpler rating system for quarterbacks.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__133">In </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__133">Wages of Wins,</Run>
+      <Run Tag="__133"> Berri, Schmidt, and Brook rate quarterbacks' passing performance using the following formula.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-123" Margin="139,16,0,16" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter19.html#page133fn03">&#xA0;&#xA0;&#xA0;quarterback rating = all yards gained &#x2013; 3 (passing attempts)</Run>
+      <LineBreak/>
+      <Run Tag="xhtml/part02chapter19.html#page133fn03">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#x2013; 30 (interceptions).</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#fn03page133">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#page133fn03">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter19.html#page133fn03">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;(1)</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter19.html#page133fn04">The coefficients in this rating system are derived from a regression that attempts to predict a team&#x2019;s scoring margin based on its yards gained, number of offensive plays, and turnovers. Note the &#x2013; 3 (passing attempts) term penalizes a quarterback for using a scarce resource&#x2013;a down.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#fn04page133">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#page133fn04">4</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter19.html#page133fn05">We will base our quarterback&#x2019;s score on Brian Burke&#x2019;s work.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#fn05page133">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#page133fn05">5</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter19.html#page133fn05"> In 2007 Burke ran a regression (similar to the one shown in </Run>
+      <Hyperlink NavigateUri="part01chapter17.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter19.html#page133fn05">chapter 17</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter19.html#page133fn05">) to predict team games won during the 2002&#x2013;6 NFL seasons. Burke used the following independent variables:</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__133">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__133">TRUOPASS</Run>
+      <Run Tag="__133"> = offense (passing yards allowed &#x2013; sack yards)/passing plays</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__133">TRUDPASS</Run>
+      <Run Tag="__133"> = defense (passing yards allowed &#x2013; sack yards)/passing plays</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__133">ORUNAVG</Run>
+      <Run Tag="__133"> = offense rushing yards allowed/rushing attempts</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__133">DRUNAVG</Run>
+      <Run Tag="__133"> = defense rushing yards allowed/rushing attempts</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__133">OINTRATE</Run>
+      <Run Tag="__133"> = interceptions thrown/passing attempts</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__133">DINTRATE</Run>
+      <Run Tag="__133"> = interceptions made/passing attempts</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="xhtml/part02chapter19.html#page133fn06">OFUMRATE</Run>
+      <Run Tag="xhtml/part02chapter19.html#page133fn06"> = offensive fumbles/all offensive plays (not fumbles lost)</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#fn06page133">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#page133fn06">6</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__133">DFFRATE</Run>
+      <Run Tag="__133"> = defensive forced fumbles/all defensive plays</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__133">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part02chapter19.html#page_134">&#xA0;</Run>
+      <Image Source="/Resources/f464e9cb-14d9-4892-b6eb-160edfa10105.jpg" Stretch="Uniform" Width="250" Height="292" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part02chapter19.html#chapter19figure01">Figure 19.1. Regression results for predicting team wins. The quarterback influences TRUOPASS (analogous to PY/A in </Run>
+      <Hyperlink NavigateUri="part01chapter17.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter19.html#chapter19figure01">chapter 17</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter19.html#chapter19figure01">) and OINTRATE.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__134">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__134">PENRATE</Run>
+      <Run Tag="__134"> = each team&#x2019;s penalty yards/all plays, offensive and defensive</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__134">OPPPENRATE</Run>
+      <Run Tag="__134"> = opponent&#x2019;s penalty yards/all plays, offensive and defensive</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__134">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__134">The results of his regression are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter19.html#chapter19figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__134">figure 19.1</Run>
+      </Hyperlink>
+      <Run Tag="__134">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__134">We will simply rate each 2007 NFL quarterback using the coefficients from Burke&#x2019;s regression. This should rate quarterbacks according to how their team&#x2019;s passing game favorably impacted the number of games their team won. Therefore our quarterback rating is 1.543(TRUOPASS) &#x2013; 50.0957(OINTRATE).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__134">Figure 19.2 shows the NFL&#x2019;s quarterback ratings, our ratings, and the ratings from </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__134">Wages of Wins</Run>
+      <Run Tag="__134"> for the 2007 season. We normalized our quarterback scores to average out to 100 by multiplying each QB&#x2019;s rating. Our results are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter19.html#chapter19figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__134">figure 19.2</Run>
+      </Hyperlink>
+      <Run Tag="__134">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__134">All three methods of rating quarterbacks rank Tom Brady first by a wide margin. Both our system and </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__134">Wages of Wins</Run>
+      <Run Tag="__134"> rank Ben Roethlisberger much lower than his NFL rating of second place. This is in part because we count sacks and Roethlisberger was sacked often.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__134">The three rating systems are remarkably consistent. The correlation between our ratings and the NFL ratings is .91. The correlation between the NFL ratings and the </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__134">Wages of Wins</Run>
+      <Run Tag="__134"> ratings is .84. Finally, the correlation between our ratings and the </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__134">Wages of Win</Run>
+      <Run Tag="__134"> ratings is .87. It appears that a simpler formula that ties a quarterback&#x2019;s rating to the extent to which his team&#x2019;s passing game creates wins is more useful than the NFL&#x2019;s arbitrary, unnecessarily complex formula.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/e904022a-bbda-4b4c-8e84-81c4571e19ad.jpg" Stretch="Uniform" Width="414" Height="610" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part02chapter19.html#chapter19figure02" xml:space="preserve"/>
+      <Run Tag="xhtml/part02chapter19.html#page_135">Figure 19.2. NFL quarterback ratings, regression ratings, and </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part02chapter19.html#page_135">Wages of Wins</Run>
+      <Run Tag="xhtml/part02chapter19.html#page_135"> ratings. See file Qb2007statts.xls. Source: David Berri, Martin Schmidt, and Stacey Brook, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part02chapter19.html#page_135">The Wages of Wins: Taking Measure of the Many Myths in Modern Sport</Run>
+      <Run Tag="xhtml/part02chapter19.html#page_135"> (Stanford University Press, 2006), and equation (1) on page 133.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part02chapter19.html#page_136">&#xA0;</Run>
+      <Image Source="/Resources/0996791a-ac70-4103-b876-bb3e1c4904b4.jpg" Stretch="Uniform" Width="411" Height="610" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter19.html#page_137">We will see in </Run>
+      <Hyperlink NavigateUri="part02chapter22.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter19.html#page_137">chapter 22</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter19.html#page_137"> that a much better way of evaluating a team&#x2019;s passing attack is available, by calculating how each play changes the expected number of points by which the team wins the game. Unfortunately, however, what is really needed is a way to decompose the effectiveness of a team&#x2019;s passing attack and understand what fraction of a team&#x2019;s passing effectiveness can be attributed to the quarterback, the receivers, and the offensive line. Since the starting offensive line and the starting quarterback are usually in for almost every play, this is very difficult. In </Run>
+      <Hyperlink NavigateUri="part03chapter30.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter19.html#page_137">chapter 30</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter19.html#page_137"> we will show that the fact that almost every NBA player sits out at least 17% of each game makes it fairly simple to partition a team&#x2019;s success (or lack thereof) among its players.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#page132fn01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#fn01page132">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter19.html#fn01page132"> Berri, Schmidt, and Brook, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part02chapter19.html#fn01page132">Wages of Win,</Run>
+      <Run Tag="xhtml/part02chapter19.html#fn01page132"> 167.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#page132fn02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#fn02page132">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter19.html#fn02page132"> Ibid., 167.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#page133fn03">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#fn03page133">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter19.html#fn03page133"> Ibid, 173.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#page133fn04">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#fn04page133">4</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter19.html#fn04page133"> A team is allowed only four downs to gain ten yards. Therefore, downs are scarce resources and die use of a down should be penalized.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#page133fn05">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#fn05page133">5</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter19.html#fn05page133"> See his great Web site, </Run>
+      <Hyperlink NavigateUri="http://www.bbnflstats.com/">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter19.html#fn05page133">http://www.bbnflstats.com/</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter19.html#fn05page133">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter19.html#page133fn06">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter19.html#fn06page133">6</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter19.html#fn06page133"> &#x201C;Not fumbles lost&#x201D; means all fumbles are used, not just the fumbles on which the team loses possession of the ball.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

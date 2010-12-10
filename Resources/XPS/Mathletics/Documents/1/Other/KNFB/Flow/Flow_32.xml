@@ -1,0 +1,581 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__155">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__155">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part02chapter23.html#part02chapter23" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part02chapter23.html#page_158">&#xA0;&#xA0;23&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__155">IF PASSING IS BETTER THAN RUNNING,</Run>
+      <LineBreak/>
+      <Run Tag="__155">WHY DON&#x2019;T TEAMS ALWAYS PASS?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__155">I</Run>
+      <Run Tag="__155">n football the offense selects a play and the defense lines up in a defensive formation. Let&#x2019;s consider a very simple model of play selection in which the offense and defense simultaneously select their play:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__155">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__155">The offense may choose to run or pass.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__155">The defense may choose a run or pass defense.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter23.html#ch23en1">The number of yards gained is given in </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter23.html#chapter23table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter23.html#ch23en1">table 23.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter23.html#ch23en1">, which we call a payoff matrix for the game. We see that if the defense makes the right call on a run, the opposing team loses 5 yards, and if the defense makes the wrong call, the team gains 5 yards. On a pass the right defensive call results in an incomplete pass for the opposing team while the wrong defensive call results in a 10-yard gain for the team. Games in which two players are in total conflict are called two-person zero sum games (TPZSGs). In our game every yard gained by the offense makes the defense one yard worse-off, so we have a TPZSG. The great mathematician James von Neumann and the brilliant economist Oskar Morgenstern discovered the solution concepts for TPZSG.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part02chapter23.html#ch23_en1">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter23.html#ch23en1">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter23.html#ch23en1"> We assume the row player wishes to maximize the payoff from the payoff matrix and the column player wants to minimize the payoff from the payoff matrix. We define the value of the game (v) to the row player as the maximum expected payoff the row player can assure himself. Suppose we choose a running play. Then the defense can choose run defense and we lose 5 yards. Suppose we choose a pass offense. Then the defense can choose pass defense and we gain 0 yards. Thus by throwing a pass the offense can ensure themselves of gaining 0 yards. Is there a way the offense can assure that on average they will gain more than 0 yards? A player in a TPZSG can choose to play a mixed strategy in which he makes choices with a given probability. Let&#x2019;s suppose the offense chooses run with probability q and chooses pass with probability 1 q. On average, how does our mixed strategy do against each of the defense&#x2019;s &#x201C;pure&#x201D; strategy choices?</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__155">
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run Tag="xhtml/part02chapter23.html#chapter23table01" xml:space="preserve"/>
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part02chapter23.html#page_159">TABLE 23.1</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part02chapter23.html#page_159">Payoff Matrix for Football Game (Yards)</Run>
+      </Paragraph>
+      <Table Tag="__155">
+        <Table.Columns>
+          <TableColumn Width="99"/>
+          <TableColumn Width="88"/>
+          <TableColumn Width="91"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__155">&#xA0;</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__155">Run Defense</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__155">Pass Defense</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__155">Offense runs</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__155">&#x2013;5</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__155">5</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__156">Offense passes</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__156">10</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__156">0</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__156">&#xA0;</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__156">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__156">If a run defense is chosen, the expected gain is q(&#x2013;5) + (1 &#x2013; q) 10 = 10 15q.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__156">If a pass defense is chosen, the expected gain is q(5) + (1 &#x2013; q) (0) = 5q.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__156">For any value of q chosen by the offense, the defense will choose the defense that yields minimum(10 &#x2013; 15q, 5q). Thus the offense should choose the value of q between 0 and 1 that maximizes minimum(10 &#x2013; 15q, 5q). From </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter23.html#chapter23figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__156">figure 23.1</Run>
+      </Hyperlink>
+      <Run Tag="__156"> we see that this minimum is attained where 10 &#x2013; 15q = 5q or q = 1/2.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__156">Thus the optimal mixed strategy for the offense is to run half of the time and pass half of the time. This ensures the offense of an expected payoff of at least 5/2 yards. By choosing q = 1/2 the offense is assured an expected gain of 5/2 yards. This makes the game very dull. No matter what strategy (pure or mixed) the defense chooses, the gain is on average 5/2 yards. Therefore, the value of this simple game to the row player is 5/2 yards.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__156">Note that when the defense guesses correctly, passing is 5 yards better than running, and if the defense guesses incorrectly, passing is 5 yards better than running (see </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter23.html#chapter23table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__156">table 23.1</Run>
+      </Hyperlink>
+      <Run Tag="__156">). Despite the fact that passing seems like a much better option, our optimal strategy is to run half of the time. Note that TPZSG theory provides a rationale for the fact that teams actually do &#x201C;mix up&#x201D; running and passing calls. For similar reasons, players should occasionally bluff in poker when they have a poor hand. If you never bet with a poor hand, your opponents may not call your bet very often when you have a good hand. Bluffing with a bad hand will also sometimes enable you to win a hand with poor cards.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part02chapter23.html#page_160">&#xA0;</Run>
+      <Image Source="/Resources/fdd0724c-4a01-4a06-9ce5-201a0b1d6406.jpg" Stretch="Uniform" Width="375" Height="286" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part02chapter23.html#chapter23figure01">Figure 23.1. Offense&#x2019;s optimal mix.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__157">Now let&#x2019;s find the defensive team&#x2019;s optimal strategy. Let x = the probability that the defense calls a run defense and 1 &#x2013; x = probability that defense calls a pass defense. The defense&#x2019;s goal is, of course, to minimize the expected payoff to the offense. Against this defensive mixed strategy, how will the offense fare?</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__157">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__157">If offense chooses run, then on average they gain x(&#x2013;5) + (1 &#x2013; x)(5) = 5 &#x2013; 10x.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__157">If offense chooses pass, then on average they gain x(10) + (1 &#x2013; x)(0) = 10x.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__157">Therefore, for any value x chosen by the defense, the offense will choose the play attaining maximum(5 &#x2013; 10x, 10x). The defense should therefore choose the value of x that minimizes maximum(5 &#x2013; 10x, 10x). </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter23.html#chapter23figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__157">Figure 23.2</Run>
+      </Hyperlink>
+      <Run Tag="__157"> shows that choosing x = 1/4 will attain this minimum and ensure that the offense is held to an average of 5/2 yards per carry. Therefore, the defense should play a pass defense 75% of the time. This is because the pass play is better than the run. Since the defense looks for the pass more often, the offense only passes half the time, even though the pass seems like a much more effective play.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__157">Note that we found the offense can ensure itself of and the defense can hold the offense (on average) to the same number: 5/2 yards; 2.5 yards is the value of the game. Von Neumann and Morgenstern proved that the values obtained by analyzing the row and column players&#x2019; strategies in a TPZSG are always identical.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__157">In general suppose our payoff matrix looks like that in </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter23.html#chapter23table02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__157">table 23.2</Run>
+      </Hyperlink>
+      <Run Tag="__157">. If we assumed that the defense would choose a run and defense with equal probability, then we can interpret this matrix as indicating that running plays gain r on average and passing plays gain p on average. Also the correct choice of defense appears to have m times as much effect on a passing play as it does on a running play. For example, if m = 2, then for a pass a correct defense makes the pass gain 4k yards worse than the incorrect defensive choice. For a run, the correct choice of defense makes the run gain 2k yards worse than the incorrect defensive choice.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part02chapter23.html#page_161">&#xA0;</Run>
+      <Image Source="/Resources/1910a260-ad07-4413-a18d-fb73a02d5d5c.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part02chapter23.html#chapter23figure02">Figure 23.2. Defense&#x2019;s optimal mix.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__158">&#xA0;</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__158">
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part02chapter23.html#chapter23table02">TABLE 23.2</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part02chapter23.html#chapter23table02">Generalized Football Payoff Matrix</Run>
+      </Paragraph>
+      <Table Tag="__158">
+        <Table.Columns>
+          <TableColumn Width="99"/>
+          <TableColumn Width="88"/>
+          <TableColumn Width="91"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__158">&#xA0;</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__158">Run Defense</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__158">Pass Defense</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__158">Offense runs</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__158">r &#x2013; k&#xA0;&#xA0;&#xA0;&#xA0;</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__158">r + k&#xA0;&#xA0;&#xA0;&#xA0;</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__158">Offense passes</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__158">p + mk</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__158">p &#x2013; mk</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__158">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter23.html#page_162">Note that our previous example shows that for a TPZSG with a 2 &#xD7; 2 payoff table, the optimal strategy for a player is found by equating the expected payoff against both of the opponent&#x2019;s strategies. For the payoff matrix shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter23.html#chapter23table02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part02chapter23.html#page_162">table 23.2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part02chapter23.html#page_162">, we can show that the optimal strategy for the offense is to run with probability m/(m + 1) and pass with probability 1/(m + 1). The optimal defensive mix can be shown to be choosing a run defense with probability </Run>
+      <Image Source="/Resources/315e7c6a-b4e4-4d65-9aac-7de39f620b26.jpg" Stretch="Uniform" Width="100" Height="35" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="xhtml/part02chapter23.html#page_162"> and a pass defense with probability </Run>
+      <Image Source="/Resources/f91c3b60-f676-4f9d-9a39-7081df51601d.jpg" Stretch="Uniform" Width="100" Height="34" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="xhtml/part02chapter23.html#page_162"> Note that the defense chooses to defend the better play more than 50% of the time. For m = 2 the offense will run 2/3 of the time and pass 1/3 of the time. For = m 0.5 it runs 1/3 of the time and passes 2/3 of the time. For m = 1 it runs and passes with equal probability. The idea is that for m &gt; 1 the defensive call has more effect on a pass than a run, and for m &lt; 1 the defensive call has more effect on a run than a pass. Thus we see that the offense will choose more often the play over which the defense has &#x201C;less control.&#x201D; For m &gt; 1 the defense has less control over the run, so it runs more than it passes. Similarly, if m 1 &lt; the defense has less control over the pass, so the offense passes more than it runs. Note the optimal run-pass mix does not depend on r and p, which represent the base effectiveness levels of running and passing plays, respectively.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__158">We can draw several other interesting insights from this simple formulation.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__158">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__158">Suppose we get a new and improved quarterback. We can model this by saying that for any defense our pass play will gain, say, 3 more yards. Should we pass more often? We are simply replacing the current value of p by p + 3 and leaving m unchanged, so our optimal run-pass mix remains unchanged. Even though passing has improved, the defense will play a pass defense more often, so we should play the same run-pass mix as before.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__158">Suppose we get a new and improved running back who can gain 5 more yards per carry against a pass defense but no more against a run defense. How will the optimal run-pass mix change? Intuitively one would think the offense should run more often because of the improved ground game.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Hyperlink NavigateUri="xhtml/part02chapter23.html#chapter23table03">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__158">Table 23.3</Run>
+      </Hyperlink>
+      <Run Tag="__158"> illustrates that this is not the case.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__158">The revised payoff matrix is shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part02chapter23.html#chapter23table04">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__158">table 23.4</Run>
+      </Hyperlink>
+      <Run Tag="__158">. The optimal run-pass mix is to run 2/5 of the time and pass 3/5 of the time. The value of the game has increased to 1 yard and the team runs less often. The optimal run-pass defense mix is run defense 3/5 and pass defense 2/5. Since the offense&#x2019;s running game has improved so much against the pass defense, the defense is terrified of the run and plays a run defense more often. This causes the offense to pass more and run less, even though its running game is much better.</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__159">
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part02chapter23.html#chapter23table03">TABLE 23.3</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part02chapter23.html#chapter23table03">Original Payoff Matrix for Football Paradox (Yards)</Run>
+      </Paragraph>
+      <Table Tag="__159">
+        <Table.Columns>
+          <TableColumn Width="99"/>
+          <TableColumn Width="88"/>
+          <TableColumn Width="91"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__159">&#xA0;</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">Run Defense</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">Pass Defense</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__159">Offense runs</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">&#x2013;5</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">&#xA0;&#xA0;5</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__159">Offense passes</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">&#xA0;&#xA0;5</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">&#x2013;5</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__159">Note</Run>
+        <Run Tag="__159">: This matrix has r = 0, k = 5, p = 0, and m = 1. Therefore, the optimal strategy is to run 50% of the time and pass 50% of the time. The value of this game is 0 yards. The optimal defensive mix is to choose a run defense half of the time and a pass defense half of the time.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__159">Source</Run>
+        <Run Tag="__159">: Mike Shor, &#x201C;Game Theory and Business Strategy Mixed Strategies in American Football,&#x201D; </Run>
+        <Hyperlink NavigateUri="http://www2.owen.vanderbilt.edu/Mike.Shor/courses/gametheory/docs/lecture05/Football.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__159">http://www2.owen.vanderbilt.edu/Mike.Shor/courses/gametheory/docs/lecture05/Football.html</Run>
+        </Hyperlink>
+        <Run Tag="__159">.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__159">&#xA0;</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run Tag="xhtml/part02chapter23.html#chapter23table04" xml:space="preserve"/>
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part02chapter23.html#page_163">TABLE 23.4</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part02chapter23.html#page_163">Revised Payoff Matrix for Football Paradox (Yards)</Run>
+      </Paragraph>
+      <Table Tag="__159">
+        <Table.Columns>
+          <TableColumn Width="104"/>
+          <TableColumn Width="104"/>
+          <TableColumn Width="139"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__159">&#xA0;</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">Run Defense</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">Pass Defense</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__159">Offense runs</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">&#x2013;5</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">10</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__159">Offense passes</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">&#x2013;5</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__159">&#xA0;&#xA0;5</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__159">Source</Run>
+        <Run Tag="__159">: Mike Shor, &#x201C;Game Theory and Business Strategy: Mixed Strategies in American Football,&#x201D; </Run>
+        <Hyperlink NavigateUri="http://www2.owen.vanderbilt.edu/Mike.Shor/courses/game-theory/docs/lecture05/Football.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__159">http://www2.owen.vanderbilt.edu/Mike.Shor/courses/game-theory/docs/lecture05/Football.html</Run>
+        </Hyperlink>
+      </Paragraph>
+    </Section>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__159">Game Theory and Real Football</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__159">The TPZSG examples in this chapter are admittedly simple and bear little relationship to actual football. Is there a way an NFL team can actually use TPZSG to create an optimal play mix? For game theory to be useful in the NFL we need the following information for each play:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__159">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__159">play called by offense</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__159">defensive formation or strategy</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__159">down, line of scrimmage, and yards gained on play</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__159">First we combine the down and yards to go situation into groups that might look like this:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__160">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__160">first and 10</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__160">second and short (</Run>
+          <Image Source="/Resources/84e501c2-d910-4f7e-befc-6dcf96bd4ad8.jpg" Stretch="Uniform" Width="13" Height="11" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+          <Run Tag="__160"> 3 yards for first down)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__160">second and medium (4 &#x2013; 7 yards for first down)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__160">second and long (at least 8 yards to go for a first down)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__160">third and short (</Run>
+          <Image Source="/Resources/84e501c2-d910-4f7e-befc-6dcf96bd4ad8.jpg" Stretch="Uniform" Width="13" Height="11" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+          <Run Tag="__160"> 2 yards for a first down)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__160">third and medium (3&#x2013;5 yards for a first down)</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__160">third and long (more than 5 yards for a first down)</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part02chapter23.html#page_164">Suppose the offense has fifteen plays they can call on first and 10 and the defense has ten plays. Given the results of each play we could determine for a given down and yards to go situation the average value points gained on plays for each offensive and defensive play call combination. For example, we might find that on first and 10 LaDainian Tomlinson sweeping right end for the San Diego Chargers averaged 0.4 value points against the cover two defense. This results in one of the 150 entries in the relevant payoff matrix for first and 10. Then we can use TPZSG to solve for the optimal mixed strategies for both the offense and defense. For example, we might find on first and 10 the optimal offensive play selection mixed strategy would ensure (against any defensive mix) an expected value of 0.3 points. The numbers in the matrix could be adjusted based on the strength or weakness of the opposition. To get to this game theory &#x201C;Nirvana&#x201D; we would need to have coaching experts break down the film of every play to tell us the offensive and defensive play calls.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__160">I am confident that once this data collection hurdle is overcome, game theory will provide useful insights into football play selection.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part02chapter23.html#ch23en1">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part02chapter23.html#ch23_en1">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part02chapter23.html#ch23_en1"> Von Neumann and Morgenstern, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part02chapter23.html#ch23_en1">Theory of Games and Economic Behavior</Run>
+      <Run Tag="xhtml/part02chapter23.html#ch23_en1">.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

@@ -1,0 +1,2284 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_app.html#app">
+      <Paragraph Margin="0,64,0,56" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="14">
+        <Run Tag="__158">A P P E N D I X:</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Bold" FontSize="16" Tag="__158">A COMPILATION OF OUR LISTS</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__158">This appendix duplicates all of the lists we present in the book. You can use them in any of three ways:</Run>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__158">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Skim them all to get a feel for the contents of the book.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Use them to identify a topic of interest and go straight to that chapter.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Use them as reminders after you have read the book (and add to them as you accumulate experiences).</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__158">The More Your Clients Trust You, the More They Will</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__158">(Chapter 1)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__158">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Reach for your advice</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Be inclined to accept and act on your recommendations</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Bring you in on more advanced, complex, strategic issues</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Treat you as you wish to be treated</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Respect you</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Share more information that helps you to help them, and improves the quality of the service you provide</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Pay your bills without question</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Refer you to their friends and business acquaintances</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Lower the level of stress in your interactions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Give you the benefit of the doubt</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Forgive you when you make a mistake</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Protect you when you need it (even from their own organization)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Warn you of dangers that you might avoid</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Be comfortable and allow you to be comfortable</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Involve you early on when their issues begin to form, rather than later in the process (or maybe even call you first!)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__158">Trust your instincts and judgments (including those about other people such as your colleagues and theirs)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__158">Common Traits of Trusted Advisors</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__159">(Chapter 1)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__159">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Seem to understand us, effortlessly, and like us</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Are consistent (we can depend on them)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Always help us see things from fresh perspectives</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Don&#x2019;t try to force things on us</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Help us think things through (it&#x2019;s our decision)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Don&#x2019;t substitute their judgment for ours</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Don&#x2019;t panic or get overemotional (they stay calm)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Help us </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__159">think</Run>
+            <Run Tag="__159"> and separate our logic from our emotion</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Criticize and correct us gently, lovingly</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Don&#x2019;t pull their punches (we can rely on them to tell us the truth)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Are in it for the long haul (the relationship is more important than the current issue)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Give us reasoning (to help us think), not just their conclusions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Give us options, increase our understanding of those options, give us their recommendation, and let us choose</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Challenge our assumptions (help us uncover the false assumptions we&#x2019;ve been working under)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Make us feel comfortable and casual personally (but they take the issues seriously)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Act like a real person, not someone in a role</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Are reliably on our side and always seem to have our interests at heart</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Remember everything we ever said (without notes)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Are always honorable (they don&#x2019;t gossip about others, and we trust their values)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Help us put our issues in context, often through the use of metaphors, stories, and anecdotes (few problems are completely unique)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Have a sense of humor to diffuse (our) tension in tough situations</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__159">Are smart (sometimes in ways we&#x2019;re not)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__159">Common Attributes of Trusted Advisors</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__159">(Chapter 2)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__159">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__159">Have a predilection to focus on the client, rather than themselves. They have: </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__159">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__159">enough self-confidence to listen without prejudging</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__159">enough curiosity to inquire without supposing an answer</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__159">willingness to see the client as co-equal in a joint journey</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__159">enough ego strength to subordinate their own ego</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Focus on the client as an individual, not as a person fulfilling a role</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Believe that a continued focus on problem definition and resolution is as important as technical or content mastery</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Show a strong &#x201C;competitive&#x201D; drive aimed not at competitors, but at constantly finding new ways to be of greater service to the client</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Consistently focus on doing the next right thing, rather than on aiming for specific outcomes</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Are motivated more by an internalized drive to do the right thing than by their own organization&#x2019;s rewards or dynamics</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">View methodologies, models, management techniques, and business processes as means to an end</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Believe that success in client relationships is tied to the accumulation of quality experiences</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Believe that both selling and serving are aspects of professionalism</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Believe that there is a distinction between a business life and a private life, but that both lives are very personal (i.e., human)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__160">Three Basic Skills a Trusted Advisor Needs</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__160">(Chapters 3-5)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__160">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Earning trust</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Giving advice effectively</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Building relationships</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__160">Some Characteristics of Trust Relationships</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__160">(Chapter 3)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__160">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Grows, rather than just appears</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Is both rational and emotional</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Presumes a two-way relationship</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Is intrinsically about perceived risk</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Is different for the client than it is for the advisor</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Is personal</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__160">Principles of Relationship Building</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__160">(Chapter 5)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__160">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Go first</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Illustrate, don&#x2019;t tell</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Listen for what&#x2019;s different, not for what&#x2019;s familiar</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Be sure your advice is being sought</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__160">Earn the right to offer advice</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Keep asking</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Say what you mean</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">When you need help, ask for it</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Show an interest in the person</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Use compliments, not flattery</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Show appreciation</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__161">Important Mindsets</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__161">(Chapter 6)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__161">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Ability to focus on the other person</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Self-confidence</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Ego strength</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Curiosity</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Inclusive professionalism</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__161">Four Essential Elements That Engender Trust</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__161">(Chapter 8)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__161">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Credibility</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Reliability</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Intimacy</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Alow level of self-orientation, or focus on oneself</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__161">Some Tips on Enhancing Credibility</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__161">(Chapter 8)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__161">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Figure out how to tell as much truth as possible, except where doing so would injure others.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Don&#x2019;t tell lies, or even exaggerate. At all. Ever.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Avoid saying things that others might construe as lies.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Speak with expression, not monotonically. Use body language, eye contact, and vocal range. Show the client you have energy around the subject at hand.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Don&#x2019;t just cite references. Where it is genuinely possible to create mutual benefit, introduce your clients to each other; they will learn from each other, and you will have plenty of reflected credit in which to bask.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">When you don&#x2019;t know, say so, quickly and directly.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__161">Yes it&#x2019;s important to have them know your credentials. Just don&#x2019;t get silly by having all those initials and certifications appear after your name on your business card.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Relax. You know much more than you think you know. If you don&#x2019;t really belong there, then don&#x2019;t put yourself there in the first place.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Make sure you&#x2019;ve done absolutely all your homework on theclient company, the client marketplace, and the client individual, and that it&#x2019;s absolutely up to the minute.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">There&#x2019;s no reason to show off.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Love your topic. It will show.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__162">Some Thoughts on Reliability</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__162">(Chapter 8)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__162">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Make specific commitments to your client around small things: getting that article by tomorrow, placing the call, writing the draft by Monday, looking up a reference. And then deliver on them, quietly, and on time.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Send meeting materials in advance so that the client has the option of reviewing them in advance, saving meeting time for substantive discussions.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Make sure meetings have clear goals, not just agendas, and ensure the goals are met.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Use the client&#x2019;s &#x201C;fit and feel&#x201D; around terminology, style, formats, hours.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Review agendas with your client, before meetings, before phone calls, before discussions. Clients should know that they can expect you to always solicit their views on how time will be spent.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Reconfirm scheduled events before they happen. Announce changes to scheduled or committed dates </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__162">as soon as</Run>
+            <Run Tag="__162"> they change.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__162">Some Thoughts on Intimacy</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__162">(Chapter 8)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__162">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Be not afraid! Creating intimacy requires courage, not just for you, but for everyone.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">People in senior positions appreciate candor, but candor isn&#x2019;t necessarily intimacy, and they value that even more.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Find the fun and fascination.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Test whether you&#x2019;re coming too close to the line, or pushing too far, too fast.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__162">Practice a little. No, you can&#x2019;t practice spontaneity, but you can practice phrasing.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__162">&#x201C;Threats&#x201D; to Client Focus</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__162">(Chapter 8)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__163">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Selfishness</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Self-consciousness</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Aneed to appear on top of things</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Adesire to look intelligent</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Ato-do list on our mind that is a mile long</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Adesire to jump to the solution</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Adesire to win that exceeds the desire to help the client</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Adesire to be right</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Adesire to be seen to be right</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Adesire to be seen as adding value</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Fears of various kinds: fear of not knowing, of not having the right answer, of not appearing intelligent, of being rejected</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__163">Clues About Excessive Self-Orientation</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__163">(Chapter 8)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__163">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">A tendency to relate their stories to ourselves</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">A need to too quickly finish their sentences for them</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">A need to fill empty spaces in conversations</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">A need to appear clever, bright, witty, etc.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">An inability to provide a direct answer to a direct question</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">An unwillingness to say we don&#x2019;t know</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Name-dropping of other clients</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">A recitation of qualifications</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">A tendency to give answers too quickly</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">A tendency to want to have the last word</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Closed ended questions early on</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Putting forth hypotheses or problem statements before fully hearing the client&#x2019;s hypotheses or problem statements</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Passive listening; a lack of visual and verbal cues that indicate the client is being heard</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Watching the client as if he/she were a television set (merely a source of data)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__163">Signs of Low Self-Orientation</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__163">(Chapter 8)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__163">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Letting the client fill in the empty spaces</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Asking the client to talk about what&#x2019;s behind an issue</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Using open-ended questions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Not giving answers until the right is earned to do so (and the client will let you know when you have earned it)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Focusing on defining the problem, not guessing the solution</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__163">Reflective listening, summarizing what we&#x2019;ve heard to make sure we heard correctly what was said and what was intended</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Saying you don&#x2019;t know when you don&#x2019;t know</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Acknowledging the feelings of the client (with respect)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Learning to tell the client&#x2019;s story before we write our own</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Listening to clients without distractions: door closed, phone off, email not in line of sight, frequent eye contact</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Resisting with confidence a client&#x2019;s invitation to provide a solution too early on&#x2014;to stay in the listening and joint problem definition phases of discussion</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Trusting in our ability to add value </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__164">after</Run>
+            <Run Tag="__164"> listening, rather than trying to do so </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__164">during</Run>
+            <Run Tag="__164"> listening</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Taking most of the responsibility for failed communications</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__164">The Five-Step Trust-Building Process</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__164">(Chapter 9)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__164">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Engage: Uses language of interest and concern</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Listen: Uses language of understanding and empathy</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Frame: Uses language of perspective and candor</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Envision: Uses language of possibility</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Commit: Uses language of joint exploration</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__164">Skills Required for the Five-Step Trust Process</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__164">(Chapter 9)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__164">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Engaging requires the skill of being (credibly) noticed.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Listening requires an ability to </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__164">understand</Run>
+            <Run Tag="__164"> another human being.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Framing requires creative insight and emotional courage.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Envisioning requires a spirit of collaboration and creativity.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Commitment requires the ability to generate enthusiasm, and sometimes the ability to manage down overenthusiasm.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__164">Approaches to Engagement</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__164">(Chapter 10)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__164">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Approaches that demonstrate concern about competitive developments</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Approaches that signal an understanding of career challenges facing a particular individual</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Approaches that might offer a solution to a specific managerial issue</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__164">Approaches that demonstrate continuity and development</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__165">What Good Listeners Do</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__165">(Chapter 11)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__165">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Probe for clarification</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Listen for unvoiced emotions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Listen for the story</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Summarize well</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Empathize</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Listen for what&#x2019;s different, not for what&#x2019;s familiar</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Take it all seriously (they don&#x2019;t say, &#x201C;You shouldn&#x2019;t worry about that&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Spot hidden assumptions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Let the client &#x201C;get it out of his or her system&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Ask &#x201C;How do you feel about that?&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Keep the client talking (&#x201C;What else have you considered?&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Keep asking for more detail that helps them understand</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Get rid of distractions while listening</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Focus on hearing your version first</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Let you tell your story your way</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Stand in your shoes, at least while they&#x2019;re listening</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Ask you how you think they might be of help</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Ask what you&#x2019;ve thought of before telling you what they&#x2019;ve thought of</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Look at (not stare at) the client as he or she speaks</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Look for congruity (or incongruity) between what the client says and how he or she gestures and postures</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Make it seem as if the client is the only thing that matters and that they have all the time in the world.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Encourage by nodding head or giving a slight smile</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Are aware of and control their body movement (no moving around, shaking legs, fiddling with a paper clip)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__165">What Great Listeners Don&#x2019;t Do</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__165">(Chapter 11)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__165">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Interrupt</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Respond too soon</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Match the client&#x2019;s points (&#x201C;Oh, yes, I had something like that happen to me. It all started . . .&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Editorialize in midstream (&#x201C;Well, that option&#x2019;s a nonstarter&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Jump to conclusions (much less judgments)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Ask closed-end questions for no reason</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Give you their ideas before hearing yours</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Judge you</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Try to solve the problem too quickly</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__165">Take calls or interruptions in the course of a client meeting. (It seems so obvious, but watch how often it happens!)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__166">Characteristics of Naming and Claiming</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__166">(Chapter 12)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__166">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">An acknowledgment of the difficulty of raising the issue</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">An acceptance of the responsibility for raising it</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">A direct statement of the issue itself</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__166">Responsibility-Taking Caveats</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__166">(Chapter 12)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__166">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">It&#x2019;s probably just me, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I must have been tuned out for a moment, I&#x2019;m sorry, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I&#x2019;m sure you covered this before, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I&#x2019;m sorry to interrupt but I just can&#x2019;t get this out of my head about . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">You&#x2019;ve probably thought of this already, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I wish I knew, but I just don&#x2019;t know how to handle this concern . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I realize you have a strong preference for XYZ, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I&#x2019;m probably thinking about this all wrong, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I&#x2019;m not sure if this is on-point, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I may not have understood this right, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I don&#x2019;t know exactly how to say this, so I hope you&#x2019;ll help me, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I&#x2019;m not sure if I&#x2019;m being inappropriate in bringing this up, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">I hope you&#x2019;ll forgive me for not knowing quite how to say this, but . . .</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__166">Commitment Topics</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__166">(Chapter 14)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__166">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">What&#x2019;s going to get in the way of getting this done?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">What do we intend to do about it?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">Who needs to be brought into the loop?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">Who should do what part?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">What information do we need?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">When shall we check in?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">What are the key deadlines?</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__166">Managing Expectations</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__166">(Chapter 14)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__166">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">Clearly articulate what we will do and won&#x2019;t do</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">Clearly articulate what the client will do and won&#x2019;t do</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__166">Define the boundaries of the analyses we will perform</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Check with the client about areas that the client may not want us to get involved in, or any people the client does not want us to speak with</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Identify precise working arrangements</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Agree on methods and frequency of communicating</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Decide who should get which reports</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Decide how often a report should be delivered</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Decide how any reports will get used</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Decide what milestones and progress reviews are needed</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Decide how success will be measured, both at the end and during the process</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__167">Building Trust When Managing Expectations</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__167">(Chapter 14)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__167">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Always tell the truth about what you can (and can&#x2019;t) do, and what you can (and can&#x2019;t) deliver when.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Start the project before you&#x2019;ve been engaged.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Show your enthusiasm.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Ask the questions that are troubling you earlier rather than later.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__167">Concerns About the Trust-Based Approach</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__167">(Chapter 15)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__167">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">This is all too personally risky. The emotional stuff feels embarrassing, different, flaky.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">It&#x2019;s not easy to stop worrying about yourself and focus on others instead.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">Professional services firms often breed a culture of content expertise and mastery. (We&#x2019;re taught that content is all.)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">We can&#x2019;t overcome our fears of looking ignorant, stupid, or uninformed, so we act assertively.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">It&#x2019;s hard to shut up and listen before you solve the problem. We have a hard time rewiring our instincts or habits.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">It takes a lot of courage to speak about the unspeakable. Some things you just don&#x2019;t say; they&#x2019;re too personal, too risky, or too unprofessional.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">It comes too close to the line of invading the private.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">This approach discounts too heavily the value of good content or expertise.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">It all sounds too moralistic.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">This process sounds s-l-o-w! My budget won&#x2019;t allow for this!</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__167">My client wants me to focus on the work at hand; he or she doesn&#x2019;t want to see me about anything else.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">It&#x2019;s risky to take a position on an issue until I&#x2019;m absolutely sure.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">I took a position, and now I&#x2019;m stuck with it. To change my view would destroy my credibility!</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">It&#x2019;s hard to be this humble!</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__168">Why Professionals Jump to Action Too Soon</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__168">(Chapter 15)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__168">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">The human tendency to focus on ourselves</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">The belief that we&#x2019;re selling only content</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">The desire for tangibility</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">The search for validation</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__168">Common Fears</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__168">(Chapter 15)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__168">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Not having the answer</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Not being able to get the right answer quickly</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Having the wrong answer</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Committing some social faux pas</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Looking confused</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Not knowing how to respond</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Having missed some information</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Revealing some ignorance</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Misdiagnosing</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__168">Other Emotions One Must Control</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__168">(Chapter 15)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__168">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Wanting (needing?) to take credit for an idea</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Wanting to fill blank airtime with content</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Playing to our own insecurity by feeling we have to get all our credentials out there</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Wanting to put a cap on the problem so we can solve it later, without the pressure</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Wanting to hedge our answers in case we&#x2019;re wrong</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__168">Wanting (too soon) to relate our own version of the client&#x2019;s story or problem</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__168">Dealing with Different Client Types</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__168">(Chapter 16)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__169">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__169">Work in advance on what is different about this client, and what might be different about you in this situation. </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__169">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">Are there any topics I should avoid because they are too delicate to discuss in a large forum?</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">Are there any topics on which the views of your colleagues are divided?</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">Where are we likely to encounter the most resistance?</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">Do you have initiatives already going on that might interact with the discussion of this one?</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__169">As you look at a client, force yourself to ask three questions: </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__169">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">What is the client&#x2019;s prevailing personal motivation?</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">What is their personality?</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">How does the state of their organization affect their worldview?</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__169">When thinking about a client&#x2019;s prevailing personal motivation, which of the following comes first? </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__169">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">the need to excel?</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">the need to take action and achieve results?</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">the need to understand and analyze before deciding?</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__169">the need to drive consensus?</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__169">Figure out why you might truly like this client as a person.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__169">Use the trust equation.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__169">Some Difficult Client Types, and How to Respond</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__169">(Chapter 16)</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__169">Type 1. The &#x201C;Just the Facts, Ma&#x2019;am&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__169">Type 2. The &#x201C;I&#x2019;ll Get Back to You&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__169">Type 3.The &#x201C;You&#x2019;re the Expert, Dummy&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__169">Type 4. The &#x201C;Let Me Handle That&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__169">Type 5. The &#x201C;Let&#x2019;s Go Through This Again&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__170">Type 6. The &#x201C;You Don&#x2019;t Understand&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__170">Type 7. The &#x201C;My Enemy&#x2019;s Enemy Is My Friend&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__170">Type 8. The &#x201C;Just Like, You Know, Come On&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal">
+        <Run FontStyle="Normal" FontWeight="Normal" Tag="__170">Type 9. The &#x201C;Oh, By the Way&#x201D; Client</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__170">Factors Affecting a Client&#x2019;s Perceived Value of Service</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__170">(Chapter 19)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__170">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Understanding</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Sense of control</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Sense of progress</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Access and availability</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Responsiveness</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Reliability</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Appreciation</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Sense of importance</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__170">Respect</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__170">Tactics to Build Trust on the Assignment</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__170">(Chapter 19)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__170">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__170">Involving the client in the process through: </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__170">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__170">brainstorming sessions</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__170">giving the client tasks to perform</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__170">giving the client options and letting the client choose</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__170">keeping the client informed on what&#x2019;s going to happen, when, and why</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Paragraph/>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__170">Making reports and presentations more useful, easier to pass on, by: </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__170">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__170">getting the client to instruct us on format and presentation</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__170">providing a summary so the client can use it internally without modification</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__170">having all reports read by a non-project person to ensure readability and comprehension prior to delivery</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">providing all charts, tables, and summaries on overheads for internal client use</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Paragraph/>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__171">Helping the client use what we deliver by: </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__171">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">coaching the client in dealing with others in client organization</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">empowering the client with reasoning steps</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">advising on tactics/politics of how results should be shared inside client organization</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">writing progress summaries in a way that the client can use internally without modification</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Paragraph/>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__171">Making meetings more valuable by: </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__171">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">establishing a specific agenda and goals prior to meeting</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">sending information and reports in advance, saving meeting time for discussion, not presentation</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">finding out attendees in advance and researching them</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">establishing next steps for both sides</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">dictating and transcribing a summary of all meetings and significant phone conversations and sending copy to client the same day or next day</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">Calling afterward to confirm that goals were met</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Paragraph/>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__171">Being accessible and available by: </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__171">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">calling in advance when we&#x2019;re going to be unavailable</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">ensuring that our assistants know where we are and when we&#x2019;ll be back</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">ensuring that our assistants know the names of all clients and names of all team members involved in the relationship</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__171">working at getting clients comfortable with our &#x201C;junior&#x201D; personnel, so they can be available when we&#x2019;re not</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Paragraph/>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__172">Building Trust During the Engagement Process</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__172">(Chapter 19)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__172">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Keep clients in the loop regarding your progress.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Tell the truth and not what the client wants to hear.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Love your work.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Make sure that your answer is not a purely technical one.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Figure out what comes next for the client.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Don&#x2019;t ask for follow-on work too quickly.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__172">Client Suggestions for Relationship Building</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__172">(Chapter 20 )</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__172">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Make an impact on our business, don&#x2019;t just be visible.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Do more things &#x201C;on spec&#x201D; (i.e., invest your time on preliminary work in new areas).</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Spend more time helping us think, and helping us develop strategies.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Lead our thinking. Tell us what our business is going to look like five or ten years from now.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__172">Jump</Run>
+            <Run Tag="__172"> on any new pieces of information we have, so you can stay up-to-date on what&#x2019;s going on in our business. Use our data to give us an extra level of analysis. Ask for it, don&#x2019;t wait for us to give it to you.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Schedule some offsite meetings together. Join us for brainstorming sessions about our business.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Make an extra effort to understand how our business works: sit in on our meetings.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Help us see how we compare to others, both within and outside our industry.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Tell me why our competitors are doing what they&#x2019;re doing.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Discuss with us other things we should be doing; we welcome any and all ideas!</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__172">The Quick-Impact List to Gain Trust</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__172">(Chapter 22)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__172">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Listen to everything</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Empathize (for real)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Note what they&#x2019;re feeling</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Build that shared agenda</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__172">Take a point of view, for goodness&#x2019; sake!</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Take a personal risk</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Ask about a related area</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Ask great questions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Give away ideas</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Return calls unbelievably fast</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Relax your mind</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__173">Sayings to Relax Your Mind</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__173">(Chapter 22)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__173">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">It&#x2019;s about the client.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Who am I thinking about?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">What is the client feeling about this?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">The answer is a better question.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">The problem is rarely what the client said it was at first.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">I am not the center of the universe.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Who am I serving by my present approach?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Assigning blame will trap me; taking responsibility will empower me.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">It&#x2019;s a &#x201C;we&#x201D; game, not a &#x201C;me&#x201D; game.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">What am I afraid of here?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Knowing the truth is better than not knowing it.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">You can hope for what might be, but don&#x2019;t wish for what can&#x2019;t be.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Apoint of view doesn&#x2019;t commit you for life.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Don&#x2019;t ever, ever tell a lie or even shade the truth.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__173">More Tips</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__173">(Chapter 22)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__173">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Notice a feeling in yourself and comment on it.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Make a commitment and then deliver on it&#x2014;not overdeliver or underdeliver, just deliver.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Don&#x2019;t answer a question the first time the client asks it; ask for clarification.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Say something revealing about yourself, but not manipulatively.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Make a facial expression of empathy, even if it&#x2019;s just scrunching up your face and saying &#x201C;ouch&#x201D; in an appropriate setting.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__173">Reach out to notice, and acknowledge, something that has been held back in or about the other person.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__173">Top Things to Remind Yourself</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__173">(Chapter 22)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__174">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">I don&#x2019;t have to prove myself every ten seconds.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">I have a right to be here in this room; I can add value without worrying about it.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Shut up and repeat again and again: &#x201C;Really? And then what happened?&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Also again and again: &#x201C;Gee, what&#x2019;s behind that?&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Is my pulse racing? Why? Why not say so, and say why, out loud?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Have I earned the right yet to give an answer?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Am I trying in any way to win an argument? Turn it back into a conversation.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Emulate Lt. Columbo: &#x201C;I may be a little slow here. Maybe it&#x2019;s just me, but ...&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Take responsibility for the emotional outcome.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Don&#x2019;t blame anybody for anything anytime.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">More value is added through problem definition than through problem answer.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Just because the client asks a question doesn&#x2019;t mean that&#x2019;s the right question to answer.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Don&#x2019;t be insecure. Say to yourself: &#x201C;Hey, if I don&#x2019;t know the answer, and I&#x2019;m a pro, then this is a really neat question; lets get into it!&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Is my tummy telling me something&#x2019;s wrong? My tummy&#x2019;s right. Let&#x2019;s talk about it.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__174">Two Final Suggestions</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Justify" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14">
+        <Run FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__174">(Chapter 22)</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__174">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Call your client, now!</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__174">Tell your romantic partner how much he or she is appreciated. Do it today!</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+    </Section>
+  </Section>
+</Flow>

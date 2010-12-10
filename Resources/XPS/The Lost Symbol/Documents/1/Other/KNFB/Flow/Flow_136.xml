@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c129_r1.htm#c11">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__579">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__579">129 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__579">Robert Langdon</Run>
+        <Run Tag="__579"> stood mesmerized at the glass portal, absorbing the power of the landscape below him. Having ascended unknowingly hundreds of feet into the air, he was now admiring one of the most spectacular vistas he had ever seen.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__579">The shining dome of the U.S. Capitol rose like a mountain at the east end of the National Mall. On either side of the building, two parallel lines of light stretched toward him . . . the illuminated facades of the Smithsonian museums . . . beacons of art, history, science, culture.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__579">Langdon now realized to his astonishment that much of what Peter had declared to be true . . . was in fact true. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__579">There is indeed a winding staircase . . . descending hundreds of feet beneath a massive stone.</Run>
+        <Run Tag="__579"> The huge capstone of this obelisk sat directly over his head, and Langdon now recalled a forgotten bit of trivia that seemed to have eerie relevance: the capstone of the Washington Monument weighed precisely thirty-three hundred pounds.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__579">Again, the number 33.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__579">More startling, however, was the knowledge that this capstone&#x2019;s ultimate peak, the zenith of this obelisk, was crowned by a tiny, polished tip of aluminum&#x2014;a metal as precious as gold in its day. The shining apex of the Washington Monument was only about a foot tall, the same size as the Masonic Pyramid. Incredibly, this small metal pyramid bore a famous engraving&#x2014;</Run>
+        <Span FontFamily="serif" FontWeight="Bold" FontSize="14">
+          <Span FontFamily="serif" FontWeight="Bold" FontSize="12">
+            <Run FontFamily="serif" FontStyle="Italic" FontWeight="Bold" FontSize="12" Tag="__579">Laus Deo&#x2014;</Run>
+          </Span>
+        </Span>
+        <Run Tag="__579"> and Langdon suddenly understood. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__579">This is the true message of the base of the stone pyramid.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/0bee1c61-130b-400b-b2f3-0c8be08e35ca.jpg" Stretch="Uniform" Width="350" Height="53" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__579">The seven symbols are a transliteration!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__579">The simplest of ciphers.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__579">The symbols are letters.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14"/>
+      <Paragraph Margin="48,16,80,16" TextAlignment="Right" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">The stonemason&#x2019;s square&#x2014;L</Run>
+      </Paragraph>
+      <Paragraph Margin="48,16,80,16" TextAlignment="Right" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">The element gold&#x2014;AU</Run>
+      </Paragraph>
+      <Paragraph Margin="48,16,80,16" TextAlignment="Right" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">The Greek Sigma&#x2014;S</Run>
+      </Paragraph>
+      <Paragraph Margin="48,16,80,16" TextAlignment="Right" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">The Greek Delta&#x2014;D</Run>
+      </Paragraph>
+      <Paragraph Margin="48,16,80,16" TextAlignment="Right" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">Alchemical mercury&#x2014;E</Run>
+      </Paragraph>
+      <Paragraph Margin="48,16,80,16" TextAlignment="Right" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">The Ouroboros&#x2014;O</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14"/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">&#x201C;Laus Deo,&#x201D;</Run>
+        <Run Tag="__580"> Langdon whispered. The well-known Latin phrase&#x2014;meaning &#x201C;praise God&#x201D;&#x2014;was inscribed on the tip of the Washington Monument in script letters only one inch tall. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">On full display . . . and yet invisible to all.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,17,0,17" TextAlignment="Left" FontSize="16">
+        <Span FontWeight="Bold" FontSize="16">
+          <Run FontStyle="Italic" FontWeight="Bold" FontSize="16" Tag="__580">Laus Deo.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__580">&#x201C;Praise God,&#x201D; Peter said behind him, flipping on the soft lighting in the chamber. &#x201C;The Masonic Pyramid&#x2019;s final code.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__580">Langdon turned. His friend was grinning broadly, and Langdon recalled that Peter had actually </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">spoken</Run>
+        <Run Tag="__580"> the words &#x201C;praise God&#x201D; earlier inside the Masonic library. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">And I still missed it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__580">Langdon felt a chill to realize how apt it was that the legendary Masonic Pyramid had guided him </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">here</Run>
+        <Run Tag="__580"> . . . to America&#x2019;s great obelisk&#x2014;the symbol of ancient mystical wisdom&#x2014;rising toward the heavens at the heart of a nation.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__580">In a state of wonder, Langdon began moving counterclockwise around the perimeter of the tiny square room, arriving now at another viewing window.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__580">North.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__580">Through this northward-facing window, Langdon gazed down at the familiar silhouette of the White House directly in front of him. He raised his eyes to the horizon, where the straight line of Sixteenth Street ran due north toward the House of the Temple.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__581">I am due south of Heredom.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__581">He continued around the perimeter to the next window. Looking west, Langdon&#x2019;s eyes traced the long rectangle of the reflecting pool to the Lincoln Memorial, its classical Greek architecture inspired by the Parthenon in Athens, Temple to Athena&#x2014;goddess of heroic undertakings.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__581">Annuit coeptis,</Run>
+        <Run Tag="__581"> Langdon thought. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__581">God favors our undertaking.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__581">Continuing to the final window, Langdon gazed southward across the dark waters of the Tidal Basin, where the Jefferson Memorial shone brightly in the night. The gently sloping cupola, Langdon knew, was modeled after the Pantheon, the original home to the great Roman gods of mythology.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__581">Having looked in all four directions, Langdon now thought about the aerial photos he had seen of the National Mall&#x2014;her four arms outstretched from the Washington Monument toward the cardinal points of the compass. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__581">I am standing at the crossroads of America.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__581">Langdon continued back around to where Peter was standing. His mentor was beaming. &#x201C;Well, Robert, this is it. The Lost Word. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__581">This</Run>
+        <Run Tag="__581"> is where it&#x2019;s buried. The Masonic Pyramid led us </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__581">here</Run>
+        <Run Tag="__581">.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__581">Langdon did a double take. He had all but forgotten about the Lost Word.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__581">&#x201C;Robert, I know of nobody more trustworthy than you. And after a night like tonight, I believe you deserve to know what this is all about. As promised in legend, the Lost Word is indeed buried at the bottom of a winding staircase.&#x201D; He motioned to the mouth of the monument&#x2019;s long stairwell.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__581">Langdon had finally started to get his feet back under him, but now he was puzzled.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__581">Peter quickly reached into his pocket and pulled out a small object. &#x201C;Do you remember this?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">Langdon took the cube-shaped box that Peter had entrusted to him long ago. &#x201C;Yes . . . but I&#x2019;m afraid I didn&#x2019;t do a very good job of protecting it.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">Solomon chuckled. &#x201C;Perhaps the time had come for it to see the light of day.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">Langdon eyed the stone cube, wondering why Peter had just handed it to him.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">&#x201C;What does this look like to you?&#x201D; Peter asked.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">Langdon eyed the 1514 </Run>
+        <Image Source="/Resources/6b6fcc8f-4d8b-4ebb-a0c6-29b6d2a74096.jpg" Stretch="Uniform" Width="26" Height="24" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run Tag="__582"> and recalled his first impression when Katherine had unwrapped the package. &#x201C;A cornerstone.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">&#x201C;Exactly,&#x201D; Peter replied. &#x201C;Now, there are a few things you might not know about cornerstones. First, the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__582">concept</Run>
+        <Run Tag="__582"> of laying a cornerstone comes from the Old Testament.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">Langdon nodded. &#x201C;The Book of Psalms.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">&#x201C;Correct. And a true cornerstone is always </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__582">buried</Run>
+        <Run Tag="__582"> beneath the ground&#x2014;symbolizing the building&#x2019;s initial step upward out of the earth toward the heavenly light.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">Langdon glanced out at the Capitol, recalling that its cornerstone was buried so deep in the foundation that, to this day, excavations had been unable to find it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c129_r1.htm#page486">&#x201C;And finally,&#x201D; Solomon said, &#x201C;like the stone box in your hand, many cornerstones are little vaults . . . and have hollow cavities so that they can hold buried treasures . . . talismans, if you will&#x2014;symbols of hope for the future of the building about to be erected.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">Langdon was well aware of this tradition, too. Even today, Masons laid cornerstones in which they sealed meaningful objects&#x2014;time capsules, photos, proclamations, even the ashes of important people.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">&#x201C;My purpose in telling you this,&#x201D; Solomon said, glancing over at the stairwell, &#x201C;should be clear.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__582">&#x201C;You think the Lost Word is buried in the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__582">cornerstone</Run>
+        <Run Tag="__582"> of the Washington Monument?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__583">&#x201C;I don&#x2019;t </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__583">think</Run>
+        <Run Tag="__583">, Robert. I </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__583">know</Run>
+        <Run Tag="__583">. The Lost Word was buried in the cornerstone of this monument on July 4, 1848, in a full Masonic ritual.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__583">Langdon stared at him. &#x201C;Our Masonic forefathers buried a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__583">word</Run>
+        <Run Tag="__583">?!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__583">Peter nodded. &#x201C;They did indeed. They understood the true power of what they were burying.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__583">All night, Langdon had been trying to wrap his mind around sprawling, ethereal concepts . . . the Ancient Mysteries, the Lost Word, the Secrets of the Ages. He wanted something solid, and despite Peter&#x2019;s claims that the key to it all was buried in a cornerstone 555 feet beneath him, Langdon was having a hard time accepting it. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__583">People study the mysteries for entire lifetimes and are still unable to access the power allegedly hidden there.</Run>
+        <Run Tag="__583"> Langdon flashed on D&#xFC;rer&#x2019;s </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__583">Melencolia I</Run>
+        <Run Tag="__583">&#x2014;the image of the dejected Adept, surrounded by the tools of his failed efforts to unveil the mystical secrets of alchemy. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__583">If the secrets can actually be unlocked, they will not be found in one place!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__583">Any answer, Langdon had always believed, was spread across the world in thousands of volumes . . . encoded into writings of Pythagoras, Hermes, Heraclitus, Paracelsus, and hundreds of others. The answer was found in dusty, forgotten tomes on alchemy, mysticism, magic, and philosophy. The answer was hidden in the ancient library of Alexandria, the clay tablets of Sumer, and the hieroglyphs of Egypt.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__583">&#x201C;Peter, I&#x2019;m sorry,&#x201D; Langdon said quietly, shaking his head. &#x201C;To understand the Ancient Mysteries is a lifelong process. I can&#x2019;t imagine how the key could possibly rest within a single word.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__583">Peter placed a hand on Langdon&#x2019;s shoulder. &#x201C;Robert, the Lost Word is not a &#x2018;word.&#x2019;&#x201D; He gave a sage smile. &#x201C;We only call it the &#x2018;Word&#x2019; because that&#x2019;s what the ancients called it . . . in the beginning.&#x201D;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

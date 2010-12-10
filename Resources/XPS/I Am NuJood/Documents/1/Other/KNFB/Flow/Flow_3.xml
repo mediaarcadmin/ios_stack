@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page7" xml:space="preserve"/>
+      <Image Source="/Resources/3394b9af-6c34-4711-afea-8d8cc777687b.jpg" Stretch="Uniform" Width="180" Height="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <LineBreak/>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#fm1">Nujood, a Modern-Day Heroine</Run>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Figure HorizontalAnchor="ColumnLeft" HorizontalOffset="16" VerticalOffset="0" CanDelayPlacement="False" Height="42.6318367346939" Margin="0,0,1,0" Padding="0,0,0,0" TextAlignment="Justify" FontFamily="Charis SIL" FontSize="50" Tag="KNFBDropCap">
+        <Paragraph LineHeight="50" LineStackingStrategy="BlockLineHeight">
+          <Run FontFamily="Charis SIL" FontSize="50" Tag="__3">O</Run>
+        </Paragraph>
+      </Figure>
+      <Run Tag="__3">nce upon a time there was a magical land with legends as astonishing as its houses, which are adorned with such delicate tracery that they look like gingerbread cottages trimmed with icing. A land at the southernmost tip of the Arabian Peninsula, washed by the Red Sea and the Indian Ocean. A land steeped in a thousand years of history, where adobe turrets perch on the peaks of serried mountains. A land where the scent of incense wafts gaily around the corners of the narrow cobblestone streets.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__3">This country is called Yemen.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__3">But a very long time ago, grown-ups gave it another name: </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__3">Arabia Felix</Run>
+      <Run Tag="__3">, Happy Arabia.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page8">For Yemen inspires dreams. It is the realm of the Queen of Sheba, an incredibly strong and beautiful woman who inflamed the heart of King Solomon and left her mark in the sacred pages of the Bible and the Koran. It is a mysterious place where men never appear in public without curved daggers worn proudly at their waists, while women hide their charms behind thick black veils.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__3">It is a land that lies along an ancient trade route, a country crossed by merchant caravans laden with fine fabrics, cinnamon, and other aromatic spices. These caravans journeyed on for weeks, sometimes months, never stopping, persevering through wind and rain, and the weakest travelers, the stories say, never came home again.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__3">To see Yemen in your mind&#x2019;s eye, imagine a country a little larger than Syria, Greece, and Nepal all rolled into one, and diving headlong into the Gulf of Aden. Out there, in those tempestuous seas, pirates from many lands lie in wait for merchant ships plying their trades in India, Africa, Europe, and America.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page9">In centuries past, many invaders succumbed to the temptation to claim this lovely land for themselves. Ethiopians came ashore armed with their bows and arrows, but were swiftly driven away. Next came the Persians, with their bushy eyebrows, who constructed canals and fortresses and recruited various native tribes to fight off other invaders. The Portuguese then tried their luck, and set up trading outposts. The Ottomans, who later took up the challenge, held sway in the country for more than a hundred years. Still later, the British, with their white skin, put into port in the south, in Aden, while the Turks set up shop in the north. And then, once the English were gone, Russians from colder climes set their sights upon the south. Like a cake fought over by greedy children, the country gradually split in two.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__4">Grown-ups say that this </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__4">Arabia Felix</Run>
+      <Run Tag="__4"> has always been the object of envious desire because of its thousand and one treasures. Foreigners covet its oil; its honey is worth its weight in gold; the music of Yemen is captivating, its poetry gentle and refined, its spicy cuisine endlessly pleasing. From around the world, archeologists come to this country to study the architecture of its ruins.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__4">It has been years and years now since the invaders packed up their bags and left, but ever since their departure, Yemen has experienced a series of civil wars too complicated for the pages of children&#x2019;s books. Unified in 1990, the nation still suffers from the wounds left by these many conflicts, like a sick old man, trying to get well, who has lost his bearings and must learn to walk again. Sometimes you even wonder who makes the law in this strange land, where many girls and boys beg in the streets instead of going to school.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page10">Yemen&#x2019;s head of state is a president whose photograph often decorates the display windows of shops, but power in this country lies also with tribal chiefs in turbans who wield enormous authority in the villages, whether it&#x2019;s a question of arms sales, marriage, or the commerce and </Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#nts1a" xml:space="preserve"/>
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_nts_r1.htm#nts1">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page10">culture of khat</Run>
+      </Hyperlink>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page10">. Then there are those explosions in the capital, Sana&#x2019;a, in the chic neighborhoods where the diplomatic representatives of foreign nations live, people who drive big cars with tinted windows. And in Yemeni homes, of course, the real law is laid down by fathers and older brothers.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__5">It was in this extraordinary and turbulent country, barely ten years ago, that a little girl named Nujood was born.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__5">A tiny wisp of a thing, Nujood is neither a queen nor a princess. She is a normal girl with parents and plenty of brothers and sisters. Like all children her age, she loves to play hide-and-seek and adores chocolate. She likes to make colored drawings and fantasizes about being a sea turtle, because she has never seen the ocean. When she smiles, a tiny dimple appears in her left cheek.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page11">One cold and gray February evening in 2008, however, that appealing and mischievous grin suddenly melted into bitter tears when her father told her that she was going to wed a man three times her age. It was as if the whole world had landed on her shoulders. Hastily married off a few days later, the little girl resolved to gather all her strength and try to escape her miserable fate. &#x2026;</Run>
+      <LineBreak/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Right" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__5">D</Run>
+      <Run FontFamily="Charis SIL" FontSize="12" Tag="__5">ELPHINE</Run>
+      <Run Tag="__5"> M</Run>
+      <Run FontFamily="Charis SIL" FontSize="12" Tag="__5">INOUI</Run>
+    </Paragraph>
+  </Section>
+</Flow>

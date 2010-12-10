@@ -53,12 +53,20 @@
     }
     NSString *deviceString;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        deviceString = @"Pad";
+        deviceString = @"ipad";
     } else {
-        deviceString = @"Phone";
+        deviceString = @"iphone";
+    }
+    NSString *scaleString = @"";
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    if([mainScreen respondsToSelector:@selector(scale)]) {
+        CGFloat scale = [mainScreen scale];
+        if(scale != 1.0f) {
+            scaleString = [NSString stringWithFormat:@"@%fx", (float)scale];
+        }
     }
     
-    return [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"BlioDynamicDefault-%@-%@.png", deviceString, orientationString]];
+    return [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"BlioDynamicDefault-%@%@~%@.png", orientationString, scaleString, deviceString]];
 }
 
 + (UIImage *)loadDynamicDefaultImageForOrientation:(UIInterfaceOrientation)orientation {
@@ -71,10 +79,27 @@
     // round!)
     unlink([dynamicDefaultPngPath fileSystemRepresentation]);
     
+    UIImage *ret = nil;
+    
     if(imageData) {
-        return [UIImage imageWithData:imageData];
+        if([UIImage respondsToSelector:@selector(imageWithCGImage:scale:orientation:)]) {
+            CGDataProviderRef pngProvider = CGDataProviderCreateWithCFData((CFDataRef)imageData);
+            if(pngProvider) {
+                CGImageRef image = CGImageCreateWithPNGDataProvider(pngProvider, nil, false, kCGRenderingIntentDefault);
+                if(image) {
+                    ret = [UIImage imageWithCGImage:image
+                                              scale:[[UIScreen mainScreen] scale] 
+                                        orientation:UIImageOrientationUp];
+                    CGImageRelease(image);
+                }
+                CGDataProviderRelease(pngProvider);
+            }
+        } else {
+            ret = [UIImage imageWithData:imageData];
+        }
     }
-    return nil;
+    
+    return ret;
 }
 
 + (void)saveDynamicDefaultImage:(UIImage *)image
@@ -118,31 +143,33 @@
 }
 
 - (void)setUpImageForOrientation:(UIInterfaceOrientation)orientation {
-    [self.dynamicImageView removeFromSuperview];
-    self.dynamicImageView = nil;
-    
-    UIImage *image = [self dynamicDefaultImageForOrientation:orientation];
-    if(image) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        imageView.contentMode = UIViewContentModeBottom;
-        imageView.image = image;
-        self.dynamicImageView = imageView;
-        [self.view addSubview:imageView];
-    }
-    
-    
-    [self.nonDynamicImageView removeFromSuperview];
-    self.nonDynamicImageView = nil;
+    if(!fadesBegun) {
+        [self.dynamicImageView removeFromSuperview];
+        self.dynamicImageView = nil;
+        
+        UIImage *image = [self dynamicDefaultImageForOrientation:orientation];
+        if(image) {
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+            imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            imageView.contentMode = UIViewContentModeBottom;
+            imageView.image = image;
+            self.dynamicImageView = imageView;
+            [self.view addSubview:imageView];
+        }
+        
+        
+        [self.nonDynamicImageView removeFromSuperview];
+        self.nonDynamicImageView = nil;
 
-    image = [self nonDynamicDefaultImageForOrientation:orientation];
-    if(image) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-        imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        imageView.contentMode = UIViewContentModeBottom;
-        imageView.image = image;
-        self.nonDynamicImageView = imageView;
-        [self.view addSubview:imageView];
+        image = [self nonDynamicDefaultImageForOrientation:orientation];
+        if(image) {
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+            imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            imageView.contentMode = UIViewContentModeBottom;
+            imageView.image = image;
+            self.nonDynamicImageView = imageView;
+            [self.view addSubview:imageView];
+        }
     }
 }
 
@@ -171,7 +198,28 @@
     [self release];
 }
 
+- (CGFloat)rotationForOrientation:(UIInterfaceOrientation)orientation
+{
+    CGFloat rotation = 0.0f;
+    switch(orientation) {
+        case UIInterfaceOrientationPortraitUpsideDown:
+            rotation = (CGFloat)M_PI;
+            break;
+        case UIInterfaceOrientationLandscapeLeft:
+            rotation = -(CGFloat)M_PI_2;
+            break;
+        case UIInterfaceOrientationLandscapeRight:
+            rotation = (CGFloat)M_PI_2;
+            break;
+        default:
+            break;
+    }
+    return rotation;
+}
+
 - (void)fadeOutDefaultImageIfDynamicImageAlsoAvailable  {
+    // Fade and slightly zoom the default image, revealing the dynamic
+    // image behind, if there is one.
     self.fadesBegun = YES;
     if(self.dynamicImageView) {
         UIImageView *imageView = self.nonDynamicImageView;
@@ -179,11 +227,7 @@
         CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
         [imageView removeFromSuperview];
         imageView.center = windowCenter;
-        if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-            imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-            imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
-        }
+        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
         [window addSubview:imageView];
         
         [UIView beginAnimations:@"FadeOutRealDefault" context:nil];
@@ -215,16 +259,16 @@
 - (void)fadeOutCompletly {
     self.fadesBegun = YES;
     if(self.dynamicImageView) {
+        // Fade the dynamic image (don't zoom it - idea is that the UI behind
+        // it will be similar to it).
+        // The default image should already have been removed by 
+        // -fadeOutDefaultImageIfDynamicImageAlsoAvailable, above.
         UIImageView *imageView = self.dynamicImageView;
         UIWindow *window = self.view.window;
         CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
         [imageView removeFromSuperview];
         imageView.center = windowCenter;
-        if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-            imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-            imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
-        }
+        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
         [window addSubview:imageView];
         
         [UIView beginAnimations:@"FadeOutDynamicDefault" context:nil];
@@ -237,16 +281,13 @@
         [UIView commitAnimations];
         [self retain];
     } else {
+        // Fade and slightly zoom the default image, revealing the UI.
         UIImageView *imageView = self.nonDynamicImageView;
         UIWindow *window = self.view.window;
         CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
         [imageView removeFromSuperview];
         imageView.center = windowCenter;
-        if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-            imageView.transform = CGAffineTransformMakeRotation(-M_PI_2);
-        } else if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-            imageView.transform = CGAffineTransformMakeRotation(M_PI_2);
-        }
+        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
         [window addSubview:imageView];        
 
         [UIView beginAnimations:@"FadeOutDynamicDefault" context:nil];

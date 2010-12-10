@@ -12,7 +12,7 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
-		28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
+		28AD73600D9D9599002E5188 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		28C286E10D94DF7D0034E888 /* BlioLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */; };
 		28F335F11007B36200424DE2 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		553D5B17126F6B6B00A1CE83 /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
@@ -221,7 +221,7 @@
 		7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		A30E0EFB123EA5B400D31157 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
-		A30E0EFC123EA5B400D31157 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
+		A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A30E0EFF123EA5B400D31157 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
 		A30E0F00123EA5B400D31157 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
@@ -289,7 +289,7 @@
 		A30E0F44123EA5B400D31157 /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
 		A30E0F45123EA5B400D31157 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
 		A30E0F46123EA5B400D31157 /* icon-freebooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DCCE466911B9AE22002D7E01 /* icon-freebooks.png */; };
-		A30E0F47123EA5B400D31157 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */; };
+		A30E0F47123EA5B400D31157 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
 		A30E0F48123EA5B400D31157 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D211C9155F00CFEB88 /* Default@2x.png */; };
 		A30E0F49123EA5B400D31157 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D311C9155F00CFEB88 /* Icon@2x.png */; };
 		A30E0F4A123EA5B400D31157 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D611C9159000CFEB88 /* Default-Landscape.png */; };
@@ -539,7 +539,7 @@
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A3689AF4116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3689AF3116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m */; };
 		A368C69E116A3A52008653CF /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */; };
-		A36D34C3120B136700E1A035 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
+		A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A36D34C4120B136700E1A035 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A36D34C6120B136700E1A035 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
 		A36D34C7120B136700E1A035 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
@@ -608,7 +608,7 @@
 		A36D350F120B136700E1A035 /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
 		A36D3511120B136700E1A035 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
 		A36D3512120B136700E1A035 /* icon-freebooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DCCE466911B9AE22002D7E01 /* icon-freebooks.png */; };
-		A36D3513120B136700E1A035 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */; };
+		A36D3513120B136700E1A035 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
 		A36D3514120B136700E1A035 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D211C9155F00CFEB88 /* Default@2x.png */; };
 		A36D3515120B136700E1A035 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D311C9155F00CFEB88 /* Icon@2x.png */; };
 		A36D3516120B136700E1A035 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D611C9159000CFEB88 /* Default-Landscape.png */; };
@@ -1070,7 +1070,7 @@
 		DCAC9611126918C200C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
 		DCAC9612126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
 		DCAC9613126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
-		DCB0364011BDC43300B341D4 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */; };
+		DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
 		DCC447E211ADBAB700CBD491 /* BlioVoiceData.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */; };
 		DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
 		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
@@ -1303,7 +1303,7 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28A0AAE50D9B0CCF005BE974 /* BlioApp_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioApp_Prefix.pch; sourceTree = "<group>"; };
-		28AD735F0D9D9599002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainNavControllerAndLibraryView.xib; sourceTree = "<group>"; };
 		28C286DF0D94DF7D0034E888 /* BlioLibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLibraryViewController.h; sourceTree = "<group>"; };
 		28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLibraryViewController.m; sourceTree = "<group>"; };
 		28F335F01007B36200424DE2 /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
@@ -1928,7 +1928,7 @@
 		DCA65A4611503CF6006534F4 /* icon-vault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-vault.png"; sourceTree = "<group>"; };
 		DCAC960F126918C200C24BF7 /* BlioMyAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMyAccountViewController.h; sourceTree = "<group>"; };
 		DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMyAccountViewController.m; sourceTree = "<group>"; };
-		DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "MainWindow-iPad.xib"; sourceTree = "<group>"; };
+		DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "MainNavControllerAndLibraryView-iPad.xib"; sourceTree = "<group>"; };
 		DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioVoiceData.plist; sourceTree = "<group>"; };
 		DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDownloadVoicesViewController.h; sourceTree = "<group>"; };
 		DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDownloadVoicesViewController.m; sourceTree = "<group>"; };
@@ -2310,7 +2310,7 @@
 				DCFAC87A12AD68D20049341B /* webstore-screenshot@2x.png */,
 				DCFAC96912AD738D0049341B /* webstore-screenshot-ipad.png */,
 				DCFAC96A12AD738D0049341B /* webstore-screenshot-ipad@2x.png */,
-				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
+				28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */,
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				7DE7B5E21104B4FD0021F382 /* Lighting.xib */,
 				C9867DE51127164F0070A03E /* BlioStoreBookView.xib */,
@@ -3058,7 +3058,7 @@
 				A382D3D611C9159000CFEB88 /* Default-Landscape.png */,
 				A382D3D711C9159000CFEB88 /* Default-Portrait.png */,
 				A382D3D811C9159000CFEB88 /* Icon-iPad.png */,
-				DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */,
+				DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */,
 				DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */,
 			);
 			path = "Resources-iPad";
@@ -3302,7 +3302,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */,
+				28AD73600D9D9599002E5188 /* MainNavControllerAndLibraryView.xib in Resources */,
 				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
 				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
 				7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */,
@@ -3375,7 +3375,7 @@
 				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */,
 				DCCE466A11B9AE22002D7E01 /* icon-freebooks.png in Resources */,
-				DCB0364011BDC43300B341D4 /* MainWindow-iPad.xib in Resources */,
+				DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
 				A382D3D411C9155F00CFEB88 /* Default@2x.png in Resources */,
 				A382D3D511C9155F00CFEB88 /* Icon@2x.png in Resources */,
 				A382D3D911C9159000CFEB88 /* Default-Landscape.png in Resources */,
@@ -3533,7 +3533,7 @@
 				A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */,
 				A3428F8D129454A700AA1DBF /* XPS in Resources */,
 				A30E0EFB123EA5B400D31157 /* credits.html in Resources */,
-				A30E0EFC123EA5B400D31157 /* MainWindow.xib in Resources */,
+				A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */,
 				A30E0EFF123EA5B400D31157 /* BookEdge.pvrtc in Resources */,
 				A30E0F00123EA5B400D31157 /* EPubDefault.css in Resources */,
@@ -3601,7 +3601,7 @@
 				A30E0F44123EA5B400D31157 /* button-tts-pause.png in Resources */,
 				A30E0F45123EA5B400D31157 /* EucConfiguration.plist in Resources */,
 				A30E0F46123EA5B400D31157 /* icon-freebooks.png in Resources */,
-				A30E0F47123EA5B400D31157 /* MainWindow-iPad.xib in Resources */,
+				A30E0F47123EA5B400D31157 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
 				A30E0F48123EA5B400D31157 /* Default@2x.png in Resources */,
 				A30E0F49123EA5B400D31157 /* Icon@2x.png in Resources */,
 				A30E0F4A123EA5B400D31157 /* Default-Landscape.png in Resources */,
@@ -3755,7 +3755,7 @@
 			files = (
 				A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */,
 				A31E82EE120B3FD800CB6657 /* credits.html in Resources */,
-				A36D34C3120B136700E1A035 /* MainWindow.xib in Resources */,
+				A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A36D34C4120B136700E1A035 /* RootViewController.xib in Resources */,
 				A36D34C6120B136700E1A035 /* BookEdge.pvrtc in Resources */,
 				A36D34C7120B136700E1A035 /* EPubDefault.css in Resources */,
@@ -3824,7 +3824,7 @@
 				A36D350F120B136700E1A035 /* button-tts-pause.png in Resources */,
 				A36D3511120B136700E1A035 /* EucConfiguration.plist in Resources */,
 				A36D3512120B136700E1A035 /* icon-freebooks.png in Resources */,
-				A36D3513120B136700E1A035 /* MainWindow-iPad.xib in Resources */,
+				A36D3513120B136700E1A035 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
 				A36D3514120B136700E1A035 /* Default@2x.png in Resources */,
 				A36D3515120B136700E1A035 /* Icon@2x.png in Resources */,
 				A36D3516120B136700E1A035 /* Default-Landscape.png in Resources */,

@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c68_r1.htm#c68">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__313">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__313">68 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__313">Albrecht D&#xFC;rer?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__313">Katherine was trying to put the pieces together as she hurried with Langdon through the basement of the Adams Building. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">A.D. stands for Albrecht D&#xFC;rer?</Run>
+        <Run Tag="__313"> The famous sixteenth-century German engraver and painter was one of her brother&#x2019;s favorite artists, and Katherine was vaguely familiar with his work. Even so, she could not imagine how D&#xFC;rer would be any help to them in this case. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">For one thing, he&#x2019;s been dead more than four hundred years.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__313">&#x201C;D&#xFC;rer is symbolically perfect,&#x201D; Langdon was saying as they followed the trail of illuminated </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__313">EXIT</Run>
+        <Run Tag="__313"> signs. &#x201C;He was the ultimate Renaissance mind&#x2014;artist, philosopher, alchemist, </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">and</Run>
+        <Run Tag="__313"> a lifelong student of the Ancient Mysteries. To this day, nobody fully understands the messages hidden in D&#xFC;rer&#x2019;s art.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__313">&#x201C;That may be true,&#x201D; she said. &#x201C;But how does &#x2018;1514 Albrecht D&#xFC;rer&#x2019; explain how to decipher the pyramid?&#x201D; They reached a locked door, and Langdon used Bellamy&#x2019;s key card to get through.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__313">&#x201C;The number 1514,&#x201D; Langdon said as they hurried up the stairs, &#x201C;is pointing us to a very specific piece of D&#xFC;rer&#x2019;s work.&#x201D; They came into a huge corridor. Langdon glanced around and then pointed left. &#x201C;This way.&#x201D; They moved quickly again. &#x201C;Albrecht D&#xFC;rer actually </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">hid</Run>
+        <Run Tag="__313"> the number 1514 in his most mysterious piece of art&#x2014;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">Melencolia I</Run>
+        <Run Tag="__313">&#x2014;which he completed in the year 1514. It&#x2019;s considered the seminal work of the Northern European Renaissance.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__313">Peter had once shown Katherine </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">Melencolia I</Run>
+        <Run Tag="__313"> in an old book on ancient mysticism, but she didn&#x2019;t recall any hidden number 1514.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__313">&#x201C;As you may know,&#x201D; Langdon said, sounding excited, &#x201C;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">Melencolia I</Run>
+        <Run Tag="__313"> depicts mankind&#x2019;s struggle to comprehend the Ancient Mysteries. The symbolism in </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">Melencolia I</Run>
+        <Run Tag="__313"> is so complex it makes Leonardo da Vinci look overt.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__313">Katherine stopped abruptly and looked at Langdon. &#x201C;Robert, </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__313">Melencolia I</Run>
+        <Run Tag="__313"> is here in Washington. It hangs in the National Gallery.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">&#x201C;Yes,&#x201D; he said with a smile, &#x201C;and something tells me </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__314">that&#x2019;s</Run>
+        <Run Tag="__314"> not a coincidence. The gallery is closed at this hour, but I know the curator and&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">&#x201C;Forget it, Robert, I know what happens when you go to museums.&#x201D; Katherine headed off into a nearby alcove, where she saw a desk with a computer.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">Langdon followed, looking unhappy.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">&#x201C;Let&#x2019;s do this the easier way.&#x201D; It seemed Professor Langdon, the art connoisseur, was having an ethical dilemma about using the Internet when an original was so nearby. Katherine stepped behind the desk and powered up the computer. When the machine finally came to life, she realized she had another problem. &#x201C;There&#x2019;s no icon for a browser.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">&#x201C;It&#x2019;s an internal library network.&#x201D; Langdon pointed to an icon on the desktop. &#x201C;Try that.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">Katherine clicked on the icon marked </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__314">DIGITAL COLLECTIONS</Run>
+        <Run Tag="__314">. The computer accessed a new screen, and Langdon pointed again. Katherine clicked on his choice of icon: </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__314">FINE PRINTS COLLECTION</Run>
+        <Run Tag="__314">. The screen refreshed. </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__314">FINE PRINTS: SEARCH</Run>
+        <Run Tag="__314">.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">&#x201C;Type in &#x2018;Albrecht D&#xFC;rer.&#x2019; &#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">Katherine entered the name and then clicked the search key. Within seconds, the screen began displaying a series of thumbnail images. All of the images looked to be similar in style&#x2014;intricate black-and-white engravings. D&#xFC;rer had apparently done dozens of similar engravings.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">Katherine scanned the alphabetical list of his artwork.</Run>
+      </Paragraph>
+      <Paragraph Margin="32,16,32,16" TextAlignment="Left" FontFamily="serif" FontSize="14">
+        <Span FontFamily="serif" FontWeight="Bold" FontSize="14" xml:space="preserve">
+          <Run Tag="__314">Adam and Eve</Run>
+          <LineBreak/>
+          <Run Tag="__314"> Betrayal of Christ</Run>
+          <LineBreak/>
+          <Run Tag="__314"> Four Horsemen of the Apocalypse</Run>
+          <LineBreak/>
+          <Run Tag="__314"> Great Passion</Run>
+          <LineBreak/>
+          <Run Tag="__314"> Last Supper</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__314">Seeing all the biblical titles, Katherine recalled that D&#xFC;rer practiced something called Mystic Christianity&#x2014;a fusion of early Christianity, alchemy, astrology, and science.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__315">Science . . .</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__315">The image of her lab in flames rushed through her mind. She could barely process the long-term ramifications, but for the moment, her thoughts turned to her assistant, Trish. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__315">I hope she made it out.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__315">Langdon was saying something about D&#xFC;rer&#x2019;s version of the Last Supper, but Katherine was barely listening. She had just seen the link for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__315">Melencolia I.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__315">She clicked the mouse, and the page refreshed with general information.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Span FontFamily="serif" FontWeight="Bold" FontSize="14">
+          <Run FontFamily="serif" FontStyle="Italic" FontWeight="Bold" FontSize="14" Tag="__315">Melencolia I,</Run>
+          <Run Tag="__315"> 1514</Run>
+        </Span>
+        <LineBreak/>
+        <Run Tag="__315"> </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__315">Albrecht D&#xFC;rer</Run>
+        <LineBreak/>
+        <Run Tag="__315"> </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__315">(engraving on laid paper)</Run>
+        <LineBreak/>
+        <Run Tag="__315"> </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__315">Rosenwald Collection</Run>
+        <LineBreak/>
+        <Run Tag="__315"> </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__315">National Gallery of Art</Run>
+        <LineBreak/>
+        <Run Tag="__315"> </Run>
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__315">Washington, D.C.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__315">When she scrolled down, a high-res digital image of D&#xFC;rer&#x2019;s masterpiece appeared in all its glory.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__315">Katherine stared in bewilderment, having forgotten just how strange it was.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__315">Langdon gave an understanding chuckle. &#x201C;As I said, it&#x2019;s cryptic.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__315">Melencolia I</Run>
+        <Run Tag="__315"> consisted of a brooding figure with giant wings, seated in front of a stone building, surrounded by the most disparate and bizarre collection of objects imaginable&#x2014;measuring scales, an emaciated dog, carpenter&#x2019;s tools, an hourglass, various geometric solids, a hanging bell, a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__315">putto</Run>
+        <Run Tag="__315">, a blade, a ladder.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__315">Katherine vaguely recalled her brother telling her that the winged figure was a representation of &#x201C;human genius&#x201D;&#x2014;a great thinker with chin in hand, looking depressed, still unable to achieve enlightenment. The genius is surrounded with all of the symbols of his human intellect&#x2014;objects of science, math, philosophy, nature, geometry, even carpentry&#x2014;and yet is still unable to climb the ladder to true enlightenment. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__315">Even the human genius has difficulty comprehending the Ancient Mysteries.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__316">&#x201C;Symbolically,&#x201D; Langdon said, &#x201C;this represents mankind&#x2019;s failed attempt to transform </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__316">human</Run>
+        <Run Tag="__316"> intellect into </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__316">god</Run>
+        <Run Tag="__316">like power. In alchemical terms, it represents our inability to turn lead into gold.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__316">&#x201C;Not a particularly encouraging message,&#x201D; Katherine agreed. &#x201C;So how does it help us?&#x201D; She did not see the hidden number 1514 that Langdon was talking about.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__316">&#x201C;Order from chaos,&#x201D; Langdon said, flashing a lopsided grin. &#x201C;Just as your brother promised.&#x201D; He reached in his pocket and pulled out the grid of letters he had written earlier from the Masonic cipher. &#x201C;Right now, this grid is meaningless.&#x201D; He spread the paper out on the desk.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/5cfbd2db-b7c0-4d99-bac9-dd9c39f0e533.jpg" Stretch="Uniform" Width="160" Height="179" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__316">Katherine eyed the grid. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__316">Definitely meaningless.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__316">&#x201C;But D&#xFC;rer will transform it.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__316">&#x201C;And how might he do that?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__316">&#x201C;Linguistic alchemy.&#x201D; Langdon motioned to the computer screen. &#x201C;Look carefully. Hidden in this masterpiece is something that will make sense of our sixteen letters.&#x201D; He waited. &#x201C;Do you see it yet? Look for the number 1514.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__317">Katherine was in no mood to play classroom. &#x201C;Robert, I see nothing&#x2014;an orb, a ladder, a knife, a polyhedron, a scale? I give up.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__317">&#x201C;Look! There in the background. Carved into that building behind the angel? Beneath the bell? D&#xFC;rer engraved a square that is full of numbers.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__317">Katherine now saw the square that contained numbers, among them 1514.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__317">&#x201C;Katherine, that square is the key to deciphering the pyramid!&#x201D; </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__317">She shot him a surprised look. &#x201C;That&#x2019;s not just </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__317">any</Run>
+        <Run Tag="__317"> square,&#x201D; Langdon said, grinning. </Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__317">&#x201C;That, Ms. Solomon, is a </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__317">magic</Run>
+        <Run Tag="__317"> square.&#x201D;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

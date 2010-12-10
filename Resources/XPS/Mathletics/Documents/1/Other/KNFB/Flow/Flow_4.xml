@@ -1,0 +1,1432 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__5">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__5">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="21" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="24">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="24" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/contents.html#page_vii">CONTENTS</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__5">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__5">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Span FontFamily="times new roman" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Hyperlink NavigateUri="frontmatter01.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__5">Preface</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Span FontFamily="times new roman" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Hyperlink NavigateUri="frontmatter02.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__5">Acknowledgments</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Span FontFamily="times new roman" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Hyperlink NavigateUri="frontmatter03.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__5">List of Abbreviations</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__5">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__5">
+      <Table.Columns>
+        <TableColumn Width="4.4404973357016*"/>
+        <TableColumn Width="95.5595026642984*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell ColumnSpan="2" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Span FontFamily="times new roman" FontWeight="Bold" FontSize="11">
+                <Hyperlink NavigateUri="part01.html">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__5">Part I. Baseball</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter01.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;1.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter01.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Baseball&#x2019;s Pythagorean Theorem</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter02.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;2.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter02.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Who Had a Better Year, Nomar Garciaparra or Ichiro Suzuki?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__5">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Span FontFamily="times new roman" FontStyle="Italic" FontSize="11">
+                <Hyperlink NavigateUri="part01chapter02.html#part01chapter02section01">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__5">The Runs-Created Approach</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter03.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;3.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter03.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Evaluating Hitters by Linear Weights</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter04.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;4.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter04.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Evaluating Hitters by Monte Carlo Simulation</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter05.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;5.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter05.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Evaluating Baseball Pitchers and Forecasting Future Pitcher Performance</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter06.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;6.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter06.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Baseball Decision-Making</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter07.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;7.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter07.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Evaluating Fielders</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__5">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Span FontFamily="times new roman" FontStyle="Italic" FontSize="11">
+                <Hyperlink NavigateUri="part01chapter07.html#part01chapter07section01">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__5">Sabermetrics&#x2019; Last Frontier</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter08.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;8.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter08.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Player Win Averages</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter09.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">&#xA0;&#xA0;9.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter09.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">The Value of Replacement Players</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__5">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Span FontFamily="times new roman" FontStyle="Italic" FontSize="11">
+                <Hyperlink NavigateUri="part01chapter09.html#part01chapter09section01">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__5">Evaluating Trades and Fair Salary</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter10.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">10.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter10.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Park Factors</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter11.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">11.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter11.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Streakiness in Sports</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter12.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">12.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter12.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">The Platoon Effect</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter13.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">13.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter13.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Was Tony Perez a Great Clutch Hitter?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter14.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">14.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter14.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Pitch Count and Pitcher Effectiveness</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter15.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">15.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter15.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Would Ted Williams Hit .406 Today?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter16.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">16.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter16.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Was Joe DiMaggio&#x2019;s 56-Game Hitting Streak the Greatest Sports Record of All Time?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter17.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">17.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part01chapter17.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Major League Equivalents</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell ColumnSpan="2" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Span FontFamily="times new roman" FontWeight="Bold" FontSize="11">
+                <Hyperlink NavigateUri="part02.html">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__5">Part II. Football</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter18.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">18.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter18.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">What Makes NFL Teams Win?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter19.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">19.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter19.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Who&#x2019;s Better, Tom Brady or Peyton Manning?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph/>
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter20.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">20.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter20.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Football States and Values</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter21.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">21.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter21.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">Football Decision-Making 101</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter22.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">22.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter22.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">A State and Value Analysis of the 2006 Super Bowl Champion Colts</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter23.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">23.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter23.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__5">If Passing Is Better Than Running, Why Don&#x2019;t Teams Always Pass?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter24.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">24.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter24.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Should We Go for a One-Point or Two-Point Conversion?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter25.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">25.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter25.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">To Give Up the Ball Is Better Than to Receive</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__6">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Span FontFamily="times new roman" FontStyle="Italic" FontSize="11">
+                <Hyperlink NavigateUri="part02chapter25.html#part02chapter25section01">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__6">The Case of College Football Overtime</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter26.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">26.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter26.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Why Is the NFL&#x2019;s Overtime System Fatally Flawed?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter27.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">27.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part02chapter27.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">How Valuable Are High Draft Picks in the NFL?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__6">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__6">
+      <Table.Columns>
+        <TableColumn Width="4.4404973357016*"/>
+        <TableColumn Width="95.5595026642984*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell ColumnSpan="2" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Span FontFamily="times new roman" FontWeight="Bold" FontSize="11">
+                <Hyperlink NavigateUri="part03.html">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__6">Part III. Basketball</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter28.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">28.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter28.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Basketball Statistics 101</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__6">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Span FontFamily="times new roman" FontStyle="Italic" FontSize="11">
+                <Hyperlink NavigateUri="part03chapter28.html#part03chapter28section01">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__6">The Four-Factor Model</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter29.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">29.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter29.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Linear Weights for Evaluating NBA Players</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter30.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">30.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter30.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Adjusted +/&#x2013; Player Ratings</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter31.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">31.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter31.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">NBA Lineup Analysis</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter32.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">32.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter32.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Analyzing Team and Individual Matchups</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter33.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">33.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter33.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">NBA Players&#x2019; Salaries and the Draft</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter34.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">34.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter34.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Are NBA Officials Prejudiced?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter35.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">35.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter35.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Are College Basketball Games Fixed?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter36.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">36.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter36.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Did Tim Donaghy Fix NBA Games?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter37.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">37.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part03chapter37.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">End-Game Basketball Strategy</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__6">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__6">
+      <Table.Columns>
+        <TableColumn Width="4.4404973357016*"/>
+        <TableColumn Width="95.5595026642984*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell ColumnSpan="2" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Span FontFamily="times new roman" FontWeight="Bold" FontSize="11">
+                <Hyperlink NavigateUri="part04.html">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__6">Part IV. Playing with Money, and</Run>
+                  <LineBreak/>
+                  <Run Tag="__6">Other Topics for Serious Sports Fans</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter38.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">38.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter38.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Sports Gambling 101</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter39.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">39.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter39.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run FontFamily="times new roman" FontStyle="Italic" FontSize="11" Tag="__6"><Run.TextDecorations><TextDecorationCollection/></Run.TextDecorations>Freakonomics</Run>
+                <Run Tag="__6"> Meets the Bookmaker</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter40.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">40.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter40.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Rating Sports Teams</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter41.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">41.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter41.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Which League Has Greater Parity, The NFL or the NBA?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter42.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">42.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter42.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">The Ratings Percentage Index (RPI)</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter43.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">43.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter43.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">From Point Ratings to Probabilities</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter44.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">44.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter44.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Optimal Money Management</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__6">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Span FontFamily="times new roman" FontStyle="Italic" FontSize="11">
+                <Hyperlink NavigateUri="part04chapter44.html#part04chapter44section01">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__6">The Kelly Growth Criteria</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter45.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">45.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter45.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Ranking Great Sports Collapses</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter46.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">46.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter46.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Can Money Buy Success?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter47.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">47.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter47.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Does Joey Crawford Hate the Spurs?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph/>
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter48.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">48.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter48.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Does Fatigue Make Cowards of Us All?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__6">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="16,0,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Span FontFamily="times new roman" FontStyle="Italic" FontSize="11">
+                <Hyperlink NavigateUri="part04chapter48.html#part04chapter48section01">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="__6">The Case of NBA Back-to-Back Games and NFL Bye Weeks</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter49.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">49.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter49.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Can the Bowl Championship Series Be Saved?</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter50.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">50.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter50.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Comparing Players from Different Eras</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter51.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">51.</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,4,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Hyperlink NavigateUri="part04chapter51.html">
+                <Hyperlink.TextDecorations>
+                  <TextDecorationCollection/>
+                </Hyperlink.TextDecorations>
+                <Run Tag="__6">Conclusions</Run>
+              </Hyperlink>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__7">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Span FontFamily="times new roman" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Hyperlink NavigateUri="backmatter01.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__7">Index of Databases</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Span FontFamily="times new roman" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Hyperlink NavigateUri="backmatter02.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__7">Annotated Bibliography</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Span FontFamily="times new roman" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Hyperlink NavigateUri="backmatter03.html">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__7">Index</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+  </Section>
+</Flow>

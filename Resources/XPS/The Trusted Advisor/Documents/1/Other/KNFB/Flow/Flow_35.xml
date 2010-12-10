@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ack.html#ack">
+      <Paragraph Margin="0,64,0,56" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="14">
+        <Run Tag="__175">A C K N O W L E D G M E N T S</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">We must first thank our families for their support, and for the lessons they have taught us about the importance of trusting relationships (and the benefits of getting good advice!).</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">We are also grateful to the many consulting clients and participants in workshops, seminars, and training programs who bore with us as we tried to articulate and communicate our ideas.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">Many people have helped directly with the manuscript of this book as it developed through numerous drafts. All three of us have benefited from insights contributed by our spouses, and our thanks for substantive contributions go to Kathy, Ren&#xE9;e, and Susan.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">David&#x2019;s assistant and business manager, Julie MacDonald O&#x2019;Leary, was the only person other than the authors to read and critique every draft. She provided invaluable input (as always) at every stage. Of the many readers of the manuscript, Patrick McKenna and Gerald Riskin of The Edge Group (collaborators with David on the PracticeCoach(c) program) were particularly generous with their time and ideas. We appreciate the opportunity to &#x201C;borrow&#x201D; their best ones.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">Our thanks also go to John Butman, who was extremely helpful to Charlie and Rob in structuring and organizing their ideas, contributing to their thinking, and thoughtful about how to describe the difficult topic of trust, among other contributions.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">John Barch deserves special thanks for his early encouragement to Charlie and Rob.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">In addition to those mentioned, the following practicing trusted advisors were kind enough to read the manuscript and contribute ideas:</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">Fiona Czerniawska, Tom Colleton, David Gaylin, Candace Harris, Marco Materazzi, Jon Moynihan, Scott Parker, Frances Sacker, Chris Starrett, and Robbie Vorhaus.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__175">Finally, we would like to acknowledge the individuals who were kind enough to grant us interviews and share their experience with us, including: Peter Biagetti, George Colony, Jim Copeland, Jim Kelly, Richard Mahoney, David Nadler, Regina M. Pisa, Alan Schwartz, Joe Sherman, Stephanie Weathered, Tim White, and the management teams at Digitas, Inc., and Forrester Research.</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

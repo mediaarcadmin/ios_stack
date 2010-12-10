@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__228">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__228">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part03chapter36.html#part03chapter36" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part03chapter36.html#page_244">&#xA0;&#xA0;36&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__228">DID TIM DONAGHY FIX NBA GAMES?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__228">I</Run>
+      <Run Tag="__228">n July 2007 shockwaves rippled through the sports world when NBA referee Tim Donaghy was accused of fixing the outcome of NBA games. If bettors attempt to fix a game, after the opening betting line is posted the line would move substantially as the &#x201C;fixers&#x201D; put their bets down. A move of two or more points in the line is generally considered highly unusual. For example, on November 14, 2007, when the Toronto Raptors played the Golden State Warriors, the opening line on total points (referred to hereafter as the Total Line) was 208 points. This means that if you bet the &#x201C;Over&#x201D; you would win if the total points scored were 209 or more. If you bet the &#x201C;Under&#x201D; you would win if the total points scored were 207 points or fewer. If the total points scored were 208 neither would win. The closing Total Line was 214 points, a six-point increase. This means that near game time a large amount of money was bet on the Over. If, as was alleged, Donaghy had been trying to fix the game (causing the game to exceed the Total Line), he probably would have to have called lots of fouls. (Fouls create free throws and in effect make the game longer.) Using publicly available data, we can determine whether significantly many more free throws were attempted in games Donaghy officiated and in which the Total Line moved up two or more points than were attempted in the rest of the games Donaghy officiated. We adjusted the number of free throws attempted in each game based on the teams playing and on the other two game officials. </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter36.html#chapter36figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__228">Figure 36.1</Run>
+      </Hyperlink>
+      <Run Tag="__228"> displays the results of these calculations. For example, in the first listed game, Chicago had 32 free throw attempts and Miami had 22. An average NBA team had 26.07 free throw attempts per game during the 2006&#x2013;7 season. </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter36.html#chapter36figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__228">Figure 36.2</Run>
+      </Hyperlink>
+      <Run Tag="__228"> gives the average number of free throw attempts for each team and their opponents.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__228">The Bulls shot (25.40 &#x2013; 26.07) more free throws than average while the Heat shot (24.62 &#x2013; 26.07) fewer free throws than average. The Bulls&#x2019; opponents shot (23.17 &#x2013; 26.07) more free throws than average while the Heat&#x2019;s opponents shot (21.83 &#x2013; 26.07) fewer free throws than average. Using this data we would predict the Bulls to have made 26.07 + (25.40 &#x2013; 26.07) + (21.83 &#x2013; 26.07) = 25.40 + 21.83 &#x2013; 26.07 = 21.16 free throw attempts. Similarly, we estimated the Heat would attempt 21.72 free throws. Based on 2006&#x2013;7 NBA game data, we estimated the other two officials in this game combined on average (in their other games) to have allowed 0.20 fewer free throws than average. Therefore, our predicted total number of free throw attempts for the game would be 21.16 + 21.72 &#x2013; 0.2 = 42.68. Since 54 free throws were actually attempted, in this game the teams attempted 54 &#x2013; 42.68 11.32 more free throws than expected. We call actual free throw attempts in a game minus the predicted free throw attempts in a game delta free throws. Over the eleven games Donaghy officiated in which the Total Line moved up two points or more, 180.27 more free throws than expected were attempted (an average of 16.39 more free throws per game). In Donaghy&#x2019;s remaining games, 460.86 more free throws than expected were attempted (an average of 7.32 more free throws per game). If Donaghy&#x2019;s propensity for calling fouls was the same in games in which the Total Line moved at least two points as during his remaining games, what is the probability that a discrepancy at least this large would have occurred?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part03chapter36.html#page_245">&#xA0;</Run>
+      <Image Source="/Resources/a15fce66-9257-46fe-84e9-48be22b96b81.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter36.html#chapter36figure01">Figure 36.1. Free throws attempted with Donaghy officiating. See file Donaghy.xls.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/cb826b73-16a9-4811-ad43-1fd144faee0e.jpg" Stretch="Uniform" Width="165" Height="413" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter36.html#chapter36figure02">Figure 36.2. Free throws attempted, 2006 &#x2013; 7 season, by team.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter36.html#page_246">The standard deviation of the average of delta free throw attempts over n games is 11.39/n</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="xhtml/part03chapter36.html#page_246">.5</Run>
+      <Run Tag="xhtml/part03chapter36.html#page_246"> where 11.39 is the standard deviation of delta free throw attempts over all games. Then the standard deviation of (mean delta free throw attempts in games in which the Total Line moved two or more points)&#x2013;(mean delta free throw attempts in games in which the Total Line did not move two or more points) is given by </Run>
+      <Image Source="/Resources/4fcad0fe-712c-4d93-961c-b9a5b66e16cd.jpg" Stretch="Uniform" Width="150" Height="41" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="xhtml/part03chapter36.html#page_246"> The observed value of (mean delta free throw attempts in games in which the Total Line moved two or more points)&#x2013;(mean delta free throw attempts in games in which the Total Line did not move two or more points) points was 16.39 &#x2013; 7.32 = 9.07. The probability of a discrepancy in mean free throw attempts of 9.07 or larger is simply the probability that a normal random variable with mean 0 and standard deviation 3.72 exceeds 9.07. This probability can be computed in Excel as 1 &#x2013; NORMDIST (9.07,0,3.72,True) = .005. This means that if the mean free throw attempts in games Donaghy officiated and the spread moved two or more points was identical to the mean free throw attempts in his other games, a discrepancy in free throw attempts at least as large as what we observed </Run>
+      <Run Tag="xhtml/part03chapter36.html#page_247" xml:space="preserve"/>
+      <Run Tag="xhtml/part03chapter36.html#page_246">would only occur with a probability of 1/200. This analysis conclusively indicates that in games Donaghy officiated and the Total Line increased by at least two points, significantly more free throws were attempted than were attempted in other games in which Donaghy officiated.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__231">A Better Analysis</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__231">The NBA knows exactly how many fouls each official calls during each game. (They do not release these data.) A better test of whether Donaghy fixed games would be to compare the percentage of fouls Donaghy called in games where the Total Line increased by at least two points to the percentage of fouls he called in all other games. If this difference is statistically significant, this would be additional evidence to support the hypothesis that during games in which the Total Line increased by at least two points, Donaghy called more fouls in an effort to cause the game total points to exceed the Las Vegas Total Line.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

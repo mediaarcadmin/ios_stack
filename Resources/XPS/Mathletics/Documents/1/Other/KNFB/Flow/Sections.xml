@@ -1,0 +1,1200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BookContents ReadOutLoudFlow="True" NoTextFlowView="False">
+  <PageLocations>
+    <PageRange Start="0" End="44" Source="Pages_0_44.xml"/>
+    <PageRange Start="45" End="76" Source="Pages_45_76.xml"/>
+    <PageRange Start="77" End="113" Source="Pages_77_113.xml"/>
+    <PageRange Start="114" End="146" Source="Pages_114_146.xml"/>
+    <PageRange Start="147" End="176" Source="Pages_147_176.xml"/>
+    <PageRange Start="177" End="213" Source="Pages_177_213.xml"/>
+    <PageRange Start="214" End="242" Source="Pages_214_242.xml"/>
+    <PageRange Start="243" End="284" Source="Pages_243_284.xml"/>
+    <PageRange Start="285" End="322" Source="Pages_285_322.xml"/>
+    <PageRange Start="323" End="341" Source="Pages_323_341.xml"/>
+  </PageLocations>
+  <Sections>
+    <Section PageIndex="0" Name="Cover" Level="0">
+      <FlowReference Source="Flow_0.xml" PageIndices="0-1"/>
+    </Section>
+    <Section PageIndex="2" Name="Title" Level="0">
+      <FlowReference Source="Flow_1.xml" PageIndices="2"/>
+    </Section>
+    <Section PageIndex="3" Name="Copyright" Level="0">
+      <FlowReference Source="Flow_2.xml" PageIndices="3"/>
+    </Section>
+    <Section PageIndex="4" Name="Dedication" Level="0">
+      <FlowReference Source="Flow_3.xml" PageIndices="4"/>
+    </Section>
+    <Section PageIndex="5" Name="Contents" Level="0">
+      <FlowReference Source="Flow_4.xml" PageIndices="5-7"/>
+    </Section>
+    <Section PageIndex="8" Name="Preface" Level="0">
+      <FlowReference Source="Flow_5.xml" PageIndices="8"/>
+    </Section>
+    <Section PageIndex="9" Name="Acknowledgments" Level="0">
+      <FlowReference Source="Flow_6.xml" PageIndices="9"/>
+    </Section>
+    <Section PageIndex="10" Name="List of Abbreviations" Level="0">
+      <FlowReference Source="Flow_7.xml" PageIndices="10-11"/>
+    </Section>
+    <Section PageIndex="12" Name="Part I. Basebal" Level="0">
+      <FlowReference Source="Flow_8.xml" PageIndices="12"/>
+    </Section>
+    <Section PageIndex="13" Name="1. Baseball’s Pythagorean Theorem" Level="1">
+      <FlowReference Source="Flow_9.xml" PageIndices="13-20"/>
+    </Section>
+    <Section PageIndex="21" Name="2. Who Had a Better Year, Nomar Garciaparra or Ichiro Suzuki?" Level="1">
+      <FlowReference Source="Flow_10.xml" PageIndices="21-25"/>
+    </Section>
+    <Section PageIndex="21" Name="The Runs-Created Approach" Level="2"/>
+    <Section PageIndex="26" Name="3. Evaluating Hitters by Linear Weights" Level="1">
+      <FlowReference Source="Flow_11.xml" PageIndices="26-38"/>
+    </Section>
+    <Section PageIndex="39" Name="4. Evaluating Hitters by Monte Carlo Simulation" Level="1">
+      <FlowReference Source="Flow_12.xml" PageIndices="39-49"/>
+    </Section>
+    <Section PageIndex="50" Name="5. Evaluating Baseball Pitchers and Forecasting Future Pitcher Performance" Level="1">
+      <FlowReference Source="Flow_13.xml" PageIndices="50-60"/>
+    </Section>
+    <Section PageIndex="61" Name="6. Baseball Decision-Making" Level="1">
+      <FlowReference Source="Flow_14.xml" PageIndices="61-70"/>
+    </Section>
+    <Section PageIndex="71" Name="7. Evaluating Fielders" Level="1">
+      <FlowReference Source="Flow_15.xml" PageIndices="71-76"/>
+    </Section>
+    <Section PageIndex="71" Name="Sabermetrics’ Last Frontier" Level="2"/>
+    <Section PageIndex="77" Name="8. Player Win Averages" Level="1">
+      <FlowReference Source="Flow_16.xml" PageIndices="77-83"/>
+    </Section>
+    <Section PageIndex="84" Name="9. The Value of Replacement Players" Level="1">
+      <FlowReference Source="Flow_17.xml" PageIndices="84-87"/>
+    </Section>
+    <Section PageIndex="84" Name="Evaluating Trades and Fair Salary" Level="2"/>
+    <Section PageIndex="88" Name="10. Park Factors" Level="1">
+      <FlowReference Source="Flow_18.xml" PageIndices="88-90"/>
+    </Section>
+    <Section PageIndex="91" Name="11. Streakiness in Sports" Level="1">
+      <FlowReference Source="Flow_19.xml" PageIndices="91-105"/>
+    </Section>
+    <Section PageIndex="106" Name="12. The Platoon Effect" Level="1">
+      <FlowReference Source="Flow_20.xml" PageIndices="106-109"/>
+    </Section>
+    <Section PageIndex="110" Name="13. Was Tony Perez a Great Clutch Hitter?" Level="1">
+      <FlowReference Source="Flow_21.xml" PageIndices="110-113"/>
+    </Section>
+    <Section PageIndex="114" Name="14. Pitch Count and Pitcher Effectiveness" Level="1">
+      <FlowReference Source="Flow_22.xml" PageIndices="114-116"/>
+    </Section>
+    <Section PageIndex="117" Name="15. Would Ted Williams Hit .406 Today?" Level="1">
+      <FlowReference Source="Flow_23.xml" PageIndices="117-118"/>
+    </Section>
+    <Section PageIndex="119" Name="16. Was Joe DiMaggio’s 56-Game Hitting Streak the Greatest Sports Record of All Time?" Level="1">
+      <FlowReference Source="Flow_24.xml" PageIndices="119-124"/>
+    </Section>
+    <Section PageIndex="125" Name="17. Major League Equivalents" Level="1">
+      <FlowReference Source="Flow_25.xml" PageIndices="125"/>
+    </Section>
+    <Section PageIndex="126" Name="Part II. Football" Level="0">
+      <FlowReference Source="Flow_26.xml" PageIndices="126"/>
+    </Section>
+    <Section PageIndex="127" Name="18. What Makes NFL Teams Win?" Level="1">
+      <FlowReference Source="Flow_27.xml" PageIndices="127-131"/>
+    </Section>
+    <Section PageIndex="132" Name="19. Who’s Better, Tom Brady or Peyton Manning?" Level="1">
+      <FlowReference Source="Flow_28.xml" PageIndices="132-137"/>
+    </Section>
+    <Section PageIndex="138" Name="20. Football States and Values" Level="1">
+      <FlowReference Source="Flow_29.xml" PageIndices="138-141"/>
+    </Section>
+    <Section PageIndex="142" Name="21. Football Decision-Making 101" Level="1">
+      <FlowReference Source="Flow_30.xml" PageIndices="142-147"/>
+    </Section>
+    <Section PageIndex="148" Name="22. A State and Value Analysis of the 2006 Super Bowl Champion Colts" Level="1">
+      <FlowReference Source="Flow_31.xml" PageIndices="148-154"/>
+    </Section>
+    <Section PageIndex="155" Name="23. If Passing Is Better Than Running, Why Don’t Teams Always Pass?" Level="1">
+      <FlowReference Source="Flow_32.xml" PageIndices="155-160"/>
+    </Section>
+    <Section PageIndex="161" Name="24. Should We Go for a One-Point or Two-Point Conversion?" Level="1">
+      <FlowReference Source="Flow_33.xml" PageIndices="161-165"/>
+    </Section>
+    <Section PageIndex="166" Name="25. To Give Up the Ball Is Better Than to Receive" Level="1">
+      <FlowReference Source="Flow_34.xml" PageIndices="166-168"/>
+    </Section>
+    <Section PageIndex="166" Name="The Case of College Football Overtime" Level="2"/>
+    <Section PageIndex="169" Name="26. Why Is the NFL’s Overtime System Fatally Flawed?" Level="1">
+      <FlowReference Source="Flow_35.xml" PageIndices="169-172"/>
+    </Section>
+    <Section PageIndex="173" Name="27. How Valuable Are High Draft Picks in the NFL?" Level="1">
+      <FlowReference Source="Flow_36.xml" PageIndices="173-176"/>
+    </Section>
+    <Section PageIndex="177" Name="Part III. Basketball" Level="0">
+      <FlowReference Source="Flow_37.xml" PageIndices="177"/>
+    </Section>
+    <Section PageIndex="178" Name="28. Basketball Statistics 101" Level="1">
+      <FlowReference Source="Flow_38.xml" PageIndices="178-185"/>
+    </Section>
+    <Section PageIndex="178" Name="The Four-Factor Model" Level="2"/>
+    <Section PageIndex="186" Name="29. Linear Weights for Evaluating NBA Players" Level="1">
+      <FlowReference Source="Flow_39.xml" PageIndices="186-191"/>
+    </Section>
+    <Section PageIndex="192" Name="30. Adjusted +/– Player Ratings" Level="1">
+      <FlowReference Source="Flow_40.xml" PageIndices="192-211"/>
+    </Section>
+    <Section PageIndex="212" Name="31. NBA Lineup Analysis" Level="1">
+      <FlowReference Source="Flow_41.xml" PageIndices="212-215"/>
+    </Section>
+    <Section PageIndex="216" Name="32. Analyzing Team and Individual Matchups" Level="1">
+      <FlowReference Source="Flow_42.xml" PageIndices="216-218"/>
+    </Section>
+    <Section PageIndex="219" Name="33. NBA Players’ Salaries and the Draft" Level="1">
+      <FlowReference Source="Flow_43.xml" PageIndices="219-221"/>
+    </Section>
+    <Section PageIndex="222" Name="34. Are NBA Officials Prejudiced?" Level="1">
+      <FlowReference Source="Flow_44.xml" PageIndices="222-225"/>
+    </Section>
+    <Section PageIndex="226" Name="35. Are College Basketball Games Fixed?" Level="1">
+      <FlowReference Source="Flow_45.xml" PageIndices="226-227"/>
+    </Section>
+    <Section PageIndex="228" Name="36. Did Tim Donaghy Fix NBA Games?" Level="1">
+      <FlowReference Source="Flow_46.xml" PageIndices="228-231"/>
+    </Section>
+    <Section PageIndex="232" Name="37. End-Game Basketball Strategy" Level="1">
+      <FlowReference Source="Flow_47.xml" PageIndices="232-234"/>
+    </Section>
+    <Section PageIndex="235" Name="Part IV. Playing with Money, and Other Topics for Serious Sports Fans" Level="0">
+      <FlowReference Source="Flow_48.xml" PageIndices="235"/>
+    </Section>
+    <Section PageIndex="236" Name="38. Sports Gambling 101" Level="1">
+      <FlowReference Source="Flow_49.xml" PageIndices="236-241"/>
+    </Section>
+    <Section PageIndex="242" Name="39. Freakonomics Meets the Bookmaker" Level="1">
+      <FlowReference Source="Flow_50.xml" PageIndices="242-245"/>
+    </Section>
+    <Section PageIndex="246" Name="40. Rating Sports Teams" Level="1">
+      <FlowReference Source="Flow_51.xml" PageIndices="246-264"/>
+    </Section>
+    <Section PageIndex="265" Name="41. Which League Has Greater Parity, The NFL or the NBA?" Level="1">
+      <FlowReference Source="Flow_52.xml" PageIndices="265-267"/>
+    </Section>
+    <Section PageIndex="268" Name="42. The Ratings Percentage Index (RPI)" Level="1">
+      <FlowReference Source="Flow_53.xml" PageIndices="268-270"/>
+    </Section>
+    <Section PageIndex="271" Name="43. From Point Ratings to Probabilities" Level="1">
+      <FlowReference Source="Flow_54.xml" PageIndices="271-277"/>
+    </Section>
+    <Section PageIndex="278" Name="44. Optimal Money Management" Level="1">
+      <FlowReference Source="Flow_55.xml" PageIndices="278-282"/>
+    </Section>
+    <Section PageIndex="278" Name="The Kelly Growth Criteria" Level="2"/>
+    <Section PageIndex="283" Name="45. Ranking Great Sports Collapses" Level="1">
+      <FlowReference Source="Flow_56.xml" PageIndices="283-289"/>
+    </Section>
+    <Section PageIndex="290" Name="46. Can Money Buy Success?" Level="1">
+      <FlowReference Source="Flow_57.xml" PageIndices="290-297"/>
+    </Section>
+    <Section PageIndex="298" Name="47. Does Joey Crawford Hate the Spurs?" Level="1">
+      <FlowReference Source="Flow_58.xml" PageIndices="298-299"/>
+    </Section>
+    <Section PageIndex="300" Name="48. Does Fatigue Make Cowards of Us All?" Level="1">
+      <FlowReference Source="Flow_59.xml" PageIndices="300-302"/>
+    </Section>
+    <Section PageIndex="300" Name="The Case of NBA Back-to-Back Games and NFL Bye Weeks" Level="2"/>
+    <Section PageIndex="303" Name="49. Can the Bowl Championship Series Be Saved?" Level="1">
+      <FlowReference Source="Flow_60.xml" PageIndices="303-308"/>
+    </Section>
+    <Section PageIndex="309" Name="50. Comparing Players from Different Eras" Level="1">
+      <FlowReference Source="Flow_61.xml" PageIndices="309-312"/>
+    </Section>
+    <Section PageIndex="313" Name="51. Conclusions" Level="1">
+      <FlowReference Source="Flow_62.xml" PageIndices="313-317"/>
+    </Section>
+    <Section PageIndex="318" Name="Index of Databases" Level="0">
+      <FlowReference Source="Flow_63.xml" PageIndices="318-319"/>
+    </Section>
+    <Section PageIndex="320" Name="Annotated Bibliography" Level="0">
+      <FlowReference Source="Flow_64.xml" PageIndices="320-329"/>
+    </Section>
+    <Section PageIndex="330" Name="Index" Level="0">
+      <FlowReference Source="Flow_65.xml" PageIndices="330-340"/>
+    </Section>
+  </Sections>
+  <References>
+    <Reference Id="toc:Cover|file:xhtml/cover.xml" PageIndex="0"/>
+    <Reference Id="xhtml/cover.xml" PageIndex="0"/>
+    <Reference Id="xhtml/cover.xml#Cover" PageIndex="0"/>
+    <Reference Id="file:xhtml/halftitle.html" PageIndex="1"/>
+    <Reference Id="xhtml/halftitle.html" PageIndex="1"/>
+    <Reference Id="xhtml/halftitle.html#page_i" PageIndex="1"/>
+    <Reference Id="toc:Title|file:xhtml/title.html" PageIndex="2"/>
+    <Reference Id="xhtml/title.html" PageIndex="2"/>
+    <Reference Id="xhtml/title.html#page_iii" PageIndex="2"/>
+    <Reference Id="toc:Copyright|file:xhtml/copyright.html" PageIndex="3"/>
+    <Reference Id="xhtml/copyright.html" PageIndex="3"/>
+    <Reference Id="xhtml/copyright.html#page_iv" PageIndex="3"/>
+    <Reference Id="toc:Dedication|file:xhtml/dedication.html" PageIndex="4"/>
+    <Reference Id="xhtml/dedication.html" PageIndex="4"/>
+    <Reference Id="xhtml/dedication.html#page_v" PageIndex="4"/>
+    <Reference Id="toc:Contents|file:xhtml/contents.html" PageIndex="5"/>
+    <Reference Id="xhtml/contents.html" PageIndex="5"/>
+    <Reference Id="xhtml/contents.html#page_vii" PageIndex="5"/>
+    <Reference Id="xhtml/contents.html#page_viii" PageIndex="5"/>
+    <Reference Id="xhtml/contents.html#page_ix" PageIndex="6"/>
+    <Reference Id="toc:Preface|file:xhtml/frontmatter01.html" PageIndex="8"/>
+    <Reference Id="xhtml/frontmatter01.html" PageIndex="8"/>
+    <Reference Id="xhtml/frontmatter01.html#page_xi" PageIndex="8"/>
+    <Reference Id="xhtml/frontmatter01.html#frontmatter01" PageIndex="8"/>
+    <Reference Id="xhtml/frontmatter01.html#page_xii" PageIndex="8"/>
+    <Reference Id="toc:Acknowledgments|file:xhtml/frontmatter02.html" PageIndex="9"/>
+    <Reference Id="xhtml/frontmatter02.html" PageIndex="9"/>
+    <Reference Id="xhtml/frontmatter02.html#page_xiii" PageIndex="9"/>
+    <Reference Id="xhtml/frontmatter02.html#frontmatter02" PageIndex="9"/>
+    <Reference Id="toc:List of Abbreviations|file:xhtml/frontmatter03.html" PageIndex="10"/>
+    <Reference Id="xhtml/frontmatter03.html" PageIndex="10"/>
+    <Reference Id="xhtml/frontmatter03.html#page_xv" PageIndex="10"/>
+    <Reference Id="xhtml/frontmatter03.html#frontmatter03" PageIndex="10"/>
+    <Reference Id="xhtml/frontmatter03.html#page_xvi" PageIndex="10"/>
+    <Reference Id="xhtml/frontmatter03.html#page_xvii" PageIndex="11"/>
+    <Reference Id="toc:Part I. Basebal|file:xhtml/part01.html" PageIndex="12"/>
+    <Reference Id="xhtml/part01.html" PageIndex="12"/>
+    <Reference Id="xhtml/part01.html#page_1" PageIndex="12"/>
+    <Reference Id="xhtml/part01.html#part01" PageIndex="12"/>
+    <Reference Id="toc:1. Baseball’s Pythagorean Theorem|file:xhtml/part01chapter01.html" PageIndex="13"/>
+    <Reference Id="xhtml/part01chapter01.html" PageIndex="13"/>
+    <Reference Id="xhtml/part01chapter01.html#page_3" PageIndex="13"/>
+    <Reference Id="xhtml/part01chapter01.html#part01chapter01" PageIndex="13"/>
+    <Reference Id="xhtml/part01chapter01.html#page_4" PageIndex="13"/>
+    <Reference Id="xhtml/part01chapter01.html#rfnpage_004" PageIndex="14"/>
+    <Reference Id="xhtml/part01chapter01.html#chapter01figure01" PageIndex="14"/>
+    <Reference Id="xhtml/part01chapter01.html#page_5" PageIndex="14"/>
+    <Reference Id="xhtml/part01chapter01.html#rfnpage_005" PageIndex="15"/>
+    <Reference Id="xhtml/part01chapter01.html#page_6" PageIndex="15"/>
+    <Reference Id="xhtml/part01chapter01.html#chapter01figure02" PageIndex="16"/>
+    <Reference Id="xhtml/part01chapter01.html#rfnpage_006" PageIndex="16"/>
+    <Reference Id="xhtml/part01chapter01.html#page_7" PageIndex="16"/>
+    <Reference Id="xhtml/part01chapter01.html#rfnpage_007" PageIndex="16"/>
+    <Reference Id="xhtml/part01chapter01.html#page_8" PageIndex="17"/>
+    <Reference Id="xhtml/part01chapter01.html#chapter01figure03" PageIndex="18"/>
+    <Reference Id="xhtml/part01chapter01.html#page_9" PageIndex="18"/>
+    <Reference Id="xhtml/part01chapter01.html#chapter01figure04" PageIndex="19"/>
+    <Reference Id="xhtml/part01chapter01.html#page_10" PageIndex="19"/>
+    <Reference Id="xhtml/part01chapter01.html#chapter01figurea" PageIndex="20"/>
+    <Reference Id="xhtml/part01chapter01.html#fnpage_004" PageIndex="20"/>
+    <Reference Id="xhtml/part01chapter01.html#fnpage_005" PageIndex="20"/>
+    <Reference Id="xhtml/part01chapter01.html#fnpage_006" PageIndex="20"/>
+    <Reference Id="xhtml/part01chapter01.html#fnpage_007" PageIndex="20"/>
+    <Reference Id="toc:2. Who Had a Better Year, Nomar Garciaparra or Ichiro Suzuki?|file:xhtml/part01chapter02.html" PageIndex="21"/>
+    <Reference Id="xhtml/part01chapter02.html" PageIndex="21"/>
+    <Reference Id="xhtml/part01chapter02.html#page_11" PageIndex="21"/>
+    <Reference Id="xhtml/part01chapter02.html#part01chapter02" PageIndex="21"/>
+    <Reference Id="xhtml/part01chapter02.html#part01chapter02section01" PageIndex="21"/>
+    <Reference Id="xhtml/part01chapter02.html#page_12" PageIndex="21"/>
+    <Reference Id="xhtml/part01chapter02.html#chapter02table01" PageIndex="21"/>
+    <Reference Id="xhtml/part01chapter02.html#chapter02figure01" PageIndex="22"/>
+    <Reference Id="xhtml/part01chapter02.html#rfnpage_012" PageIndex="22"/>
+    <Reference Id="xhtml/part01chapter02.html#page_13" PageIndex="22"/>
+    <Reference Id="xhtml/part01chapter02.html#rfnpage_013" PageIndex="23"/>
+    <Reference Id="xhtml/part01chapter02.html#page_14" PageIndex="23"/>
+    <Reference Id="xhtml/part01chapter02.html#chapter02figure02" PageIndex="24"/>
+    <Reference Id="xhtml/part01chapter02.html#rfnpage_014" PageIndex="24"/>
+    <Reference Id="xhtml/part01chapter02.html#page_15" PageIndex="24"/>
+    <Reference Id="xhtml/part01chapter02.html#chapter02figure03" PageIndex="24"/>
+    <Reference Id="xhtml/part01chapter02.html#page_16" PageIndex="25"/>
+    <Reference Id="xhtml/part01chapter02.html#fnpage_012" PageIndex="25"/>
+    <Reference Id="xhtml/part01chapter02.html#fnpage_013" PageIndex="25"/>
+    <Reference Id="xhtml/part01chapter02.html#fnpage_014" PageIndex="25"/>
+    <Reference Id="toc:3. Evaluating Hitters by Linear Weights|file:xhtml/part01chapter03.html" PageIndex="26"/>
+    <Reference Id="xhtml/part01chapter03.html" PageIndex="26"/>
+    <Reference Id="xhtml/part01chapter03.html#page_17" PageIndex="26"/>
+    <Reference Id="xhtml/part01chapter03.html#part01chapter03" PageIndex="26"/>
+    <Reference Id="xhtml/part01chapter03.html#page_18" PageIndex="26"/>
+    <Reference Id="xhtml/part01chapter03.html#rfnpage_018" PageIndex="27"/>
+    <Reference Id="xhtml/part01chapter03.html#page_19" PageIndex="27"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figure01" PageIndex="28"/>
+    <Reference Id="xhtml/part01chapter03.html#page_20" PageIndex="28"/>
+    <Reference Id="xhtml/part01chapter03.html#page_21" PageIndex="29"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figure02" PageIndex="30"/>
+    <Reference Id="xhtml/part01chapter03.html#page_22" PageIndex="30"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figure03" PageIndex="31"/>
+    <Reference Id="xhtml/part01chapter03.html#rfnpage_022" PageIndex="31"/>
+    <Reference Id="xhtml/part01chapter03.html#page_23" PageIndex="31"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03table01" PageIndex="31"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figure04" PageIndex="32"/>
+    <Reference Id="xhtml/part01chapter03.html#page_24" PageIndex="32"/>
+    <Reference Id="xhtml/part01chapter03.html#rfnpage_024" PageIndex="32"/>
+    <Reference Id="xhtml/part01chapter03.html#page_25" PageIndex="33"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figure05" PageIndex="33"/>
+    <Reference Id="xhtml/part01chapter03.html#page_26" PageIndex="34"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figure06" PageIndex="35"/>
+    <Reference Id="xhtml/part01chapter03.html#page_27" PageIndex="35"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figure07" PageIndex="36"/>
+    <Reference Id="xhtml/part01chapter03.html#page_28" PageIndex="36"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figurea" PageIndex="37"/>
+    <Reference Id="xhtml/part01chapter03.html#page_29" PageIndex="37"/>
+    <Reference Id="xhtml/part01chapter03.html#chapter03figureb" PageIndex="38"/>
+    <Reference Id="xhtml/part01chapter03.html#fnpage_018" PageIndex="38"/>
+    <Reference Id="xhtml/part01chapter03.html#fnpage_022" PageIndex="38"/>
+    <Reference Id="xhtml/part01chapter03.html#fnpage_024" PageIndex="38"/>
+    <Reference Id="toc:4. Evaluating Hitters by Monte Carlo Simulation|file:xhtml/part01chapter04.html" PageIndex="39"/>
+    <Reference Id="xhtml/part01chapter04.html" PageIndex="39"/>
+    <Reference Id="xhtml/part01chapter04.html#page_30" PageIndex="39"/>
+    <Reference Id="xhtml/part01chapter04.html#part01chapter04" PageIndex="39"/>
+    <Reference Id="xhtml/part01chapter04.html#rfnpage_30" PageIndex="39"/>
+    <Reference Id="xhtml/part01chapter04.html#page_31" PageIndex="39"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure01" PageIndex="40"/>
+    <Reference Id="xhtml/part01chapter04.html#page_32" PageIndex="40"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure02" PageIndex="41"/>
+    <Reference Id="xhtml/part01chapter04.html#page_33" PageIndex="42"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure03" PageIndex="42"/>
+    <Reference Id="xhtml/part01chapter04.html#page_34" PageIndex="43"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure04" PageIndex="43"/>
+    <Reference Id="xhtml/part01chapter04.html#page_35" PageIndex="44"/>
+    <Reference Id="xhtml/part01chapter04.html#page_36" PageIndex="44"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure05" PageIndex="45"/>
+    <Reference Id="xhtml/part01chapter04.html#page_37" PageIndex="45"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure06" PageIndex="46"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure07" PageIndex="46"/>
+    <Reference Id="xhtml/part01chapter04.html#page_38" PageIndex="46"/>
+    <Reference Id="xhtml/part01chapter04.html#page_39" PageIndex="47"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure08" PageIndex="48"/>
+    <Reference Id="xhtml/part01chapter04.html#page_40" PageIndex="48"/>
+    <Reference Id="xhtml/part01chapter04.html#chapter04figure09" PageIndex="49"/>
+    <Reference Id="xhtml/part01chapter04.html#fnpage_30" PageIndex="49"/>
+    <Reference Id="toc:5. Evaluating Baseball Pitchers and Forecasting Future Pitcher Performance|file:xhtml/part01chapter05.html" PageIndex="50"/>
+    <Reference Id="xhtml/part01chapter05.html" PageIndex="50"/>
+    <Reference Id="xhtml/part01chapter05.html#page_41" PageIndex="50"/>
+    <Reference Id="xhtml/part01chapter05.html#part01chapter05" PageIndex="50"/>
+    <Reference Id="xhtml/part01chapter05.html#page_42" PageIndex="50"/>
+    <Reference Id="xhtml/part01chapter05.html#rfnpage_42" PageIndex="50"/>
+    <Reference Id="xhtml/part01chapter05.html#rfnpage_42-01" PageIndex="51"/>
+    <Reference Id="xhtml/part01chapter05.html#page_43" PageIndex="51"/>
+    <Reference Id="xhtml/part01chapter05.html#rfnpage_43" PageIndex="52"/>
+    <Reference Id="xhtml/part01chapter05.html#page_44" PageIndex="52"/>
+    <Reference Id="xhtml/part01chapter05.html#chapter05figure01" PageIndex="52"/>
+    <Reference Id="xhtml/part01chapter05.html#rfnpage_44" PageIndex="53"/>
+    <Reference Id="xhtml/part01chapter05.html#page_45" PageIndex="53"/>
+    <Reference Id="xhtml/part01chapter05.html#page_46" PageIndex="53"/>
+    <Reference Id="xhtml/part01chapter05.html#chapter05figure02" PageIndex="54"/>
+    <Reference Id="xhtml/part01chapter05.html#chapter05figure03" PageIndex="54"/>
+    <Reference Id="xhtml/part01chapter05.html#chapter05figure04" PageIndex="55"/>
+    <Reference Id="xhtml/part01chapter05.html#rfnpage_46" PageIndex="55"/>
+    <Reference Id="xhtml/part01chapter05.html#page_47" PageIndex="55"/>
+    <Reference Id="xhtml/part01chapter05.html#rfnpage_47" PageIndex="55"/>
+    <Reference Id="xhtml/part01chapter05.html#rfnpage_47-01" PageIndex="55"/>
+    <Reference Id="xhtml/part01chapter05.html#page_48" PageIndex="56"/>
+    <Reference Id="xhtml/part01chapter05.html#rfnpage_48" PageIndex="56"/>
+    <Reference Id="xhtml/part01chapter05.html#page_49" PageIndex="56"/>
+    <Reference Id="xhtml/part01chapter05.html#chapter05figure05" PageIndex="57"/>
+    <Reference Id="xhtml/part01chapter05.html#page_50" PageIndex="57"/>
+    <Reference Id="xhtml/part01chapter05.html#page_51" PageIndex="58"/>
+    <Reference Id="xhtml/part01chapter05.html#chapter05figure06" PageIndex="59"/>
+    <Reference Id="xhtml/part01chapter05.html#fnpage_42" PageIndex="59"/>
+    <Reference Id="xhtml/part01chapter05.html#fnpage_42-01" PageIndex="59"/>
+    <Reference Id="xhtml/part01chapter05.html#fnpage_43" PageIndex="59"/>
+    <Reference Id="xhtml/part01chapter05.html#fnpage_44" PageIndex="59"/>
+    <Reference Id="xhtml/part01chapter05.html#fnpage_46" PageIndex="59"/>
+    <Reference Id="xhtml/part01chapter05.html#fnpage_47" PageIndex="59"/>
+    <Reference Id="xhtml/part01chapter05.html#fnpage_47-01" PageIndex="59"/>
+    <Reference Id="xhtml/part01chapter05.html#fnpage_48" PageIndex="59"/>
+    <Reference Id="toc:6. Baseball Decision-Making|file:xhtml/part01chapter06.html" PageIndex="61"/>
+    <Reference Id="xhtml/part01chapter06.html" PageIndex="61"/>
+    <Reference Id="xhtml/part01chapter06.html#page_52" PageIndex="61"/>
+    <Reference Id="xhtml/part01chapter06.html#part01chapter06" PageIndex="61"/>
+    <Reference Id="xhtml/part01chapter06.html#page_53" PageIndex="61"/>
+    <Reference Id="xhtml/part01chapter06.html#page_54" PageIndex="62"/>
+    <Reference Id="xhtml/part01chapter06.html#chapter06table01" PageIndex="62"/>
+    <Reference Id="xhtml/part01chapter06.html#page_55" PageIndex="63"/>
+    <Reference Id="xhtml/part01chapter06.html#chapter06table02" PageIndex="63"/>
+    <Reference Id="xhtml/part01chapter06.html#page_56" PageIndex="64"/>
+    <Reference Id="xhtml/part01chapter06.html#page_57" PageIndex="64"/>
+    <Reference Id="xhtml/part01chapter06.html#pg58fn01" PageIndex="65"/>
+    <Reference Id="xhtml/part01chapter06.html#page_58" PageIndex="65"/>
+    <Reference Id="xhtml/part01chapter06.html#chapter06table03" PageIndex="65"/>
+    <Reference Id="xhtml/part01chapter06.html#fn_1page_058" PageIndex="65"/>
+    <Reference Id="xhtml/part01chapter06.html#fn_1-page_058" PageIndex="66"/>
+    <Reference Id="xhtml/part01chapter06.html#page_59" PageIndex="66"/>
+    <Reference Id="xhtml/part01chapter06.html#page_60" PageIndex="67"/>
+    <Reference Id="xhtml/part01chapter06.html#chapter06table04" PageIndex="67"/>
+    <Reference Id="xhtml/part01chapter06.html#page_61" PageIndex="68"/>
+    <Reference Id="xhtml/part01chapter06.html#pg61fn02" PageIndex="68"/>
+    <Reference Id="xhtml/part01chapter06.html#page_62" PageIndex="68"/>
+    <Reference Id="xhtml/part01chapter06.html#chapter06table05" PageIndex="68"/>
+    <Reference Id="xhtml/part01chapter06.html#page_63" PageIndex="69"/>
+    <Reference Id="xhtml/part01chapter06.html#fn01pg58" PageIndex="70"/>
+    <Reference Id="xhtml/part01chapter06.html#fn02pg61" PageIndex="70"/>
+    <Reference Id="toc:7. Evaluating Fielders|file:xhtml/part01chapter07.html" PageIndex="71"/>
+    <Reference Id="xhtml/part01chapter07.html" PageIndex="71"/>
+    <Reference Id="xhtml/part01chapter07.html#page_64" PageIndex="71"/>
+    <Reference Id="xhtml/part01chapter07.html#part01chapter07" PageIndex="71"/>
+    <Reference Id="xhtml/part01chapter07.html#part01chapter07section01" PageIndex="71"/>
+    <Reference Id="xhtml/part01chapter07.html#page_65" PageIndex="72"/>
+    <Reference Id="xhtml/part01chapter07.html#chapter07figure01" PageIndex="72"/>
+    <Reference Id="xhtml/part01chapter07.html#chapter07figure02" PageIndex="72"/>
+    <Reference Id="xhtml/part01chapter07.html#page_66" PageIndex="72"/>
+    <Reference Id="xhtml/part01chapter07.html#page_67" PageIndex="73"/>
+    <Reference Id="xhtml/part01chapter07.html#page_68" PageIndex="74"/>
+    <Reference Id="xhtml/part01chapter07.html#page_69" PageIndex="75"/>
+    <Reference Id="xhtml/part01chapter07.html#chapter07figure03" PageIndex="75"/>
+    <Reference Id="xhtml/part01chapter07.html#rfnpage_69" PageIndex="75"/>
+    <Reference Id="xhtml/part01chapter07.html#page_70" PageIndex="76"/>
+    <Reference Id="xhtml/part01chapter07.html#chapter07table01" PageIndex="76"/>
+    <Reference Id="xhtml/part01chapter07.html#fnpage_69" PageIndex="76"/>
+    <Reference Id="toc:8. Player Win Averages|file:xhtml/part01chapter08.html" PageIndex="77"/>
+    <Reference Id="xhtml/part01chapter08.html" PageIndex="77"/>
+    <Reference Id="xhtml/part01chapter08.html#page_71" PageIndex="77"/>
+    <Reference Id="xhtml/part01chapter08.html#part01chapter08" PageIndex="77"/>
+    <Reference Id="xhtml/part01chapter08.html#rfnpage_71" PageIndex="77"/>
+    <Reference Id="xhtml/part01chapter08.html#page_72" PageIndex="77"/>
+    <Reference Id="xhtml/part01chapter08.html#rfnpage_72" PageIndex="77"/>
+    <Reference Id="xhtml/part01chapter08.html#rfnpage_72-01" PageIndex="78"/>
+    <Reference Id="xhtml/part01chapter08.html#page_73" PageIndex="78"/>
+    <Reference Id="xhtml/part01chapter08.html#page_74" PageIndex="79"/>
+    <Reference Id="xhtml/part01chapter08.html#chapter08table01" PageIndex="79"/>
+    <Reference Id="xhtml/part01chapter08.html#chapter08table02" PageIndex="79"/>
+    <Reference Id="xhtml/part01chapter08.html#chapter08table03" PageIndex="79"/>
+    <Reference Id="xhtml/part01chapter08.html#page_75" PageIndex="80"/>
+    <Reference Id="xhtml/part01chapter08.html#page_76" PageIndex="80"/>
+    <Reference Id="xhtml/part01chapter08.html#rfnpage_76" PageIndex="80"/>
+    <Reference Id="xhtml/part01chapter08.html#chapter08figure01" PageIndex="81"/>
+    <Reference Id="xhtml/part01chapter08.html#page_77" PageIndex="81"/>
+    <Reference Id="xhtml/part01chapter08.html#rfnpage_77" PageIndex="81"/>
+    <Reference Id="xhtml/part01chapter08.html#rfnpage_77-01" PageIndex="82"/>
+    <Reference Id="xhtml/part01chapter08.html#page_78" PageIndex="82"/>
+    <Reference Id="xhtml/part01chapter08.html#chapter08figure02" PageIndex="82"/>
+    <Reference Id="xhtml/part01chapter08.html#rfnpage_78" PageIndex="82"/>
+    <Reference Id="xhtml/part01chapter08.html#fnpage_71" PageIndex="83"/>
+    <Reference Id="xhtml/part01chapter08.html#fnpage_72" PageIndex="83"/>
+    <Reference Id="xhtml/part01chapter08.html#fnpage_72-01" PageIndex="83"/>
+    <Reference Id="xhtml/part01chapter08.html#fnpage_76" PageIndex="83"/>
+    <Reference Id="xhtml/part01chapter08.html#fnpage_77" PageIndex="83"/>
+    <Reference Id="xhtml/part01chapter08.html#fnpage_77-01" PageIndex="83"/>
+    <Reference Id="xhtml/part01chapter08.html#fnpage_78" PageIndex="83"/>
+    <Reference Id="toc:9. The Value of Replacement Players|file:xhtml/part01chapter09.html" PageIndex="84"/>
+    <Reference Id="xhtml/part01chapter09.html" PageIndex="84"/>
+    <Reference Id="xhtml/part01chapter09.html#page_79" PageIndex="84"/>
+    <Reference Id="xhtml/part01chapter09.html#part01chapter09" PageIndex="84"/>
+    <Reference Id="xhtml/part01chapter09.html#part01chapter09section01" PageIndex="84"/>
+    <Reference Id="xhtml/part01chapter09.html#page_80" PageIndex="84"/>
+    <Reference Id="xhtml/part01chapter09.html#rfnpage_80" PageIndex="84"/>
+    <Reference Id="xhtml/part01chapter09.html#page_81" PageIndex="85"/>
+    <Reference Id="xhtml/part01chapter09.html#chapter09figure01" PageIndex="86"/>
+    <Reference Id="xhtml/part01chapter09.html#page_82" PageIndex="86"/>
+    <Reference Id="xhtml/part01chapter09.html#rfnpage_82" PageIndex="86"/>
+    <Reference Id="xhtml/part01chapter09.html#rfnpage_82-01" PageIndex="86"/>
+    <Reference Id="xhtml/part01chapter09.html#page_83" PageIndex="87"/>
+    <Reference Id="xhtml/part01chapter09.html#fnpage_80" PageIndex="87"/>
+    <Reference Id="xhtml/part01chapter09.html#fnpage_82" PageIndex="87"/>
+    <Reference Id="xhtml/part01chapter09.html#fnpage_82-01" PageIndex="87"/>
+    <Reference Id="toc:10. Park Factors|file:xhtml/part01chapter10.html" PageIndex="88"/>
+    <Reference Id="xhtml/part01chapter10.html" PageIndex="88"/>
+    <Reference Id="xhtml/part01chapter10.html#page_84" PageIndex="88"/>
+    <Reference Id="xhtml/part01chapter10.html#part01chapter10" PageIndex="88"/>
+    <Reference Id="xhtml/part01chapter10.html#rfnpage_85" PageIndex="88"/>
+    <Reference Id="xhtml/part01chapter10.html#rfnpage_85-01" PageIndex="88"/>
+    <Reference Id="xhtml/part01chapter10.html#page_85" PageIndex="89"/>
+    <Reference Id="xhtml/part01chapter10.html#chapter10figure01" PageIndex="89"/>
+    <Reference Id="xhtml/part01chapter10.html#page_86" PageIndex="89"/>
+    <Reference Id="xhtml/part01chapter10.html#rfnpage_86" PageIndex="89"/>
+    <Reference Id="xhtml/part01chapter10.html#fnpage_85" PageIndex="90"/>
+    <Reference Id="xhtml/part01chapter10.html#fnpage_85-01" PageIndex="90"/>
+    <Reference Id="xhtml/part01chapter10.html#fnpage_86" PageIndex="90"/>
+    <Reference Id="toc:11. Streakiness in Sports|file:xhtml/part01chapter11.html" PageIndex="91"/>
+    <Reference Id="xhtml/part01chapter11.html" PageIndex="91"/>
+    <Reference Id="xhtml/part01chapter11.html#page_87" PageIndex="91"/>
+    <Reference Id="xhtml/part01chapter11.html#part01chapter11" PageIndex="91"/>
+    <Reference Id="xhtml/part01chapter11.html#page_88" PageIndex="92"/>
+    <Reference Id="xhtml/part01chapter11.html#page_89" PageIndex="93"/>
+    <Reference Id="xhtml/part01chapter11.html#page_90" PageIndex="94"/>
+    <Reference Id="xhtml/part01chapter11.html#chapter11figure01" PageIndex="94"/>
+    <Reference Id="xhtml/part01chapter11.html#page_91" PageIndex="95"/>
+    <Reference Id="xhtml/part01chapter11.html#chapter11figure02" PageIndex="95"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11en1" PageIndex="96"/>
+    <Reference Id="xhtml/part01chapter11.html#page_92" PageIndex="96"/>
+    <Reference Id="xhtml/part01chapter11.html#chapter11figure03" PageIndex="96"/>
+    <Reference Id="xhtml/part01chapter11.html#page_93" PageIndex="97"/>
+    <Reference Id="xhtml/part01chapter11.html#page_94" PageIndex="97"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11en2" PageIndex="98"/>
+    <Reference Id="xhtml/part01chapter11.html#chapter11figure04" PageIndex="98"/>
+    <Reference Id="xhtml/part01chapter11.html#page_95" PageIndex="98"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11en3" PageIndex="99"/>
+    <Reference Id="xhtml/part01chapter11.html#page_96" PageIndex="99"/>
+    <Reference Id="xhtml/part01chapter11.html#page_97" PageIndex="100"/>
+    <Reference Id="xhtml/part01chapter11.html#chapter11table01" PageIndex="100"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11en4" PageIndex="101"/>
+    <Reference Id="xhtml/part01chapter11.html#page_98" PageIndex="101"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11en5" PageIndex="101"/>
+    <Reference Id="xhtml/part01chapter11.html#page_99" PageIndex="101"/>
+    <Reference Id="xhtml/part01chapter11.html#chapter11figure05" PageIndex="102"/>
+    <Reference Id="xhtml/part01chapter11.html#page_100" PageIndex="102"/>
+    <Reference Id="xhtml/part01chapter11.html#chapter11figure06" PageIndex="104"/>
+    <Reference Id="xhtml/part01chapter11.html#page_101" PageIndex="104"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11_en1" PageIndex="105"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11_en2" PageIndex="105"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11_en3" PageIndex="105"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11_en4" PageIndex="105"/>
+    <Reference Id="xhtml/part01chapter11.html#ch11_en5" PageIndex="105"/>
+    <Reference Id="toc:12. The Platoon Effect|file:xhtml/part01chapter12.html" PageIndex="106"/>
+    <Reference Id="xhtml/part01chapter12.html" PageIndex="106"/>
+    <Reference Id="xhtml/part01chapter12.html#page_102" PageIndex="106"/>
+    <Reference Id="xhtml/part01chapter12.html#part01chapter12" PageIndex="106"/>
+    <Reference Id="xhtml/part01chapter12.html#ch12en1" PageIndex="106"/>
+    <Reference Id="xhtml/part01chapter12.html#page_103" PageIndex="107"/>
+    <Reference Id="xhtml/part01chapter12.html#chapter12figure01" PageIndex="107"/>
+    <Reference Id="xhtml/part01chapter12.html#page_104" PageIndex="107"/>
+    <Reference Id="xhtml/part01chapter12.html#chapter12table01" PageIndex="108"/>
+    <Reference Id="xhtml/part01chapter12.html#page_105" PageIndex="108"/>
+    <Reference Id="xhtml/part01chapter12.html#ch12_en1" PageIndex="109"/>
+    <Reference Id="toc:13. Was Tony Perez a Great Clutch Hitter?|file:xhtml/part01chapter13.html" PageIndex="110"/>
+    <Reference Id="xhtml/part01chapter13.html" PageIndex="110"/>
+    <Reference Id="xhtml/part01chapter13.html#page_106" PageIndex="110"/>
+    <Reference Id="xhtml/part01chapter13.html#part01chapter13" PageIndex="110"/>
+    <Reference Id="xhtml/part01chapter13.html#rfnpage_106" PageIndex="110"/>
+    <Reference Id="xhtml/part01chapter13.html#page_107" PageIndex="110"/>
+    <Reference Id="xhtml/part01chapter13.html#chapter13figure01" PageIndex="112"/>
+    <Reference Id="xhtml/part01chapter13.html#page_108" PageIndex="112"/>
+    <Reference Id="xhtml/part01chapter13.html#page_109" PageIndex="113"/>
+    <Reference Id="xhtml/part01chapter13.html#chapter13figure02" PageIndex="113"/>
+    <Reference Id="xhtml/part01chapter13.html#rfnpage_109" PageIndex="113"/>
+    <Reference Id="xhtml/part01chapter13.html#fnpage_106" PageIndex="113"/>
+    <Reference Id="xhtml/part01chapter13.html#fnpage_109" PageIndex="113"/>
+    <Reference Id="toc:14. Pitch Count and Pitcher Effectiveness|file:xhtml/part01chapter14.html" PageIndex="114"/>
+    <Reference Id="xhtml/part01chapter14.html" PageIndex="114"/>
+    <Reference Id="xhtml/part01chapter14.html#page_110" PageIndex="114"/>
+    <Reference Id="xhtml/part01chapter14.html#part01chapter14" PageIndex="114"/>
+    <Reference Id="xhtml/part01chapter14.html#rfnpage_110-01" PageIndex="114"/>
+    <Reference Id="xhtml/part01chapter14.html#rfnpage_110-02" PageIndex="114"/>
+    <Reference Id="xhtml/part01chapter14.html#page_111" PageIndex="114"/>
+    <Reference Id="xhtml/part01chapter14.html#rfnpage_111" PageIndex="115"/>
+    <Reference Id="xhtml/part01chapter14.html#chapter14table01" PageIndex="115"/>
+    <Reference Id="xhtml/part01chapter14.html#page_112" PageIndex="115"/>
+    <Reference Id="xhtml/part01chapter14.html#chapter14figure01" PageIndex="116"/>
+    <Reference Id="xhtml/part01chapter14.html#fnpage_110-01" PageIndex="116"/>
+    <Reference Id="xhtml/part01chapter14.html#fnpage_110-02" PageIndex="116"/>
+    <Reference Id="xhtml/part01chapter14.html#fnpage_111" PageIndex="116"/>
+    <Reference Id="toc:15. Would Ted Williams Hit .406 Today?|file:xhtml/part01chapter15.html" PageIndex="117"/>
+    <Reference Id="xhtml/part01chapter15.html" PageIndex="117"/>
+    <Reference Id="xhtml/part01chapter15.html#page_113" PageIndex="117"/>
+    <Reference Id="xhtml/part01chapter15.html#part01chapter15" PageIndex="117"/>
+    <Reference Id="xhtml/part01chapter15.html#page_114" PageIndex="117"/>
+    <Reference Id="xhtml/part01chapter15.html#page_115" PageIndex="118"/>
+    <Reference Id="xhtml/part01chapter15.html#chapter15table01" PageIndex="118"/>
+    <Reference Id="xhtml/part01chapter15.html#page115fn01" PageIndex="118"/>
+    <Reference Id="xhtml/part01chapter15.html#fn01page115" PageIndex="118"/>
+    <Reference Id="toc:16. Was Joe DiMaggio’s 56-Game Hitting Streak the Greatest Sports Record of All Time?|file:xhtml/part01chapter16.html" PageIndex="119"/>
+    <Reference Id="xhtml/part01chapter16.html" PageIndex="119"/>
+    <Reference Id="xhtml/part01chapter16.html#page_116" PageIndex="119"/>
+    <Reference Id="xhtml/part01chapter16.html#part01chapter16" PageIndex="119"/>
+    <Reference Id="xhtml/part01chapter16.html#page116fn01" PageIndex="119"/>
+    <Reference Id="xhtml/part01chapter16.html#page_117" PageIndex="119"/>
+    <Reference Id="xhtml/part01chapter16.html#page_118" PageIndex="120"/>
+    <Reference Id="xhtml/part01chapter16.html#page_119" PageIndex="121"/>
+    <Reference Id="xhtml/part01chapter16.html#page_120" PageIndex="122"/>
+    <Reference Id="xhtml/part01chapter16.html#page_121" PageIndex="123"/>
+    <Reference Id="xhtml/part01chapter16.html#chapter16figure01" PageIndex="123"/>
+    <Reference Id="xhtml/part01chapter16.html#page_122" PageIndex="124"/>
+    <Reference Id="xhtml/part01chapter16.html#fn01page116" PageIndex="124"/>
+    <Reference Id="toc:17. Major League Equivalents|file:xhtml/part01chapter17.html" PageIndex="125"/>
+    <Reference Id="xhtml/part01chapter17.html" PageIndex="125"/>
+    <Reference Id="xhtml/part01chapter17.html#page_123" PageIndex="125"/>
+    <Reference Id="xhtml/part01chapter17.html#part01chapter17" PageIndex="125"/>
+    <Reference Id="xhtml/part01chapter17.html#page123fn01" PageIndex="125"/>
+    <Reference Id="xhtml/part01chapter17.html#page_124" PageIndex="125"/>
+    <Reference Id="xhtml/part01chapter17.html#fn01page123" PageIndex="125"/>
+    <Reference Id="toc:Part II. Football|file:xhtml/part02.html" PageIndex="126"/>
+    <Reference Id="xhtml/part02.html" PageIndex="126"/>
+    <Reference Id="xhtml/part02.html#page_125" PageIndex="126"/>
+    <Reference Id="xhtml/part02.html#part02" PageIndex="126"/>
+    <Reference Id="toc:18. What Makes NFL Teams Win?|file:xhtml/part02chapter18.html" PageIndex="127"/>
+    <Reference Id="xhtml/part02chapter18.html" PageIndex="127"/>
+    <Reference Id="xhtml/part02chapter18.html#page_127" PageIndex="127"/>
+    <Reference Id="xhtml/part02chapter18.html#part02chapter18" PageIndex="127"/>
+    <Reference Id="xhtml/part02chapter18.html#page_128" PageIndex="127"/>
+    <Reference Id="xhtml/part02chapter18.html#page_129" PageIndex="129"/>
+    <Reference Id="xhtml/part02chapter18.html#chapter18figure01" PageIndex="129"/>
+    <Reference Id="xhtml/part02chapter18.html#page_130" PageIndex="129"/>
+    <Reference Id="xhtml/part02chapter18.html#chapter18figure02" PageIndex="130"/>
+    <Reference Id="xhtml/part02chapter18.html#page_131" PageIndex="130"/>
+    <Reference Id="toc:19. Who’s Better, Tom Brady or Peyton Manning?|file:xhtml/part02chapter19.html" PageIndex="132"/>
+    <Reference Id="xhtml/part02chapter19.html" PageIndex="132"/>
+    <Reference Id="xhtml/part02chapter19.html#page_132" PageIndex="132"/>
+    <Reference Id="xhtml/part02chapter19.html#part02chapter19" PageIndex="132"/>
+    <Reference Id="xhtml/part02chapter19.html#page132fn01" PageIndex="132"/>
+    <Reference Id="xhtml/part02chapter19.html#page132fn02" PageIndex="132"/>
+    <Reference Id="xhtml/part02chapter19.html#page_133" PageIndex="132"/>
+    <Reference Id="xhtml/part02chapter19.html#page133fn03" PageIndex="133"/>
+    <Reference Id="xhtml/part02chapter19.html#page133fn04" PageIndex="133"/>
+    <Reference Id="xhtml/part02chapter19.html#page133fn05" PageIndex="133"/>
+    <Reference Id="xhtml/part02chapter19.html#page133fn06" PageIndex="133"/>
+    <Reference Id="xhtml/part02chapter19.html#page_134" PageIndex="133"/>
+    <Reference Id="xhtml/part02chapter19.html#chapter19figure01" PageIndex="134"/>
+    <Reference Id="xhtml/part02chapter19.html#page_135" PageIndex="135"/>
+    <Reference Id="xhtml/part02chapter19.html#chapter19figure02" PageIndex="135"/>
+    <Reference Id="xhtml/part02chapter19.html#page_136" PageIndex="136"/>
+    <Reference Id="xhtml/part02chapter19.html#page_137" PageIndex="136"/>
+    <Reference Id="xhtml/part02chapter19.html#fn01page132" PageIndex="137"/>
+    <Reference Id="xhtml/part02chapter19.html#fn02page132" PageIndex="137"/>
+    <Reference Id="xhtml/part02chapter19.html#fn03page133" PageIndex="137"/>
+    <Reference Id="xhtml/part02chapter19.html#fn04page133" PageIndex="137"/>
+    <Reference Id="xhtml/part02chapter19.html#fn05page133" PageIndex="137"/>
+    <Reference Id="xhtml/part02chapter19.html#fn06page133" PageIndex="137"/>
+    <Reference Id="toc:20. Football States and Values|file:xhtml/part02chapter20.html" PageIndex="138"/>
+    <Reference Id="xhtml/part02chapter20.html" PageIndex="138"/>
+    <Reference Id="xhtml/part02chapter20.html#page_138" PageIndex="138"/>
+    <Reference Id="xhtml/part02chapter20.html#part02chapter20" PageIndex="138"/>
+    <Reference Id="xhtml/part02chapter20.html#page_139" PageIndex="138"/>
+    <Reference Id="xhtml/part02chapter20.html#page139fn01" PageIndex="139"/>
+    <Reference Id="xhtml/part02chapter20.html#page139fn02" PageIndex="139"/>
+    <Reference Id="xhtml/part02chapter20.html#page139fn03" PageIndex="139"/>
+    <Reference Id="xhtml/part02chapter20.html#page_140" PageIndex="139"/>
+    <Reference Id="xhtml/part02chapter20.html#chapter20table01" PageIndex="139"/>
+    <Reference Id="xhtml/part02chapter20.html#ch20ta01" PageIndex="139"/>
+    <Reference Id="xhtml/part02chapter20.html#ch20ta01-1" PageIndex="139"/>
+    <Reference Id="xhtml/part02chapter20.html#page_141" PageIndex="139"/>
+    <Reference Id="xhtml/part02chapter20.html#page_142" PageIndex="141"/>
+    <Reference Id="xhtml/part02chapter20.html#fn01page139" PageIndex="141"/>
+    <Reference Id="xhtml/part02chapter20.html#fn02page139" PageIndex="141"/>
+    <Reference Id="xhtml/part02chapter20.html#fn03page139" PageIndex="141"/>
+    <Reference Id="toc:21. Football Decision-Making 101|file:xhtml/part02chapter21.html" PageIndex="142"/>
+    <Reference Id="xhtml/part02chapter21.html" PageIndex="142"/>
+    <Reference Id="xhtml/part02chapter21.html#page_143" PageIndex="142"/>
+    <Reference Id="xhtml/part02chapter21.html#part02chapter21" PageIndex="142"/>
+    <Reference Id="xhtml/part02chapter21.html#page_144" PageIndex="142"/>
+    <Reference Id="xhtml/part02chapter21.html#page_145" PageIndex="143"/>
+    <Reference Id="xhtml/part02chapter21.html#chapter21table01" PageIndex="143"/>
+    <Reference Id="xhtml/part02chapter21.html#chapter21figure01" PageIndex="144"/>
+    <Reference Id="xhtml/part02chapter21.html#page_146" PageIndex="144"/>
+    <Reference Id="xhtml/part02chapter21.html#page146fn01" PageIndex="144"/>
+    <Reference Id="xhtml/part02chapter21.html#page_147" PageIndex="145"/>
+    <Reference Id="xhtml/part02chapter21.html#chapter21table02" PageIndex="145"/>
+    <Reference Id="xhtml/part02chapter21.html#page147fn02" PageIndex="145"/>
+    <Reference Id="xhtml/part02chapter21.html#page_148" PageIndex="146"/>
+    <Reference Id="xhtml/part02chapter21.html#chapter21table03" PageIndex="146"/>
+    <Reference Id="xhtml/part02chapter21.html#page149fn03" PageIndex="146"/>
+    <Reference Id="xhtml/part02chapter21.html#page_149" PageIndex="147"/>
+    <Reference Id="xhtml/part02chapter21.html#chapter21table04" PageIndex="147"/>
+    <Reference Id="xhtml/part02chapter21.html#page_150" PageIndex="147"/>
+    <Reference Id="xhtml/part02chapter21.html#fn01page146" PageIndex="147"/>
+    <Reference Id="xhtml/part02chapter21.html#fn02page147" PageIndex="147"/>
+    <Reference Id="xhtml/part02chapter21.html#fn03page149" PageIndex="147"/>
+    <Reference Id="toc:22. A State and Value Analysis of the 2006 Super Bowl Champion Colts|file:xhtml/part02chapter22.html" PageIndex="148"/>
+    <Reference Id="xhtml/part02chapter22.html" PageIndex="148"/>
+    <Reference Id="xhtml/part02chapter22.html#page_151" PageIndex="148"/>
+    <Reference Id="xhtml/part02chapter22.html#part02chapter22" PageIndex="148"/>
+    <Reference Id="xhtml/part02chapter22.html#page_152" PageIndex="149"/>
+    <Reference Id="xhtml/part02chapter22.html#chapter22figure01" PageIndex="149"/>
+    <Reference Id="xhtml/part02chapter22.html#page_153" PageIndex="150"/>
+    <Reference Id="xhtml/part02chapter22.html#page_154" PageIndex="150"/>
+    <Reference Id="xhtml/part02chapter22.html#chapter22figure02" PageIndex="151"/>
+    <Reference Id="xhtml/part02chapter22.html#page_155" PageIndex="152"/>
+    <Reference Id="xhtml/part02chapter22.html#chapter22figure03" PageIndex="152"/>
+    <Reference Id="xhtml/part02chapter22.html#page_156" PageIndex="152"/>
+    <Reference Id="xhtml/part02chapter22.html#chapter22figure04" PageIndex="153"/>
+    <Reference Id="xhtml/part02chapter22.html#page_157" PageIndex="154"/>
+    <Reference Id="xhtml/part02chapter22.html#chapter22figure05" PageIndex="154"/>
+    <Reference Id="toc:23. If Passing Is Better Than Running, Why Don’t Teams Always Pass?|file:xhtml/part02chapter23.html" PageIndex="155"/>
+    <Reference Id="xhtml/part02chapter23.html" PageIndex="155"/>
+    <Reference Id="xhtml/part02chapter23.html#page_158" PageIndex="155"/>
+    <Reference Id="xhtml/part02chapter23.html#part02chapter23" PageIndex="155"/>
+    <Reference Id="xhtml/part02chapter23.html#ch23en1" PageIndex="155"/>
+    <Reference Id="xhtml/part02chapter23.html#page_159" PageIndex="155"/>
+    <Reference Id="xhtml/part02chapter23.html#chapter23table01" PageIndex="155"/>
+    <Reference Id="xhtml/part02chapter23.html#page_160" PageIndex="156"/>
+    <Reference Id="xhtml/part02chapter23.html#chapter23figure01" PageIndex="157"/>
+    <Reference Id="xhtml/part02chapter23.html#page_161" PageIndex="157"/>
+    <Reference Id="xhtml/part02chapter23.html#chapter23figure02" PageIndex="157"/>
+    <Reference Id="xhtml/part02chapter23.html#chapter23table02" PageIndex="158"/>
+    <Reference Id="xhtml/part02chapter23.html#page_162" PageIndex="158"/>
+    <Reference Id="xhtml/part02chapter23.html#chapter23table03" PageIndex="159"/>
+    <Reference Id="xhtml/part02chapter23.html#page_163" PageIndex="159"/>
+    <Reference Id="xhtml/part02chapter23.html#chapter23table04" PageIndex="159"/>
+    <Reference Id="xhtml/part02chapter23.html#page_164" PageIndex="160"/>
+    <Reference Id="xhtml/part02chapter23.html#ch23_en1" PageIndex="160"/>
+    <Reference Id="toc:24. Should We Go for a One-Point or Two-Point Conversion?|file:xhtml/part02chapter24.html" PageIndex="161"/>
+    <Reference Id="xhtml/part02chapter24.html" PageIndex="161"/>
+    <Reference Id="xhtml/part02chapter24.html#page_165" PageIndex="161"/>
+    <Reference Id="xhtml/part02chapter24.html#part02chapter24" PageIndex="161"/>
+    <Reference Id="xhtml/part02chapter24.html#rfnpage_165" PageIndex="161"/>
+    <Reference Id="xhtml/part02chapter24.html#rfnpage_165-01" PageIndex="161"/>
+    <Reference Id="xhtml/part02chapter24.html#page_166" PageIndex="161"/>
+    <Reference Id="xhtml/part02chapter24.html#rfnpage_166" PageIndex="161"/>
+    <Reference Id="xhtml/part02chapter24.html#page_167" PageIndex="162"/>
+    <Reference Id="xhtml/part02chapter24.html#page_168" PageIndex="163"/>
+    <Reference Id="xhtml/part02chapter24.html#rfnpage_168" PageIndex="163"/>
+    <Reference Id="xhtml/part02chapter24.html#rfnpage_168-01" PageIndex="163"/>
+    <Reference Id="xhtml/part02chapter24.html#chapter24table01" PageIndex="163"/>
+    <Reference Id="xhtml/part02chapter24.html#page_169" PageIndex="164"/>
+    <Reference Id="xhtml/part02chapter24.html#page_170" PageIndex="164"/>
+    <Reference Id="xhtml/part02chapter24.html#page_171" PageIndex="165"/>
+    <Reference Id="xhtml/part02chapter24.html#fnpage_165" PageIndex="165"/>
+    <Reference Id="xhtml/part02chapter24.html#fnpage_165-01" PageIndex="165"/>
+    <Reference Id="xhtml/part02chapter24.html#fnpage_166" PageIndex="165"/>
+    <Reference Id="xhtml/part02chapter24.html#fnpage_168" PageIndex="165"/>
+    <Reference Id="xhtml/part02chapter24.html#fnpage_168-01" PageIndex="165"/>
+    <Reference Id="toc:25. To Give Up the Ball Is Better Than to Receive|file:xhtml/part02chapter25.html" PageIndex="166"/>
+    <Reference Id="xhtml/part02chapter25.html" PageIndex="166"/>
+    <Reference Id="xhtml/part02chapter25.html#page_172" PageIndex="166"/>
+    <Reference Id="xhtml/part02chapter25.html#part02chapter25" PageIndex="166"/>
+    <Reference Id="xhtml/part02chapter25.html#part02chapter25section01" PageIndex="166"/>
+    <Reference Id="xhtml/part02chapter25.html#rfnpage_172" PageIndex="166"/>
+    <Reference Id="xhtml/part02chapter25.html#page_173" PageIndex="166"/>
+    <Reference Id="xhtml/part02chapter25.html#page_174" PageIndex="167"/>
+    <Reference Id="xhtml/part02chapter25.html#rfnpage_174" PageIndex="168"/>
+    <Reference Id="xhtml/part02chapter25.html#fnpage_172" PageIndex="168"/>
+    <Reference Id="xhtml/part02chapter25.html#fnpage_174" PageIndex="168"/>
+    <Reference Id="toc:26. Why Is the NFL’s Overtime System Fatally Flawed?|file:xhtml/part02chapter26.html" PageIndex="169"/>
+    <Reference Id="xhtml/part02chapter26.html" PageIndex="169"/>
+    <Reference Id="xhtml/part02chapter26.html#page_175" PageIndex="169"/>
+    <Reference Id="xhtml/part02chapter26.html#part02chapter26" PageIndex="169"/>
+    <Reference Id="xhtml/part02chapter26.html#rfnpage_175" PageIndex="169"/>
+    <Reference Id="xhtml/part02chapter26.html#page_176" PageIndex="169"/>
+    <Reference Id="xhtml/part02chapter26.html#page_177" PageIndex="170"/>
+    <Reference Id="xhtml/part02chapter26.html#rfnpage_177" PageIndex="170"/>
+    <Reference Id="xhtml/part02chapter26.html#rfnpage_177-01" PageIndex="171"/>
+    <Reference Id="xhtml/part02chapter26.html#page_178" PageIndex="171"/>
+    <Reference Id="xhtml/part02chapter26.html#rfnpage_178" PageIndex="171"/>
+    <Reference Id="xhtml/part02chapter26.html#page_179" PageIndex="172"/>
+    <Reference Id="xhtml/part02chapter26.html#rfnpage_179" PageIndex="172"/>
+    <Reference Id="xhtml/part02chapter26.html#fnpage_175" PageIndex="172"/>
+    <Reference Id="xhtml/part02chapter26.html#fnpage_177" PageIndex="172"/>
+    <Reference Id="xhtml/part02chapter26.html#fnpage_177-01" PageIndex="172"/>
+    <Reference Id="xhtml/part02chapter26.html#fnpage_178" PageIndex="172"/>
+    <Reference Id="xhtml/part02chapter26.html#fnpage_179" PageIndex="172"/>
+    <Reference Id="toc:27. How Valuable Are High Draft Picks in the NFL?|file:xhtml/part02chapter27.html" PageIndex="173"/>
+    <Reference Id="xhtml/part02chapter27.html" PageIndex="173"/>
+    <Reference Id="xhtml/part02chapter27.html#page_180" PageIndex="173"/>
+    <Reference Id="xhtml/part02chapter27.html#part02chapter27" PageIndex="173"/>
+    <Reference Id="xhtml/part02chapter27.html#rfnpage_180" PageIndex="173"/>
+    <Reference Id="xhtml/part02chapter27.html#page_181" PageIndex="173"/>
+    <Reference Id="xhtml/part02chapter27.html#chapter27figure01" PageIndex="174"/>
+    <Reference Id="xhtml/part02chapter27.html#page_182" PageIndex="174"/>
+    <Reference Id="xhtml/part02chapter27.html#chapter27table01" PageIndex="174"/>
+    <Reference Id="xhtml/part02chapter27.html#rfnpage_182" PageIndex="175"/>
+    <Reference Id="xhtml/part02chapter27.html#page_183" PageIndex="175"/>
+    <Reference Id="xhtml/part02chapter27.html#rfnpage_183" PageIndex="175"/>
+    <Reference Id="xhtml/part02chapter27.html#page_184" PageIndex="176"/>
+    <Reference Id="xhtml/part02chapter27.html#rfnpage_184" PageIndex="176"/>
+    <Reference Id="xhtml/part02chapter27.html#fnpage_180" PageIndex="176"/>
+    <Reference Id="xhtml/part02chapter27.html#fnpage_182" PageIndex="176"/>
+    <Reference Id="xhtml/part02chapter27.html#fnpage_183" PageIndex="176"/>
+    <Reference Id="xhtml/part02chapter27.html#fnpage_184" PageIndex="176"/>
+    <Reference Id="toc:Part III. Basketball|file:xhtml/part03.html" PageIndex="177"/>
+    <Reference Id="xhtml/part03.html" PageIndex="177"/>
+    <Reference Id="xhtml/part03.html#page_185" PageIndex="177"/>
+    <Reference Id="xhtml/part03.html#part03" PageIndex="177"/>
+    <Reference Id="toc:28. Basketball Statistics 101|file:xhtml/part03chapter28.html" PageIndex="178"/>
+    <Reference Id="xhtml/part03chapter28.html" PageIndex="178"/>
+    <Reference Id="xhtml/part03chapter28.html#page_187" PageIndex="178"/>
+    <Reference Id="xhtml/part03chapter28.html#part03chapter28" PageIndex="178"/>
+    <Reference Id="xhtml/part03chapter28.html#part03chapter28section01" PageIndex="178"/>
+    <Reference Id="xhtml/part03chapter28.html#page_188" PageIndex="178"/>
+    <Reference Id="xhtml/part03chapter28.html#rfnpage_189" PageIndex="179"/>
+    <Reference Id="xhtml/part03chapter28.html#rfnpage_189-01" PageIndex="179"/>
+    <Reference Id="xhtml/part03chapter28.html#page_189" PageIndex="179"/>
+    <Reference Id="xhtml/part03chapter28.html#chapter28figure01" PageIndex="180"/>
+    <Reference Id="xhtml/part03chapter28.html#page_190" PageIndex="180"/>
+    <Reference Id="xhtml/part03chapter28.html#chapter28figure02" PageIndex="181"/>
+    <Reference Id="xhtml/part03chapter28.html#page_191" PageIndex="181"/>
+    <Reference Id="xhtml/part03chapter28.html#chapter28figure03" PageIndex="182"/>
+    <Reference Id="xhtml/part03chapter28.html#page_192" PageIndex="182"/>
+    <Reference Id="xhtml/part03chapter28.html#page_193" PageIndex="183"/>
+    <Reference Id="xhtml/part03chapter28.html#chapter28figure04" PageIndex="184"/>
+    <Reference Id="xhtml/part03chapter28.html#page_194" PageIndex="184"/>
+    <Reference Id="xhtml/part03chapter28.html#fnpage_189" PageIndex="185"/>
+    <Reference Id="xhtml/part03chapter28.html#fnpage_189-01" PageIndex="185"/>
+    <Reference Id="toc:29. Linear Weights for Evaluating NBA Players|file:xhtml/part03chapter29.html" PageIndex="186"/>
+    <Reference Id="xhtml/part03chapter29.html" PageIndex="186"/>
+    <Reference Id="xhtml/part03chapter29.html#page_195" PageIndex="186"/>
+    <Reference Id="xhtml/part03chapter29.html#part03chapter29" PageIndex="186"/>
+    <Reference Id="xhtml/part03chapter29.html#rfnpage_195" PageIndex="186"/>
+    <Reference Id="xhtml/part03chapter29.html#page_196" PageIndex="186"/>
+    <Reference Id="xhtml/part03chapter29.html#rfnpage_196" PageIndex="187"/>
+    <Reference Id="xhtml/part03chapter29.html#rfnpage_196-01" PageIndex="187"/>
+    <Reference Id="xhtml/part03chapter29.html#rfnpage_196-02" PageIndex="187"/>
+    <Reference Id="xhtml/part03chapter29.html#page_197" PageIndex="187"/>
+    <Reference Id="xhtml/part03chapter29.html#chapter29table01" PageIndex="187"/>
+    <Reference Id="xhtml/part03chapter29.html#page_198" PageIndex="188"/>
+    <Reference Id="xhtml/part03chapter29.html#page_199" PageIndex="188"/>
+    <Reference Id="xhtml/part03chapter29.html#rfnpage_199-01" PageIndex="188"/>
+    <Reference Id="xhtml/part03chapter29.html#rfnpage_199-02" PageIndex="188"/>
+    <Reference Id="xhtml/part03chapter29.html#rfnpage_199-03" PageIndex="189"/>
+    <Reference Id="xhtml/part03chapter29.html#page_200" PageIndex="189"/>
+    <Reference Id="xhtml/part03chapter29.html#page_201" PageIndex="189"/>
+    <Reference Id="xhtml/part03chapter29.html#chapter29table02" PageIndex="189"/>
+    <Reference Id="xhtml/part03chapter29.html#fnpage_195" PageIndex="190"/>
+    <Reference Id="xhtml/part03chapter29.html#fnpage_196" PageIndex="190"/>
+    <Reference Id="xhtml/part03chapter29.html#fnpage_196-01" PageIndex="191"/>
+    <Reference Id="xhtml/part03chapter29.html#fnpage_196-02" PageIndex="191"/>
+    <Reference Id="xhtml/part03chapter29.html#fnpage_199-01" PageIndex="191"/>
+    <Reference Id="xhtml/part03chapter29.html#fnpage_199-02" PageIndex="191"/>
+    <Reference Id="xhtml/part03chapter29.html#fnpage_199-03" PageIndex="191"/>
+    <Reference Id="toc:30. Adjusted +/– Player Ratings|file:xhtml/part03chapter30.html" PageIndex="192"/>
+    <Reference Id="xhtml/part03chapter30.html" PageIndex="192"/>
+    <Reference Id="xhtml/part03chapter30.html#page_202" PageIndex="192"/>
+    <Reference Id="xhtml/part03chapter30.html#part03chapter30" PageIndex="192"/>
+    <Reference Id="xhtml/part03chapter30.html#rfnpage_202-01" PageIndex="192"/>
+    <Reference Id="xhtml/part03chapter30.html#rfnpage_202-02" PageIndex="192"/>
+    <Reference Id="xhtml/part03chapter30.html#page_203" PageIndex="193"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table01" PageIndex="193"/>
+    <Reference Id="xhtml/part03chapter30.html#page_204" PageIndex="193"/>
+    <Reference Id="xhtml/part03chapter30.html#page_205" PageIndex="194"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure01" PageIndex="195"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure02" PageIndex="196"/>
+    <Reference Id="xhtml/part03chapter30.html#page_206" PageIndex="196"/>
+    <Reference Id="xhtml/part03chapter30.html#page_207" PageIndex="197"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table02" PageIndex="198"/>
+    <Reference Id="xhtml/part03chapter30.html#page_208" PageIndex="198"/>
+    <Reference Id="xhtml/part03chapter30.html#page_209" PageIndex="199"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table03" PageIndex="199"/>
+    <Reference Id="xhtml/part03chapter30.html#page_210" PageIndex="199"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table04" PageIndex="199"/>
+    <Reference Id="xhtml/part03chapter30.html#page_211" PageIndex="200"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table05" PageIndex="200"/>
+    <Reference Id="xhtml/part03chapter30.html#page_212" PageIndex="201"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure03" PageIndex="201"/>
+    <Reference Id="xhtml/part03chapter30.html#page_213" PageIndex="201"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure04" PageIndex="202"/>
+    <Reference Id="xhtml/part03chapter30.html#page_214" PageIndex="203"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure05" PageIndex="203"/>
+    <Reference Id="xhtml/part03chapter30.html#page_215" PageIndex="203"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table06" PageIndex="203"/>
+    <Reference Id="xhtml/part03chapter30.html#page_216" PageIndex="204"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table07" PageIndex="204"/>
+    <Reference Id="xhtml/part03chapter30.html#page_217" PageIndex="205"/>
+    <Reference Id="xhtml/part03chapter30.html#pg217fn03" PageIndex="205"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table08" PageIndex="205"/>
+    <Reference Id="xhtml/part03chapter30.html#page_218" PageIndex="206"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure06" PageIndex="206"/>
+    <Reference Id="xhtml/part03chapter30.html#page_219" PageIndex="207"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table09" PageIndex="207"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30table10" PageIndex="207"/>
+    <Reference Id="xhtml/part03chapter30.html#page_220" PageIndex="208"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure07" PageIndex="208"/>
+    <Reference Id="xhtml/part03chapter30.html#pg61fn04" PageIndex="208"/>
+    <Reference Id="xhtml/part03chapter30.html#page_221" PageIndex="209"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure08" PageIndex="209"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure09" PageIndex="209"/>
+    <Reference Id="xhtml/part03chapter30.html#page_222" PageIndex="209"/>
+    <Reference Id="xhtml/part03chapter30.html#chapter30figure10" PageIndex="210"/>
+    <Reference Id="xhtml/part03chapter30.html#page_223" PageIndex="210"/>
+    <Reference Id="xhtml/part03chapter30.html#fnpage_202-01" PageIndex="211"/>
+    <Reference Id="xhtml/part03chapter30.html#fnpage_202-02" PageIndex="211"/>
+    <Reference Id="xhtml/part03chapter30.html#fn03pg217" PageIndex="211"/>
+    <Reference Id="xhtml/part03chapter30.html#fn04pg220" PageIndex="211"/>
+    <Reference Id="toc:31. NBA Lineup Analysis|file:xhtml/part03chapter31.html" PageIndex="212"/>
+    <Reference Id="xhtml/part03chapter31.html" PageIndex="212"/>
+    <Reference Id="xhtml/part03chapter31.html#page_224" PageIndex="212"/>
+    <Reference Id="xhtml/part03chapter31.html#part03chapter31" PageIndex="212"/>
+    <Reference Id="xhtml/part03chapter31.html#page_225" PageIndex="212"/>
+    <Reference Id="xhtml/part03chapter31.html#page_226" PageIndex="213"/>
+    <Reference Id="xhtml/part03chapter31.html#chapter31figure01" PageIndex="213"/>
+    <Reference Id="xhtml/part03chapter31.html#page_227" PageIndex="214"/>
+    <Reference Id="xhtml/part03chapter31.html#chapter31figure02" PageIndex="215"/>
+    <Reference Id="toc:32. Analyzing Team and Individual Matchups|file:xhtml/part03chapter32.html" PageIndex="216"/>
+    <Reference Id="xhtml/part03chapter32.html" PageIndex="216"/>
+    <Reference Id="xhtml/part03chapter32.html#page_228" PageIndex="216"/>
+    <Reference Id="xhtml/part03chapter32.html#part03chapter32" PageIndex="216"/>
+    <Reference Id="xhtml/part03chapter32.html#page_229" PageIndex="216"/>
+    <Reference Id="xhtml/part03chapter32.html#page_230" PageIndex="217"/>
+    <Reference Id="xhtml/part03chapter32.html#chapter32table01" PageIndex="217"/>
+    <Reference Id="xhtml/part03chapter32.html#page_231" PageIndex="218"/>
+    <Reference Id="xhtml/part03chapter32.html#page_232" PageIndex="218"/>
+    <Reference Id="toc:33. NBA Players’ Salaries and the Draft|file:xhtml/part03chapter33.html" PageIndex="219"/>
+    <Reference Id="xhtml/part03chapter33.html" PageIndex="219"/>
+    <Reference Id="xhtml/part03chapter33.html#page_233" PageIndex="219"/>
+    <Reference Id="xhtml/part03chapter33.html#part03chapter33" PageIndex="219"/>
+    <Reference Id="xhtml/part03chapter33.html#page_234" PageIndex="219"/>
+    <Reference Id="xhtml/part03chapter33.html#page_235" PageIndex="220"/>
+    <Reference Id="xhtml/part03chapter33.html#chapter33figure01" PageIndex="220"/>
+    <Reference Id="xhtml/part03chapter33.html#rfnpage_235-01" PageIndex="220"/>
+    <Reference Id="xhtml/part03chapter33.html#page_236" PageIndex="221"/>
+    <Reference Id="xhtml/part03chapter33.html#chapter33table01" PageIndex="221"/>
+    <Reference Id="xhtml/part03chapter33.html#fnpage_235-01" PageIndex="221"/>
+    <Reference Id="toc:34. Are NBA Officials Prejudiced?|file:xhtml/part03chapter34.html" PageIndex="222"/>
+    <Reference Id="xhtml/part03chapter34.html" PageIndex="222"/>
+    <Reference Id="xhtml/part03chapter34.html#page_237" PageIndex="222"/>
+    <Reference Id="xhtml/part03chapter34.html#part03chapter34" PageIndex="222"/>
+    <Reference Id="xhtml/part03chapter34.html#rfnpage_237-01" PageIndex="222"/>
+    <Reference Id="xhtml/part03chapter34.html#rfnpage_237-02" PageIndex="222"/>
+    <Reference Id="xhtml/part03chapter34.html#page_238" PageIndex="222"/>
+    <Reference Id="xhtml/part03chapter34.html#chapter34figure01" PageIndex="223"/>
+    <Reference Id="xhtml/part03chapter34.html#page_239" PageIndex="223"/>
+    <Reference Id="xhtml/part03chapter34.html#page_240" PageIndex="224"/>
+    <Reference Id="xhtml/part03chapter34.html#chapter34table01" PageIndex="224"/>
+    <Reference Id="xhtml/part03chapter34.html#page_241" PageIndex="225"/>
+    <Reference Id="xhtml/part03chapter34.html#fnpage_237-01" PageIndex="225"/>
+    <Reference Id="xhtml/part03chapter34.html#fnpage_237-02" PageIndex="225"/>
+    <Reference Id="toc:35. Are College Basketball Games Fixed?|file:xhtml/part03chapter35.html" PageIndex="226"/>
+    <Reference Id="xhtml/part03chapter35.html" PageIndex="226"/>
+    <Reference Id="xhtml/part03chapter35.html#page_242" PageIndex="226"/>
+    <Reference Id="xhtml/part03chapter35.html#part03chapter35" PageIndex="226"/>
+    <Reference Id="xhtml/part03chapter35.html#rfnpage_242-01" PageIndex="226"/>
+    <Reference Id="xhtml/part03chapter35.html#page_243" PageIndex="226"/>
+    <Reference Id="xhtml/part03chapter35.html#rfnpage_242-02" PageIndex="226"/>
+    <Reference Id="xhtml/part03chapter35.html#fnpage_242-01" PageIndex="227"/>
+    <Reference Id="xhtml/part03chapter35.html#fnpage_242-02" PageIndex="227"/>
+    <Reference Id="toc:36. Did Tim Donaghy Fix NBA Games?|file:xhtml/part03chapter36.html" PageIndex="228"/>
+    <Reference Id="xhtml/part03chapter36.html" PageIndex="228"/>
+    <Reference Id="xhtml/part03chapter36.html#page_244" PageIndex="228"/>
+    <Reference Id="xhtml/part03chapter36.html#part03chapter36" PageIndex="228"/>
+    <Reference Id="xhtml/part03chapter36.html#page_245" PageIndex="229"/>
+    <Reference Id="xhtml/part03chapter36.html#chapter36figure01" PageIndex="229"/>
+    <Reference Id="xhtml/part03chapter36.html#chapter36figure02" PageIndex="230"/>
+    <Reference Id="xhtml/part03chapter36.html#page_246" PageIndex="230"/>
+    <Reference Id="xhtml/part03chapter36.html#page_247" PageIndex="230"/>
+    <Reference Id="toc:37. End-Game Basketball Strategy|file:xhtml/part03chapter37.html" PageIndex="232"/>
+    <Reference Id="xhtml/part03chapter37.html" PageIndex="232"/>
+    <Reference Id="xhtml/part03chapter37.html#page_248" PageIndex="232"/>
+    <Reference Id="xhtml/part03chapter37.html#part03chapter37" PageIndex="232"/>
+    <Reference Id="xhtml/part03chapter37.html#rfnpage_248" PageIndex="232"/>
+    <Reference Id="xhtml/part03chapter37.html#page_249" PageIndex="232"/>
+    <Reference Id="xhtml/part03chapter37.html#page_250" PageIndex="233"/>
+    <Reference Id="xhtml/part03chapter37.html#rfnpage_250" PageIndex="233"/>
+    <Reference Id="xhtml/part03chapter37.html#page_251" PageIndex="234"/>
+    <Reference Id="xhtml/part03chapter37.html#rfnpage_251-01" PageIndex="234"/>
+    <Reference Id="xhtml/part03chapter37.html#rfnpage_251-02" PageIndex="234"/>
+    <Reference Id="xhtml/part03chapter37.html#fnpage_248" PageIndex="234"/>
+    <Reference Id="xhtml/part03chapter37.html#fnpage_250" PageIndex="234"/>
+    <Reference Id="xhtml/part03chapter37.html#fnpage_251-01" PageIndex="234"/>
+    <Reference Id="xhtml/part03chapter37.html#fnpage_251-02" PageIndex="234"/>
+    <Reference Id="toc:Part IV. Playing with Money, and Other Topics for Serious Sports Fans|file:xhtml/part04.html" PageIndex="235"/>
+    <Reference Id="xhtml/part04.html" PageIndex="235"/>
+    <Reference Id="xhtml/part04.html#page_253" PageIndex="235"/>
+    <Reference Id="xhtml/part04.html#part04" PageIndex="235"/>
+    <Reference Id="toc:38. Sports Gambling 101|file:xhtml/part04chapter38.html" PageIndex="236"/>
+    <Reference Id="xhtml/part04chapter38.html" PageIndex="236"/>
+    <Reference Id="xhtml/part04chapter38.html#page_255" PageIndex="236"/>
+    <Reference Id="xhtml/part04chapter38.html#part04chapter38" PageIndex="236"/>
+    <Reference Id="xhtml/part04chapter38.html#page_256" PageIndex="236"/>
+    <Reference Id="xhtml/part04chapter38.html#rfnpage_256-01" PageIndex="237"/>
+    <Reference Id="xhtml/part04chapter38.html#page_257" PageIndex="237"/>
+    <Reference Id="xhtml/part04chapter38.html#page_258" PageIndex="238"/>
+    <Reference Id="xhtml/part04chapter38.html#chapter38table01" PageIndex="238"/>
+    <Reference Id="xhtml/part04chapter38.html#page_259" PageIndex="239"/>
+    <Reference Id="xhtml/part04chapter38.html#chapter38table02" PageIndex="239"/>
+    <Reference Id="xhtml/part04chapter38.html#page_260" PageIndex="240"/>
+    <Reference Id="xhtml/part04chapter38.html#page_261" PageIndex="240"/>
+    <Reference Id="xhtml/part04chapter38.html#chapter38table03" PageIndex="240"/>
+    <Reference Id="xhtml/part04chapter38.html#fnpage_256-01" PageIndex="241"/>
+    <Reference Id="toc:39. Freakonomics Meets the Bookmaker|file:xhtml/part04chapter39.html" PageIndex="242"/>
+    <Reference Id="xhtml/part04chapter39.html" PageIndex="242"/>
+    <Reference Id="xhtml/part04chapter39.html#page_262" PageIndex="242"/>
+    <Reference Id="xhtml/part04chapter39.html#part04chapter39" PageIndex="242"/>
+    <Reference Id="xhtml/part04chapter39.html#page_263" PageIndex="242"/>
+    <Reference Id="xhtml/part04chapter39.html#page_264" PageIndex="243"/>
+    <Reference Id="xhtml/part04chapter39.html#chapter39figure01" PageIndex="244"/>
+    <Reference Id="xhtml/part04chapter39.html#page_265" PageIndex="244"/>
+    <Reference Id="toc:40. Rating Sports Teams|file:xhtml/part04chapter40.html" PageIndex="246"/>
+    <Reference Id="xhtml/part04chapter40.html" PageIndex="246"/>
+    <Reference Id="xhtml/part04chapter40.html#page_266" PageIndex="246"/>
+    <Reference Id="xhtml/part04chapter40.html#part04chapter40" PageIndex="246"/>
+    <Reference Id="xhtml/part04chapter40.html#rfnpage_266-01" PageIndex="246"/>
+    <Reference Id="xhtml/part04chapter40.html#page_267" PageIndex="246"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure01" PageIndex="248"/>
+    <Reference Id="xhtml/part04chapter40.html#page_268" PageIndex="248"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure02" PageIndex="248"/>
+    <Reference Id="xhtml/part04chapter40.html#page_269" PageIndex="248"/>
+    <Reference Id="xhtml/part04chapter40.html#page_270" PageIndex="249"/>
+    <Reference Id="xhtml/part04chapter40.html#page_271" PageIndex="249"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure03" PageIndex="252"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure04" PageIndex="252"/>
+    <Reference Id="xhtml/part04chapter40.html#page_272" PageIndex="252"/>
+    <Reference Id="xhtml/part04chapter40.html#page_273" PageIndex="253"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure05" PageIndex="254"/>
+    <Reference Id="xhtml/part04chapter40.html#page_274" PageIndex="254"/>
+    <Reference Id="xhtml/part04chapter40.html#rfnpage_274" PageIndex="255"/>
+    <Reference Id="xhtml/part04chapter40.html#page_275" PageIndex="256"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure06" PageIndex="256"/>
+    <Reference Id="xhtml/part04chapter40.html#page_276" PageIndex="257"/>
+    <Reference Id="xhtml/part04chapter40.html#rfnpage_276-01" PageIndex="257"/>
+    <Reference Id="xhtml/part04chapter40.html#rfnpage_276-02" PageIndex="257"/>
+    <Reference Id="xhtml/part04chapter40.html#page_277" PageIndex="258"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure07" PageIndex="258"/>
+    <Reference Id="xhtml/part04chapter40.html#page_278" PageIndex="259"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure08" PageIndex="259"/>
+    <Reference Id="xhtml/part04chapter40.html#page_279" PageIndex="260"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure09" PageIndex="260"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure10" PageIndex="260"/>
+    <Reference Id="xhtml/part04chapter40.html#page_280" PageIndex="261"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure11" PageIndex="262"/>
+    <Reference Id="xhtml/part04chapter40.html#page_281" PageIndex="263"/>
+    <Reference Id="xhtml/part04chapter40.html#chapter40figure12" PageIndex="263"/>
+    <Reference Id="xhtml/part04chapter40.html#page_282" PageIndex="263"/>
+    <Reference Id="xhtml/part04chapter40.html#fnpage_266-01" PageIndex="264"/>
+    <Reference Id="xhtml/part04chapter40.html#fnpage_274" PageIndex="264"/>
+    <Reference Id="xhtml/part04chapter40.html#fnpage_276-01" PageIndex="264"/>
+    <Reference Id="xhtml/part04chapter40.html#fnpage_276-02" PageIndex="264"/>
+    <Reference Id="toc:41. Which League Has Greater Parity, The NFL or the NBA?|file:xhtml/part04chapter41.html" PageIndex="265"/>
+    <Reference Id="xhtml/part04chapter41.html" PageIndex="265"/>
+    <Reference Id="xhtml/part04chapter41.html#page_283" PageIndex="265"/>
+    <Reference Id="xhtml/part04chapter41.html#part04chapter41" PageIndex="265"/>
+    <Reference Id="xhtml/part04chapter41.html#rfnpage_283" PageIndex="265"/>
+    <Reference Id="xhtml/part04chapter41.html#page_284" PageIndex="265"/>
+    <Reference Id="xhtml/part04chapter41.html#chapter41figure01" PageIndex="266"/>
+    <Reference Id="xhtml/part04chapter41.html#chapter41figure02" PageIndex="266"/>
+    <Reference Id="xhtml/part04chapter41.html#page_285" PageIndex="267"/>
+    <Reference Id="xhtml/part04chapter41.html#page_286" PageIndex="267"/>
+    <Reference Id="xhtml/part04chapter41.html#fnpage_283" PageIndex="267"/>
+    <Reference Id="toc:42. The Ratings Percentage Index (RPI)|file:xhtml/part04chapter42.html" PageIndex="268"/>
+    <Reference Id="xhtml/part04chapter42.html" PageIndex="268"/>
+    <Reference Id="xhtml/part04chapter42.html#page_287" PageIndex="268"/>
+    <Reference Id="xhtml/part04chapter42.html#part04chapter42" PageIndex="268"/>
+    <Reference Id="xhtml/part04chapter42.html#page_288" PageIndex="268"/>
+    <Reference Id="xhtml/part04chapter42.html#page_289" PageIndex="269"/>
+    <Reference Id="xhtml/part04chapter42.html#rfnpage_289" PageIndex="270"/>
+    <Reference Id="xhtml/part04chapter42.html#fnpage_289" PageIndex="270"/>
+    <Reference Id="toc:43. From Point Ratings to Probabilities|file:xhtml/part04chapter43.html" PageIndex="271"/>
+    <Reference Id="xhtml/part04chapter43.html" PageIndex="271"/>
+    <Reference Id="xhtml/part04chapter43.html#page_290" PageIndex="271"/>
+    <Reference Id="xhtml/part04chapter43.html#part04chapter43" PageIndex="271"/>
+    <Reference Id="xhtml/part04chapter43.html#rfnpage_290-01" PageIndex="271"/>
+    <Reference Id="xhtml/part04chapter43.html#rfnpage_290-02" PageIndex="271"/>
+    <Reference Id="xhtml/part04chapter43.html#page_291" PageIndex="271"/>
+    <Reference Id="xhtml/part04chapter43.html#page_292" PageIndex="272"/>
+    <Reference Id="xhtml/part04chapter43.html#page_293" PageIndex="273"/>
+    <Reference Id="xhtml/part04chapter43.html#page_294" PageIndex="274"/>
+    <Reference Id="xhtml/part04chapter43.html#chapter43figure01" PageIndex="274"/>
+    <Reference Id="xhtml/part04chapter43.html#page_295" PageIndex="275"/>
+    <Reference Id="xhtml/part04chapter43.html#chapter43figure02" PageIndex="275"/>
+    <Reference Id="xhtml/part04chapter43.html#page_296" PageIndex="276"/>
+    <Reference Id="xhtml/part04chapter43.html#chapter43figure03" PageIndex="276"/>
+    <Reference Id="xhtml/part04chapter43.html#chapter43table01" PageIndex="276"/>
+    <Reference Id="xhtml/part04chapter43.html#page_297" PageIndex="277"/>
+    <Reference Id="xhtml/part04chapter43.html#fnpage_290-01" PageIndex="277"/>
+    <Reference Id="xhtml/part04chapter43.html#fnpage_290-02" PageIndex="277"/>
+    <Reference Id="toc:44. Optimal Money Management|file:xhtml/part04chapter44.html" PageIndex="278"/>
+    <Reference Id="xhtml/part04chapter44.html" PageIndex="278"/>
+    <Reference Id="xhtml/part04chapter44.html#page_298" PageIndex="278"/>
+    <Reference Id="xhtml/part04chapter44.html#part04chapter44" PageIndex="278"/>
+    <Reference Id="xhtml/part04chapter44.html#part04chapter44section01" PageIndex="278"/>
+    <Reference Id="xhtml/part04chapter44.html#rfnpage_298" PageIndex="278"/>
+    <Reference Id="xhtml/part04chapter44.html#page_299" PageIndex="278"/>
+    <Reference Id="xhtml/part04chapter44.html#page_300" PageIndex="280"/>
+    <Reference Id="xhtml/part04chapter44.html#chapter44figure01" PageIndex="280"/>
+    <Reference Id="xhtml/part04chapter44.html#page_301" PageIndex="281"/>
+    <Reference Id="xhtml/part04chapter44.html#chapter44figure02" PageIndex="281"/>
+    <Reference Id="xhtml/part04chapter44.html#chapter44figure03" PageIndex="281"/>
+    <Reference Id="xhtml/part04chapter44.html#chapter44figure04" PageIndex="282"/>
+    <Reference Id="xhtml/part04chapter44.html#page_302" PageIndex="282"/>
+    <Reference Id="xhtml/part04chapter44.html#fnpage_298" PageIndex="282"/>
+    <Reference Id="toc:45. Ranking Great Sports Collapses|file:xhtml/part04chapter45.html" PageIndex="283"/>
+    <Reference Id="xhtml/part04chapter45.html" PageIndex="283"/>
+    <Reference Id="xhtml/part04chapter45.html#page_303" PageIndex="283"/>
+    <Reference Id="xhtml/part04chapter45.html#part04chapter45" PageIndex="283"/>
+    <Reference Id="xhtml/part04chapter45.html#rfnpage_303" PageIndex="283"/>
+    <Reference Id="xhtml/part04chapter45.html#page_304" PageIndex="283"/>
+    <Reference Id="xhtml/part04chapter45.html#page_305" PageIndex="284"/>
+    <Reference Id="xhtml/part04chapter45.html#page_306" PageIndex="285"/>
+    <Reference Id="xhtml/part04chapter45.html#rfnpage_306" PageIndex="285"/>
+    <Reference Id="xhtml/part04chapter45.html#page_307" PageIndex="286"/>
+    <Reference Id="xhtml/part04chapter45.html#page_308" PageIndex="286"/>
+    <Reference Id="xhtml/part04chapter45.html#chapter45figure01" PageIndex="287"/>
+    <Reference Id="xhtml/part04chapter45.html#page_309" PageIndex="288"/>
+    <Reference Id="xhtml/part04chapter45.html#chapter45figure02" PageIndex="288"/>
+    <Reference Id="xhtml/part04chapter45.html#page_310" PageIndex="288"/>
+    <Reference Id="xhtml/part04chapter45.html#fnpage_303" PageIndex="289"/>
+    <Reference Id="xhtml/part04chapter45.html#fnpage_306" PageIndex="289"/>
+    <Reference Id="toc:46. Can Money Buy Success?|file:xhtml/part04chapter46.html" PageIndex="290"/>
+    <Reference Id="xhtml/part04chapter46.html" PageIndex="290"/>
+    <Reference Id="xhtml/part04chapter46.html#page_311" PageIndex="290"/>
+    <Reference Id="xhtml/part04chapter46.html#part04chapter46" PageIndex="290"/>
+    <Reference Id="xhtml/part04chapter46.html#page_312" PageIndex="291"/>
+    <Reference Id="xhtml/part04chapter46.html#chapter46figure01" PageIndex="291"/>
+    <Reference Id="xhtml/part04chapter46.html#chapter46figure02" PageIndex="291"/>
+    <Reference Id="xhtml/part04chapter46.html#page_313" PageIndex="291"/>
+    <Reference Id="xhtml/part04chapter46.html#chapter46figure03" PageIndex="292"/>
+    <Reference Id="xhtml/part04chapter46.html#page_314" PageIndex="293"/>
+    <Reference Id="xhtml/part04chapter46.html#chapter46figure04" PageIndex="293"/>
+    <Reference Id="xhtml/part04chapter46.html#page_315" PageIndex="294"/>
+    <Reference Id="xhtml/part04chapter46.html#chapter46figure05" PageIndex="295"/>
+    <Reference Id="xhtml/part04chapter46.html#page_316" PageIndex="295"/>
+    <Reference Id="xhtml/part04chapter46.html#page_317" PageIndex="296"/>
+    <Reference Id="xhtml/part04chapter46.html#chapter46figure06" PageIndex="296"/>
+    <Reference Id="xhtml/part04chapter46.html#chapter46figure07" PageIndex="296"/>
+    <Reference Id="xhtml/part04chapter46.html#page_318" PageIndex="297"/>
+    <Reference Id="toc:47. Does Joey Crawford Hate the Spurs?|file:xhtml/part04chapter47.html" PageIndex="298"/>
+    <Reference Id="xhtml/part04chapter47.html" PageIndex="298"/>
+    <Reference Id="xhtml/part04chapter47.html#page_319" PageIndex="298"/>
+    <Reference Id="xhtml/part04chapter47.html#part04chapter47" PageIndex="298"/>
+    <Reference Id="xhtml/part04chapter47.html#page_320" PageIndex="298"/>
+    <Reference Id="toc:48. Does Fatigue Make Cowards of Us All?|file:xhtml/part04chapter48.html" PageIndex="300"/>
+    <Reference Id="xhtml/part04chapter48.html" PageIndex="300"/>
+    <Reference Id="xhtml/part04chapter48.html#page_321" PageIndex="300"/>
+    <Reference Id="xhtml/part04chapter48.html#part04chapter48" PageIndex="300"/>
+    <Reference Id="xhtml/part04chapter48.html#part04chapter48section01" PageIndex="300"/>
+    <Reference Id="xhtml/part04chapter48.html#page_322" PageIndex="300"/>
+    <Reference Id="xhtml/part04chapter48.html#page_323" PageIndex="301"/>
+    <Reference Id="toc:49. Can the Bowl Championship Series Be Saved?|file:xhtml/part04chapter49.html" PageIndex="303"/>
+    <Reference Id="xhtml/part04chapter49.html" PageIndex="303"/>
+    <Reference Id="xhtml/part04chapter49.html#page_324" PageIndex="303"/>
+    <Reference Id="xhtml/part04chapter49.html#part04chapter49" PageIndex="303"/>
+    <Reference Id="xhtml/part04chapter49.html#rfnpage_324" PageIndex="303"/>
+    <Reference Id="xhtml/part04chapter49.html#page_325" PageIndex="303"/>
+    <Reference Id="xhtml/part04chapter49.html#page_326" PageIndex="304"/>
+    <Reference Id="xhtml/part04chapter49.html#chapter49figure01" PageIndex="305"/>
+    <Reference Id="xhtml/part04chapter49.html#rfnpage_326" PageIndex="305"/>
+    <Reference Id="xhtml/part04chapter49.html#page_327" PageIndex="306"/>
+    <Reference Id="xhtml/part04chapter49.html#rfnpage_327" PageIndex="306"/>
+    <Reference Id="xhtml/part04chapter49.html#page_328" PageIndex="306"/>
+    <Reference Id="xhtml/part04chapter49.html#page_329" PageIndex="307"/>
+    <Reference Id="xhtml/part04chapter49.html#chapter49table01" PageIndex="307"/>
+    <Reference Id="xhtml/part04chapter49.html#chapter49table02" PageIndex="307"/>
+    <Reference Id="xhtml/part04chapter49.html#page_330" PageIndex="308"/>
+    <Reference Id="xhtml/part04chapter49.html#fnpage_324" PageIndex="308"/>
+    <Reference Id="xhtml/part04chapter49.html#fnpage_326" PageIndex="308"/>
+    <Reference Id="xhtml/part04chapter49.html#fnpage_327" PageIndex="308"/>
+    <Reference Id="toc:50. Comparing Players from Different Eras|file:xhtml/part04chapter50.html" PageIndex="309"/>
+    <Reference Id="xhtml/part04chapter50.html" PageIndex="309"/>
+    <Reference Id="xhtml/part04chapter50.html#page_331" PageIndex="309"/>
+    <Reference Id="xhtml/part04chapter50.html#part04chapter50" PageIndex="309"/>
+    <Reference Id="xhtml/part04chapter50.html#pa04-ch50-fn1" PageIndex="309"/>
+    <Reference Id="xhtml/part04chapter50.html#page_332" PageIndex="309"/>
+    <Reference Id="xhtml/part04chapter50.html#page_333" PageIndex="310"/>
+    <Reference Id="xhtml/part04chapter50.html#chapter50table01" PageIndex="310"/>
+    <Reference Id="xhtml/part04chapter50.html#pa04-ch50-fn2" PageIndex="311"/>
+    <Reference Id="xhtml/part04chapter50.html#page_334" PageIndex="311"/>
+    <Reference Id="xhtml/part04chapter50.html#fn1-pa04-ch50" PageIndex="312"/>
+    <Reference Id="xhtml/part04chapter50.html#fn2-pa04-ch50" PageIndex="312"/>
+    <Reference Id="toc:51. Conclusions|file:xhtml/part04chapter51.html" PageIndex="313"/>
+    <Reference Id="xhtml/part04chapter51.html" PageIndex="313"/>
+    <Reference Id="xhtml/part04chapter51.html#page_335" PageIndex="313"/>
+    <Reference Id="xhtml/part04chapter51.html#part04chapter51" PageIndex="313"/>
+    <Reference Id="xhtml/part04chapter51.html#rfnpage_335" PageIndex="313"/>
+    <Reference Id="xhtml/part04chapter51.html#page_336" PageIndex="313"/>
+    <Reference Id="xhtml/part04chapter51.html#page_337" PageIndex="314"/>
+    <Reference Id="xhtml/part04chapter51.html#page_338" PageIndex="315"/>
+    <Reference Id="xhtml/part04chapter51.html#page_339" PageIndex="316"/>
+    <Reference Id="xhtml/part04chapter51.html#fnpage_335" PageIndex="317"/>
+    <Reference Id="toc:Index of Databases|file:xhtml/backmatter01.html" PageIndex="318"/>
+    <Reference Id="xhtml/backmatter01.html" PageIndex="318"/>
+    <Reference Id="xhtml/backmatter01.html#page_341" PageIndex="318"/>
+    <Reference Id="xhtml/backmatter01.html#backmatter01" PageIndex="318"/>
+    <Reference Id="toc:Annotated Bibliography|file:xhtml/backmatter02.html" PageIndex="320"/>
+    <Reference Id="xhtml/backmatter02.html" PageIndex="320"/>
+    <Reference Id="xhtml/backmatter02.html#page_343" PageIndex="320"/>
+    <Reference Id="xhtml/backmatter02.html#backmatter02" PageIndex="320"/>
+    <Reference Id="xhtml/backmatter02.html#page_344" PageIndex="321"/>
+    <Reference Id="xhtml/backmatter02.html#page_345" PageIndex="322"/>
+    <Reference Id="xhtml/backmatter02.html#page_346" PageIndex="323"/>
+    <Reference Id="xhtml/backmatter02.html#page_347" PageIndex="324"/>
+    <Reference Id="xhtml/backmatter02.html#page_348" PageIndex="325"/>
+    <Reference Id="xhtml/backmatter02.html#page_349" PageIndex="326"/>
+    <Reference Id="xhtml/backmatter02.html#page_350" PageIndex="327"/>
+    <Reference Id="xhtml/backmatter02.html#page_351" PageIndex="328"/>
+    <Reference Id="xhtml/backmatter02.html#page_352" PageIndex="329"/>
+    <Reference Id="toc:Index|file:xhtml/backmatter03.html" PageIndex="330"/>
+    <Reference Id="xhtml/backmatter03.html" PageIndex="330"/>
+    <Reference Id="xhtml/backmatter03.html#page_353" PageIndex="330"/>
+    <Reference Id="xhtml/backmatter03.html#backmatter03" PageIndex="330"/>
+    <Reference Id="xhtml/backmatter03.html#bow" PageIndex="331"/>
+    <Reference Id="xhtml/backmatter03.html#page_354" PageIndex="332"/>
+    <Reference Id="xhtml/backmatter03.html#exe" PageIndex="333"/>
+    <Reference Id="xhtml/backmatter03.html#page_355" PageIndex="333"/>
+    <Reference Id="xhtml/backmatter03.html#hit" PageIndex="334"/>
+    <Reference Id="xhtml/backmatter03.html#mon" PageIndex="336"/>
+    <Reference Id="xhtml/backmatter03.html#page_356" PageIndex="336"/>
+    <Reference Id="xhtml/backmatter03.html#poi" PageIndex="338"/>
+    <Reference Id="xhtml/backmatter03.html#page_357" PageIndex="338"/>
+    <Reference Id="xhtml/backmatter03.html#sag" PageIndex="339"/>
+    <Reference Id="xhtml/backmatter03.html#page_358" PageIndex="340"/>
+  </References>
+</BookContents>

@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page141" xml:space="preserve"/>
+      <Image Source="/Resources/64632341-2a9c-42f5-b9fd-29d7293ac880.jpg" Stretch="Uniform" Width="251" Height="87" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__85">August 2008</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Figure HorizontalAnchor="ColumnLeft" HorizontalOffset="16" VerticalOffset="0" CanDelayPlacement="False" Height="42.6318367346939" Margin="0,0,1,0" Padding="0,0,0,0" TextAlignment="Justify" FontFamily="Charis SIL" FontSize="50" Tag="KNFBDropCap">
+        <Paragraph LineHeight="50" LineStackingStrategy="BlockLineHeight">
+          <Run FontFamily="Charis SIL" FontSize="50" Tag="__85">I</Run>
+        </Paragraph>
+      </Figure>
+      <Run Tag="__85">&#x2019;ve eaten a &#x201C;bizza.&#x201D; That was a few days ago, in a very modern restaurant where the waiters all wore caps and shouted their orders into a microphone.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__85">The bizza tasted so strange! It crunches under your teeth, like a big </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__85">khobz</Run>
+      <Run Tag="__85"> flatbread, with lots of good things to eat on top: tomatoes, corn, chicken, olives. At the table next to us, there were ladies wearing scarves who looked like the women in the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__85">Yemen Times</Run>
+      <Run Tag="__85"> offices. They were very stylish, and even used a knife and fork to bring the pieces of bizza to their mouths.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page142">I tried to imitate them, cutting my slice the same way. At first it wasn&#x2019;t easy; I got bizza everywhere. As for Ha&#xEF;fa, she saw a girl empty a bottle of spicy tomato sauce over her plate, so she wanted to try that, too. Except that, from the first mouthful, her throat was on fire and her eyes got all red! Luckily, one of the waiters finally left his mic to bring her a big bottle of water.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__85">Now we have a new game: when we help Omma prepare meals, we pretend we&#x2019;re customers in a &#x201C;bizzeria&#x201D; who&#x2019;ve come to choose their favorite dishes.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__85">&#x201C;How may I help you?&#x201D; asks Ha&#xEF;fa, laying out the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__85">sofrah</Run>
+      <Run Tag="__85"> in our main room.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__85">&#x201C;Let&#x2019;s see, today, I think I&#x2019;ll have a cheese bizza.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__85">Actually, I say </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__85">cheese</Run>
+      <Run Tag="__85"> because when I rummaged through our pantry bag, I realized that that&#x2019;s all we have left to eat. Too bad; we&#x2019;ll cope.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__85">&#x201C;Come to the table,&#x201D; announces Ha&#xEF;fa, inviting the rest of the family to join us.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">We&#x2019;ve barely begun to eat, though, when someone knocks on our front door.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">&#x201C;Nujood, are you expecting more reporters?&#x201D; Mohammad asks me suspiciously.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">&#x201C;No, not today.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">&#x201C;Then perhaps it&#x2019;s the water truck, to fill the cistern. But he usually comes in the morning.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">Frowning, Mohammad gets to his feet, still chewing his mouthful of bread, and hurries to the front door. Who could be visiting us at this hour, in this stifling August heat? During very hot weather, visitors usually come at the end of the day.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">Mohammad&#x2019;s cry startles us all.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">&#x201C;Fares!&#x201D; he shouts. &#x201C;Fares has come back!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page143">I feel faint. Fares, my beloved brother, whom I haven&#x2019;t seen in four years! Supporting herself against the wall with trembling hands, our mother staggers to the front door, and we&#x2019;re all close behind her, with little Rawdha trying to sneak ahead of us by slipping between our legs. Our tiny hall has never seemed so long.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">The young man at the door has a gaunt face and deeply tanned skin; how he has changed! Tall and thin, Fares is no longer the adolescent in the photo I&#x2019;ve studied so often, down to the slightest details. Now I must look way up to observe him closely. His eyes have a harder look, and his forehead bears a few dark creases, like Aba&#x2019;s. He has become a man.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">&#x201C;Fares! Fares! Fares!&#x201D; moans our mother, clinging to his white tunic, hugging him tightly.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">&#x201C;We&#x2019;ve missed you so much,&#x201D; I tell him, when it&#x2019;s my turn to kiss him.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">Ramrod straight, Fares is silent. He seems exhausted; his eyes are empty, almost sad. Where has it gone, the ebullience that suited him so well?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__86">&#x201C;Fares, Fares!&#x201D; Rawdha sings like a robot, without really understanding that this tall gentleman is her big brother, who left our home when she was still nothing but a little bitty baby.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,16" TextAlignment="Center" FontFamily="Charis SIL" FontSize="16">
+      <Image Source="/Resources/55832ac8-9b14-444c-baf4-73342eb8a897.jpg" Stretch="Uniform" Width="60" Height="20" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page144">Since that short phone call from Saudi Arabia, two years after his flight, we hadn&#x2019;t heard a thing from him, until an unexpected call one evening, just last month. When Omma recognized his voice on the other end of the line, she shrieked with joy. Then we&#x2019;d all torn the phone from her hands, one after another, to listen to him. He&#x2019;d seemed distant, very far away, but it had warmed my heart to know he was alive.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__87">&#x201C;Are things going well for you, over there?&#x201D; our father had hastened to ask, his voice cracking, on the verge of tears.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__87">Aba wanted to know everything from Fares: For whom was he working? Did he like it there? Was he earning a good living? In answer, my brother had simply repeated the same question several times, as if possessed: &#x201C;And </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__87">you</Run>
+      <Run Tag="__87">, how are </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__87">you</Run>
+      <Run Tag="__87">?&#x201D; Then he told us, &#x201C;I&#x2019;m very worried about my family. I&#x2019;ve heard things. Please tell me that everything&#x2019;s all right.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page145">And he </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page145">was</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page145"> worried&#x2014;you could hear it in his voice. He explained to us that over there, rumours were circulating about our family. All the way out there, in Saudi Arabia, so remote that I couldn&#x2019;t even find it on a map! Yemeni travelers had told Fares that we&#x2019;d had some problems, but they hadn&#x2019;t given him any details. And then one day Fares had seen a photo of our father and me in a local paper. But after years of playing hooky&#x2014;he&#x2019;d abandoned school at the end of the first year&#x2014;he was simply incapable of reading the article beneath the picture, so that mysterious story had kept tormenting his mind, until he could no longer sleep.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__87">Rumors carried by travelers, a photo in a Saudi paper: the news of my divorce had indeed traveled beyond my country&#x2019;s borders. At Fares&#x2019;s insistence, Aba quickly filled him in on what had happened in the past few months.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__87">&#x201C;Now I understand a little better,&#x201D; my brother said.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__87">&#x201C;Fares, my son, please, come home!&#x201D; our mother had begged him, sniffling.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__88">&#x201C;I can&#x2019;t, I have work to do,&#x201D; he&#x2019;d replied, and then the line had gone dead.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__88">The call must have lasted about ten minutes, but that was enough to plunge Omma back into utter despair. She had recovered her taste for life after my divorce, but now she flew off the handle at the slightest thing. She wanted to see her son again, to smell him, to touch him. She simply couldn&#x2019;t bear seeing our family threatened anymore&#x2014;some of us bolting, others being carried off. Why did fate always persecute her? Hadn&#x2019;t she, too, the right to be just a little bit happy, like other mamas?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page146">Her nightmares returned. Fearing that Fares had decided to abandon his family for good and had called just to ease his conscience, she felt she would never see him again. Her insomnia came back to plague her at night, and my heart broke to see her suffer. My divorce had opened my eyes about many things, making me more sensitive to the unhappiness of others.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__88">And now, on this hot, oppressive day, my Fares has returned. A Fares much calmer and quieter than the one I remember, but those bushy eyebrows and that curly hair could belong only to my brother. I want to know everything about him. Does his boss treat him well? Has he made new friends in Saudi Arabia? And hey&#x2014;surely they must eat good bizzas over there?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__88">Refusing to let go of him, our mother pulls him by the arm into our second room. Fares isn&#x2019;t saying much; slowly, he takes off his shoes before collapsing onto a cushion. I don&#x2019;t take my eyes off him. In a flash, Omma brings him a glass of </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__88">cha&#xEF;</Run>
+      <Run Tag="__88">, hot tea, from which he takes a few quick swallows.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__88">&#x201C;So, tell us a little,&#x201D; Aba urges him.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__88">Fares sets his glass down on the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__88">sofrah</Run>
+      <Run Tag="__88">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__88">&#x201C;In four years, I wasn&#x2019;t able to save up a thing. I&#x2019;m so sorry. If only I&#x2019;d known,&#x201D; he murmurs, bowing his head.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page147">Silence falls in the room. Then my brother&#x2019;s face relaxes a little, and a faint smile appears.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__89">&#x201C;You remember, Aba? I was so angry at you, that day, for having yelled at me when I came home empty-handed after going to beg some bread from the baker. I was eaten up by shame; I&#x2019;d had enough of scrounging left and right for bits of change. I dreamed of new clothes, like all boys my age, but at home we had barely enough to buy food. The next day I woke up with the crazy desire to depend on no one but myself. I wanted to succeed, to earn money with a decent job, and buy myself the clothes I wanted. So I left, resolving not to return here until the day when my pockets were stuffed with money.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__89">Fares pauses for a sip of tea.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__89">&#x201C;In the neighborhood there were people who talked about the chance to travel to Saudi Arabia. They said that over there a man can earn his living, and even send money back home to help his family. That was exactly what I needed. I wanted to try that adventure; I was full of ambition and had nothing to lose. I was young, thoughtless; I never imagined how hard things would be.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page148">&#x201C;It took me four days to reach Saudi Arabia. First I took a share taxi north to Sa&#x2019;ada. The road to the city was full of army checkpoints, and I began to realize that the trip would be long and difficult. In Sa&#x2019;ada, I met a &#x2018;passer,&#x2019; who offered to get me over the border for five thousand rials, about twenty-five dollars. That was expensive, but given my situation, I wasn&#x2019;t about to turn back. At least the man knew his business; he said he would use paths that would outsmart the border guards. Since I didn&#x2019;t have any identification papers on me, I decided to rely on him.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__89">&#x201C;We were so worried!&#x201D; exclaims Aba. &#x201C;We thought you&#x2019;d disappeared for good.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__89">Absorbed in his memories, Fares simply goes on with his story.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__89">&#x201C;We crossed the border on foot in the middle of the night. I have never been so scared in my life. Along the way, I encountered other Yemenis, some of them younger than I was. Like me, they didn&#x2019;t really know what awaited them on the other side, and had only one thought: to make their fortunes. It was walking through the darkness that made me understand the real risk I was taking. If I&#x2019;d been caught by soldiers, they would have immediately sent me back to Sana&#x2019;a.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page149">&#x201C;My relief at crossing the border was quickly overwhelmed by my confusion: Now what? Where should I go? It was the first time I&#x2019;d ever set foot in a foreign land. Tired, I walked on until I reached the outskirts of the town of Khamiss Mousheid. What a disappointment! That part of Saudi Arabia is no better than Sana&#x2019;a. A man from whom I had asked directions offered to put me up for the night. He lived out in the countryside with his wife and children.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__90">&#x201C;The next day, when he offered me a job, I accepted right away. I truly had no other choice. He raised sheep, and put me in charge of a herd of six hundred animals. I had to take them out to pasture every day, with the help of one other shepherd, who was from the Sudan. I worked twelve hours a day, from six in the morning until six in the evening. At night I shared my room with the Sudanese, in a tiny stone house in the middle of nowhere, furnished with only two little mattresses. There was no television, no refrigerator, no toilet, no air-conditioning. I lost all my illusions.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__90">Fares pauses again, swallowing hard; his voice is growing hoarse, probably from fatigue after his journey.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page150">&#x201C;From then on, it was one disappointment after another. The boss grew more demanding every day. We had to feed the animals, water them, take them out into the fields. The workdays kept getting longer. It took me a month to realize how precarious my position was, when I received my salary for the first time: two hundred Saudi rials, a little over fifty dollars for thirty days&#x2019; work, enough to buy myself some candy at the corner store&#x2014;which belonged, strangely enough, to my boss.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__90">&#x201C;I was shaken. I figured out that I would have to work for at least a year to amass the necessary money to come home to Sana&#x2019;a. I didn&#x2019;t have enough to phone you. Besides, I was too proud to admit my failure. The first time I called you, it was only to make you believe that all was well. The second time, two years later, it was because I was so worried.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__91">He bows his head, and heaves a deep sigh.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__91">&#x201C;Once I&#x2019;d hung up the phone, I couldn&#x2019;t help thinking about Omma&#x2019;s tears on the other end of the line. I couldn&#x2019;t sleep at night for thinking about them. I counted every last bit of my money: I had just enough to return to Sana&#x2019;a. One morning last week, I went to tell my boss good-bye. I&#x2019;d made up my mind: it was time to go home.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__91">&#x201C;And now what do you plan on doing?&#x201D; asks Mohammad.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__91">&#x201C;Well, I&#x2019;ll do what the others do. I&#x2019;ll sell chewing gum in the street,&#x201D; replies Fares resignedly.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page151">How he has changed! Fares, once so ambitious, today seems ready to accept defeat. I can still see his impudent expression when he stood up to Aba, like a colored drawing I would have thought could never be erased. I remember his cheekiness, which exasperated Aba but gave me a good laugh. If he had been with us at the bizzeria the other day, he would have been the first to make airplanes from the restaurant&#x2019;s paper napkins, and wing them over to the next table. It was in thinking about his impetuous energy that I&#x2019;d found the strength, in April, to run away to the courthouse. His escape had given me the courage to fly with my own wings. I feel I owe him something.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__91">Fares, beaten, no&#x2014;that isn&#x2019;t like him. I would never have imagined that he would give up. It makes me sick at heart. One day I must manage to help him in turn. I don&#x2019;t really know how, but in the end, I&#x2019;ll find a way.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

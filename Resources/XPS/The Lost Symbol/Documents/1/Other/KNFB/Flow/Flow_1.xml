@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_tp_r1.htm#tp">
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/e6fa0240-965b-446b-a25e-234bc4d20732.jpg" Stretch="Uniform"/>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

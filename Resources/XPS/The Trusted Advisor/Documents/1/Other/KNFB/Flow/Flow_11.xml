@@ -1,0 +1,370 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ch2.html#ch2">
+      <Paragraph Margin="0,80,0,28" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="16">
+        <Run Tag="__17">2</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Normal" FontSize="19" Tag="__17">What Is a Trusted Advisor?</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__17">N</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__17">ONE</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" xml:space="preserve" Tag="__17"> OF</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" xml:space="preserve" Tag="__17"> US</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" xml:space="preserve" Tag="__17"> BEGINS</Run>
+          <Run Tag="__17"> our career as a trusted advisor, but that is the status to which most of us aspire. We usually begin as vendors, performing a specific task or &#x201C;one-off&#x201D; service, employing our technical skills (see Figure 2-1). We may perform with excellence and expertise, but our activities are limited in scope.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__17">At the next level, the client may sense that we possess capabilities not directly related to our original area of expertise. When operating at this level, we begin to focus on our ability to solve more general problems and not solely on our technical mastery. Our clients see us increasingly this way as well and begin to call upon us for issues with more breadth, and earlier on in the initial defining stages of their problems.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__17">Fig. 2.1. The Evolution of a Client-Advisor Relationship</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/48e70fc0-187a-4663-a1a4-e0ed6e924804.jpg" Stretch="Uniform" Width="300" Height="154" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__17"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__17">At the third level (valuable resource) we might be consulted on broad strategy issues related to our specific expertise, but not limited only to that expertise. We are no longer seen through the client&#x2019;s eyes as having just technical expertise or problem-solving ability, but we are seen in terms of our ability to put issues in context and to provide perspective. We begin to offer advice proactively and to identify issues in their organizational context.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__17">The highest level, the pinnacle, is that of trusted advisor, in which virtually all issues, personal and professional, are open to discussion and exploration. The trusted advisor is the person the client turns to when an issue first arises, often in times of great urgency: a crisis, a change, a triumph, or a defeat.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__18">Issues at this level are no longer seen merely as organizational problems, but also involve a personal dimension. Becoming a trusted advisor at the pinnacle level requires an integration of content expertise with organizational and interpersonal skills.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__18">These levels, depicted in Figure 2-1, are a function of both &#x201C;breadth of issues&#x201D; and &#x201C;depth of personal relationship.&#x201D; By &#x201C;breadth of issues&#x201D; we mean the range of business issues in which the advisor gets involved. By &#x201C;depth of personal relationship,&#x201D; we mean the extent to which the client permits us to address their personal relationship to the issues at hand (and the business at large).</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__18">We do not suggest that a professional operating at Level 1 is doing something wrong. Far from it. Most of our daily professional lives are spent operating at Levels 1 and 2; relatively little of our time is spent actually working at Levels 3 and 4. The issue is not hours in a day, but rather the ability to shift comfortably and instantly to any level when necessary.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__18">Another way of looking at the stages in the evolution of a client-advisor relationship is shown in Figure 2-2. It uses the same axes: breadth of business issues and depth of personal relationship.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__18">Marketing people are fond of pointing out three kinds of professional-client relationships, which correspond to three approaches to winning business. These are product/service-based, needs-based, and relationship-based approaches. It is usually argued that the best, the most highly evolved of these three types is the relationship-based mode.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__18">We think the distinctions are useful, but the conclusions are not quite right. As we suggested in Figure 2-1, there are times when it is perfectly appropriate and right for a relationship to be service based, or needs-based. And there are times when a particular type of relationship is </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__18">not</Run>
+          <Run Tag="__18"> the appropriate one.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__18">Fig. 2.2. Four Types of Relationship</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/627e6876-0a45-43ba-b954-b786698d052e.jpg" Stretch="Uniform" Width="300" Height="154" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__18"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__18">Most important, we feel a fourth type of relationship is missing from the typology, the trust-based relationship. The difference between this and the other levels is the human dimension, the recognition of the interpersonal, individual aspects of the relationship.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__19">It can be seen that the full trust-based relationship is marked by a broad range of business issues and a deep personal relationship.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__19">Figure 2-3 summarizes the characteristics of operating at the different levels shown in Figure 2-2. Each level has different implications for the focus, the time and energy spent, for what the client receives from the relationship, and for indicators of success.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__19">Pinnacle Relationships</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__19">Extreme examples are often useful for highlighting key aspects of an issue. So it is with pinnacle relationships and trust.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__19">One advisor who has reached the pinnacle of trust with his client is David Falk, agent to basketball superstar Michael Jordan.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__19">Falk helped to create and to build Michael Jordan into one of the world&#x2019;s most successful &#x201C;brands,&#x201D; starting with the 1977 Nike endorsement deal, then worth $2.5 million plus royalties. Eventually, Jordan endorsed dozens of products, from phone service to golf-club covers, and is worth many millions of dollars. Falk, too, has profited handsomely from this relationship. With Jordan as a client, he was able to develop an agency that eventually sold for $100 million.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/ac42026e-ade4-4012-8817-c205b5dc4488.jpg" Stretch="Uniform" Width="450" Height="235" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__19"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__19">Henry Louis Gates, Jr., writing in </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__19">The New Yorker</Run>
+          <Run Tag="__19">, recounted how Falk was &#x201C;exquisitely attuned&#x201D; to Jordan&#x2019;s attitudes about money and Falk&#x2019;s fees. In two instances, Falk reduced or waived specific fees (without being asked by Jordan) because he knew that&#x2019;s what Jordan wanted, even though Michael would never make such a request. Falk believes that this is one of the reasons the two are still working together, and that Falk continues to collect 4 percent of Jordan&#x2019;s enormous earnings.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">The trusted advisor acts variously as a mirror, a sounding board, a confessor, a mentor, and even, at times, the jester or fool. The following excerpt from a conversation between Bill Gates and Warren Buffett is telling:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">Gates: It&#x2019;s important to have someone who you totally trust, who is totally committed, who shares your vision, and yet who has a little bit different set of skills and who also acts as something of a check on you. Some of the ideas you run by him, you know he&#x2019;s going to say, &#x201C;Hey, wait a minute, have you thought about this and that?&#x201D; The benefit of sparking off somebody who&#x2019;s got that kind of brilliance is that it not only makes business more fun, but it really leads to a lot of success.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">Buffett: I&#x2019;ve had a partner like that, Charlie Munger, for a lot of years, and it does for me exactly what Bill is talking about. You have to calibrate with Charlie, though, because Charlie says everything I do is dumb. If he says it&#x2019;s really dumb, I know it is, but if he just says it&#x2019;s dumb, I take that as an affirmative vote.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">Richard Mahoney, former CEO of Monsanto, says of John Shutack, his trusted advisor from the management consulting firm Booz Allen &amp; Hamilton:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">&#x201C;He irritated the hell out of me sometimes. But he wasn&#x2019;t a nuisance because he always gave good counsel.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">How does it look from the advisor&#x2019;s side? James Kelly, formerly managing director and co-chairman of Gemini Consulting and now an independent writer and consultant, provides an informative glimpse of how a truly trusted advisor views the client:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">&#x201C;You must have a belief in the clients that you&#x2019;re working with. That&#x2019;s not to say that you accept them as being perfect. But there are ingredients in everybody that can and need to be appreciated at the same time that you may have to be working on the things that aren&#x2019;t so good.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">"On some level all of us are flawed and inadequate; we have to accept that and do what we can to help with the things that maybe clients can&#x2019;t deal with in their particular setting as they might like to.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__20">&#x201C;So part of the role is putting your own credibility at stake on behalf of the client, despite the fact that he is (we all are) inevitably flawed. You support their strengths and help compensate for their weaknesses.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__21">This ability to focus on the other person is evident in virtually all the trusted advisors we have encountered. We are not aware of any one approach that they have taken to get there. Some seem to have been born that way, with a blend of curiosity, equanimity, and quiet self-assurance that permits them to easily focus their attention on others. Listen to how James Kelly describes a client&#x2019;s decision to bring Kelly in:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__21">&#x201C;In his case it was a difficult thing to do because my client has such a strong personality. I&#x2019;ve thought about it a lot, and I think it&#x2019;s because he sensed that I wasn&#x2019;t going to undermine him or compete with him in the same territory. In this case, I ended up having to coach him that he really was being counterproductive. But I feel it was almost like he knew that something had to be done, it&#x2019;s just that those messages had to be delivered by someone who cared. You have to accept and believe in the clients you serve.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__21">In the deepest and most complete trusted advisor relationships, there are few boundaries within the relationship, little separation between professional and personal issues. Both members of the relationship fully know about each other and understand the role the other plays in his or her life.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__21">Regina M. Pisa, chairman and managing partner of Goodwin, Procter &amp; Hoar, L.L.P., one of Boston&#x2019;s largest and most prominent law firms, describes a most unusual and special trusted advisor relationship.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__21">&#x201C;I had a CEO client call me,&#x201D; she says. &#x201C;He was leaving an appointment at Massachusetts General Hospital and wanted to come over right away. He walked in with his wife, and said that they had just been told that he was terminally ill, with not much time left. He said, &#x2018;I&#x2019;m fearful for my wife. She doesn&#x2019;t have someone like you in her life who she can call on for anything and I want you to do for her what you did for me. We&#x2019;re putting ourselves in your hands to help us through all of this.&#x2019;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__21">&#x201C;Getting the estate planning in order was the easy part. What they were asking for was for me to help them deal with the whole thing, before and after death. There&#x2019;s no greater definition of a trusted advisor, no greater reward than when you develop bonds with clients that run so deep.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__21">This story stands as an object lesson for what can be achieved. Not all of us might choose to aim for relationships as deep as this one. But the story reveals that there are no limits to the depth to which a trusting relationship can go, other than those imposed by the advisor and the client.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__22">Clients like Ms. Pisa&#x2019;s are the best clients because they understand the value of what you provide. In the push-pull of work, there are always deal pressures, missed deadlines, and so forth. Clients are not always understanding. They might be unreasonable in their expectations. But when you have relationships like this, clients treat you well.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__22">Characteristics of Successful Trusted Advisors</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__22">Those professionals who apply trust most successfully are those who are at ease with concepts like:</Run>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__22">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__22">Do well by doing good</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__22">What goes around comes around</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__22">You get back what you put in</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__22">Use it or lose it</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__22">These maxims are ways of suggesting that success comes to those who have chosen </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__22">not</Run>
+          <Run Tag="__22"> to make success their primary goal. The way to be as rich as Bill Gates is to care more about writing code than about being rich. And the way to be a great advisor is to care about your client.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__22">A common trait of all these trusted advisor relationships is that the advisor places a higher value on maintaining and preserving the relationship itself than on the outcomes of the current transaction, financial and otherwise. Often, the advisor will make a substantial investment in the client (without a guarantee of return) before the relationship does, in fact, generate any income, let alone any profit.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__22">Based on the examples cited above, and the many trusted advisors we have encountered in our careers, we believe the following attributes describe trusted advisors:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__22">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run Tag="__22">Have a predilection to focus on the client, rather than themselves. They have: </Run>
+          </Paragraph>
+          <List MarkerStyle="Disc" Margin="64,32,0,32" FontSize="14" Tag="__22">
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__22">enough self-confidence to listen without pre-judging</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__22">enough curiosity to inquire without supposing an answer</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__22">willingness to see the client as co-equal in a joint journey</Run>
+              </Paragraph>
+            </ListItem>
+            <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+              <Paragraph>
+                <Run Tag="__22">enough ego strength to subordinate their own ego</Run>
+              </Paragraph>
+            </ListItem>
+          </List>
+          <Paragraph/>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__22">Focus on the client as an individual, not as a person fulfilling a role</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__23">Believe that a continued focus on problem definition and resolution is more important than technical or content mastery</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__23">Show a strong &#x201C;competitive&#x201D; drive aimed not at competitors, but at constantly finding new ways to be of greater service to the client</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__23">Consistently focus on doing the next right thing, rather than on aiming for specific outcomes</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__23">Are motivated more by an internalized drive to do the right thing than by their own organization&#x2019;s rewards or dynamics</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__23">View methodologies, models, techniques, and business processes as means to an end. They are useful if they work, and are to be discarded if they don&#x2019;t; the test is effectiveness for </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__23">this</Run>
+            <Run Tag="__23"> client.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__23">Believe that success in client relationships is tied to the accumulation of quality experiences. As a result, they seek out (rather than avoid) client-contact experiences, and take personal risks with clients rather than avoid them.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__23">Believe that both selling and serving are aspects of professionalism. Both are about proving to clients that you are dedicated to helping them with their issues.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__23">Believe that there is a distinction between a business life and a private life, but that both lives are very personal (i.e., human). They recognize that refined skills in dealing with other people are critical in business and in personal life; the two worlds are often more alike than they are different, and for some, they overlap to an extraordinary extent.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__23">The Benefits of Being a Trusted Advisor</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__23">To begin with the obvious commercial point, a trusted advisor benefits from having trusting relationships because they lead to repeat business from the same client. These relationships also lead to new business through referrals from existing clients.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__23">These relationships are also less plagued by pro forma procedures that waste time and drive professionals crazy, such as proposals, presentations, studies, activity reports, and the like. In short, these relationships can be highly profitable, and more enjoyable, for the trusted advisor.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__23">Another benefit is that in a trusting relationship, the advisor is able to employ the most prized individual skills and powers (listening, reasoning, problem solving, and imagining) and apply them to subjects that truly matter.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__23">Time can be spent with a decision maker with substantial power to affect an organization: create new initiatives, harness resources, and get things done. Trust frees us from the need to spend time on inconsequential projects or tedious procedural issues.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__23">The world of media production provides an example of the efficiency benefits of trust relationships. Consider the stories of two (disguised) producers of television documentaries. Producer Thomas has, over the years, developed relationships of trust with a small number of television programmers (the executives in charge of developing and commissioning programs) and created a number of successful shows with and for them.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__23">Now, to sell a new program, he simply creates a brief document (two to three pages) describing the basic idea. &#x201C;There is no subject that an experienced executive has not received a proposal about,&#x201D; he says. &#x201C;For the programmer, it&#x2019;s not about receiving a voluminous and costly proposal. It&#x2019;s about working with a producer they trust. If they like the idea, and need more information, they&#x2019;ll ask for it. If not, they&#x2019;ll simply give me the green light.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__24">Producer Atkins, on the other hand, has a far less established reputation in television, and, following a less-than-successful relationship with one programmer, no strong trust relationship. As a result, he is forced to devote a great deal of time to producing weighty proposals that contain complete program treatments, biographies of the key team members, detailed budgets, and complex schedules, all elaborately produced with desktop publishing software, replete with graphics and images, and handsomely bound.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__24">He exhausts himself (and his staff) in creating these proposals, only a fraction of which are, or can be, successful. As a result, he has produced fewer documentaries than Producer Thomas, and earns less money.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__24">Finally, one of the most significant rewards of a trusted advisor relationship, for both client and advisor, is that in such a relationship, the individuals are most able to be fully who they are. The members of the relationship do not expend energy protecting themselves, and both can be open with information about their lives, their strengths, and their weaknesses. They share information and ideas, feel comfortable with themselves, and have great access to their emotions and inspirations.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__24">Behaving with a professional colleague as you would with a friend (conducting yourself at the office as you would outside it) is an extremely valuable reward of a trusted advisor relationship. There is little pretense. Much work can be done without wasting time or words. There is no need for client or advisor to posture before each other. They are who they are (as imperfect as each of them may be) and do not allow their conflicts and incompatibilities to erode their mutual trust.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__24">Getting Started</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__24">Few of us start with the skills of the expert trusted advisors described here. In fact, those individuals did not </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__24">begin</Run>
+          <Run Tag="__24"> their careers with these skills fully developed. If we are to develop our trust-building skill, we must be honest with ourselves about how good at it we currently are. Many people assume they are better at winning trust than they really are.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__24">A study was once done on pairs of graduate students and their faculty advisors. Each group, the students and the advisors, were asked a number of questions about themselves and their counterparts. The questions boiled down to the following:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__24">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__24">How trustworthy have you been in your relations with the other person?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__24">How trustworthy has the other person been in his or her relations with you?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__24">How trustworthy do you think the other person thinks you have been?</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__24">The results were that each group perceived themselves to be more trustworthy than the other group. Not only that, they predicted that the self-perception of themselves as more trustworthy would be shared by the other person, which of course it was not.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__25">If this study can be generalized (and we think it can), it reveals that we must work continuously to convince others that we truly are worthy of their trust. As a starting position, they think we are less trustworthy than we think of ourselves as being, and we have our doubts about their trustworthiness! There is work to be done!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__25">We&#x2019;ll begin our investigation of how to get started by examining the three skills of earning trust, giving advice effectively, and building relationships. First, earning trust.</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>
