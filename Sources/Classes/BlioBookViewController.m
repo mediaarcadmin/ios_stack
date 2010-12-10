@@ -2148,9 +2148,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [audioMgr setCurrentBlock:blockId];
                 [audioMgr setBlockWords:[_audioParagraphSource wordsForParagraphWithID:blockId]];
 
-				if ( [audioMgr.blockWords count] && (wordOffset < [audioMgr.blockWords count] - 1 )) {
-					++wordOffset;
-				}
+				//if ( [audioMgr.blockWords count] && (wordOffset < [audioMgr.blockWords count] - 1 )) {
+				//	++wordOffset;
+				//}
+				
                 [audioMgr setCurrentWordOffset:wordOffset];
                 [audioMgr setPageChanged:NO];
             }
