@@ -92,6 +92,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)setThumb:(UIImage *)thumb;
 - (void)setThumbAnchorPoint:(CGPoint)anchor;
+- (void)showThumb:(BOOL)show;
 
 @end
 
@@ -267,7 +268,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:self.view.bounds];
 	thumbPreview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	thumbPreview.userInteractionEnabled = NO;
-	thumbPreview.alpha = 0;
+	thumbPreview.alpha = 0.01f;
 	thumbPreview.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7f];
 	[self.view addSubview:thumbPreview];
 	
@@ -3202,31 +3203,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = YES;
-	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:0.2f];
-	[self.bookViewController.thumbPreview setAlpha:1];
-	[UIView commitAnimations];
+	[self.bookViewController.thumbPreview showThumb:YES];
     return [super beginTrackingWithTouch:touch withEvent:event];
 }
 
 - (void)cancelTrackingWithEvent:(UIEvent *)event {
     touchInProgress = NO;
-	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:0.2f];
-	[self.bookViewController.thumbPreview setAlpha:0];
-	[UIView commitAnimations];
+	[self.bookViewController.thumbPreview showThumb:NO];
     [super cancelTrackingWithEvent:event];
 }
 
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = NO;
-	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:0.2f];
-	[self.bookViewController.thumbPreview setAlpha:0];
-	[UIView commitAnimations];
+	[self.bookViewController.thumbPreview showThumb:NO];
     [super endTrackingWithTouch:touch withEvent:event];
 }
 
@@ -3274,12 +3263,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[super dealloc];
 }
 
-- (void)setAlpha:(CGFloat)alpha {
+- (void)showThumb:(BOOL)show {
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.2f];
 	if (thumbImage.image) {
-		[super setAlpha:alpha];
+		if (show) {
+			[self setAlpha:1];
+		} else {
+			[self setAlpha:0.01f];
+		}
 	} else {
-		[super setAlpha:0];
+		[self setAlpha:0.01f];
 	}
+	[UIView commitAnimations];
 }
 
 - (CGRect)thumbBounds {
