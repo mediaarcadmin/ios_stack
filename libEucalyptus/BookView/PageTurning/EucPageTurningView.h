@@ -108,7 +108,9 @@ typedef enum EucPageTurningViewAnimationFlags {
     THVec3 _pageTouchPoint;
     CGPoint _viewportTouchPoint;
     CGPoint _touchVelocity;
-
+    
+    BOOL _accessibilityScrollUnderway;
+    
     BOOL _dragUnderway;
     EucPageTurningViewAnimationFlags _animationFlags;
     
