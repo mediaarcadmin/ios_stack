@@ -224,6 +224,7 @@
             [_selector setSelectedRange:nil];
         }        
         _pageLayoutController.pageSize = newSize;
+        self.pageCount = _pageLayoutController.globalPageCount;
         [self _redisplayCurrentPage];
     }
 }
@@ -860,7 +861,7 @@ typedef enum {
     if(_pageNumber > 0 && !_selector.selectedRange && !_pageTurningView.isAnimating) {
         CGFloat tapTurnMargin = [_pageLayoutController tapTurnMarginForView:pageTextView];
         if(point.x < tapTurnMargin &&
-           _pageNumber > 0) {
+           _pageNumber > 1) {
             [self goToPageNumber:_pageNumber - 1 animated:YES];
         } else if(point.x > (pageTextView.bounds.size.width - tapTurnMargin) && 
                   _pageNumber < _pageCount) {
