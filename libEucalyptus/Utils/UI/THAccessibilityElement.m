@@ -43,4 +43,17 @@
     }
 }
 
+- (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
+{
+    if(_delegate && [_delegate respondsToSelector:@selector(thAccessibilityElementAccessibilityScroll:)]) {
+        return [_delegate thAccessibilityElementAccessibilityScroll:direction];
+    }
+    return NO;
+}
+
+- (BOOL)_accessibilityIsScrollable
+{
+    return YES;
+}
+
 @end

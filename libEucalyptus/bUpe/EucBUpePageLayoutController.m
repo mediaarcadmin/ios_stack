@@ -255,5 +255,9 @@
     return 0.25f * view.bounds.size.width;
 }
 
+- (CGFloat)topMarginForView:(UIView *)view
+{
+    return ((EucPageView *)view).pageTextView.frame.origin.y - view.bounds.origin.y;
+}
 
 @end

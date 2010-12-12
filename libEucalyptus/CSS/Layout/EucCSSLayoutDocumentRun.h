@@ -34,6 +34,10 @@ typedef enum EucCSSLayoutDocumentRunComponentKind {
     EucCSSLayoutDocumentRunComponentKindFloat,
 } EucCSSLayoutDocumentRunComponentKind;
 
+typedef struct EucCSSLayoutDocumentRunStringInfo {
+    NSString *string;
+} EucCSSLayoutDocumentRunStringInfo;
+
 typedef struct EucCSSLayoutDocumentRunHyphenationInfo {
     NSString *beforeHyphen;
     CGFloat widthBeforeHyphen;
@@ -41,13 +45,11 @@ typedef struct EucCSSLayoutDocumentRunHyphenationInfo {
     CGFloat widthAfterHyphen;
 } EucCSSLayoutDocumentRunHyphenationInfo;
 
-
 typedef struct EucCSSLayoutDocumentRunImageInfo {
     CGImageRef image;
     CGSize scaledSize;
     CGFloat scaledLineHeight;
 } EucCSSLayoutDocumentRunImageInfo;
-
 
 typedef struct EucCSSLayoutDocumentRunComponentInfo {
     EucCSSLayoutDocumentRunComponentKind kind;
@@ -55,7 +57,7 @@ typedef struct EucCSSLayoutDocumentRunComponentInfo {
     EucCSSIntermediateDocumentNode *documentNode;
     CGFloat width;
     union {
-        NSString *string;
+        EucCSSLayoutDocumentRunStringInfo stringInfo;
         EucCSSLayoutDocumentRunHyphenationInfo hyphenationInfo;
         EucCSSLayoutDocumentRunImageInfo imageInfo;
     } contents;
@@ -73,19 +75,19 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     
     EucCSSIntermediateDocumentNode *_nextNodeUnderLimitNode;
     EucCSSIntermediateDocumentNode *_nextNodeInDocument;
-
+    
     CGFloat _scaleFactor;
     
     size_t _componentsCount;
     size_t _componentsCapacity;
     EucCSSLayoutDocumentRunComponentInfo *_componentInfos;
-
+    
     size_t _wordsCount;
     size_t _wordToComponentCapacity;
     uint32_t *_wordToComponent;
     
     uint32_t _currentWordElementCount;
-   
+    
     BOOL _previousInlineCharacterWasSpace;
     UniChar _characterBeforeWord;
     BOOL _alreadyInsertedSpace;
@@ -93,11 +95,11 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     
     NSMutableArray *_sizeDependentComponentIndexes;
     NSMutableArray *_floatComponentIndexes;
-
+    
     struct THBreak *_potentialBreaks;
     struct EucCSSLayoutDocumentRunBreakInfo *_potentialBreakInfos;
     int _potentialBreaksCount;
-
+    
     EucSharedHyphenator *_sharedHyphenator;
 }
 
@@ -112,13 +114,13 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 // attibutes was requested recently.
 + (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
            underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
-                    forId:(uint32_t)id
-              scaleFactor:(CGFloat)scaleFactor;
+forId:(uint32_t)id
+scaleFactor:(CGFloat)scaleFactor;
 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)node 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
-             forId:(uint32_t)id
-       scaleFactor:(CGFloat)scaleFactor;
+forId:(uint32_t)id
+scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
                                        inContainer:(EucCSSLayoutPositionedBlock *)container

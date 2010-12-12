@@ -1498,28 +1498,25 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (CGRect)nonToolbarRect
 {
-    UIView *bookView = self.bookView;
-    CGRect rect = [bookView convertRect:self.bookView.bounds toView:nil];
+    CGRect rect = self.bookView.bounds;
     
     if([self toolbarsVisible]) {
         CGRect navRect;
         if(_pageJumpView) {
-            navRect = [_pageJumpView convertRect:_pageJumpView.bounds toView:nil];
+            navRect = _pageJumpView.frame;
         } else {
-            UINavigationBar *navBar = self.navigationController.navigationBar;
-            navRect = [navBar convertRect:navBar.bounds toView:nil];
+            navRect = self.navigationController.navigationBar.frame;
         }
         
         CGFloat navRectBottom = CGRectGetMaxY(navRect);
         rect.size.height -= navRectBottom - rect.origin.y;
         rect.origin.y = navRectBottom;
 
-        UIToolbar *toolbar = self.navigationController.toolbar;
-        CGRect toolbarRect = [toolbar convertRect:toolbar.bounds toView:nil];
-        rect.size.height = toolbarRect.origin.y - rect.origin.y;
+        CGRect toolbarRect = self.navigationController.toolbar.frame;
+        rect.size.height -= toolbarRect.size.height;
     }
     
-    return [bookView convertRect:rect fromView:nil];
+    return rect;
 }
 
 - (void)observeTouch:(UITouch *)touch

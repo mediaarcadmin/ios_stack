@@ -493,4 +493,9 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
    return _margins;    
 }
 
+- (NSString *)pageText
+{
+    return [self.pageTextView pageText];
+}
+
 @end

@@ -1114,6 +1114,28 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
     return [_pageLayoutController tapTurnMarginForView:view];
 }
 
+- (CGFloat)pageTurningView:(EucPageTurningView *)pageTurningView topMarginForView:(UIView *)view
+{
+    return [_pageLayoutController topMarginForView:view];
+}
+
+- (NSString *)pageTurningViewAccessibilityPageDescriptionForView:(UIView *)view
+{
+    /*
+    THPair *pageIndexPointRange = [view.layer valueForKey:@"EucBookViewIndexPointRange"];
+    EucBookPageIndexPoint *pageIndexPoint = pageIndexPointRange.first;
+    NSInteger pageNumber = [_pageLayoutController pageNumberForIndexPoint:pageIndexPoint];
+    
+    return [NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Prefix to page announcement for page turn (arg = localised \"X of Y\")"), 
+            [_pageLayoutController pageDescriptionForPageNumber:pageNumber]];
+     */
+    NSString *pageText = [(EucPageView *)view pageText];
+    if([pageText rangeOfCharacterFromSet:[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet]].location == NSNotFound) {
+        pageText = NSLocalizedString(@"No text on this page", @"Accessibility description for otherwise empty page");
+    }
+    return pageText;
+}
+
 #pragma mark -
 #pragma mark Selector
 

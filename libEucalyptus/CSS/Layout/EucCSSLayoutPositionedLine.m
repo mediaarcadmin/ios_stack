@@ -512,7 +512,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     renderItem->lineBox.baseline = ascender;
                     renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
                     
-                    renderItem->item.stringItem.string = [info->contents.string retain];
+                    renderItem->item.stringItem.string = [info->contents.stringInfo.string retain];
                     renderItem->item.stringItem.layoutPoint = info->point;
 
                     _placeRenderItemInRenderItem(renderItem, _renderItems + parentIndex);
@@ -643,12 +643,12 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                 
                 xPosition -= info->width;
                 xPosition += info->contents.hyphenationInfo.widthBeforeHyphen;
-                
-                // Store the entire word in the alt text for accessibility.
-                renderItem->altText = renderItem->item.stringItem.string;
-                
+                                
                 renderItem->lineBox.width = info->contents.hyphenationInfo.widthBeforeHyphen;
 
+                // Store the entire word in the alt text for accessibility.
+                renderItem->altText = renderItem->item.stringItem.string;                        
+                
                 renderItem->item.stringItem.string = [info->contents.hyphenationInfo.beforeHyphen retain];
                 renderItem->item.stringItem.layoutPoint = info->point;
                 

@@ -286,7 +286,7 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                 if(wordId == wantedWordId) {
                     if(renderItem->item.stringItem.layoutPoint.element == 0) {
                         word = renderItem->item.stringItem.string;
-                    } else if(i != 0) {
+                    } else if(renderItem->altText) {
                         // First part of a hyphenated word.  The full word
                         // is placed in the altText.
                         word = renderItem->altText;
@@ -524,7 +524,7 @@ found:
                         }
                         if(renderItem->item.stringItem.layoutPoint.element == 0) {
                             [buildElementString appendString:renderItem->item.stringItem.string];
-                        } else if(i != 0) {
+                        } else if(renderItem->altText) {
                             // First part of a hyphenated word.  The full word
                             // is placed in the altText.
                             [buildElementString appendString:renderItem->altText];
@@ -597,6 +597,36 @@ found:
 - (NSInteger)indexOfAccessibilityElement:(id)element
 {
     return [[self accessibilityElements] indexOfObject:element];
+}
+
+- (NSString *)pageText
+{
+    NSArray *runs = [self _runs];    
+    NSMutableString *buildPageText = [NSMutableString string];
+    for(EucCSSLayoutPositionedRun *run in runs) {
+        for(EucCSSLayoutPositionedLine *line in run.children) {
+            EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
+            size_t renderItemsCount = line.renderItemCount;
+            
+            EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
+            for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {   
+                if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                    if(buildPageText.length) {
+                        [buildPageText appendString:@" "];
+                    }
+                    if(renderItem->item.stringItem.layoutPoint.element == 0) {
+                        [buildPageText appendString:renderItem->item.stringItem.string];
+                    } else if(renderItem->altText) {
+                        // First part of a hyphenated word.  The full word
+                        // is placed in the altText.
+                        [buildPageText appendString:renderItem->altText];
+                    }
+                }
+            }
+        }
+        [buildPageText appendString:@"\n\n"];
+    }
+    return buildPageText ?: nil;
 }
 
 @end
