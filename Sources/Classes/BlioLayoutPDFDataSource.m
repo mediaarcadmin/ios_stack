@@ -333,35 +333,36 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
 	[pdfLock lock];
     if (nil == pdf) {
         [self openDocumentWithoutLock];
-        if (nil == pdf) {
-            [pdfLock unlock];
-            return toc;
-        }
     }
 	
-	
-	// Section 8.2.2 Document Outline in the 1.6 PDF spec:
-	// http://www.adobe.com/content/dam/Adobe/en/devnet/pdf/pdfs/pdf_reference_archives/PDFReference16.pdf
-	
-	CGPDFDictionaryRef catalog, outline, first;
-    catalog = CGPDFDocumentGetCatalog(pdf);
-    if (!CGPDFDictionaryGetDictionary(catalog, "Outlines", &outline)) {
-		[pdfLock unlock];
-		// No outline present
-		return toc;
-	}
-	
-    if (!CGPDFDictionaryGetDictionary(outline, "First", &first)) {
-		[pdfLock unlock];
-		// No first entry in outline
-		return toc;
-	}
-	
-
-    parse_outline_items(0, pdf, first, toc);
-
+    if(pdf) {
+        // Section 8.2.2 Document Outline in the 1.6 PDF spec:
+        // http://www.adobe.com/content/dam/Adobe/en/devnet/pdf/pdfs/pdf_reference_archives/PDFReference16.pdf
+        
+        CGPDFDictionaryRef catalog, outline, first;
+        catalog = CGPDFDocumentGetCatalog(pdf);
+        if (CGPDFDictionaryGetDictionary(catalog, "Outlines", &outline)) {
+            if (CGPDFDictionaryGetDictionary(outline, "First", &first)) {
+                parse_outline_items(0, pdf, first, toc);
+            }
+        }
+    }
     [pdfLock unlock];
 	
+    // If there are no TOC entries for page index 0, add an artificial one.
+    BOOL makeArtificialFrontEnrty = YES;
+    for(BlioTOCEntry *entry in toc) {
+        if(entry.startPage == 0) {
+            makeArtificialFrontEnrty = NO;
+        }
+    }
+    if(makeArtificialFrontEnrty) {
+        BlioTOCEntry *tocEntry = [[BlioTOCEntry alloc] init];
+        tocEntry.name = NSLocalizedString(@"Front of book", @"Name for the single table-of-contents entry for the front page of a book that does not specify a TOC entry for the front page");
+        [toc addObject:tocEntry];
+        [tocEntry release];
+    }
+    
 	return toc;
 }
 
