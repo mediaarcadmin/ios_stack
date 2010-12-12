@@ -2897,7 +2897,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     if(_twoUp) {
                         _recacheFlags[0] = YES;
                         if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
-                            _recacheFlags[5] = YES;
+                            _recacheFlags[4] = YES;
                         }
                     }                    
                     _recacheFlags[1] = YES;
