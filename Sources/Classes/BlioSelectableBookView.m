@@ -158,7 +158,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 }
 
 - (void)setLastHighlightColor:(UIColor *)color {
-    if (![lastHighlightColor isEqual:color]) {
+    if (![lastHighlightColor isEqual:color] && ![color isEqual:[UIColor yellowColor]]) {
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:color] forKey:kBlioLastHighlightColorKey];
         [lastHighlightColor release];
         lastHighlightColor = [color retain];
@@ -232,7 +232,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     if ([self.selector selectedRangeIsHighlight]) {
         BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
         if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:toRange:withColor:)])
-            [self.delegate updateHighlightNoteAtRange:highlightRange toRange:self.selectedRange withColor:nil]; 
+            [self.delegate updateHighlightNoteAtRange:highlightRange toRange:self.selectedRange withColor:[UIColor yellowColor]]; 
     } else {
         if ([self.delegate respondsToSelector:@selector(addHighlightNoteWithColor:)])
             // Yellow is for notes.
