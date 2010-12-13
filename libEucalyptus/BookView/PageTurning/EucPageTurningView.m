@@ -23,6 +23,7 @@
 #import "THEmbeddedResourceManager.h"
 #import "THRoundRects.h"
 #import "THPair.h"
+#import "THUIDeviceAdditions.h"
 #import "EucPageTurningPageContentsInformation.h"
 
 #define FOV_ANGLE ((GLfloat)10.0f)
@@ -75,6 +76,8 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 - (void)_setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
 
 - (void)_refreshHighlightsForPageContentsIndex:(NSUInteger)index;
+
+- (void)_announceAccessibilityTurnOver;
 
 @end
 
@@ -641,7 +644,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [self didChangeValueForKey:@"unzoomedRightPageFrame"];
         [self didChangeValueForKey:@"leftPageFrame"];
         [self didChangeValueForKey:@"rightPageFrame"];
-        [self didChangeValueForKey:@"zoomMatrix"];        
+        [self didChangeValueForKey:@"zoomMatrix"];
+        
+        [self _setNeedsAccessibilityElementsRebuild];
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
 }    
 
@@ -1001,7 +1007,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [self _prepareForTurnForwards:forwards];
 
         _viewportTouchPoint = CGPointMake(forwards ? _viewportLogicalSize.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-        _touchVelocity = CGPointMake(forwards ? -0.4f : 0.4f, 0.0f);
+        _touchVelocity = CGPointMake(forwards ? -0.6f : 0.6f, 0.0f);
         
         CGFloat percentage = (CGFloat)pageCount / 512.0f;
         if(pageCount == 1) {
@@ -1278,10 +1284,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
             if(forwards) {
                 _viewportTouchPoint = CGPointMake(_rightPageRect.size.width, _viewportLogicalSize.height * 0.5f);
-                _touchVelocity = CGPointMake(-0.4f, 0.0f);
+                _touchVelocity = CGPointMake(-0.6f, 0.0f);
             } else {
                 _viewportTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? -_leftPageRect.size.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-                _touchVelocity = CGPointMake(0.4f, 0.0f);
+                _touchVelocity = CGPointMake(0.6f, 0.0f);
             }
             
             NSUInteger pageCount;
@@ -1946,6 +1952,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+            if(_accessibilityScrollUnderway) {
+                [self _announceAccessibilityTurnOver];
+            }
         }
         if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)){
@@ -2319,8 +2328,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     _touchVelocity.x = 0;
                 } else if(absTouchVelocity < 0.2f) {
                     _touchVelocity.x = _touchVelocity.x < 0 ? -0.2f : 0.2f;
-                } else if(absTouchVelocity > 0.4f) {
-                    _touchVelocity.x = _touchVelocity.x < 0 ? -0.4f : 0.4f;
+                } else if(absTouchVelocity > 0.6f) {
+                    _touchVelocity.x = _touchVelocity.x < 0 ? -0.6f : 0.6f;
                 }
                 _touchVelocity.y = 0.0f;
             } 
@@ -2439,6 +2448,18 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [super setUserInteractionEnabled:enabled];
 }
 
+- (CGFloat)_topMarginForView:(UIView *)view
+{
+    CGFloat ret;
+    id<EucPageTurningViewDelegate> delegate = self.delegate;
+    if([delegate respondsToSelector:@selector(pageTurningView:topMarginForView:)]) {
+        ret = [delegate pageTurningView:self topMarginForView:view];
+    } else {
+        ret = 0.1 * view.bounds.size.width;
+    }
+    return ret;
+}
+
 - (CGFloat)_tapTurnMarginForView:(UIView *)view
 {
     CGFloat ret;
@@ -2461,62 +2482,73 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         NSMutableArray *accessibilityElements = [[NSMutableArray alloc] initWithCapacity:pageViewAccessibilityElements.count + 1];
         
         CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageContentsInformation[3].view];
+        {
+            CGFloat topMargin = [self _topMarginForView:_pageContentsInformation[3].view];
+            CGRect frame = self.bounds;
+            frame.origin.y = 0;
+            frame.size.height = topMargin;
+            frame.size.width -= 2 * tapZoneWidth;
+            frame.origin.x += tapZoneWidth;
+            frame = [self convertRect:frame toView:nil];
             
-        for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
-            element.accessibilityContainer = self;
-            [accessibilityElements addObject:element];
-        }
-
+            THAccessibilityElement *toolbarTapButton = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            toolbarTapButton.accessibilityFrame = frame;
+            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book page", @"Accessibility title for previous page tap zone");
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] >= NSOrderedSame) {
+                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls, three finger swipe down to read this page, three finger swipe sideways to turn the page, .", @"Accessibility title for previous page tap zone on devices with three-finger swipe support");
+            } else {
+                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone on devices without three-finger swipe support");
+            }
+            toolbarTapButton.delegate = self;
+            
+            [accessibilityElements addObject:toolbarTapButton];
+            [toolbarTapButton release];
+        }        
+        
         {
             THAccessibilityElement *nextPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if(!_pageContentsInformation[5].view)  {
+            if(!_pageContentsInformation[4] && !_pageContentsInformation[5])  {
                 nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
             }            
-            CGRect frame = [self convertRect:self.bounds toView:nil];
+            CGRect frame = self.bounds;
             frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
             frame.size.width = tapZoneWidth;
-            nextPageTapZone.accessibilityFrame = frame;
-            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");
+            frame = [self convertRect:frame toView:nil];
             
+            nextPageTapZone.accessibilityFrame = frame;
+            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
             nextPageTapZone.delegate = self;
             
             [accessibilityElements addObject:nextPageTapZone];
             _nextPageTapZone = [nextPageTapZone retain];
             
             [nextPageTapZone release];
-        }        
+        }      
         
         {
-            UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            THAccessibilityElement *previousPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if(!_pageContentsInformation[1].view)  {
+            if(!_pageContentsInformation[0] && !_pageContentsInformation[1])  {
                 previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
             }
-            CGRect frame = [self convertRect:self.bounds toView:nil];
+            CGRect frame = self.bounds;
             frame.size.width = tapZoneWidth;
+            frame = [self convertRect:frame toView:nil];
+
             previousPageTapZone.accessibilityFrame = frame;
             previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+            previousPageTapZone.delegate = self;
             
             [accessibilityElements addObject:previousPageTapZone];
             [previousPageTapZone release];
+        }     
+        
+        for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
+            element.accessibilityContainer = self;
+            element.accessibilityFrame = [self convertRect:element.accessibilityFrame toView:nil];
+            [accessibilityElements addObject:element];
         }        
-
-        {
-            CGRect frame = [self convertRect:self.bounds toView:nil];
-            frame.origin.y = 0;
-            frame.size.height = tapZoneWidth;
-            frame.size.width -= 2 * tapZoneWidth;
-            frame.origin.x += tapZoneWidth;
-
-            UIAccessibilityElement *toolbarTapButton = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            toolbarTapButton.accessibilityFrame = frame;
-            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book Page", @"Accessibility title for previous page tap zone");
-            toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone");
-            
-            [accessibilityElements addObject:toolbarTapButton];
-            [toolbarTapButton release];
-        }
                 
         _accessibilityElements = accessibilityElements;
     }
@@ -2543,14 +2575,116 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return [[self accessibilityElements] indexOfObject:element];
 }
 
-- (void)thAccessibilityElementDidBecomeFocused:(THAccessibilityElement *)element
+- (NSString *)_currentAccessibilityDescription
 {
-    // An attempt to auto-read the book.  Doesn't really work.
-    /*if(element == _nextPageTapZone) {
-        if(element.accessibilityElementIsFocused) {
-            [self turnToPageView:_pageViews[2] forwards:YES pageCount:1];
+    NSString *description = nil;
+    if(_bitmapDataSource) {
+        NSMutableArray *pageIndexes = [[NSMutableArray alloc] initWithCapacity:2];
+        if(_pageContentsInformation[2] && _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
+            [pageIndexes addObject:[NSNumber numberWithUnsignedInteger:_pageContentsInformation[2].pageIndex]];
+        } else if(_pageContentsInformation[3] && _pageContentsInformation[3].pageIndex != NSUIntegerMax) {
+            [pageIndexes addObject:[NSNumber numberWithUnsignedInteger:_pageContentsInformation[3].pageIndex]];
         }
-    }*/
+        description = [_bitmapDataSource pageTurningViewAccessibilityPageDescriptionForPagesAtIndexes:pageIndexes];
+    } else {
+        description = [_viewDataSource pageTurningViewAccessibilityPageDescriptionForView:_pageContentsInformation[3].view];
+    }
+    return description;
+}
+
+- (void)_announceAccessibilityTurnOver
+{
+    if(&UIAccessibilityPageScrolledNotification != NULL) {
+        NSString *description = [self _currentAccessibilityDescription];
+        UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, description);
+    }
+    _accessibilityScrollUnderway = NO;
+}
+                                                                            
+- (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction 
+{       
+    if(!_accessibilityScrollUnderway) {
+        if(direction == UIAccessibilityScrollDirectionUp) {
+            if(&UIAccessibilityAnnouncementNotification != NULL) {
+                NSString *description = [self _currentAccessibilityDescription];
+                UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, description);
+            }
+            return NO;
+        } else {
+            BOOL scroll = NO;
+            BOOL forwards = NO;
+            if(direction == UIAccessibilityScrollDirectionLeft) {
+                forwards = YES;
+                scroll = YES;
+            } else if (direction == UIAccessibilityScrollDirectionRight) {
+                forwards = NO;
+                scroll = YES;
+            }
+
+            if(scroll) {
+                _accessibilityScrollUnderway = [self stepPageForwards:forwards];
+                if(!_accessibilityScrollUnderway) {
+                    [self _announceAccessibilityTurnOver];
+                }
+            }
+        }
+    }
+    return _accessibilityScrollUnderway;
+}
+
+- (BOOL)thAccessibilityElementAccessibilityScroll:(UIAccessibilityScrollDirection)direction 
+{
+    return [self accessibilityScroll:direction];
+}
+
+- (BOOL)stepPageForwards:(BOOL)forwards
+{
+    BOOL ret = NO;
+    if(_bitmapDataSource) {
+        NSUInteger turnTo = NSUIntegerMax;
+        if(forwards) {
+            if(_pageContentsInformation[4]) {
+                turnTo = _pageContentsInformation[4].pageIndex;
+            } else if(_pageContentsInformation[5]) {
+                turnTo = _pageContentsInformation[5].pageIndex;
+            }
+        } else {
+            if(_pageContentsInformation[0]) {
+                turnTo = _pageContentsInformation[0].pageIndex;
+            } else if(_pageContentsInformation[1]) {
+                turnTo = _pageContentsInformation[1].pageIndex;
+            }
+        } 
+        if(turnTo != NSUIntegerMax) {
+            [self turnToPageAtIndex:turnTo animated:YES]; 
+            ret = YES;
+        }        
+    } else {
+        BOOL onLeft = NO;
+        UIView *view = nil;
+        if(forwards) {
+            if(_pageContentsInformation[4].view) {
+                view = _pageContentsInformation[4].view;
+                onLeft = YES;
+            } else {
+                view = _pageContentsInformation[5].view;
+                onLeft = NO;
+            }
+        } else {
+            if(_pageContentsInformation[0].view) {
+                view = _pageContentsInformation[0].view;
+                onLeft = YES;
+            } else {
+                view = _pageContentsInformation[1].view;
+                onLeft = NO;
+            }
+        } 
+        if(view) {
+            [self turnToPageView:view forwards:forwards pageCount:1 onLeft:onLeft]; 
+            ret = YES;
+        }        
+    }
+    return ret;
 }
 
 // Since gravity is the only force we're using, we just manually add it in 
@@ -2763,7 +2897,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     if(_twoUp) {
                         _recacheFlags[0] = YES;
                         if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
-                            _recacheFlags[5] = YES;
+                            _recacheFlags[4] = YES;
                         }
                     }                    
                     _recacheFlags[1] = YES;

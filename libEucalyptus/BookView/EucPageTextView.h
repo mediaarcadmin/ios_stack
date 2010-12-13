@@ -31,6 +31,8 @@
 - (NSArray *)rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 - (NSString *)accessibilityLabelForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId;
 
+- (NSString *)pageText;
+
 - (void)clear;
 
 - (void)handleTouchBegan:(UITouch *)touch atLocation:(CGPoint)location;

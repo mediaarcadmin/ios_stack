@@ -248,7 +248,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
 
         EucCSSLayoutDocumentRunComponentKind kind = _componentInfos[i].kind;
         if(kind == EucCSSLayoutDocumentRunComponentKindWord) {
-            [_componentInfos[i].contents.string release];
+            [_componentInfos[i].contents.stringInfo.string release];
         } else if (kind == EucCSSLayoutDocumentRunComponentKindImage) { 
             CFRelease(_componentInfos[i].contents.imageInfo.image);
         } else if(kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
@@ -314,7 +314,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         _wordToComponent[_wordsCount] = _componentsCount;
         _currentWordElementCount = 0;
         
-        [info->contents.string retain];
+        [info->contents.stringInfo.string retain];
     } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
         CFRetain(info->contents.imageInfo.image);
     } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
@@ -578,7 +578,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 
                 EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                 info.kind = EucCSSLayoutDocumentRunComponentKindWord;
-                info.contents.string = word;
+                info.contents.stringInfo.string = word;
                 info.width = [stringRenderer widthOfString:word pointSize:fontPixelSize];
                 [self _addComponent:&info];
                 
@@ -661,7 +661,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                     }
                                     EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                                     info.kind = EucCSSLayoutDocumentRunComponentKindWord;
-                                    info.contents.string = (NSString *)string;
+                                    info.contents.stringInfo.string = (NSString *)string;
                                     info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                                     [self _addComponent:&info];
                                     
@@ -756,7 +756,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     }                    
                     EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                     info.kind = EucCSSLayoutDocumentRunComponentKindWord;
-                    info.contents.string = (NSString *)string;
+                    info.contents.stringInfo.string = (NSString *)string;
                     info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                     [self _addComponent:&info];
                     CFRelease(string);
@@ -1196,7 +1196,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     NSMutableArray *words = [NSMutableArray arrayWithCapacity:wordsCount];
     
     for(NSUInteger i = 0; i < wordsCount; ++i) {
-        [words addObject:_componentInfos[_wordToComponent[i + 1]].contents.string];
+        [words addObject:_componentInfos[_wordToComponent[i + 1]].contents.stringInfo.string];
     }
     
     return words;

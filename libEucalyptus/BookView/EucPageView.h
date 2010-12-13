@@ -58,6 +58,7 @@ typedef enum EucPageViewTitleLineContents
 @property (nonatomic, assign) BOOL fullBleed;
 @property (nonatomic, assign, readonly) CGRect contentRect;
 @property (nonatomic, assign, readonly) CGSize margins;
+@property (nonatomic, retain, readonly) NSString *pageText;
 
 - (id)initWithFrame:(CGRect)frame
           pointSize:(CGFloat)pointSize 

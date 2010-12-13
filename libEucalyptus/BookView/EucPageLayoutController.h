@@ -37,6 +37,7 @@
 
 - (BOOL)viewEdgeIsRigid:(UIView *)view;
 - (CGFloat)tapTurnMarginForView:(UIView *)view;
+- (CGFloat)topMarginForView:(UIView *)view;
 
 + (EucPageView *)blankPageViewWithFrame:(CGRect)frame
                            forPointSize:(CGFloat)pointSize;

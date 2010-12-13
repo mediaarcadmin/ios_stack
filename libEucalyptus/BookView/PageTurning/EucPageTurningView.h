@@ -108,7 +108,9 @@ typedef enum EucPageTurningViewAnimationFlags {
     THVec3 _pageTouchPoint;
     CGPoint _viewportTouchPoint;
     CGPoint _touchVelocity;
-
+    
+    BOOL _accessibilityScrollUnderway;
+    
     BOOL _dragUnderway;
     EucPageTurningViewAnimationFlags _animationFlags;
     
@@ -242,6 +244,8 @@ typedef enum EucPageTurningViewAnimationFlags {
 @property (nonatomic, assign, readonly) NSUInteger focusedPageIndex;
 
 - (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated;
+- (BOOL)stepPageForwards:(BOOL)forwards;
+
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex;
 - (void)refreshHighlightsForPageAtIndex:(NSUInteger)index;
 
@@ -273,6 +277,8 @@ typedef enum EucPageTurningViewAnimationFlags {
 
 - (UIView *)pageTurningView:(EucPageTurningView *)pageTurningView scaledViewForView:(UIView *)view pinchStartedAt:(CGPoint[])startPinch pinchNowAt:(CGPoint[])currentPinch currentScaledView:(UIView *)currentScaledView;
 
+- (NSString *)pageTurningViewAccessibilityPageDescriptionForView:(UIView *)view;
+
 @end
 
 
@@ -282,6 +288,10 @@ typedef enum EucPageTurningViewAnimationFlags {
 
 @required
 - (CGRect)pageTurningView:(EucPageTurningView *)pageTurningView contentRectForPageAtIndex:(NSUInteger)index;
+
+// The array is an array of NSNumbers - in two-up mode, it will contain
+// two numbers (if two pages are visible).
+- (NSString *)pageTurningViewAccessibilityPageDescriptionForPagesAtIndexes:(NSArray *)pageIndexes;
 
 @optional
 - (CGContextRef)pageTurningView:(EucPageTurningView *)pageTurningView 
@@ -309,7 +319,6 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 // Return THPairs of [ NSValue: Highlight Rect, UIColor: Highlight Color]
 - (NSArray *)pageTurningView:(EucPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)index;
 
-
 @end
 
 
@@ -331,6 +340,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 // Views are assumed not to have rigid edges if this is not implemented.
 - (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView viewEdgeIsRigid:(UIView *)view;
 - (CGFloat)pageTurningView:(EucPageTurningView *)pageTurningView tapTurnMarginForView:(UIView *)view;
+- (CGFloat)pageTurningView:(EucPageTurningView *)pageTurningView topMarginForView:(UIView *)view;
 
 @end
 

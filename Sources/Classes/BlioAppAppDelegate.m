@@ -333,6 +333,8 @@ static void *background_init_thread(void * arg) {
         [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
     }
     
+    self.delayedDidFinishLaunchingLaunchComplete = YES;
+    
     for(NSURL *url in self.delayedURLOpens) {
         [self application:[UIApplication sharedApplication] handleOpenURL:url];
     }

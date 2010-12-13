@@ -232,7 +232,7 @@
         }
     } else {
         if (pageStr) {
-            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) in BlioFlowView"), pageStr, (unsigned long)self.pageCount];
+            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) in BlioFlowView"), pageStr, (unsigned long)self.pageCount - 1];
         } else {
             ret = [_eucBookView.book title];
         }
