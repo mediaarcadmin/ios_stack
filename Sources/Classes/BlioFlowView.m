@@ -258,7 +258,7 @@
     [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save;
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save
 {
    
 	if (save) {
