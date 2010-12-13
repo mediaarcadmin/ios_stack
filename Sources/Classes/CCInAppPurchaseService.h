@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <StoreKit/StoreKit.h>
 
 @class CCInAppPurchaseConnection;
 @class CCInAppPurchaseResponse;
-static NSString* const CCInAppPurchaseURL = @"http://judah.crosscomm.net:8080/blio-mobile-server/productservice/";
-static NSString* const CCInAppPurchaseURLTest = @"http://judah.crosscomm.net:8080/blio-mobile-server/productservice/";
+static NSString* const CCInAppPurchaseURL = @"http://blio-in-app-purchase.crosscomm.net:8080/blio-mobile-server/productservice/";
 
 @interface CCInAppPurchaseProduct : NSObject {
 	NSString * dateCreated;
@@ -22,6 +22,7 @@ static NSString* const CCInAppPurchaseURLTest = @"http://judah.crosscomm.net:808
 	NSString * name;
 	NSString * price;
 	NSString * productId;
+	SKProduct * product;
 }
 @property (nonatomic, retain) NSString * dateCreated;
 @property (nonatomic, retain) NSString * description;
@@ -31,6 +32,7 @@ static NSString* const CCInAppPurchaseURLTest = @"http://judah.crosscomm.net:808
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * price;
 @property (nonatomic, retain) NSString * productId;
+@property (nonatomic, retain) SKProduct * product;
 
 @end
 
@@ -69,12 +71,14 @@ static NSString* const CCInAppPurchaseURLTest = @"http://judah.crosscomm.net:808
 
 @end
 
-@interface CCInAppPurchasePurchaseProductsRequest : CCInAppPurchaseRequest {
+@interface CCInAppPurchasePurchaseProductRequest : CCInAppPurchaseRequest {
 	NSString * hardwareId;
 	NSString * productId;
+	NSData * HTTPBody;
 }
 @property (nonatomic, copy) NSString * hardwareId;
 @property (nonatomic, copy) NSString * productId;
+@property (nonatomic, retain) NSData * HTTPBody;
 @end
 @protocol CCInAppPurchaseConnectionDelegate<NSObject>
 

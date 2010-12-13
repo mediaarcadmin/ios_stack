@@ -8,11 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <StoreKit/StoreKit.h>
+#import "CCInAppPurchaseService.h"
+#import "BlioRoundedRectActivityView.h"
 
 typedef enum {
-	BlioVoiceDownloadButtonStateDownload = 0,
-	BlioVoiceDownloadButtonStateInProgress = 1,
-	BlioVoiceDownloadButtonStateInstalled = 2
+	BlioVoiceDownloadButtonStatePurchase = 0,
+	BlioVoiceDownloadButtonStatePurchasing = 1,
+	BlioVoiceDownloadButtonStateInProgress = 2,
+	BlioVoiceDownloadButtonStateInstalled = 3
 } BlioVoiceDownloadButtonState;
 
 static const CGFloat kBlioVoiceDownloadButtonWidth = 100.0f;
@@ -22,30 +25,31 @@ static const CGFloat kBlioVoiceDownloadButtonRightMargin = 10.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewWidth = 100.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewHeight = 10.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 10.0f;
-@interface BlioPurchaseVoicesViewController : UITableViewController <SKProductsRequestDelegate,SKPaymentTransactionObserver> {
-	NSArray * availableVoicesForDownload;
+
+@interface BlioPurchaseVoicesViewController : UITableViewController {
+	NSMutableArray * availableVoicesForPurchase;
+	BlioRoundedRectActivityView * activityIndicatorView;
 }
 
-@property (nonatomic, retain) NSArray * availableVoicesForDownload;
+@property (nonatomic, retain) NSMutableArray * availableVoicesForPurchase;
+@property (nonatomic,retain) BlioRoundedRectActivityView* activityIndicatorView;
 
-- (void) failedTransaction:(SKPaymentTransaction *)transaction;
-- (void) restoreTransaction:(SKPaymentTransaction *)transaction;
-- (void) completeTransaction:(SKPaymentTransaction *)transaction;
 @end
 
 @interface BlioPurchaseVoiceTableViewCell : UITableViewCell {
 	UIButton * downloadButton;
-	NSString * voice;
+	CCInAppPurchaseProduct * product;
 	UIProgressView * progressView;
 	UILabel * progressLabel;
+	BlioVoiceDownloadButtonState buttonState;
 }
 
 @property (nonatomic, retain) UIButton * downloadButton;
-@property (nonatomic, copy) NSString * voice;
+@property (nonatomic, retain) CCInAppPurchaseProduct * product;
 @property (nonatomic, retain) UIProgressView * progressView;
 @property (nonatomic, retain) UILabel * progressLabel;
 
--(void)configureWithVoice:(NSString*)aVoice;
+-(void)configureWithInAppPurchaseProduct:(CCInAppPurchaseProduct*)aProduct;
 -(void)setDownloadButtonState:(BlioVoiceDownloadButtonState)buttonState;
 -(NSString*)progressLabelFormattedText;
 

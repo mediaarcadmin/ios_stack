@@ -10,17 +10,19 @@
 #import "BlioProcessing.h"
 #import "BlioBook.h"
 
-
-
-@interface BlioProcessingCompleteOperation : BlioProcessingOperation {
+@interface BlioProcessingAggregateOperation : BlioProcessingOperation {
 	NSUInteger alreadyCompletedOperations;
 }
-
 @property (nonatomic, assign) NSUInteger alreadyCompletedOperations;
 -(void) calculateProgress;
 @end
 
-@interface BlioProcessingPreAvailabilityCompleteOperation : BlioProcessingOperation {
+@interface BlioProcessingCompleteOperation : BlioProcessingAggregateOperation {
+}
+
+@end
+
+@interface BlioProcessingPreAvailabilityCompleteOperation : BlioProcessingAggregateOperation {
     NSString *filenameKey;
 }
 @property (nonatomic, copy) NSString *filenameKey;
@@ -40,7 +42,8 @@
     BOOL finished;
 	BOOL resume;
 	
-	long expectedContentLength;	
+	long long expectedContentLength;	
+	NSData * requestHTTPBody;
 }
 
 @property (nonatomic, retain) NSURL *url;
@@ -50,8 +53,9 @@
 @property (nonatomic, retain) NSURLConnection *connection;
 @property (nonatomic, retain) NSURLConnection *headConnection;
 @property (nonatomic, retain) NSFileHandle *downloadFile;
-@property (nonatomic, assign) long expectedContentLength;
+@property (nonatomic, assign) long long expectedContentLength;
 @property (nonatomic, assign) BOOL resume;
+@property (nonatomic, retain) NSData * requestHTTPBody;
 
 - (id)initWithUrl:(NSURL *)aURL;
 - (void)downloadDidFinishSuccessfully:(BOOL)success;

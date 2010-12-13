@@ -11,10 +11,12 @@
 #import "BlioProcessing.h"
 #import "BlioProcessingStandardOperations.h"
 #import "BlioInAppPurchaseManager.h"
+#import "BlioAlertManager.h"
+#import "SKProduct+LocalizedPrice.h"
 
 @implementation BlioPurchaseVoicesViewController
 
-@synthesize availableVoicesForDownload;
+@synthesize availableVoicesForPurchase,activityIndicatorView;
 
 #pragma mark -
 #pragma mark Initialization
@@ -29,17 +31,13 @@
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
 #endif
-		
-		[[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-		
     }
     return self;
 }
 
 - (void)dealloc {
-	[[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	self.availableVoicesForDownload = nil;
+	self.availableVoicesForPurchase = nil;
+	self.activityIndicatorView = nil;
     [super dealloc];
 }
 
@@ -49,27 +47,50 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	CGFloat activityIndicatorDiameter = 50.0f;
+	CGRect targetFrame = [[UIScreen mainScreen] bounds];
+	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((targetFrame.size.width-activityIndicatorDiameter)/2, (targetFrame.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchStarted:) name:BlioInAppPurchaseProductsFetchStarted object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFailed:) name:BlioInAppPurchaseProductsFetchFailed object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFinished:) name:BlioInAppPurchaseProductsFetchFinished object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsUpdated:) name:BlioInAppPurchaseProductsUpdated object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[BlioInAppPurchaseManager sharedInAppPurchaseManager] fetchProductsFromProductServer];
+	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) {
+		[[BlioInAppPurchaseManager sharedInAppPurchaseManager] fetchProductsFromProductServer];
+		[self.tableView reloadData];
+	}
+	else [self.activityIndicatorView startAnimating];
 }
 -(void)viewDidUnload {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[self.activityIndicatorView removeFromSuperview];
+	self.activityIndicatorView = nil;
 	// Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 
 }
+-(void)didReceiveInAppPurchaseProductsFetchStarted:(NSNotification*)note {
+	[self.activityIndicatorView startAnimating];
+}
+-(void)didReceiveInAppPurchaseProductsFetchFailed:(NSNotification*)note {
+	[self.activityIndicatorView stopAnimating];
+}
+-(void)didReceiveInAppPurchaseProductsFetchFinished:(NSNotification*)note {
+	[self.activityIndicatorView stopAnimating];
+}
 -(void)didReceiveInAppPurchaseProductsUpdated:(NSNotification*)note {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
-	
-	NSMutableArray * voices = [NSMutableArray array];
-	NSArray * availableVoicesForUse = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse];
-	for (NSString * key in [BlioInAppPurchaseManager sharedInAppPurchaseManager].products) {
-		if (![availableVoicesForUse containsObject:key]) [voices addObject:key];
-	}
-
-	for (NSString * key in voices) {
-		NSLog(@"voice: %@",key);
-	}
+	[self.activityIndicatorView stopAnimating];
+	self.availableVoicesForPurchase = [BlioInAppPurchaseManager sharedInAppPurchaseManager].inAppProducts;
+//	NSArray * availableVoicesForUse = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse];
+//	for (SKProduct * product in [BlioInAppPurchaseManager sharedInAppPurchaseManager].products) {
+//		if (![availableVoicesForUse containsObject:product.localizedTitle]) [availableVoicesForPurchase addObject:product];
+//	}
+//
+//	for (SKProduct * product in availableVoicesForPurchase) {
+//		NSLog(@"voice product: %@",product.localizedTitle);
+//	}
+	[self.tableView reloadData];
 }
 
 
@@ -110,16 +131,23 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+//	if ([BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) return nil;
+//	else if (!self.availableVoicesForPurchase || [self.availableVoicesForPurchase count] == 0) return nil;
 	return NSLocalizedString(@"Available Voices",@"\"Available Voices\" table header in Download Voices View");
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	return NSLocalizedStringWithDefaultValue(@"DOWNLOAD_VOICES_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Voices take approximately 50MB of storage each, and may take time to download. Do not quit Blio while download is in progress.",@"Explanatory message that appears at the bottom of the Available Voices table within Download Voices View.");
+	if ([BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) return NSLocalizedStringWithDefaultValue(@"CHECKING_FOR_VOICES_AVAILABLE_FOR_PURCHASE",nil,[NSBundle mainBundle],@"Blio is checking the App Store for available voices. Please wait a moment...",@"Explanatory message that informs the end-user the Blio app is checking the App Store for available voices in the Purchase Voices View.");
+	else if (!self.availableVoicesForPurchase || [self.availableVoicesForPurchase count] == 0) return NSLocalizedStringWithDefaultValue(@"NO_AVAILABLE_VOICES_FOR_PURCHASE",nil,[NSBundle mainBundle],@"There are no new voices available for you to purchase at this time.",@"Explanatory message that informs the end-user the Blio app is checking the App Store for available voices in the Purchase Voices View.");
+	return NSLocalizedStringWithDefaultValue(@"PURCHASE_VOICES_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Voices take approximately 50MB of storage each, and may take time to download.",@"Explanatory message that appears at the bottom of the Available Voices table within Purchase Voices View.");
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+	return 80;
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return [self.availableVoicesForDownload count];
+    return [self.availableVoicesForPurchase count];
 }
 
 
@@ -134,7 +162,7 @@
     }
     
     // Configure the cell...
-	[cell configureWithVoice:[self.availableVoicesForDownload objectAtIndex:indexPath.row]];
+	[cell configureWithInAppPurchaseProduct:[self.availableVoicesForPurchase objectAtIndex:indexPath.row]];
 	
     return cell;
 }
@@ -194,130 +222,6 @@
 	 */
 }
 
-#pragma mark -
-#pragma mark NSURLConnectionDelegate
-
-- (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
-	
-}
-- (void)connection:(NSURLConnection *)aConnection didReceiveData:(NSData *)data {
-	
-}
-- (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
-	// grab data values in response
-	
-	[aConnection release];
-	
-	//	SKProductsRequest* productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:aSet];	
-	//	productsRequest.delegate = self;
-	//	[productsRequest start];
-	
-}
-- (void)connection:(NSURLConnection *)aConnection didFailWithError:(NSError *)error {
-	// notify end-user
-	
-	[aConnection release];
-}
-
-#pragma mark -
-#pragma mark SKProductsRequestDelegate
-
-- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-	// set internal status so that activity indicator stops spinning
-	
-	NSArray* productObjects = response.products;
-	NSLog(@"received %i products from apple product request",[productObjects count]);
-}	
-
-#pragma mark -
-#pragma mark SKPaymentTransactionObserver
-
-- (void) paymentQueue:(SKPaymentQueue *)queue
-  updatedTransactions:(NSArray *)transactions
-{
-	for (SKPaymentTransaction *transaction in transactions)
-	{
-		switch (transaction.transactionState)
-		{
-			case SKPaymentTransactionStatePurchased:
-				[self completeTransaction:transaction];
-				break;
-			case SKPaymentTransactionStateFailed:
-				[self failedTransaction:transaction];
-				break;
-			case SKPaymentTransactionStateRestored:
-				[self restoreTransaction:transaction];
-			default:
-				break;
-		}
-	}
-}
-
-
-
-- (void) failedTransaction:(SKPaymentTransaction *)transaction
-{
-	NSLog(@"Transaction Failed");
-	if (transaction.error.code != SKErrorPaymentCancelled)
-	{
-		// Optionally, display an error here.
-	}
-	[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-}
-
-
-
-- (void) restoreTransaction:(SKPaymentTransaction *)transaction
-{
-	NSLog(@"Transaction Restored");
-	//If you want to save the transaction
-	// [self recordTransaction: transaction];
-	
-	//Provide the new content
-	//	[self provideContent: transaction.originalTransaction.payment.productIdentifier];
-	
-	//Finish the transaction
-	[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-}
-
-
-
-- (void) completeTransaction:(SKPaymentTransaction *)transaction
-{
-	NSLog(@"Transaction completed");
-	//If you want to save the transaction
-	// [self recordTransaction:transaction];
-	
-	//NSLog(@"Transaction state: %@ identifier %@",transaction.transactionState,transaction.transactionIdentifier);
-	
-	//	NSString *receiptString = [EncryptorEncoder encode:(uint8_t*)[transaction.transactionReceipt bytes]
-	//												length:[transaction.transactionReceipt length]];
-	//	NSLog(@"%@", receiptString);
-	
-	//send purchase request to bible touch servers
-	//	NSString *productId =transaction.payment.productIdentifier;
-	//@"com.crosscomm.bibletouch.addons.esv";
-	
-	//TODO: change data to receiptString
-	//	NSString *data = receiptString; //@"ewoJInNpZ25hdHVyZSIgPSAiQWtpTE9DUWt4R2duTnh2emRFMmdkc0hiZVRVZjVOWkJrMHpGRXFqR09hdy9QV2p2ZE5mWmJNeUFoRUVLQzgxSlNQRVQ1anF6Ymt1UEhYYzRNUUVKaG5wL3pyZWVIUFpobHBuSmgzRHgxZ0dUTzl6T25JUFhnbzhnWXNuY3JqZC9vSzc3V2dTa013cUcydlFuUzE0K05Xb0pSRDNSSEluTnVTanQ3WnpucnBYK0FBQURWekNDQTFNd2dnSTdvQU1DQVFJQ0NHVVVrVTNaV0FTMU1BMEdDU3FHU0liM0RRRUJCUVVBTUg4eEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUtEQXBCY0hCc1pTQkpibU11TVNZd0pBWURWUVFMREIxQmNIQnNaU0JEWlhKMGFXWnBZMkYwYVc5dUlFRjFkR2h2Y21sMGVURXpNREVHQTFVRUF3d3FRWEJ3YkdVZ2FWUjFibVZ6SUZOMGIzSmxJRU5sY25ScFptbGpZWFJwYjI0Z1FYVjBhRzl5YVhSNU1CNFhEVEE1TURZeE5USXlNRFUxTmxvWERURTBNRFl4TkRJeU1EVTFObG93WkRFak1DRUdBMVVFQXd3YVVIVnlZMmhoYzJWU1pXTmxhWEIwUTJWeWRHbG1hV05oZEdVeEd6QVpCZ05WQkFzTUVrRndjR3hsSUdsVWRXNWxjeUJUZEc5eVpURVRNQkVHQTFVRUNnd0tRWEJ3YkdVZ1NXNWpMakVMTUFrR0ExVUVCaE1DVlZNd2daOHdEUVlKS29aSWh2Y05BUUVCQlFBRGdZMEFNSUdKQW9HQkFNclJqRjJjdDRJclNkaVRDaGFJMGc4cHd2L2NtSHM4cC9Sd1YvcnQvOTFYS1ZoTmw0WElCaW1LalFRTmZnSHNEczZ5anUrK0RyS0pFN3VLc3BoTWRkS1lmRkU1ckdYc0FkQkVqQndSSXhleFRldngzSExFRkdBdDFtb0t4NTA5ZGh4dGlJZERnSnYyWWFWczQ5QjB1SnZOZHk2U01xTk5MSHNETHpEUzlvWkhBZ01CQUFHamNqQndNQXdHQTFVZEV3RUIvd1FDTUFBd0h3WURWUjBqQkJnd0ZvQVVOaDNvNHAyQzBnRVl0VEpyRHRkREM1RllRem93RGdZRFZSMFBBUUgvQkFRREFnZUFNQjBHQTFVZERnUVdCQlNwZzRQeUdVakZQaEpYQ0JUTXphTittVjhrOVRBUUJnb3Foa2lHOTJOa0JnVUJCQUlGQURBTkJna3Foa2lHOXcwQkFRVUZBQU9DQVFFQUVhU2JQanRtTjRDL0lCM1FFcEszMlJ4YWNDRFhkVlhBZVZSZVM1RmFaeGMrdDg4cFFQOTNCaUF4dmRXLzNlVFNNR1k1RmJlQVlMM2V0cVA1Z204d3JGb2pYMGlreVZSU3RRKy9BUTBLRWp0cUIwN2tMczlRVWU4Y3pSOFVHZmRNMUV1bVYvVWd2RGQ0TndOWXhMUU1nNFdUUWZna1FRVnk4R1had1ZIZ2JFL1VDNlk3MDUzcEdYQms1MU5QTTN3b3hoZDNnU1JMdlhqK2xvSHNTdGNURXFlOXBCRHBtRzUrc2s0dHcrR0szR01lRU41LytlMVFUOW5wL0tsMW5qK2FCdzdDMHhzeTBiRm5hQWQxY1NTNnhkb3J5L0NVdk02Z3RLc21uT09kcVRlc2JwMGJzOHNuNldxczBDOWRnY3hSSHVPTVoydG04bnBMVW03YXJnT1N6UT09IjsKCSJwdXJjaGFzZS1pbmZvIiA9ICJld29KSW1sMFpXMHRhV1FpSUQwZ0lqTTBOVE0xTVRZek5pSTdDZ2tpYjNKcFoybHVZV3d0ZEhKaGJuTmhZM1JwYjI0dGFXUWlJRDBnSWpFd01EQXdNREF3TURBek5qVXlORGNpT3dvSkluQjFjbU5vWVhObExXUmhkR1VpSUQwZ0lqSXdNVEF0TURNdE16QWdNREE2TVRBNk1EUWdSWFJqTDBkTlZDSTdDZ2tpY0hKdlpIVmpkQzFwWkNJZ1BTQWlZMjl0TG1OeWIzTnpZMjl0YlM1aWFXSnNaWFJ2ZFdOb0xtRmtaRzl1Y3k1bGMzWWlPd29KSW5SeVlXNXpZV04wYVc5dUxXbGtJaUE5SUNJeE1EQXdNREF3TURBd016WTFNalEzSWpzS0NTSnhkV0Z1ZEdsMGVTSWdQU0FpTVNJN0Nna2liM0pwWjJsdVlXd3RjSFZ5WTJoaGMyVXRaR0YwWlNJZ1BTQWlNakF4TUMwd015MHpNQ0F3TURveE1Eb3dOQ0JGZEdNdlIwMVVJanNLQ1NKaWFXUWlJRDBnSW1OdmJTNWpjbTl6YzJOdmJXMHVZbWxpYkdWMGIzVmphQ0k3Q2draVluWnljeUlnUFNBaU1pNHdMakFpT3dwOSI7CgkicG9kIiA9ICIxMDAiOwoJInNpZ25pbmctc3RhdHVzIiA9ICIwIjsKfQ==";
-	//	NSString *hardwareId = [[UIDevice currentDevice] uniqueIdentifier];
-	//	NSString *urlString = [NSString stringWithFormat:@"http://www.bibletouch.com/bibletouch/productservice/purchase/%@/%@", hardwareId, productId];
-	//	NSURL *url = [NSURL URLWithString:urlString];
-	//	NSLog(@"purchase service called with url %@", urlString);
-	//	ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-	//	[request appendPostData:[data dataUsingEncoding:NSUTF8StringEncoding]];
-	//	[request setRequestMethod:@"POST"];
-	//	[request addRequestHeader:@"Content-Type" value:@"text/xml"];
-	//	[request start];
-	//	
-	//	NSString *response = [request responseString];
-	//	NSLog(@"response for purchase request %@",response);
-	
-	//if request worked correctly, make download request
-	// [self provideContent:transaction.payment.productIdentifier];
-	
-	[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-}
 
 #pragma mark -
 #pragma mark Memory management
@@ -333,12 +237,12 @@
 
 @implementation BlioPurchaseVoiceTableViewCell
 
-@synthesize downloadButton,voice,progressView,progressLabel;
+@synthesize downloadButton,product,progressView,progressLabel;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.downloadButton = nil;
-	self.voice = nil;
+	self.product = nil;
 	self.progressView = nil;
 	self.progressLabel = nil;
     [super dealloc];
@@ -348,7 +252,7 @@
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
         // Initialization code
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-		
+		buttonState = -1;
 		[self.imageView setImage:[UIImage imageNamed:@"voice-sample-play-button.png"]];
 		UIButton * sampleButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		sampleButton.frame = CGRectMake(0,0,44,self.bounds.size.height);
@@ -359,6 +263,7 @@
 		[self.contentView addSubview:sampleButton];
 		self.downloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		self.downloadButton.frame = CGRectMake(self.contentView.bounds.size.width - kBlioVoiceDownloadButtonWidth - kBlioVoiceDownloadButtonRightMargin, (self.bounds.size.height - kBlioVoiceDownloadButtonHeight)/2, kBlioVoiceDownloadButtonWidth, kBlioVoiceDownloadButtonHeight);
+		//		self.downloadButton.frame = CGRectMake(0,0,320,44);
 		self.downloadButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		[self.downloadButton addTarget:self action:@selector(onDownloadButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		self.downloadButton.titleLabel.shadowOffset = CGSizeMake(0, -1);
@@ -373,101 +278,129 @@
 		[self.contentView addSubview:progressView];
 		[self.contentView bringSubviewToFront:progressView];
 		
-		self.progressLabel = [[UILabel alloc] initWithFrame:self.progressView.frame];
+		self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.progressView.frame.origin.x, self.progressView.frame.origin.y + self.progressView.frame.size.height, self.progressView.frame.size.width, 15.0f)];
 		self.progressLabel.center = CGPointMake(self.progressView.center.x, self.progressView.center.y + self.progressView.bounds.size.height);
 		self.progressLabel.font = [UIFont boldSystemFontOfSize:11];
 		self.progressLabel.textAlignment = UITextAlignmentCenter;
+		self.progressLabel.backgroundColor = [UIColor clearColor];
 		self.progressLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		[self.contentView addSubview:progressLabel];
 		[self.contentView bringSubviewToFront:progressLabel];
 		
+		[self.contentView sendSubviewToBack:self.textLabel];
 		self.textLabel.backgroundColor = [UIColor clearColor];
-		
-		[self setDownloadButtonState:BlioVoiceDownloadButtonStateDownload];
+		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchase];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationProgressNotification:) name:BlioProcessingOperationProgressNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationFailedNotification:) name:BlioProcessingOperationFailedNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseTransactionFailed:) name:BlioInAppPurchaseTransactionFailed object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseTransactionRestored:) name:BlioInAppPurchaseTransactionRestored object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseTransactionPurchased:) name:BlioInAppPurchaseTransactionPurchased object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];		
 	}
     return self;
 }
 -(void)prepareForReuse {
 	[super prepareForReuse];
-	[self setDownloadButtonState:BlioVoiceDownloadButtonStateDownload];
+	[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchase];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
--(void)setDownloadButtonState:(BlioVoiceDownloadButtonState)buttonState {
-	switch (buttonState) {
-		case BlioVoiceDownloadButtonStateDownload:
-			[self.downloadButton setTitle:NSLocalizedString(@"Download",@"\"Download\" button label in download voices view") forState:UIControlStateNormal];
-			self.downloadButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
-			[self.downloadButton setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];		
-			self.downloadButton.hidden = NO;
-			self.downloadButton.alpha = 1.0f;
-			self.downloadButton.enabled = YES;
-			
-			self.progressView.hidden = YES;
-			self.progressLabel.hidden = YES;
-			break;
-			
-		case BlioVoiceDownloadButtonStateInProgress:
-			self.progressView.hidden = NO;
-			self.progressLabel.hidden = NO;
-			self.progressLabel.text = NSLocalizedString(@"Calculating...",@"\"Calculating...\" text label as temporary substitute for i of i MB progress label text.");
-			self.downloadButton.hidden = YES;		
-			break;
-			
-		case BlioVoiceDownloadButtonStateInstalled:
-			self.progressView.hidden = YES;
-			self.progressLabel.hidden = YES;
-			self.downloadButton.hidden = NO;
-			self.downloadButton.alpha = 0.65f;
-			[self.downloadButton setTitle:NSLocalizedString(@"Installed",@"\"Installed\" button label in download voices view") forState:UIControlStateNormal];
-			self.downloadButton.enabled = NO;
-			//			[self.downloadButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];		
-			break;
+-(void)setDownloadButtonState:(BlioVoiceDownloadButtonState)aButtonState {
+	if (buttonState != aButtonState) {
+		buttonState = aButtonState;
+		switch (buttonState) {
+			case BlioVoiceDownloadButtonStatePurchase:
+				self.downloadButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
+				[self.downloadButton setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];		
+				self.downloadButton.hidden = NO;
+				self.downloadButton.alpha = 1.0f;
+				self.downloadButton.enabled = YES;
+				
+				self.progressView.hidden = YES;
+				self.progressLabel.hidden = YES;
+				break;
+			case BlioVoiceDownloadButtonStatePurchasing:
+				self.progressView.hidden = YES;
+				self.progressLabel.hidden = YES;
+				self.downloadButton.hidden = NO;
+				self.downloadButton.alpha = 0.65f;
+				[self.downloadButton setTitle:NSLocalizedString(@"Purchasing",@"\"Purchasing\" transition button label in purchase voices view.") forState:UIControlStateDisabled];
+				self.downloadButton.enabled = NO;
+				//			[self.downloadButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];		
+				break;
+				
+			case BlioVoiceDownloadButtonStateInProgress:
+				self.progressView.hidden = NO;
+				self.progressLabel.hidden = NO;
+				self.progressLabel.text = NSLocalizedString(@"Calculating...",@"\"Calculating...\" text label as temporary substitute for i of i MB progress label text.");
+				self.downloadButton.hidden = YES;		
+				break;
+				
+			case BlioVoiceDownloadButtonStateInstalled:
+				self.progressView.hidden = YES;
+				self.progressLabel.hidden = YES;
+				self.downloadButton.hidden = NO;
+				self.downloadButton.alpha = 0.65f;
+				[self.downloadButton setTitle:NSLocalizedString(@"Installed",@"\"Installed\" button label in purchase voices view") forState:UIControlStateDisabled];
+				self.downloadButton.enabled = NO;
+				//			[self.downloadButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];		
+				break;
+		}
 	}
 }
 -(NSString*)progressLabelFormattedText {
-	return NSLocalizedStringWithDefaultValue(@"I_OF_I_MB_DOWNLOAD_PROGRESS",nil,[NSBundle mainBundle],@"%i of %i MB",@"\"%i of %i MB\" download voice progress label text");
+	return NSLocalizedStringWithDefaultValue(@"F_OF_F_MB_DOWNLOAD_PROGRESS",nil,[NSBundle mainBundle],@"%.1f of %.1f MB",@"\"%.1f of %.1f MB\" download voice progress label text");
 }
--(void)configureWithVoice:(NSString*)aVoice {
-	self.voice = aVoice;
-    self.textLabel.text = [BlioAcapelaAudioManager voiceNameForVoice:aVoice];
-	BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] downloadVoiceOperationByVoice:aVoice];
+-(void)configureWithInAppPurchaseProduct:(CCInAppPurchaseProduct*)aProduct {
+	self.product = aProduct;
+    self.textLabel.text = self.product.name;
+	[self.downloadButton setTitle:[NSString stringWithFormat:@"%@",self.product.product.localizedPrice] forState:UIControlStateNormal];
+	BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] downloadVoiceOperationByVoice:self.product.name];
 	if (voiceOp) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
 		self.progressView.progress = voiceOp.percentageComplete/100.0f;
 		if (voiceOp.expectedContentLength != NSURLResponseUnknownLength) {
-			NSInteger totalMB = voiceOp.expectedContentLength/1000000;
-			NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
+			CGFloat totalMB = voiceOp.expectedContentLength/1000000;
+			CGFloat progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
 			self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];
 		}
 	}
-	else if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse] containsObject:aVoice]) {
+	else if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoiceNamesForUse] containsObject:self.product.name]) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInstalled];
 	}
-	else [self setDownloadButtonState:BlioVoiceDownloadButtonStateDownload];
+	else if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] isPurchasingProductWithID:self.product.productId]) {
+		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchasing];
+	}
+	else [self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchase];
 }
 -(void)onPlaySampleButtonPressed:(id)sender {
 	//	NSLog(@"onPlaySampleButtonPressed");
-	[[BlioAcapelaAudioManager sharedAcapelaAudioManager] playSampleForVoice:self.voice];
+	[[BlioAcapelaAudioManager sharedAcapelaAudioManager] playSampleForVoice:self.product.name];
 }
 -(void)onDownloadButtonPressed:(id)sender {
 	//	NSLog(@"onDownloadButtonPressed");
-	[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
-	[[BlioAcapelaAudioManager sharedAcapelaAudioManager] downloadVoice:self.voice];
+	if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] canMakePurchases]) {
+		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchasing];
+		[[BlioInAppPurchaseManager sharedInAppPurchaseManager] purchaseProductWithID:self.product.productId];
+	}
+	else {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+									 message:NSLocalizedStringWithDefaultValue(@"PURCHASES_NOT_ENABLED",nil,[NSBundle mainBundle],@"In-App Purchases are not currently enabled, possibly due to Parental Controls restrictions.",@"Alert message when SKPaymenQueue canMakePayments returns NO.")
+									delegate:nil 
+						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+						   otherButtonTitles: nil];		
+	}
 }
 - (void)onProcessingOperationProgressNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [note object];
-		if ([voiceOp.voice isEqualToString:self.voice]) {
+		if ([voiceOp.voice isEqualToString:self.product.productId]) {
 			//			NSLog(@"BlioPurchaseVoiceTableViewCell onProcessingProgressNotification entered. percentage: %u",voiceOp.percentageComplete);
 			[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
 			if (voiceOp.percentageComplete != 100) {
 				self.progressView.progress = voiceOp.percentageComplete/100.0f;
-				NSInteger totalMB = voiceOp.expectedContentLength/1000000;
-				NSInteger progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
+				CGFloat totalMB = voiceOp.expectedContentLength/1000000;
+				CGFloat progressMB = (voiceOp.expectedContentLength * self.progressView.progress)/1000000;
 				self.progressLabel.text = [NSString stringWithFormat:[self progressLabelFormattedText],progressMB,totalMB];		
 			}
 			else {
@@ -480,7 +413,7 @@
 - (void)onProcessingOperationCompleteNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [note object];
-		if ([voiceOp.voice isEqualToString:self.voice]) {
+		if ([voiceOp.voice isEqualToString:self.product.productId]) {
 			//			NSLog(@"BlioPurchaseVoiceTableViewCell onProcessingOperationCompleteNotification entered.");
 			[self setDownloadButtonState:BlioVoiceDownloadButtonStateInstalled];
 		}
@@ -489,12 +422,29 @@
 - (void)onProcessingOperationFailedNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [note object];
-		if ([voiceOp.voice isEqualToString:self.voice]) {
+		if ([voiceOp.voice isEqualToString:self.product.productId]) {
 			//			NSLog(@"BlioPurchaseVoiceTableViewCell onProcessingOperationFailedNotification entered.");
-			[self setDownloadButtonState:BlioVoiceDownloadButtonStateDownload];
+			[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchase];
 		}
 	}
 }
-
+- (void)didReceiveInAppPurchaseTransactionFailed:(NSNotification*)note {
+	SKPaymentTransaction* transaction = (SKPaymentTransaction*)[[note userInfo] objectForKey:BlioInAppPurchaseNotificationTransactionKey];
+	if ([transaction.payment.productIdentifier isEqualToString:self.product.productId]) {
+		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchase];
+	}
+}
+- (void)didReceiveInAppPurchaseTransactionRestored:(NSNotification*)note {
+	SKPaymentTransaction* transaction = (SKPaymentTransaction*)[[note userInfo] objectForKey:BlioInAppPurchaseNotificationTransactionKey];
+	if ([transaction.payment.productIdentifier isEqualToString:self.product.productId]) {
+		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
+	}
+}
+- (void)didReceiveInAppPurchaseTransactionPurchased:(NSNotification*)note {
+	SKPaymentTransaction* transaction = (SKPaymentTransaction*)[[note userInfo] objectForKey:BlioInAppPurchaseNotificationTransactionKey];
+	if ([transaction.payment.productIdentifier isEqualToString:self.product.productId]) {
+		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
+	}
+}
 @end
 

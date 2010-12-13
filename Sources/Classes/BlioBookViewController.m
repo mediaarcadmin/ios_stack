@@ -2155,7 +2155,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
             else {
                 // use the current word and block, which is where we last stopped.
-                if ( audioMgr.currentWordOffset + 1 < [audioMgr.blockWords count] ) {
+                if ( audioMgr.currentWordOffset < [audioMgr.blockWords count] ) {
                     // We last stopped in the middle of a block.
                 } else {
                     // We last stopped at the end of a block, so need the next one.
@@ -2367,26 +2367,46 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	if ( _audioBookManager.timeIx >= [_audioBookManager.wordTimes count] )
 		// can get here ahead of audioPlayerDidFinishPlaying
 		return;
-	//int timeElapsed = (int) (([_audioBookManager.avPlayer currentTime] - _audioBookManager.timeStarted) * 1000.0);
-	//int timeElapsed = [_audioBookManager.avPlayer currentTime] * 1000;
-	//NSLog(@"Elapsed time %d",timeElapsed);
-	if ( ([_audioBookManager.avPlayer currentTime] * 1000 ) >= ([[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]) ) {
-		//NSLog(@"Passed time %d",[[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]);
 
+    
+    BOOL highlightShouldMove = NO;
+    id moveToBlockID = nil;
+    NSUInteger moveToWordOffset = 0;
+    
+    // Loop through all the words that should have been highlighted before this 
+    // time.  A loop because the audio manager might potentially have read more
+    // than one word in the time that elapsed between the last checkHighlightTime
+    // call was made (this is unlikely since we fire so fast, but possible,
+    // especially if the main thread stalls for some reason).    
+    int timeElapsed = [_audioBookManager.avPlayer currentTime] * 1000;
+	while ( timeElapsed > [[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue] ) {
+		//NSLog(@"Time is: %ld, Passed time %d", timeElapsed, [[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]);
+
+        // Save these now, because we're about to move on to the next word.
+        highlightShouldMove = YES;
+        [moveToBlockID release];
+        moveToBlockID = [_audioBookManager.currentBlock retain];
+        moveToWordOffset = _audioBookManager.currentWordOffset;
+
+		++_audioBookManager.timeIx;
+        ++_audioBookManager.currentWordOffset;
+        
+        if ( _audioBookManager.currentWordOffset == _audioBookManager.blockWords.count ) {
+            [self prepareTextToSpeakWithAudioManager:_audioBookManager];
+        }            
+	}
+    
+    if ( highlightShouldMove ) {
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-            BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
-                                                                                wordOffset:_audioBookManager.currentWordOffset];
+            //NSLog(@"%@, %d", moveToBlockID, moveToWordOffset);
+            BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:moveToBlockID
+                                                                                wordOffset:moveToWordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
-		
-        ++_audioBookManager.currentWordOffset;
-		++_audioBookManager.timeIx;
-	}
-    if ( _audioBookManager.currentWordOffset == [_audioBookManager.blockWords count] ) {
-		// Last word of block, get more words.  
-		[self prepareTextToSpeakWithAudioManager:_audioBookManager];
-	}    
+    }
+    
+    [moveToBlockID release];
 }
 
 - (void)stopAudio {		
