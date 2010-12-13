@@ -42,5 +42,5 @@ static NSString * const kBlioDownloadNewBooksDefaultsKey = @"downloadnewbooks";
 static NSString * const kBlioUsersDictionaryDefaultsKey = @"kBlioUsersDictionaryDefaultsKey";
 static NSString * const kBlioUserLoginCredentialsDefaultsKey = @"kBlioUserLoginCredentialsDefaultsKey";
 static NSString * const kBlioUserRegistrationRecordsDefaultsKey = @"kBlioUserRegistrationRecordsDefaultsKey";
-
+static NSString * const kBlioDeviceIDDefaultsKey = @"lastDevice";
 static NSString * const kBlioOpenBookKey = @"kBlioOpenBookKey";
