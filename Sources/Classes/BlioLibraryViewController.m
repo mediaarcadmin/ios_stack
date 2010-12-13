@@ -463,6 +463,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+	
+	[super viewWillAppear:animated];
+
+	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+	[self.navigationController.toolbar setBarStyle:UIBarStyleDefault];
+	[self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
+	
+	sortSegmentedControl.tintColor = tintColor;
+    [self.navigationController.toolbar setTintColor:tintColor];
+    [self.navigationController.navigationBar setTintColor:tintColor];    
+
     // Workaround to properly set the UIBarButtonItem's tint color in iOS 4
     // From http://stackoverflow.com/questions/3151549/uitoolbar-tint-on-ios4
     for (UIBarButtonItem * item in self.toolbarItems)
@@ -470,10 +481,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         item.style = UIBarButtonItemStylePlain;
         item.style = UIBarButtonItemStyleBordered;
     }
-	sortSegmentedControl.tintColor = tintColor;
-    [self.navigationController.toolbar setTintColor:tintColor];
-    [self.navigationController.navigationBar setTintColor:tintColor];    
-    [super viewWillAppear:animated];
+	
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated {
