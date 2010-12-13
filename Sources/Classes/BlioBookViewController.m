@@ -35,6 +35,8 @@ static const CGFloat kBlioBookSliderPreviewHeightPad = 180;
 static const CGFloat kBlioBookSliderPreviewWidthPhone = 180;
 static const CGFloat kBlioBookSliderPreviewHeightPhone = 180;
 static const CGFloat kBlioBookSliderPreviewAnchorOffset = 20;
+static const CGFloat kBlioBookSliderPreviewPhoneLandscapeOffset = 26;
+
 static const CGFloat kBlioBookSliderPreviewShadowRadius = 20;
 static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 
@@ -3272,6 +3274,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		thumbImage.layer.shouldRasterize = YES;
 		thumbImage.layer.shadowOffset = CGSizeZero;
 		thumbImage.layer.zPosition = 1000; // to raise it's shadow above the slider
+		
+		self.backgroundColor = [UIColor redColor];
 	}
 	return self;
 }
@@ -3295,6 +3299,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[self setAlpha:0.01f];
 	}
 	[UIView commitAnimations];
+}
+
+- (void)layoutSubviews {
+	CGRect viewBounds = self.bounds;
+	BOOL isLandscape = CGRectGetWidth(viewBounds) > CGRectGetHeight(viewBounds);
+	
+	[super layoutSubviews];
+	
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && isLandscape) {
+		CGRect thumbFrame = thumbImage.frame;
+		thumbFrame.origin.y += kBlioBookSliderPreviewPhoneLandscapeOffset;
+		thumbImage.frame = thumbFrame;
+	}
 }
 
 - (CGRect)thumbBounds {
