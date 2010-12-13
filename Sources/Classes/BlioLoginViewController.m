@@ -12,6 +12,7 @@
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
 #import "BlioCreateAccountViewController.h"
+#import <QuartzCore/CALayer.h>
 
 @implementation BlioLoginViewController
 
@@ -28,15 +29,22 @@
 		UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		aButton.showsTouchWhenHighlighted = NO;
 		[aButton setTitle:NSLocalizedString(@"Forgot Password?",@"\"Forgot Password?\" button label") forState:UIControlStateNormal];
-		[aButton setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];		
-		[aButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];
+		[aButton setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateHighlighted];		
+		[aButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
 		[aButton.titleLabel setShadowOffset:CGSizeMake(0.0f, -1.0f)];
-		[aButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-		[aButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
-		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButton.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateNormal];
-		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButtonPressed.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateHighlighted];
+		[aButton setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
+		[aButton setTitleColor:[UIColor colorWithRed:0.0f/255.0f green:50.0f/255.0f blue:100.0f/255.0f alpha:1] forState:UIControlStateNormal];
+		[[aButton layer] setCornerRadius:4.0f];
+		[[aButton layer] setMasksToBounds:YES];
+		[[aButton layer] setBorderWidth:0.0f];		
+		[[aButton layer] setBorderColor:[[UIColor colorWithRed:100.0f/255.0f green:100.0f/255.0f blue:100.0f/255.0f alpha:1] CGColor]];
+//		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButton.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateNormal];
+//		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButtonPressed.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateHighlighted];
+		[aButton setBackgroundColor:[UIColor clearColor]];
+//		[aButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
 		[aButton addTarget:self action:@selector(forgotPassword:) forControlEvents:UIControlEventTouchUpInside];
-		aButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
+//		aButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
+		aButton.titleLabel.font = [UIFont systemFontOfSize:14];
 		CGFloat leftMargin = kCellTopOffset;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			leftMargin = kCellLeftOffsetPad;

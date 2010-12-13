@@ -54,6 +54,7 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 - (NSUInteger)wordOffsetForCharacterRange:(NSRange)characterRange;
 
 -(NSArray*)availableVoicesForUse;
+-(NSArray*)availableVoiceNamesForUse;
 -(NSArray*)availableVoicesForDownload;
 
 -(void)playSampleForVoice:(NSString *)aVoice;

@@ -10,7 +10,7 @@
 #import "BlioAppSettingsConstants.h"
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
-
+#import <QuartzCore/CALayer.h>
 
 @implementation BlioStoreWebsitePhoneContentView
 
@@ -33,12 +33,12 @@
     
     
     if(UIInterfaceOrientationIsLandscape(orientation)) {
-		self.screenshotView.frame = CGRectMake(33,10,112,210);
+		self.screenshotView.frame = CGRectMake(10,10,160,202);
 		self.headerLabel.hidden = YES;
 		self.subHeaderLabel.hidden = YES;
 	}
 	else {
-		self.screenshotView.frame = CGRectMake(33,8,75,150);
+		self.screenshotView.frame = CGRectMake(10,15,105,132);
 		self.headerLabel.hidden = NO;
 		self.subHeaderLabel.hidden = NO;
 	}
@@ -97,8 +97,8 @@
 		[self.view addSubview:phoneContentView];
 
 		// screenshot image
-		UIImageView * screenshotView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"webstore-screenshot.png"]] autorelease];
-		screenshotView.frame = CGRectMake(33,8,75,150);
+		UIImageView * screenshotView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"webstore-screenshot-phone.png"]] autorelease];
+		screenshotView.frame = CGRectMake(10,15,105,132);
 		[self.phoneContentView addSubview:screenshotView];
 		self.phoneContentView.screenshotView = screenshotView;
 		
@@ -135,8 +135,20 @@
 		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		launchButton.frame = CGRectMake(self.view.bounds.size.width/2 - ((2.6)*kStdButtonWidth)/2, yPlacement, (2.6)*kStdButtonWidth, kStdButtonHeight);
 		launchButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-		launchButton.backgroundColor = [UIColor clearColor];
-		[launchButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
+		[[launchButton layer] setCornerRadius:8.0f];
+		[[launchButton layer] setMasksToBounds:YES];
+		[[launchButton layer] setBorderWidth:2.0f];
+		[[launchButton layer] setBorderColor:[[UIColor colorWithRed:100.0f/255.0f green:100.0f/255.0f blue:100.0f/255.0f alpha:1] CGColor]];
+		[launchButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//		[launchButton setBackgroundColor:[UIColor whiteColor]];
+//		CAGradientLayer * gradientLayer = [[CAGradientLayer alloc] init];
+//		[gradientLayer setBounds:[launchButton bounds]];
+//		[gradientLayer setPosition:CGPointMake([launchButton bounds].size.width/2,[launchButton bounds].size.height/2)];
+//		[[launchButton layer] insertSublayer:gradientLayer atIndex:0];
+//		[gradientLayer setColors:[NSArray arrayWithObjects:(id)[[UIColor whiteColor] CGColor],(id)[[UIColor colorWithRed:200.0f/255.0f green:200.0f/255.0f blue:200.0f/255.0f alpha:1] CGColor], nil]];
+//		[gradientLayer release];
+//		launchButton.backgroundColor = [UIColor clearColor];
+		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
 		[self.phoneContentView addSubview:launchButton];
 		
 		
@@ -147,10 +159,10 @@
 		createAccountButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
 		createAccountButton.backgroundColor = [UIColor clearColor];
 		[createAccountButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
-		[self.phoneContentView addSubview:createAccountButton];
+//		[self.phoneContentView addSubview:createAccountButton];
 	}
 	else {
-		self.view.backgroundColor = [UIColor colorWithRed:255.0f/255.0f green:255.0f/255.0f blue:255.0f/255.0f alpha:1.0f]; // the default background color of grouped tableview on iPad
+		self.view.backgroundColor = [UIColor whiteColor]; // the default background color of grouped tableview on iPad
 		self.view.autoresizesSubviews = YES;
 		
 		UIView * contentView = [[[UIView alloc] initWithFrame:CGRectMake(0,0,650,450)] autorelease];
@@ -191,7 +203,13 @@
 		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		launchButton.frame = CGRectMake(355,350,298,50);
 		launchButton.backgroundColor = [UIColor clearColor];
-		[launchButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
+//		[launchButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
+		[[launchButton layer] setCornerRadius:8.0f];
+		[[launchButton layer] setMasksToBounds:YES];
+		[[launchButton layer] setBorderWidth:2.0f];
+		[[launchButton layer] setBorderColor:[[UIColor colorWithRed:100.0f/255.0f green:100.0f/255.0f blue:100.0f/255.0f alpha:1] CGColor]];
+		[launchButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
 		[contentView addSubview:launchButton];
 		
 		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -200,7 +218,7 @@
 		createAccountButton.frame = createAccountButtonFrame;
 		createAccountButton.backgroundColor = [UIColor clearColor];
 		[createAccountButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
-		[contentView addSubview:createAccountButton];
+//		[contentView addSubview:createAccountButton];
 		
 	}
 	[createAccountButton setTitle:NSLocalizedString(@"Create Account",@"\"Create Account\" text label for cell in Store Website View Controller") forState:UIControlStateNormal];
@@ -214,8 +232,9 @@
 		createAccountButton.hidden = YES;
 	}
 	else {
-		[launchButton addTarget:self action:@selector(openModalLogin:) forControlEvents:UIControlEventTouchUpInside];
-		[launchButton setTitle:NSLocalizedString(@"Login",@"Button label for opening login window.") forState:UIControlStateNormal];
+		[launchButton addTarget:self action:@selector(confirmLaunch:) forControlEvents:UIControlEventTouchUpInside];
+//		[launchButton setTitle:NSLocalizedString(@"Login",@"Button label for opening login window.") forState:UIControlStateNormal];
+		[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
 		createAccountButton.hidden = NO;
 	}
 }
@@ -241,16 +260,28 @@
 		explanationLabel.text = explanationText;		
 	}
 }
+- (void)confirmLaunch:(id)sender {	
+	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		[self launchWebsite:sender];
+	}
+	else {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention...\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"LOGIN_BEFORE_BROWSING_WEBSTORE",nil,[NSBundle mainBundle],@"You are currently not logged in. By inputting your username and password now, Blio will be able to automatically download purchases you make in the webstore when you return. Would you like to input your username and password now?",@"Alert Text encouraging the end-user to login before leaving for the webstore.")
+									delegate:self 
+						   cancelButtonTitle:nil
+						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button title"),NSLocalizedString(@"Login",@"\"Login\" button title"),nil];	
+	}
+}
 - (void)launchWebsite:(id)sender {	
 	// Open question whether we will go to a single top-level URL here for both iphone and ipad.
 //	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-		UIButton* ctl = (UIButton*)sender;
-		if ( ctl == launchButton ) {
+//		UIButton* ctl = (UIButton*)sender;
+//		if ( ctl == launchButton ) {
 //			NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
 			NSURL* url = [[NSURL alloc] initWithString:@"http://bliodemo.crosscomm.net"];
 			
 			[[UIApplication sharedApplication] openURL:url];			  
-		}
+//		}
 //	}
 	// TODO: take out this beta alert below!
 //	else {
@@ -271,10 +302,11 @@
 }
 -(void)loginDismissed:(NSNotification*)note {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-		[self updateLogin];
-		[self updateExplanation];
-	}
+//	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+//		[self updateLogin];
+//		[self updateExplanation];
+//	}
+	[self launchWebsite:nil];
 }
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -284,4 +316,16 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 //	[self.phoneContentView layoutSubviews];
 }
+#pragma mark - 
+#pragma mark UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+	if (buttonIndex == 0) {
+		[self launchWebsite:alertView];
+	}
+	else if (buttonIndex == 1) {
+		[self openModalLogin:alertView];
+	}
+}
+
 @end

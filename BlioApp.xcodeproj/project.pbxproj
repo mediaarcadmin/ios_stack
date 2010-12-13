@@ -1112,15 +1112,24 @@
 		DCEB07741242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
 		DCEB07751242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
 		DCEB07761242AFEF0073881D /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
+		DCF0C27412B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C27312B1362900275449 /* SKProduct+LocalizedPrice.m */; };
+		DCF0C27512B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C27312B1362900275449 /* SKProduct+LocalizedPrice.m */; };
+		DCF0C27612B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C27312B1362900275449 /* SKProduct+LocalizedPrice.m */; };
+		DCF63D1612B59CA7003E762C /* webstore-screenshot-phone.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF63D1412B59CA7003E762C /* webstore-screenshot-phone.png */; };
+		DCF63D1712B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF63D1512B59CA7003E762C /* webstore-screenshot-phone@2x.png */; };
+		DCF63D1812B59CA7003E762C /* webstore-screenshot-phone.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF63D1412B59CA7003E762C /* webstore-screenshot-phone.png */; };
+		DCF63D1912B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF63D1512B59CA7003E762C /* webstore-screenshot-phone@2x.png */; };
+		DCF63D1A12B59CA7003E762C /* webstore-screenshot-phone.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF63D1412B59CA7003E762C /* webstore-screenshot-phone.png */; };
+		DCF63D1B12B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF63D1512B59CA7003E762C /* webstore-screenshot-phone@2x.png */; };
+		DCF641FF12B60B60003E762C /* button-background-graygradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FD12B60B60003E762C /* button-background-graygradient.png */; };
+		DCF6420012B60B60003E762C /* button-background-graygradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */; };
+		DCF6420112B60B60003E762C /* button-background-graygradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FD12B60B60003E762C /* button-background-graygradient.png */; };
+		DCF6420212B60B60003E762C /* button-background-graygradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */; };
+		DCF6420312B60B60003E762C /* button-background-graygradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FD12B60B60003E762C /* button-background-graygradient.png */; };
+		DCF6420412B60B60003E762C /* button-background-graygradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */; };
 		DCF6E1FB125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
 		DCF6E1FC125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
 		DCF6E1FD125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
-		DCFAC87B12AD68D20049341B /* webstore-screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC87912AD68D20049341B /* webstore-screenshot.png */; };
-		DCFAC87C12AD68D20049341B /* webstore-screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC87A12AD68D20049341B /* webstore-screenshot@2x.png */; };
-		DCFAC87D12AD68D20049341B /* webstore-screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC87912AD68D20049341B /* webstore-screenshot.png */; };
-		DCFAC87E12AD68D20049341B /* webstore-screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC87A12AD68D20049341B /* webstore-screenshot@2x.png */; };
-		DCFAC87F12AD68D20049341B /* webstore-screenshot.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC87912AD68D20049341B /* webstore-screenshot.png */; };
-		DCFAC88012AD68D20049341B /* webstore-screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC87A12AD68D20049341B /* webstore-screenshot@2x.png */; };
 		DCFAC96B12AD738D0049341B /* webstore-screenshot-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC96912AD738D0049341B /* webstore-screenshot-ipad.png */; };
 		DCFAC96C12AD738D0049341B /* webstore-screenshot-ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC96A12AD738D0049341B /* webstore-screenshot-ipad@2x.png */; };
 		DCFAC96D12AD738D0049341B /* webstore-screenshot-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC96912AD738D0049341B /* webstore-screenshot-ipad.png */; };
@@ -1949,10 +1958,14 @@
 		DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioCreateAccountViewController.m; sourceTree = "<group>"; };
 		DCEB07721242AFEF0073881D /* DigitalLockerGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DigitalLockerGateway.h; sourceTree = "<group>"; };
 		DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DigitalLockerGateway.m; sourceTree = "<group>"; };
+		DCF0C27212B1362900275449 /* SKProduct+LocalizedPrice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKProduct+LocalizedPrice.h"; sourceTree = "<group>"; };
+		DCF0C27312B1362900275449 /* SKProduct+LocalizedPrice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKProduct+LocalizedPrice.m"; sourceTree = "<group>"; };
+		DCF63D1412B59CA7003E762C /* webstore-screenshot-phone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webstore-screenshot-phone.png"; sourceTree = "<group>"; };
+		DCF63D1512B59CA7003E762C /* webstore-screenshot-phone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webstore-screenshot-phone@2x.png"; sourceTree = "<group>"; };
+		DCF641FD12B60B60003E762C /* button-background-graygradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-background-graygradient.png"; sourceTree = "<group>"; };
+		DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-background-graygradient@2x.png"; sourceTree = "<group>"; };
 		DCF6E1F9125E6F8C00CAC22B /* BlioGetBooksImportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioGetBooksImportViewController.h; sourceTree = "<group>"; };
 		DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioGetBooksImportViewController.m; sourceTree = "<group>"; };
-		DCFAC87912AD68D20049341B /* webstore-screenshot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webstore-screenshot.png"; sourceTree = "<group>"; };
-		DCFAC87A12AD68D20049341B /* webstore-screenshot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webstore-screenshot@2x.png"; sourceTree = "<group>"; };
 		DCFAC96912AD738D0049341B /* webstore-screenshot-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webstore-screenshot-ipad.png"; sourceTree = "<group>"; };
 		DCFAC96A12AD738D0049341B /* webstore-screenshot-ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webstore-screenshot-ipad@2x.png"; sourceTree = "<group>"; };
 		DCFF6190117F6F4E00463427 /* button-delete-red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-delete-red.png"; sourceTree = "<group>"; };
@@ -2177,6 +2190,8 @@
 				C9FD392611FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png */,
 				C9FD392711FD69FF008F1F50 /* buttonBarArrowUpSmall.png */,
 				C9FD392811FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png */,
+				DCF641FD12B60B60003E762C /* button-background-graygradient.png */,
+				DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */,
 				DC2EB05411C96E28006AC1B6 /* DRM */,
 				A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */,
 				A3C7436111CAC178005A2219 /* icon-cart@2x.png */,
@@ -2296,8 +2311,8 @@
 				7D131D201295628300BCA583 /* icon-author.png */,
 				7D131D211295628300BCA583 /* icon-arbitrary@2x.png */,
 				7D131D221295628300BCA583 /* icon-arbitrary.png */,
-				DCFAC87912AD68D20049341B /* webstore-screenshot.png */,
-				DCFAC87A12AD68D20049341B /* webstore-screenshot@2x.png */,
+				DCF63D1412B59CA7003E762C /* webstore-screenshot-phone.png */,
+				DCF63D1512B59CA7003E762C /* webstore-screenshot-phone@2x.png */,
 				DCFAC96912AD738D0049341B /* webstore-screenshot-ipad.png */,
 				DCFAC96A12AD738D0049341B /* webstore-screenshot-ipad@2x.png */,
 				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
@@ -3023,6 +3038,8 @@
 				C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */,
 				C9D8A4A110F20E4800FD5F22 /* BlioUIImageAdditions.h */,
 				C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */,
+				DCF0C27212B1362900275449 /* SKProduct+LocalizedPrice.h */,
+				DCF0C27312B1362900275449 /* SKProduct+LocalizedPrice.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -3507,10 +3524,12 @@
 				7D131D351295628300BCA583 /* icon-arbitrary@2x.png in Resources */,
 				7D131D361295628300BCA583 /* icon-arbitrary.png in Resources */,
 				7DBB2E1712A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */,
-				DCFAC87D12AD68D20049341B /* webstore-screenshot.png in Resources */,
-				DCFAC87E12AD68D20049341B /* webstore-screenshot@2x.png in Resources */,
 				DCFAC96D12AD738D0049341B /* webstore-screenshot-ipad.png in Resources */,
 				DCFAC96E12AD738D0049341B /* webstore-screenshot-ipad@2x.png in Resources */,
+				DCF63D1812B59CA7003E762C /* webstore-screenshot-phone.png in Resources */,
+				DCF63D1912B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */,
+				DCF6420112B60B60003E762C /* button-background-graygradient.png in Resources */,
+				DCF6420212B60B60003E762C /* button-background-graygradient@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3731,10 +3750,12 @@
 				7D131D3F1295628300BCA583 /* icon-arbitrary@2x.png in Resources */,
 				7D131D401295628300BCA583 /* icon-arbitrary.png in Resources */,
 				7DBB2E1812A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */,
-				DCFAC87F12AD68D20049341B /* webstore-screenshot.png in Resources */,
-				DCFAC88012AD68D20049341B /* webstore-screenshot@2x.png in Resources */,
 				DCFAC96F12AD738D0049341B /* webstore-screenshot-ipad.png in Resources */,
 				DCFAC97012AD738D0049341B /* webstore-screenshot-ipad@2x.png in Resources */,
+				DCF63D1A12B59CA7003E762C /* webstore-screenshot-phone.png in Resources */,
+				DCF63D1B12B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */,
+				DCF6420312B60B60003E762C /* button-background-graygradient.png in Resources */,
+				DCF6420412B60B60003E762C /* button-background-graygradient@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3956,10 +3977,12 @@
 				7D131D2B1295628300BCA583 /* icon-arbitrary@2x.png in Resources */,
 				7D131D2C1295628300BCA583 /* icon-arbitrary.png in Resources */,
 				7DBB2E1612A6C30C0048D44A /* TextFlowXAMLOverrides.css in Resources */,
-				DCFAC87B12AD68D20049341B /* webstore-screenshot.png in Resources */,
-				DCFAC87C12AD68D20049341B /* webstore-screenshot@2x.png in Resources */,
 				DCFAC96B12AD738D0049341B /* webstore-screenshot-ipad.png in Resources */,
 				DCFAC96C12AD738D0049341B /* webstore-screenshot-ipad@2x.png in Resources */,
+				DCF63D1612B59CA7003E762C /* webstore-screenshot-phone.png in Resources */,
+				DCF63D1712B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */,
+				DCF641FF12B60B60003E762C /* button-background-graygradient.png in Resources */,
+				DCF6420012B60B60003E762C /* button-background-graygradient@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4097,6 +4120,7 @@
 				DCAC9612126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */,
 				DC8BB2481277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33712A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
+				DCF0C27512B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4230,6 +4254,7 @@
 				DCAC9611126918C200C24BF7 /* BlioMyAccountViewController.m in Sources */,
 				DC8BB2491277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33812A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
+				DCF0C27612B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4363,6 +4388,7 @@
 				DCAC9613126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */,
 				DC8BB2471277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33612A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
+				DCF0C27412B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,7 +7,7 @@
 	<key>BlioLibraryViewDisableRotation~ipad</key>
 	<false/>
 	<key>CFBundleIdentifier</key>
-	<string>com.knfbreading.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.knfbreading.Blio</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleVersion</key>

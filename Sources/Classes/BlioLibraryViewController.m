@@ -467,7 +467,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     // From http://stackoverflow.com/questions/3151549/uitoolbar-tint-on-ios4
     for (UIBarButtonItem * item in self.toolbarItems)
     {
-		NSLog(@"item: %@",item);
         item.style = UIBarButtonItemStylePlain;
         item.style = UIBarButtonItemStyleBordered;
     }
@@ -1987,7 +1986,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
 		progressView.hidden = NO;
 		progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		
+		[self.contentView addSubview:self.progressView];
+
 		pauseResumeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, kBlioLibraryListButtonWidth, kBlioLibraryListButtonHeight)];
 		[pauseResumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
 		pauseResumeButton.showsTouchWhenHighlighted = YES;
@@ -2006,13 +2006,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 -(void)prepareForReuse {
 	[super prepareForReuse];
-	[progressView removeFromSuperview];
 	progressView.isAccessibilityElement = NO;
 	progressView.progress = 0;
 	progressView.hidden = YES;
 	//progressSlider.hidden = YES;
 	self.statusBadge.image = nil;
 	self.accessoryView = nil;
+	pauseResumeButton.isAccessibilityElement = NO;
 }
 -(void)onPauseResumeButtonPressed:(id)sender {
 	if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) [delegate pauseProcessingForBook:[self book]];
@@ -2105,7 +2105,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
 		progressView.isAccessibilityElement = NO;
-		[self.progressView removeFromSuperview];
 		progressView.hidden = YES;
 		self.accessoryView = pauseResumeButton;
 		[self resetAuthorText];
@@ -2114,13 +2113,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	else if ([[self.book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateComplete) {
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		self.accessoryView = pauseResumeButton;
+		pauseResumeButton.isAccessibilityElement = YES;
 		// set appearance to reflect incomplete state
 		// self.bookView.alpha = 0.35f;
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
-			progressView.isAccessibilityElement = YES;
-			[self.contentView addSubview:self.progressView];
 			progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
 			progressView.hidden = NO;
+			progressView.isAccessibilityElement = YES;
 
 			//self.progressSlider.hidden = YES;
 			BlioProcessingCompleteOperation * completeOp = [[delegate processingDelegate] processingCompleteOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
@@ -2140,22 +2139,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotProcessed) {
 			self.authorLabel.text = NSLocalizedString(@"Retrieving Information...","\"Retrieving Information...\" status indicator in BlioLibraryListCell");
 			progressView.isAccessibilityElement = NO;
-			[progressView removeFromSuperview];
 			progressView.hidden = YES;
 			self.accessoryView = nil;
+			pauseResumeButton.isAccessibilityElement = NO;
 			//self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePaused) {
 			self.authorLabel.text = NSLocalizedString(@"Paused...","\"Paused...\" status indicator in BlioLibraryListCell");
 			progressView.isAccessibilityElement = NO;
-			[progressView removeFromSuperview];
 			progressView.hidden = YES;
 			//self.progressSlider.hidden = YES;
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateFailed) {
 			self.authorLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryListCell");
 			progressView.isAccessibilityElement = NO;
-			[progressView removeFromSuperview];
 			progressView.hidden = YES;
 			//self.progressSlider.hidden = YES;
 		}
@@ -2163,14 +2160,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 			self.authorLabel.text = NSLocalizedString(@"App Update Required","\"App Update Required\" status indicator in BlioLibraryListCell");
 			progressView.isAccessibilityElement = NO;
-			[progressView removeFromSuperview];
 			progressView.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
 			self.authorLabel.text = NSLocalizedString(@"Suspended","\"Suspended\" status indicator in BlioLibraryListCell");
 			progressView.isAccessibilityElement = NO;
-			[progressView removeFromSuperview];
 			progressView.hidden = YES;
 			//self.progressSlider.hidden = YES;
 //			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
@@ -2179,9 +2174,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	else {
 		//self.progressSlider.hidden = NO;
 		progressView.isAccessibilityElement = NO;
-		[progressView removeFromSuperview];
 		progressView.hidden = YES;
 		self.accessoryView = nil;
+		pauseResumeButton.isAccessibilityElement = NO;
 		[self resetAuthorText];
 		self.selectionStyle = UITableViewCellSelectionStyleGray;
 		if ([self.book hasManifestValueForKey:BlioManifestAudiobookMetadataKey]) {
@@ -2192,6 +2187,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 	}
     [self setNeedsLayout];
+	[self layoutIfNeeded];
 	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 -(void) listenToProcessingNotifications {
@@ -2256,7 +2252,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			BlioProcessingCompleteOperation * completeOp = [note object];
 			//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
-			progressView.isAccessibilityElement = YES;
+//			progressView.isAccessibilityElement = YES;
 			progressView.frame = CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, self.contentView.frame.size.width - (CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin), 10);
 			progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 

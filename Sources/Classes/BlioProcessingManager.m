@@ -1088,6 +1088,37 @@
 	}
 	*/
 }
+-(void) deleteBooksForSourceID:(BlioBookSourceID)sourceID {
+	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@", [NSNumber numberWithInt:sourceID]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+    if (errorExecute) {
+        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found %i book results with sourceID %i, will delete...",[results count],sourceID); 
+			for (BlioBook * book in results) {
+				[self deleteBook:book shouldSave:YES];
+			}
+			
+		}
+		else {
+			NSLog(@"No paid book results to delete."); 
+		}
+	}
+    [fetchRequest release];
+	
+	// end resume previous processing operations
+	
+}
+
 -(void) deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site {
 	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 		
