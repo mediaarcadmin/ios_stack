@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Metadata PackagerVersion="1.1.937.0" FormatVersion="1.0.2.0" Source="9464327fd07e2a7286e5cd47ccb49868">
+  <Edition Name="" />
+  <Identifier ISBN="9780307589682" />
+  <Features />
+  <PageStatistics MaxWidth="576" MaxHeight="864" />
+  <Source Type="EPUB" />
+  <View Default="REFLOW" />
+  <KNFBConv Build="937" When="11/1/2010 9:14:08 AM" CommandLine="C:\Dev_r937/KNFBConv.exe -A -x=n -F=&quot;C:\Users\Kurt\Desktop\For Converter/9780307589682.epub&quot; -ISBN=file -v=10 -NoInCoverSub -rights" />
+  <Dimensions Height="" Width="" Depth="" />
+  <Language Text="ENG" />
+  <Contributor Author="Ali, Nujood; Minoui, Delphine" />
+  <Title Main="I Am Nujood, Age 10 and Divorced" />
+  <Subject Keyword="BIOGRAPHY &amp; AUTOBIOGRAPHY / Personal Memoirs" />
+  <Subject Keyword="SOCIAL SCIENCE / Sociology / General" />
+  <Subject Keyword="SOCIAL SCIENCE / Sociology / Marriage &amp; Family" />
+</Metadata>

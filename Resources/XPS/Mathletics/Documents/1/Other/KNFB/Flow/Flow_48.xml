@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__235">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__235">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,48,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="27">
+      <Run Tag="xhtml/part04.html#part04" xml:space="preserve"/>
+      <Run Tag="xhtml/part04.html#page_253">PART IV</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__235">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__235">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,0,0,48" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="29">
+      <Run Tag="__235">PLAYING WITH MONEY,</Run>
+      <LineBreak/>
+      <Run Tag="__235">AND OTHER TOPICS FOR</Run>
+      <LineBreak/>
+      <Run Tag="__235">SERIOUS SPORTS FANS</Run>
+    </Paragraph>
+  </Section>
+</Flow>

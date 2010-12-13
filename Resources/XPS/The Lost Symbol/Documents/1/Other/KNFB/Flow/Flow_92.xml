@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c85_r1.htm#c85">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__385">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__385">85 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__385">Transformation.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__385">Dean Galloway </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__385">heard</Run>
+        <Run Tag="__385"> it happen, and so he didn&#x2019;t need to see it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__385">Across the desk from him, Langdon and Katherine were dead silent, no doubt staring in mute astonishment at the stone cube, which had just transformed itself loudly before their very eyes.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__385">Galloway couldn&#x2019;t help but smile. He had anticipated the result, and although he still had no idea how this development would ultimately help them solve the riddle of the pyramid, he was enjoying the rare chance to teach a Harvard symbologist something about symbols.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__385">&#x201C;Professor,&#x201D; the dean said, &#x201C;few people realize that the Masons venerate the shape of the cube&#x2014;or </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__385">ashlar,</Run>
+        <Run Tag="__385"> as we call it&#x2014;because it is a three-dimensional representation of another symbol . . . a much older, two-dimensional symbol.&#x201D; Galloway didn&#x2019;t need to ask if the professor recognized the ancient symbol now lying before them on the desk. It was one of the most famous symbols in the world.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__385">Robert Langdon&#x2019;s thoughts churned as he stared at the transformed box on the desk in front of him. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__385">I had no idea . . .</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__385">Moments ago, he had reached into the stone box, grasped the Masonic ring, and gently turned it. As he rotated the ring through thirty-three degrees, the cube had suddenly changed before his eyes. The square panels that made up the sides of the box fell away from one another as their hidden hinges released. The box collapsed all at once, its side panels and lid falling outward, slapping loudly on the desk.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Image Source="/Resources/f3bccf33-e9ac-4806-adb9-ef3f8eeca4dd.jpg" Stretch="Uniform" Width="155" Height="188" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__386">The cube becomes a cross,</Run>
+        <Run Tag="__386"> Langdon thought. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__386">Symbolic alchemy.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__386">Katherine looked bewildered by the sight of the collapsed cube. &#x201C;The Masonic Pyramid relates to . . . Christianity?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__386">For a moment, Langdon had wondered the same thing. After all, the Christian crucifix was a respected symbol within the Masons, and certainly there were plenty of Christian Masons. However, Masons were also Jews, Muslims, Buddhists, Hindus, and those who had no name for their God. The presence of an exclusively Christian symbol seemed restrictive. Then the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__386">true</Run>
+        <Run Tag="__386"> meaning of this symbol had dawned on him.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__386">&#x201C;It&#x2019;s not a crucifix,&#x201D; Langdon said, standing up now. &#x201C;The cross with the circumpunct in the middle is a binary symbol&#x2014;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__386">two</Run>
+        <Run Tag="__386"> symbols fused to create </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__386">one</Run>
+        <Run Tag="__386">.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__386">&#x201C;What are you saying?&#x201D; Katherine&#x2019;s eyes followed him as he paced the room.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__386">&#x201C;The cross,&#x201D; Langdon said, &#x201C;was not a Christian symbol until the fourth century. Long before that, it was used by the Egyptians to represent the intersection of two dimensions&#x2014;the human and the celestial. As above, so below. It was a visual representation of the juncture where man and God become one.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__386">&#x201C;Okay.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__386">&#x201C;The circumpunct,&#x201D; Langdon said, &#x201C;we already know has many meanings&#x2014;one of its most esoteric being the </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__386">rose,</Run>
+        <Run Tag="__386"> the alchemical symbol for perfection. But, when you place a rose on the center of a cross, you create another symbol entirely&#x2014;the Rose Cross.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__387">Galloway reclined in his chair, smiling. &#x201C;My, my. Now you&#x2019;re cooking.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__387">Katherine stood now, too. &#x201C;What am I missing?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__387">&#x201C;The Rose Cross,&#x201D; Langdon explained, &#x201C;is a common symbol in Freemasonry. In fact, one of the degrees of the Scottish Rite is called &#x2018;Knights of the Rose Cross&#x2019; and honors the early Rosicrucians, who contributed to Masonic mystical philosophy. Peter may have mentioned the Rosicrucians to you. Dozens of great scientists were members&#x2014;John Dee, Elias Ashmole, Robert Fludd&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__387">&#x201C;Absolutely,&#x201D; Katherine said. &#x201C;I&#x2019;ve read all of the Rosicrucian manifestos in my research.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__387">Every scientist should,</Run>
+        <Run Tag="__387"> Langdon thought. The Order of the Rose Cross&#x2014;or more formally the Ancient and Mystical Order Rosae Crucis&#x2014;had an enigmatic history that had greatly influenced science and closely paralleled the legend of the Ancient Mysteries . . . early sages possessing secret wisdom that was passed down through the ages and studied by only the brightest minds. Admittedly, history&#x2019;s list of famous Rosicrucians was a who&#x2019;s who of European Renaissance luminaries: Paracelsus, Bacon, Fludd, Descartes, Pascal, Spinoza, Newton, Leibniz.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__387">According to Rosicrucian doctrine, the order was &#x201C;built on esoteric truths of the ancient past,&#x201D; truths which had to be &#x201C;concealed from the average man&#x201D; and which promised great insight into &#x201C;the spiritual realm.&#x201D; The brotherhood&#x2019;s symbol had blossomed over the years into a flowering rose on an ornate cross, but it had begun as a more modest dotted circle on an unadorned cross&#x2014;the simplest manifestation of the rose on the simplest manifestation of the cross.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__387">&#x201C;Peter and I often discuss Rosicrucian philosophy,&#x201D; Galloway told Katherine.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__387">As the dean began outlining the interrelationship between Masonry and Rosicrucianism, Langdon felt his attention drawn back to the same nagging thought he&#x2019;d had all night. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__387">Jeova Sanctus Unus. This phrase is linked to alchemy somehow.</Run>
+        <Run Tag="__387"> He still could not remember exactly what Peter had told him about the phrase, but for some reason, the mention of Rosicrucianism seemed to have rekindled the thought. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__387">Think, Robert!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">&#x201C;The Rosicrucian founder,&#x201D; Galloway was saying, &#x201C;was allegedly a German mystic who went by the name Christian Rosenkreuz&#x2014;a pseudonym obviously, perhaps even for Francis Bacon, who some historians believe founded the group himself, although there is no proof of&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">&#x201C;A pseudonym!&#x201D; Langdon declared suddenly, startling even himself. &#x201C;That&#x2019;s it! </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">Jeova Sanctus Unus!</Run>
+        <Run Tag="__388"> It&#x2019;s a pseudonym!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">&#x201C;What are you talking about?&#x201D; Katherine demanded.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">Langdon&#x2019;s pulse had quickened now. &#x201C;All night, I&#x2019;ve been trying to remember what Peter told me about </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">Jeova Sanctus Unus</Run>
+        <Run Tag="__388"> and its relationship to alchemy. Finally I remembered! It&#x2019;s not about alchemy so much as about an </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">alchemist</Run>
+        <Run Tag="__388">! A very famous alchemist!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">Galloway chuckled. &#x201C;It&#x2019;s about time, Professor. I mentioned his name twice and also the word </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">pseudonym</Run>
+        <Run Tag="__388">.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">Langdon stared at the old dean. &#x201C;You </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">knew</Run>
+        <Run Tag="__388">?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">&#x201C;Well, I had my suspicions when you told me the engraving said </Run>
+        <Span FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="OEBPS/Brow_9780385533133_epub_c85_r1.htm#page322">
+          <Run Tag="__388">Jeova Sanctus Unus</Run>
+        </Span>
+        <Run Tag="__388"> and had been decrypted using D&#xFC;rer&#x2019;s alchemical magic square, but when you found the Rose Cross, I was certain. As you probably know, the personal papers of the scientist in question included a very heavily annotated copy of the Rosicrucian manifestos.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">&#x201C;Who?&#x201D; Katherine asked.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">&#x201C;One of the world&#x2019;s greatest scientists!&#x201D; Langdon replied. &#x201C;He was an alchemist, a member of the Royal Society of London, a Rosicrucian, </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">and</Run>
+        <Run Tag="__388"> he signed some of his most secretive science papers with a pseudonym&#x2014;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">&#x2018;Jeova Sanctus Unus&#x2019;</Run>
+        <Run Tag="__388">!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">&#x201C;One True God?&#x201D; Katherine said. &#x201C;Modest guy.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">&#x201C;Brilliant guy, actually,&#x201D; Galloway corrected. &#x201C;He signed his name that way because, like the ancient Adepts, he understood </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">himself</Run>
+        <Run Tag="__388"> as divine. In addition, because the sixteen letters in </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">Jeova Sanctus Unus</Run>
+        <Run Tag="__388"> could be rearranged to spell his name in Latin, making it a perfect pseudonym.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__388">Katherine now looked puzzled. &#x201C;</Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__388">Jeova Sanctus Unus</Run>
+        <Run Tag="__388"> is an anagram of a famous alchemist&#x2019;s name in Latin?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">Langdon grabbed a piece of paper and pencil off the dean&#x2019;s desk, writing as he talked. &#x201C;Latin interchanges the letters </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__389">J</Run>
+        <Run Tag="__389"> for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__389">I</Run>
+        <Run Tag="__389"> and the letter </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__389">V</Run>
+        <Run Tag="__389"> for </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__389">U,</Run>
+        <Run Tag="__389"> which means </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__389">Jeova Sanctus Unus</Run>
+        <Run Tag="__389"> can actually be perfectly rearranged to spell this man&#x2019;s name.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">Langdon wrote down sixteen letters: </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__389">Isaacus Neutonuus.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">He handed the slip of paper to Katherine and said, &#x201C;I think you&#x2019;ve heard of him.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">&#x201C;Isaac Newton?&#x201D; Katherine demanded, looking at the paper. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__389">&#x201C;That&#x2019;s</Run>
+        <Run Tag="__389"> what the engraving on the pyramid was trying to tell us!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">For a moment, Langdon was back in Westminster Abbey, standing at Newton&#x2019;s pyramidical tomb, where he had experienced a similar epiphany. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__389">And tonight, the great scientist surfaces again.</Run>
+        <Run Tag="__389"> It was no coincidence, of course . . . the pyramids, mysteries, science, hidden knowledge . . . it was all intertwined. Newton&#x2019;s name had always been a recurring guidepost for those seeking secret knowledge.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">&#x201C;Isaac Newton,&#x201D; Galloway said, &#x201C;must have something to do with how to decipher the meaning of the pyramid. I can&#x2019;t imagine what it would be, but&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">&#x201C;Genius!&#x201D; Katherine exclaimed, her eyes going wide. &#x201C;That&#x2019;s how we transform the pyramid!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">&#x201C;You understand?&#x201D; Langdon said.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">&#x201C;Yes!&#x201D; she said. &#x201C;I can&#x2019;t believe we didn&#x2019;t see it! It has been staring us right in the face. A simple alchemical process. I can transform this pyramid using basic science! Newtonian science!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">Langdon strained to understand.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">&#x201C;Dean Galloway,&#x201D; Katherine said. &#x201C;If you read the ring, it says&#x2014;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__389">&#x201C;Stop!&#x201D; The old dean suddenly raised his finger in the air and motioned for silence. Gently, he cocked his head to the side, as if he were listening to something. After a moment, he stood up abruptly. &#x201C;My friends, this pyramid obviously has secrets left to reveal. I don&#x2019;t know what Ms. Solomon is getting at, but if she knows your next step, then I have played my role. Pack up your things and say no more to me. Leave me in darkness for the moment. I would prefer to have no information to share should our visitors try to force me.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__390">&#x201C;Visitors?&#x201D; Katherine said, listening. &#x201C;I don&#x2019;t hear anyone.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__390">&#x201C;You </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__390">will,</Run>
+        <Run Tag="__390">&#x201D; Galloway said, heading for the door. &#x201C;Hurry.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__390">Across town, a cell tower was attempting to contact a phone that lay in pieces on Massachusetts Avenue. Finding no signal, it redirected the call to voice mail.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__390">&#x201C;Robert!&#x201D; Warren Bellamy&#x2019;s panicked voice shouted. &#x201C;Where are you?! Call me! Something terrible is happening!&#x201D;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

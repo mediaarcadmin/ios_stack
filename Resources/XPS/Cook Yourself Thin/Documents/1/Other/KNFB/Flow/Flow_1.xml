@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,52" Tag="cookyourselfthin_tp01.html#tp01">
+      <Paragraph>
+        <Run Tag="cookyourselfthin_tp01.html#pageiii" xml:space="preserve"/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,216,0,130" TextAlignment="Center" FontWeight="Bold" FontSize="32">
+        <Run Tag="__1">Cook Yourself Thin</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,216" TextAlignment="Center" FontWeight="Bold" FontSize="16">
+        <Run Tag="__1">Skinny Meals You Can Make in Minutes</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,43,0,17" TextAlignment="Center">
+        <Image Source="/Resources/a0db9042-fa5e-4e0a-85c6-5a1e5171538c.jpg" Stretch="Uniform" Width="89" Height="45" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

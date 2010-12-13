@@ -232,7 +232,7 @@
         }
     } else {
         if (pageStr) {
-            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) in BlioFlowView"), pageStr, (unsigned long)self.pageCount];
+            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) in BlioFlowView"), pageStr, (unsigned long)self.pageCount - 1];
         } else {
             ret = [_eucBookView.book title];
         }
@@ -251,14 +251,14 @@
 
 - (BOOL)toolbarShowShouldBeSuppressed
 {
-    return _pageViewIsTurning || self.selector.tracking;
+    return _pageViewIsTurning || self.selector.tracking || self.selector.selectedRange;
 }
 
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
     [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save;
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save
 {
    
 	if (save) {
@@ -308,6 +308,15 @@
 	} else {
 		_suppressHistory = NO;
 	}
+}
+
+- (UIImage *)dimPageImage
+{
+    UIImage *ret = nil;
+    _eucBookView.dimQuotient = 1.0f;
+    ret = _eucBookView.currentPageImage;
+    _eucBookView.dimQuotient = 0.0f;
+    return ret;
 }
 
 #pragma mark -
@@ -515,6 +524,7 @@
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
 {
     [_delegate cancelPendingToolbarShow];
+    [_delegate hideToolbars];
     return [_eucBookView eucSelector:selector willBeginEditingHighlightWithRange:selectedRange];
 }
 

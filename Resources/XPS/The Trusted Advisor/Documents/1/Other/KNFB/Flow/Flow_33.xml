@@ -1,0 +1,362 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ch22.html#ch22">
+      <Paragraph Margin="0,80,0,28" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="16">
+        <Run Tag="__153">22</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Normal" FontSize="19" Tag="__153">The Quick-Impact List to Gain Trust</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__153">W</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__153">HAT ARE THE TOP HIGHEST IMPACT</Run>
+          <Run Tag="__153"> or fastest payback things that people can do to gain trust? We are asked this question regularly. And it is valid.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__153">So, here goes!</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__153">1. Listen to everything</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__153">Force yourself to listen and paraphrase. Get what they&#x2019;re trying to say. If you can&#x2019;t say it back in a way that has the speaker replying, &#x201C;Yes, that&#x2019;s it, that&#x2019;s exactly what I&#x2019;m saying,&#x201D; you haven&#x2019;t listened.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__153">2. Empathize (for real)</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__153">Listening and paraphrasing let the other person know that he or she has been heard. But has he or she been understood? There&#x2019;s that nagging doubt until some form of empathetic statement is heard. You don&#x2019;t have to agree with what the other person says; you simply have to understand it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__153">Whenever you find yourself thinking, &#x201C;This guy&#x2019;s an idiot,&#x201D; immediately ask yourself, &#x201C;Why does he believe this? Where&#x2019;s he coming from? What happened to cause him to think this way?&#x201D; You have to work </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__153">hard</Run>
+          <Run Tag="__153"> at understanding other people. You must:</Run>
+        </Span>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__153">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__153">Listen to where they&#x2019;re coming from</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__153">Understand where they&#x2019;re coming from</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__153">Acknowledge that you understand where they&#x2019;re coming from</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__153">Anyone who understands us has earned the right to engage in discussion and to be heard in return, even to argue with us. Anyone who empathizes with us has earned the right to disagree with us and still have our respect. They have greatly increased the odds of changing our mind.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__153">3. Note what they&#x2019;re feeling</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__153">A purely emotional skill, this takes but a moment, but the payback is instant. Its only drawback is it feels risky. But its risk is far less than we think.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__153">Salacuse says that to be a good advisor we have to pay attention to three things in every conversation: our client&#x2019;s words and actions (we would include feelings), our own words and actions (and feelings), </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__153">and</Run>
+          <Run Tag="__153"> our client&#x2019;s </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__153">reaction</Run>
+          <Run Tag="__153"> to our words and actions.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__154">This can feel complex, but it can be easy. All it takes is a valid observation and a few words spoken from the heart. Examples: &#x201C;You really look excited today! What&#x2019;s going on?&#x201D; Or, leaning forward, &#x201C;Joe, you seem distracted; something happening?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__154">The most powerful versions of this come from acknowledging a feeling about the other person, as well as our own feelings, if it is done with care. The same is true, though slightly less so, for observing feelings in third parties (e.g., &#x201C;Joe seems a little listless lately; did his review upset him?&#x201D;).</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__154">4. Build that shared agenda</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__154">We can think of nothing easier than to practice the technique of a shared agenda. It may not yield the highest payoff but it is the easiest thing to do. Whether you&#x2019;re in a formal or informal meeting, on the phone, or in a large or small group, always start by sharing your idea of an agenda for the meeting and openly (and sincerely) asking the client to add his or her ideas to the agenda. It gives you immediate data, it models for the client the truth of your &#x201C;we-not-me&#x201D; attitude, and it creates buy-in.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__154">5. Take a point of view, for goodness&#x2019; sake!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__154">It feels very risky to go out on a limb with an idea or perspective when you are not entirely sure of it because it involves personal risk. The truth is, it is extremely useful to our clients for us to be able to articulate a point of view, even if it ends up being rejected, or even wrong! There are two reasons: It stimulates reactions, and it crystallizes issues. Stating a point of view serves as a catalyst, a way of helping the client think.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__154">Learn to express a point of view with a simple, emotional framing phrase such as: &#x201C;Now let me just float a trial balloon here&#x201D; or &#x201C;This is probably not where we&#x2019;ll end up, but . . .&#x201D; or &#x201C;Hey, who knows where this might go, but it occurs to me that . . .&#x201D;</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__154">6. Take a personal risk</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__154">Personal risk is when we feel we are putting a piece of ourselves &#x201C;out there,&#x201D; revealing something about ourselves, becoming to some extent emotionally naked. We fear being ridiculed, or failing, or losing respect, or any of a thousand forms of emotional loss. Intimacy is the act of risking that personal loss. It doesn&#x2019;t have to be private. It just has to be personal. To risk something personal is to say that we are willing to increase the level of intimacy. It may or may not be reciprocated, but it&#x2019;s worth the attempt.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__154">7. Ask about a related area</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__154">Most professions specialize and tend to focus on the issues and information relevant to the assignment at hand. But by doing so, they are potentially failing in their professional obligation to the client to notice and point out opportunities for improvement. Advisors who are willing to notice things outside their particular realm of expertise (and to naturally express that interest) make an impression on the client. The impression is that such advisors care, because, in fact, they do.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__154">If your curiosity about the client&#x2019;s business has increased dramatically, this is a good sign; it means you care. You can be sure that articulating your questions to the client will be perceived as such.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__155">8. Ask great questions</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">Open-ended questions force you to not prejudge what you are hearing, either by biasing the speaker, or by enforcing artificial categories. The objective is to hear what the speaker has to say in the speaker&#x2019;s own terms.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">The emotional subtext of open-ended questions is one of respect; the listener pays the speaker the respect of allowing the speaker to set the frames of reference: his (or her) worldview, the sense of what is important and what isn&#x2019;t, what came first and what comes later, what is cause and what is effect.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__155">9. Give away ideas</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">David Nadler, CEO of Delta Consulting, is a fan of this technique:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">&#x201C;I&#x2019;m not just a reflective psychotherapist who keeps saying, &#x2018;I understand, that must be tough.&#x2019; That&#x2019;s a useful technique, but you&#x2019;ve got to marry it to solutions. An idea that I got from one of our people is the technique of responding with three to five ideas&#x2014;kind of idea generating. With an intro like &#x2018;These ideas might be wild and off the mark, but let&#x2019;s think about . . .&#x2019;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">The conclusions many advisors draw are that they must be careful about giving away the store. First, they feel that the store is limited in nature. Second, it would hardly do to have the client discover that there is a limit to the store. Worst of all, it would be disastrous to have the client discover not only that the store is limited but that we have mastered only a part of it!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">The truth is, expertise is like love: not only is it unlimited, you destroy it only by not giving it away. Love for a child is not cut in half with the birth of a second child. And expertise is not to be confused with what can be scanned into a database. The human capacity for problem redefinition and creativity is what a successful advisor brings to every situation. It is unlimited; it only gets better with practice.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__155">10. Return calls unbelievably fast</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">Stephanie Wethered, the pastor referred to earlier, does this. She tries to return calls within ten minutes. She says it&#x2019;s the most trust-creating thing she does; no one expects it, and it demonstrates how much she values the other person.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__155">11. Relax your mind</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">Here is a simple exercise for calming the stress before entering a stress-inducing environment such as a critical meeting. The purpose of this exercise is to temporarily cleanse your mind of internal distraction by spending some time concentrating your attention purely on a piece of wisdom.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__155">&#x201C;Some time&#x201D; might mean sixty seconds at bedtime. It might mean several minutes in front of a keyboard or with a pencil, writing about what the wisdom means. Or it might mean talking out loud to oneself in the car for a few minutes before the client phone call or meeting.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__156">Here is a list of such &#x201C;sayings&#x201D; built around key precepts of this book. Think about only one at a time. The others will wait for another day.</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__156">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">It&#x2019;s about the client.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Who am I thinking about?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">What is the client feeling about this?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">The answer is a better question.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">The problem is rarely what the client said it was at first.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">I am not the center of the universe.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Who am I serving by my present approach?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Assigning blame will trap me; taking responsibility will empower me.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">It&#x2019;s a &#x201C;we&#x201D; game, not a &#x201C;me&#x201D; game.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">What am I afraid of here?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Knowing the truth is better than not knowing it.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">You can hope for what might be, but don&#x2019;t wish for what can&#x2019;t be.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Apoint of view doesn&#x2019;t commit you for life.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Don&#x2019;t ever, ever tell a lie or even shade the truth.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__156">More Tips</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__156">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Notice a feeling in yourself and comment on it.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Make a commitment and then deliver on it&#x2014;not overdeliver or underdeliver, just deliver.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Don&#x2019;t answer a question the first time the client asks it; ask for clarification.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Say something revealing about yourself, but not manipulatively.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Make a facial expression of empathy, even if it&#x2019;s just scrunching up your face and saying &#x201C;ouch&#x201D; in an appropriate setting.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Reach out to notice, and acknowledge, something that has been held back in or about the other person.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__156">Top Things to Remind Yourself</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__156">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">I don&#x2019;t have to prove myself every ten seconds.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">I have a right to be here in this room; I can add value without worrying about it.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Shut up and repeat again and again: &#x201C;Really? And then what happened?&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Also again and again: &#x201C;Gee, what&#x2019;s behind that?&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__156">Is my pulse racing? Why? Why not say so, and say why, out loud?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Have I earned the right yet to give an answer?</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Am I trying in any way to win an argument? Turn it back into a conversation.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Emulate Lt. Columbo: &#x201C;I may be a little slow here. Maybe it&#x2019;s just me, but . . .&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Take responsibility for the emotional outcome.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Don&#x2019;t blame anybody for anything anytime.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">More value is added through problem definition than through problem answer.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Just because the client asks a question doesn&#x2019;t mean that&#x2019;s the right question to answer.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Don&#x2019;t be insecure. Say to yourself: &#x201C;Hey, if I don&#x2019;t know the answer, and I&#x2019;m a pro, then this is a really neat question; lets get into it!&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Is my tummy telling me something&#x2019;s wrong? My tummy&#x2019;s right. Let&#x2019;s talk about it.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__157">Two Final Suggestions</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__157">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Call your client, now!</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__157">Tell your romantic partner how much he or she is appreciated. Do it today!</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+    </Section>
+  </Section>
+</Flow>

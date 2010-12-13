@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="OEBPS/Brow_9780385533133_epub_c10_r1.htm#c10">
+      <Paragraph Margin="0,17,0,18" TextAlignment="Right" FontFamily="sans-serif" FontSize="19">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="19" Tag="__58">CHAPTER</Run>
+        <Run FontFamily="sans-serif" FontSize="32" xml:space="preserve" Tag="__58">10 </Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontWeight="Bold" FontSize="14" Tag="__58">Robert Langdon</Run>
+        <Run Tag="__58"> had entered the Capitol Rotunda many times in his life, but never at a full sprint. As he ran through the north entrance, he spotted a group of tourists clustered in the center of the room. A small boy was screaming, and his parents were trying to console him. Others were crowding around, and several security guards were doing their best to restore order.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__58">&#x201C;He pulled it out of his sling,&#x201D; someone said frantically, &#x201C;and just </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__58">left</Run>
+        <Run Tag="__58"> it there!&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__58">As Langdon drew nearer, he got his first glimpse of what was causing all the commotion. Admittedly, the object on the Capitol floor was odd, but its presence hardly warranted screaming.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__58">The device on the floor was one Langdon had seen many times. The Harvard art department had dozens of these&#x2014;life-size plastic models used by sculptors and painters to help them render the human body&#x2019;s most complex feature, which, surprisingly, was not the human face but rather the human hand. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__58">Someone left a mannequin hand in the Rotunda?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__58">Mannequin hands, or </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__58">handequins</Run>
+        <Run Tag="__58"> as some called them, had articulated fingers enabling an artist to pose the hand in whatever position he wanted, which for sophomoric college students was often with the middle finger extended straight up in the air. This handequin, however, had been positioned with its index finger and thumb pointing up toward the ceiling.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__58">As Langdon drew nearer, though, he realized this handequin was unusual. Its plastic surface was not smooth like most. Instead, the surface was mottled and slightly wrinkled, and appeared almost . . .</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__58">Like real skin.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__58">Langdon stopped abruptly.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__58">Now he saw the blood. </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__58">My God!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="OEBPS/Brow_9780385533133_epub_c10_r1.htm#page41">The severed wrist appeared to have been skewered onto a spiked wooden base so that it would stand up. A wave of nausea rushed over him. Langdon inched closer, unable to breathe, seeing now that the tips of the index finger and thumb had been decorated with tiny tattoos. The tattoos, however, were not what held Langdon&#x2019;s attention. His gaze moved instantly to the familiar golden ring on the fourth finger.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__59">No.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,17,0,12" TextAlignment="Justify" FontFamily="serif" FontSize="14">
+        <Run Tag="__59">Langdon recoiled. His world began to spin as he realized he was looking at the severed right hand of Peter Solomon.</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

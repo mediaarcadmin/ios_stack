@@ -23,9 +23,33 @@
 #import "THEmbeddedResourceManager.h"
 #import "THRoundRects.h"
 #import "THPair.h"
+#import "THUIDeviceAdditions.h"
 #import "EucPageTurningPageContentsInformation.h"
 
 #define FOV_ANGLE ((GLfloat)10.0f)
+
+
+// With a little help from http://www.anima-entertainment.de/?p=252:
+// assuming :
+// t is a value between 0 and 1
+// b is an offset
+// c is the height
+/*
+static CGFloat easeIn (CGFloat t, CGFloat b, CGFloat c) {
+    return c*powf(t, 3.0f) + b;
+}
+
+static CGFloat easeOut (CGFloat t, CGFloat b, CGFloat c) {
+    return c*(powf(t-1, 3.0f) + 1) + b;
+}
+*/
+static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
+    if ( (t*2.0f) < 1.0f)
+        return c*0.5f*powf(t*2.0f, 3.0f) + b;
+    else
+        return c*0.5f*(powf(t*2.0f-2.0f, 3.0f) + 2.0f) + b;
+}
+
 
 @interface EucPageTurningView ()
 
@@ -52,6 +76,8 @@
 - (void)_setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
 
 - (void)_refreshHighlightsForPageContentsIndex:(NSUInteger)index;
+
+- (void)_announceAccessibilityTurnOver;
 
 @end
 
@@ -277,9 +303,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     
-    _grayThumbnail = [_texturePool unusedTexture];
-    glBindTexture(GL_TEXTURE_2D, _grayThumbnail);
-    uint32_t graySquare[4] = { 0xff888888, 0xffffffff, 0xffffffff, 0xff888888 };
+    _checkerboardTexture = [_texturePool unusedTexture];
+    glBindTexture(GL_TEXTURE_2D, _checkerboardTexture);
+    uint32_t graySquare[4] = { 0xffaaaaaa, 0xffdddddd, 0xffdddddd, 0xffaaaaaa };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &graySquare);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -380,8 +406,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_bookEdgeTexture) {
         glDeleteTextures(1, &_bookEdgeTexture);
     }
-    if(_grayThumbnail) {
-        glDeleteTextures(1, &_grayThumbnail);
+    if(_checkerboardTexture) {
+        glDeleteTextures(1, &_checkerboardTexture);
     }
     if(_alphaWhiteZoomedContent) {
         glDeleteTextures(1, &_alphaWhiteZoomedContent);
@@ -618,7 +644,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [self didChangeValueForKey:@"unzoomedRightPageFrame"];
         [self didChangeValueForKey:@"leftPageFrame"];
         [self didChangeValueForKey:@"rightPageFrame"];
-        [self didChangeValueForKey:@"zoomMatrix"];        
+        [self didChangeValueForKey:@"zoomMatrix"];
+        
+        [self _setNeedsAccessibilityElementsRebuild];
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
 }    
 
@@ -693,13 +722,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
-- (GLuint)_createTextureFromRGBABitmapContext:(CGContextRef)context
+- (GLuint)_createTextureFromRGBABitmapContext:(CGContextRef)context storeAsRGB565:(BOOL)storeAsRGB565
 {
     size_t contextWidth = CGBitmapContextGetWidth(context);
     size_t contextHeight = CGBitmapContextGetHeight(context);
     
     CGContextRef textureContext = NULL;
-    void *textureData;
+    uint8_t *textureData;
     BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(context) != contextWidth * 4;
     if(dataIsNonContiguous || (textureData = CGBitmapContextGetData(context)) == NULL) {
         // We need to generate contiguous data to upload, and we need to be
@@ -716,6 +745,26 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGColorSpaceRelease(colorSpace);
     }
     
+    uint16_t *RGB565TextureData = NULL;
+    if(storeAsRGB565) {
+        THTimer *timer = [THTimer timerWithName:@"Convert to RGB565"];
+        size_t bufferLength = contextWidth * contextHeight * 4;
+        
+        // Convert in-place.
+        uint16_t *RGB565TextureData = (uint16_t *)textureData;        
+        for(int i = 0; i < bufferLength; i += 4) {
+            uint16_t result = 0;
+            result |= textureData[i] >> 3;
+            result <<= 6;
+            result |= textureData[i+1] >> 2; 
+            result <<= 5; 
+            result |= textureData[i+2] >> 3;
+            RGB565TextureData[i / 4] = result;
+        }
+        
+        [timer report];
+    }
+    
     EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
     [eaglContext thPush];
     
@@ -723,10 +772,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
     glBindTexture(GL_TEXTURE_2D, textureRef); 
 
-    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, contextWidth, contextHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
-
+    if(storeAsRGB565) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, contextWidth, contextHeight, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, textureData);
+    } else {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, contextWidth, contextHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+    }
+    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
     
@@ -735,10 +788,13 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     [eaglContext thPop];
     [_texturePool checkInEAGLContext];
-
+    
     if(textureContext) {
         CGContextRelease(textureContext);
         free(textureData);
+    }
+    if(RGB565TextureData) {
+        free(RGB565TextureData);
     }
     
     THLog(@"Created Texture of size (%ld, %ld)", (long)contextWidth, (long)contextHeight);
@@ -746,7 +802,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return textureRef;
 }
 
-- (GLuint)_createTextureFrom:(id)viewOrImage invertingLuminance:(BOOL)invertingLuminance
+- (GLuint)_createTextureFrom:(id)viewOrImage invertingLuminance:(BOOL)invertingLuminance storeAsRGB565:(BOOL)storeAsRGB565
 {   
     CGFloat scaleFactor = 1.0f;
     CGSize scaledSize, rawSize;
@@ -835,7 +891,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     CGColorSpaceRelease(colorSpace);
     
-    GLuint ret = [self _createTextureFromRGBABitmapContext:textureContext];
+    GLuint ret = [self _createTextureFromRGBABitmapContext:textureContext storeAsRGB565:storeAsRGB565];
 
     CGContextRelease(textureContext);
     free(textureData);
@@ -847,13 +903,14 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (GLuint)_createTextureFrom:(id)viewOrImage
 {
-    return [self _createTextureFrom:viewOrImage invertingLuminance:NO];
+    return [self _createTextureFrom:viewOrImage invertingLuminance:NO storeAsRGB565:NO];
 }
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
     _blankPageTexture = [self _createTextureFrom:pageTexture
-                              invertingLuminance:isDark];
+                              invertingLuminance:isDark
+                                   storeAsRGB565:YES];
     _pageTextureIsDark = isDark;
 }
 
@@ -950,7 +1007,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [self _prepareForTurnForwards:forwards];
 
         _viewportTouchPoint = CGPointMake(forwards ? _viewportLogicalSize.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-        _touchVelocity = CGPointMake(forwards ? -0.4f : 0.4f, 0.0f);
+        _touchVelocity = CGPointMake(forwards ? -0.6f : 0.6f, 0.0f);
         
         CGFloat percentage = (CGFloat)pageCount / 512.0f;
         if(pageCount == 1) {
@@ -1129,7 +1186,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             }
             
             if(fastImage) {
-                _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage];
+                _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage invertingLuminance:NO storeAsRGB565:YES];
             }
         }
         
@@ -1211,21 +1268,26 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         if(animated) {
             [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 
+            // Set up the pages we're turning to
             if(_pageContentsInformation[forwards ? 5 : 1].pageIndex != rightPageIndex) {
+                // Set up the right-hand page (or only page in 1-up mode).
                 [self _setupBitmapPage:rightPageIndex forInternalPageOffset:forwards ? 5 : 1];
             } 
-            if(_pageContentsInformation[forwards ? 4 : 0].pageIndex != rightPageIndex - 1){
-                [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
+            if(_twoUp) {
+                // Set up the left-hand page.
+                if(_pageContentsInformation[forwards ? 4 : 0].pageIndex != rightPageIndex - 1){
+                    [self _setupBitmapPage:rightPageIndex - 1 forInternalPageOffset:forwards ? 4 : 0];
+                }
             }
             
             [self _prepareForTurnForwards:forwards];
 
             if(forwards) {
                 _viewportTouchPoint = CGPointMake(_rightPageRect.size.width, _viewportLogicalSize.height * 0.5f);
-                _touchVelocity = CGPointMake(-0.4f, 0.0f);
+                _touchVelocity = CGPointMake(-0.6f, 0.0f);
             } else {
                 _viewportTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? -_leftPageRect.size.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-                _touchVelocity = CGPointMake(0.4f, 0.0f);
+                _touchVelocity = CGPointMake(0.6f, 0.0f);
             }
             
             NSUInteger pageCount;
@@ -1586,15 +1648,23 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, _stablePageVertexNormals);
     
     glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
+    glUniform1f(glGetUniformLocation(_program, "uColorFade"), 1.0f);
+    glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
+
+    THVec2 contentsScaleForCheckerboard = THVec2Make(_minZoomFactor * _unzoomedRightPageFrame.size.width / 10.0f, _minZoomFactor * _unzoomedRightPageFrame.size.height / 10.0f);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _blankPageTexture);
     
-    
     // Draw the right-hand (or only) flat page.
     if(_pageContentsInformation[_rightFlatPageContentsIndex]) {
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex].texture ?: _grayThumbnail);    
+        if(_pageContentsInformation[_rightFlatPageContentsIndex].texture) {
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex].texture); 
+        } else {
+            glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+            glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
+        }
         if(_pageContentsInformation[_rightFlatPageContentsIndex].zoomedTexture && _zoomFactor > 1.0f) {
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex].zoomedTexture); 
@@ -1620,6 +1690,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
         }
+        if(!_pageContentsInformation[_rightFlatPageContentsIndex].texture) {
+            glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
+        }
     }
     
     if(_twoUp && _rightPageFrame.origin.x > 0.0f) {
@@ -1640,7 +1713,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageContentsIndex].texture ?: _grayThumbnail);
+            if(_pageContentsInformation[leftFlatPageContentsIndex].texture) {
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageContentsIndex].texture); 
+            } else {
+                glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+                glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
+            }
             if(_pageContentsInformation[leftFlatPageContentsIndex].zoomedTexture && _zoomFactor > 1.0f) {
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageContentsIndex].zoomedTexture);    
@@ -1668,7 +1746,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
-            }                                        
+            }         
+            if(!_pageContentsInformation[leftFlatPageContentsIndex].texture) {
+                glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
+            }            
             
             if(_twoUp) {
                 glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
@@ -1690,6 +1771,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         // Clear the depth buffer so that this page wins if it has coordinates 
         // that conincide with the flat page.
         glClear(GL_DEPTH_BUFFER_BIT);
+        
+        CGFloat midpointX = _pageVertices[Y_VERTEX_COUNT / 2][X_VERTEX_COUNT - 1].x;
+        if(!_twoUp && midpointX < 0.0f) {
+            glUniform1f(glGetUniformLocation(_program, "uColorFade"), MIN(1.0f, (_rightPageRect.size.width + midpointX) / _rightPageRect.size.width));
+        }
 		                        
         const THVec3 *pageVertices, *pageVertexNormals;        
         pageVertices = (THVec3 *)_pageVertices;
@@ -1699,7 +1785,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         glVertexAttribPointer(glGetAttribLocation(_program, "aNormal"), 3, GL_FLOAT, GL_FALSE, 0, pageVertexNormals);
         
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-2].texture ?: _grayThumbnail);
+        if(_pageContentsInformation[_rightFlatPageContentsIndex-2].texture) {
+            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-2].texture); 
+        } else {
+            glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+            glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
+        }
         if(_pageContentsInformation[_rightFlatPageContentsIndex-2].zoomedTexture && _zoomFactor > 1.0f) {
             CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageContentsIndex - 2].zoomedTextureRect;
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
@@ -1717,9 +1808,18 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
         glDrawElements(GL_TRIANGLE_STRIP, TRIANGLE_STRIP_COUNT, GL_UNSIGNED_BYTE, 0);
         
+        if(!_pageContentsInformation[_rightFlatPageContentsIndex-2].texture) {
+            glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
+        }            
+
         if(_twoUp) {
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-1].texture ?: _grayThumbnail);
+            if(_pageContentsInformation[_rightFlatPageContentsIndex-1].texture) {
+                glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-1].texture); 
+            } else {
+                glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+                glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
+            }
             if(_zoomFactor > 1.0f) {
                 if(_pageContentsInformation[_rightFlatPageContentsIndex-1].zoomedTexture) {
                     CGRect zoomedTextureRect = _pageContentsInformation[_rightFlatPageContentsIndex-1].zoomedTextureRect;
@@ -1754,7 +1854,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 0);
         } else {
             glUniform1f(glGetUniformLocation(_program, "uContentsBleed"), 1.0f);
+            glUniform1f(glGetUniformLocation(_program, "uColorFade"), 1.0f);
         }
+        glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
         
         glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                      (GLfloat *)&invisibleZoomedTextureRect);
@@ -1850,6 +1952,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+            if(_accessibilityScrollUnderway) {
+                [self _announceAccessibilityTurnOver];
+            }
         }
         if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)){
@@ -2223,8 +2328,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     _touchVelocity.x = 0;
                 } else if(absTouchVelocity < 0.2f) {
                     _touchVelocity.x = _touchVelocity.x < 0 ? -0.2f : 0.2f;
-                } else if(absTouchVelocity > 0.4f) {
-                    _touchVelocity.x = _touchVelocity.x < 0 ? -0.4f : 0.4f;
+                } else if(absTouchVelocity > 0.6f) {
+                    _touchVelocity.x = _touchVelocity.x < 0 ? -0.6f : 0.6f;
                 }
                 _touchVelocity.y = 0.0f;
             } 
@@ -2343,6 +2448,18 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [super setUserInteractionEnabled:enabled];
 }
 
+- (CGFloat)_topMarginForView:(UIView *)view
+{
+    CGFloat ret;
+    id<EucPageTurningViewDelegate> delegate = self.delegate;
+    if([delegate respondsToSelector:@selector(pageTurningView:topMarginForView:)]) {
+        ret = [delegate pageTurningView:self topMarginForView:view];
+    } else {
+        ret = 0.1 * view.bounds.size.width;
+    }
+    return ret;
+}
+
 - (CGFloat)_tapTurnMarginForView:(UIView *)view
 {
     CGFloat ret;
@@ -2365,62 +2482,73 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         NSMutableArray *accessibilityElements = [[NSMutableArray alloc] initWithCapacity:pageViewAccessibilityElements.count + 1];
         
         CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageContentsInformation[3].view];
+        {
+            CGFloat topMargin = [self _topMarginForView:_pageContentsInformation[3].view];
+            CGRect frame = self.bounds;
+            frame.origin.y = 0;
+            frame.size.height = topMargin;
+            frame.size.width -= 2 * tapZoneWidth;
+            frame.origin.x += tapZoneWidth;
+            frame = [self convertRect:frame toView:nil];
             
-        for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
-            element.accessibilityContainer = self;
-            [accessibilityElements addObject:element];
-        }
-
+            THAccessibilityElement *toolbarTapButton = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            toolbarTapButton.accessibilityFrame = frame;
+            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book page", @"Accessibility title for previous page tap zone");
+            if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] >= NSOrderedSame) {
+                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls, three finger swipe down to read this page, three finger swipe sideways to turn the page, .", @"Accessibility title for previous page tap zone on devices with three-finger swipe support");
+            } else {
+                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone on devices without three-finger swipe support");
+            }
+            toolbarTapButton.delegate = self;
+            
+            [accessibilityElements addObject:toolbarTapButton];
+            [toolbarTapButton release];
+        }        
+        
         {
             THAccessibilityElement *nextPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if(!_pageContentsInformation[5].view)  {
+            if(!_pageContentsInformation[4] && !_pageContentsInformation[5])  {
                 nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
             }            
-            CGRect frame = [self convertRect:self.bounds toView:nil];
+            CGRect frame = self.bounds;
             frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
             frame.size.width = tapZoneWidth;
-            nextPageTapZone.accessibilityFrame = frame;
-            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");
+            frame = [self convertRect:frame toView:nil];
             
+            nextPageTapZone.accessibilityFrame = frame;
+            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
             nextPageTapZone.delegate = self;
             
             [accessibilityElements addObject:nextPageTapZone];
             _nextPageTapZone = [nextPageTapZone retain];
             
             [nextPageTapZone release];
-        }        
+        }      
         
         {
-            UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            THAccessibilityElement *previousPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if(!_pageContentsInformation[1].view)  {
+            if(!_pageContentsInformation[0] && !_pageContentsInformation[1])  {
                 previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
             }
-            CGRect frame = [self convertRect:self.bounds toView:nil];
+            CGRect frame = self.bounds;
             frame.size.width = tapZoneWidth;
+            frame = [self convertRect:frame toView:nil];
+
             previousPageTapZone.accessibilityFrame = frame;
             previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+            previousPageTapZone.delegate = self;
             
             [accessibilityElements addObject:previousPageTapZone];
             [previousPageTapZone release];
+        }     
+        
+        for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
+            element.accessibilityContainer = self;
+            element.accessibilityFrame = [self convertRect:element.accessibilityFrame toView:nil];
+            [accessibilityElements addObject:element];
         }        
-
-        {
-            CGRect frame = [self convertRect:self.bounds toView:nil];
-            frame.origin.y = 0;
-            frame.size.height = tapZoneWidth;
-            frame.size.width -= 2 * tapZoneWidth;
-            frame.origin.x += tapZoneWidth;
-
-            UIAccessibilityElement *toolbarTapButton = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            toolbarTapButton.accessibilityFrame = frame;
-            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book Page", @"Accessibility title for previous page tap zone");
-            toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone");
-            
-            [accessibilityElements addObject:toolbarTapButton];
-            [toolbarTapButton release];
-        }
                 
         _accessibilityElements = accessibilityElements;
     }
@@ -2447,14 +2575,116 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return [[self accessibilityElements] indexOfObject:element];
 }
 
-- (void)thAccessibilityElementDidBecomeFocused:(THAccessibilityElement *)element
+- (NSString *)_currentAccessibilityDescription
 {
-    // An attempt to auto-read the book.  Doesn't really work.
-    /*if(element == _nextPageTapZone) {
-        if(element.accessibilityElementIsFocused) {
-            [self turnToPageView:_pageViews[2] forwards:YES pageCount:1];
+    NSString *description = nil;
+    if(_bitmapDataSource) {
+        NSMutableArray *pageIndexes = [[NSMutableArray alloc] initWithCapacity:2];
+        if(_pageContentsInformation[2] && _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
+            [pageIndexes addObject:[NSNumber numberWithUnsignedInteger:_pageContentsInformation[2].pageIndex]];
+        } else if(_pageContentsInformation[3] && _pageContentsInformation[3].pageIndex != NSUIntegerMax) {
+            [pageIndexes addObject:[NSNumber numberWithUnsignedInteger:_pageContentsInformation[3].pageIndex]];
         }
-    }*/
+        description = [_bitmapDataSource pageTurningViewAccessibilityPageDescriptionForPagesAtIndexes:pageIndexes];
+    } else {
+        description = [_viewDataSource pageTurningViewAccessibilityPageDescriptionForView:_pageContentsInformation[3].view];
+    }
+    return description;
+}
+
+- (void)_announceAccessibilityTurnOver
+{
+    if(&UIAccessibilityPageScrolledNotification != NULL) {
+        NSString *description = [self _currentAccessibilityDescription];
+        UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, description);
+    }
+    _accessibilityScrollUnderway = NO;
+}
+                                                                            
+- (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction 
+{       
+    if(!_accessibilityScrollUnderway) {
+        if(direction == UIAccessibilityScrollDirectionUp) {
+            if(&UIAccessibilityAnnouncementNotification != NULL) {
+                NSString *description = [self _currentAccessibilityDescription];
+                UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, description);
+            }
+            return NO;
+        } else {
+            BOOL scroll = NO;
+            BOOL forwards = NO;
+            if(direction == UIAccessibilityScrollDirectionLeft) {
+                forwards = YES;
+                scroll = YES;
+            } else if (direction == UIAccessibilityScrollDirectionRight) {
+                forwards = NO;
+                scroll = YES;
+            }
+
+            if(scroll) {
+                _accessibilityScrollUnderway = [self stepPageForwards:forwards];
+                if(!_accessibilityScrollUnderway) {
+                    [self _announceAccessibilityTurnOver];
+                }
+            }
+        }
+    }
+    return _accessibilityScrollUnderway;
+}
+
+- (BOOL)thAccessibilityElementAccessibilityScroll:(UIAccessibilityScrollDirection)direction 
+{
+    return [self accessibilityScroll:direction];
+}
+
+- (BOOL)stepPageForwards:(BOOL)forwards
+{
+    BOOL ret = NO;
+    if(_bitmapDataSource) {
+        NSUInteger turnTo = NSUIntegerMax;
+        if(forwards) {
+            if(_pageContentsInformation[4]) {
+                turnTo = _pageContentsInformation[4].pageIndex;
+            } else if(_pageContentsInformation[5]) {
+                turnTo = _pageContentsInformation[5].pageIndex;
+            }
+        } else {
+            if(_pageContentsInformation[0]) {
+                turnTo = _pageContentsInformation[0].pageIndex;
+            } else if(_pageContentsInformation[1]) {
+                turnTo = _pageContentsInformation[1].pageIndex;
+            }
+        } 
+        if(turnTo != NSUIntegerMax) {
+            [self turnToPageAtIndex:turnTo animated:YES]; 
+            ret = YES;
+        }        
+    } else {
+        BOOL onLeft = NO;
+        UIView *view = nil;
+        if(forwards) {
+            if(_pageContentsInformation[4].view) {
+                view = _pageContentsInformation[4].view;
+                onLeft = YES;
+            } else {
+                view = _pageContentsInformation[5].view;
+                onLeft = NO;
+            }
+        } else {
+            if(_pageContentsInformation[0].view) {
+                view = _pageContentsInformation[0].view;
+                onLeft = YES;
+            } else {
+                view = _pageContentsInformation[1].view;
+                onLeft = NO;
+            }
+        } 
+        if(view) {
+            [self turnToPageView:view forwards:forwards pageCount:1 onLeft:onLeft]; 
+            ret = YES;
+        }        
+    }
+    return ret;
 }
 
 // Since gravity is the only force we're using, we just manually add it in 
@@ -2667,7 +2897,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     if(_twoUp) {
                         _recacheFlags[0] = YES;
                         if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
-                            _recacheFlags[5] = YES;
+                            _recacheFlags[4] = YES;
                         }
                     }                    
                     _recacheFlags[1] = YES;
@@ -2879,27 +3109,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 	translation.x /= _viewportToBoundsPointsTransform.a;
 	translation.y /= _viewportToBoundsPointsTransform.d;
 	[self _setZoomMatrixFromTranslation:translation zoomFactor:zoomFactor];
-}
-
-// With a little help from http://www.anima-entertainment.de/?p=252:
-// assuming :
-// t is a value between 0 and 1
-// b is an offset
-// c is the height
-/*
-static CGFloat easeIn (CGFloat t, CGFloat b, CGFloat c) {
-    return c*pow(t, 3.0f) + b;
-}
-
-static CGFloat easeOut (CGFloat t, CGFloat b, CGFloat c) {
-    return c*(pow(t-1, 3.0f) + 1) + b;
-}
-*/
-static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
-    if ( (t*2.0f) < 1.0f)
-        return c*0.5f*powf(t*2.0f, 3.0f) + b;
-    else
-        return c*0.5f*(powf(t*2.0f-2.0f, 3.0f) + 2.0f) + b;
 }
 
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated
@@ -3279,6 +3488,7 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
             CGContextRef textureContext = CGBitmapContextCreate(textureData, minSize.width, minSize.height, 8, minSize.width * 4, 
                                                                 colorSpace, kCGImageAlphaPremultipliedLast);
+            
             CGColorSpaceRelease(colorSpace);
             CGContextScaleCTM(textureContext, 1.0f, -1.0f);
             CGContextTranslateCTM(textureContext, 0, -minSize.height);
@@ -3299,21 +3509,55 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
                 THAddRoundedRectToPath(textureContext, highlightRect, cornerRadius, cornerRadius);
                 CGContextFillPath(textureContext);
             }
+            CGContextRelease(textureContext);
             
-            // Unpremultiply the alpha for OpenGL.
+            
+            THTimer *timer = [THTimer timerWithName:@"Convert to RGBA4444"];
+            
+            // Unpremultiply, and convert to RGBA4444 to save RAM.
+            // Do the conversion in-place.
+            uint16_t *newTextureData = (uint16_t *)textureData;
             for(int i = 0; i < bufferLength; i += 4) {
-                int alpha = textureData[i+3];
-                if(alpha > 0) {
-                    textureData[i] = (255 * (int)textureData[i]) / alpha;
-                    textureData[i+1] = (255 * (int)textureData[i+1]) / alpha;
-                    textureData[i+2] = (255 * (int)textureData[i+2]) / alpha;
+                uint16_t result = 0;
+                uint32_t alpha = textureData[i+3];
+                if(alpha) {
+                    result |= ((255 * (uint32_t)textureData[i]) / alpha) >> 4;
+                    result <<= 4;
+                    result |= ((255 * (uint32_t)textureData[i+1]) / alpha) >> 4; 
+                    result <<= 4; 
+                    result |= ((255 * (uint32_t)textureData[i+2]) / alpha) >> 4;
+                    result <<= 4;
+                    result |= alpha >> 4;
                 }
+                newTextureData[i / 4] = result;
             }
             
-            _pageContentsInformation[index].highlightTexture = [self _createTextureFromRGBABitmapContext:textureContext];
+            [timer report];
+            
+            
+            EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
+            [eaglContext thPush];
+            
+            GLuint textureRef = [_texturePool unusedTexture];
+            
+            glBindTexture(GL_TEXTURE_2D, textureRef); 
+            
+            glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+            
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, minSize.width, minSize.height, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, textureData);
+            
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
+            
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);   
+            
+            [eaglContext thPop];
+            [_texturePool checkInEAGLContext];
+            
+            _pageContentsInformation[index].highlightTexture = textureRef;
             gotHighlights = YES;
             
-            CGContextRelease(textureContext);
             free(textureData);
         }
     }

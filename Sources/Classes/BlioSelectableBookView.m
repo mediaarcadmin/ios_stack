@@ -82,7 +82,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     EucMenuItem *colorItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Color", "\"Color\" option in popup menu")
                                                           action:@selector(showColorMenu:)] autorelease];
    
-    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu")
+    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
                                                                  action:@selector(showWebTools:)] autorelease];
 
     EucMenuItem *removeItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Remove", "\"Remove Highlight\" option in popup menu")
@@ -117,7 +117,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
                                                             action:@selector(addNote:)] autorelease];
     EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu")
                                                          action:@selector(copy:)] autorelease];
-    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Tools", "\"Tools\" option in popup menu")
+    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
                                                                  action:@selector(showWebTools:)] autorelease];
     
     NSArray *ret;
@@ -158,7 +158,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 }
 
 - (void)setLastHighlightColor:(UIColor *)color {
-    if (![lastHighlightColor isEqual:color]) {
+    if (![lastHighlightColor isEqual:color] && ![color isEqual:[UIColor yellowColor]]) {
         [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:color] forKey:kBlioLastHighlightColorKey];
         [lastHighlightColor release];
         lastHighlightColor = [color retain];
@@ -232,7 +232,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     if ([self.selector selectedRangeIsHighlight]) {
         BlioBookmarkRange *highlightRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRangeOriginalHighlightRange]];
         if ([self.delegate respondsToSelector:@selector(updateHighlightNoteAtRange:toRange:withColor:)])
-            [self.delegate updateHighlightNoteAtRange:highlightRange toRange:self.selectedRange withColor:nil]; 
+            [self.delegate updateHighlightNoteAtRange:highlightRange toRange:self.selectedRange withColor:[UIColor yellowColor]]; 
     } else {
         if ([self.delegate respondsToSelector:@selector(addHighlightNoteWithColor:)])
             // Yellow is for notes.

@@ -13,14 +13,15 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSLayoutPositionedContainer;
+@class EucCSSLayoutPositionedBlock;
 
 @interface EucCSSRenderer : NSObject {
     CGContextRef _cgContext;
+    CGFloat _currentScaleFactor;
 }
 
 @property (nonatomic, assign) CGContextRef cgContext;
 
-- (void)render:(EucCSSLayoutPositionedContainer *)layoutEntity atPoint:(CGPoint)point;
+- (void)render:(EucCSSLayoutPositionedBlock *)layoutEntity atPoint:(CGPoint)point;
 
 @end

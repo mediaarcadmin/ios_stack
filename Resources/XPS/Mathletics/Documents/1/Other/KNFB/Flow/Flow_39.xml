@@ -1,0 +1,1982 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__186">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__186">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part03chapter29.html#part03chapter29" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part03chapter29.html#page_195">&#xA0;&#xA0;29&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__186">LINEAR WEIGHTS FOR EVALUATING</Run>
+      <LineBreak/>
+      <Run Tag="__186">NBA PLAYERS</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__186">I</Run>
+      <Run Tag="__186">n </Run>
+      <Hyperlink NavigateUri="part01chapter03.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__186">chapter 3</Run>
+      </Hyperlink>
+      <Run Tag="__186"> we discussed the use of Linear Weights to evaluate MLB hitters. We found that by determining appropriate weights for singles, walks, doubles, triples, home runs, outs, stolen bases, and caught stealing we can do a pretty good job of estimating the Runs Created by a hitter.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__186">Given the wealth of information in an NBA box score, many people have tried to come up with Linear Weights formulas that multiply each box score statistic by a weight and equate the weighted sum of player statistics as a measure of the player&#x2019;s ability. In this chapter we will discuss several linear weighting schemes used to rate NBA players:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,16" TextAlignment="Left" Tag="__186">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__186">The NBA Efficiency metric</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__186">John Hollinger&#x2019;s PER and Game Score ratings</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="xhtml/part03chapter29.html#rfnpage_195">Berri, Schmidt, and Brook&#x2019;s (BSB) Win Scores.</Run>
+          <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+            <Hyperlink NavigateUri="xhtml/part03chapter29.html#fnpage_195">
+              <Hyperlink.TextDecorations>
+                <TextDecorationCollection/>
+              </Hyperlink.TextDecorations>
+              <Run Tag="xhtml/part03chapter29.html#rfnpage_195">1</Run>
+            </Hyperlink>
+          </Span>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__186">NBA Efficiency Rating</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__186">Let&#x2019;s begin by discussing the NBA Efficiency rating (created by Dave Heeren), which is computed as</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-132" Margin="144,8,0,8" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__186">efficiency per game = (points per game) + (rebounds per game)</Run>
+      <LineBreak/>
+      <Run Tag="__186">&#xA0;&#xA0;&#xA0;+ (assists per game) + (steals per game)</Run>
+      <LineBreak/>
+      <Run Tag="__186">&#xA0;&#xA0;&#xA0;&#x2013; (turnovers per game) &#x2013; (missed FG per game)</Run>
+      <LineBreak/>
+      <Run Tag="__186">&#xA0;&#xA0;&#xA0;&#x2013; (missed FT per game).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter29.html#page_196">This simplistic system essentially says that all good statistics are worth +1 and all bad statistics are worth &#x2013;1. This does not make sense. For example, a player who shoots 26.67% on three-point field goals (which is almost 10% below the league average) would raise his efficiency by taking more three-pointers. For example, suppose a player shot 5 for 18 on three-pointers. He scored 15 points and missed 13 shots. This player&#x2019;s three-point field goal attempts would yield 15 &#x2013; 13 = 2 Efficiency points. If he shot 10 for 36, his three-point field goal attempts would yield 30 &#x2013; 26 = 4 Efficiency points. Any player who shot this badly would be told not to shoot! Similarly, consider a player who shoots 36.4% (4 for 11) on two-pointers. If he takes 11 shots, he scores 8 points and misses 7 shots. These shots add 8 &#x2013; 7 = 1 point to his Efficiency rating. If he shot 8 for 22 (which is almost 10% below league average) his shots would add 2 points to his Efficiency rating.</Run>
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_196" xml:space="preserve"/>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#fnpage_196">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#page_196">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#page_196"> The 2006&#x2013;7 leaders in Efficiency rating are listed in </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter29.html#chapter29table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter29.html#page_196">table 29.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter29.html#page_196">. In </Run>
+      <Hyperlink NavigateUri="part03chapter30.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter29.html#page_196">chapter 30</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter29.html#page_196"> we will see that certain players on this list (such as Carmelo Anthony and Amare Stoudemire) are vastly overrated according to the NBA Efficiency statistic. Other players not on the list (such as Luol Deng and Anthony Parker) are vastly underrated by the NBA Efficiency metric.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__187">The Player Efficiency Rating System</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_196-01">Now let&#x2019;s turn our attention to John Hollinger&#x2019;s well-known PER (Player Efficiency) and Game Score ratings.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#fnpage_196-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#rfnpage_196-01">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_196-01"> An average NBA player has a PER score of 15. Hollinger&#x2019;s PER rating formula is complex, but as pointed out by Berri,</Run>
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_196-02" xml:space="preserve"/>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#fnpage_196-02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#rfnpage_196-01">4</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_196-01"> a player who shoots more than 30.4% on two-point field goals can increase his PER rating by taking more shots. In addition, a player who shoots more than 21.4% on three-point field goals can increase his PER rating by taking more shots. (No regular NBA player shoots this badly.) Thus Hollinger&#x2019;s PER rating implies that if you are by far the worst shooter in the league, you can help your team by taking more shots. We can also see that Hollinger assigns incorrect weights to shooting statistics by looking at his Game Score formula, which is used to rank player performances during a game:</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__187">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter29.html#chapter29table01" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part03chapter29.html#page_197">TABLE 29.1</Run>
+      <LineBreak/>
+      <Run Tag="xhtml/part03chapter29.html#page_197">NBA Efficiency Leaders Ranked on Per Game Basis (2006&#x2013;7 Season)</Run>
+    </Paragraph>
+    <Table Tag="__187">
+      <Table.Columns>
+        <TableColumn Width="3.55239786856128*"/>
+        <TableColumn Width="17.2291296625222*"/>
+        <TableColumn Width="4.4404973357016*"/>
+        <TableColumn Width="7.46003552397869*"/>
+        <TableColumn Width="6.21669626998224*"/>
+        <TableColumn Width="6.21669626998224*"/>
+        <TableColumn Width="6.74955595026643*"/>
+        <TableColumn Width="7.81527531083481*"/>
+        <TableColumn Width="8.52575488454707*"/>
+        <TableColumn Width="11.190053285968*"/>
+        <TableColumn Width="12.6110124333925*"/>
+        <TableColumn Width="7.99289520426288*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">PLAYER NAME, TEAM NAME</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">GP</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">MPG</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">PTS</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">EFF</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">RPG</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;APG</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">STPG</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">BLKPG</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">EFF48M</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">&#xA0;EFF</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">Kevin Garnett, MIN</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">76</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">39.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">22.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">29.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">12.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;4.1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">1.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;1.66</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">35.53</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">29.17</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">Kobe Bryant, LAL</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">77</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">40.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">31.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">27.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;5.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;5.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">1.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;0.47</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">32.55</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">27.65</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">Dywane Wade, MIA</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">51</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">37.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">27.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">27.1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;4.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;7.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">2.1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;1.22</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">34.25</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">27.06</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">Dirk Nowitzki, DAL</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">78</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">36.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">24.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">26.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;8.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;3.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">0.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">0.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">35.71</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">26.9</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">Ming Yao, HOU</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">48</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">32.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">25.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">25.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;9.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;2.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">0.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;1.96</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">36.63</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">25.81</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">Carlos Boozer, UTA</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">74</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">34.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">20.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">25.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">11.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;3.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">0.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;0.28</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">35.86</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">25.81</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">LeBron James, CLE</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">78</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">40.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">27.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">25.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;6.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;6.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">1.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">0.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">30.05</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">25.6</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">Pau Gasol, MEM</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">59</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">35.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">20.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">25.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;9.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;3.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">0.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;2.14</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">33.85</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">25.49</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">Tim Duncan, SAS</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">80</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">33.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">20.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">25.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">10.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;&#xA0;3.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">0.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">&#xA0;2.38</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__187">35.76</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__187">25.39</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">10</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Chris Bosh, TOR</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">69</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">38.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">22.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">25.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">10.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;2.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">0.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">31.59</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">25.35</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">11</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Elton Brand, LAC</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">80</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">38.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">20.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">25.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;9.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;2.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;2.24</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">31.18</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">24.99</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">12</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Steve Nash, PHX</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">76</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">35.1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">18.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">24.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;3.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">11.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">0.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;0.08</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">33.32</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">24.5</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">13</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Gilbert Arenas, WAS</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">74</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">39.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">28.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">24.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;4.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;6.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;0.18</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">29.19</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">24.18</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">14</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Shawn Marion, PHX</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">80</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">37.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">17.5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">24.1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;9.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;1.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">2.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;1.52</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">30.76</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">24.11</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph/>
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">15</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Amare Stoudemire, PHX</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">82</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">32.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">20.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">23.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;9.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;1.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.34</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">34.29</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">23.43</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">16</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Carmelo Anthony, DEN</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">65</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">37.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">28.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">23.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;6.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;3.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;0.34</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">29.28</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">23.32</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">17</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Dwight Howard, ORL</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">82</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">36.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">17.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">23.1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">12.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;1.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">0.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.9</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">30.08</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">23.11</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">18</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Marcus Camby, DEN</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">70</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">33.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">11.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">23.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">11.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;3.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">3.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">32.66</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">23.04</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">19</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Vince Carter, NJN</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">82</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">38.3</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">25.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">22.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;6.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;4.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">1.0</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;0.37</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">28.62</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">22.73</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">20</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="16,1,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">Zach Randolph, POR</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">68</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">35.7</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">23.6</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">22.4</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">10.1</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;&#xA0;2.2</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">0.8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">&#xA0;0.22</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__188">30.15</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">22</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__188">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__188">
+      <Table.Columns>
+        <TableColumn Width="14.9200710479574*"/>
+        <TableColumn Width="85.0799289520426*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph/>
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">game score=</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">(points &#xD7; 1.0) + (FGM &#xD7; 0.4) + (FGA &#xD7; &#x2013;0.7)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">+ (FTA &#x2013; FTM) &#xD7; &#x2013;0.4) + (OREB &#xD7; 0.7)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">+ (DREB &#xD7; 0.3) + (STL &#xD7; 1.0) + (AST &#xD7; 0.7)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__188">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="xhtml/part03chapter29.html#rfnpage_199-01">+ (BLK &#xD7; 0.7) + (PF &#xD7; &#x2013;0.4) + (TO &#xD7; &#x2013;1.0).</Run>
+              <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+                <Hyperlink NavigateUri="xhtml/part03chapter29.html#fnpage_199-01">
+                  <Hyperlink.TextDecorations>
+                    <TextDecorationCollection/>
+                  </Hyperlink.TextDecorations>
+                  <Run Tag="xhtml/part03chapter29.html#rfnpage_199-01">5</Run>
+                </Hyperlink>
+              </Span>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__188">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__188">A player shooting over 20.4% (0.7/3.4) on three-pointers will increase his Game Score by taking more shots. A player shooting over 29.2% on two-pointers (0.7/2.4) will also increase his Game Score by taking more shots. (This implies that the worst shooter in the league would help his team by taking more shots.)</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_199-02">Berri found a 0.99 correlation between Hollinger&#x2019;s Game Score ratings and his PER ratings.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#fnpage_199-02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#rfnpage_199-02">6</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_199-02"> This shows that PER and Game Score will almost always rank players in the same order. Berri also found a 0.99 correlation between Hollinger&#x2019;s Game Score ratings and NBA Efficiency ratings. This suggests that Hollinger&#x2019;s rankings are simply a minor repackaging of NBA Efficiency.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__188">Win Scores and Wins Produced</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_199-03">Now we turn to BSB&#x2019;s Win Scores and Wins Produced. Although the Win Score formula published on their blog</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#fnpage_199-03">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#rfnpage_199-03">7</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#rfnpage_199-03"> is only an approximation of their more complex formula, BSB state that the following formula closely approximates their more complicated method for ranking players.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__189">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__189">
+      <Table.Columns>
+        <TableColumn Width="20.0710479573712*"/>
+        <TableColumn Width="79.9289520426288*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__189">player win score =</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__189">points + rebounds + steals + 0.5(assists)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__189">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__189">+ 0.5(blocked shots) &#x2013; FG attempts</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__189">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__189">&#x2013;turnovers &#x2013; 0.5(FT attempts)</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="32,1,0,1" TextAlignment="Left" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__189">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__189">&#x2013; 0.5(personal fouls).</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__189">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter29.html#page_200">Unlike the NBA Efficiency metric or Hollinger&#x2019;s PER rating, the Linear Weights in the Win Score metric seem much more sensible. For example, to raise his rating by shooting more, a player needs to shoot over 50% on two-point field goals or over 33.33% on three-point field goals. It also seems reasonable to give equal weight to turnovers and rebounds, because a rebound gets you possession and a turnover gives up possession. Using a complex method BSB convert Win Scores into Wins Produced. The nice thing about Wins Produced is that the sum of Wins Produced by all of a team&#x2019;s players will be nearly the same as the team&#x2019;s total number of wins. For example, for the 2006&#x2013;7 Chicago Bulls, BSB found the Wins Produced shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter29.html#chapter29table02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter29.html#page_200">table 29.2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter29.html#page_200">. The Bulls actually won 55 games (including playoff games) during the 2006&#x2013;7 season. BSB believe (and I agree) that Luol Deng was the Bulls&#x2019; best player and created 15.56 wins. The total Wins Produced for the Bulls is 52.17, which is close to their actual total of 55 wins. However, the fact that for most teams the Wins Produced for each player on a team nearly equal the team&#x2019;s total wins does not imply that the team&#x2019;s &#x201C;wins&#x201D; are accurately partitioned among the team&#x2019;s players.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter29.html#page_201">As an example, Bruce Bowen of the Spurs always fares poorly in terms of Win Score and Wins Produced. Most NBA experts agree that Bowen is a superb defender. BSB attempt to acknowledge the fact that Bowen is a good defender by introducing a &#x201C;team adjustment&#x201D; that accounts for the Spurs&#x2019; excellent defense. The problem with this approach is that the team adjustment does not reveal how much of the Spurs&#x2019; defensive effectiveness is a result of their excellent defenders (Tim Duncan and Bowen), in contrast to their average defenders (like Manu Ginobili and Tony Parker). This means that Bowen&#x2019;s defensive ability is not properly accounted for by BSB. Because basketball is half offense and half defense, the shortage of defensive statistics in the box scores causes BSB to shortchange great defenders like Bowen.</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__189">
+      <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__189">
+        <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+          <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part03chapter29.html#chapter29table02">TABLE 29.2</Run>
+          <LineBreak/>
+          <Run Tag="xhtml/part03chapter29.html#chapter29table02">Wins Produced by Player, Chicago Bulls, 2006&#x2013;7</Run>
+        </Paragraph>
+        <Table Tag="__189">
+          <Table.Columns>
+            <TableColumn Width="105"/>
+            <TableColumn Width="134"/>
+          </Table.Columns>
+          <TableRowGroup>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__189">Wins Produced</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__189">Name</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__189">15.5561875</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__189">Deng, Luol</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__189">8.74225</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__189">Hinrich, Kirk</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__189">4.478541667</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__189">Gordon, Ben</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">16.049625</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Wallace, Ben</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">3.6920625</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Duhon, Chris</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">&#x2013;0.560333333</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Brown, P.J.</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">2.150416667</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Nocioni, Andres</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">2.077666667</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Thomas, Tyrus</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">1.024833333</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Sefolosha, Thabo</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">&#x2013;1.809166667</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Allen, Malik</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">1.305</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Griffin, Adrian</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">&#x2013;0.34375</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Sweetney, Michael</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">&#x2013;0.213583333</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Khryapa, Viktor</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">&#x2013;0.020416667</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Barrett, Andre</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow FontFamily="times new roman" FontSize="9">
+              <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">0</Run>
+                </Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+                <Paragraph Margin="0,5,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                  <Run Tag="__190">Andriuskevicius, Martynas</Run>
+                </Paragraph>
+              </TableCell>
+            </TableRow>
+          </TableRowGroup>
+        </Table>
+      </Section>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__190">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__190">For most players (other than some defensive stalwarts) I believe that BSB do an excellent job of weighting the box score statistics that are best for player evaluation. The only problem I have with the BSB ratings is that they are based on the statistics tabulated in a box score, so their Win Score metric primarily captures player attributes that are measured in the box score. I am sure that the activity during at least 80% of any game is not tabulated in a box score. For example, the box score does not give credit for the following:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__190">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__190">taking a charge</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__190">deflecting a pass</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__190">boxing out so my teammate gets the rebound</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__190">the pass before the pass that earns an assist</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__190">helping out on defense when my teammate is beaten by a quick guard</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__190">setting a screen that leads to an open three-pointer.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__190">All these events help the team, but none is reflected in the box score. In the next chapter we discuss the rating of players by Adjusted +/&#x2013; ratings. This approach has been used by the Dallas Mavericks to rate NBA players since the 2000&#x2013;2001 season. Adjusted +/&#x2013; ratings are based on the premise that a good player helps his team. It is not concerned with a player&#x2019;s box score statistical contribution; it simply focuses on how the player&#x2019;s team does when he is on the court, versus how he does when he is off the court.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#rfnpage_195">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#fnpage_195">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_195"> Berri, Schmidt, and Brook, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part03chapter29.html#fnpage_195">Wages of Wins</Run>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_195">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#rfnpage_196">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#fnpage_196">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_196"> The reader should be able to show that a player who shoots below 25% on three-pointers or below 33.33% on two-pointers would improve his Efficiency rating by taking more shots. For example, if a player makes x three-pointers and misses (100 &#x2013; x) three-pointers, she would contribute 3x &#x2013; (100 &#x2013; x) to the Efficiency rating. This is positive as long as 4x &#x2013; 100 &gt; 0 or x &gt; 25. Thus a player shooting &gt;25% on three-pointers increases his efficiency by taking more three-pointers. This is a disquieting property of the Efficiency rating.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#rfnpage_196-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#fnpage_196-01">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_196-01"> Hollinger&#x2019;s ratings can be found on </Run>
+      <Hyperlink NavigateUri="http://espn.com">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter29.html#fnpage_196-01">http://espn.com</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_196-01">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#rfnpage_196-02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#fnpage_196-02">4</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_196-02"> See Berri&#x2019;s comments at </Run>
+      <Hyperlink NavigateUri="http://dberri.wordpress.com">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter29.html#fnpage_196-02">http://dberri.wordpress.com</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_196-02">/2006/11/17/a-comment-on-the-player-efficiency-rating/.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#rfnpage_199-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#fnpage_199-01">5</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_199-01"> FGM = field goals made; FGA = field goals attempted; FTA = free throws attempted; FTM = free throws made; OREB = offensive rebounds; DREB = defensive rebounds; STL = steals; AST = assists; BLK = blocks; PF = personal fouls; TO = turnovers.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#rfnpage_199-02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#fnpage_199-02">6</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_199-02"> Berri, private communication with the author, July 2007.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter29.html#rfnpage_199-03">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter29.html#fnpage_199-03">7</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_199-03"> See </Run>
+      <Hyperlink NavigateUri="http://dberri.wordpress.com/2006/05/21/simple-models-of-player-performance/">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter29.html#fnpage_199-03">http://dberri.wordpress.com/2006/05/21/simplemodelsofplayerperformance/</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter29.html#fnpage_199-03">.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

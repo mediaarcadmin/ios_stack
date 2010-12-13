@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_col01.html#col01">
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/79114176-8c17-45d9-9bd6-a9b98d4896c0.jpg" Stretch="Uniform" Width="49" Height="40" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__2"/>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

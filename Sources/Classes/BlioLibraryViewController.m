@@ -333,19 +333,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-        [self.processingDelegate enqueueBookWithTitle:@"Think Twice" 
-                                              authors:[NSArray arrayWithObjects:@"Scottoline, Lisa", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Think Twice.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"ThinkTwice" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-		
         [self.processingDelegate enqueueBookWithTitle:@"The Legend of Sleepy Hollow" 
                                               authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
 											coverPath:nil
@@ -359,16 +346,42 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-        [self.processingDelegate enqueueBookWithTitle:@"The Color Companion to Walt Disney World" 
-                                              authors:[NSArray arrayWithObjects:@"Sehlinger, Bob", nil]
+        [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
+                                              authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/The Color Companion to Walt Disney World.xps"
+											  xpsPath:@"XPS/New Italian Kitchen.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"ColorCompanionToWaltDisneyWorld" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+/*		
+        [self.processingDelegate enqueueBookWithTitle:@"Frommer's Maui" 
+                                              authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Frommer's Maui.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"FrommersMaui" // this should normally be ISBN number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+*/		
+        [self.processingDelegate enqueueBookWithTitle:@"Frommer's Cancun" 
+                                              authors:[NSArray arrayWithObjects:@"Baird, David", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS/Frommer's Cancun.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundle
+									 sourceSpecificID:@"FrommersCancun" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
@@ -444,19 +457,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  placeholderOnly:NO
 		 ];
 		
-        [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
-                                              authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/New Italian Kitchen.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-		
 #endif // DEV_MODE
         
     }
@@ -471,6 +471,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         item.style = UIBarButtonItemStyleBordered;
     }
 	sortSegmentedControl.tintColor = tintColor;
+    [self.navigationController.toolbar setTintColor:tintColor];
+    [self.navigationController.navigationBar setTintColor:tintColor];    
     [super viewWillAppear:animated];
 }
 
@@ -713,7 +715,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.gridView reloadData];	
 	}
 }
-#pragma mark - 
+#pragma mark -
 #pragma mark MRGridViewDataSource methods
 
 -(MRGridViewCell*)gridView:(MRGridView*)gridView cellForGridIndex: (NSInteger)index{
@@ -801,7 +803,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 }
 
-#pragma mark - 
+#pragma mark -
 #pragma mark MRGridViewDelegate methods
 
 - (void)gridView:(MRGridView *)gridView didSelectCellAtIndex:(NSInteger)index{
@@ -819,7 +821,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 -(void)gridView:(MRGridView *)gridView confirmationForDeletionAtIndex:(NSInteger)index {
 	_keyValueOfCellToBeDeleted = index;
-	UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Please confirm...",@"\"Please confirm...\" alert message title")
+	UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Confirmation Request",@"\"Confirmation Request\" alert message title")
 													message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CONFIRM_DELETE_ACTION", nil,[NSBundle mainBundle],@"Are you sure you want to delete %@?",@"Message requesting to confirm delete action within MRGridView"), [self contentDescriptionForCellAtIndex:index] ]
 												   delegate:self
 										  cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" alert button")
@@ -828,7 +830,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[alert show];
 	[alert release];	
 }
-#pragma mark - 
+#pragma mark -
 #pragma mark UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -846,7 +848,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[UIView commitAnimations];
 }
 
-#pragma mark - 
+#pragma mark -
 #pragma mark UITableViewDelegate methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -864,6 +866,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 }
 
+- (void)openBook:(BlioBook *)selectedBook  {
+    //if ([[selectedBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+    //	// cancel all other operations related to paid books.
+    //	[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
+    //}
+    BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
+    if (nil != aBookViewController) {
+        [aBookViewController setManagedObjectContext:self.managedObjectContext];
+        aBookViewController.toolbarsVisibleAfterAppearance = YES;
+        [self.navigationController pushViewController:aBookViewController animated:YES];
+        [aBookViewController release];
+    }
+}
+                  
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	NSArray *sections = [self.fetchedResultsController sections];
@@ -878,30 +894,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 	}
 
-		
-		
-		
     BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
-//		if ([[selectedBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-//			// cancel all other operations related to paid books.
-//			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
-//		}
-		BlioBookViewController *aBookViewController = [[BlioBookViewController alloc] initWithBook:selectedBook delegate:nil];
-		if (nil != aBookViewController) {
-			[aBookViewController setManagedObjectContext:self.managedObjectContext];
-			aBookViewController.toolbarsVisibleAfterAppearance = YES;
-			[self.navigationController pushViewController:aBookViewController animated:YES];
-			[aBookViewController release];
-		}
-		
+        [self openBook:selectedBook];
 		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	}    
 	else [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
 	
 }
 
-#pragma mark - 
+#pragma mark -
 #pragma mark UITableViewDataSource methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -1385,46 +1387,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         return;
     }
     
-#if 0    
-    [UIView beginAnimations:@"popBook" context:coverView];
-    [UIView setAnimationDuration:0.65f];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(popBookDidStop:finished:context:)];
-    [UIView setAnimationWillStartSelector:@selector(popBookWillStart:context:)];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    
-    CGFloat widthRatio = (targetView.bounds.size.width)/aCoverImageView.frame.size.width;
-    CGFloat heightRatio = (targetView.bounds.size.height)/aCoverImageView.frame.size.height;
-    CGRect poppedRect;
-    
-    // If the targetView is landscape, use the widthRatio for both and top align if necessary
-    if (targetView.bounds.size.width > targetView.bounds.size.height) {
-        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * widthRatio);
-        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
-        CGPoint topLeft = [self.view convertPoint:CGPointZero fromView:targetView];
-        poppedRect.origin.y = topLeft.y;
-    } else {
-        CGSize poppedSize = CGSizeMake(poppedImageView.frame.size.width * widthRatio, poppedImageView.frame.size.height * heightRatio);
-        poppedRect = CGRectIntegral(CGRectMake((targetView.bounds.size.width-poppedSize.width)/2.0f, (targetView.bounds.size.height-poppedSize.height)/2.0f, poppedSize.width, poppedSize.height));
-		
-    }
-	
-    [poppedImageView setFrame:poppedRect];
-    [self.tableView setAlpha:0.0f];
-    [aTextureView setAlpha:0.0f];
-    
-    [UIView commitAnimations];
-    
-    [aTextureView release];
-    [poppedImageView release];
-    
-    self.openBookViewController = aBookViewController;
-    self.currentBookView = bookView;
-    self.currentPoppedBookCover = aCoverImageView;
-    self.bookCoverPopped = NO;
-    self.firstPageRendered = NO;
-#endif
-    
     [aBookViewController release];
     
     return;    
@@ -1833,7 +1795,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			self.resumeButton.hidden = NO;
 			self.stateLabel.hidden = NO;
 			stateLabel.font = [UIFont boldSystemFontOfSize:10.0];
-			self.stateLabel.text = NSLocalizedString(@"Update App","\"Update App\" status indicator in BlioLibraryGridViewCell");
+			self.stateLabel.text = NSLocalizedString(@"Update Blio","\"Update Blio\" status indicator in BlioLibraryGridViewCell");
 			self.progressView.hidden = YES;
 			self.pauseButton.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];
@@ -2158,7 +2120,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 		if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateNotSupported) {
 
-			self.authorLabel.text = NSLocalizedString(@"App Update Required","\"App Update Required\" status indicator in BlioLibraryListCell");
+			self.authorLabel.text = NSLocalizedString(@"Blio Update Required","\"Blio Update Required\" status indicator in BlioLibraryListCell");
 			progressView.isAccessibilityElement = NO;
 			progressView.hidden = YES;
 			self.statusBadge.image = [UIImage imageNamed:@"badge-notsupported.png"];

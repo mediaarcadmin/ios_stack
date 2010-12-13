@@ -11,7 +11,7 @@
 
 #import "EucBookPageIndexPoint.h"
 
-#import "EucCSS.h"
+#import "EucConfiguration.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayouter.h"
@@ -43,7 +43,7 @@
 {
     if((self = [super initWithFrame:frame])) {
         _pointSize = pointSize;
-        _scaleFactor = pointSize / EUC_CSS_DEFAULT_POINT_SIZE;
+        _scaleFactor = pointSize / [[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey] floatValue];
     }
     return self;
 }
@@ -60,7 +60,7 @@
 - (void)setPointSize:(CGFloat)pointSize
 {
     _pointSize = pointSize;
-    _scaleFactor = pointSize / EUC_CSS_DEFAULT_POINT_SIZE;
+    _scaleFactor = pointSize / [[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey] floatValue];
 }
 
 - (EucBookPageIndexPoint *)layoutPageFromPoint:(EucBookPageIndexPoint *)point
@@ -237,12 +237,26 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
         lineOffset.x += runOrigin.x;
         lineOffset.y += runOrigin.y;
         
+        CGPoint currentAbsoluteOrigin = CGPointZero;
+        
         EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
         for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {
-            if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+            if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindOpenNode) {
+                currentAbsoluteOrigin.x += renderItem->origin.x;
+                currentAbsoluteOrigin.y += renderItem->origin.y;
+            } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindCloseNode) {
+                if(renderItem->parentIndex != NSUIntegerMax) {
+                    EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                    currentAbsoluteOrigin.x -= parentItem->origin.x;
+                    currentAbsoluteOrigin.y -= parentItem->origin.y;
+                }
+            } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
                 uint32_t wordId = renderItem->item.stringItem.layoutPoint.word;
                 if(wordId == wantedWordId) {
-                    CGRect itemRect = renderItem->item.stringItem.rect;
+                    CGRect itemRect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                                 currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                 renderItem->lineBox.width, 
+                                                 renderItem->lineBox.height);
                     itemRect.origin.x += lineOffset.x;
                     itemRect.origin.y += lineOffset.y;
                     [array addObject:[NSValue valueWithCGRect:itemRect]];
@@ -262,7 +276,6 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
     EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
     uint32_t wantedWordId = [(NSNumber *)elementId intValue];
     
-    
     for(EucCSSLayoutPositionedLine *line in run.children) {
         EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
         size_t renderItemsCount = line.renderItemCount;
@@ -273,19 +286,19 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                 if(wordId == wantedWordId) {
                     if(renderItem->item.stringItem.layoutPoint.element == 0) {
                         word = renderItem->item.stringItem.string;
-                    } else if(i != 0) {
+                    } else if(renderItem->altText) {
                         // First part of a hyphenated word.  The full word
                         // is placed in the altText.
                         word = renderItem->altText;
                     }
-                    break;
+                    goto found;
                 } else if(wordId > wantedWordId) {
-                    break;   
+                    goto found;   
                 }
             }
         }
     }    
-    
+found:
     return word;
 }
 
@@ -319,47 +332,62 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
         for(EucCSSLayoutPositionedRun *run in [self _runs]) {    
             CGPoint runOrigin = run.absoluteFrame.origin;
             for(EucCSSLayoutPositionedLine *line in run.children) {
-                EucCSSLayoutPositionedLineRenderItem* renderItem = line.renderItems;
+                EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
+                EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
                 size_t renderItemsCount = line.renderItemCount;
                 
                 CGPoint lineOffset = line.frame.origin;
                 lineOffset.x += runOrigin.x;
                 lineOffset.y += runOrigin.y;
                 
-                NSURL *currentHyperlinkURL = nil;
-                CGRect hyperlinkRect = CGRectZero;
+                CGPoint currentAbsoluteOrigin = CGPointZero;
+                
+                EucCSSIntermediateDocumentNode *currentHyperlinkNode = nil;
+                CGRect currentHyperlinkRect = CGRectZero;
                 for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
-                    if(currentHyperlinkURL) {
+                    if(currentHyperlinkNode) {
                         if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
-                            if(CGRectIsEmpty(hyperlinkRect)) {
-                                hyperlinkRect = CGRectOffset(renderItem->item.stringItem.rect, lineOffset.x, lineOffset.y);
+                            CGRect itemRect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                                         currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                         renderItem->lineBox.width, 
+                                                         renderItem->lineBox.height);                            
+                            if(CGRectIsEmpty(currentHyperlinkRect)) {
+                                currentHyperlinkRect = CGRectOffset(itemRect, lineOffset.x, lineOffset.y);
                             } else {
-                                hyperlinkRect = CGRectUnion(hyperlinkRect, 
-                                                            CGRectOffset(renderItem->item.stringItem.rect, lineOffset.x, lineOffset.y));
+                                currentHyperlinkRect = CGRectUnion(currentHyperlinkRect, CGRectOffset(itemRect, lineOffset.x, lineOffset.y));
                             }
                         } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindImage) {
-                            if(CGRectIsEmpty(hyperlinkRect)) {
-                                hyperlinkRect = CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y);
+                            CGRect itemRect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                                          currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                          renderItem->lineBox.width, 
+                                                          renderItem->lineBox.height);
+                            
+                            if(CGRectIsEmpty(currentHyperlinkRect)) {
+                                currentHyperlinkRect = CGRectOffset(itemRect, lineOffset.x, lineOffset.y);
                             } else {
-                                hyperlinkRect = CGRectUnion(hyperlinkRect, 
-                                                            CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y));
+                                currentHyperlinkRect = CGRectUnion(currentHyperlinkRect, CGRectOffset(itemRect, lineOffset.x, lineOffset.y));
                             }
-                        } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindHyperlinkStop) {
-                            NSParameterAssert([renderItem->item.hyperlinkItem.url isEqual:currentHyperlinkURL]);
-                            [buildHyperlinkRectAndURLPairs addPairWithFirst:[NSValue valueWithCGRect:hyperlinkRect]
-                                                                second:currentHyperlinkURL];
-                            currentHyperlinkURL = nil;
-                        }
-                    } else {
-                        if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindHyperlinkStart) {
-                            currentHyperlinkURL = renderItem->item.hyperlinkItem.url;
-                        }
+                        } 
                     }
-                }
-                if(currentHyperlinkURL) {
-                    // Line ended with unclosed hyperlink
-                    [buildHyperlinkRectAndURLPairs addPairWithFirst:[NSValue valueWithCGRect:hyperlinkRect]
-                                                        second:currentHyperlinkURL];
+                    if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindCloseNode) {
+                        if(renderItem->item.closeNodeInfo.node == currentHyperlinkNode) {
+                            [buildHyperlinkRectAndURLPairs addPairWithFirst:[NSValue valueWithCGRect:currentHyperlinkRect]
+                                                                     second:currentHyperlinkNode.hyperlinkURL];
+                            currentHyperlinkNode = nil;
+                            currentHyperlinkRect = CGRectZero;
+                        }
+                        if(renderItem->parentIndex != NSUIntegerMax) {
+                            EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                            currentAbsoluteOrigin.x -= parentItem->origin.x;
+                            currentAbsoluteOrigin.y -= parentItem->origin.y;       
+                        }
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindOpenNode) {
+                        if(renderItem->item.openNodeInfo.node.isHyperlinkNode) {
+                            currentHyperlinkNode = renderItem->item.openNodeInfo.node;
+                        }
+                        currentAbsoluteOrigin.x += renderItem->origin.x;
+                        currentAbsoluteOrigin.y += renderItem->origin.y;
+                    }
                 }
             }
         }
@@ -474,23 +502,37 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                 lineOffset.x += runOrigin.x;
                 lineOffset.y += runOrigin.y;                
                 
+                CGPoint currentAbsoluteOrigin = CGPointZero;
+                
                 EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
                 size_t renderItemsCount = line.renderItemCount;
                 
                 EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
-                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {                    
-                    if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {   
+                    if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindOpenNode) {
+                        currentAbsoluteOrigin.x += renderItem->origin.x;
+                        currentAbsoluteOrigin.y += renderItem->origin.y;
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindCloseNode) {
+                        if(renderItem->parentIndex != NSUIntegerMax) {
+                            EucCSSLayoutPositionedLineRenderItem* parentItem = renderItems + renderItem->parentIndex;
+                            currentAbsoluteOrigin.x -= parentItem->origin.x;
+                            currentAbsoluteOrigin.y -= parentItem->origin.y;
+                        }
+                    } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
                         if(buildElementString.length) {
                             [buildElementString appendString:@" "];
                         }
                         if(renderItem->item.stringItem.layoutPoint.element == 0) {
                             [buildElementString appendString:renderItem->item.stringItem.string];
-                        } else if(i != 0) {
+                        } else if(renderItem->altText) {
                             // First part of a hyphenated word.  The full word
                             // is placed in the altText.
                             [buildElementString appendString:renderItem->altText];
                         }
-                        itemFrame = renderItem->item.stringItem.rect;
+                        itemFrame = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                               currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                               renderItem->lineBox.width, 
+                                               renderItem->lineBox.height);
                     } else if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindImage) {
                         if(buildElementString.length) {
                             [self _addAccessibilityElementTo:buildAccessibilityElements
@@ -500,9 +542,15 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
                             [buildElementString setString:@""];
                             buildElementFrame = CGRectZero;
                         }
+                        
+                        CGRect imageRect = CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x,
+                                                      currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                      renderItem->lineBox.width, 
+                                                      renderItem->lineBox.height);
+                        
                         [self _addAccessibilityElementTo:buildAccessibilityElements
                                                   string:renderItem->altText
-                                                    rect:CGRectOffset(renderItem->item.imageItem.rect, lineOffset.x, lineOffset.y)
+                                                    rect:CGRectOffset(imageRect, lineOffset.x, lineOffset.y)
                                                   traits:buildElementTraits | UIAccessibilityTraitImage];
                     }
                     
@@ -549,6 +597,36 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
 - (NSInteger)indexOfAccessibilityElement:(id)element
 {
     return [[self accessibilityElements] indexOfObject:element];
+}
+
+- (NSString *)pageText
+{
+    NSArray *runs = [self _runs];    
+    NSMutableString *buildPageText = [NSMutableString string];
+    for(EucCSSLayoutPositionedRun *run in runs) {
+        for(EucCSSLayoutPositionedLine *line in run.children) {
+            EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
+            size_t renderItemsCount = line.renderItemCount;
+            
+            EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
+            for(NSUInteger i = 0; i < renderItemsCount; ++i, ++renderItem) {   
+                if(renderItem->kind == EucCSSLayoutPositionedLineRenderItemKindString) {
+                    if(buildPageText.length) {
+                        [buildPageText appendString:@" "];
+                    }
+                    if(renderItem->item.stringItem.layoutPoint.element == 0) {
+                        [buildPageText appendString:renderItem->item.stringItem.string];
+                    } else if(renderItem->altText) {
+                        // First part of a hyphenated word.  The full word
+                        // is placed in the altText.
+                        [buildPageText appendString:renderItem->altText];
+                    }
+                }
+            }
+        }
+        [buildPageText appendString:@"\n\n"];
+    }
+    return buildPageText ?: nil;
 }
 
 @end

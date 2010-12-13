@@ -1,0 +1,310 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__106">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__106">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part01chapter12.html#part01chapter12" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part01chapter12.html#page_102">&#xA0;&#xA0;12&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__106">THE PLATOON EFFECT</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="xhtml/part01chapter12.html#ch12en1">F</Run>
+      <Run Tag="xhtml/part01chapter12.html#ch12en1">or most right-handed pitchers, the curve ball is an important part of their pitching repertoire. A right-handed pitcher&#x2019;s curve ball curves in toward a left-handed batter and away from a right-handed batter. In theory, when facing a right-handed pitcher, a left-handed batter has an edge over a right-handed batter. Similarly, when a left-handed pitcher is on the mound, the right-handed batter appears to have the edge. Managers take advantage of this alleged result by platooning batters. That is, managers tend to start right-handed batters more often against left-handed pitchers and start left-handed batters more often against right-handed pitchers. Ignoring switch hitters, Joseph Adler found that 29% of batters who face left-handed pitchers are left-handed and 51% of batters who face right-handed pitchers are left-handed.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter12.html#ch12_en1">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter12.html#ch12en1">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter12.html#ch12en1"> This shows that platooning does indeed exist. As the great American statistician and quality guru W. Edwards Deming said, &#x201C;In God we trust; all others must bring data.&#x201D; Does actual game data confirm that a batter has an edge over a pitcher who throws with a different hand than he hits with? Adler tabulated OBP for each possible pitcher batter &#x201C;hand&#x201D; combination for the 2000&#x2013;2004 seasons. The results are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter12.html#chapter12figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter12.html#ch12en1">figure 12.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter12.html#ch12en1">, which tells us the following:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__106">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__106">Left-handed batters on average have a 22-point higher OBP against right-handed pitchers than against left-handed pitchers.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__106">Right-handed batters on average have a 13-point higher OBP against left-handed pitchers than against right-handed pitchers.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__106">Left-handed pitchers on average yield a 12-point larger OBP to right-handed batters than to left-handed batters.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__106">Right-handed pitchers on average yield a 23-point larger OBP to left-handed batters than to right-handed batters.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part01chapter12.html#page_103">&#xA0;</Run>
+      <Image Source="/Resources/731e4b96-69e4-4df5-a01e-109f2a8ab864.jpg" Stretch="Uniform" Width="294" Height="171" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter12.html#chapter12figure01">Figure 12.1. Platooning results. See file Platoon.xls. Source: Joseph Adler, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter12.html#chapter12figure01">Baseball Hacks</Run>
+      <Run Tag="xhtml/part01chapter12.html#chapter12figure01"> (O&#x2019;Reilly Media, 2006), 331.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__107">Most sabermetricians refer to these differences as platoon splits. </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter12.html#chapter12figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__107">Figure 12.1</Run>
+      </Hyperlink>
+      <Run Tag="__107"> shows that platoon splits definitely exist.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__107">Since most major league pitchers are right-handed (76%), a left-handed hitter has an edge over a right-handed hitter because he will be facing mostly right-handed pitchers. This helps explain the seemingly amazing fact that 37% of major league hitters bat left-handed, when only about 10% of the U.S. population is left-handed.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__107">Predicting a Player&#x2019;s Future Platoon Splits</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__107">During the 2005&#x2013;7 seasons Jim Thome (a left-handed hitter) had a platoon split of 0.121, or 121 OBP points. Is it reasonable to expect that in 2008 he would have a 121-point platoon split when the average left-handed hitter has a 22-point platoon split? According to the theory of regression toward the mean, we would expect Thome&#x2019;s future platoon splits to be closer to average than were his past splits. The idea of regression toward the mean was first credited to Francis Galton in 1886. Galton observed that tall parents had parents who were taller than average but were closer to average height than their parents. Similarly, parents with shorter than average children tend to have children who are taller than they are but are still below average. Regression toward the mean explains many facts in sports. Consider the following:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__107">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__107">Highly successful NFL teams tend to be less successful the next year. See </Run>
+          <Hyperlink NavigateUri="part02chapter18.html">
+            <Hyperlink.TextDecorations>
+              <TextDecorationCollection/>
+            </Hyperlink.TextDecorations>
+            <Run Tag="__107">chapter 18</Run>
+          </Hyperlink>
+          <Run Tag="__107">.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__107">The famous </Run>
+          <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__107">Madden NFL</Run>
+          <Run Tag="__107"> and </Run>
+          <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__107">Sports Illustrated</Run>
+          <Run Tag="__107"> cover jinxes: If a player is on the cover of </Run>
+          <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__107">Madden NFL</Run>
+          <Run Tag="__107"> or </Run>
+          <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__107">Sports Illustrated</Run>
+          <Run Tag="__107"> he must have done something extraordinary. Therefore, regression toward the mean predicts the player will still do well but not as well as he did in the past.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter12.html#page_104">In </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/part01chapter12.html#page_104">The Book: Playing the Percentages in Baseball</Run>
+      <Run Tag="xhtml/part01chapter12.html#page_104">, Tango, Lichtman, and Dolphin (hereafter TLD) found that the best way to predict a player&#x2019;s future platoon splits was to take a weighted average of the player&#x2019;s past platoon splits and the major league average. Their rules are summarized in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter12.html#chapter12table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter12.html#page_104">table 12.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter12.html#page_104">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__108">Note that the more data we have, the closer our prediction of a player&#x2019;s future split will be to his past platoon split. Also note that more weight is given to past platoon splits for pitchers than for batters.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__108">As an example, let&#x2019;s predict the future platoon split for the left-handed batter Jim Thome based on his platoon splits during the 2005&#x2013;7 seasons. During these seasons Thome had a 0.121 platoon split and faced 897 right-handed pitchers. Our predicted future platoon split for Thome is</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/a169635d-685c-4d71-a760-9febaada87c3.jpg" Stretch="Uniform" Width="423" Height="48" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__108">This means our best guess is that next season Thome will have an OBP 69 points better against a right-handed pitcher than against a left-handed pitcher.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part01chapter12.html#chapter12table01">TABLE 12.1</Run>
+      <LineBreak/>
+      <Run Tag="xhtml/part01chapter12.html#chapter12table01">Predicting Future Platoon Splits</Run>
+    </Paragraph>
+    <Table Tag="__108">
+      <Table.Columns>
+        <TableColumn Width="50*"/>
+        <TableColumn Width="50*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">Type of player</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__108">Future Estimate of Platoon Split</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">Right-handed batter</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Image Source="/Resources/26a867a9-c929-4a5e-b486-42717ca09029.jpg" Stretch="Uniform" Width="294" Height="41" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">Left-handed batter</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Image Source="/Resources/8f1ea795-db60-4d25-97ba-24b7a76cfa53.jpg" Stretch="Uniform" Width="296" Height="41" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">Right-handed pitcher</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Image Source="/Resources/59975383-c083-4e8d-b887-d5c24ffd1a33.jpg" Stretch="Uniform" Width="326" Height="40" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">Left-handed pitcher</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Image Source="/Resources/31813a77-0feb-4ffc-b7ad-7939c9844edd.jpg" Stretch="Uniform" Width="366" Height="45" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__108">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__108">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__108">Note</Run>
+      <Run Tag="__108">: PS player&#x2019;s past platoon split; PAL plate appearances by batter against left-handed pitcher; PAR plate appearances by batter against right-handed pitcher; RHBFP right-handed batters faced by pitcher; LHBFP left-handed batters faced by pitcher.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__108">Source</Run>
+      <Run Tag="__108">: Tom Tango, Mitchell Lichtman, and Andrew Dolphin, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__108">The Book: Playing the Percentages in Baseball</Run>
+      <Run Tag="__108"> (Potomac Books, 2007), 377&#x2013;80.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__108">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="xhtml/part01chapter12.html#page_105">How Much Can Platooning Help a Team?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__108">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__109">TLD show that if a team completely platoons a position in the batting lineup for the entire season (that is, a team always has a left-handed batter hit against a right-handed pitcher and a left-handed batter hit against a right-handed pitcher), they would on average win one more game than they would if they played a single player of comparable overall ability for the whole season. The problem is, of course, that platooning in this matter uses up a roster spot that might be better spent on a pitcher or a good backup fielder.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter12.html#ch12en1">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter12.html#ch12_en1">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter12.html#ch12_en1"> Adler, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter12.html#ch12_en1">Baseball Hacks</Run>
+      <Run Tag="xhtml/part01chapter12.html#ch12_en1">, 330.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

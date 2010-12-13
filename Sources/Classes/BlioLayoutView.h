@@ -15,8 +15,9 @@
 #import "BlioLayoutDataSource.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucPageTurningView.h>
+#import <libEucalyptus/THAccessibilityElement.h>
 
-@interface BlioLayoutView : BlioSelectableBookView <EucPageTurningViewDelegate, EucPageTurningViewBitmapDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
+@interface BlioLayoutView : BlioSelectableBookView <EucPageTurningViewDelegate, EucPageTurningViewBitmapDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, THAccessibilityElementDelegate> {
     NSManagedObjectID *bookID;
     EucPageTurningView *pageTurningView;
     UIImage *pageTexture;
@@ -40,6 +41,7 @@
     NSLock *layoutCacheLock;
     NSLock *hyperlinksCacheLock;
     CGPoint startTouchPoint;
+    BOOL wasSelectionAtTouchStart;
     NSTimer *delayedTouchesBeganTimer;
 	NSTimer *delayedTouchesEndedTimer;
     BOOL hyperlinkTapped;
@@ -49,6 +51,8 @@
     
     BlioTextFlowBlock *lastBlock;
     NSUInteger blockRecursionDepth;
+    
+    BOOL performingAccessibilityZoom;
 	
 	NSMutableArray *accessibilityElements;
 	UIAccessibilityElement *prevZone;

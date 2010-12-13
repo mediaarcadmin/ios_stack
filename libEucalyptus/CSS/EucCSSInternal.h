@@ -7,10 +7,22 @@
  *
  */
 
-#include <TargetConditionals.h>
-#include <memory.h>
+#import <TargetConditionals.h>
+#import <memory.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
+#import <libcss/libcss.h>
 
 void *EucRealloc(void *ptr, size_t len, void *pw);
+
+CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style,
+                                 css_fixed size,
+                                 css_unit units,
+                                 CGFloat percentageBase,
+                                 CGFloat scaleFactor);
 
 #if !TARGET_OS_IPHONE
 

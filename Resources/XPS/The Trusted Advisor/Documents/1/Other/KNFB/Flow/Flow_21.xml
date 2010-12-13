@@ -1,0 +1,462 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ch11.html#ch11">
+      <Paragraph Margin="0,80,0,28" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="16">
+        <Run Tag="__84">11</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Normal" FontSize="19" Tag="__84">The Art of Listening</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__84">J</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__84">ACK</Run>
+          <Run Tag="__84"> W</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__84">ELCH</Run>
+          <Run Tag="__84">, CEO of General Electric, has high praise for Steven Volk, a corporate lawyer to whom Welch turned when GE&#x2019;s subsidiary NBC acquired Financial News Network in 1991. &#x201C;He is really a great advisor,&#x201D; says Welch. &#x201C;He listens better than anybody else.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__84">Effective trusted advisors are (without a single exception, in our experience) very good listeners. Listening is not a sufficient condition by itself, but it is a necessary one, the second step in our five-stage process.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__84">Listening is essential to &#x201C;earn the right&#x201D; to comment on and be involved with the client&#x2019;s issues. We must listen effectively, and be </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__84">perceived</Run>
+          <Run Tag="__84"> to be listening effectively, </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__84">before</Run>
+          <Run Tag="__84"> we can proceed with any advisory process. Cutting to the chase without having earned the right to do so will usually be interpreted as arrogance.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__84">Listening: Earning the Right</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__84">Jim Copeland is the CEO of Deloitte &amp; Touche, and someone who very effectively builds lasting, deep relationships. In 1989, Deloitte, Haskins &amp; Sells merged with Touche, Ross &amp; Co. Copeland had been with Deloitte. He describes the first five minutes of a nine-hour meeting with the CEO of a key Touche, Ross client, a fiery character, who was not at all pleased at having to &#x201C;train&#x201D; a whole new accounting firm.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__84">&#x201C;He leads with power, energy, wants to overwhelm you, to let you know who&#x2019;s in charge. And I didn&#x2019;t fight that, I just kept saying &#x2018;tell me more about that problem, how did it happen, how did it come about, what&#x2019;s going on?&#x2019; I wanted to know why he was upset, and what it would take to fix things. Basically I was there for him, and let him know that. You just start with an attitude that, by gosh, you are going to set things right, and to do that you have to totally focus on the client and the client&#x2019;s problems.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__84">There are many aspects of Copeland&#x2019;s demeanor in this meeting that explain why it was the genesis of a very long and successful relationship. But in that first meeting, none mattered more than his ability to listen. Listening earned him the right to deliver on quality content, to cross-sell, to demonstrate problem-solving capabilities, and to speak about his people. None of that would have happened had he not earned the right through listening (thereby finding out what was going on.)</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__85">Why is &#x201C;being listened to&#x201D; so important? The answer is not only about the need for a rational understanding of the issues. Our desire to be heard also flows from our need for respect, empathy, and involvement. The trusted advisor recognizes this, and always ensures that the self-esteem of the client is protected.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__85">A trusted advisor might say, &#x201C;What I like about your idea is X; now help me understand how we can use it to accomplish Y.&#x201D; Through such language, the advisor constantly lets the client know that the client is respected and that the two of them are free to discuss with great candor the specific merits of the idea at hand.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__85">In listening to earn the right, we have found advisors make two common mistakes. One is to listen only for the rational; the other is to listen too passively.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__85">Overly Rational Listening</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__85">The concept of &#x201C;earning the right&#x201D; may sound like a rational approach. After all, we send r&#xE9;sum&#xE9;s in order to &#x201C;earn the right&#x201D; to interview. We send our firm&#x2019;s qualifications to &#x201C;earn the right&#x201D; to bid on a piece of work. The truth is, these rational processes only mimic the real action.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__85">Listening to earn the right is very much an emotional as well as a rational process. Here&#x2019;s the rest of Copeland&#x2019;s story.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__85">&#x201C;So he got the message that I cared about him, and wouldn&#x2019;t let things go by that weren&#x2019;t right for him. Years later, we had a chance to pitch a project to him, $5M, a pretty big project in those days, and at the end of the pitch, he just looked at me and said &#x2018;Do </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__85">you</Run>
+          <Run Tag="__85"> think I should do this?&#x2019;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__85">&#x201C;Meaning that if I could look him in the eye and say &#x2018;you bet&#x2019; then he had me on the line to do the right thing for him. And he knew that if I didn&#x2019;t believe that, I wouldn&#x2019;t look him in the eye and say so, because he knew he could trust me. And I was able to say, in this case, &#x2018;absolutely you should do it; you need this, and we&#x2019;ll do great work for you.&#x2019;&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__85">We have had clients (and you probably have, too) who insist that this listening stuff is all so much soft talk. &#x201C;I want results, hard stuff, answers,&#x201D; they insist to us, &#x201C;don&#x2019;t give me the passive, listening stuff.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__85">Yet at the end of the day, that client (and nearly all clients) wants to be able to look someone in the eye and know that that someone cares for him and won&#x2019;t &#x201C;let things go by that [aren&#x2019;t] right for him.&#x201D; Is that &#x201C;soft?&#x201D; We don&#x2019;t think so.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__85">Overly Passive Listening</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__86">The other (related) common mistake in listening to earn the right is to listen too passively. Tony Alessandra, in his audiotape </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__86">The Dynamics of Effective Listening</Run>
+          <Run Tag="__86">, has a section titled &#x201C;Giving the Gift of Acknowledgment.&#x201D; We would add, not only is it a gift, it is also a requirement. Good listening is active, not passive.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__86">A key part of communication is the continual back and forth of acknowledging that each is being heard and understood. We all know the blank &#x201C;uh-huh&#x201D; and glazed-over look that comes from someone who we just </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__86">know</Run>
+          <Run Tag="__86"> is not really listening to us.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__86">We need, in a normal conversation, some kind of acknowledgment from the other party on a regular basis. Without that, we are forced to stop and either demand it, or stop our communicating.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__86">But what is considered acknowledgment? Is it body language? Words? The answer is that it depends on the content of the message.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__86">If the message is purely rational (for example, a senior lawyer imparting the fine points of an analysis to an associate), then the appropriate acknowledgment may be almost entirely verbal. An occasional &#x201C;mm-hmm,&#x201D; with a slight nod of the head, is enough to let a teacher know he or she is being heard and understood, and should continue.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__86">But if the message carries any emotional flavor at all (and most do), then </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__86">not</Run>
+          <Run Tag="__86"> to use emotive colorings or tones in our acknowledgments sends the message that we are not listening.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__86">A client who says &#x201C;We do 300,000 transactions a day here&#x201D; has a feeling about that number. It is not enough to know whether 300,000 is above or below the competition, or higher or lower than last month. The client may be proud of that number, or proud simply of knowing it. Or he may be bored by the number, or embarrassed by it, or any number of things.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__86">The advisor who listens passively (using only &#x201C;mm-hmm&#x201D;) is sending a message that only the rational content matters, that the feelings of the one conveying the information are irrelevant. The effective advisor knows that the emotional data is every bit as valid and important as the rational data. Each plays its role in successfully adding value and changing a client organization.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__86">There are even circumstances when a reaction from the advisor is not just good to have, but essential. For example, a CEO who complains that a former key employee is selling trade secrets to the enemy deserves more than mere &#x201C;mm-hmm.&#x201D; The advisor might appropriately respond as follows:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="32,0,32,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__86">&#x201C;You must be outraged. I wish I had a button to push to resolve this for you instantly, but I don&#x2019;t. I don&#x2019;t think anyone does.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__86">Listening to the Sequence</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__86">We have often conducted a real-time quiz to assess the frequency with which people&#x2019;s minds wander from the subject at hand. Our nonscientific study suggests that, on average, business people can pay attention for no more than thirty to sixty seconds without being distracted by an unrelated thought. Listening is a process that requires skill and discipline.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__87">Much of communication follows the model of a story. There is a beginning, a middle, and an end. There is setup, tension, and resolution. There is background, setup, and punch line. When we talk to someone (about almost anything), we choose our words to create some version of a story.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__87">But if the listener breaks up our sense of story (insists on interrupting, or rearranging, or imposing his or her own sense of story line), the meaning we intend is disrupted. It feels inappropriate when someone jumps to a conclusion, or misses a connection, or gets things out of sequence. All these are forms of not &#x201C;getting it.&#x201D; Good listening respects the speaker by respecting the sequence of the story he or she chooses to tell us.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__87">Our good friends at the Ariel Group, a theater-based communications-training firm in Cambridge, Massachusetts, teach the idea of &#x201C;reflective listening,&#x201D; followed by &#x201C;supportive listening,&#x201D; and finally &#x201C;listening for possibility.&#x201D;</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__87">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__87">Reflective listening demonstrates clarity and communicates back to the speaker that his or her message has been heard and that the impact, implications, and emotions that are connected with the issue are also well understood. (&#x201C;What I hear you saying is . . .&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__87">Supportive listening demonstrates empathy and shows that the listener not only understands why the client feels a particular way about an issue or problem but also that he or she will help the client feel comfortable with that point of view. (&#x201C;Gee, that must be tough!&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__87">Listening for possibility demonstrates insight and suggests to the client that a particular path or solution may help resolve the dilemma. (&#x201C;So what have you thought about doing to deal with that?&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__87">If we listen sequentially, we will hear the meaning the speaker intends. If we impose our own structure on what is being said, we will not hear the meaning that is being presented. We will hear some version of our own meaning, superimposed on the speaker.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__87">Avoid asking questions such as, &#x201C;What are the top three issues facing XYZ?&#x201D; If you ask that question, you&#x2019;ll generally get your list of three. You may, however, miss the fact that one of those issues is far less significant than the other two, and that any unprompted question would have elicited only the two important issues.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__87">Consider the situation of interviewing people you are thinking of hiring for your firm. When you interview candidates by asking them about their capabilities, you deprive them of the chance to tell you their very personal story. If you listen for their story, you will hear the meaning that </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__87">they</Run>
+          <Run Tag="__87"> see in their lives and careers, not one that you may have assigned. You still have the right, of course, to hire or not to hire, but it makes sense to hear someone&#x2019;s idea about what makes them tick before forming your own opinions.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__87">This is as true with clients as it is with interview candidates. If we conduct fact-finding sessions based on rigidly preconceived notions of the issues, we will miss the stories, the meaning, that our clients want to tell us. And thus we miss truth.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__87">Finally, the need to listen to the sequence, and to avoid prematurely imposing our own structure, is even more important in selling than in delivery. If we set an agenda in advance and never move off it (if we insist on holding to the sequence of our own presentations, if we answer questions at much greater length in order to answer unasked questions), then we are merely imposing our views rather than listening.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__88">There is an old (and unkind) joke about the dangers of imposing our own structure in questioning. It goes as follows:</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__88">In a murder trial, the defense attorney was cross-examining a pathologist. Here&#x2019;s what happened:</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__88">A</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__88">TTORNEY</Run>
+          <Run Tag="__88">: Before you signed the death certificate, had you taken the pulse?</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__88">C</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__88">ORONER</Run>
+          <Run Tag="__88">: No.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__88">A</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__88">TTORNEY:</Run>
+          <Run Tag="__88"> Did you listen to the heart?</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__88">C</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__88">ORONER</Run>
+          <Run Tag="__88">: No.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__88">A</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__88">TTORNEY</Run>
+          <Run Tag="__88">: Did you check for breathing?</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__88">C</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__88">ORONER</Run>
+          <Run Tag="__88">: No.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__88">A</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__88">TTORNEY</Run>
+          <Run Tag="__88">: So, when you signed the death certificate, you weren&#x2019;t sure the man was dead, were you?</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="0,0,16,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__88">C</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__88">ORONER</Run>
+          <Run Tag="__88">: Well, let me put it this way. The man&#x2019;s brain was sitting in a jar on my desk. But I guess it&#x2019;s possible he could be out there practicing law somewhere.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__88">The basic sequence of listening is to let the speaker set the structure, and to be attuned to his or her structure until he or she is satisfied that we have grasped his or her meaning.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__88">The Agenda-Setting Discussion.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__88">Setting an agenda is very simple, is socially acceptable (i.e., no risk), and is very powerful. An agenda is a prestatement, a point of view in advance of a meeting, about how the meeting should be conducted and what should be addressed.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__88">Asking, &#x201C;What else should we discuss today?&#x201D; or &#x201C;What do we have to accomplish with today&#x2019;s meeting?&#x201D; creates the opening for clients to tell us what is on their minds, and what their priorities are. Agenda setting, therefore, is a powerful formal tool for listening.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__88">An agenda should never be presented without discussion. Instead, it should be used as a golden opportunity to have a brief, mutual discussion about how the meeting should be handled. The invitation to discuss an agenda, even if only for sixty seconds, sends a powerful signal at the outset that the meeting is being run for the mutual benefit of all present and is not the closely held property of one person or segment of the meeting.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__88">An opportunity to use the agenda-setting tool arises at the start of almost any meeting, with two or two hundred people, between strangers or intimates, or whether on the first subject or the thirty-first. We should always begin the interaction by making the agenda itself a subject for discussion. &#x201C;I thought it&#x2019;d be useful if we talked mainly about &#x2014;&#x2014;&#x2014; and &#x2014;&#x2014;&#x2014;, and then just a bit on &#x2014;; how do you feel about that approach?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__89">We are talking here about both formal, written meeting agendas, and about verbal, small, even one-on-one implicit discussion agendas. If we behave as if one of us owns the agenda, has predetermined it, is wedded to it, and has a vested interest in maintaining it, then we have effectively created a &#x201C;me versus you&#x201D; dynamic. The forces that separate us have gained the upper hand.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__89">If, on the other hand, through simple gestures and words, the agenda becomes shared, we have created and acted upon a powerful symbol for working together jointly. The client is made to feel </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__89">involved</Run>
+          <Run Tag="__89">.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__89">What Good Listeners Do</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__89">What do good listeners do that makes them good listeners? They:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__89">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Probe for clarification</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Listen for unvoiced emotions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Listen for the story</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Summarize well</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Empathize</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Listen for what&#x2019;s different, not for what&#x2019;s familiar</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Take it all seriously (they don&#x2019;t say, &#x201C;You shouldn&#x2019;t worry about that&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Spot hidden assumptions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Let the client &#x201C;get it out of his or her system&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Ask &#x201C;How do you feel about that?&#x201D;</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Keep the client talking (&#x201C;What else have you considered?&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Keep asking for more detail that helps them understand</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Get rid of distractions while listening</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Focus on hearing your version first</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Let you tell your story your way</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Stand in your shoes, at least while they&#x2019;re listening</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Ask you how you think they might be of help</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Ask what you&#x2019;ve thought of before telling you what they&#x2019;ve thought of</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Look at (not stare at) the client as he or she speaks</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Look for congruity (or incongruity) between what the client says and how he or she gestures and postures</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Make it seem as if the client is the only thing that matters and that they have all the time in the world</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Encourage by nodding head or giving a slight smile</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Are aware of and control their body movement (no moving around, shaking legs, fiddling with a paper clip)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__89">Here&#x2019;s what great listeners don&#x2019;t do. They </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__89">don&#x2019;t:</Run>
+        </Span>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__89">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Interrupt</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__89">Respond too soon</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__90">Match the client&#x2019;s points (&#x201C;Oh, yes, I had something like that happen to me. It all started . . .&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__90">Editorialize in midstream (&#x201C;Well, that option&#x2019;s a nonstarter&#x201D;)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__90">Jump to conclusions (much less judgments)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__90">Ask closed-end questions for no reason</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__90">Give you their ideas before hearing yours</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__90">Judge you</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__90">Try to solve the problem too quickly</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__90">Take calls or interruptions in the course of a client meeting (it seems so obvious but watch how often it happens!)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+    </Section>
+  </Section>
+</Flow>

@@ -30,10 +30,13 @@
 #import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
 
-static const CGFloat kBlioBookSliderPreviewWidth = 150;
-static const CGFloat kBlioBookSliderPreviewHeight = 225;
-static const CGFloat kBlioBookSliderPreviewVerticalOffset = 10;
-static const CGFloat kBlioBookSliderPreviewPadding = 10;
+static const CGFloat kBlioBookSliderPreviewWidthPad = 180;
+static const CGFloat kBlioBookSliderPreviewHeightPad = 180;
+static const CGFloat kBlioBookSliderPreviewWidthPhone = 180;
+static const CGFloat kBlioBookSliderPreviewHeightPhone = 180;
+static const CGFloat kBlioBookSliderPreviewAnchorOffset = 20;
+static const CGFloat kBlioBookSliderPreviewShadowRadius = 20;
+static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
@@ -72,36 +75,40 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) UIBarButtonItem *searchButton;
 @property (nonatomic, retain) UIBarButtonItem *backButton;
 @property (nonatomic, retain) NSMutableArray *historyStack;
+@property (nonatomic, retain) BlioBookSliderPreview *thumbPreview;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void)setPageJumpSliderPreview;
 - (void) _updatePageJumpLabelForPage:(NSInteger)page;
 - (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
+- (void) togglePageJumpPanel;
+
 @end
 
 @interface BlioBookSliderPreview : UIView {
-	UIImage *thumb;
+	UIImageView *thumbImage;
 }
 
 - (void)setThumb:(UIImage *)thumb;
+- (void)setThumbAnchorPoint:(CGPoint)anchor;
+- (void)showThumb:(BOOL)show;
 
 @end
 
 @interface BlioBookSlider : UISlider {
     BOOL touchInProgress;
     BlioBookViewController *bookViewController;
-	BlioBookSliderPreview *thumbPreview;
 }
 
 @property (nonatomic) BOOL touchInProgress;
 @property (nonatomic, assign) BlioBookViewController *bookViewController;
 
-- (void)setPreviewThumb:(UIImage *)thumb;
-
 @end
 
 @interface BlioBookViewController()
+
+- (void)setPreviewThumb:(UIImage *)thumb;
 
 - (void)animateCoverPop;
 - (void)animateCoverShrink;
@@ -136,6 +143,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize delegate;
 @synthesize coverView;
 @synthesize historyStack;
+@synthesize thumbPreview;
 @synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, addButton, viewSettingsButton, searchButton, backButton;
 
 - (BOOL)toolbarsVisibleAfterAppearance 
@@ -256,6 +264,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     _pageJumpView = nil;
+	
+	thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:self.view.bounds];
+	thumbPreview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	thumbPreview.userInteractionEnabled = NO;
+	thumbPreview.alpha = 0.01f;
+	thumbPreview.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7f];
+	[self.view addSubview:thumbPreview];
+	
 }
 
 - (void)initialiseBookView {
@@ -480,6 +496,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			
 		return;
 	}
+    
+    [self.view addSubview:self.coverView];
 			
 	CGRect coverRect = [[self bookView] firstPageRect];
     CGFloat coverRectXScale = CGRectGetWidth(coverRect) / CGRectGetWidth(self.coverView.frame);
@@ -753,12 +771,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [titleView setTitle:[self.book title]];
                 [titleView setAuthor:[self.book authorsWithStandardFormat]];              
                 
+                if ([_bookView wantsTouchesSniffed]) {
+                    [(THEventCapturingWindow *)self.view.window addTouchObserver:self forView:_bookView];            
+                }                
+                
                 [self.view addSubview:_bookView];
                 [self.view sendSubviewToBack:_bookView];
-                
-                if ([_bookView wantsTouchesSniffed]) {
-                    [(THEventCapturingWindow *)_bookView.window addTouchObserver:self forView:_bookView];            
-                }
             }
             
             // Pretend that we last saved this page number, so that we 
@@ -883,12 +901,23 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aPauseButton setAlpha:0];
     [self.view addSubview:aPauseButton];
     self.pauseButton = aPauseButton;
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+
 }
 
 - (void)layoutNavigationToolbar {
-    CGRect navFrame = self.navigationController.navigationBar.frame;
+    UINavigationBar *currentNavBar = [self.navigationController navigationBar];
+    CGRect navFrame = currentNavBar.frame;
     navFrame.origin.y = 20;
     [self.navigationController.navigationBar setFrame:navFrame];
+}
+
+- (void)didBecomeActive:(NSNotification *)notification {	
+	// Layout the navigation toolbars once we have comleted this run loop.
+	// This is teh equivalent of calling in viewDidAppear (which doesn't get called when returning from background
+	// If we did layout now, the navigation bar would get adjusted before appearing and fit under the status bar
+	[self performSelector:@selector(layoutNavigationToolbar) withObject:nil afterDelay:0.1f];
 }
 
 - (void)setNavigationBarButtons {
@@ -923,6 +952,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
 
     self.pieButton = aPieButton;
+	
+	BOOL hidden = [_pageJumpView isHidden];
+    [self.pieButton setToggled:!hidden];
+	
     [aPieButton release];
     
     [self.navigationItem setRightBarButtonItem:_pageJumpButton];
@@ -1024,6 +1057,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [titleView setAuthor:[self.book authorsWithStandardFormat]];
         
         [self setNavigationBarButtons];
+		
+		[self updatePageJumpPanelForPage:self.bookView.pageNumber animated:NO];
         
         if(animated) {
             CATransition *animation = [CATransition animation];
@@ -1050,8 +1085,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
                 
             }
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
+        if(!animated) {
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+        } else {
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
+            [self.navigationController setNavigationBarHidden:NO animated:NO];
+        }
         [self.navigationController.toolbar setHidden:NO];
         [self.navigationController setToolbarHidden:NO animated:NO];
             if(!animated) {
@@ -1073,6 +1113,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 //                    [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
 //            }            
 //        }
+        [self togglePageJumpPanel];
     }
     _firstAppearance = NO;
 }
@@ -1216,7 +1257,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
 	[[AVAudioSession sharedInstance] setDelegate:nil];
 	if (_pageJumpButton) [_pageJumpButton release];
-    
+    [thumbPreview release], thumbPreview = nil;
+
     self.searchViewController = nil;
     
     self.bookView = nil;
@@ -1285,9 +1327,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)delayedToggleToolbars:(NSNumber *)toolbarStateNumber
 {
+	
     BlioLibraryToolbarsState toolbarState = [toolbarStateNumber integerValue];
-    
-    if(_fadeState != BookViewControlleUIFadeStateNone) return;
+ 
+    if(_fadeState != BookViewControlleUIFadeStateNone) {
+		// Immediately toggle the pause button if required, without animation, before returning
+		switch (toolbarState) {
+			case kBlioLibraryToolbarsStatePauseButtonVisible:
+				self.pauseButton.alpha = 1;
+				break;
+			default:
+				self.pauseButton.alpha = 0;
+				break;
+		}
+		return;
+	}
     
     // Set the fade state
     switch (toolbarState) {
@@ -1444,28 +1498,25 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (CGRect)nonToolbarRect
 {
-    UIView *bookView = self.bookView;
-    CGRect rect = [bookView convertRect:self.bookView.bounds toView:nil];
+    CGRect rect = self.bookView.bounds;
     
     if([self toolbarsVisible]) {
         CGRect navRect;
         if(_pageJumpView) {
-            navRect = [_pageJumpView convertRect:_pageJumpView.bounds toView:nil];
+            navRect = _pageJumpView.frame;
         } else {
-            UINavigationBar *navBar = self.navigationController.navigationBar;
-            navRect = [navBar convertRect:navBar.bounds toView:nil];
+            navRect = self.navigationController.navigationBar.frame;
         }
         
         CGFloat navRectBottom = CGRectGetMaxY(navRect);
         rect.size.height -= navRectBottom - rect.origin.y;
         rect.origin.y = navRectBottom;
 
-        UIToolbar *toolbar = self.navigationController.toolbar;
-        CGRect toolbarRect = [toolbar convertRect:toolbar.bounds toView:nil];
-        rect.size.height = toolbarRect.origin.y - rect.origin.y;
+        CGRect toolbarRect = self.navigationController.toolbar.frame;
+        rect.size.height -= toolbarRect.size.height;
     }
     
-    return [bookView convertRect:rect fromView:nil];
+    return rect;
 }
 
 - (void)observeTouch:(UITouch *)touch
@@ -1506,10 +1557,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)layoutPageJumpView {
     [_pageJumpView setTransform:CGAffineTransformIdentity];
     
-    ///CGSize viewBounds = [self.bookView bounds].size;
-    UINavigationBar *currentNavBar = self.navigationController.visibleViewController.navigationController.navigationBar;
+    UINavigationController *controller = [self navigationController];
+    UINavigationBar *currentNavBar = [controller navigationBar];
     CGPoint navBarBottomLeft = CGPointMake(0.0, 20 + currentNavBar.frame.size.height);
-    //CGPoint xt = [self.view convertPoint:navBarBottomLeft fromView:currentNavBar];
 
     [_pageJumpView setFrame:CGRectMake(navBarBottomLeft.x, navBarBottomLeft.y, currentNavBar.frame.size.width, currentNavBar.frame.size.height)];
     if (![_pageJumpView isHidden]) {
@@ -1523,9 +1573,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	NSInteger page = _pageJumpSlider.value;
 	
 	if ([self.bookView respondsToSelector:@selector(previewThumbnailForPageNumber:)]) {
-		[_pageJumpSlider setPreviewThumb:[self.bookView previewThumbnailForPageNumber:page]];
+		[self setPreviewThumb:[self.bookView previewThumbnailForPageNumber:page]];
 	} else {
-		[_pageJumpSlider setPreviewThumb:nil];
+		[self setPreviewThumb:nil];
 	}
 }
 
@@ -1538,11 +1588,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [_pageJumpSlider setBounds:sliderBounds];
     
     CGFloat scale = 1;
-    
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
+
+    CGRect _pageJumpViewBounds = _pageJumpView.bounds;
+
+    if(_pageJumpViewBounds.size.height < 40)
         scale = 0.75f;
     
-    CGRect _pageJumpViewBounds = _pageJumpView.bounds;
     CGPoint center = CGPointMake(CGRectGetMidX(_pageJumpView.bounds), 
                                  CGRectGetHeight(_pageJumpViewBounds) - (CGRectGetHeight(sliderBounds) / 2.0f + 2.0f) * scale);
     _pageJumpSlider.center = center;
@@ -1602,6 +1653,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         // the slider
         BlioBookSlider* slider = [[BlioBookSlider alloc] initWithFrame: CGRectZero];
         slider.bookViewController = self;
+		slider.exclusiveTouch = YES;
+
         slider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         [slider setAccessibilityLabel:NSLocalizedString(@"Page Chooser", @"Accessibility label for Book View Controller Progress slider")];
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
@@ -1638,8 +1691,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [_pageJumpView addSubview:slider];
 		[self setPageJumpSliderPreview];
         
+        _pageJumpView.layer.zPosition = 5;
         [self.view addSubview:_pageJumpView];
-	
     }
     
     CGSize sz = _pageJumpView.bounds.size;
@@ -1735,6 +1788,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
         }
     }
+}
+
+- (UIImage *)dimPageImage
+{
+    UIView<BlioBookView> *bookView = [self bookView];
+    if([bookView respondsToSelector:@selector(dimPageImage)]) {
+        return bookView.dimPageImage;
+    }
+    return nil;
 }
 
 #pragma mark -
@@ -1878,12 +1940,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     } else {
         if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
             UIImage *pageTexture = nil;
-            if ((newColor == kBlioPageColorWhite) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
-                pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"paper-white-ipad" ofType:@"png"]]];
+            if([[UIDevice currentDevice] compareSystemVersion:@"4"] >= NSOrderedSame) {
+                pageTexture = [UIImage imageNamed:kBlioFontPageTextureNamesArray[newColor]];
             } else {
-                NSString *imagePath = [[NSBundle mainBundle] pathForResource:kBlioFontPageTextureNamesArray[newColor]
-                                                                  ofType:@""];
-                pageTexture = [UIImage imageWithData:[NSData dataWithContentsOfMappedFile:imagePath]];
+                // iPad doesn't automatically look for its own images with < OS 4.0
+                if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                    NSString *name = kBlioFontPageTextureNamesArray[newColor];
+                    name = [[[name stringByDeletingPathExtension] stringByAppendingString:@"~ipad"] stringByAppendingPathExtension:[name pathExtension]];
+                    pageTexture = [UIImage imageNamed:name];
+                } else {
+                    pageTexture = [UIImage imageNamed:kBlioFontPageTextureNamesArray[newColor]];
+                }
             }
             [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
         }
@@ -2079,15 +2146,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [audioMgr setCurrentBlock:blockId];
                 [audioMgr setBlockWords:[_audioParagraphSource wordsForParagraphWithID:blockId]];
 
-				if ( [audioMgr.blockWords count] && (wordOffset < [audioMgr.blockWords count] - 1 )) {
-					++wordOffset;
-				}
+				//if ( [audioMgr.blockWords count] && (wordOffset < [audioMgr.blockWords count] - 1 )) {
+				//	++wordOffset;
+				//}
+				
                 [audioMgr setCurrentWordOffset:wordOffset];
                 [audioMgr setPageChanged:NO];
             }
             else {
                 // use the current word and block, which is where we last stopped.
-                if ( audioMgr.currentWordOffset + 1 < [audioMgr.blockWords count] ) {
+                if ( audioMgr.currentWordOffset < [audioMgr.blockWords count] ) {
                     // We last stopped in the middle of a block.
                 } else {
                     // We last stopped at the end of a block, so need the next one.
@@ -2299,26 +2367,46 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	if ( _audioBookManager.timeIx >= [_audioBookManager.wordTimes count] )
 		// can get here ahead of audioPlayerDidFinishPlaying
 		return;
-	//int timeElapsed = (int) (([_audioBookManager.avPlayer currentTime] - _audioBookManager.timeStarted) * 1000.0);
-	//int timeElapsed = [_audioBookManager.avPlayer currentTime] * 1000;
-	//NSLog(@"Elapsed time %d",timeElapsed);
-	if ( ([_audioBookManager.avPlayer currentTime] * 1000 ) >= ([[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]) ) {
-		//NSLog(@"Passed time %d",[[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]);
 
+    
+    BOOL highlightShouldMove = NO;
+    id moveToBlockID = nil;
+    NSUInteger moveToWordOffset = 0;
+    
+    // Loop through all the words that should have been highlighted before this 
+    // time.  A loop because the audio manager might potentially have read more
+    // than one word in the time that elapsed between the last checkHighlightTime
+    // call was made (this is unlikely since we fire so fast, but possible,
+    // especially if the main thread stalls for some reason).    
+    int timeElapsed = [_audioBookManager.avPlayer currentTime] * 1000;
+	while ( timeElapsed > [[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue] ) {
+		//NSLog(@"Time is: %ld, Passed time %d", timeElapsed, [[_audioBookManager.wordTimes objectAtIndex:_audioBookManager.timeIx] intValue]);
+
+        // Save these now, because we're about to move on to the next word.
+        highlightShouldMove = YES;
+        [moveToBlockID release];
+        moveToBlockID = [_audioBookManager.currentBlock retain];
+        moveToWordOffset = _audioBookManager.currentWordOffset;
+
+		++_audioBookManager.timeIx;
+        ++_audioBookManager.currentWordOffset;
+        
+        if ( _audioBookManager.currentWordOffset == _audioBookManager.blockWords.count ) {
+            [self prepareTextToSpeakWithAudioManager:_audioBookManager];
+        }            
+	}
+    
+    if ( highlightShouldMove ) {
         id<BlioBookView> bookView = self.bookView;
         if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-            BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:_audioBookManager.currentBlock
-                                                                                wordOffset:_audioBookManager.currentWordOffset];
+            //NSLog(@"%@, %d", moveToBlockID, moveToWordOffset);
+            BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:moveToBlockID
+                                                                                wordOffset:moveToWordOffset];
             [bookView highlightWordAtBookmarkPoint:point];
         }
-		
-        ++_audioBookManager.currentWordOffset;
-		++_audioBookManager.timeIx;
-	}
-    if ( _audioBookManager.currentWordOffset == [_audioBookManager.blockWords count] ) {
-		// Last word of block, get more words.  
-		[self prepareTextToSpeakWithAudioManager:_audioBookManager];
-	}    
+    }
+    
+    [moveToBlockID release];
 }
 
 - (void)stopAudio {		
@@ -2400,15 +2488,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 				self.audioPlaying = _acapelaAudioManager.startedPlaying;
 			}
 			else {
-				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You must first download Text-To-Speech voices if you wish to hear this book read aloud. Please download a voice in the Library Settings section and try again.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"No Voices Available",@"\"No Voices Available\" alert message title")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"Please go to your voice settings to download a Text-To-Speech voice.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
 											delegate:nil 
 								   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
 									otherButtonTitles:nil];
 			}
         }
         else {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"No Audio Rights",@"\"No Audio Rights\" alert message title")
 										 message:NSLocalizedStringWithDefaultValue(@"NO_AUDIO_PERMITTED_FOR_THIS_BOOK",nil,[NSBundle mainBundle],@"No audio is permitted for this book.",@"Alert message shown to end-user when the end-user attempts to hear a book read but no audiobook is present and TTS is not enabled.")
 										delegate:nil 
 							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
@@ -2428,7 +2516,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[activityIndicator stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
 	NSLog(@"Error loading web page: %@",errorMsg);
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title")
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Loading Page",@"\"Error Loading Page\" alert message title")
 								 message:errorMsg
 								delegate:nil 
 					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
@@ -2565,7 +2653,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     // Doing this here instead of in the 'didRotate' callback results in smoother
     // animation that happens simultaneously with the rotate.
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) [self layoutNavigationToolbar];
+    [self layoutNavigationToolbar];
     [self setNavigationBarButtons];
     if (_pageJumpView) {
         [self layoutPageJumpView];
@@ -2781,6 +2869,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
      }
 }
 
+- (void)refreshHighlights {
+	if ([self.bookView respondsToSelector:@selector(refreshHighlights)]) {
+		[self.bookView refreshHighlights];
+	}
+}
+
 - (void)copyWithRange:(BlioBookmarkRange*)range {
 	NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
 	[[UIPasteboard generalPasteboard] setStrings:[NSArray arrayWithObject:[wordStrings componentsJoinedByString:@" "]]];
@@ -2810,8 +2904,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type { 
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
-									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_WEBTOOL",nil,[NSBundle mainBundle],@"An Internet connection was not found; Internet access is required to use this web tool.",@"Alert message when the user tries to download a book without an Internet connection.")
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Not Found",@"\"Internet Connection Not Found\" alert message title")
+									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_WEBTOOL",nil,[NSBundle mainBundle],@"An internet connection is required to perform this function.",@"Alert message when the user tries to download a book without an Internet connection.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
 						   otherButtonTitles:nil];		
@@ -3097,6 +3191,23 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
+- (void)setPreviewThumb:(UIImage *)thumb {
+	[thumbPreview setThumb:thumb];
+	
+	if (thumb && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+		CGFloat sliderMin = _pageJumpSlider.minimumValue;
+		CGFloat sliderMax = _pageJumpSlider.maximumValue;
+		CGFloat sliderMaxMinDiff = sliderMax - sliderMin;
+		CGFloat sliderValue = _pageJumpSlider.value;
+	
+		CGRect sliderFrame = [_pageJumpView convertRect:_pageJumpSlider.frame toView:self.view];
+		CGFloat xCoord = CGRectGetMinX(sliderFrame) + ((sliderValue-sliderMin)/sliderMaxMinDiff) * CGRectGetWidth(sliderFrame);	
+		CGFloat yCoord = CGRectGetMidY(sliderFrame);
+		
+		[thumbPreview setThumbAnchorPoint:CGPointMake(xCoord, yCoord)];
+	}
+}
+
 @end
 
 @implementation BlioBookSlider 
@@ -3105,58 +3216,24 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)dealloc {
     self.bookViewController = nil;
-	[thumbPreview release], thumbPreview = nil;
     [super dealloc];
-}
-
-- (id)initWithFrame:(CGRect)frame {
-	if ((self = [super initWithFrame:frame])) {
-		self.clipsToBounds = NO;
-		thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:CGRectZero];
-		thumbPreview.userInteractionEnabled = NO;
-		thumbPreview.alpha = 0;
-		thumbPreview.backgroundColor = [UIColor clearColor];
-		thumbPreview.layer.shadowOpacity = 1;
-		thumbPreview.layer.shadowRadius = 10;
-		[self addSubview:thumbPreview];
-	}
-	return self;
-}
-
-- (void)setFrame:(CGRect)newFrame {
-	[super setFrame:newFrame];
-	[thumbPreview setFrame: CGRectMake(0, CGRectGetHeight(newFrame) + kBlioBookSliderPreviewVerticalOffset, kBlioBookSliderPreviewWidth, kBlioBookSliderPreviewHeight)];
-}
-
-- (void)setPreviewThumb:(UIImage *)thumb {	 
-	 CGFloat sliderMin =  self.minimumValue;
-	 CGFloat sliderMax = self.maximumValue;
-	 CGFloat sliderMaxMinDiff = sliderMax - sliderMin;
-	 CGFloat sliderValue = self.value;
-	 
-	CGRect thumbFrame = thumbPreview.frame;
-	CGFloat xCoord = ((sliderValue-sliderMin)/sliderMaxMinDiff)*[self bounds].size.width -thumbFrame.size.width/2.0;
-	thumbFrame.origin.x = xCoord;
-	
-	[thumbPreview setFrame:thumbFrame];
-	[thumbPreview setThumb:thumb];
 }
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = YES;
-	[thumbPreview setAlpha:1];
+	[self.bookViewController.thumbPreview showThumb:YES];
     return [super beginTrackingWithTouch:touch withEvent:event];
 }
 
 - (void)cancelTrackingWithEvent:(UIEvent *)event {
     touchInProgress = NO;
-	[thumbPreview setAlpha:0];
+	[self.bookViewController.thumbPreview showThumb:NO];
     [super cancelTrackingWithEvent:event];
 }
 
 - (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     touchInProgress = NO;
-	[thumbPreview setAlpha:0];
+	[self.bookViewController.thumbPreview showThumb:NO];
     [super endTrackingWithTouch:touch withEvent:event];
 }
 
@@ -3172,73 +3249,82 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @implementation BlioBookSliderPreview
 
+- (id)initWithFrame:(CGRect)frame {
+	if ((self = [super initWithFrame:frame])) {
+		
+		CGFloat width, height;
+		
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+			width = kBlioBookSliderPreviewWidthPad;
+			height = kBlioBookSliderPreviewHeightPad;
+		} else {
+			width = kBlioBookSliderPreviewWidthPhone;
+			height = kBlioBookSliderPreviewHeightPhone;
+		}
+		
+		thumbImage = [[UIImageView alloc] initWithFrame:CGRectInset(self.bounds, (CGRectGetWidth(self.bounds) - width)/2.0f, (CGRectGetHeight(self.bounds) - height)/2.0f)];
+		thumbImage.contentMode = UIViewContentModeScaleAspectFit;
+		thumbImage.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+		[self addSubview:thumbImage];
+		
+		thumbImage.layer.shadowRadius = kBlioBookSliderPreviewShadowRadius;
+		thumbImage.layer.shadowOpacity = 0.7f;
+		thumbImage.layer.shouldRasterize = YES;
+		thumbImage.layer.shadowOffset = CGSizeZero;
+		thumbImage.layer.zPosition = 1000; // to raise it's shadow above the slider
+	}
+	return self;
+}
+
 - (void)dealloc {
-	[thumb release], thumb = nil;
+	[thumbImage release], thumbImage = nil;
 	[super dealloc];
 }
 
-- (void)setAlpha:(CGFloat)alpha {
-	if (thumb) {
-		[super setAlpha:alpha];
+- (void)showThumb:(BOOL)show {
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.2f];
+	if (thumbImage.image) {
+		if (show) {
+			[self setAlpha:1];
+		} else {
+			[self setAlpha:0.01f];
+		}
 	} else {
-		[super setAlpha:0];
+		[self setAlpha:0.01f];
 	}
+	[UIView commitAnimations];
+}
+
+- (CGRect)thumbBounds {
+	CGSize thumbSize = thumbImage.image.size;
+	CGFloat scale = MIN(CGRectGetWidth(thumbImage.bounds) / thumbSize.width, CGRectGetHeight(thumbImage.bounds) / thumbSize.height);
+	CGRect thumbBounds = CGRectMake(0, 0, thumbSize.width * scale, thumbSize.height * scale);
+	thumbBounds.origin.x = (CGRectGetWidth(thumbImage.bounds) - CGRectGetWidth(thumbBounds))/2.0f;
+	thumbBounds.origin.y = (CGRectGetHeight(thumbImage.bounds) - CGRectGetHeight(thumbBounds))/2.0f;
+	return thumbBounds;
 }
 
 - (void)setThumb:(UIImage *)newThumb {
-	if (newThumb != thumb) {
-		
-		[newThumb retain];
-		[thumb release];
-		thumb = newThumb;
-		
-		[self setNeedsDisplay];
-		
-	}
+	[thumbImage setImage:newThumb];
+	
+	CGMutablePathRef shadowPath = CGPathCreateMutable();
+	CGPathAddRect(shadowPath, NULL, [self thumbBounds]);
+	[thumbImage.layer setShadowPath:shadowPath];
+	CGPathRelease(shadowPath);
 }
 
-- (void)drawRect:(CGRect)rect {
-	CGContextRef ctx = UIGraphicsGetCurrentContext();
+- (void)setThumbAnchorPoint:(CGPoint)anchor {
+	CGRect thumbBounds = [self thumbBounds];
 	
-	CGRect borderRect = CGRectInset(rect, 0.5f, 0.5f);
-	CGFloat radius = 5;
+	CGPoint center = CGPointMake(anchor.x, anchor.y + kBlioBookSliderPreviewAnchorOffset + CGRectGetHeight(thumbBounds)/2.0f);
 	
-	CGContextBeginPath(ctx);
-	CGContextMoveToPoint(ctx, CGRectGetMinX(rect) + radius, CGRectGetMinY(rect));
-    CGContextAddArc(ctx, CGRectGetMaxX(borderRect) - radius, CGRectGetMinY(borderRect) + radius, radius, 3 * M_PI / 2, 0, 0);
-    CGContextAddArc(ctx, CGRectGetMaxX(borderRect) - radius, CGRectGetMaxY(borderRect) - radius, radius, 0, M_PI / 2, 0);
-    CGContextAddArc(ctx, CGRectGetMinX(borderRect) + radius, CGRectGetMaxY(borderRect) - radius, radius, M_PI / 2, M_PI, 0);
-    CGContextAddArc(ctx, CGRectGetMinX(borderRect) + radius, CGRectGetMinY(borderRect) + radius, radius, M_PI, 3 * M_PI / 2, 0);	
-    CGContextClosePath(ctx);
-	CGContextSetRGBFillColor(ctx, 0, 0, 0, 0.5f);
-	CGContextFillPath(ctx);
+	center.x = MAX(center.x, CGRectGetWidth(thumbBounds)/2.0f + kBlioBookSliderPreviewEdgeInset);
+	center.x = MIN(center.x, CGRectGetWidth(self.superview.frame) - CGRectGetWidth(thumbBounds)/2.0f - kBlioBookSliderPreviewEdgeInset);
 	
-	CGContextSetRGBStrokeColor(ctx, 1, 1, 1, 0.7f);
-	CGContextSetLineWidth(ctx, 1);
+	[thumbImage setCenter:center];
 
-	CGContextBeginPath(ctx);
-	CGContextMoveToPoint(ctx, CGRectGetMinX(rect) + radius, CGRectGetMinY(rect));
-    CGContextAddArc(ctx, CGRectGetMaxX(borderRect) - radius, CGRectGetMinY(borderRect) + radius, radius, 3 * M_PI / 2, 0, 0);
-    CGContextAddArc(ctx, CGRectGetMaxX(borderRect) - radius, CGRectGetMaxY(borderRect) - radius, radius, 0, M_PI / 2, 0);
-    CGContextAddArc(ctx, CGRectGetMinX(borderRect) + radius, CGRectGetMaxY(borderRect) - radius, radius, M_PI / 2, M_PI, 0);
-    CGContextAddArc(ctx, CGRectGetMinX(borderRect) + radius, CGRectGetMinY(borderRect) + radius, radius, M_PI, 3 * M_PI / 2, 0);	
-    CGContextClosePath(ctx);
-	CGContextStrokePath(ctx);
-	
-	CGRect insetRect = CGRectInset(rect, kBlioBookSliderPreviewPadding, kBlioBookSliderPreviewPadding);
-	
-	if (thumb) {
-		CGSize imageSize = thumb.size;
-		CGFloat scale = MIN(CGRectGetWidth(insetRect) / imageSize.width, CGRectGetHeight(insetRect) / imageSize.height);
-		CGRect scaledImage = CGRectZero;
-		scaledImage.size.width = imageSize.width * scale;
-		scaledImage.size.height = imageSize.height * scale;
-
-		scaledImage.origin.x = roundf((CGRectGetWidth(rect) - CGRectGetWidth(scaledImage)) / 2.0f);
-		scaledImage.origin.y = roundf((CGRectGetHeight(rect) - CGRectGetHeight(scaledImage)) / 2.0f);
-		
-		[thumb drawInRect:scaledImage];
-	}
 }
 
 @end

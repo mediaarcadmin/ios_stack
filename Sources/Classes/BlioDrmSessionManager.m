@@ -94,7 +94,7 @@ struct BlioDrmSessionManagerDrmIVars {
 ErrorExit:
 	if ( dr != DRM_SUCCESS ) {
 		//NSLog(@"DRM initialization error: %08X",dr);
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:[NSLocalizedStringWithDefaultValue(@"PLAYREADY_INITIALIZATION_FAILED",nil,[NSBundle mainBundle],@"There was an initialization error. Please contact Blio technical support with the error code: ",@"Alert message shown when DRM initialization fails.")
 											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
 									delegate:nil 
@@ -123,7 +123,7 @@ ErrorExit:
 ErrorExit:
 	if (dr != DRM_SUCCESS) {
 		//NSLog(@"DRM commit error: %08X",dr);
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:[NSLocalizedStringWithDefaultValue(@"REPORTING_FAILED",nil,[NSBundle mainBundle],@"There was an error in book processing. Please contact Blio technical support with the error code: ",@"Alert message shown when book reporting fails.")
 											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
 									delegate:nil 
@@ -269,7 +269,7 @@ ErrorExit:
 	}
 	
 	//NSLog(@"DRM error leaving domain: %08X", dr);
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 								 message:[NSLocalizedStringWithDefaultValue(@"DEREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to deregister device. Please contact Blio technical support with the error code: ",@"Alert message shown when device deregistration fails.")
 										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
 								delegate:nil 
@@ -374,7 +374,7 @@ ErrorExit:
 	}
 	
 	//NSLog(@"DRM error joining domain: %08X", dr);
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 								 message:[NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please contact Blio technical support with the error code: ",@"Alert message shown when device registration fails.")
 										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
 								delegate:nil 
@@ -643,7 +643,7 @@ ErrorExit:
 ErrorExit:
 	if (dr != DRM_SUCCESS) {
 		//NSLog(@"DRM bind error: %08X",dr);
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:[NSLocalizedStringWithDefaultValue(@"DECRYPTION_FAILED",nil,[NSBundle mainBundle],@"Unable to open book. Please contact Blio technical support with the error code: ",@"Alert message shown when book decryption fails.")
 											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
 									delegate:nil 
@@ -699,7 +699,7 @@ ErrorExit:
 ErrorExit:
 	if (dr != DRM_SUCCESS) {
 		//NSLog(@"DRM decryption error: %08X",dr);
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:[NSLocalizedStringWithDefaultValue(@"DECRYPTION_FAILED",nil,[NSBundle mainBundle],@"Unable to open book. Please contact Blio technical support with the error code: ",@"Alert message shown when book decryption fails.")
 											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
 									delegate:nil 

@@ -148,7 +148,7 @@
 		7D3637711238F534002BDD2B /* EucPageTurningView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D36376F1238F534002BDD2B /* EucPageTurningView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3637921238F889002BDD2B /* THOpenGLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3637911238F889002BDD2B /* THOpenGLUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3AED52114963560059C5B6 /* EucCSSInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341471149602300C318E7 /* EucCSSInternal.h */; };
-		7D3AED53114963560059C5B6 /* EucCSSInternal.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341461149602300C318E7 /* EucCSSInternal.c */; };
+		7D3AED53114963560059C5B6 /* EucCSSInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2341461149602300C318E7 /* EucCSSInternal.m */; };
 		7D3AED54114963560059C5B6 /* LWCNSStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */; };
 		7D3AED55114963560059C5B6 /* LWCNSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23416B1149602300C318E7 /* LWCNSStringAdditions.m */; };
 		7D3AED5E114963560059C5B6 /* EucCSSDocumentTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D2341411149602300C318E7 /* EucCSSDocumentTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -488,7 +488,6 @@
 		7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		7DCA57DC11498328007EDB15 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2F1149667300C003BB /* Cocoa.framework */; };
-		7DCF831B114E64A400603379 /* EucCSS.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DCF8314114E646C00603379 /* EucCSS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
 		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
 		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
@@ -955,7 +954,7 @@
 		7D2341431149602300C318E7 /* EucCSSDocumentTree_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTree_Package.h; sourceTree = "<group>"; };
 		7D2341441149602300C318E7 /* EucCSSDocumentTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTreeNode.h; sourceTree = "<group>"; };
 		7D2341451149602300C318E7 /* EucCSSDocumentTreeNodeKind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTreeNodeKind.h; sourceTree = "<group>"; };
-		7D2341461149602300C318E7 /* EucCSSInternal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = EucCSSInternal.c; sourceTree = "<group>"; };
+		7D2341461149602300C318E7 /* EucCSSInternal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSInternal.m; sourceTree = "<group>"; };
 		7D2341471149602300C318E7 /* EucCSSInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSInternal.h; sourceTree = "<group>"; };
 		7D2341521149602300C318E7 /* EucCSSIntermediateDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSIntermediateDocument.h; sourceTree = "<group>"; };
 		7D2341531149602300C318E7 /* EucCSSIntermediateDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSIntermediateDocument.m; sourceTree = "<group>"; };
@@ -1236,8 +1235,6 @@
 		7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorAccessibilityMask.m; sourceTree = "<group>"; };
 		7DCA57B1114981FC007EDB15 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		7DCA5804114985C7007EDB15 /* pg103.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pg103.epub; sourceTree = "<group>"; };
-		7DCF826E114E5D0800603379 /* EucCSSLayouter_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayouter_Package.h; sourceTree = "<group>"; };
-		7DCF8314114E646C00603379 /* EucCSS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSS.h; sourceTree = "<group>"; };
 		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7DD48E5410C2E42C0001203D /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin9/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7DD48E5810C2E44F0001203D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -2202,9 +2199,8 @@
 		7D2340F51149602200C318E7 /* CSS */ = {
 			isa = PBXGroup;
 			children = (
-				7DCF8314114E646C00603379 /* EucCSS.h */,
 				7D2341471149602300C318E7 /* EucCSSInternal.h */,
-				7D2341461149602300C318E7 /* EucCSSInternal.c */,
+				7D2341461149602300C318E7 /* EucCSSInternal.m */,
 				7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */,
 				7D23416B1149602300C318E7 /* LWCNSStringAdditions.m */,
 				7DF4A34911EF839C00F6A4DD /* EucLibCSSUtils.h */,
@@ -2253,7 +2249,6 @@
 			isa = PBXGroup;
 			children = (
 				7D2341601149602300C318E7 /* EucCSSLayouter.h */,
-				7DCF826E114E5D0800603379 /* EucCSSLayouter_Package.h */,
 				7D2341611149602300C318E7 /* EucCSSLayouter.mm */,
 				7D79D070117F75C90081F554 /* EucCSSLayoutRunExtractor.h */,
 				7D79D071117F75C90081F554 /* EucCSSLayoutRunExtractor.m */,
@@ -2831,7 +2826,6 @@
 				7D3AED78114963560059C5B6 /* EucCSSRenderer.h in Headers */,
 				7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */,
 				7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */,
-				7DCF831B114E64A400603379 /* EucCSS.h in Headers */,
 				7D79D072117F75C90081F554 /* EucCSSLayoutRunExtractor.h in Headers */,
 				7DF4A38711F057C300F6A4DD /* EucLibCSSUtils.h in Headers */,
 			);
@@ -3463,7 +3457,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D3AED53114963560059C5B6 /* EucCSSInternal.c in Sources */,
+				7D3AED53114963560059C5B6 /* EucCSSInternal.m in Sources */,
 				7D3AED55114963560059C5B6 /* LWCNSStringAdditions.m in Sources */,
 				7D3AED5F114963560059C5B6 /* EucCSSDocumentTree.m in Sources */,
 				7D3AED64114963560059C5B6 /* EucCSSIntermediateDocument.m in Sources */,

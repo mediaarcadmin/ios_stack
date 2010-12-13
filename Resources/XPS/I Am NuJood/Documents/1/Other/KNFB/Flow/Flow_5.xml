@@ -1,0 +1,251 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page22" xml:space="preserve"/>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page23" xml:space="preserve"/>
+      <Image Source="/Resources/38f00636-57e2-420d-a56a-7daba2a45362.jpg" Stretch="Uniform" Width="186" Height="94" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Figure HorizontalAnchor="ColumnLeft" HorizontalOffset="16" VerticalOffset="0" CanDelayPlacement="False" Height="42.6318367346939" Margin="0,0,1,0" Padding="0,0,0,0" TextAlignment="Justify" FontFamily="Charis SIL" FontSize="50" Tag="KNFBDropCap">
+        <Paragraph LineHeight="50" LineStackingStrategy="BlockLineHeight">
+          <Run FontFamily="Charis SIL" FontSize="50" Tag="__12">I</Run>
+        </Paragraph>
+      </Figure>
+      <Run Tag="__12">n Khardji, the village where I was born, women are not taught how to make choices. When she was about sixteen, Shoya, my mother, married my father, Ali Mohammad al-Ahdel, without a word of protest. And when he decided four years later to enlarge the family by choosing a second wife, my mother obediently accepted his decision.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__12">It was with that same resignation that I at first agreed to my marriage, without realizing what was at stake. At my age, you don&#x2019;t ask yourself many questions.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__12">One day, in all innocence, I had asked Omma&#x2014;Mama&#x2014;a question.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__12">&#x201C;How are babies made?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__12">&#x201C;You&#x2019;ll find out when you&#x2019;re older,&#x201D; she&#x2019;d replied, sweeping away my question with a wave of her hand.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page24">So I&#x2019;d simply put my childish curiosity back in the cupboard and gone out to play in the garden with my brothers and sisters. Our favorite game was hide-and-seek, and the valley of Wadi La&#x2019;a, in the northern Yemeni province of Hajja, offered a wealth of hiding places where we could easily conceal ourselves: tree trunks, big rocks, caves carved out by time. When we were breathless from too much running around, we&#x2019;d dive into the cool grass to be soothed by our little nests of greenery, where the sun caressed our skin and tanned our already dusky cheeks. Rested and refreshed, we&#x2019;d amuse ourselves further by chasing the chickens and teasing the donkeys with sticks.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts3a">My mother bore sixteen children. For her, each pregnancy was a real challenge. She mourned three miscarriages in silence, and she lost one of her babies at birth. And because there was no doctor, four of my brothers and sisters, whom I never knew, died of illness between the ages of </Run>
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_nts_r1.htm#nts3">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts3a">two months and four years</Run>
+      </Hyperlink>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts3a">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__13">Omma gave birth to me the way she delivered all her children: at home, lying on a woven mat, sweating, suffering terribly, and begging God to protect her newborn.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__13">Now and then, to satisfy my curiosity, she would speak to me of my arrival.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page25">&#x201C;You were a long time coming out. The contractions began in the middle of the night, at around two in the morning. And the birth lasted a good half day, in midsummer, in withering heat. It was a Friday, a holy day.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__13">But even if I&#x2019;d been born on an ordinary weekday, it wouldn&#x2019;t have made much difference. There was never any question of Omma giving birth in a hospital. Our village was all the way at the end of the valley, far from any medical facilities, and Khardji was only five little stone houses without any grocery store, garage, barber, city hall, or even a mosque. There was no way to get there except by mule. Only a few brave pickup drivers dared take the rocky path along the edge of the ravine, a road so bad they had to change their tires every two months. So imagine the scene if my mother had chosen to go to the hospital: she would have given birth right out in the open! Omma says that even the mobile medical clinics never risked trying to reach Khardji.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__13">Whenever she was worn out by my questions and forgot to tell me the end of my story, I would spur Omma on.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__13">&#x201C;But then who acted as nurse in our house?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page26">&#x201C;Well, luckily, your big sister Jamila was there. As always, she was the one who helped me cut the cord, with a kitchen knife. Then she gave you your first bath, before wrapping you in a cloth. Nujood is a Bedouin name, people say, and it was your grand father Jad who gave it to you.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__13">&#x201C;Omma, was I born in June or July? Or right in the middle of August?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__13">This is the point at which Omma usually begins to get testy.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__14">&#x201C;Nujood, when are you going to stop pestering me like this?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__14">And that puts an end to my questions.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__14">Actually, she stops answering me because she doesn&#x2019;t know what to say, since my name does not appear in any way in the official registers. Out in the countryside, people have bushels of babies without bothering with identity cards. As for the year of my birth, who knows? By deduction, my mother says today that I must be around ten, but I could just as well be eight or nine. Sometimes, when I&#x2019;m persistent, Omma undertakes a careful calculation to try to establish the birth order of her children. For her reference points she uses the seasons, the deaths of relatives, the marriages of certain cousins, the times we moved house, and so on. It&#x2019;s a real feat of mental acrobatics.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page27">And so, after an accounting much more complicated than when she goes to the corner grocery store in Sana&#x2019;a, she deduces each time that Jamila is the oldest child, followed by Mohammad, the first boy (and &#x201C;second man&#x201D; of the family, the one who has the power of decision right after my father). Next are Mona the mysterious and Fares the impetuous. And then me, followed by my &#x201C;pet&#x201D; sister, Ha&#xEF;fa, who&#x2019;s almost as tall as I am. Finally, Morad, Abdo, Assil, Khaled, and the last little girl, Rawdha with the curly hair. As for Dowla, my &#x201C;aunt&#x201D; (and my father&#x2019;s second wife, who is also one of his distant cousins), she has five children.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__14">&#x201C;Omma&#x2019;s a good laying hen,&#x201D; Mona often says with a laugh when she feels like teasing our mother, and I remember waking up more than once in the morning to find a newborn baby in Omma&#x2019;s bed for her to cluck over. She&#x2019;ll never stop.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__14">Omma does remember, however, being visited once by the representative of an association called &#x201C;family planning.&#x201D; They gave her a prescription for tablets to keep her from getting pregnant, and she took them from time to time, on days when she remembered them. One month later, though, to her great surprise, her belly began to swell again, and she decided that such was life: sometimes you cannot go against nature.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,16" TextAlignment="Center" FontFamily="Charis SIL" FontSize="16">
+      <Image Source="/Resources/55832ac8-9b14-444c-baf4-73342eb8a897.jpg" Stretch="Uniform" Width="60" Height="20" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page28">Khardji is well named. In Arabic, </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page28">khardji</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page28"> means &#x201C;outside&#x201D;&#x2014;in other words, at the ends of the earth. Most geographers don&#x2019;t even take the trouble to put this microscopic place on any maps. Let&#x2019;s just say that Khardji is not too far from Hajja, an important city in northwestern Yemen, to the north of Sana&#x2019;a. Traveling between this tiny lost locality and the capital requires at least four hours on paved road, and the same again over sand and rubble. When my brothers used to set out in the morning for classes, they walked for a good two hours to reach the school, which was in a larger village in the valley. School was reserved for them, since my father, a very protective man, considered girls too fragile and vulnerable to venture out alone on those almost deserted paths where danger lurked behind every cactus. Besides, neither he nor my mother knew how to read or write, so they didn&#x2019;t really see any need for their girls to learn, either. Out in the countryside, most of the women are illiterate.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page29">So I grew up in the school of the great outdoors, watching Omma take care of the house and itching for the day I would be old enough to tag along with my two big sisters, Jamila and Mona, when they left to fetch water from the spring in little yellow jerry cans. The climate in Yemen is so dry that everyone must drink several liters of water every day to avoid dehydration. As soon as I learned to walk, the river became one of my chief haunts. It flowed past only a few yards below the house, and was quite useful to us: Omma did our laundry there, and rinsed out the cooking pots after every meal in its clear waters. After the men left for the fields in the morning, the women went to the river to wash in the shade of the tall trees. On stormy days, we&#x2019;d take refuge at home from the lightning and rain, but as soon as the sun&#x2019;s rays broke through the clouds again, we children would dash back to the river, now swollen with water that came up to my neck. To keep its banks from overflowing, my brothers would build little dikes to channel its current.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__16">On their way home from school, the boys would gather branches to feed the fire for the tandoor, the traditional cylindrical clay oven in which we cooked </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__16">khobz</Run>
+      <Run Tag="__16">, our Yemeni bread. My older sisters were experts in the preparation of these crusty flatbreads, which we sometimes drizzled with honey, &#x201C;the gold of Yemen,&#x201D; as the grown-ups say. The honey of our region is especially famous, and my father had several beehives he cared for with astonishing tenderness. Omma never tired of telling us that honey was good for the health and provided energy.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page30">Supper was traditionally eaten around a </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page30">sofrah</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page30">, a large cloth spread out on the floor, which many Arab Muslims use instead of a table at mealtime. As soon as Omma had set down the piping-hot stewpot full of </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page30">salta</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page30">, a spicy ragout of beef or mutton in an aromatic fenugreek sauce, we would plunge in our hands to roll up little balls of rice and meat that swiftly vanished down our throats. By imitating our parents, we learned to eat straight from the serving dishes. No plates, no forks, no knives: that&#x2019;s how we eat in the villages of Yemen.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__16">Now and then Omma would take us to the market held every Saturday in the heart of the valley, and for us, this was a major excursion. We&#x2019;d go there on donkeys to stock up on provisions. If the sun beat down too harshly, Omma would wear a straw hat over the black veil that covered a good part of her face. She looked like a sunflower!</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page31">We were living rather happily, to the rhythm of the sun. It was a simple life, but peaceful, without electricity or running water. Off behind a bush, the toilet was just a hole within low brick walls. Decorated modestly with a few cushions lying on the floor, the main room of our home turned into a bedroom at night. To go from one room to another, we had to cross the central courtyard, which became our living room in the summer, adapting itself to all our family&#x2019;s needs. Omma would set up an outdoor kitchen there, simmering </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page31">salta</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page31">s on the wood fire while she nursed the youngest children. My brothers would study the alphabet out in the fresh air. We girls would take naps on a mattress of straw.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">My father was not often at home. He usually rose at first light to take his animals out to graze. He had eighty sheep and four cows, which gave us enough milk to make butter, yogurt, and soft white cheese. Whenever he went to visit our next-door neighbors, he always wore a brown jacket over his </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">zanna</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a"> and a ceremonial dagger called a </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">jambia</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a"> at his belt. The men of my country all wear this sharp, hand-decorated dagger, which is said to be a symbol of authority, manhood, and prestige in Yemeni society. And it&#x2019;s true that it gave our father a certain self-assurance, a noticeable dash of style. I was proud of my Aba. But as I understand it, these weapons are more than simple decoration, since everyone wants to be the one wearing the handsomest </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">jambia</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">. And their cost varies, depending on whether the handle is made of plastic, ivory, or </Run>
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_nts_r1.htm#nts4">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">real rhinoceros horn</Run>
+      </Hyperlink>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">. According to the codes of our tribal culture, it is forbidden to use these daggers in self-defense or to attack an adversary during an argument. On the contrary: the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">jambia</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a"> may be used to help resolve conflicts and is, above all, a symbol of tribal justice. My father </Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page32" xml:space="preserve"/>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a">would never have imagined he would ever need his, until that unlucky day when we were forced to flee our village within twenty-four hours.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page33">I was between two and three years old when the scandal broke out. The circumstances were most unusual: Omma was in the capital, Sana&#x2019;a, for health problems, and for reasons surely related to her absence&#x2014;the details of which were unknown to me at the time&#x2014;a violent dispute broke out between my father and the other villagers in Khardji. During the arguments, my sister Mona&#x2019;s name kept coming up. It was then decided to resolve the conflict in the tribal manner, by placing </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page33">jambia</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page33">s and bundles of rial notes between the protagonists, but the discussion degenerated and, in an exceptional breach of protocol, blades were drawn. The other villagers accused my family of having trampled the honor of Khardji and stained its reputation. My father was beside himself. He felt swindled, demeaned by those he had thought were his friends. All I knew was that Mona, the second daughter of our family and thirteen years old at most, had suddenly gotten married. What, exactly, had happened? I was too little to understand. One day, I would find out, but at the time I knew only that we had to leave right away&#x2014;and leave everything behind: sheep, cows, chickens, bees, and our memories of what I had thought was a small corner of paradise.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__18">Our arrival in Sana&#x2019;a was quite a shock. The capital was a blur of dust and noise that was hard to get used to.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__18">The contrast between the green Wadi La&#x2019;a valley and the barrenness of the sprawling city was brutal, because outside the ancient heart of the city, with its lovely traditional adobe houses, their windows outlined in lacy white designs, the urban landscape becomes a vulgar confusion of dismal concrete buildings. Out in the street, I was exactly on a level with all the exhaust pipes belching diesel fumes, which made my throat sore. There were hardly any parks where we children could run and play, and you had to buy tickets to most of the amusement parks, so only rich people went there.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page34">We moved into the ground floor of a slum building on a garbage-strewn alley in the neighborhood of Al-Qa. Aba was depressed. He hardly spoke. He had lost his appetite. How could a simple illiterate peasant without a diploma hope to support his family in this capital, already collapsing under its burden of unemployed people? Other villagers had already come to seek their fortunes here only to run into a wall of problems. Some men had been reduced to sending their wives and children to beg for coins in public squares. By knocking on doors, my father finally landed a job as a sweeper for the local sanitation authority, at a salary that barely paid our rent, and whenever we were late with that, our landlord would shout angrily at us. Omma would weep, and no one could sweeten her sadness.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page35">When he was twelve years old, Fares, the fourth child in the family, began to want the things all boys long for at his age. Every day he&#x2019;d demand money to go buy himself candies, stylish trousers, and new shoes like the ones we saw in billboard advertisements. Beautiful, brand-new shoes that would have cost our father more than a month&#x2019;s salary! Jolly and rambunctious by nature, Fares kept demanding more and more, and even began to threaten my parents, telling them he would run away if they didn&#x2019;t manage to satisfy his cravings. He was a show-off, true, but he was still my favorite brother. At least he didn&#x2019;t hit me like Mohammad, my eldest brother, who acted like the head of the family. I admired Fares for his ambition, his energy, his way of standing up to everyone without worrying about their reactions. He made choices and stuck to them, even if he had to take on the entire family. One day, after an argument with our father, he left the house and did not come back.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__19">For the first time in my life, I saw Aba cry. To drown his sorrow, he began going off for long hours to chew khat with some old acquaintances, and wound up losing his job. Omma started having bad dreams, and in the main room where we children slept by her side on little mattresses laid on the floor, I was awakened several times in the middle of the night by her sobbing. She was suffering, and it showed.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__19">Fares had gone without leaving a trace, except for one tiny thing: an identity photo, in color, which Mohammad kept carefully in the deepest part of his wallet. No doubt about it&#x2014;it was Fares in the snapshot: with head held high, a white turban planted on his curly brown hair (to make him look &#x201C;grown-up,&#x201D; no doubt), he stared right at the camera with a naughty, twinkling eye.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__19">And then, two years after his flight, we received an unexpected phone call, the first sign of life.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__19">&#x201C;Saudi Arabia,&#x201D; we heard at the other end of the line. &#x201C;Everything&#x2019;s fine. &#x2026; Shepherd, I&#x2019;m working as a shepherd. &#x2026; Don&#x2019;t worry about me. &#x2026;&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page36">His voice had changed&#x2014;he sounded more confident&#x2014;but I recognized him right away. But the line, crackling with static, quickly went dead. How had Fares wound up so far away? What city was he actually in? Had he been lucky enough to take a plane, flying up into the clouds? And exactly where was Saudi Arabia, anyway? Was there any seashore where he was? I had so many questions. I overheard Aba, Omma, and Mohammad speculating that Fares had been the </Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts5a" xml:space="preserve"/>
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_nts_r1.htm#nts5">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page36">object of child trafficking</Run>
+      </Hyperlink>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page36">, which is supposedly rather frequent in Yemen. Did that mean he had found some adoptive parents? Perhaps he was happy after all, and could finally buy himself the candy and blue jeans he wanted so much. As for me, I missed him terribly.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">To help me forget his loss, I withdrew into my dreams. Dreams of water&#x2014;not of rivers, but the ocean. I&#x2019;ve always wanted to be like a sea turtle so that I could stick my head underwater. I have never seen the sea. With my colored pencils, I would draw waves in my little notebook. I imagined they were green or blue.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;They&#x2019;re blue,&#x201D; my girlfriend Malak informed me one day, looking over my shoulder.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page37">Malak and I had become inseparable. I had met her in the Al-Qa neighborhood school, where my parents had finally agreed to register me. During recess, we often played marbles. Out of the seventy pupils&#x2014;all girls&#x2014;crammed into the classroom, she was my best friend. I&#x2019;d done very well there my first year, and had just begun my second. Malak would stop by in the morning to get me and we&#x2019;d go off to school together.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;Blue? How would you know?&#x201D; I asked her.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;For vacation my parents take me to Al-Hudaydah. It&#x2019;s by the Red Sea.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;What does the water taste like?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;It&#x2019;s salty.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;And the sand&#x2014;it&#x2019;s blue, too?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;No, it&#x2019;s yellow, and it&#x2019;s so, so soft, if you only knew. &#x2026;&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;And what&#x2019;s in the sea?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">&#x201C;Boats, fish, and people swimming.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__20">Malak told me that she&#x2019;d learned to swim there. I had never even dipped my toe into a kiddie pool, so I was fascinated. No matter how hard I tried to understand how she managed to stay on the surface of the water, I could never figure out that mystery. All I remembered is that in Khardji, Omma would always shout a warning at me when I went too near the river: &#x201C;Watch out&#x2014;if you fall in, you&#x2019;ll sink!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page38">Malak said that her mother had bought her a bathing suit in pretty colors, and that she herself could even build sand castles with turrets and grand staircases that then melted away into the waves. One day she held a big shell she&#x2019;d brought back from Al-Hudaydah up against my ear.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__21">&#x201C;Listen, and you&#x2019;ll hear the sea.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__21">&#x201C;The waves, oh, I hear the waves!&#x201D; I yelped. &#x201C;It&#x2019;s unbelievable!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__21">To me, water was, above all, rain, which is becoming very scarce in Yemen. Sometimes we would be startled by hail in the middle of summertime. What happiness! We children would dash into the street to collect the little hailstones in a basin. I&#x2019;d count them proudly, because at school I had learned to count from one to a hundred. When the ice had melted, we&#x2019;d have fun sprinkling the cold water onto our faces to cool off. Mona had been fairly glum since coming to live with us in Sana&#x2019;a two months after our hasty departure from Khardji, but even she would sometimes join us in our revelry after those extraordinary hailstorms.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page39">Mona had arrived with the husband who had so suddenly imposed himself on her life, and as the years went by, she gradually recovered her natural smile, her mocking air, and the sense of humor that so often exasperated Omma. Mona brought two pretty babies into the world, Monira and Nasser, who filled her with joy. Our family and her husband&#x2019;s wound up growing closer, and to reinforce this union, they talked about marrying my big brother Mohammad to one of his brother-in-law&#x2019;s sisters, following </Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts6a" xml:space="preserve"/>
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_nts_r1.htm#nts6">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page39">the tradition of </Run>
+        <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page39"><Run.TextDecorations><TextDecorationCollection/></Run.TextDecorations>sighar</Run>
+      </Hyperlink>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page39">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__21">But it was too good to last. One day, Mona&#x2019;s husband vanished from the scene, and so did my big sister Jamila. Had they, like Fares, run away in the hope of making their fortune in Saudi Arabia, and perhaps bringing us back some electronic toys or a color television? In my parents&#x2019; room, there was much whispering about the two of them, but we children were strictly forbidden to ask any questions. I remember only that right after their mysterious disappearance, which I would come to understand only much later, Mona became capricious and moody again. Most of the time she was melancholy and depressed; then, all of a sudden, she would burst into laughter that would revive her natural beauty, enhancing her big brown eyes and delicate features. Mona really possessed lots of charm.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page40">Whether she was having a good day or a bad one, though, Mona was always particularly sweet to me, even protective&#x2014;sort of a maternal instinct. Sometimes she&#x2019;d take me with her to window-shop on Hayle Avenue, famous for its clothing stores. Gazing enviously at the window displays, I admired the sequined evening gowns, the red skirts, the silk blouses in blue, violet, yellow, and green. I imagined that I was changed into a princess. There were even wedding dresses, which looked like movie costumes or magical fairy-tale gowns. So beautiful. The stuff of dreams.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__22">One February evening in 2008, when I&#x2019;d just gotten home, Aba told me he had some good news.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__22">&#x201C;Nujood, you are about to be married.&#x201D;</Run>
+    </Paragraph>
+  </Section>
+</Flow>

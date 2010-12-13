@@ -18,14 +18,20 @@
 #import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookManager.h"
-#import <unistd.h>
 #import "BlioImportManager.h"
+#import "BlioBook.h"
+#import "BlioBookViewController.h"
+#import "BlioDefaultViewController.h"
+#import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/THUIDeviceAdditions.h>
 
-static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
+@interface BlioAppAppDelegate ()
 
-@interface BlioAppAppDelegate (private)
-- (NSString *)dynamicDefaultPngPath;
+- (void)saveBookSnapshotIfAppropriate;
+
+@property (nonatomic, assign) BOOL delayedDidFinishLaunchingLaunchComplete;
+@property (nonatomic, retain) NSMutableArray *delayedURLOpens;
+
 @end
 
 @implementation BlioAppAppDelegate
@@ -36,195 +42,96 @@ static NSString * const kBlioInBookViewDefaultsKey = @"inBookView";
 @synthesize networkStatus;
 @synthesize internetReach;
 
+@synthesize delayedDidFinishLaunchingLaunchComplete;
+@synthesize delayedURLOpens;
+
+
 #pragma mark -
 #pragma mark Application lifecycle
 
-//- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions { // returning YES *should* call application handleOpenURL, but for some reason, that is not being called on iOS < 4.0... hence, we use the older method until 3.x compatibility is retired.
--(void)applicationDidFinishLaunching:(UIApplication *)application {
-//	if (launchOptions) {
-//		NSLog(@"launchOptions: %@",launchOptions);		
-//	}
-	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-	NSError * audioError = nil;
-	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError];
-	if (audioError) {
-		NSLog(@"[ERROR: could not set AVAudioSessionCategory with error: %@, %@", audioError, [audioError userInfo]);
-	}
+- (void)ensureCorrectCertsAvailable {
+    // Copy DRM resources to writeable directory.
+	NSError* err;	
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
 	
-	NSArray * applicationSupportPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    NSString *applicationSupportPath = ([applicationSupportPaths count] > 0) ? [applicationSupportPaths objectAtIndex:0] : nil;
+	NSString* wmModelCertFilename = @"devcerttemplate.dat";
+	NSString* prModelCertFilename = @"iphonecert.dat";
+	
+	NSString* sourceDir = [[NSBundle mainBundle] resourcePath];
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		sourceDir = [sourceDir stringByAppendingPathComponent:@"DRM-iPad"];
+    } else {
+        sourceDir = [sourceDir stringByAppendingPathComponent:@"DRM"];
+    }
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSString* rsrcWmModelCert = [sourceDir stringByAppendingPathComponent:wmModelCertFilename]; 
+    NSString* docsWmModelCert = [documentsDirectory stringByAppendingPathComponent:wmModelCertFilename];
+	[fileManager copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
+    
+	NSString* rsrcPRModelCert = [sourceDir stringByAppendingPathComponent:prModelCertFilename]; 
+	NSString* docsPRModelCert = [documentsDirectory stringByAppendingPathComponent:prModelCertFilename];
+	[fileManager copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];    
+}
 
-	BOOL isDir;
+- (void)ensureApplicationSupportAvailable {    
+	NSArray *applicationSupportPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *applicationSupportPath = ([applicationSupportPaths count] > 0) ? [applicationSupportPaths objectAtIndex:0] : nil;
+    
+    BOOL isDir;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:applicationSupportPath isDirectory:&isDir] || !isDir) {
 		NSError * createApplicationSupportDirError = nil;
 		if (![[NSFileManager defaultManager] createDirectoryAtPath:applicationSupportPath withIntermediateDirectories:YES attributes:nil error:&createApplicationSupportDirError]) {
 			NSLog(@"ERROR: could not create Application Support directory in the Library directory! %@, %@",createApplicationSupportDirError, [createApplicationSupportDirError userInfo]);
 		}
 		else NSLog(@"Created Application Support directory within Library...");
-	}
-	
-    // Override point for customization after app launch   
-	//[window addSubview:[navigationController view]];
-
-    // TODO - update this with a proper check for TTS being enabled
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTTSEnabledDefaultsKey];
-    
-    NSString *dynamicDefaultPngPath = [self dynamicDefaultPngPath];
-    NSData *imageData = [NSData dataWithContentsOfFile:dynamicDefaultPngPath];
-    
-    // After loading the image data, but before decoding it, remove it from 
-    // the filesystem in case the PNG is corrupt.
-    unlink([dynamicDefaultPngPath fileSystemRepresentation]);
-    
-//    if(!imageData) {
-//		NSLog(@"No Dynamic PNG data available, showing image of library view...");
-//        imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"LibraryGridViewController.png"]];
-//    }
-//    
-//    UIImage *dynamicDefaultImage = [UIImage imageWithData:imageData];
-//    if(!dynamicDefaultImage) {
-//        NSLog(@"Could not load dynamic default.png");
-//    } else {
-//        window.backgroundColor = [UIColor colorWithPatternImage:dynamicDefaultImage];
-//    }
-
-	[window addSubview:[navigationController view]];
-    [window sendSubviewToBack:[navigationController view]];
-    window.backgroundColor = [UIColor blackColor];
-	
-	// Rotates the view.
-	CGAffineTransform transform = CGAffineTransformIdentity;
-    
-    UIScreen *screen = [UIScreen mainScreen];
-    NSString *uiScaleAdditionString = @"";
-    if([screen respondsToSelector:@selector(scale)]) {
-        CGFloat scale = [screen scale];
-        if(scale != 1.0f) {
-            uiScaleAdditionString = [NSString stringWithFormat:@"@%ldx", (long)scale]; 
-        }
-    }
-    
-tryAgain:
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-//		if ( ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft) || ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) )
-//		{
-//			NSLog(@"Using landscape image");
-//			imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Default-Landscape%@.png", uiScaleAdditionString]]];
-//			transform = CGAffineTransformMakeRotation(3.14159/2);
-//		}
-//		else
-//		{
-//			NSLog(@"Using portrait image");
-//			imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Default-Portrait%@.png", uiScaleAdditionString]]];
-//		}
-		imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Default-Portrait%@.png", uiScaleAdditionString]]];
-	} else {
-		imageData = [NSData dataWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Default%@.png", uiScaleAdditionString]]];
-	}
-        
-    if(!imageData && ![uiScaleAdditionString isEqualToString:@""]) {
-        // If we didn't find a good image to use, try again with no scale factor.
-        // Sorry about the goto, seemed clearer than other ways...
-        uiScaleAdditionString = @"";
-        goto tryAgain;
-    }
-
-    realDefaultImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:imageData]];
-    realDefaultImageView.frame = window.bounds;
-    realDefaultImageView.contentMode = UIViewContentModeScaleToFill;
-    realDefaultImageView.transform = transform;
-    [window addSubview:realDefaultImageView];
-    [window makeKeyAndVisible];
-
-	self.internetReach = [Reachability reachabilityForInternetConnection];
-	self.networkStatus = [self.internetReach currentReachabilityStatus];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
-	[self.internetReach startNotifer];
-	
-    NSPersistentStoreCoordinator *psc = [self persistentStoreCoordinator];
-	NSManagedObjectContext *moc = [self managedObjectContext];
-
-    BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
-    bookManager.persistentStoreCoordinator = psc;
-    bookManager.managedObjectContextForCurrentThread = moc; // Use our managed object contest for calls that are made on the main thread.
-    
-    libraryController.managedObjectContext = moc;
-    libraryController.processingDelegate = self.processingManager;
-
-	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
-
-	// Copy DRM resources to writeable directory.
-	NSError* err;	
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectory = [[paths objectAtIndex:0] stringByAppendingString:@"/"];
-	
-	NSString* wmModelCertFilename = @"devcerttemplate.dat";
-	NSString* prModelCertFilename = @"iphonecert.dat";
-	
-	NSString* sourceDir = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/"];
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) 
-		sourceDir = [sourceDir stringByAppendingString:@"DRM/"];
-	
-	NSString* rsrcWmModelCert = [sourceDir stringByAppendingString:wmModelCertFilename]; 
-	NSString* docsWmModelCert = [documentsDirectory stringByAppendingString:wmModelCertFilename];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
-	NSString* rsrcPRModelCert = [sourceDir stringByAppendingString:prModelCertFilename]; 
-	NSString* docsPRModelCert = [documentsDirectory stringByAppendingString:prModelCertFilename];
-	[[NSFileManager defaultManager] copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];
-
-    [self performSelector:@selector(delayedApplicationDidFinishLaunching:) withObject:application afterDelay:0];
-    
-    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-		
-//	return YES;
+	}    
 }
 
--(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-	NSLog(@"opened app with URL: %@",[url absoluteString]);
-	
-//	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-//								 message:[NSString stringWithFormat:@"handleOpenURL: %@",[url absoluteString]]
-//								delegate:nil
-//					   cancelButtonTitle:@"OK"
-//					   otherButtonTitles:nil];
-	
-	if ([url isFileURL]) {
-		NSString * file = [url path]; 
-		if ([file.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-			[[BlioImportManager sharedImportManager] importBookFromFilePath:file];
-			return YES;
+- (void)ensureTTSAvailable {
+ 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];
+    
+	BOOL isDir;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:voicesPath isDirectory:&isDir] || !isDir) {
+		NSError * createTTSDirError = nil;
+		if (![[NSFileManager defaultManager] createDirectoryAtPath:voicesPath withIntermediateDirectories:YES attributes:nil error:&createTTSDirError]) {
+			NSLog(@"ERROR: could not create TTS directory in the Application Support directory! %@, %@",createTTSDirError, [createTTSDirError userInfo]);
 		}
+		else NSLog(@"Created TTS directory within Application Support...");
+	}    
+    
+#ifdef DEMO_MODE
+	
+    NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
+	NSString *manualVoiceCopyPath = 
+	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:manualVoiceCopyPath] && ![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath]) {
+		NSError * manualVoiceCopyError = nil;
+		if (![[NSFileManager defaultManager] copyItemAtPath:manualVoiceCopyPath toPath:manualVoiceDestinationPath error:&manualVoiceCopyError]) 
+			NSLog(@"ERROR: could not manually copy the Heather voice directory to the Documents/TTS directory! %@, %@",manualVoiceCopyError, [manualVoiceCopyError userInfo]);
+		else NSLog(@"Copied Heather into TTS directory...");
 	}
-	return NO;
-}
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40200
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-//	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-//								 message:[NSString stringWithFormat:@"openURL: %@",[url absoluteString]]
-//								delegate:nil
-//					   cancelButtonTitle:@"OK"
-//					   otherButtonTitles:nil];
-	return [self application:application handleOpenURL:url];
-}
-
+    
 #endif
+	
+	NSLog(@"voicesPath: %@",voicesPath);
+	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];    
+}
 
--(void)loginDismissed:(NSNotification*)note {
-	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
-	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-		}
-		else {
-			//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-			//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Archive. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Archive. In the meantime, previously synced books will display.")]
-			//										delegate:self
-			//							   cancelButtonTitle:@"OK"
-			//							   otherButtonTitles:nil];			
-		}
-	}
+- (BOOL)canOpenURL:(NSURL *)url {
+    if ([url isFileURL]) {
+		NSString * file = [url path]; 
+		if ([file.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame ||
+            [file.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame || 
+            [file.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+            return YES;
+        } 
+    }
+    return NO;            
 }
 
 static void *background_init_thread(void * arg) {
@@ -265,38 +172,120 @@ static void *background_init_thread(void * arg) {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
 }
 
-- (void)delayedApplicationDidFinishLaunching:(UIApplication *)application {
+- (void)setUpDefaultImage
+{
+    realDefaultImageViewController = [[BlioDefaultViewController alloc] initWithNibName:nil bundle:nil];
+    [self.window addSubview:realDefaultImageViewController.view];
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // The idea here is to do as little as possible and load the faded book page very quickly.
+    // We'll properly do everything else (including ap setup, loading the NIB etc). in 
+    // -delayedApplicationDidFinishLaunching.
+    
+    self.window = [[[THEventCapturingWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    [self setUpDefaultImage];
+    [window makeKeyAndVisible];    
+    
+    
+    [self performSelector:@selector(delayedApplicationDidFinishLaunchingStep1:) withObject:application afterDelay:0];
+    
+    NSURL *launchURL = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
+    if(launchURL) {
+        BOOL canOpen = [self canOpenURL:launchURL];
+        if(canOpen) {
+            if([[UIDevice currentDevice] compareSystemVersion:@"4"] == NSOrderedAscending) {
+                // There's a bug in < 4.0 that prevents handleOpenURL being  
+                // called automatically.
+                [self application:application handleOpenURL:launchURL];
+            }
+            return YES;
+        }
+        return NO;
+    }    
+    return YES;
+}
+
+-(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+	//NSLog(@"opened app with URL: %@",[url absoluteString]);
+	//[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+	//							 message:[NSString stringWithFormat:@"handleOpenURL: %@",[url absoluteString]]
+    //                          delegate:nil
+	//				   cancelButtonTitle:@"OK"
+	//				   otherButtonTitles:nil];
+    
+    if([self canOpenURL:url]) {
+        if(self.delayedDidFinishLaunchingLaunchComplete) {
+            [[BlioImportManager sharedImportManager] importBookFromFilePath:[url path]];
+        } else {
+            NSMutableArray *myDelayedURLOpens = self.delayedURLOpens;
+            if(!myDelayedURLOpens) {
+                myDelayedURLOpens = [NSMutableArray array];
+                self.delayedURLOpens = myDelayedURLOpens;
+            }
+            [myDelayedURLOpens addObject:url];
+        }
+        return YES;
+	}
+	return NO;
+}
+
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+//	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+//								 message:[NSString stringWithFormat:@"openURL: %@",[url absoluteString]]
+//								delegate:nil
+//					   cancelButtonTitle:@"OK"
+//					   otherButtonTitles:nil];
+	return [self application:application handleOpenURL:url];
+}
+
+
+- (void)delayedApplicationDidFinishLaunchingStep1:(UIApplication *)application {
+    // Now that the view is loaded, and in the correct orientation, show the
+    // book page if one was available.
+    [realDefaultImageViewController fadeOutDefaultImageIfDynamicImageAlsoAvailable];
+    
+    // Defer again to allow the animation to start.
+    [self performSelector:@selector(delayedApplicationDidFinishLaunchingStep2:) withObject:application afterDelay:0];
+}
+
+- (void)delayedApplicationDidFinishLaunchingStep2:(UIApplication *)application {
     [self performBackgroundInitialisation];
     
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-    NSString *voicesPath = [docsPath stringByAppendingPathComponent:@"TTS"];
-
-	BOOL isDir;
-	if (![[NSFileManager defaultManager] fileExistsAtPath:voicesPath isDirectory:&isDir] || !isDir) {
-		NSError * createTTSDirError = nil;
-		if (![[NSFileManager defaultManager] createDirectoryAtPath:voicesPath withIntermediateDirectories:YES attributes:nil error:&createTTSDirError]) {
-			NSLog(@"ERROR: could not create TTS directory in the Documents directory! %@, %@",createTTSDirError, [createTTSDirError userInfo]);
-		}
-		else NSLog(@"Created TTS directory within Documents...");
+    [[NSBundle mainBundle] loadNibNamed:@"MainNavControllerAndLibraryView" owner:self options:nil];
+    
+    NSError * audioError = nil;
+	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError];
+	if (audioError) {
+		NSLog(@"[ERROR: could not set AVAudioSessionCategory with error: %@, %@", audioError, [audioError userInfo]);
 	}
+    
+    [self ensureApplicationSupportAvailable];
+    
+    [self ensureCorrectCertsAvailable];
+    
+    // TODO - update this with a proper check for TTS being enabled
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTTSEnabledDefaultsKey];
+    
+    [self ensureTTSAvailable];
+    
+	self.internetReach = [Reachability reachabilityForInternetConnection];
+	self.networkStatus = [self.internetReach currentReachabilityStatus];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
+	[self.internetReach startNotifer];
 	
-#ifdef DEMO_MODE
-	
-    NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
-	NSString *manualVoiceCopyPath = 
-	[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:manualVoiceCopyPath] && ![[NSFileManager defaultManager] fileExistsAtPath:manualVoiceDestinationPath]) {
-		NSError * manualVoiceCopyError = nil;
-		if (![[NSFileManager defaultManager] copyItemAtPath:manualVoiceCopyPath toPath:manualVoiceDestinationPath error:&manualVoiceCopyError]) 
-			NSLog(@"ERROR: could not manually copy the Heather voice directory to the Documents/TTS directory! %@, %@",manualVoiceCopyError, [manualVoiceCopyError userInfo]);
-		else NSLog(@"Copied Heather into TTS directory...");
-	}
-		
-#endif
-	
-	NSLog(@"voicesPath: %@",voicesPath);
-	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];
+    NSPersistentStoreCoordinator *psc = [self persistentStoreCoordinator];
+	NSManagedObjectContext *moc = [self managedObjectContext];
+    
+    BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+    bookManager.persistentStoreCoordinator = psc;
+    bookManager.managedObjectContextForCurrentThread = moc; // Use our managed object contest for calls that are made on the main thread.
+    
+    libraryController.managedObjectContext = moc;
+    libraryController.processingDelegate = self.processingManager;
+    
+	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 	   
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 
@@ -312,24 +301,44 @@ static void *background_init_thread(void * arg) {
 		[self.processingManager resumeProcessing];
 	}	
 	
-	[UIView beginAnimations:@"FadeOutRealDefault" context:nil];
-    [UIView setAnimationDuration:1.0/5.0];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-    [UIView setAnimationDelegate:realDefaultImageView];
-    [UIView setAnimationDidStopSelector:@selector(removeFromSuperview)];
-    realDefaultImageView.alpha = 0;
-    realDefaultImageView.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
-    [UIView commitAnimations];    
     
-    [realDefaultImageView release];
-    realDefaultImageView = nil;
+    BOOL openedBook;
     
-    [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
-}
-
-- (NSString *)dynamicDefaultPngPath {
-    NSString *tmpDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    return [tmpDir stringByAppendingPathComponent:@".BlioDynamicDefault.png"];
+    NSArray *openBookIDs = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioOpenBookKey];
+    if(openBookIDs.count == 2) {
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+		[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@ && sourceSpecificID == %@",
+                                    [openBookIDs objectAtIndex:0],
+                                    [openBookIDs objectAtIndex:1]]];
+        NSError *errorExecute = nil; 
+		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+        if(!errorExecute && results.count == 1) {
+            [libraryController openBook:[results objectAtIndex:0]];
+            openedBook = YES;
+        }
+    }
+    
+    // Must do the view adding in this order to get landscape support to work
+    // correctly.
+    [realDefaultImageViewController.view removeFromSuperview];
+    [window addSubview:navigationController.view];
+    [window addSubview:realDefaultImageViewController.view];
+    [window sendSubviewToBack:navigationController.view];
+    
+    [realDefaultImageViewController fadeOutCompletly];
+    [realDefaultImageViewController release];
+    
+    if(!openedBook) {
+        [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
+    }
+    
+    self.delayedDidFinishLaunchingLaunchComplete = YES;
+    
+    for(NSURL *url in self.delayedURLOpens) {
+        [self application:[UIApplication sharedApplication] handleOpenURL:url];
+    }
+    self.delayedURLOpens = nil;
 }
 
 
@@ -338,6 +347,24 @@ static void *background_init_thread(void * arg) {
     NSError *error;
     if (![[self managedObjectContext] save:&error])
         NSLog(@"[BlioAppAppDelegate applicationWillTerminate] Save failed with error: %@, %@", error, [error userInfo]);
+    [self saveBookSnapshotIfAppropriate];
+}
+
+-(void)loginDismissed:(NSNotification*)note {
+	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
+	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
+			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+		}
+		else {
+			//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
+			//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Archive. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Archive. In the meantime, previously synced books will display.")]
+			//										delegate:self
+			//							   cancelButtonTitle:@"OK"
+			//							   otherButtonTitles:nil];			
+		}
+	}
 }
 
 #pragma mark -
@@ -348,6 +375,7 @@ static void *background_init_thread(void * arg) {
     NSError *error;
     if (![[self managedObjectContext] save:&error])
         NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);
+    [self saveBookSnapshotIfAppropriate];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -382,11 +410,11 @@ static void *background_init_thread(void * arg) {
 		if ([[self.processingManager internetOperations] count] > 0)
 		{
 			// ALERT user to what just happened.
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-															message:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Internet access has been lost, and any current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")
-														   delegate:nil
-												  cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-												  otherButtonTitles:nil];
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Lost",@"\"Internet Connection Lost\" Alert message title")
+										 message:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")
+										delegate:nil
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+							   otherButtonTitles:nil];
 		}
 		[self.processingManager stopInternetOperations];
 	}
@@ -502,6 +530,48 @@ static void *background_init_thread(void * arg) {
     processingManager = [[BlioProcessingManager alloc] init];
    	
     return processingManager;
+}
+
+#pragma mark -
+#pragma mark State saving for restoration on launch.
+
+- (void)saveBookSnapshotIfAppropriate
+{
+    BlioBookViewController *bookViewController = nil;
+    for(UIViewController *potentialController in navigationController.viewControllers) {
+        if([potentialController isKindOfClass:[BlioBookViewController class]]) {
+            bookViewController = (BlioBookViewController *)potentialController;
+        }
+    }
+    UIImage *pageImage = bookViewController.dimPageImage;
+    if(pageImage) {
+        [BlioDefaultViewController saveDynamicDefaultImage:pageImage];
+    }
+}
+
+- (void)navigationController:(UINavigationController *)theNavigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated;
+{
+    if([viewController isKindOfClass:[BlioBookViewController class]]) {
+        BlioBookViewController *bookViewController = (BlioBookViewController *)viewController;
+        BlioBook *book = bookViewController.book;
+        NSArray *toStore = [NSArray arrayWithObjects:book.sourceID, book.sourceSpecificID, nil];
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:toStore forKey:kBlioOpenBookKey];
+        [defaults synchronize];
+    } else {
+        BOOL containsBook = NO;
+        for(UIViewController *potentialController in theNavigationController.viewControllers) {
+            if([potentialController isKindOfClass:[BlioBookViewController class]]) {
+                containsBook = NO;
+            }
+        }
+        if(!containsBook) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults removeObjectForKey:kBlioOpenBookKey];
+            [defaults synchronize];
+        }
+    }
 }
 
 @end

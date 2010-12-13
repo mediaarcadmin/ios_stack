@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__117">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__117">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part01chapter15.html#part01chapter15" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part01chapter15.html#page_113">&#xA0;&#xA0;15&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__117">WOULD TED WILLIAMS HIT .406 TODAY?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__117">I</Run>
+      <Run Tag="__117">n 1941 Ted Williams hit .406. If he were in his prime today (say, the 2006 season), could he still hit around .400? Across the United States arguments similar to the following take place every day: Could Bill Russell dominate Shaq? Who was better: Peyton Manning or Joe Montana? Of course we can&#x2019;t know for sure the answers to these questions. We can, however, use mathematics to determine whether today&#x2019;s players are superior to players from an earlier time.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__117">Let&#x2019;s examine how hitters from the 1940s through the 1980s compare to the hitters in 1941. We will define the level of pitching + defense (PD) in 1941 (PD1941 for short) to be average. If, for example, PD1990 = .10, that would mean a batter hitting against PD1990 would hit 0.10 (or 100 points) higher than a batter hitting against PD1941. If PD1990 = &#x2013;.10, that would mean a batter hitting against PD1990 would hit 0.10 (or 100 points) lower than a batter hitting against PD1941.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__117">Since PD1941 = 0, simple algebra shows that</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-123" Margin="139,16,0,16" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__117">PD2005 &#x2013; PD1941 = PD2005</Run>
+      <LineBreak/>
+      <Run Tag="__117">= (PD1942 &#x2013; PD1941) + (PD1943 &#x2013; PD1942)</Run>
+      <LineBreak/>
+      <Run Tag="__117">&#xA0;&#xA0;&#xA0;+ (PD 1944 &#x2013; PD 1943)</Run>
+      <LineBreak/>
+      <Run Tag="__117">&#xA0;&#xA0;&#xA0;+ .&#xA0;.&#xA0;. + (PD2004 &#x2013; PD2003)</Run>
+      <LineBreak/>
+      <Run Tag="__117">&#xA0;&#xA0;&#xA0;+ (PD2005 &#x2013; PD2004).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter15.html#page_114">How can we estimate PD1942 &#x2013; PD1941? Let&#x2019;s assume that the ability of all the 1941 hitters who were still playing in 1942 did not change from 1941 to 1942. Since young players tend to improve with experience and older players tend to lose ability over time, it seems reasonable to assume that the ability of a given cohort of players will not change much from year to year. Given this assumption, suppose the 1941 players who played in 1942 had a batting average (BA) of .260 in 1941 and .258 in 1942. This would indicate that PD1942 was .002 points better than PD1941 (PD1942 &#x2013; PD1941 = &#x2013;.002). Thus, in general, PD1942 &#x2013; PD1941 = BA of the cohort of these hitters in 1942 minus the BA of the cohort of 1941 players in 1941. A similar relationship holds when determining the relative merits of PD during successive years. In the file batting.xlsx, we used some powerful Excel functions (VLOOKUP, IF, OFFSET, SUMIFS, and COUNTIFS) to determine the number of AB and hits in years x and x + 1 for all players who played in both years x and x + 1. For example, we found that players who played in both 1941 and 1942 had the statistics given in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter15.html#chapter15table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter15.html#page_114">table 15.1</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter15.html#page_114">. Thus PD1942 &#x2013; PD1941 = &#x2013;.009, indicating that the 1942 PD was 9 points better than the 1941 PD.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__118">We find the following:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__118">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__118">PD1950 &#x2013; PD1941 = &#x2013;.015</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__118">PD1960 &#x2013; PD1941 = &#x2013;.022</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__118">PD1970 &#x2013; PD1941 = &#x2013;.039</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__118">PD1980 &#x2013; PD1941 = &#x2013;.044</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__118">PD1990 &#x2013; PD1941 = &#x2013;.057</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__118">PD2005 &#x2013; PD1941 = &#x2013;.062</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter15.html#page_115">This indicates that 1950 PD is 15 points better than 1941 PD; 1960 PD is 22 points better than 1941 PD; 1970 PD is 39 points better than 1941 PD; 1980 PD is 44 points better than 1941 PD; 1990 PD is 57 points better than PD1941; and 2005 PD is 62 points better than 1941 PD. In 2005 Ted Williams would have faced PD that was 62 BA points better than 1941 PD; he would have hit .406 &#x2013; .062, or .344 in 2005. Essentially we have found that the strength of MLB pitching and defense has improved by around one BA (62/64) points per year. The greatest improvement occurred in the 1940s (probably because pitching was worse than expected during World War II because many would-be players were serving their country) and the 1960s (probably because the 1960s saw an influx of great black and Latino pitchers such as Bob Gibson and Juan Marichal).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__118">&#xA0;</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__118">
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part01chapter15.html#chapter15table01">TABLE 15.1</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part01chapter15.html#chapter15table01">Batting Average for 1941 and 1942 Cohorts of Batters Who Played Both Years</Run>
+      </Paragraph>
+      <Table Tag="__118">
+        <Table.Columns>
+          <TableColumn Width="40"/>
+          <TableColumn Width="55"/>
+          <TableColumn Width="55"/>
+          <TableColumn Width="35"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,3,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__118">Year</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,3,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">AB</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,3,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">Hits</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,3,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">BA</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__118">1941</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">71,404</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">18,822</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">.264</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__118">1942</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">71,437</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">18,212</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+                <Run Tag="__118">.255</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+    </Section>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter15.html#page115fn01">Our methodology for comparing players of different eras is based on the &#x201C;Davenport Translations.&#x201D;</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter15.html#fn01page115">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter15.html#page115fn01">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter15.html#page115fn01"> Similar calculations can be used to predict how minor league prospects will perform in the majors. We will discuss these ideas in </Run>
+      <Hyperlink NavigateUri="part01chapter17.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter15.html#page115fn01">chapter 17</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter15.html#page115fn01">, and in </Run>
+      <Hyperlink NavigateUri="part04chapter50.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter15.html#page115fn01">chapter 50</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter15.html#page115fn01"> we will use a more sophisticated mathematical approach to determine whether NBA player quality has improved or declined during the past decade.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter15.html#page115fn01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter15.html#fn01page115">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter15.html#fn01page115"> See Baseball Prospectus Team of Experts, Keri, and Click, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part01chapter15.html#fn01page115">Baseball between the Numbers,</Run>
+      <Run Tag="xhtml/part01chapter15.html#fn01page115"> xxvii.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

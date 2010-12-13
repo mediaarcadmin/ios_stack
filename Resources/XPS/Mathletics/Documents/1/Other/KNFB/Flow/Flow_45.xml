@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__226">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__226">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part03chapter35.html#part03chapter35" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part03chapter35.html#page_242">&#xA0;&#xA0;35&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__226">ARE COLLEGE BASKETBALL GAMES FIXED?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__226">I</Run>
+      <Run Tag="__226">n 2006 Wharton professor Justin Wolfers created a stir by claiming that around 5% of all college basketball games are fixed by players who intentionally slacken their effort (often called point shaving). Wolfers argued that for games in which the favorite is favored by S points, we should find that the probability of the favorite winning by between 1 and S &#x2013; 1 points should equal the probability of the favorite winning by between S + 1 and 2S &#x2013; 1 points. This follows because statisticians usually find that forecast errors about an unbiased prediction (like a point spread) should be symmetrically distributed, like a normal or Bell curve. For strong favorites (defined as teams favored by more than 12 points), Wolfers found that the forecast errors were not symmetrical about the point spread. He found that 46.2% of the time, strong favorites won by between 1 and S &#x2013; 1 points, and 40.7% of the time, strong favorites won by between S + 1 and 2S &#x2013; 1 points. Wolfers thus argues that 46.2% &#x2013;40.7% = 5.5% of the time players shaved points. This would account for more games ending under the spread than over the spread. The idea is once victory is in hand some of the favored team&#x2019;s players do not play at their optimum level. This causes more games to end with the favorite winning by a number of points in the range [1, S &#x2013; 1] than the range [S + 1, 2S &#x2013; 1]. Wolfers&#x2019;s conclusion seems a bit strong, since there may be other factors that might cause the asymmetry in forecast errors.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="xhtml/part03chapter35.html#rfnpage_242-01">
+        <Hyperlink NavigateUri="xhtml/part03chapter35.html#fnpage_242-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="__226">1</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__226">Rebuttal</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter35.html#page_243">Heston and Bernhardt (HB) provide other explanations for the asymmetry in forecast errors Wolfers found for strong favorites.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="xhtml/part03chapter35.html#rfnpage_242-02">
+        <Hyperlink NavigateUri="xhtml/part03chapter35.html#fnpage_242-02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter35.html#page_243">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter35.html#page_243"> HB looked at games involving strong favorites in which the spread increased from the opening line and games involving strong favorites in which the spread decreased from the opening line. If the game were fixed, you would expect more betting on the underdog. This would decrease the number of points by which the better team is favored. Therefore, we should expect a greater forecast error asymmetry in games in which the spread decreased than those in which the spread increased. HB found, however, that when the spread increased, 45.15% of the time the outcome was in interval [1, S &#x2013; 1] and 39.54% of the time the outcome was in the interval [S + 1, 2S &#x2013; 1], a discrepancy of 5.61%. When the spread decreased, HB found 45.12% of the games ended in the interval [1, S &#x2013; 1] and 39.54% of the games ended in the interval [S + 1, 2S &#x2013; 1], a discrepancy of 5.58%. Basically, whether the spread increased or decreased, the asymmetry that Wolfers found was equally present. HB also looked at Division I games in which there was no betting line. They used the Sagarin ratings (discussed in </Run>
+      <Hyperlink NavigateUri="part03chapter30.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter35.html#page_243">chapter 30</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter35.html#page_243">) to set point spreads for these games and found that 48.55% of the favorites won by a margin in [1, S &#x2013; 1] and 42.64% of the favorites won by a margin in [S + 1, 2S &#x2013; 1]. The discrepancy here of 5.91% is virtually identical to the discrepancy found by HB in games in which the line increased or decreased. Since the asymmetry of outcomes about the point spread that Wolfers found persists in games where there is no gambling, it seems unlikely that &#x201C;fixing the game&#x201D; is the cause of this asymmetry.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__227">HB conclude that the pervasive asymmetry in forecast errors must be a feature inherent in the way basketball is played. They provide two persuasive explanations for the asymmetry in forecast errors.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__227">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__227">Consider a 14-point favorite leading by 12 points late in the game. The favorite will probably start holding the ball. This will reduce the favorite&#x2019;s chance of covering the spread. By reducing the number of possessions in the game, holding the ball will also reduce the variability of the favorite&#x2019;s final victory margin. This will also reduce the favorite&#x2019;s chance of covering the spread.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__227">Key players often foul out. If a key player fouls out, then the better team is more likely to have a good replacement. This can introduce an asymmetry in the final score in terms of the predicted point spread.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter35.html#rfnpage_242-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter35.html#fnpage_242-01">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter35.html#fnpage_242-01"> See Wolfers, &#x201C;Point Shaving in College Basketball.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter35.html#rfnpage_242-02">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter35.html#fnpage_242-02">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter35.html#fnpage_242-02"> See Heston and Bernhardt, &#x201C;No Foul Play.&#x201D;</Run>
+    </Paragraph>
+  </Section>
+</Flow>

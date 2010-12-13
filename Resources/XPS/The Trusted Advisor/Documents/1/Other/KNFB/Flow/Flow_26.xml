@@ -1,0 +1,639 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ch15.html#ch15">
+      <Paragraph Margin="0,80,0,28" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="16">
+        <Run Tag="__109">15</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Normal" FontSize="19" Tag="__109">What&#x2019;s So Hard About All This?</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__109">M</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__109">OST, IF NOT ALL</Run>
+          <Run Tag="__109">, of what we have had to say so far in this book is straightforward. Why, then, are skilled trusted advisors not more common? What&#x2019;s so hard about this?</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__109">There are many reasons people find it difficult to fulfil the trusted-advisor role. Here is a list of some of the more frequent comments we hear:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__109">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">This is all too personally risky. The emotional stuff feels embarrassing, different, flaky.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">It&#x2019;s not easy to stop worrying about yourself and focus on others instead.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">Professional services firms often breed a culture of content expertise and mastery. (We&#x2019;re taught that content is all.)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">We can&#x2019;t overcome our fears of looking ignorant, stupid, or uninformed, so we act assertively.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">It&#x2019;s hard to shut up and listen before you solve the problem. We have a hard time rewiring our instincts or habits.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">It takes a lot of courage to speak about the unspeakable. Some things you just don&#x2019;t say; they&#x2019;re too personal, too risky, or too unprofessional.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">It comes too close to the line of invading the private.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">This approach discounts too heavily the value of good content or expertise.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">It all sounds too moralistic.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">This process sounds s-l-o-w! My budget won&#x2019;t allow for this!</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">My client wants me to focus on the work at hand; he or she doesn&#x2019;t want to see me about anything else.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">It&#x2019;s risky to take a position on an issue until I&#x2019;m absolutely sure.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">I took a position, and now I&#x2019;m stuck with it. To change my view would destroy my credibility!</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__109">It&#x2019;s hard to be this humble!</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__109">Let&#x2019;s examine each of these in turn.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__109">&#xA0;1. &#xA0;This is all too personally risky. The emotional stuff feels embarrassing, different, flaky.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__109">That&#x2019;s right. It </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__109">is</Run>
+          <Run Tag="__109"> risky, and if we don&#x2019;t do it with careful balance, it will come off as flaky, and we will feel embarrassed. So careful balance is the key. It means awareness, focus, and practice. The fact that it doesn&#x2019;t get done often is an opportunity, not a problem. It&#x2019;s a chance to distinguish ourselves. Risk is the essence of creating intimacy.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">&#xA0;2. &#xA0;It&#x2019;s not easy to stop worrying about yourself and focus on others instead.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__110">Right again. For most of us, &#x201C;us&#x201D; is our favorite subject. But we get so much better at being ourselves if we focus on what other people are worrying about. It helps us find ourselves. Remember the quote from Ralph Waldo Emerson: </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__110">&#x201C;Who you are shouts so loud I cannot hear what you say.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">New ways of thinking and behaving can be learned, but we have to practice them.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">&#xA0;3. &#xA0;Professional services firms often breed a culture of content expertise and mastery. (We&#x2019;re taught that content is all.)</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">The fact that we&#x2019;re taught it is absolutely no guarantee that it&#x2019;s right, just that it&#x2019;s common. The statement is accurate, but incomplete. Many professional firm cultures do breed a cult of exclusive focus on content mastery. After all, it&#x2019;s so measurable, so quantifiable.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__110">But it&#x2019;s probably also fair to say that leading professional services firms have made (or are attempting to make) the adjustment to an approach that recognizes just </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__110">how little</Run>
+          <Run Tag="__110"> content mastery matters if the client does not trust us. We would venture to say that truly </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__110">great</Run>
+          <Run Tag="__110"> professional services firms (and those of the future) haven&#x2019;t just made the adjustment to that approach; they are (or will be) built on it.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">&#xA0;4. &#xA0;We can&#x2019;t overcome our fears of looking ignorant, stupid, or uninformed, so we act assertively.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__110">Oh, yes we can. It&#x2019;s just that it&#x2019;s hard or we&#x2019;re out of practice, or we don&#x2019;t realize that we look even </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__110">more</Run>
+          <Run Tag="__110"> ignorant, stupid, or uninformed if we let pure assertiveness take over.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">These fears are a normal human response, like fight or flight. That doesn&#x2019;t mean we can&#x2019;t overcome them. What also makes us human is our ability to recognize our feelings for what they are and to transcend them. The essence of &#x201C;emotional intelligence&#x201D; is the ability to recognize and interpret emotions in ourselves and in others and to act on that interpretation rather than be blindly driven by the pure emotions themselves.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">&#xA0;5. &#xA0;It&#x2019;s hard to shut up and listen before you solve the problem. We have a hard time rewiring our instincts or habits.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">It is indeed hard to shut up and listen. Those instincts and habits are wired deeply. But they can be and are changed every day by many people. The first step is to recognize them for what they are, just ingrained habits. The three of us still feel we haven&#x2019;t gotten it right personally. We get overexcited when we think we know the answer to a client&#x2019;s question, and jump in with an answer before the client has even finished describing the situation. We may think we are proving our value by providing a speedy answer, but it is more than possible that the client has a negative reaction and thinks we are not listening and are too eager to show off.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__110">Rob is trying the following technique: He&#x2019;s learning to control himself by keeping a pen in his right hand (he&#x2019;s left-handed) and forcing himself to at least wait long enough to switch his pen to the opposite hand. We all have to find habit-breaking devices (simple as they may be) that will work for us. Otherwise we&#x2019;re stuck in the old behaviors.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">&#xA0;6. &#xA0;It takes a lot of courage to speak about the unspeakable. Some things you just don&#x2019;t say; they&#x2019;re too personal, too risky, or too unprofessional.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">Right again. It does take courage. One thing that helps, and gives us courage, is the realization that very often, the alternative (i.e., not speaking up) can be worse. It means a lost opportunity to help someone who could actually benefit from it. Without risk, there is a guarantee of only a limited intimacy, and hence to trust. In our experience, advisors vastly overrate the risk of taking an action, and underrate the risk of not taking an action.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">&#xA0;7. &#xA0;It comes too close to the line of invading the private.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">If we have sincere respect for the other person, the words that convey it will probably come. Most people welcome interventions made with respect. When they don&#x2019;t welcome it, they don&#x2019;t return respect with indignation, but with a simple &#x201C;No, thank you.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">Most advisors, when they feel that something comes &#x201C;too close&#x201D; to invading the private, are actually not referring to how the other person will feel, but are focused on their own worries about how they will feel in response to the other person&#x2019;s response.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__111">If we invade the private, we </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__111">are</Run>
+          <Run Tag="__111"> too close to the line. It&#x2019;s why naming and claiming, and gentle phrasing, and giving people an &#x201C;out&#x201D; are so valuable.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">&#xA0;8. &#xA0;This approach discounts too heavily the value of good content or expertise.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__111">Discounting? No way! This approach actually </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__111">enables</Run>
+          <Run Tag="__111"> good content and expertise to be effective. If we don&#x2019;t have an adequate level of trust, no content and expertise will ever get through.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">&#xA0;9. &#xA0;It all sounds too moralistic.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__111">It would be moralistic if it were judgmental, and if we were critical of others who fail to follow this approach. We&#x2019;re not. We are not moralists, but we do know that this approach </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__111">works</Run>
+          <Run Tag="__111">. It can make you successful in ways that would otherwise not occur.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">Evaluate it purely in pragmatic terms, based on your own observations. Does trust succeed as a strategy? Do people buy to a great extent on the basis of trust and relationships? Do people respond positively or negatively to an outreach on the part of another person? Ask yourself if it works. Let your own experience be your guide.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">10. &#xA0;This process sounds s-l-o-w! My budget won&#x2019;t allow for this!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">This makes two false assumptions. First, it assumes that clients won&#x2019;t pay for counseling time. The real-world truth, is that since the counseling is done with them, in their presence, they more readily perceive the value of counseling (and will pay for it) than they can perceive the value of what advisors do back in their own offices.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">Second, the concern assumes that time spent advising a client must be recouped on the current assignment, when the truth is that, done well, effective counseling (reimbursed or not) can be the most effective means of generating future revenues that exists. Which would you rather do? Be someone&#x2019;s counselor, or write proposals?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__111">11. &#xA0;My client wants me to focus on the work at hand; he (or she) doesn&#x2019;t want to see me about anything else.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">Unless and until you earn the right to do otherwise, this may well continue. It&#x2019;s worth an attempt every now and then. You can do clients a service by stating to them (very clearly, very directly, one time) that you perceive them as wanting you to focus on the work at hand, and that they don&#x2019;t want to see you about anything else. Ask to confirm this observation, because you intend to deliver on it and want to make sure that you&#x2019;ve got it right.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">Then listen closely to the client&#x2019;s answer and be prepared to deliver based upon it. If, at a certain point, you feel the situation will simply never change, then thank heavens you now have a clear sign that your investment in becoming a trusted advisor to a client will be better made elsewhere.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">12. &#xA0;It&#x2019;s risky to take a position on an issue until I&#x2019;m absolutely sure</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__112">It&#x2019;s risky to take a </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__112">hard-wired</Run>
+          <Run Tag="__112"> position on an issue until you&#x2019;re absolutely sure. If you take a preliminary position with your client, make sure that it is just that, and that he or she acknowledges it as such. Then you can actually look pretty good most of the time, and pretty thoughtful all of the time.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__112">There are sins of omission and sins of commission. Not taking a position sacrifices an enormous range of options for helping a client. It diminishes the possibility of framing hypotheses, brainstorming, stimulating conversation, and gaining the client&#x2019;s insight by involving them in evolving thinking. For the sake of an inward fear (read self-orientation), this so-called risk aversion surrenders many positives. It isn&#x2019;t risky to do this; it&#x2019;s unprofessional </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__112">not</Run>
+          <Run Tag="__112"> to do it.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">13. &#xA0;I took a position, and now I&#x2019;m stuck with it. To change my view would destroy my credibility!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">Our credibility is far more at stake if we are seen to be sticking to an incorrect view in the face of new data or thinking, than it is to admit we were wrong. Admitting we were wrong is admitting we are imperfect (i.e., human). Not to admit so is to claim we&#x2019;re omnipotent. To cling to a wrong idea for the sake of &#x201C;credibility&#x201D; is also the height of self-orientation, because it&#x2019;s all about us, and not at all about the facts or the client.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-27" Margin="43,11,0,11" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">14. &#xA0;It&#x2019;s hard to be this humble!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">Humility is not weakness. Serving others does not require us to be servile. Ego strength means not having to have our egos stroked continuously. Recognizing and respecting the strength in others does not diminish our respect or strength.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">In summary, we believe that the risks of failure in trying to build trust are overrated, as long as people are self-aware enough to avoid being obnoxious. We&#x2019;ve never heard of anyone who actually tried to build trust and failed.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__112">Why We All Rush to Action Too Soon</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">There is one mistake made more commonly than all the others combined, which is simply jumping ahead in the trust process to driving for action before completing the other steps.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__112">Imagine yourself as a systems consultant. You are meeting a potential client from a new part of an organization you already know reasonably well. After some pleasantries, the potential client begins to tell you about some performance problems in his system.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__113">You nod your head vigorously, interjecting &#x201C;uh-huh&#x201D; knowingly at all the right hardware and software references. You drop in a few &#x201C;Yes, they have that same problem over at [the part of the organization you know really well].&#x201D; After a while, you are pretty sure that what you suspected all along is in fact the case; they have an architecture design issue. You ask the one killer question to make sure, and, voila! You get the answer you expected!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__113">&#x201C;Listen,&#x201D; you say, &#x201C;what if we reconfigured some basic architectural features. It wouldn&#x2019;t have to take long (we have a proprietary process for doing it, called IMEX; I&#x2019;ll leave you a brochure) and it&#x2019;ll not only solve the performance problems you&#x2019;re having, it&#x2019;ll make your users love you.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__113">And then, to your chagrin, the client backs off. Why? Because even if your answer is absolutely, completely, 100 percent correct, the client will not buy it (in fact will resist buying it) until and unless you earn the right to even discuss a problem statement. You have not </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__113">earned that right</Run>
+          <Run Tag="__113">.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__113">The interesting point is not </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__113">that</Run>
+          <Run Tag="__113"> we jump too soon to commitment and action, but </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__113">why</Run>
+          <Run Tag="__113"> we do so. There are four reasons why advisors jump to action too soon:</Run>
+        </Span>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__113">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__113">The human tendency to focus on ourselves</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__113">The belief that we&#x2019;re selling only content</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__113">The desire for tangibility</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__113">The search for validation.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__113">The Tendency to Focus on Ourselves</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__113">So much of our time is spent focusing on ourselves, and so much of other people&#x2019;s time is spent focusing on themselves, that it is a rare and surprising event whenever someone breaks the veil. Sincere interest in another person comes across strikingly simply because it is unusual.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__113">A </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__113">New York Times</Run>
+          <Run Tag="__113"> survey showed the same result. Sixty percent of Americans said that you couldn&#x2019;t trust most people, but only 20 percent said they couldn&#x2019;t trust most of the people they knew. In other words, the more we know someone, the more likely we are to assume that we can trust him or her.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__113">In one extensive executive education program, we asked one question in every session and never once received a different answer. The question was, &#x201C;Who operates at a higher level of trustworthiness: you or your colleagues?&#x201D; The answer, time and again, was &#x201C;me.&#x201D; Specifically, some 800 participants rated 15 percent of their colleagues at the lowest level of trustworthiness. Yet only one of the 800 rated themselves as being at that bottom level.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__113">We are not completely sure what this finding means. It may mean people are egocentric, or that they have a healthy respect for themselves, or that they are hopelessly self-centered. It clearly </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__113">does</Run>
+          <Run Tag="__113"> mean that people trust what they know.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__113">We all rate our own intentions higher than those of other people. In professional services (a business in which there is </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__113">nothing else but</Run>
+          <Run Tag="__113"> human beings), this observation takes on critical business importance.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__113">Action is the one step that feels as if it is mostly about us as advisors. It is about answers, and it feeds our desire to show that we are the answer experts. We are the ones suggesting action, and action usually consists of something we know how to do.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__114">The Belief That We&#x2019;re Selling Only Content</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__114">A lawyer friend of ours (one of the top in his field) told us he believed that the key to success in the law is to be one of the top two or three content experts in your city in your field. By that definition, there are probably fewer than 100 successful lawyers in the entire city of New York. Without trying to take a position on the absolute levels of importance of relationships and content, this feels restrictive to us.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__114">It&#x2019;s harder now for advisors to stay current. For physicians, it is literally a physical impossibility to keep up with research papers. For lawyers, it is the same. For management consultants, the sky is the limit in terms of how well read one would like to be. For accountants, the tax code is massive enough to defy any one individual&#x2019;s attempt to master it. With all this effort, it is tempting to believe that when we have mastered the content, we have done enough.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__114">Clients add fuel to this fire because they espouse the belief (at their conscious level, that is) that content is king. They will characterize their lawyers, accountants, and consultants as content experts. When they compliment you, it is likely to be about your technical mastery.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__114">While this is misleading, it is a strongly held belief, one that causes advisors to instinctively jump ahead in the trust-development process to what looks like content&#x2014;the step that says &#x201C;let&#x2019;s get to action&#x201D;!</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__114">The Desire for Tangibility</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__114">In the professions, problem solving is highly valued. Problem solvers, like nature, somehow abhor a vacuum. They are very uncomfortable with the uncertainty inherent in the early parts of the trust-development process. They seek to fill silences with hypotheses, and they seek to fill hypothesis gaps with data questions.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__114">It&#x2019;s therefore not surprising that for many, a hint of ambiguity or uncertainty is uncomfortable. Advisors are, in effect, trained not to ask open-ended questions, but rather to ask closed-ended ones that reinforce hypotheses and showcase brilliance. We are often explicitly trained to control meetings, not to risk them being hijacked by clients.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__114">In this ambiguous world, it is not surprising that there is respite when one finally gets down to action steps: who&#x2019;ll do what, with what resources, by when, in what order, costing how much, to what kinds of specifications, and so forth. Action is tangible, and the need for it is deeply built into many professionals&#x2019; psyches.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__114">The Search for Validation</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__114">Finally, professionals live in a paradoxical world, and unconsciously live out that tension. Consider these common sources of confusion for the typical professional:</Run>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__114">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__114">We must master huge levels of concrete detail, yet our &#x201C;product&#x201D; is rarely tangible.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__114">We often work in firms that have mission statements espousing the value that the firm is ranked ahead of the individual, but we are also frequently told that most clients buy individuals, not firms.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__115">Many professional service firms talk about the importance of people, yet have high turnover rates. They simultaneously talk about the need to &#x201C;prune&#x201D; for quality (fire), and the need to &#x201C;attract and retain the best&#x201D; (hire).</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__115">Professionals who leave and then return to their firms all cite &#x201C;the people&#x201D; as the primary competitive attribute of their firm, no matter which firm it is. Yet attention to skills in dealing with people is often neglected.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__115">Most professionals don&#x2019;t like to be seen as &#x201C;selling,&#x201D; even though they are supposed to &#x201C;develop business&#x201D; by mid-career, or even earlier.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__115">Psychologically, in our experience, many professionals are both slightly insecure and slightly egocentric.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__115">Amid this confusion, there is a tremendous desire for positive feedback from the client, because it is the client who trumps all at the end of the day. Feedback comes largely from the client&#x2019;s reaction to our action activities. It is only then that the normal, slightly nervous professional can be really, really sure that everything is OK. It is at that point that commitments are made, financial and otherwise. Only then does the professional get the chance to apply what he or she was trained to do: apply technical skills. Until then, everything feels uncertain.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__115">These tendencies are virtually hard-wired in us. In our executive education work, we find some slight amusement in telling people right before a role-play of the trust process that the error they will most likely commit is that of jumping to problem solving and action. They then proceed, almost inevitably, to prove the point.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__115">Without conscious self-control and practice in controlling our instincts, new habits do not develop. Learning to interact with other people in new ways is not something that can be absorbed instantaneously. Many of us have a lifetime of bad habits to break.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__115">There are strong instincts working against the natural development of trusted relationships in business, and we all need conscious self-discipline (and self-awareness) in modifying our instinctive approaches.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__115">Risk</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__115">Rebecca, a management consultant, told us of a client relationship from her past. The project had gone well, and she had enjoyed the relationship, but had not tried to maintain it after the project was over. A year later, the client called Rebecca and said, with a touch of hurt in the tone of voice, &#x201C;How come you never called? I thought we had a good relationship, and I could have used your help several times.&#x201D; Rebecca later explained to us the reason she had not maintained the contact: &#x201C;I thought it was too risky. It might have been perceived as presumptuous. I figured, if she needed me, she&#x2019;d call.&#x201D; What a shame; for all involved!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__115">The number one reason (on our list, anyway) that people don&#x2019;t &#x201C;do this trust stuff&#x201D; is usually expressed as: &#x201C;Well, I wouldn&#x2019;t do that, it&#x2019;s just too risky.&#x201D; The word </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__115">risk</Run>
+          <Run Tag="__115"> comes up continually. Let&#x2019;s examine just what people mean by this.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__116">First of all, what kinds of things do people find &#x201C;risky?&#x201D; Nearly everything we have listed are ways to increase trust: staking out a point of view, naming and claiming, reflective listening, observing an emotional fact, working the trust process rather than jumping to action. The very steps we recommend are those most commonly cited as being infeasible, because they are too risky!</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__116">This doesn&#x2019;t mean we are right or wrong. It simply means that trust-enhancing steps </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__116">do</Run>
+          <Run Tag="__116"> carry some connotation of risk. Risk isn&#x2019;t antithetical to trust; risk is part and parcel of trust. So when people say, &#x201C;That won&#x2019;t increase trust, it&#x2019;s too risky,&#x201D; we say, &#x201C;Taking a risk is </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__116">precisely</Run>
+          <Run Tag="__116"> how you build trust.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__116">Second, what we hear expressed as business risk turns out to be, on close examination, personal risk. We hear generally two kinds of risk-averse comments: perceived risk to credibility, and perceived risk to intimacy. These are analyzed in Figure 15-1.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__116">The perceived risk about credibility is based on a misconception about what it means to be a professional. Too many service professionals (and clients, if you ask them directly) labor under several misapprehensions about professionalism. They believe that to be professional means:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__116">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__116">You must have the answers.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__116">You must be quiet if you don&#x2019;t know the answer (and to find another professional with the requisite expertise as quickly as possible).</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__116">You keep the total knowledge base somewhat under wraps.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__116">You must (generally) keep any gaps in your knowledge base hidden from the client.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__116">Fig. 15.1. Reasons for Precieved Risk</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/f50ff82a-a7dc-435a-bb8f-31377f179291.jpg" Stretch="Uniform" Width="336" Height="260" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__117"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__117">With this view of professionalism, no wonder it appears risky to openly admit ignorance, to suggest that further refinement of the problem statement might be in order, or to suggest that a series of hypotheses or points of view might actually advance the cause rather than signal incompetence.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__117">The sense of credibility risk thus hinges on a narrow sense of professionalism, which we called exclusive rather than inclusive professionalism.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__117">The perceived risk of intimacy comes from the (mistaken) idea that clients do not want to broaden the agenda beyond the purely rational. Clients themselves will hardly volunteer the idea that they want a deeper, more intimate relationship with their service providers. But the same clients will be the first to say that a primary buying criterion is the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__117">understanding</Run>
+          <Run Tag="__117"> their provider has of their specific situation (not situations like this in general).</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__117">Most research on buying suggests unambiguously that buying is a highly emotional process. This is perhaps particularly true for large-ticket, highly differentiated, complex purchases like professional services. In such an environment, both sides find it easy to kid themselves that logic must prevail and that the client does not want intimacy. But buying is an emotional act. Virtually always.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__117">There are two kinds of risks: The risk of doing a wrong thing, and the risk of not doing a right thing. Most business people are paralyzed by the fear of the first kind of risk, often to the extent of unintentionally committing the second kind, which is more insidious and harmful than simply doing the wrong thing. To do a wrong thing is an understandable mistake, one we can learn from and, we would hope, be forgiven for. But to not do a right thing typically involves willful ignorance (or arrogance) over an extended period of time, and indicates lack of personal courage.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__117">Even these two aspects of risk, however, don&#x2019;t explain everything. How do we explain Rebecca, who assumed that her client didn&#x2019;t care much about continued contact? There is another level of beliefs or feelings at work, some form of fear that the advisor feels.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__118">Fear of what? Here we can generate quite a list. It would include fear of:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__118">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Not having the answer</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Not being able to get the right answer quickly</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Having the wrong answer</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Committing some social faux pas</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Looking confused</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Not knowing how to respond</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Having missed some information</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Revealing some ignorance</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__118">Misdiagnosing</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__118">People in the service professions are a bit hard on themselves. Perhaps this is the sign of the overachiever. Perhaps it comes from working in a business where there is no practical upper limit to quality. Being overachievers cursed with an ability to envision a great number of ways to fall short, it makes sense that our worst nightmares tend to center on these fears. However, if our fears dominate our behavior, we will never take a risk and will accomplish much less.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__118">Finally, it may be that the professions are havens of rationality for those less comfortable with a more direct, emotional approach to life. Good social skills and an excellent mind, in the professions, can generally compensate for a very large degree of emotional avoidance. Combined with an ethos that worships the mind, it is not surprising that some advisors feel that working on the intimacy part of the trust equation is risky.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__118">The good news is that an attempt to take a personal risk is far more often than not returned by the other party, thus increasing intimacy. The only sure way not to lose the game is never to play the game at all. After all, as the Sicilian proverb says, </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__118">&#x201C;Chi gioca solo non perde mai</Run>
+          <Run Tag="__118">,&#x201D; or &#x201C;If one plays alone, one never loses.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__118">Managing Your Own Emotions</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__118">How much of being a successful trust-based advisor comes down to managing one&#x2019;s own emotions? Probably quite a lot.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__118">Consider a simple example to which we can probably all relate. Imagine yourself in the early stages of fact finding with a client, in a meeting with several other people, with a number of unfamiliar concepts floating around. Someone mentions the &#x201C;XP-27 situation,&#x201D; and many of the others laugh knowingly. You don&#x2019;t know what it&#x2019;s about. Do you stop and ask? Or do you let the meeting continue, figuring that perhaps you missed something from the pre-read materials, and that you&#x2019;ll pick up the issue in context as the meeting goes along? (After all, you have probably done pretty well for yourself so far in your career by picking things up from their context.)</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__118">Suppose you do the latter. Then suppose that a few minutes later, another similar moment arises, where someone refers to the RB-5, and someone else says, &#x201C;Yes, and if it&#x2019;s like that, it&#x2019;ll make the XP-27 look like small beer!&#x201D; Everyone laughs and nods vigorously. Except you, of course, because you haven&#x2019;t a clue what anyone is talking about. Meanwhile, the conversation rapidly turns to other topics.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__119">Now you have a slightly bigger problem. If you stop the conversation to ask what it all means, you run the original risk of looking unstudied or out of it. You also run the risk of looking like you tried to outrun the risk in the first place, by not asking about the XP-27 when it first came up. And, as you ponder this latest development, your attention is nowhere near being focused on the conversation, thus setting you up even more for further confusions yet to come.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__119">A trivial example, to be sure. But most of us know how to deal with this. We have all had to say things like, &#x201C;I&#x2019;m probably the only one who didn&#x2019;t do our reading last night, but . . .&#x201D; or &#x201C;At the risk of sounding silly, could someone help me understand . . .&#x201D; So, why don&#x2019;t we do this more often?</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__119">The truth is that the higher the stakes, the harder it is to take those simple, little, self-correcting steps. Our emotions overrule what our heads tell us is the wisest thing to do.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__119">Our own emotional needs (such as ego fulfillment) often dominate our reactions, rather than a calm, cool reflection along the lines of &#x201C;What am I trying to achieve at this stage and what&#x2019;s the best way for me to get there? What should I say now, and how should I say it?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__119">A trusted advisor is above all someone who is capable of totally and completely devoting himself, his caring, and his attention to the client. The biggest obstacle to doing that is the tendency to devote our caring and attention to ourselves. And the root reason for that is self-centered fear; fear of losing what we have or not getting what </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__119">we</Run>
+          <Run Tag="__119"> want.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__119">Emotions and desires we must learn to control include:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__119">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__119">Wanting (needing?) to take credit for an idea</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__119">Wanting to fill blank airtime with content</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__119">Playing to our own insecurity by feeling we have to get all our credentials out there</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__119">Wanting to put a cap on the problem so we can solve it later, without the pressure</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__119">Wanting to hedge our answers in case we&#x2019;re wrong</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__119">Wanting (too soon) to relate our own version of the client&#x2019;s story or problem</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+    </Section>
+  </Section>
+</Flow>

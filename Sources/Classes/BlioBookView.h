@@ -20,6 +20,7 @@
 - (void)addHighlightWithColor:(UIColor *)color;
 - (void)addHighlightNoteWithColor:(UIColor *)color;
 - (void)removeHighlightAtRange:(BlioBookmarkRange *)range;
+- (void)refreshHighlights;
 - (void)updateHighlightNoteAtRange:(BlioBookmarkRange *)highlightRange toRange:(BlioBookmarkRange *)toRange withColor:(UIColor *)newColor;
 - (BOOL)hasNoteOverlappingSelectedRange;
 
@@ -84,6 +85,7 @@
 
 @optional
 @property (nonatomic, assign) CGFloat fontPointSize;
+@property (nonatomic, readonly) UIImage *dimPageImage;
 
 // Page texture-related properties are readony because
 // - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
@@ -112,5 +114,6 @@
 - (BOOL)toolbarHideShouldBeSuppressed; 
 
 - (UIImage*)previewThumbnailForPageNumber:(NSInteger)pageNumber;
+- (void)refreshHighlights;
 
 @end

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__298">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__298">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part04chapter47.html#part04chapter47" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part04chapter47.html#page_319">&#xA0;&#xA0;47&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__298">DOES JOEY CRAWFORD HATE THE SPURS?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__298">I</Run>
+      <Run Tag="__298">n March 2007 NBA official Joey Crawford ejected Spurs star Tim Duncan during a game against the Dallas Mavericks. The NBA then suspended Crawford for the rest of the 2007 season. They said that he &#x201C;was unfair to the Spurs.&#x201D; Is it possible to determine whether Joey Crawford&#x2019;s officiating harmed the Spurs&#x2019; performance during Spurs games in which he officiated?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__298">If Joey Crawford was biased against the Spurs, then we would expect the Spurs to have played significantly worse than expected during the games in which Crawford officiated. To determine an expected level of performance by the Spurs, we looked at each Spurs game officiated by Crawford during the 2004&#x2013;5, 2005&#x2013;6, and 2006&#x2013;7 seasons. Using the season-ending Sagarin ratings and a home edge of 3 points we made a prediction for the amount by which the Spurs should have won each game. Then we computed for each game</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__298">
+      <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__298">
+        <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+          <Run Tag="__298">residual Spurs performance = actual Spurs winning margin</Run>
+        </Paragraph>
+        <Paragraph Margin="0,1,0,0" TextAlignment="Right" FontFamily="times new roman" FontSize="14">
+          <Run Tag="__298">&#x2014;predicted Spurs winning margin.</Run>
+        </Paragraph>
+      </Section>
+    </Section>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__298">For example, on April 15, 2007, the Spurs played the Mavericks at Dallas. They lost by 5 points. The Spurs had a season-ending rating of +8.54, while the Mavericks had a season-ending rating of +6.96. Our prediction for this game would have been that the Spurs would win by (8.54 &#x2013; 6.96) &#x2013; 3 = &#x2013;1.42 points, or the Mavericks win by 1.42 points. Therefore, the residual Spurs performance for this game = &#x2013;5 &#x2013; (&#x2013;1.42) = &#x2013;3.58 points.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__298">Historically the standard deviation of game margins about predictions made using the season-ending Sagarin ratings is around 12 points. If Crawford adversely affected the Spurs&#x2019; performance, then we would expect the average of the Spurs&#x2019; residuals to be significantly negative.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter47.html#page_320">Our null hypothesis is that Joey Crawford&#x2019;s officiating has no effect on the Spurs. Our alternative hypothesis is that his officiating has a significant effect on the Spurs&#x2019; performance (see </Run>
+      <Hyperlink NavigateUri="part01chapter11.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part04chapter47.html#page_320">chapter 11</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part04chapter47.html#page_320"> for a discussion of hypothesis testing.) Each Spurs game residual is normally distributed and has a mean of 0 and a standard deviation of 12. The average of n identically distributed in de pen dent random variables has a mean equal to the individual random variables and a standard deviation equal to</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/d75a1738-2091-4b1f-bbee-aa8c047b9800.jpg" Stretch="Uniform" Width="350" Height="46" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__299">Our sample of Spurs games in which Crawford officiated includes 14 games. Therefore if Crawford has no effect on the performance of the Spurs, we would expect our average Spurs residual to be normally distributed with a mean of 0 and a standard deviation of</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/8afd61fb-604e-4816-a307-8bc6a9e8a342.jpg" Stretch="Uniform" Width="120" Height="38" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__299">In reality our average Spurs residual was &#x2013;2.5. This is &#x2013;2.5/3.21 = .78 standard deviations below average. As we noted during our discussion of streakiness in </Run>
+      <Hyperlink NavigateUri="part01chapter11.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__299">chapter 11</Run>
+      </Hyperlink>
+      <Run Tag="__299">, any result more than two standard deviations away from expected causes us to reject our null hypothesis. Therefore, our analysis indicates that Crawford&#x2019;s officiating did not have a significantly adverse impact on the Spurs&#x2019; performance.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__299">The NBA could easily monitor the performance of each team in games involving each official and use our methodology to quell (or substantiate) teams&#x2019; complaints about biased officiating.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="24,16,24,16" BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph/>
+    <Section Margin="0,0,0,0" Tag="__12">
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Run Tag="__12">&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;</Run>
+      </Paragraph>
+      <Paragraph Margin="48,17,48,12" TextAlignment="Left" FontFamily="sans-serif" FontSize="16">
+        <Run FontFamily="sans-serif" FontWeight="Bold" FontSize="16" Tag="__12">FACT:</Run>
+      </Paragraph>
+      <Paragraph Margin="32,16,32,16" TextAlignment="Left" FontFamily="serif" FontSize="14" xml:space="preserve">
+        <Run Tag="__12">In 1991, a document was locked in the safe of the director of the CIA. The document is still there today. Its cryptic text includes references to an ancient portal and an unknown location underground. The document also contains the phrase </Run>
+        <Run FontFamily="serif" FontStyle="Italic" FontSize="14" Tag="__12">&#x201C;It&#x2019;s buried out there somewhere.&#x201D;</Run>
+        <LineBreak/>
+        <Run Tag="__12"> </Run>
+        <LineBreak/>
+        <Run Tag="__12"> All organizations in this novel exist, including the Freemasons, the Invisible College, the Office of Security, the SMSC, and the Institute of Noetic Sciences.</Run>
+        <LineBreak/>
+        <Run Tag="__12"> </Run>
+        <LineBreak/>
+        <Run Tag="__12"> All rituals, science, artwork, and monuments in this novel are real.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,16,0,16" TextAlignment="Center">
+        <Run Tag="__12">&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

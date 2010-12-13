@@ -116,7 +116,7 @@
 		subHeaderLabel.textColor = [UIColor grayColor];
 		subHeaderLabel.backgroundColor = [UIColor clearColor];
 		subHeaderLabel.numberOfLines = 2;
-		subHeaderLabel.text = NSLocalizedString(@"Over 75,000 Books, Available Now",@"Buy Books View Sub-Header");
+		subHeaderLabel.text = NSLocalizedString(@"Where books are more than words.",@"Buy Books View Sub-Header");
 		[self.phoneContentView addSubview:subHeaderLabel];
 		self.phoneContentView.subHeaderLabel = subHeaderLabel;
 
@@ -188,7 +188,7 @@
 		subHeaderLabel.font = [UIFont systemFontOfSize:30.0f];
 		subHeaderLabel.textColor = [UIColor grayColor];
 		subHeaderLabel.backgroundColor = [UIColor clearColor];
-		subHeaderLabel.text = NSLocalizedString(@"Over 75,000 Books, Available Now",@"Buy Books View Sub-Header");
+		subHeaderLabel.text = NSLocalizedString(@"Where books are more than words.",@"Buy Books View Sub-Header");
 
 		// explanation
 		self.explanationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(360,120,285,230)] autorelease];
@@ -240,9 +240,9 @@
 }
 -(void)updateExplanation {
 	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books for Blio, you must visit the blioreader.com website in a browser.  Purchased books will appear in your Archive for download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.");
+		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books, you must visit the blioreader.com website.  Purchased books will download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.");
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please login:",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
+			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
 			labelTitle = [NSString stringWithFormat:@"%@ %@",labelTitle,getStarted];
 		}
 		explanationLabel.text = labelTitle;
@@ -250,10 +250,10 @@
 	else {
 		CGRect explanationFrame = explanationLabel.frame;
 		NSString * explanationText = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION_IPAD",nil,[NSBundle mainBundle],@"Enjoy a vast selection of cookbooks, travel guides, how-to books, schoolbooks, art books, children's stories, and magazines. Relax, learn, work, or play! The smart display lets you insert highlights, notes, videos, and even webpages. Selected books also go hands-free with Blio's read-aloud feature.\n\nFlexible & accessible. Shop endless titles, right from the Blio Bookstore, with access to over one million free books and a huge library of today's bestsellers. Then, take your library on the road by syncing to your favorite on-the-go mobile device.",@"Explanation text for how to buy books through the website/mobile Safari (for iPad)");
-		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please login:",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
-			explanationText = [NSString stringWithFormat:@"%@ %@",explanationText,getStarted];
-		}			
+//		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+//			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
+//			explanationText = [NSString stringWithFormat:@"%@ %@",explanationText,getStarted];
+//		}			
 		CGSize explanationSize = [explanationText sizeWithFont:explanationLabel.font constrainedToSize:explanationLabel.frame.size lineBreakMode:UILineBreakModeWordWrap];
 		explanationFrame.size.height = explanationSize.height;
 		explanationLabel.frame = explanationFrame;

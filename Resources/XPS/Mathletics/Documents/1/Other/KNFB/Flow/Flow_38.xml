@@ -1,0 +1,489 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__178">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__178">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part03chapter28.html#part03chapter28" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part03chapter28.html#page_187">&#xA0;&#xA0;28&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__178">BASKETBALL STATISTICS 101</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="19">
+      <Run Tag="xhtml/part03chapter28.html#part03chapter28section01">The Four-Factor Model</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__178">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__178">F</Run>
+      <Run Tag="__178">or each player and team NBA box scores track the following information:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__178">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">two-point field goals made and missed</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">three-point field goals made and missed</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">free throws made and missed</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">personal fouls committed</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">assists</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">offensive and defensive rebounds</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">blocked shots</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">turnovers</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">steals</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__178">minutes played</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__178">How can we use this data (on a per game or per season basis) to break down what makes an NBA team perform well or poorly?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__178">Effective Field Goal Percentage</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter28.html#page_188">Many coaches and players currently evaluate their shooting by looking at their field goal percentage. For example, suppose in a Dallas Mavericks&#x2013;New York Knicks game the Mavericks make 45 out of 100 field goals (shoot 45%). The Knicks make 50 out of 100 field goals (shoot 50%). At first glance the Knicks shot better than the Mavericks. Suppose, however, the Mavericks shot 15 for 20 on three-pointers and the Knicks shot 1 for 5 on three-pointers. On the same number of shots the Mavericks scored 105 points and the Knicks scored 101 points. This indicates that the Mavericks actually shot better from the field than the Knicks did. To capture this phenomenon, NBA statistical geeks have created Effective Field Goal percentage (EFG).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-44" Margin="64,8,0,8" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__178">EFG = (all field goals made + 0.5 (3-point field goals made)/(all field goal attempts).</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__179">In essence, EFG gives 50% more credit for making a three-pointer because a three-pointer is worth 50% more points than a two-point field goal. For our example, the Mavericks&#x2019; EFG = (45 + 0.5 &#xD7; (15))/100 = 52.5% and the Knicks&#x2019; EFG = (50 + 0.5 &#xD7; (1))/100 = 50.5%. This example shows that EFG does a better job of capturing the quality of a team&#x2019;s shooting than does the traditional metric of Field Goal Percentage.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__179">How Can We Evaluate Team Rebounding?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__179">Raw rebounds for a team or player can be misleading. What really matters is the percentage of rebounds a team gets when they are on offense (called Offensive Rebounding Percentage, or ORP) and the percentage of rebounds a team gets when they are on defense (called Defensive Rebounding Percentage, or DRP).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part03chapter28.html#rfnpage_189">Dean Oliver, a statistical consultant for the Denver Nuggets, describes a four-factor model that can be used to analyze a team&#x2019;s performance and to better understand a team&#x2019;s strengths and weaknesses.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part03chapter28.html#fnpage_189">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter28.html#rfnpage_189">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter28.html#rfnpage_189"> The four factors (measured for both the team&#x2019;s offense and the team&#x2019;s defense) are explained below.</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__179">
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__179">Four Factors for Team Offense</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__179">1. Effective Field Goal Percentage (EFG).</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="xhtml/part03chapter28.html#rfnpage_189-01">2. Turnovers Committed per Possession (TPP). A possession starts when a team gets the basketball and ends when they give up control of the basketball. During the last five seasons NBA teams have averaged around 92 possessions per game.</Run>
+        <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+          <Hyperlink NavigateUri="xhtml/part03chapter28.html#fnpage_189-01">
+            <Hyperlink.TextDecorations>
+              <TextDecorationCollection/>
+            </Hyperlink.TextDecorations>
+            <Run Tag="xhtml/part03chapter28.html#rfnpage_189-01">2</Run>
+          </Hyperlink>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__179">3. Offensive Rebounding Percentage (ORP): the percentage of rebounds a team gets of their missed shots.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__179">4. Free Throw Rate (FTR): foul shots made divided by field goal attempts. FTR is impacted by how often a team gets to the foul line as well as by their free throw percentage.</Run>
+      </Paragraph>
+    </Section>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__179">
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="xhtml/part03chapter28.html#page_189">Four Factors for Team Defense</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__179">1. Opponent&#x2019;s Effective Field Goal Percentage (OEFG).</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__179">2. Defensive Turnovers Caused per Possession (DTPP).</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__179">3. Defensive Rebounding Percentage (DRP): percentage of rebounds a team gets of their opponent&#x2019;s missed shots.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+        <Run Tag="__179">4. Opponent&#x2019;s Free Throw Rate (OFTR): foul shots made by the opposing team divided by field goal attempts made by the opposing team.</Run>
+      </Paragraph>
+    </Section>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Hyperlink NavigateUri="xhtml/part03chapter28.html#chapter28figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__179">Figure 28.1</Run>
+      </Hyperlink>
+      <Run Tag="__179"> shows the values of the four factors for teams during the 2006&#x2013;7 NBA season. </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter28.html#chapter28figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__179">Figure 28.2</Run>
+      </Hyperlink>
+      <Run Tag="__179"> shows each team&#x2019;s ranking for each of the four factors as well as the number of games won by each team.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/d4b6d98b-fd1e-4ee5-9e0c-44cfbd274ae0.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter28.html#chapter28figure01">Figure 28.1. Four-factor analysis of the NBA 2006&#x2013;7 season. Source: </Run>
+      <Hyperlink NavigateUri="http://www.basketball-reference.com">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter28.html#chapter28figure01">http://www.basketball-reference.com</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter28.html#chapter28figure01">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part03chapter28.html#page_190">&#xA0;</Run>
+      <Image Source="/Resources/8c64ac2c-9553-4566-8cf3-75f09b345936.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter28.html#chapter28figure02">Figure 28.2. NBA team rankings by four factors, 2006&#x2013;7. Source: </Run>
+      <Hyperlink NavigateUri="http://www.basketball-reference.com">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part03chapter28.html#chapter28figure02">http://www.basketball-reference.com</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part03chapter28.html#chapter28figure02">.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__181">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__181">For example, the Mavericks had an EFG of 50.9% and held their opponents to an EFG of 47.7%. The Mavs committed 0.151 turnovers per possession and caused 0.157 turnovers per possession. The Mavs rebounded 28.7% of their missed shots and 75% of their opponents&#x2019; shots (or, equivalently, their opponents rebounded 25% of their missed shots). The Mavs made 0.256 free throws per FGA while their opponents made 0.265 free throws per FGA. This shows the Mavs bested their opponents on all factors except free throws. This is not surprising because the Mavs are primarily a jump shooting team that does not often drive to the basket.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="xhtml/part03chapter28.html#page_191">The Four Factors Are Virtually Uncorrelated</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__181">The interesting thing about the four factors is that there is little correlation among them (See </Run>
+      <Hyperlink NavigateUri="part01chapter05.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__181">chapter 5</Run>
+      </Hyperlink>
+      <Run Tag="__181"> for an explanation of correlation). Recall that correlations are always between &#x2013;1 and +1 with a correlation near +1 for two quantities x and y indicating that when x is big y tends to be big and a correlation near &#x2013;1 indicating that when x is big y tends to be small. </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter28.html#chapter28figure03">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__181">Figure 28.3</Run>
+      </Hyperlink>
+      <Run Tag="__181"> shows the correlations found using the Correlation option from Excel&#x2019;s Data Analysis Toolpak.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__182">Notice that most of the correlations are near 0. For example, the correlation between offensive shooting and defensive turnovers is &#x2013;.10. This indicates that if a team is better than average on offensive shooting, they will be slightly worse than average in causing defensive turnovers. Let&#x2019;s examine the three largest (in absolute value) correlations shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter28.html#chapter28figure03">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__182">figure 28.3</Run>
+      </Hyperlink>
+      <Run Tag="__182">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/5ca7db14-dcc5-4062-b077-cd449ba597a2.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter28.html#chapter28figure03">Figure 28.3. Correlations among the four factors.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,16" TextAlignment="Left" Tag="__182">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__182">There is a &#x2013;.67 correlation between defensive shooting percentage and defensive rebounding. This means that teams that give up a high shooting percentage tend to be poor defensive rebounding teams. This is reasonable because if a team fails to rebound its opponents&#x2019; missed shots, they will in all likelihood get many easy inside shots or dunks on follow-up shots.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="xhtml/part03chapter28.html#page_192">There is a &#x2013;.47 correlation between offensive shooting and offensive rebounding. This means that good shooting teams tend to be poor offensive rebounding teams. The Phoenix Suns (first in offensive shooting and twenty-ninth in offensive rebounding) are an illustration of this phenomenon. Perhaps teams loaded with good shooters do not have the tough guys needed to pound the offensive boards.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__182">There is a .46 correlation between offensive rebounding and offensive turnovers. This means teams that are good at offensive rebounding also tend to turn the ball over a lot. This is reasonable because good offensive rebounders tend to be poor ball handlers.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__182">Different Paths to Team Success (or Failure)</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__182">We can use </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter28.html#chapter28figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__182">figure 28.2</Run>
+      </Hyperlink>
+      <Run Tag="__182"> to quickly zero in on the keys to success (or failure) for an NBA team. Consider the following examples:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,16" TextAlignment="Left" Tag="__183">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__183">The 2007 champion San Antonio Spurs won because of their great shooting, holding their opponents to poor shooting opportunities, allowing few turnovers, and by holding down fouls and giving up few points from the foul line.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__183">The 2007 Phoenix Suns were successful because of great shooting, lack of turnovers, and giving up few points from the foul line. The Suns succeeded despite their poor offensive and defensive rebounding and lack of free throws.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__183">The 2007 Memphis Grizzlies had the league&#x2019;s worst record. Their shooting percentage defense was poor, they allowed lots of turnovers, and they rebounded poorly.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__183">The 2007 New York Knicks had a 33&#x2013;49 record, due almost exclusively to lots of turnovers committed on offense, while their defense caused very few turnovers.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__183">How Important Are the Four Factors?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__183">Can we estimate the relative importance of the four factors? Recall that in </Run>
+      <Hyperlink NavigateUri="part02chapter18.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__183">chapter 18</Run>
+      </Hyperlink>
+      <Run Tag="__183"> we used regression to predict NFL team performance based on measures of passing and rushing efficiency, and of turnover frequency. (See </Run>
+      <Hyperlink NavigateUri="part01chapter03.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__183">chapter 3</Run>
+      </Hyperlink>
+      <Run Tag="__183"> for a description of regression analysis.) We can use regression in a similar way to evaluate the importance of the four factors in basketball performance. Running a regression using the data in </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter28.html#chapter28figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__183">figure 28.1</Run>
+      </Hyperlink>
+      <Run Tag="__183"> can predict a team&#x2019;s number of wins from the following four independent variables:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,16" TextAlignment="Left" Tag="__183">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__183">EFG &#x2013; OEFG</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__183">TPP &#x2013; DTPP</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="xhtml/part03chapter28.html#page_193">ORP &#x2013; DRP</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__183">FTR &#x2013; OFTR.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__183">The results of the regression are shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part03chapter28.html#chapter28figure04">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__183">figure 28.4</Run>
+      </Hyperlink>
+      <Run Tag="__183">. From these results we can predict</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-84" Margin="96,8,0,8" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__183">games won = 41.06 + 351.88(EFG &#x2013; OEFG)</Run>
+      <LineBreak/>
+      <Run Tag="__183">+ 333.06(TPP &#x2013; DTPP) + 130.61(ORP &#x2013; DRP)</Run>
+      <LineBreak/>
+      <Run Tag="__183">+ 44.43(FTR &#x2013; OFTR).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/4a8ea40b-8711-435f-9ca9-022b7c2377de.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part03chapter28.html#chapter28figure04">Figure 28.4. Four-factor regression.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__184">These four independent variables explain 91% of the variation in the number of games won. The standard error of 3.53 means we are 95% sure our predicted wins will be within 2(3.53) = 7.06 wins of the actual number of wins.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__184">To measure the impact of the four factors on wins, we can look at the correlations between the four factors and wins:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,16" TextAlignment="Left" Tag="__184">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__184">EFG &#x2013; OEFG has a .85 correlation with wins and by itself explains 71% of the variation in wins.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__184">TPP &#x2013; DTPP has a 0.38 correlation with wins and by itself explains 15% of variation in wins.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__184">ORP &#x2013; DRP has a 0.25 correlation with wins and by itself explains 6% of variation in wins.</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="xhtml/part03chapter28.html#page_194">FTR &#x2013; OFTR has a &#x2013;0.01 correlation with wins and by itself explains virtually none of the variation in wins.</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__184">This analysis indicates that NBA teams&#x2019; differential on shooting percentage is by far the most important factor in their success.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__184">The relative importance of the four factors are summarized as follows:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,0" TextAlignment="Left" Tag="__184">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__184">A 0.01 improvement in EFG &#x2013; OEFG is worth 3.5 wins. That is any of the following improvements:</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">1. improve our EFG 1% (say, from 47% to 48%);</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">2. reduce our opponent&#x2019;s EFG by 1%; or</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">3. improve our EFG by 0.5% and cut our opponent&#x2019;s EFG by 0.5% should on average cause us to win 3.5 more games.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,0" TextAlignment="Left" Tag="__185">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__185">A 0.01 improvement in TPP &#x2013; DPPP is worth 3.3 wins. Thus any of the following improvements:</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">1. one less turnover per 100 possessions; or</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">2. one less turnover per 200 possessions and causing one more turnover per 200 possessions would lead to 3.3 more wins.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,0" TextAlignment="Left" Tag="__185">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__185">An increase of 0.01 in ORP &#x2013; DRP would lead on average to 1.3 more wins per season. Thus any of the following combinations would be expected to lead to 1.3 more wins:</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">1. one more offensive rebound per 100 missed shots;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">2. one more defensive rebound per 100 shots missed by opponent; or</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">3. one more offensive rebound per 200 missed shots and one more offensive rebound per 200 shots missed by an opponent.</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="32,16,0,0" TextAlignment="Left" Tag="__185">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__185">An increase of 0.01 in FTR &#x2013; OFTR would be expected to lead to 0.44 wins. Therefore any of these three combinations would be expected to lead to 0.44 wins:</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">1. one more free throw made per 100 field goal attempts;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">2. one less free throw given up per 100 field goal attempts by opponent; or</Run>
+    </Paragraph>
+    <Paragraph TextIndent="-16" Margin="48,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">3. one more free throw made per 200 field goal attempts and one less free throw given up per 200 field goal attempts.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__185">In summary, Dean Oliver&#x2019;s decomposition of a team&#x2019;s ability into four factors provides a quick and effective way to diagnose a team&#x2019;s strengths and weaknesses. Of course, the four-factor model may be applied to final or season-in-progress cumulative team data, or simply to the box score data for any particular game.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter28.html#rfnpage_189">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter28.html#fnpage_189">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter28.html#fnpage_189"> Oliver, </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="12" Tag="xhtml/part03chapter28.html#fnpage_189">Basketball on Paper</Run>
+      <Run Tag="xhtml/part03chapter28.html#fnpage_189">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part03chapter28.html#rfnpage_189-01">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part03chapter28.html#fnpage_189-01">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part03chapter28.html#fnpage_189-01"> See Kubatko et al., &#x201C;A Starting Point for Analyzing Basketball Statistics.&#x201D;</Run>
+    </Paragraph>
+  </Section>
+</Flow>

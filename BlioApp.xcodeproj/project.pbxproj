@@ -12,7 +12,7 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
-		28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
+		28AD73600D9D9599002E5188 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		28C286E10D94DF7D0034E888 /* BlioLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */; };
 		28F335F11007B36200424DE2 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		553D5B17126F6B6B00A1CE83 /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
@@ -148,9 +148,6 @@
 		7D6D9FFB124E9DEE005FD8CE /* BlioBookSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCCFF123BCED600859B92 /* BlioBookSearchResultsTableViewController.m */; };
 		7D6D9FFC124E9DEE005FD8CE /* BlioBookSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCD0D123BDB1300859B92 /* BlioBookSearchResult.m */; };
 		7D6D9FFE124E9E1A005FD8CE /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
-		7D6DA3421250DF6D005FD8CE /* paper-white-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6DA3411250DF6D005FD8CE /* paper-white-ipad.png */; };
-		7D6DA3431250DF6D005FD8CE /* paper-white-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6DA3411250DF6D005FD8CE /* paper-white-ipad.png */; };
-		7D6DA3441250DF6D005FD8CE /* paper-white-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D6DA3411250DF6D005FD8CE /* paper-white-ipad.png */; };
 		7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		7D79183610F2257C00C4D839 /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
 		7D79CF7D117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79CF7C117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m */; };
@@ -168,6 +165,15 @@
 		7D9A6886125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
 		7DA5665511529FD2000A849D /* BlioTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */; };
 		7DA5665B11529FE2000A849D /* BlioTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */; };
+		7DA97BA512B25A6500F1FF75 /* paper-black~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA212B25A6400F1FF75 /* paper-black~ipad.png */; };
+		7DA97BA612B25A6500F1FF75 /* paper-neutral~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA312B25A6500F1FF75 /* paper-neutral~ipad.png */; };
+		7DA97BA812B25A6500F1FF75 /* paper-black~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA212B25A6400F1FF75 /* paper-black~ipad.png */; };
+		7DA97BA912B25A6500F1FF75 /* paper-neutral~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA312B25A6500F1FF75 /* paper-neutral~ipad.png */; };
+		7DA97BAB12B25A6500F1FF75 /* paper-black~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA212B25A6400F1FF75 /* paper-black~ipad.png */; };
+		7DA97BAC12B25A6500F1FF75 /* paper-neutral~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA312B25A6500F1FF75 /* paper-neutral~ipad.png */; };
+		7DA97C1112B273CC00F1FF75 /* paper-white~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */; };
+		7DA97C1212B273CC00F1FF75 /* paper-white~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */; };
+		7DA97C1312B273CC00F1FF75 /* paper-white~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */; };
 		7DAA2FF011512A8D006634CC /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
 		7DAA2FF111512A8D006634CC /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
 		7DAA2FF211512A8D006634CC /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
@@ -176,7 +182,16 @@
 		7DAA30C411512B1C006634CC /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
 		7DB190EB120315A80001017D /* NSData+MBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB190EA120315A80001017D /* NSData+MBBase64.m */; };
 		7DB1913F12031BAA0001017D /* NSString+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */; };
+		7DB195B112B14CA20087E61F /* BlioDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */; };
+		7DB195B212B14CA20087E61F /* BlioDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */; };
+		7DB195B312B14CA20087E61F /* BlioDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */; };
+		7DB349A812B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
+		7DB349A912B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
+		7DB349AA12B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
 		7DB5F71111EC65BF00D33185 /* logo-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */; };
+		7DB6493C12B12AC100F42F87 /* DRM-iPad in Resources */ = {isa = PBXBuildFile; fileRef = 7DB6493812B12AC100F42F87 /* DRM-iPad */; };
+		7DB6493D12B12AC100F42F87 /* DRM-iPad in Resources */ = {isa = PBXBuildFile; fileRef = 7DB6493812B12AC100F42F87 /* DRM-iPad */; };
+		7DB6493E12B12AC100F42F87 /* DRM-iPad in Resources */ = {isa = PBXBuildFile; fileRef = 7DB6493812B12AC100F42F87 /* DRM-iPad */; };
 		7DB7029F1248D38E00BC3272 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
 		7DB9F95310F3A08C0010DF0B /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
@@ -212,7 +227,7 @@
 		7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		7DF58BF310DA9C0E004E3DBB /* ePubs in Resources */ = {isa = PBXBuildFile; fileRef = 7DF58BA210DA9A86004E3DBB /* ePubs */; };
 		A30E0EFB123EA5B400D31157 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
-		A30E0EFC123EA5B400D31157 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
+		A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A30E0EFF123EA5B400D31157 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
 		A30E0F00123EA5B400D31157 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
@@ -280,7 +295,7 @@
 		A30E0F44123EA5B400D31157 /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
 		A30E0F45123EA5B400D31157 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
 		A30E0F46123EA5B400D31157 /* icon-freebooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DCCE466911B9AE22002D7E01 /* icon-freebooks.png */; };
-		A30E0F47123EA5B400D31157 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */; };
+		A30E0F47123EA5B400D31157 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
 		A30E0F48123EA5B400D31157 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D211C9155F00CFEB88 /* Default@2x.png */; };
 		A30E0F49123EA5B400D31157 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D311C9155F00CFEB88 /* Icon@2x.png */; };
 		A30E0F4A123EA5B400D31157 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D611C9159000CFEB88 /* Default-Landscape.png */; };
@@ -379,7 +394,6 @@
 		A30E0FA9123EA5B400D31157 /* button-tts-pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FF122289D20022D410 /* button-tts-pause@2x.png */; };
 		A30E0FAA123EA5B400D31157 /* downloadButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B903122289EF0022D410 /* downloadButton@2x.png */; };
 		A30E0FAB123EA5B400D31157 /* downloadButtonPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B904122289EF0022D410 /* downloadButtonPressed@2x.png */; };
-		A30E0FAC123EA5B400D31157 /* devcerttemplate.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F291222CDD90004B11D /* devcerttemplate.dat */; };
 		A30E0FAE123EA5B400D31157 /* voice-sample-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */; };
 		A30E0FAF123EA5B400D31157 /* badge-audiobook.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCC1227640D003C57CA /* badge-audiobook.png */; };
 		A30E0FB0123EA5B400D31157 /* badge-notsupported.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCD1227640D003C57CA /* badge-notsupported.png */; };
@@ -389,7 +403,6 @@
 		A30E0FB4123EA5B400D31157 /* badge-audiobook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDD11227640D003C57CA /* badge-audiobook@2x.png */; };
 		A30E0FB5123EA5B400D31157 /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
 		A30E0FB6123EA5B400D31157 /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
-		A30E0FB7123EA5B400D31157 /* iphonecert.dat in Resources */ = {isa = PBXBuildFile; fileRef = A3E641D312397F6700D2B85A /* iphonecert.dat */; };
 		A30E0FBA123EA5B400D31157 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		A30E0FBB123EA5B400D31157 /* BlioAppAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */; };
 		A30E0FBC123EA5B400D31157 /* BlioLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */; };
@@ -532,7 +545,7 @@
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A3689AF4116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3689AF3116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m */; };
 		A368C69E116A3A52008653CF /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */; };
-		A36D34C3120B136700E1A035 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainWindow.xib */; };
+		A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A36D34C4120B136700E1A035 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A36D34C6120B136700E1A035 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
 		A36D34C7120B136700E1A035 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
@@ -601,7 +614,7 @@
 		A36D350F120B136700E1A035 /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
 		A36D3511120B136700E1A035 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
 		A36D3512120B136700E1A035 /* icon-freebooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DCCE466911B9AE22002D7E01 /* icon-freebooks.png */; };
-		A36D3513120B136700E1A035 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */; };
+		A36D3513120B136700E1A035 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
 		A36D3514120B136700E1A035 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D211C9155F00CFEB88 /* Default@2x.png */; };
 		A36D3515120B136700E1A035 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D311C9155F00CFEB88 /* Icon@2x.png */; };
 		A36D3516120B136700E1A035 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D611C9159000CFEB88 /* Default-Landscape.png */; };
@@ -823,7 +836,6 @@
 		A3729AF61225A18800E68C25 /* BlioDrmSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3729AF41225A18800E68C25 /* BlioDrmSessionManager.m */; };
 		A37A584B113C36EF0003CCFF /* back-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A584A113C36EF0003CCFF /* back-black.png */; };
 		A37A586D113C45640003CCFF /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
-		A37E2F2D1222CDD90004B11D /* devcerttemplate.dat in Resources */ = {isa = PBXBuildFile; fileRef = A37E2F291222CDD90004B11D /* devcerttemplate.dat */; };
 		A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
 		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
 		A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
@@ -868,9 +880,14 @@
 		A3C7437F11CAC178005A2219 /* paper-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436F11CAC178005A2219 /* paper-white@2x.png */; };
 		A3CA7B221275F92900775EF4 /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
 		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
+		A3E5AF1712B2FD2A008F48C6 /* back-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */; };
+		A3E5AF1812B2FD2A008F48C6 /* back-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */; };
+		A3E5AF1912B2FD2A008F48C6 /* back-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */; };
+		A3E5AF1B12B2FD44008F48C6 /* forward-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */; };
+		A3E5AF1C12B2FD44008F48C6 /* forward-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */; };
+		A3E5AF1D12B2FD44008F48C6 /* forward-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */; };
 		A3E6419912397C0400D2B85A /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
 		A3E6419A12397C0400D2B85A /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
-		A3E641D512397F6700D2B85A /* iphonecert.dat in Resources */ = {isa = PBXBuildFile; fileRef = A3E641D312397F6700D2B85A /* iphonecert.dat */; };
 		A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
 		A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
 		A3FE55B112074EBD0038DA0C /* BlioEULATextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */; };
@@ -1065,7 +1082,7 @@
 		DCAC9611126918C200C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
 		DCAC9612126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
 		DCAC9613126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
-		DCB0364011BDC43300B341D4 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */; };
+		DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
 		DCC447E211ADBAB700CBD491 /* BlioVoiceData.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */; };
 		DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
 		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
@@ -1307,7 +1324,7 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28A0AAE50D9B0CCF005BE974 /* BlioApp_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioApp_Prefix.pch; sourceTree = "<group>"; };
-		28AD735F0D9D9599002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainNavControllerAndLibraryView.xib; sourceTree = "<group>"; };
 		28C286DF0D94DF7D0034E888 /* BlioLibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLibraryViewController.h; sourceTree = "<group>"; };
 		28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLibraryViewController.m; sourceTree = "<group>"; };
 		28F335F01007B36200424DE2 /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
@@ -1407,7 +1424,6 @@
 		7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmark.m; sourceTree = "<group>"; };
 		7D529C101158DC1100548C00 /* TextFlowCover.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TextFlowCover.xhtml; sourceTree = "<group>"; };
 		7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ePubBaseOverrides.css; sourceTree = "<group>"; };
-		7D6DA3411250DF6D005FD8CE /* paper-white-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white-ipad.png"; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
 		7D79183410F2257C00C4D839 /* BlioFlowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowView.h; sourceTree = "<group>"; };
@@ -1435,12 +1451,20 @@
 		7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowFlow.m; sourceTree = "<group>"; };
 		7DA5665811529FE2000A849D /* BlioTextFlowParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraph.h; sourceTree = "<group>"; };
 		7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraph.m; sourceTree = "<group>"; };
+		7DA97BA212B25A6400F1FF75 /* paper-black~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-black~ipad.png"; sourceTree = "<group>"; };
+		7DA97BA312B25A6500F1FF75 /* paper-neutral~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-neutral~ipad.png"; sourceTree = "<group>"; };
+		7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white~ipad.png"; sourceTree = "<group>"; };
 		7DAA30C311512B1C006634CC /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		7DB190E9120315A80001017D /* NSData+MBBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+MBBase64.h"; sourceTree = "<group>"; };
 		7DB190EA120315A80001017D /* NSData+MBBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+MBBase64.m"; sourceTree = "<group>"; };
 		7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+BlioAdditions.m"; sourceTree = "<group>"; };
 		7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+BlioAdditions.h"; sourceTree = "<group>"; };
+		7DB195AF12B14CA20087E61F /* BlioDefaultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDefaultViewController.h; sourceTree = "<group>"; };
+		7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDefaultViewController.m; sourceTree = "<group>"; };
+		7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSDataAdditions.m; sourceTree = "<group>"; };
+		7DB349AB12B1956200BCE8DF /* THNSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSDataAdditions.h; sourceTree = "<group>"; };
 		7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white@2x.png"; sourceTree = "<group>"; };
+		7DB6493812B12AC100F42F87 /* DRM-iPad */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "DRM-iPad"; sourceTree = "<group>"; };
 		7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+BlioAdditions.h"; sourceTree = "<group>"; };
 		7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+BlioAdditions.m"; sourceTree = "<group>"; };
 		7DB9F57C10F345450010DF0B /* BlioBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookView.h; sourceTree = "<group>"; };
@@ -1636,7 +1660,6 @@
 		A37DAE7B11B21458005F949A /* drmxmlsig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsig.h; path = DRM/drmxmlsig.h; sourceTree = "<group>"; };
 		A37DAE7C11B21458005F949A /* drmxmlsigconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsigconstants.h; path = DRM/drmxmlsigconstants.h; sourceTree = "<group>"; };
 		A37DAE7D11B21458005F949A /* drmxmlutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlutilities.h; path = DRM/drmxmlutilities.h; sourceTree = "<group>"; };
-		A37E2F291222CDD90004B11D /* devcerttemplate.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = devcerttemplate.dat; sourceTree = "<group>"; };
 		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
 		A37FC33310EA785F00F3DC5A /* BlioAcapelaAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioAcapelaAudioManager.h; path = TTS/BlioAcapelaAudioManager.h; sourceTree = "<group>"; };
 		A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioAcapelaAudioManager.m; path = TTS/BlioAcapelaAudioManager.m; sourceTree = "<group>"; };
@@ -1709,9 +1732,10 @@
 		A3C7436F11CAC178005A2219 /* paper-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white@2x.png"; sourceTree = "<group>"; };
 		A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioBookManager.h; sourceTree = "<group>"; };
 		A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioBookManager.m; sourceTree = "<group>"; };
+		A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-black@2x.png"; sourceTree = "<group>"; };
+		A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward-black@2x.png"; sourceTree = "<group>"; };
 		A3E6419712397C0400D2B85A /* icon-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back.png"; sourceTree = "<group>"; };
 		A3E6419812397C0400D2B85A /* icon-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back@2x.png"; sourceTree = "<group>"; };
-		A3E641D312397F6700D2B85A /* iphonecert.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = iphonecert.dat; sourceTree = "<group>"; };
 		A3EC8A21122857E100D27D8C /* bigdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigdefs.h; path = DRM/bigdefs.h; sourceTree = "<group>"; };
 		A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLoginViewController.h; sourceTree = "<group>"; };
 		A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLoginViewController.m; sourceTree = "<group>"; };
@@ -1929,7 +1953,7 @@
 		DCA65A4611503CF6006534F4 /* icon-vault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-vault.png"; sourceTree = "<group>"; };
 		DCAC960F126918C200C24BF7 /* BlioMyAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMyAccountViewController.h; sourceTree = "<group>"; };
 		DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMyAccountViewController.m; sourceTree = "<group>"; };
-		DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "MainWindow-iPad.xib"; sourceTree = "<group>"; };
+		DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "MainNavControllerAndLibraryView-iPad.xib"; sourceTree = "<group>"; };
 		DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioVoiceData.plist; sourceTree = "<group>"; };
 		DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDownloadVoicesViewController.h; sourceTree = "<group>"; };
 		DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDownloadVoicesViewController.m; sourceTree = "<group>"; };
@@ -2122,6 +2146,8 @@
 				DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */,
 				DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */,
 				DC8BB5881278E7060044580E /* Additions */,
+				7DB195AF12B14CA20087E61F /* BlioDefaultViewController.h */,
+				7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */,
 				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
 				1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */,
 				A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */,
@@ -2169,6 +2195,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */,
+				A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */,
 				DCD4A4E4126F7F8E00A131B7 /* icon-add@2x.png */,
 				DCD4A4E5126F7F8E00A131B7 /* icon-bookmarked@2x.png */,
 				DCD4A4E6126F7F8E00A131B7 /* icon-bookmarked.png */,
@@ -2210,7 +2238,6 @@
 				A3C7436D11CAC178005A2219 /* paper-black@2x.png */,
 				A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */,
 				A3C7436F11CAC178005A2219 /* paper-white@2x.png */,
-				7D6DA3411250DF6D005FD8CE /* paper-white-ipad.png */,
 				A382D3D211C9155F00CFEB88 /* Default@2x.png */,
 				A382D3D311C9155F00CFEB88 /* Icon@2x.png */,
 				A383F2431174FA7A0049ED3A /* icon-cart.png */,
@@ -2315,7 +2342,7 @@
 				DCF63D1512B59CA7003E762C /* webstore-screenshot-phone@2x.png */,
 				DCFAC96912AD738D0049341B /* webstore-screenshot-ipad.png */,
 				DCFAC96A12AD738D0049341B /* webstore-screenshot-ipad@2x.png */,
-				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
+				28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */,
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				7DE7B5E21104B4FD0021F382 /* Lighting.xib */,
 				C9867DE51127164F0070A03E /* BlioStoreBookView.xib */,
@@ -2862,7 +2889,7 @@
 				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
+				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -3028,6 +3055,8 @@
 		DC8BB5881278E7060044580E /* Additions */ = {
 			isa = PBXGroup;
 			children = (
+				7DB349AB12B1956200BCE8DF /* THNSDataAdditions.h */,
+				7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */,
 				7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */,
 				7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */,
 				7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */,
@@ -3059,13 +3088,15 @@
 		DCB0363E11BDC42C00B341D4 /* Resources-iPad */ = {
 			isa = PBXGroup;
 			children = (
-				A3E641D312397F6700D2B85A /* iphonecert.dat */,
-				A37E2F291222CDD90004B11D /* devcerttemplate.dat */,
+				7DB6493812B12AC100F42F87 /* DRM-iPad */,
 				A382D3D611C9159000CFEB88 /* Default-Landscape.png */,
 				A382D3D711C9159000CFEB88 /* Default-Portrait.png */,
 				A382D3D811C9159000CFEB88 /* Icon-iPad.png */,
-				DCB0363F11BDC43300B341D4 /* MainWindow-iPad.xib */,
+				DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */,
 				DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */,
+				7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */,
+				7DA97BA212B25A6400F1FF75 /* paper-black~ipad.png */,
+				7DA97BA312B25A6500F1FF75 /* paper-neutral~ipad.png */,
 			);
 			path = "Resources-iPad";
 			sourceTree = "<group>";
@@ -3287,7 +3318,7 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = GDataTouchUnitTests.octest;
@@ -3308,7 +3339,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */,
+				28AD73600D9D9599002E5188 /* MainNavControllerAndLibraryView.xib in Resources */,
 				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
 				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
 				7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */,
@@ -3381,7 +3412,7 @@
 				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */,
 				DCCE466A11B9AE22002D7E01 /* icon-freebooks.png in Resources */,
-				DCB0364011BDC43300B341D4 /* MainWindow-iPad.xib in Resources */,
+				DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
 				A382D3D411C9155F00CFEB88 /* Default@2x.png in Resources */,
 				A382D3D511C9155F00CFEB88 /* Icon@2x.png in Resources */,
 				A382D3D911C9159000CFEB88 /* Default-Landscape.png in Resources */,
@@ -3491,7 +3522,6 @@
 				DC5FCDD71227640D003C57CA /* badge-audiobook@2x.png in Resources */,
 				DC8CADA7124877DA00C1EED9 /* table-headerbar-background.png in Resources */,
 				DC8CADA8124877DA00C1EED9 /* table-headerbar-background@2x.png in Resources */,
-				7D6DA3441250DF6D005FD8CE /* paper-white-ipad.png in Resources */,
 				C99239DD126CCD9200BA364A /* searchBarBorder.png in Resources */,
 				C99239DE126CCD9200BA364A /* searchBarBorder@2x.png in Resources */,
 				C9923A12126CCF2D00BA364A /* searchFieldIcon.png in Resources */,
@@ -3530,6 +3560,12 @@
 				DCF63D1912B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */,
 				DCF6420112B60B60003E762C /* button-background-graygradient.png in Resources */,
 				DCF6420212B60B60003E762C /* button-background-graygradient@2x.png in Resources */,
+				7DB6493D12B12AC100F42F87 /* DRM-iPad in Resources */,
+				7DA97BA812B25A6500F1FF75 /* paper-black~ipad.png in Resources */,
+				7DA97BA912B25A6500F1FF75 /* paper-neutral~ipad.png in Resources */,
+				7DA97C1212B273CC00F1FF75 /* paper-white~ipad.png in Resources */,
+				A3E5AF1912B2FD2A008F48C6 /* back-black@2x.png in Resources */,
+				A3E5AF1D12B2FD44008F48C6 /* forward-black@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3540,7 +3576,7 @@
 				A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */,
 				A3428F8D129454A700AA1DBF /* XPS in Resources */,
 				A30E0EFB123EA5B400D31157 /* credits.html in Resources */,
-				A30E0EFC123EA5B400D31157 /* MainWindow.xib in Resources */,
+				A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */,
 				A30E0EFF123EA5B400D31157 /* BookEdge.pvrtc in Resources */,
 				A30E0F00123EA5B400D31157 /* EPubDefault.css in Resources */,
@@ -3608,7 +3644,7 @@
 				A30E0F44123EA5B400D31157 /* button-tts-pause.png in Resources */,
 				A30E0F45123EA5B400D31157 /* EucConfiguration.plist in Resources */,
 				A30E0F46123EA5B400D31157 /* icon-freebooks.png in Resources */,
-				A30E0F47123EA5B400D31157 /* MainWindow-iPad.xib in Resources */,
+				A30E0F47123EA5B400D31157 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
 				A30E0F48123EA5B400D31157 /* Default@2x.png in Resources */,
 				A30E0F49123EA5B400D31157 /* Icon@2x.png in Resources */,
 				A30E0F4A123EA5B400D31157 /* Default-Landscape.png in Resources */,
@@ -3707,7 +3743,6 @@
 				A30E0FA9123EA5B400D31157 /* button-tts-pause@2x.png in Resources */,
 				A30E0FAA123EA5B400D31157 /* downloadButton@2x.png in Resources */,
 				A30E0FAB123EA5B400D31157 /* downloadButtonPressed@2x.png in Resources */,
-				A30E0FAC123EA5B400D31157 /* devcerttemplate.dat in Resources */,
 				A30E0FAE123EA5B400D31157 /* voice-sample-play-button@2x.png in Resources */,
 				A30E0FAF123EA5B400D31157 /* badge-audiobook.png in Resources */,
 				A30E0FB0123EA5B400D31157 /* badge-notsupported.png in Resources */,
@@ -3717,10 +3752,8 @@
 				A30E0FB4123EA5B400D31157 /* badge-audiobook@2x.png in Resources */,
 				A30E0FB5123EA5B400D31157 /* icon-back.png in Resources */,
 				A30E0FB6123EA5B400D31157 /* icon-back@2x.png in Resources */,
-				A30E0FB7123EA5B400D31157 /* iphonecert.dat in Resources */,
 				DC8CADA5124877DA00C1EED9 /* table-headerbar-background.png in Resources */,
 				DC8CADA6124877DA00C1EED9 /* table-headerbar-background@2x.png in Resources */,
-				7D6DA3421250DF6D005FD8CE /* paper-white-ipad.png in Resources */,
 				C99239E1126CCD9300BA364A /* searchBarBorder.png in Resources */,
 				C99239E2126CCD9300BA364A /* searchBarBorder@2x.png in Resources */,
 				C9923A10126CCF2D00BA364A /* searchFieldIcon.png in Resources */,
@@ -3756,6 +3789,12 @@
 				DCF63D1B12B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */,
 				DCF6420312B60B60003E762C /* button-background-graygradient.png in Resources */,
 				DCF6420412B60B60003E762C /* button-background-graygradient@2x.png in Resources */,
+				7DB6493E12B12AC100F42F87 /* DRM-iPad in Resources */,
+				7DA97BAB12B25A6500F1FF75 /* paper-black~ipad.png in Resources */,
+				7DA97BAC12B25A6500F1FF75 /* paper-neutral~ipad.png in Resources */,
+				7DA97C1312B273CC00F1FF75 /* paper-white~ipad.png in Resources */,
+				A3E5AF1712B2FD2A008F48C6 /* back-black@2x.png in Resources */,
+				A3E5AF1B12B2FD44008F48C6 /* forward-black@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3765,7 +3804,7 @@
 			files = (
 				A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */,
 				A31E82EE120B3FD800CB6657 /* credits.html in Resources */,
-				A36D34C3120B136700E1A035 /* MainWindow.xib in Resources */,
+				A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A36D34C4120B136700E1A035 /* RootViewController.xib in Resources */,
 				A36D34C6120B136700E1A035 /* BookEdge.pvrtc in Resources */,
 				A36D34C7120B136700E1A035 /* EPubDefault.css in Resources */,
@@ -3834,7 +3873,7 @@
 				A36D350F120B136700E1A035 /* button-tts-pause.png in Resources */,
 				A36D3511120B136700E1A035 /* EucConfiguration.plist in Resources */,
 				A36D3512120B136700E1A035 /* icon-freebooks.png in Resources */,
-				A36D3513120B136700E1A035 /* MainWindow-iPad.xib in Resources */,
+				A36D3513120B136700E1A035 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
 				A36D3514120B136700E1A035 /* Default@2x.png in Resources */,
 				A36D3515120B136700E1A035 /* Icon@2x.png in Resources */,
 				A36D3516120B136700E1A035 /* Default-Landscape.png in Resources */,
@@ -3934,7 +3973,6 @@
 				DCA1B901122289D20022D410 /* button-tts-pause@2x.png in Resources */,
 				DCA1B907122289EF0022D410 /* downloadButton@2x.png in Resources */,
 				DCA1B908122289EF0022D410 /* downloadButtonPressed@2x.png in Resources */,
-				A37E2F2D1222CDD90004B11D /* devcerttemplate.dat in Resources */,
 				DC32BF8E12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */,
 				DC5FCDD81227640D003C57CA /* badge-audiobook.png in Resources */,
 				DC5FCDD91227640D003C57CA /* badge-notsupported.png in Resources */,
@@ -3944,10 +3982,8 @@
 				DC5FCDDD1227640D003C57CA /* badge-audiobook@2x.png in Resources */,
 				A3E6419912397C0400D2B85A /* icon-back.png in Resources */,
 				A3E6419A12397C0400D2B85A /* icon-back@2x.png in Resources */,
-				A3E641D512397F6700D2B85A /* iphonecert.dat in Resources */,
 				DC8CADA9124877DA00C1EED9 /* table-headerbar-background.png in Resources */,
 				DC8CADAA124877DA00C1EED9 /* table-headerbar-background@2x.png in Resources */,
-				7D6DA3431250DF6D005FD8CE /* paper-white-ipad.png in Resources */,
 				C99239DF126CCD9300BA364A /* searchBarBorder.png in Resources */,
 				C99239E0126CCD9300BA364A /* searchBarBorder@2x.png in Resources */,
 				C9923A14126CCF2D00BA364A /* searchFieldIcon.png in Resources */,
@@ -3983,6 +4019,12 @@
 				DCF63D1712B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */,
 				DCF641FF12B60B60003E762C /* button-background-graygradient.png in Resources */,
 				DCF6420012B60B60003E762C /* button-background-graygradient@2x.png in Resources */,
+				7DB6493C12B12AC100F42F87 /* DRM-iPad in Resources */,
+				7DA97BA512B25A6500F1FF75 /* paper-black~ipad.png in Resources */,
+				7DA97BA612B25A6500F1FF75 /* paper-neutral~ipad.png in Resources */,
+				7DA97C1112B273CC00F1FF75 /* paper-white~ipad.png in Resources */,
+				A3E5AF1812B2FD2A008F48C6 /* back-black@2x.png in Resources */,
+				A3E5AF1C12B2FD44008F48C6 /* forward-black@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4121,6 +4163,8 @@
 				DC8BB2481277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33712A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				DCF0C27512B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
+				7DB195B212B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
+				7DB349A912B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4255,6 +4299,8 @@
 				DC8BB2491277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33812A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				DCF0C27612B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
+				7DB195B312B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
+				7DB349AA12B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4389,6 +4435,8 @@
 				DC8BB2471277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33612A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				DCF0C27412B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
+				7DB195B112B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
+				7DB349A812B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

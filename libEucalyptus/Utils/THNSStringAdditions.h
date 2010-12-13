@@ -14,6 +14,8 @@
 + (id)stringWithBytes:(const void *)bytes length:(NSUInteger)len encoding:(NSStringEncoding)encoding;
 + (id)stringWithCharacters:(const UniChar *)characters length:(NSUInteger)length backedBy:(id)object;
 
++ (id)stringWithRomanNumeralsFromInteger:(NSUInteger)integer;
+
 + (id)stringWithRegMatch:(regmatch_t *)match fromCString:(const char *)string;
 + (id)stringWithRegMatch:(regmatch_t *)match fromBytes:(const char *)string encoding:(NSStringEncoding)encoding;
 + (id)stringWithByteSize:(long long)byteSize;

@@ -1,0 +1,762 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_ch8.html#ch8">
+      <Paragraph Margin="0,80,0,28" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="16">
+        <Run Tag="__61">8</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Span FontStyle="Normal" FontWeight="Normal" FontSize="16">
+            <Run FontStyle="Normal" FontWeight="Normal" FontSize="19" Tag="__61">The Trust Equation</Run>
+          </Span>
+        </Span>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="16" Tag="__61">I</Run>
+          <Run FontStyle="Normal" FontWeight="Normal" FontSize="11" Tag="__61">N THIS CHAPTER</Run>
+          <Run Tag="__61">, we offer a formula that will show how different trust elements interrelate. Naturally, the equation should be treated as a framework for looking at the topic, and not as a scientific conclusion.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__61">We suggest that there are four primary components of trustworthiness, shown in Figure 8-1. The four components have to do with the trustworthiness of words, actions, emotions, and motives, as shown in Figure 8-2.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__61">We can use the trust equation to isolate the impact of each particular component of the equation. Figure 8-3 shows the kinds of relationship failures that result from the absence of each component, one by one.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__61">Most professionals, when asked to talk about trust, instinctively focus on credibility and reliability. &#x201C;My client knows I am credible and reliable,&#x201D; they say. &#x201C;So why doesn&#x2019;t my client trust me?&#x201D;</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__61">Fig. 8.1. The Trust Equation</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/6deb0cd8-5777-4a2a-a8cb-50832366951c.jpg" Stretch="Uniform" Width="100" Height="116" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__61"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__61">Fig. 8.2. Trust Realms</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/0adec57b-3f6a-4d50-98d2-098ab2a35260.jpg" Stretch="Uniform" Width="300" Height="112" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__62"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__62">The answer, of course, is that trust has multiple dimensions. I might trust your expertise, but distrust (profoundly) your motives (i.e., self-orientation). I might trust your brilliance, but dislike your style of dealing with me (your intimacy).</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__62">Fig. 8.3. Individual Failings</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/f001f4be-4322-45c7-8499-ed1c8f568e1b.jpg" Stretch="Uniform" Width="200" Height="111" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__62"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__62">Winning trust requires that you do well on all four dimensions (in the client&#x2019;s eyes), unless you are so </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__62">superb</Run>
+          <Run Tag="__62"> at one or two dimensions that you can overcome some relative weaknesses in the others. Even then, you have to be truly superb, not just good.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__62">One of Rob&#x2019;s children was diagnosed as having a serious medical condition when she was barely three years old. Given the complexity and potential severity of the situation, she was referred to a highly specialized surgeon at Children&#x2019;s Hospital in Boston who was sufficiently famous to have been the subject of a book, written about him and his work, complete with photographs of his hands. From the standpoint of credibility and reliability, few people in the world could match him. But his intimacy skills were not among the highest, to be sure.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__62">This was pointedly obvious when, at the end of six hours of surgery on Rob&#x2019;s daughter, the surgeon emerged from the operating room saying to the anxious parents, &#x201C;Don&#x2019;t worry. </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__62">He</Run>
+          <Run Tag="__62">&#x2019;s fine.&#x201D; Rob and his wife, Susan, almost shouted in unison, &#x201C;She&#x2019;s a she!&#x201D; He shrugged and casually said, &#x201C;Oh, yeah, I meant to say &#x2018;she.&#x2019; Anyway, she&#x2019;ll be fine. Complex surgery. Interesting case. We videotaped it.&#x201D; With that, he strolled away, leaving two grateful yet dumbfounded parents in his wake.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__63">Did this surgeon &#x201C;get away with it?&#x201D; Yes. Can </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__63">you</Run>
+          <Run Tag="__63"> get by only on technical excellence? Yes, you can, barely, if you&#x2019;re world-famous. The rest of us cannot.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__63">Credibility</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__63">It does not diminish the importance of credibility to say that it is the one aspect of trust that is most commonly achieved. Given the focus that most professionals place on their technical expertise, and its relative tangibility, this is the factor most likely to be done well by you (and your competitors).</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__63">Credibility isn&#x2019;t just content expertise. It&#x2019;s content expertise plus &#x201C;presence,&#x201D; which refers to how we look, act, react, and talk about our content. It depends not only on the substantive reality of the advisor&#x2019;s expertise, but also on the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__63">experience</Run>
+          <Run Tag="__63"> of the person doing the perceiving. As the chapter on relationship building suggested (Chapter 5), we must find ways not only to be credible, but also to give the client the sense that we are credible. We must illustrate, not assert.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__63">Why do doctors hang all those diplomas and certificates on their office walls? The paper on the wall is a shorthand means of communicating both competence and experience, which results in credibility. That impressive, scripted diploma appeals to both our rational and our emotional sides. We see not only certification of certain skills (competence) but also a testimonial from an institution, designed to make us feel good. The net result is aimed at reducing the patient&#x2019;s concerns as they sit half-dressed in a cold examination room.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__63">At the same time, doctors also create credibility in a direct way, either through repeated positive experiences, or from a compelling diagnosis of what is wrong (and what is to be done about it). In either case, we believe the doctor: he or she has the perceived credibility that derives from experience. There are both rational and emotional components at work.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__63">The concept of credibility includes notions of both accuracy and completeness. These parallel the rational and emotional realms. Accuracy, in the client-advisor world, is mostly rational. We check facts, logic, and other people&#x2019;s experiences to assess whether someone is accurate. Completeness, on the other hand, is frequently assessed more emotionally.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__63">When someone is perceived to be accurate, we use the word &#x201C;believable&#x201D; to describe them. When we are talking about their completeness, on the other hand, we say they are &#x201C;honest.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__63">Among the four components of the trust equation, credibility requires a moderate amount of time to establish. For the rational component of credibility (believability) we can examine someone&#x2019;s logic, or check someone&#x2019;s claims against the direct experience of others (i.e., references). This doesn&#x2019;t take long. The emotional side of credibility (honesty) takes longer to evaluate, because it takes longer to assure oneself that all dimensions of an issue are being covered. These relationships are shown in Figure 8-4.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__63">What lessons should an advisor draw from this view of credibility? Primarily that, while most providers sell on the basis of technical competence, most buyers buy on the basis of emotion. Since credibility is the most overtly rational component of the trust equation, it is a natural magnet for professionals seeking to establish trust. However, there is not only a temptation to overemphasize credibility as a component of trust, it is tempting to overemphasize the rational component of credibility itself.</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__64">Fig. 8.4 Comparison of Rational and Emotional Credibility</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/4c780609-df23-4dc9-8cda-25e5f31162a5.jpg" Stretch="Uniform" Width="300" Height="77" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__64"/>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__64">Of course, credibility is important. It is important to get the content right, to convey how smart we are, how well we&#x2019;ve thought through the guidance the client is seeking from us. So we tend naturally to spend time on our logic, our facts, and to list our credentials: all direct appeals to rationality.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__64">What we tend </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__64">not</Run>
+          <Run Tag="__64"> to do is to enhance the emotional side of credibility: to convey a sense of honesty, to allay any unconscious suspicions of incompleteness. The best service professionals excel at two things in conveying credibility: anticipating needs, and speaking about needs that are commonly not articulated.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__64">For example, we might ask a client, &#x201C;Tell me, what was your reaction to your competitor&#x2019;s latest move?&#x201D; This enhances our credibility by showing that we are knowledgeable or have done our homework. Or, one might use phrases that start with, &#x201C;You know, I suppose if I were in your position, I might be wondering about X. Is it possible that that is an issue for you?&#x201D; Again, the delicate &#x201C;offering&#x201D; of an insight or piece of content (without assertiveness) allows the client to form a conclusion about our mastery of content and our ability to contribute new perspectives.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__64">Some final tips on enhancing credibility:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__64">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__64">Figure out how to tell as much truth as possible, except where doing so would injure others.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__64">Don&#x2019;t tell lies, or even exaggerate. At all. Ever.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__64">Avoid saying things that others might construe as lies. For example, &#x201C;Yes of course, we&#x2019;ll put our best people on the job.&#x201D; (Really? Who are the worst? Says who? And how come the best don&#x2019;t seem to be very busy?) Or, &#x201C;We don&#x2019;t write reports that just sit on shelves.&#x201D; (Really? Who are you implying does write such reports? And do you mean you don&#x2019;t give us documentation?)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__64">Speak with expression, not monotonically. Use body language, eye contact, and vocal range. Show the client you have energy around the subject at hand.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__64">Don&#x2019;t just cite references. Where it is genuinely possible to create mutual benefit, introduce your clients to each other; they will learn from each other, and you will have plenty of reflected credit in which to bask.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__65">When you don&#x2019;t know, say so, quickly and directly.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__65">Yes it&#x2019;s important to have them know your credentials. It will make them feel better and it will make you feel better. A text bio sent as an advance background sheet is of particular value in new relationships, as well as any article reprints or (flattering) quotes about you. Just don&#x2019;t get silly by having all those initials and certifications appear after your name on your business card.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__65">Relax. You know much more than you think you know. If you don&#x2019;t really belong there, then don&#x2019;t put yourself there in the first place.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__65">Make sure you&#x2019;ve done absolutely all your homework on the client company, the client marketplace, and the client individual, and that it&#x2019;s absolutely up to the minute. Even if you know them and their business cold, there is likelihood that there will be some news clip about your client that will have been published that very day.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__65">There&#x2019;s no reason to show off. They already assume you know what you&#x2019;re talking about (or how to handle a situation). The number of times clients actually want to test your knowledge is actually quite low.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__65">Love your topic. It will show.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__65">Reliability</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__65">Reliability is about whether clients think you are dependable and can be trusted to behave in consistent ways. Judgments on reliability are strongly affected, if not determined, by the number of times the client has interacted with you. We tend to trust the people we know well, and assign less trustworthiness to those with whom we have not interacted.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__65">If I&#x2019;ve dealt with you five or six times in, say, six months, I have a better idea of what to expect from you than if I&#x2019;ve known you for a year but have only dealt with you once or twice. Judgments about reliability can be &#x201C;borrowed&#x201D; by checking the experiences that other clients have had with the advisor. These are temporary estimates, however, and can be quickly revised by the client&#x2019;s own direct experience.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__65">Reliability is the one component of the trust equation that has an explicit action orientation. It links words and deeds, intention and action. It is this action orientation that distinguishes reliability from credibility.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__65">Reliability in this largely rational sense is the </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__65">repeated experience of links between promises and action</Run>
+          <Run Tag="__65">. We judge someone&#x2019;s reliability with due dates and quality levels: &#x201C;on time and on spec.&#x201D; Less formally, we consider the time it takes someone to return a phone call, whether meetings are canceled or kept, and whether to-do lists are completed.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__65">Reliability also has an emotional aspect, which is revealed when things are done in the manner that clients prefer, or to which they are accustomed. We unconsciously form opinions about someone&#x2019;s reliability by the extent to which they seem to anticipate our own habits, expectations, routines, and quirks. These anticipations include whether someone dresses in a manner we consider appropriate, or the phrasing and intonation of someone&#x2019;s speech. Reliability in this emotional sense is t</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__65">he repeated experience of expectations fulfilled</Run>
+          <Run Tag="__65">.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__65">A good advisor will find (or create) a number of opportunities to demonstrate both rational and emotional reliability, by making promises, explicit or implicit, and then delivering on them.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__66">Consider Federal Express, an organization most of us think of as highly reliable. We think of them as reliable partly because their advertising sends us that message, and partly because they deliver on their promise. Yet not all of their reputation for reliability comes from the obvious &#x201C;technical&#x201D; aspect of their service offerings.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__66">We experience a sense of reliability from FedEx:</Run>
+      </Paragraph>
+      <List MarkerStyle="Disc" Margin="64,32,0,32" TextAlignment="Left" FontSize="14" Tag="__66">
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">when we get first-ring responses on their 800 number</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">when the voice mail interface is as painless as possible</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">when the associate answering the phone is knowledgeable and energetic</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">from the consistent look and feel of their packaging</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">from the way the zip-strip always tears off the same way</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">from the consistent paint job on the trucks</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">from the uniforms that distinguish them from other carriers</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">from the easy-to-use and accurate &#x201C;tracking&#x201D; system</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">from the fact that the delivery driver turnover rate is low</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">from the driver consistently leaving your package in the same place (the place you want it left)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__66">All these characteristics are consistent and reinforce reliability. In addition, they are tailored to be user-friendly, to fit our own notions of what is familiar. Consistency alone is not enough to create reliability. It must also be consistency in terms of the client&#x2019;s preferences, not just the provider&#x2019;s.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__66">How does reliability play out in professional services? Advisors who rate the highest on reliability will not just deliver their work on time and on spec. Nor will they simply be consistent, even at a level of excellence.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__66">They will also be expert at a variety of small touches that are aimed at client-based familiarity. Sending meeting material in advance is one example; staying current on client events and names is another. Reliability on the emotional level has a great deal to do with the client&#x2019;s preferences, and not just with consistency from the service provider&#x2019;s perspective.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__66">Strategies for reliability include setting up a series of deadlines or opportunities to deliver discrete work product components within a short and usually agreed-upon period of time. The biggest leverage for reliability enhancement probably lies in the emotional realm. The more a provider can do to understand and relate to the usually unconscious norms of the client, the more the client will feel at ease and experience a sense of reliability.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__66">Some final thoughts on reliability:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__66">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__66">Make specific commitments to your client around small things: getting that article by tomorrow, placing the call, writing the draft by Monday, looking up a reference. And then deliver on them, quietly, and on time.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__67">Send meeting materials in advance so that the client has the option of reviewing them in advance, saving meeting time for substantive discussions.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__67">Make sure meetings have clear goals, not just agendas, and ensure the goals are met.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__67">Use the client&#x2019;s &#x201C;fit and feel&#x201D; around terminology, style, formats, hours.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__67">Review agendas with your client, before meetings, before phone calls, before discussions. Clients should know that they can expect you to always solicit their views on how time will be spent.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__67">Reconfirm scheduled events before they happen. Announce changes to scheduled or committed dates </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__67">as soon as</Run>
+            <Run Tag="__67"> they change.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__67">Intimacy</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__67">The most effective, as well as the most common, sources of differentiation in trustworthiness come from intimacy and self-orientation. Both of these are relatively scarce, compared to credibility and reliability. People trust those with whom they are willing to talk about difficult agendas (intimacy), and those who demonstrate that they care (low self-orientation).</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__67">The most common failure in building trust is the lack of intimacy. Some professionals consider it a positive virtue to maintain an emotional distance from their clients. They work hard at being &#x201C;aloof.&#x201D; We believe that they do so not only at their own risk but also their clients&#x2019;.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__67">Business can be intensely personal. There are obvious human emotions around such charged issues as promotion, compensation, hiring and firing, reorganization, and other forms of decision making. The same emotional environment surrounds the &#x201C;macro&#x201D; business environment: mergers and acquisitions, lawsuits, changing pension plans, selling off businesses, and closing down plants are all areas that go well beyond logic. Hundreds, if not thousands, of lives are affected by these activities. It should be no surprise, then, that intimacy is needed to make a connection to the interior, emotional state of the client.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__67">We don&#x2019;t mean that private lives necessarily get shared via intimacy. We do mean that things personal, related to the issues at hand, get shared. It is possible to have an intimate relationship with a client, in the sense that we mean it here, and not have anything to do with their life outside work. Intimacy is about &#x201C;emotional closeness&#x201D; concerning the issues at hand, so it is obviously the most overtly emotional of the four trust equation components. It is driven by emotional honesty, a willingness to expand the bounds of acceptable topics, while maintaining mutual respect and by respecting boundaries. Greater intimacy means that fewer subjects are barred from discussion.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__67">Establishing intimacy is playing a &#x201C;game&#x201D; of mutually increasing risk. One party offers a piece of himself or herself and the other party either responds (thereby deepening intimacy), or chooses not to respond (thereby drawing an intimacy line). Behaving appropriately requires knowing when to take a risk, and knowing when a risk has been declined and how to behave in the face of the declination.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__67">We should recognize that clumsy attempts to establish intimacy too soon could backfire. Perhaps it comes from a vendor who assumes we share his passion for golf; or a dinner invitation we put off with &#x201C;Yes, let&#x2019;s do that, sometime,&#x201D; or a sharing of personal experiences that is more information than we want to know.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__68">The fear of committing this kind of gaffe (assuming more intimacy than is desired) is a very great fear for a very great number of service professionals. Intimacy is scary stuff. Of all the components of trust, it&#x2019;s the one that seems so easy to get so wrong. We like to believe we can control or influence credibility. We know our content, or at least we know what we don&#x2019;t know. We can demonstrate reliability. We can even get comfortable with keeping self-orientation low if we focus on the other person instead of ourselves.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__68">But intimacy? Now that&#x2019;s another matter. It&#x2019;s the one element that seems to have such high consequences if we get it wrong, because we run the risk of being publicly exposed and personally vulnerable. Intimacy is more about who </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__68">we are</Run>
+          <Run Tag="__68"> than any other aspect of trust.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__68">Creating intimacy is a dance, requiring some cautious stepping and some leaps of faith that bad things won&#x2019;t happen as one makes new, carefully selected moves. Here are a few suggestions:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__68">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__68">Be not afraid!</Run>
+            <Run Tag="__68"> Creating intimacy requires courage, not just for you, but for everyone. Chances are, you&#x2019;ve had at least some degree of success in forming intimate relationships at some time in your life. It&#x2019;s the same thing here.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__68">People in senior positions appreciate candor, but candor isn&#x2019;t necessarily intimacy, and they value that even more</Run>
+            <Run Tag="__68">. Senior people get coddled a lot. Messages to them are often polished to the point of unrecognizability prior to their delivery.</Run>
+            <LineBreak/>
+            <Run Tag="__68"> &#xA0;&#xA0;&#xA0;&#xA0;We know a CEO who is liberated by the fact that his senior people all tell him the truth. But that&#x2019;s not all. There is also intimacy between them. They know each other well enough to be able to get angry with each other, to call each other&#x2019;s bluff, to challenge each other&#x2019;s thinking on a regular basis. The CEO looks for that same trait in his outside advisors, and if it is lacking, he is not averse to switching advisors. Of course, one must learn to disagree without being disagreeable!</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__68">Find the fun and fascination</Run>
+            <Run Tag="__68">. By getting closer to the emotional components of the client&#x2019;s decision making, we can ask people questions they haven&#x2019;t previously heard from advisors. It shows we have a different angle, a different point of view, and a broader perspective. It&#x2019;s fun for them and it&#x2019;s fun for us. It builds rapport and repartee. And you learn a lot.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph xml:space="preserve">
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__68">Test whether you&#x2019;re coming too close to the line, or pushing too far, too fast</Run>
+            <Run Tag="__68">. Ask yourself if you were in your client&#x2019;s position, would this topic be something you&#x2019;d want to talk about with someone you trusted? If the answer is yes, you&#x2019;re most of the way there. But not completely. You also want to make sure that it&#x2019;s the right topic, right time, and right phrasing of the question.</Run>
+            <LineBreak/>
+            <Run Tag="__68"> &#xA0;&#xA0;&#xA0;&#xA0;Think of how you&#x2019;re posing it, or planning to pose it. Have you given your client a reasonable way </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__68">not</Run>
+            <Run Tag="__68"> to answer the question? People need a readily accessible, face-saving &#x201C;out&#x201D; if they don&#x2019;t want to (or are not ready to) answer. If you can&#x2019;t say yes to both parts of this, you&#x2019;re too close to the line.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__69">Practice a little</Run>
+            <Run Tag="__69">. No, you can&#x2019;t practice spontaneity, but you can practice phrasing. Rob often writes down two or three ways of asking difficult questions or delivering difficult messages, testing and trying them out before actually using them.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__69">Don&#x2019;t Overrate the Downside Risk</Run>
+            <Run Tag="__69">. What exactly are you afraid of? Sometimes we&#x2019;re afraid of saying something because we think it will put the business at risk. But if we&#x2019;re honest, we often find what is at risk isn&#x2019;t the business itself, it is our own personal comfort with expanding the bounds of intimacy. The business risk is often overstated. And paradoxically, the way to manage the business risk is often to take what feels like the personal risk.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__69">One of You Has to Make the First Move. And It&#x2019;s You!</Run>
+            <Run Tag="__69"> Increased intimacy starts with one person or another taking what feels like a personal risk, to share something of what they see, feel or think about something. If that risk is met in kind, intimacy is increased, and thus trust is increased. It is an endless and useless internal debate to believe that the client should make the first move in this dance. You as the professional have no control over that other person. The only actions you can influence are your own. Accept responsibility for being the first risk-taker.</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__69">Will all of this, put together, give you immediate powers of intimacy building? No, but we hope it will get you started. Many professionals assume that intimacy always takes the longest time to develop among the trust factors. This is not so. In fact, done well, it is potentially the least time-dependent component.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__69">Rob was working with a company that had just reorganized. One of the executives, historically considered a high flyer, felt there was no longer a place for him in the organization. No one had come and spoken personally to him about it. The honest truth was that the person was still held in high regard, but no one had told him that. Tears flowed during Rob&#x2019;s conversation with this man.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__69">Of course, Rob felt uncomfortable, but that&#x2019;s not the point. What was required was only to give this man a chance to vent, and to acknowledge that the situation was uncomfortable. In so doing, Rob gave him a chance to keep talking, and to navigate his way through the period of uncertainty.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__69">We are not required to solve the client&#x2019;s emotional state, but it is a major step forward in a trust relationship when a client can feel comfortable enough to express strong emotion. Imagine how much weaker the substantive business relationship would have been if this client had never revealed his inner state to Rob.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__69">Self-Orientation</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__69">There is no greater source of distrust than advisors who appear to be more interested in themselves than in trying to be of service to the client. We must work hard to show that our self-orientation is under control.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__69">The most egregious form of self-orientation is, of course, simple selfishness, being &#x201C;in it for the money.&#x201D; However, self-orientation is about much more than greed. It covers anything that keeps us focused on ourselves rather than on our client. The following list reveals how many &#x201C;threats&#x201D; there are to client focus (and temptations for self-orientation):</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__70">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">Selfishness</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">Self-consciousness</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A need to appear on top of things</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A desire to look intelligent</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A to-do list on our mind that is a mile long</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A desire to jump to the solution</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A desire to win that exceeds the desire to help the client</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A desire to be right</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A desire to be seen to be right</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A desire to be seen as adding value</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">Fears of various kinds: of not knowing, of not having the right answer, of not appearing intelligent, of being rejected</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__70">In short, any form of preoccupation with our own agenda is focusing on something other than the client, and it will reduce trust directly.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__70">Clients recognize excessive self-orientation through such things as:</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__70">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A tendency to relate their stories to ourselves</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A need to too quickly finish their sentences for them</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A need to fill empty spaces in conversations</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A need to appear clever, bright, witty, etc.</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">An inability to provide a direct answer to a direct question</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">An unwillingness to say we don&#x2019;t know</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">Name-dropping of other clients</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A recitation of qualifications</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A tendency to give answers too quickly</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">A tendency to want to have the last word</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">Closed-ended questions early on</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">Putting forth hypotheses or problem statements before fully hearing the client&#x2019;s hypotheses or problem statements</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">Passive listening; a lack of visual and verbal cues that indicate the client is being heard</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__70">Watching the client as if he/she were a television set (merely a source of data)</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__70">How do we, as would-be trusted advisors, demonstrate a lack of self-orientation? Through the following kinds of behaviors (which both represent and help create an inner state of client focus):</Run>
+      </Paragraph>
+      <List MarkerStyle="Decimal" Margin="48,32,0,32" TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__71">
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Letting the client fill in the empty spaces</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Asking the client to talk about what&#x2019;s behind an issue</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Using open-ended questions</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Not giving answers until the right is earned to do so (and the client will let you know when you have earned it)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Focusing on defining the problem, not guessing the solution</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Reflective listening, summarizing what we&#x2019;ve heard to make sure we heard correctly what was said and what was intended</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Saying you don&#x2019;t know when you don&#x2019;t know</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Acknowledging the feelings of the client (with respect)</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Learning to tell the client&#x2019;s story before we write our own</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Listening to clients without distractions: door closed, phone off, email not in line of sight, frequent eye contact</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Resisting with confidence a client&#x2019;s invitation to provide a solution too early on&#x2014;to stay in the listening and joint problem definition phases of discussion</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Trusting in our ability to add value </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__71">after</Run>
+            <Run Tag="__71"> listening, rather than trying to do so </Run>
+            <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__71">during</Run>
+            <Run Tag="__71"> listening</Run>
+          </Paragraph>
+        </ListItem>
+        <ListItem TextAlignment="Left" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Paragraph>
+            <Run Tag="__71">Taking most of the responsibility for failed communications</Run>
+          </Paragraph>
+        </ListItem>
+      </List>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__71">Here are some additional ways of making sure self-orientation stays low:</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__71">Talk to your client as if he or she is a friend. Even if clients are </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__71">not</Run>
+          <Run Tag="__71"> actually our friends, we can be friendly with them. Our conversational tone and tenor can be (we would argue, </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__71">has</Run>
+          <Run Tag="__71"> to be) one of friendship. We&#x2019;re concerned about our friends and their well-being, and it shows in our conversational style. We should use the same style with clients.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__71">Think about how you would help your client if you were responsible for this person&#x2019;s future success. Even if you are a specialist called in only on specific occasions, think about their success. Try to make their concerns </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__71">your</Run>
+          <Run Tag="__71"> concerns.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__71">Pay attention. Having low self-orientation requires intensely personal attention. This doesn&#x2019;t mean focusing endless hours on each client or potential client. But it does mean starting each interaction, each analysis, each project in an intensely one-to-one manner.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__71">Be honest with yourself about your level of interest. If, over time, you feel little interest in the work, it will be hard to keep your self-orientation low. If you&#x2019;re not interested or inspired by the work or the client, it&#x2019;s almost inevitable that you will focus more on yourself. But if that&#x2019;s happening too often, it&#x2019;s time to make a change to work that interests you more, either new clients or new matters. If you have any choice, you know that life is too short to work on the uninspiring.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__71">Being on the receiving end of dealing with someone with low self-orientation can be an amazing experience. More than twenty years ago, Mary Doyle, most recently Counsel to the Secretary of the Interior, was one of Rob&#x2019;s law professors. Rob still remembers a Saturday lunch with her and the time she spent with him a few weeks before his first set of law school finals.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__71">He remembers the intense focus she had on the conversation and the topics at hand. It was as if nothing else mattered in the world. She made it clear that the conversation would go </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__71">where</Run>
+          <Run Tag="__71"> he wanted it to go, and for </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__71">as long as</Run>
+          <Run Tag="__71"> he wanted it to go.</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__71">Although she might not have realized it at the time, it was one of the most profoundly helpful conversations he ever had. Part of it was indeed the sound advice being offered, but an equally significant part was the intensity of her commitment to help him resolve what needed to be resolved.</Run>
+      </Paragraph>
+      <Paragraph Margin="0,32,0,16" TextAlignment="Center" FontFamily="sans-serif" FontStyle="Normal" FontWeight="Bold" FontSize="12">
+        <Run Tag="__72">Trust and Relationship Economics</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">Is this trust stuff just so much softness? Absolutely not! It&#x2019;s profitable. The trust equation is useful in clarifying the economics of client relationships. By assigning values to the four factors, the equation can be used to assess the trust level of a relationship, which might be particularly useful to you in comparing different relationships.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">We will contrast the relationship of a professional with a new client and with a client of long standing.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">In the new client case, we might rate the client&#x2019;s initial perception of the professional&#x2019;s credibility as 5 on a scale of 1 to 10, perhaps based on reputation and very early perceptions. Reliability, which typically takes longer to establish, might be rated as a 3, and intimacy, which certainly takes more time to establish, might be given a 2.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">The client&#x2019;s perception of the professional&#x2019;s degree of self-orientation in a new client setting might be an 8. This reflects the fact that a common starting assumption by a client, based on past experience, is that the professional is primarily interested in looking after his or her own interests. That view might change once the client gets to know the professional, but a low self-orientation is rarely the starting assumption.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">We therefore get:</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__72">New Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">(C+R+I)/S = (5+3+2)/8 = 10/8 = 1.25</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">Now let&#x2019;s look at a reasonably successful existing client relationship, where the numerator&#x2019;s values will be higher, and the denominator lower.</Run>
+      </Paragraph>
+      <Paragraph Margin="16,24,0,8" TextAlignment="Left" FontFamily="sans-serif" FontStyle="Italic" FontWeight="Bold" FontSize="12">
+        <Run Tag="__72">Existing Client</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">(C+R+I)/S = (7+8+5)/4 = 20/4 = 5</Run>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">(If you think our guesses or estimates are off, substitute your own. It&#x2019;s a simple calculation.) Our calculations are summarized in Figure 8-5.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">The ratio of our two scenarios (in this case the ratio between 5 and 1.25, or 4) is of economic interest. Like many other researchers, we have found in our work with professional service firms that the cost of developing new-client business is 4 to 7 times higher than the cost of developing the same amount of business from an existing client. The trust equation gives us a major insight into why this is so, and what might be done about it.</Run>
+      </Paragraph>
+      <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__72">This ratio between &#x201C;undeveloped&#x201D; and &#x201C;developed&#x201D; trust closely parallels that between highly profitable and highly unprofitable businesses. High-retention relationships are high-trust relationships. A trust-based strategy is a profitable strategy.</Run>
+      </Paragraph>
+      <Paragraph>
+        <LineBreak/>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run FontStyle="Normal" FontWeight="Bold" FontSize="14" Tag="__73">Fig. 8.5. Our Calculations</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph/>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Image Source="/Resources/e0fa1cf1-ff0e-449a-a5d4-20cba6fbf64d.jpg" Stretch="Uniform" Width="300" Height="96" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" xml:space="preserve" Tag="__73"/>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

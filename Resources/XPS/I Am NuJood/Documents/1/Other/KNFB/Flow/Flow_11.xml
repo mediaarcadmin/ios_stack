@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page120" xml:space="preserve"/>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page121" xml:space="preserve"/>
+      <Image Source="/Resources/914b945c-b287-4ecd-a601-3bcebf55c840.jpg" Stretch="Uniform" Width="186" Height="99" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Figure HorizontalAnchor="ColumnLeft" HorizontalOffset="16" VerticalOffset="0" CanDelayPlacement="False" Height="42.6318367346939" Margin="0,0,1,0" Padding="0,0,0,0" TextAlignment="Justify" FontFamily="Charis SIL" FontSize="50" Tag="KNFBDropCap">
+        <Paragraph LineHeight="50" LineStackingStrategy="BlockLineHeight">
+          <Run FontFamily="Charis SIL" FontSize="50" Tag="__74">S</Run>
+        </Paragraph>
+      </Figure>
+      <Run Tag="__74">o this is what happiness is. Ever since I left the courthouse a few hours ago, something wonderful has been happening to me. In the street, the din of the traffic jams has never seemed so sweet to me. When we passed a grocery store just now, I thought about having a big ice-cream cone, and I told myself, </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__74">I bet I could eat a second one, and even a third. &#x2026;</Run>
+      <Run Tag="__74"> Spotting a cat in the distance, I felt like running over to pet it. My eyes are shining, as if they were discovering for the first time the slightest bits of beauty in being alive. I feel happy. This is the best day of my life.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__74">&#x201C;How do I look, Shada?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__74">&#x201C;Beautiful, simply beautiful.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page122">To celebrate my victory, Shada gave me some brand-new clothes. In my new pink sweatshirt and my pre-faded blue jeans embroidered with colorful butterflies, I feel like a new Nujood. My long, curly hair is pinned up in a twist and set off with a green ribbon, and I&#x2019;m feeling fine. Especially since I have the right to take off my black veil, so now everyone can compliment me on my hair!</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__74">We have an appointment at the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__74">Yemen Times</Run>
+      <Run Tag="__74"> with Hamed and a few other journalists. The building is impressive, three stories high, with a uniformed guard watching everyone who comes and goes through the main door, like the guards at the villas of the chic neighborhoods in Sana&#x2019;a that I love to draw. A little dizzy with emotion, I hold on to the wooden railing as I climb the marble steps of the big staircase. The windows are so clean that the sunshine makes little yellow circles on the white walls, and there&#x2019;s a nice smell of floor wax in the air.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__75">On the second floor, Nadia, the editor in chief of the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__75">Yemen Times</Run>
+      <Run Tag="__75">, welcomes me with a hug. I would never have imagined that a woman could manage a newspaper. How can her husband accept that? Seeing my astonishment, Nadia laughs gaily.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__75">&#x201C;Come, follow me.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__75">In her large, bright office, Nadia pushes open a door&#x2014;to a child&#x2019;s room, where the floor is strewn with toys and little cushions.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page123">&#x201C;This is my daughter&#x2019;s room,&#x201D; she explains. &#x201C;Sometimes I bring her along with me to the paper. That way, I can be a mama </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page123">and</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page123"> keep working.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__75">A room just for her daughter! The universe that is opening up to me is so different from mine. I almost have the impression that I&#x2019;ve landed on another planet. It&#x2019;s intimidating&#x2014;and fascinating.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__75">And the surprises are just beginning. When Nadia invites me to follow her to what she calls the editorial room, I am dumbfounded to discover that most of the journalists are women. Some wear black from head to toe, raising their </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__75">niqab</Run>
+      <Run Tag="__75">s only to take a sip of tea. Others wear orange or red scarves, which allow a few blond curls to escape and complement their blue eyes and milk-white skin. These women wear polish on their long fingernails, and they speak Arabic with a strange accent. They must be foreigners (Americans, or Germans?), perhaps with Yemeni husbands. They have certainly studied long years at universities to earn their positions here. And like Shada, they probably drive their own cars when they come to work.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page124">I imagine them drinking coffee and smoking cigarettes, like the women on television. Maybe they even wear lipstick when they go out to dinner downtown. One of them is on the phone; it must be a very important call. I listen and let myself drift along on her melodious language. English, I suppose. One day, I&#x2019;m going to speak English, too.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__75">Watching them is endlessly interesting: I&#x2019;m particularly struck by their ability to concentrate while they tap away on machines with their eyes glued to the screens I see atop every desk of pale wood. To be able to work while watching </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__75">Tom and Jerry</Run>
+      <Run Tag="__75">&#x2014;what talent, and what luxury!</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">&#x201C;Nujood, those are computers,&#x201D; Hamed exclaims, amused by my enthusiasm.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">&#x201C;They&#x2019;re what?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">&#x201C;Computers! Machines connected to keyboards that allow you to write articles and send letters. You can even store photos in them.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">Machines that let you write letters and keep photos? These women are not only attractive, but also very modern. I try to see myself in their place in ten or twenty years, with shiny nails, holding a pen. I wouldn&#x2019;t mind being a journalist. Or a lawyer. Or maybe both? With my computer, I would send letters to Hamed and Shada. I would work hard, that&#x2019;s for sure, and I would have a job that would allow me to help people in trouble and bring them a better life.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">My tour of the premises ends at the conference room, &#x201C;Where we hold all our important events,&#x201D; Nadia tells me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page125">A man shouts, &#x201C;Bravo, Nujood!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">A chorus of voices then cheers, &#x201C;Nujood won, Nujood won!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">When I go through the big door I see some thirty faces, all looking at me with eager eyes, and applause rings through the room. Nods, smiles, and blown kisses welcome me, and I pinch my right hand to convince myself I&#x2019;m not dreaming. Yes, it&#x2019;s all real, and today, the &#x201C;important event&#x201D; is me.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">I&#x2019;m showered with gifts. First, Hamed hands me an enormous stuffed red bear, so tall it comes almost to my shoulders. On its round tummy there&#x2019;s a large heart decorated with letters I can&#x2019;t read.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">&#x201C;It&#x2019;s English writing. It means, &#x2018;I love you,&#x2019;&#x201D; Hamed says.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__76">I don&#x2019;t even know which way to turn with all the packages being handed to me from every side. I untie the ribbons one by one, and it&#x2019;s surprise after surprise: a little battery-powered piano, colored pencils, pads of drawing paper, and a Fulla doll, like the ones in Judge Abdel Wahed&#x2019;s house.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">When I try to find words to express my gratitude, only one comes to mind: &#x201C;</Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__77">Shokran!</Run>
+      <Run Tag="__77"> Thank you!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">And I give everyone a big smile.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page126">Then Nadia invites me to cut a cake: it&#x2019;s chocolate, my favorite flavor, with five red cherries on top. And suddenly I remember one of my escapades on Hayle Avenue, with Mona. How many times, with my nose pressed to the boutique windows, had I dreamed about a wedding celebration with presents and evening gowns? Things hadn&#x2019;t turned out that way.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">Compared to dreams, reality can be truly cruel. But it can also come up with beautiful surprises.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">Today I finally understand the meaning of the word </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__77">party</Run>
+      <Run Tag="__77">. If it were a dessert, it would be sugary, and crunchy, perhaps with something soft inside, like my favorite coconut candies.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">Holding my big stuffed bear in my arms, I announce, &#x201C;A divorce party&#x2014;that&#x2019;s really better than a wedding party!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">&#x201C;And on this very special occasion, what can we sing for you, Nujood?&#x201D; asks Nadia.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">&#x201C;I don&#x2019;t know.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">While I hesitate, Shada has an idea: &#x201C;Why don&#x2019;t we sing &#x2018;Happy Birthday&#x2019;?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">&#x201C;Happy &#x2018;birthday&#x2019;? What&#x2019;s a birthday?&#x201D; I ask, a little confused.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">&#x201C;A birthday is when people celebrate the day someone was born.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">&#x201C;All right, but there&#x2019;s a problem.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">&#x201C;What do you mean?&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page127">&#x201C;It&#x2019;s just that I don&#x2019;t know when I was born.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">&#x201C;Well, then, from now on, today will be your birthday!&#x201D; exclaims Shada.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">The room fills with applause.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">&#x201C;Happy birthday, Nujood! Happy birthday!&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__77">I feel like laughing and laughing. It&#x2019;s so simple to be happy, when you&#x2019;re among friends.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

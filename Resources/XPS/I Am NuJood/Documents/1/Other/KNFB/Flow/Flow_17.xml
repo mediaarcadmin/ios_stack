@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page179" xml:space="preserve"/>
+      <Image Source="/Resources/8d17953e-75c1-4f39-9056-cdb186aad15f.jpg" Stretch="Uniform" Width="180" Height="50" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__108">Delphine Minou has supplied notes for the convenience of the reader; a few translator&#x2019;s notes have been added where appropriate for this American edition.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_fm1_r1.htm#nts1a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts1">culture of khat</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__108">When chewed, the leaves of the khat plant produce an effect of euphoria that allows the user to forget hunger and fatigue. Other side effects include emotional instability, manic behavior, and hallucinations, while withdrawal symptoms can range from irritability to lethargy and depression. The World Health Organization has classified khat as a drug of abuse that can produce psychological dependence, and although it has been outlawed in many countries, this narcotic is sold freely in Yemen. Its consumption, predominantly by men, is a time-honored social ritual so widespread that khat has become the country&#x2019;s main agricultural product, absorbing more than two thirds of the nation&#x2019;s annual water resources in a country facing a serious threat of water shortages in the near future.&#x2014;Translator&#x2019;s note</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page180" xml:space="preserve"/>
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_c01_r1.htm#nts2a">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts2">niqab</Run>
+        <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts2"><Run.TextDecorations><TextDecorationCollection/></Run.TextDecorations>s that match their long black robes</Run>
+      </Hyperlink>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__108">The </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__108">niqab</Run>
+      <Run Tag="__108"> is a veil that covers the face, allowing only the eyes to be seen. It is worn most commonly by Muslim women in the Arab countries of the Persian Gulf&#x2014;Yemen, Saudi Arabia, Bahrain, Qatar, Kuwait, and Oman&#x2014;and is also common in Turkey, Pakistan, and Iraq.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c02_r1.htm#nts3a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts3">two months and four years</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__108">Yemen has one of the highest rates of infant mortality and maternal deaths during childbirth in the world.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c02_r1.htm#nts4a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts4">real rhinoceros horn</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__109">Since the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__109">jambia</Run>
+      <Run Tag="__109"> handle often indicates the social status of the wearer, daggers made with real&#x2014;and necessarily smuggled&#x2014;rhinoceros horn and elephant ivory are much more prized than ones with handles of ordinary bone or horn.&#x2014;Translator&#x2019;s note</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c02_r1.htm#nts5a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts5">object of child trafficking</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page181">The trafficking of Yemeni children in Saudi Arabia is a plague affecting all disadvantaged youngsters who do not go to school. Some local nongovernmental organizations estimate that thirty percent of the school-age children living near the border with Saudi Arabia leave each year to try their luck in their northern neighbor, where work conditions are appalling, and although the subject is taboo in Yemeni families, cases of sexual abuse have been recorded.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Hyperlink NavigateUri="Ali_9780307589682_epub_c02_r1.htm#nts6a">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts6"><Run.TextDecorations><TextDecorationCollection/></Run.TextDecorations>the tradition of</Run>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts6"> sighar</Run>
+      </Hyperlink>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__109">Still rather widespread in rural and poor urban areas, the ancient custom of </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__109">sighar</Run>
+      <Run Tag="__109">, or &#x201C;marriage ex change,&#x201D; involves giving a younger sister of the groom to a member of his bride&#x2019;s family as a dowry. In Yemen, dowries have great social and economic importance, and are customarily negotiated before a wedding by the men of both families.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c03_r1.htm#nts7a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts7">legal age of fifteen</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__109">In 1999, it became legal in Yemen for parents to give their daughters in marriage before the age of fifteen, provided that the husband promises not to touch his wife until she has reached puberty&#x2014;a provision so vague that it welcomes arbitrary interpretations and is rarely respected.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts8">&#x201C;</Run>
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c04_r1.htm#nts8a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts8">Too young? When the prophet</Run>
+        </Hyperlink>
+        <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts8"> &#x2026;&#x201D;</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__109">The reference to the marriage of the Prophet reflects widespread misunderstanding of the fact, as pointed out by scholars, that the marriage between Mohammad and A&#xEF;sha (&#x201C;Mother of the Faithful&#x201D;) was God&#x2019;s wish.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c04_r1.htm#nts9a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts9">the Houthi rebels</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page182">In 2004, Hussein Badreddin al-Houthi, a leader of the minority Zaidi sect of Shiite Islam, began a bloody rebellion in northern Yemen and around Sana&#x2019;a in an attempt to overthrow President Ali Abdullah al-Saleh, break Yemen&#x2019;s ties to the United States, and restore the Shiite imamate that was toppled in 1962. The rebels, currently led by Abdul-Malik al-Houthi, appear to control much of Sa&#x2019;ada Province, on the northwestern border with Saudi Arabia, and recent fighting between the army and Houthi forces has destroyed entire villages, left thousands dead, and driven tens of thousands from their homes.&#x2014;Translator&#x2019;s note</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c04_r1.htm#nts10a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts10">the black veils usually worn</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__110">According to local lore in Sana&#x2019;a, women began to veil themselves in black when the Imam Yahya seized power in northern Yemen following the demise of the Ottoman Empire. Imam Yahya sought to establish a stable, modern state, but was himself assassinated in an attempted coup in February 1948.&#x2014;Translator&#x2019;s note</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c05_r1.htm#nts11a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts11">who fights for women&#x2019;s rights</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page183">In 1999, Shada Nasser achieved notoriety with her defense of Amina Ali Abduladif, married at the age of ten and condemned to death by a Yemeni court after being convicted of killing her husband. Due to an unprecedented public outcry, the capital sentence was finally suspended in 2005. Amina was at last released, after spending some ten years behind bars, but she lives in hiding, fearing the vengeance of her in-laws.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Span FontFamily="Charis SIL" FontStyle="Italic" FontSize="16">
+        <Hyperlink NavigateUri="Ali_9780307589682_epub_c11_r1.htm#nts12a">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts12">the army checkpoint</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__110">Al Qaeda has a growing presence in Yemen, and the authorities have increased security measures, especially on the road to the airport. In a worsening crisis, the Yemeni government now battles three insurgencies: the Houthi rebels in the north, Al Qaeda terrorists seeking to establish a regional base in the country, and a southern secessionist movement fighting under the banner of the formerly independent South Yemen.&#x2014;Translator&#x2019;s note</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__111">her self-confidence</Run>
+      <Run Tag="__111"> Delphine Minoui, &#x201C;Nojoud, 10 ans, divorc&#xE9;e au Yemen,&#x201D; </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__111">Le Figaro</Run>
+      <Run Tag="__111">, June 24, 2008.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page184">before the age of eighteen Early Marriage in Yemen: A Base Line Story to Com bat Early Marriage in Hadramout and Hadeyda Governates</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page184">, Sana&#x2019;a University, 2006. According to this study, early marriages are the main reason why Yemeni girls lack access to education. In Yemen, seventy percent of women are illiterate.</Run>
+    </Paragraph>
+  </Section>
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16" Tag="file:OEBPS/Ali_9780307589682_epub_bm1_r1.htm">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page185" xml:space="preserve"/>
+      <Image Source="/Resources/58b7582a-0c54-4c12-ba7b-9cb496698864.jpg" Stretch="Uniform" Width="224" Height="57" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__112">1. Honor is obviously very important to the men of Nu-jood&#x2019;s family. What does the notion of honor mean in rural Yemeni culture, and how does it differ from Western ideas of honor? When Nujood, Shada, and their allies go to court to seek a divorce for Nujood, what conception of honor are </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="__112">they</Run>
+      <Run Tag="__112"> defending?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__112">2. Nujood mentions a tribal proverb that says &#x201C;To guarantee a happy marriage, marry a nine-year-old girl.&#x201D; How does this traditional view of a &#x201C;happy marriage&#x201D; differ from the Western view? Are there any ways in which they might be similar?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__112">3. Nujood says that when her family was driven from Khardji, they lost &#x201C;a small corner of paradise.&#x201D; How do the injustices endured by Nujood&#x2019;s father and brother, Fares, show that life in a patriarchal society can be hard not just for women, but for male Yemenis, too?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page186">Consider how the actions of Omma, Mona, Nujood&#x2019;s mother-in-law, Dowla, and Shada reflect differences in their life experiences, personalities, backgrounds, and relationships with Nujood. For example:</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__112">4. What do you think Omma was thinking when Nujood told her about the abuse? Can you understand her lack of action?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__112">5. Conversely, why was Dowla willing and able to give Nujood the help and advice that no one else was willing to provide?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__113">6. Were you surprised when one of Nujood&#x2019;s primary oppressors turned out to be a woman? Nujood&#x2019;s mother-in-law is a strong personality who treats the young girl harshly and fails to come to her defense on her wedding night. How does this play, paradoxically, into the idea of Yemen as a highly patriarchal society? Do you see any similarity, for example, between the mother-in-law&#x2019;s behavior and the fact that in some African societies, it is the women who enforce the practice of female circumcision?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__113">7. How do you interpret the behavior of Mona, not only in her attempts to protect Nujood, but in her difficult relationship with her older sister, Jamila?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__113">8. What enables Shada to take up Nujood&#x2019;s cause so quickly and effectively? How does Shada, whom Nujood calls her &#x201C;second mother,&#x201D; open up Nujood&#x2019;s world? Who else teaches Nujood about what a &#x201C;real&#x201D; family can be like?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page187">9. The urban elites Nujood encounters in the courtroom and at the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page187">Yemen Times</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page187"> lead very different lives from those of Nujood and the country people of Yemen. How are these &#x201C;enlightened&#x201D; people actually disconnected from the rest of their society? For example, Nujood tells us several times that child marriage is common in Yemen, so why did the judges seem so shocked by Nujood&#x2019;s tender age? Do you think they were unaware of their society&#x2019;s problem with early marriage, or were they simply blind to the real-life consequences for girls like Nujood? Was there something special about Nujood that prompted the judges to help her, or was she simply the first girl who had come to them asking for a divorce?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__113">10. Shada and Nujood chose the less &#x201C;elitist&#x201D; option for Nujood&#x2019;s schooling. Do you think Nujood made the right decision&#x2014;to stay in Yemen for her education? Do you think she will become a lawyer and help other girls like herself, as she says she hopes to do? Closer to home, Nu-jood talks about her protective feelings toward her sisters Mona and Ha&#xEF;fa, and even toward her big brother Fares. Do you think Nujood will be able to protect her siblings? What might stand in her way?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__114">11. How has the international publicity surrounding the divorce affected Nujood&#x2019;s family and community? Has it enlightened her relatives and neighbors? Or do you think it may have caused dissension within the family and alienated them from their own society?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,32,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page188">12. Khat plays a small but sinister role in Nujood&#x2019;s story. Khat is illegal in the United States, but some people in immigrant communities compare it to coffee and support its important traditional role in social situations. U.S. authorities counter that it is more like cocaine than coffee. After reading this book, what effect do you think khat has on its users and on Yemen in general? Do you feel that it contributed to Nujood&#x2019;s father&#x2019;s problems? If so, how? How do you think its use and effects might compare to social drugs in the United States? And most important, what does it tell us about </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page188">any</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page188"> society that devotes so much of its valuable resources to tuning out from itself, so to speak?</Run>
+    </Paragraph>
+  </Section>
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16" Tag="file:OEBPS/Ali_9780307589682_epub_bm2_r1.htm">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page189" xml:space="preserve"/>
+      <Image Source="/Resources/5ded888b-41ee-4688-b1e1-a96de6edf2be.jpg" Stretch="Uniform" Width="348" Height="56" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__115">The Girls World Communication Center (GWCC), a nongovernmental organization based in Sana&#x2019;a, recently launched a new program called ENTELAK. This program helps girls who have been forced to leave school and those who are young victims of early marriage to continue their educations.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="__115">Local GWCC members assist the girls in their studies, helping them to secure a good future. They also lead campaigns to raise awareness among the girls&#x2019; families and communities about the importance of educating women.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" LineHeight="19" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontSize="16">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page190">Founded in 1998, GWCC was the first language center in Yemen catering exclusively to girls. Its programs have since expanded to include skills and leadership training, scholarships, and networking opportunities. Supporters include the British Council, the United Nations Development Fund for Women (UNIFEM), and the </Run>
+      <Run FontFamily="Charis SIL" FontStyle="Italic" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page190">Glamour</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page190"> Women of the Year Fund. If you wish to make a donation, you can access the website at </Run>
+      <Run FontFamily="Charis SIL" FontWeight="Bold" FontSize="16" Tag="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page190">http://www.yldf.org/</Run>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page190"> or contact </Run>
+      <Span FontFamily="Charis SIL" FontWeight="Bold" FontSize="16">
+        <Hyperlink NavigateUri="mailto:gwcc@yldf.org">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page190">gwcc@yldf.org</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page190">.</Run>
+    </Paragraph>
+  </Section>
+  <Section Margin="16,16,32,0" BreakPageBefore="True" BreakColumnBefore="True" FontFamily="Charis SIL" FontSize="16" Tag="file:OEBPS/Ali_9780307589682_epub_bm3_r1.htm">
+    <Paragraph Margin="0,32,0,56" TextAlignment="Center" LineHeight="38" LineStackingStrategy="BlockLineHeight" FontFamily="Charis SIL" FontWeight="Normal" FontSize="19">
+      <Run Tag="OEBPS/Ali_9780307589682_epub_bm3_r1.htm#page191" xml:space="preserve"/>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,16" TextAlignment="Center" FontFamily="Charis SIL" FontSize="16">
+      <Image Source="/Resources/b8558dae-b7a8-4c07-913d-ac549a48bbcb.jpg" Stretch="Uniform" Width="332" Height="600" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+  </Section>
+</Flow>

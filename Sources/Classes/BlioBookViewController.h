@@ -64,7 +64,7 @@ typedef enum BlioFontSize {
 - (BOOL)fixedViewEnabled;
 @end
 
-@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton, BlioModalPopoverController, BlioBookSlider;
+@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton, BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -148,6 +148,7 @@ typedef enum {
     BOOL shouldDisplaySearchAfterRotation;
     
     NSMutableArray *historyStack;
+	BlioBookSliderPreview *thumbPreview;
 }
 
 // Designated initializers.
@@ -177,6 +178,8 @@ typedef enum {
 
 @property (nonatomic, assign) id <BlioCoverViewDelegate> delegate;
 @property (nonatomic, retain) BlioCoverView *coverView;
+
+@property (nonatomic, retain, readonly) UIImage *dimPageImage;
 
 - (void)stopAudio;
 - (void)pauseAudio;

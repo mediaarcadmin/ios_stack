@@ -6,7 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "EucCSSLayouter_Package.h"
+#import "EucCSSInternal.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSIntermediateDocument.h"
@@ -26,6 +26,7 @@
 @implementation EucCSSLayoutPositionedBlock
 
 @synthesize documentNode = _documentNode;
+@synthesize scaleFactor = _scaleFactor;
 
 @synthesize borderRect = _borderRect;
 @synthesize paddingRect = _paddingRect;
@@ -214,7 +215,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                     [self _collapseTopMarginUpwards];
                 }            
             }
-            frame.size.height = 0.0f;
+            frame.size.height = CGRectGetMaxY(_contentRect);
         } else {
             height += _borderRect.origin.y;
             height += bottomMarginHeight;

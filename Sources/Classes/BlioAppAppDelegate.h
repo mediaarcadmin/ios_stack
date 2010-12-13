@@ -18,25 +18,29 @@
  #define BLIO_NSXMLPARSER_DELEGATE 
 #endif
 
-@class BlioLibraryViewController;
+@class BlioLibraryViewController, BlioDefaultViewController;
 
-@interface BlioAppAppDelegate : NSObject <UIApplicationDelegate> {
+@interface BlioAppAppDelegate : NSObject <UIApplicationDelegate, UINavigationControllerDelegate> {
     UIWindow *window;
+
     UINavigationController *navigationController;
     BlioLibraryViewController *libraryController;
-    
-    UIImageView *realDefaultImageView;
-    
+        
     NSManagedObjectModel *managedObjectModel;
     NSManagedObjectContext *managedObjectContext;	    
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
     
     BlioProcessingManager *processingManager;
 	NetworkStatus networkStatus;
-	Reachability * internetReach;
+	Reachability * internetReach;    
+    
+    BlioDefaultViewController *realDefaultImageViewController;
+
+    BOOL delayedDidFinishLaunchingLaunchComplete;
+    NSMutableArray *delayedURLOpens;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
+@property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
 @property (nonatomic, retain) IBOutlet BlioLibraryViewController *libraryController;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;

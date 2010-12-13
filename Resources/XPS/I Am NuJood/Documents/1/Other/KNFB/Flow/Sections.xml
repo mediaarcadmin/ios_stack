@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BookContents ReadOutLoudFlow="True" NoTextFlowView="False">
+  <PageLocations>
+    <PageRange Start="0" End="34" Source="Pages_0_34.xml"/>
+    <PageRange Start="35" End="65" Source="Pages_35_65.xml"/>
+    <PageRange Start="66" End="96" Source="Pages_66_96.xml"/>
+    <PageRange Start="97" End="117" Source="Pages_97_117.xml"/>
+  </PageLocations>
+  <Sections>
+    <Section PageIndex="0" Name="Cover" Level="0">
+      <FlowReference Source="Flow_0.xml" PageIndices="0"/>
+    </Section>
+    <Section PageIndex="1" Name="Title Page" Level="0">
+      <FlowReference Source="Flow_1.xml" PageIndices="1"/>
+    </Section>
+    <Section PageIndex="2" Name="Contents" Level="0">
+      <FlowReference Source="Flow_2.xml" PageIndices="2"/>
+    </Section>
+    <Section PageIndex="3" Name="Nujood, a Modern-Day Heroine" Level="0">
+      <FlowReference Source="Flow_3.xml" PageIndices="3-5"/>
+    </Section>
+    <Section PageIndex="6" Name="Chapter 1 - In Court" Level="0">
+      <FlowReference Source="Flow_4.xml" PageIndices="6-11"/>
+    </Section>
+    <Section PageIndex="12" Name="Chapter 2 - Khardji" Level="0">
+      <FlowReference Source="Flow_5.xml" PageIndices="12-22"/>
+    </Section>
+    <Section PageIndex="23" Name="Chapter 3 - The Judge" Level="0">
+      <FlowReference Source="Flow_6.xml" PageIndices="23-27"/>
+    </Section>
+    <Section PageIndex="28" Name="Chapter 4 - The Wedding" Level="0">
+      <FlowReference Source="Flow_7.xml" PageIndices="28-46"/>
+    </Section>
+    <Section PageIndex="47" Name="Chapter 5 - Shada" Level="0">
+      <FlowReference Source="Flow_8.xml" PageIndices="47-52"/>
+    </Section>
+    <Section PageIndex="53" Name="Chapter 6 - Running Away" Level="0">
+      <FlowReference Source="Flow_9.xml" PageIndices="53-64"/>
+    </Section>
+    <Section PageIndex="65" Name="Chapter 7 - The Divorce" Level="0">
+      <FlowReference Source="Flow_10.xml" PageIndices="65-73"/>
+    </Section>
+    <Section PageIndex="74" Name="Chapter 8 - The Birthday" Level="0">
+      <FlowReference Source="Flow_11.xml" PageIndices="74-77"/>
+    </Section>
+    <Section PageIndex="78" Name="Chapter 9 - Mona" Level="0">
+      <FlowReference Source="Flow_12.xml" PageIndices="78-84"/>
+    </Section>
+    <Section PageIndex="85" Name="Chapter 10 - The Return of Fares" Level="0">
+      <FlowReference Source="Flow_13.xml" PageIndices="85-91"/>
+    </Section>
+    <Section PageIndex="92" Name="Chapter 11 - When I Become a Lawyer" Level="0">
+      <FlowReference Source="Flow_14.xml" PageIndices="92-100"/>
+    </Section>
+    <Section PageIndex="101" Name="Epilogue" Level="0">
+      <FlowReference Source="Flow_15.xml" PageIndices="101-105"/>
+    </Section>
+    <Section PageIndex="106" Name="Acknowledgments" Level="0">
+      <FlowReference Source="Flow_16.xml" PageIndices="106"/>
+    </Section>
+    <Section PageIndex="108" Name="Notes" Level="0">
+      <FlowReference Source="Flow_17.xml" PageIndices="108-0"/>
+    </Section>
+    <Section PageIndex="117" Name="Copyright" Level="0">
+      <FlowReference Source="Flow_18.xml" PageIndices="117"/>
+    </Section>
+  </Sections>
+  <References>
+    <Reference Id="toc:Cover|file:OEBPS/Ali_9780307589682_epub_cvi_r1.htm" PageIndex="0"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_cvi_r1.htm" PageIndex="0"/>
+    <Reference Id="toc:Title Page|file:OEBPS/Ali_9780307589682_epub_tp_r1.htm" PageIndex="1"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_tp_r1.htm" PageIndex="1"/>
+    <Reference Id="toc:Contents|file:OEBPS/Ali_9780307589682_epub_toc_r1.htm" PageIndex="2"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_toc_r1.htm" PageIndex="2"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_toc_r1.htm#toc" PageIndex="2"/>
+    <Reference Id="toc:Nujood, a Modern-Day Heroine|file:OEBPS/Ali_9780307589682_epub_fm1_r1.htm" PageIndex="3"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_fm1_r1.htm" PageIndex="3"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#fm1" PageIndex="3"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page7" PageIndex="3"/>
+    <Reference Id="KNFBDropCap" PageIndex="3"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page8" PageIndex="3"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page9" PageIndex="3"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page10" PageIndex="4"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#nts1a" PageIndex="4"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_fm1_r1.htm#page11" PageIndex="5"/>
+    <Reference Id="toc:Chapter 1 - In Court|file:OEBPS/Ali_9780307589682_epub_c01_r1.htm" PageIndex="6"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm" PageIndex="6"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#c01" PageIndex="6"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page12" PageIndex="6"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page13" PageIndex="6"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#nts2a" PageIndex="6"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page14" PageIndex="6"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page15" PageIndex="7"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page16" PageIndex="7"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page17" PageIndex="8"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page18" PageIndex="9"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page19" PageIndex="9"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page20" PageIndex="10"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c01_r1.htm#page21" PageIndex="10"/>
+    <Reference Id="toc:Chapter 2 - Khardji|file:OEBPS/Ali_9780307589682_epub_c02_r1.htm" PageIndex="12"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm" PageIndex="12"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#c02" PageIndex="12"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page22" PageIndex="12"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page23" PageIndex="12"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page24" PageIndex="12"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts3a" PageIndex="12"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page25" PageIndex="13"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page26" PageIndex="13"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page27" PageIndex="14"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page28" PageIndex="15"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page29" PageIndex="15"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page30" PageIndex="16"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page31" PageIndex="16"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts4a" PageIndex="17"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page32" PageIndex="17"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page33" PageIndex="17"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page34" PageIndex="18"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page35" PageIndex="18"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page36" PageIndex="19"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts5a" PageIndex="20"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page37" PageIndex="20"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page38" PageIndex="21"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page39" PageIndex="21"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#nts6a" PageIndex="21"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c02_r1.htm#page40" PageIndex="22"/>
+    <Reference Id="toc:Chapter 3 - The Judge|file:OEBPS/Ali_9780307589682_epub_c03_r1.htm" PageIndex="23"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm" PageIndex="23"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#c03" PageIndex="23"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#page41" PageIndex="23"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#page42" PageIndex="23"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#page43" PageIndex="24"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#page44" PageIndex="24"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#nts7a" PageIndex="24"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#page45" PageIndex="25"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#page46" PageIndex="25"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c03_r1.htm#page47" PageIndex="26"/>
+    <Reference Id="toc:Chapter 4 - The Wedding|file:OEBPS/Ali_9780307589682_epub_c04_r1.htm" PageIndex="28"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm" PageIndex="28"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#c04" PageIndex="28"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page48" PageIndex="28"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page49" PageIndex="28"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page50" PageIndex="28"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page51" PageIndex="29"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page52" PageIndex="29"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page53" PageIndex="30"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page54" PageIndex="31"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#nts8a" PageIndex="31"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page55" PageIndex="31"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page56" PageIndex="32"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page57" PageIndex="32"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page58" PageIndex="33"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page59" PageIndex="34"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page60" PageIndex="34"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page61" PageIndex="34"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page62" PageIndex="35"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page63" PageIndex="36"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page64" PageIndex="37"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page65" PageIndex="37"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#nts9a" PageIndex="37"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page66" PageIndex="38"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page67" PageIndex="38"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#nts10a" PageIndex="39"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page68" PageIndex="39"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page69" PageIndex="40"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page70" PageIndex="40"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page71" PageIndex="41"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page72" PageIndex="42"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page73" PageIndex="42"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page74" PageIndex="43"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page75" PageIndex="44"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page76" PageIndex="44"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page77" PageIndex="45"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c04_r1.htm#page78" PageIndex="45"/>
+    <Reference Id="toc:Chapter 5 - Shada|file:OEBPS/Ali_9780307589682_epub_c05_r1.htm" PageIndex="47"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm" PageIndex="47"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#c05" PageIndex="47"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page79" PageIndex="47"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#nts11a" PageIndex="47"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page80" PageIndex="47"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page81" PageIndex="48"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page82" PageIndex="48"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page83" PageIndex="49"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page84" PageIndex="50"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page85" PageIndex="50"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page86" PageIndex="51"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c05_r1.htm#page87" PageIndex="51"/>
+    <Reference Id="toc:Chapter 6 - Running Away|file:OEBPS/Ali_9780307589682_epub_c06_r1.htm" PageIndex="53"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm" PageIndex="53"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#c06" PageIndex="53"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page88" PageIndex="53"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page89" PageIndex="53"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page90" PageIndex="53"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page91" PageIndex="54"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page92" PageIndex="54"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page93" PageIndex="55"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page94" PageIndex="56"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page95" PageIndex="56"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page96" PageIndex="57"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page97" PageIndex="58"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page98" PageIndex="58"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page99" PageIndex="59"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page100" PageIndex="59"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page101" PageIndex="60"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page102" PageIndex="61"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page103" PageIndex="61"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page104" PageIndex="62"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page105" PageIndex="63"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c06_r1.htm#page106" PageIndex="63"/>
+    <Reference Id="toc:Chapter 7 - The Divorce|file:OEBPS/Ali_9780307589682_epub_c07_r1.htm" PageIndex="65"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm" PageIndex="65"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#c07" PageIndex="65"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page107" PageIndex="65"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page108" PageIndex="65"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page109" PageIndex="66"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page110" PageIndex="66"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page111" PageIndex="67"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page112" PageIndex="68"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page113" PageIndex="68"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page114" PageIndex="69"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page115" PageIndex="70"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page116" PageIndex="70"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page117" PageIndex="71"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page118" PageIndex="72"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c07_r1.htm#page119" PageIndex="72"/>
+    <Reference Id="toc:Chapter 8 - The Birthday|file:OEBPS/Ali_9780307589682_epub_c08_r1.htm" PageIndex="74"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm" PageIndex="74"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#c08" PageIndex="74"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page120" PageIndex="74"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page121" PageIndex="74"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page122" PageIndex="74"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page123" PageIndex="75"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page124" PageIndex="75"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page125" PageIndex="76"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page126" PageIndex="77"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c08_r1.htm#page127" PageIndex="77"/>
+    <Reference Id="toc:Chapter 9 - Mona|file:OEBPS/Ali_9780307589682_epub_c09_r1.htm" PageIndex="78"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm" PageIndex="78"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#c09" PageIndex="78"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page128" PageIndex="78"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page129" PageIndex="78"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page130" PageIndex="78"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page131" PageIndex="79"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page132" PageIndex="79"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page133" PageIndex="80"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page134" PageIndex="81"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page135" PageIndex="81"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page136" PageIndex="82"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page137" PageIndex="82"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page138" PageIndex="83"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page139" PageIndex="84"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c09_r1.htm#page140" PageIndex="84"/>
+    <Reference Id="toc:Chapter 10 - The Return of Fares|file:OEBPS/Ali_9780307589682_epub_c10_r1.htm" PageIndex="85"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm" PageIndex="85"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#c10" PageIndex="85"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page141" PageIndex="85"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page142" PageIndex="85"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page143" PageIndex="86"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page144" PageIndex="87"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page145" PageIndex="87"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page146" PageIndex="88"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page147" PageIndex="88"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page148" PageIndex="89"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page149" PageIndex="90"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page150" PageIndex="90"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c10_r1.htm#page151" PageIndex="91"/>
+    <Reference Id="toc:Chapter 11 - When I Become a Lawyer|file:OEBPS/Ali_9780307589682_epub_c11_r1.htm" PageIndex="92"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm" PageIndex="92"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#c11" PageIndex="92"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page152" PageIndex="92"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page153" PageIndex="92"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page154" PageIndex="92"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page155" PageIndex="93"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page156" PageIndex="93"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page157" PageIndex="94"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#nts12a" PageIndex="94"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page158" PageIndex="95"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page159" PageIndex="95"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page160" PageIndex="96"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page161" PageIndex="96"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page162" PageIndex="97"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page163" PageIndex="98"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page164" PageIndex="98"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page165" PageIndex="99"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page166" PageIndex="99"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page167" PageIndex="100"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_c11_r1.htm#page168" PageIndex="100"/>
+    <Reference Id="toc:Epilogue|file:OEBPS/Ali_9780307589682_epub_epl_r1.htm" PageIndex="101"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm" PageIndex="101"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#epl" PageIndex="101"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#page169" PageIndex="101"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#page170" PageIndex="101"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#page171" PageIndex="102"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#page172" PageIndex="102"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#page173" PageIndex="103"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#page174" PageIndex="104"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#page175" PageIndex="104"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_epl_r1.htm#page176" PageIndex="105"/>
+    <Reference Id="toc:Acknowledgments|file:OEBPS/Ali_9780307589682_epub_ack_r1.htm" PageIndex="106"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_ack_r1.htm" PageIndex="106"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_ack_r1.htm#ack" PageIndex="106"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_ack_r1.htm#page177" PageIndex="106"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_ack_r1.htm#page178" PageIndex="106"/>
+    <Reference Id="toc:Notes|file:OEBPS/Ali_9780307589682_epub_nts_r1.htm" PageIndex="108"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm" PageIndex="108"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts" PageIndex="108"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page179" PageIndex="108"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts1" PageIndex="108"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts2" PageIndex="108"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page180" PageIndex="108"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts3" PageIndex="108"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts4" PageIndex="109"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts5" PageIndex="109"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page181" PageIndex="109"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts6" PageIndex="109"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts7" PageIndex="109"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts8" PageIndex="109"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts9" PageIndex="110"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page182" PageIndex="110"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts10" PageIndex="110"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts11" PageIndex="110"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page183" PageIndex="110"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#nts12" PageIndex="110"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_nts_r1.htm#page184" PageIndex="111"/>
+    <Reference Id="file:OEBPS/Ali_9780307589682_epub_bm1_r1.htm" PageIndex="112"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm1_r1.htm" PageIndex="112"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#bm1" PageIndex="112"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page185" PageIndex="112"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page186" PageIndex="112"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page187" PageIndex="113"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm1_r1.htm#page188" PageIndex="114"/>
+    <Reference Id="file:OEBPS/Ali_9780307589682_epub_bm2_r1.htm" PageIndex="115"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm2_r1.htm" PageIndex="115"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#bm2" PageIndex="115"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page189" PageIndex="115"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm2_r1.htm#page190" PageIndex="115"/>
+    <Reference Id="file:OEBPS/Ali_9780307589682_epub_bm3_r1.htm" PageIndex="116"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm3_r1.htm" PageIndex="116"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm3_r1.htm#bm3" PageIndex="116"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_bm3_r1.htm#page191" PageIndex="116"/>
+    <Reference Id="toc:Copyright|file:OEBPS/Ali_9780307589682_epub_cop_r1.htm" PageIndex="117"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_cop_r1.htm" PageIndex="117"/>
+    <Reference Id="OEBPS/Ali_9780307589682_epub_cop_r1.htm#cop" PageIndex="117"/>
+  </References>
+</BookContents>

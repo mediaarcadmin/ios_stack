@@ -7,6 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
 
 struct css_computed_style;
 
@@ -17,6 +22,9 @@ struct css_computed_style;
     
     uint32_t _key;
     THStringRenderer *_stringRenderer;
+    
+    CGFloat _textPointSize;
+    NSUInteger _lineHeightKind;
 }
 
 // Concrete:
@@ -38,6 +46,11 @@ struct css_computed_style;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *previousDisplayableSibling;
 
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
+
+- (CGFloat)textPointSizeAtScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)textAscenderAtScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)xHeightAtScaleFactor:(CGFloat)scaleFactor;
 
 // Overridable:
 @property (nonatomic, readonly) BOOL isTextNode;  // Default: NO

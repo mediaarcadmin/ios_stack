@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Section Margin="0,0,0,0" Tag="9780743205443_rev01.html#rev01">
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__1">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">The Trusted Advisor</Run>
+          <Run Tag="__1"> offers an invaluable road map to all those who seek to develop truly special relationships with their clients.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;Carl Stern, CEO, Boston Consulting Group</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__1">&#x201C;This is a major contribution to the consulting profession, a richly illustrated and humanistic look at what differentiates a truly great advisor from a good one. This book will be valuable reading for the novice and experienced professional alike.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;John Lynch, Chairman and CEO, Towers Perrin</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__1">&#x201C;Our company&#x2019;s development has been guided by and benefited from </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">The Trusted Advisor</Run>
+          <Run Tag="__1"> concepts&#x2014;and they work!&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;George Colony, Chairman and CEO, Forrester Research</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Normal" FontWeight="Normal" FontSize="14" Tag="__1">&#x201C;This book provides valuable insight into how one can become and, equally important, remain a trusted advisor, which is essential to success in a wide variety of professions.&#x201D;</Run>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;Howard G. Paster, Chairman and CEO, Hill and Knowlton</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__1">&#x201C;This book is engaging, enjoyable and absolutely on target. It is packed with truth. </Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">The Trusted Advisor</Run>
+          <Run Tag="__1"> will guide success, not just in the advisory professions but in leadership and life as well.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;William F. Stasior, Senior Chairman and Former CEO, Booz&#xB7;Allen &amp; Hamilton</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__1">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">The Trusted Advisor</Run>
+          <Run Tag="__1"> will make any advisor more effective in winning and servicing clients&#x2019; business. It is a must-read for anyone working in professional service firms.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;Thomas W. Watson, Chief Growth Officer, Omnicom Group</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__1">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">The Trusted Advisor</Run>
+          <Run Tag="__1"> is right on the mark. Required reading for all professionals.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;Hobson Brown, Jr., President and CEO, Russell Reynolds Associates</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__1">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">The Trusted Advisor</Run>
+          <Run Tag="__1"> will help advisors everywhere learn how to take their client relationships to a higher level.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;Dale Gifford, Chief Executive, Hewitt Associates</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__1">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">The Trusted Advisor</Run>
+          <Run Tag="__1"> gets to the heart and soul of the advice business. This pathbreaking book is a must read.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;Professor Charles Fombrun, Leonard N. Stern School of Business, New York University</Run>
+      </Paragraph>
+      <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Justify" FontStyle="Normal" FontWeight="Normal" FontSize="14">
+        <Span FontStyle="Normal" FontWeight="Normal" FontSize="14">
+          <Run Tag="__1">&#x201C;</Run>
+          <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">The Trusted Advisor</Run>
+          <Run Tag="__1"> is a masterful work with valuable examples, constructs, and recommendations. The authors should be lauded for sharing their wealth of experience and advice on this critical topic.&#x201D;</Run>
+        </Span>
+      </Paragraph>
+      <Paragraph TextIndent="-16" Margin="48,3,16,8" TextAlignment="Justify" FontStyle="Italic" FontWeight="Normal" FontSize="14">
+        <Run FontStyle="Italic" FontWeight="Normal" FontSize="14" Tag="__1">&#x2014;David C. Munn, President and CEO, Information Technology Services Marketing Association</Run>
+      </Paragraph>
+    </Section>
+  </Section>
+</Flow>

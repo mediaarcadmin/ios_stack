@@ -13,8 +13,8 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+#import "EucCSSInternal.h"
 #import "EucCSSLayouter.h"
-#import "EucCSSLayouter_Package.h"
 #import "EucCSSLayoutDocumentRun.h"
 #import "EucCSSLayoutDocumentRun_Package.h"
 #import "EucCSSLayoutPositionedRun.h"
@@ -44,8 +44,6 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 } EucCSSLayoutDocumentRunBreakInfo;
 
 @interface EucCSSLayoutDocumentRun ()
-- (void)_populateComponentInfo:(EucCSSLayoutDocumentRunComponentInfo *)info 
-                       forNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_addComponent:(EucCSSLayoutDocumentRunComponentInfo *)info;
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode;
@@ -138,7 +136,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         _document = _startNode.document;        
         
         css_computed_style *inlineNodeStyle = inlineNode.computedStyle;
-        
+                
         // _wordToComponent is 1-indexed for words - word '0' is the start of 
         // this run - so set that up now.
         _wordToComponentCapacity = 128;
@@ -148,6 +146,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         BOOL reachedLimit = NO;
         
         EucCSSLayoutDocumentRunComponentInfo currentComponentInfo = { EucCSSLayoutDocumentRunComponentKindNone };
+        static const EucCSSLayoutDocumentRunComponentInfo hardBreakInfo = { EucCSSLayoutDocumentRunComponentKindHardBreak };
         
         BOOL wasFloat = NO;
         while(YES) {
@@ -166,8 +165,19 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     wasFloat = YES;
                 } else if(css_computed_display(inlineNodeStyle, false) != CSS_DISPLAY_BLOCK) {
                     // Open this node.
-                    [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
+                    if(inlineNodeStyle && 
+                       css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM &&
+                       (_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutDocumentRunComponentKindHardBreak)) {
+                        EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
+                        info.documentNode = inlineNode.parent;
+                        info.width = 0;
+                        [self _addComponent:&info];
+                        _previousInlineCharacterWasSpace = YES;
+                        _alreadyInsertedSpace = YES;
+                    }
+                    
                     currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
+                    currentComponentInfo.documentNode = inlineNode;
                     [self _addComponent:&currentComponentInfo];
                     nextNode = [inlineNode nextDisplayableUnder:underNode];
                 } else {
@@ -184,17 +194,24 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     if(!inlineNode.isTextNode && 
                        !inlineNode.isImageNode &&
                        (!inlineNodeStyle || css_computed_float(inlineNodeStyle) == CSS_FLOAT_NONE)) {
-                        // If the node /doesn't/ have children, it's already closed,
-                        // above.
                         if(currentComponentInfo.documentNode != inlineNode) {
                             // We can close nodes that we didn't start if we're in
                             // an inline node with block nodes within it, so we
                             // need to populate this if we didn't above (usually,
                             // it's populated on node open).
-                            [self _populateComponentInfo:&currentComponentInfo forNode:inlineNode];
+                            currentComponentInfo.documentNode = inlineNode;
                         }
                         currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
                         [self _addComponent:&currentComponentInfo];
+                        
+                        if(inlineNodeStyle && css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM) {
+                            EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
+                            info.documentNode = inlineNode.parent;
+                            info.width = 0;
+                            [self _addComponent:&info];
+                            _previousInlineCharacterWasSpace = YES;
+                            _alreadyInsertedSpace = YES;
+                        }
                     }                    
                     inlineNode = inlineNode.parent;
                     inlineNodeStyle = inlineNode.computedStyle;
@@ -227,14 +244,17 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
 - (void)dealloc
 {
     for(uint32_t i = 0; i < _componentsCount; ++i) {
-        EucCSSLayoutDocumentRunComponentKind kind = _componentInfos[i].kind;
-        if(kind == EucCSSLayoutDocumentRunComponentKindWord || kind == EucCSSLayoutDocumentRunComponentKindImage) { 
-            [(id)(_componentInfos[i].component) release];
-        } else if(kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-            [(id)(_componentInfos[i].component) release];
-            [(id)(_componentInfos[i].component2) release];
-        }
         [_componentInfos[i].documentNode release];
+
+        EucCSSLayoutDocumentRunComponentKind kind = _componentInfos[i].kind;
+        if(kind == EucCSSLayoutDocumentRunComponentKindWord) {
+            [_componentInfos[i].contents.stringInfo.string release];
+        } else if (kind == EucCSSLayoutDocumentRunComponentKindImage) { 
+            CFRelease(_componentInfos[i].contents.imageInfo.image);
+        } else if(kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+            [_componentInfos[i].contents.hyphenationInfo.beforeHyphen release];
+            [_componentInfos[i].contents.hyphenationInfo.afterHyphen release];
+        }
     }
     free(_componentInfos);
     free(_wordToComponent);
@@ -294,12 +314,12 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         _wordToComponent[_wordsCount] = _componentsCount;
         _currentWordElementCount = 0;
         
-        [(id)info->component retain];
+        [info->contents.stringInfo.string retain];
     } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
-        [(id)info->component retain];
+        CFRetain(info->contents.imageInfo.image);
     } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-        [(id)info->component retain];
-        [(id)info->component2 retain];
+        [info->contents.hyphenationInfo.beforeHyphen retain];
+        [info->contents.hyphenationInfo.afterHyphen retain];
     }
     
     if(_componentsCapacity == _componentsCount) {
@@ -423,7 +443,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
             EucCSSLayoutDocumentRunComponentInfo info = { 0 };
             info.documentNode = subnode;
             info.kind = EucCSSLayoutDocumentRunComponentKindImage;
-            info.component = (void *)image;
+            info.contents.imageInfo.image = image;
             [self _addComponent:&info];
             
             if(!_sizeDependentComponentIndexes) {
@@ -444,7 +464,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     for(NSNumber *indexNumber in _sizeDependentComponentIndexes) {
         size_t offset = [indexNumber integerValue];
         
-        CGImageRef image = (CGImageRef)(_componentInfos[offset].component);
+        CGImageRef image = _componentInfos[offset].contents.imageInfo.image;
         EucCSSIntermediateDocumentNode *subnode = _componentInfos[offset].documentNode;
         
         CGFloat specifiedWidth = CGFLOAT_MAX;
@@ -507,43 +527,15 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                                   minHeight:minHeight];
         
         _componentInfos[offset].width = calculatedSize.width;
-        _componentInfos[offset].ascender = calculatedSize.height;
-        _componentInfos[offset].pointSize = calculatedSize.height;
+        _componentInfos[offset].contents.imageInfo.scaledSize = CGSizeMake(calculatedSize.width, calculatedSize.height);
         
         if(css_computed_line_height(nodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
-            _componentInfos[offset].lineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, _scaleFactor);
+            _componentInfos[offset].contents.imageInfo.scaledLineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, _scaleFactor);
         } else {
-            _componentInfos[offset].lineHeight = calculatedSize.height;
+            _componentInfos[offset].contents.imageInfo.scaledLineHeight = calculatedSize.height;
         }  
     }
 }
-
-- (void)_populateComponentInfo:(EucCSSLayoutDocumentRunComponentInfo *)info 
-                       forNode:(EucCSSIntermediateDocumentNode *)subnode 
-{
-    css_computed_style *subnodeStyle = subnode.computedStyle;
-    if(!subnodeStyle) {
-        subnodeStyle = [subnode.parent computedStyle];
-    }
-    THStringRenderer *stringRenderer = subnode.stringRenderer;
-
-    css_fixed length = 0;
-    css_unit unit = (css_unit)0;
-    css_computed_font_size(subnodeStyle, &length, &unit);
-    CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);    
-    
-    info->pointSize = fontPixelSize;
-    info->ascender = [stringRenderer ascenderForPointSize:fontPixelSize];
-
-    if(css_computed_line_height(subnodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
-        info->lineHeight = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, fontPixelSize, _scaleFactor);
-    } else {
-        info->lineHeight = [stringRenderer lineSpacingForPointSize:fontPixelSize];
-    }
-    info->width = 0;
-    info->documentNode = subnode;
-}
-
 
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode 
 {
@@ -563,7 +555,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
 
     EucCSSLayoutDocumentRunComponentInfo spaceInfo = { 0 };
     spaceInfo.kind = EucCSSLayoutDocumentRunComponentKindSpace;
-    [self _populateComponentInfo:&spaceInfo forNode:subnode];
+    spaceInfo.documentNode = subnode;
     spaceInfo.width = [stringRenderer widthOfString:@" " pointSize:fontPixelSize];
     
     uint8_t textAlign = [self _textAlign];
@@ -586,7 +578,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 
                 EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                 info.kind = EucCSSLayoutDocumentRunComponentKindWord;
-                info.component = (void *)word;
+                info.contents.stringInfo.string = word;
                 info.width = [stringRenderer widthOfString:word pointSize:fontPixelSize];
                 [self _addComponent:&info];
                 
@@ -598,12 +590,12 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     
                     for(THPair *hyphenatedPair in hyphenations) {
                         NSString *beforeBreak = hyphenatedPair.first;
-                        hyphenInfo.component = beforeBreak;
-                        hyphenInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
+                        hyphenInfo.contents.hyphenationInfo.beforeHyphen = beforeBreak;
+                        hyphenInfo.contents.hyphenationInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
                         
                         NSString *afterBreak = hyphenatedPair.second;
-                        hyphenInfo.component2 = afterBreak;
-                        hyphenInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
+                        hyphenInfo.contents.hyphenationInfo.afterHyphen = afterBreak;
+                        hyphenInfo.contents.hyphenationInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
                         
                         [self _addComponent:&hyphenInfo];
                     }
@@ -669,7 +661,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                     }
                                     EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                                     info.kind = EucCSSLayoutDocumentRunComponentKindWord;
-                                    info.component = (void *)string;
+                                    info.contents.stringInfo.string = (NSString *)string;
                                     info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                                     [self _addComponent:&info];
                                     
@@ -681,12 +673,12 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                         
                                         for(THPair *hyphenatedPair in hyphenations) {
                                             NSString *beforeBreak = hyphenatedPair.first;
-                                            hyphenInfo.component = beforeBreak;
-                                            hyphenInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
+                                            hyphenInfo.contents.hyphenationInfo.beforeHyphen = beforeBreak;
+                                            hyphenInfo.contents.hyphenationInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
                                             
                                             NSString *afterBreak = hyphenatedPair.second;
-                                            hyphenInfo.component2 = afterBreak;
-                                            hyphenInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
+                                            hyphenInfo.contents.hyphenationInfo.afterHyphen = afterBreak;
+                                            hyphenInfo.contents.hyphenationInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
                                             
                                             [self _addComponent:&hyphenInfo];
                                         }
@@ -764,7 +756,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     }                    
                     EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
                     info.kind = EucCSSLayoutDocumentRunComponentKindWord;
-                    info.component = (void *)string;
+                    info.contents.stringInfo.string = (NSString *)string;
                     info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                     [self _addComponent:&info];
                     CFRelease(string);
@@ -869,8 +861,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     break;
                 case EucCSSLayoutDocumentRunComponentKindHyphenationRule:
                     {
-                        breaks[breaksCount].x0 = lineSoFarWidth + _componentInfos[i].widthBeforeHyphen - _componentInfos[i].width;
-                        breaks[breaksCount].x1 = lineSoFarWidth - _componentInfos[i].widthAfterHyphen;
+                        breaks[breaksCount].x0 = lineSoFarWidth + _componentInfos[i].contents.hyphenationInfo.widthBeforeHyphen - lastWordWidth;
+                        breaks[breaksCount].x1 = lineSoFarWidth - _componentInfos[i].contents.hyphenationInfo.widthAfterHyphen;
                         breaks[breaksCount].penalty = 0;
                         breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN;
                         breakInfos[breaksCount].point = _componentInfos[i].point;
@@ -1204,7 +1196,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     NSMutableArray *words = [NSMutableArray arrayWithCapacity:wordsCount];
     
     for(NSUInteger i = 0; i < wordsCount; ++i) {
-        [words addObject:(id)_componentInfos[_wordToComponent[i + 1]].component];
+        [words addObject:_componentInfos[_wordToComponent[i + 1]].contents.stringInfo.string];
     }
     
     return words;
@@ -1219,7 +1211,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     NSString *lastAttribute = nil;
     for(NSUInteger i = 0; i < wordsCount; ++i) {
         NSString *attribute = lastAttribute;
-        EucCSSIntermediateDocumentNode *documentNode = (id)_componentInfos[_wordToComponent[i + 1]].documentNode;
+        EucCSSIntermediateDocumentNode *documentNode = _componentInfos[_wordToComponent[i + 1]].documentNode;
         if(documentNode != lastDocumentNode) {
             BOOL found = NO;
             EucCSSIntermediateDocumentNode *containingNode = documentNode;

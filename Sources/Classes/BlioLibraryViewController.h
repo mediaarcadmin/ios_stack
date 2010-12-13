@@ -146,6 +146,8 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 - (CGRect)visibleRect;
 - (void)showStore:(id)sender;
 
+-(void)openBook:(BlioBook *)selectedBook;
+
 @end
 
 @interface BlioLibraryBookView : UIView {

@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="ISBN" version="2.0">
+     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" 
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:opf="http://www.idpf.org/2007/opf">
+      <dc:title>Cook Yourself Thin</dc:title>
+      <dc:language>en</dc:language>
+<dc:identifier id="ISBN" opf:scheme="978-1-4013-9474-5">978-1-4013-9474-5</dc:identifier>
+      <dc:creator>Lifetime Entertainment Services</dc:creator>
+      <dc:contributor>Lifetime Entertainment Services</dc:contributor>
+      <dc:publisher>HarperCollins</dc:publisher>
+      <dc:rights>Copyright © 2009 Lifetime Entertainment Services</dc:rights>
+  </metadata>
+  <manifest>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="pt" href="page-template.xpgt" media-type="application/vnd.adobe.page-template+xml" />
+    <item id="msrcss" href="pdlmsr.css" media-type="text/css" />
+    <item id="cov" href="cookyourselfthin_cov.html" media-type="application/xhtml+xml" />
+    <item id="tp01" href="cookyourselfthin_tp01.html" media-type="application/xhtml+xml" />
+    <item id="toc" href="cookyourselfthin_toc.html" media-type="application/xhtml+xml" />
+    <item id="dum01" href="cookyourselfthin_dum01.html" media-type="application/xhtml+xml" />
+    <item id="fm01" href="cookyourselfthin_fm01.html" media-type="application/xhtml+xml" />
+    <item id="fm02" href="cookyourselfthin_fm02.html" media-type="application/xhtml+xml" />
+    <item id="fmm01" href="cookyourselfthin_fmm01.html" media-type="application/xhtml+xml" />
+    <item id="fmm02" href="cookyourselfthin_fmm02.html" media-type="application/xhtml+xml" />
+    <item id="fmm03" href="cookyourselfthin_fmm03.html" media-type="application/xhtml+xml" />
+    <item id="fm03" href="cookyourselfthin_fm03.html" media-type="application/xhtml+xml" />
+    <item id="fm04" href="cookyourselfthin_fm04.html" media-type="application/xhtml+xml" />
+    <item id="fm05" href="cookyourselfthin_fm05.html" media-type="application/xhtml+xml" />
+    <item id="fm06" href="cookyourselfthin_fm06.html" media-type="application/xhtml+xml" />
+    <item id="fm07" href="cookyourselfthin_fm07.html" media-type="application/xhtml+xml" />
+    <item id="fm08" href="cookyourselfthin_fm08.html" media-type="application/xhtml+xml" />
+    <item id="fm09" href="cookyourselfthin_fm09.html" media-type="application/xhtml+xml" />
+    <item id="fm10" href="cookyourselfthin_fm10.html" media-type="application/xhtml+xml" />
+    <item id="fm11" href="cookyourselfthin_fm11.html" media-type="application/xhtml+xml" />
+    <item id="fm12" href="cookyourselfthin_fm12.html" media-type="application/xhtml+xml" />
+    <item id="fm13" href="cookyourselfthin_fm13.html" media-type="application/xhtml+xml" />
+    <item id="fm14" href="cookyourselfthin_fm14.html" media-type="application/xhtml+xml" />
+    <item id="pt01" href="cookyourselfthin_pt01.html" media-type="application/xhtml+xml" />
+    <item id="ch01" href="cookyourselfthin_ch01.html" media-type="application/xhtml+xml" />
+    <item id="ch02" href="cookyourselfthin_ch02.html" media-type="application/xhtml+xml" />
+    <item id="ch03" href="cookyourselfthin_ch03.html" media-type="application/xhtml+xml" />
+    <item id="ind01" href="cookyourselfthin_ind01.html" media-type="application/xhtml+xml" />
+    <item id="ack01" href="cookyourselfthin_ack01.html" media-type="application/xhtml+xml" />
+    <item id="bm02" href="cookyourselfthin_bm02.html" media-type="application/xhtml+xml" />
+    <item id="cop01" href="cookyourselfthin_cop01.html" media-type="application/xhtml+xml" />
+    <item id="image_0001" href="Images/logo.jpg" media-type="image/jpeg" />
+    <item id="image_0002" href="Images/08.jpg" media-type="image/jpeg" />
+    <item id="image_0003" href="Images/12.jpg" media-type="image/jpeg" />
+    <item id="image_0004" href="Images/13.jpg" media-type="image/jpeg" />
+    <item id="image_0005" href="Images/14.jpg" media-type="image/jpeg" />
+    <item id="image_0006" href="Images/16.jpg" media-type="image/jpeg" />
+    <item id="image_0007" href="Images/18.jpg" media-type="image/jpeg" />
+    <item id="image_0008" href="Images/33.jpg" media-type="image/jpeg" />
+    <item id="image_0009" href="Images/37.jpg" media-type="image/jpeg" />
+    <item id="image_0010" href="Images/44.jpg" media-type="image/jpeg" />
+    <item id="image_0011" href="Images/51.jpg" media-type="image/jpeg" />
+    <item id="image_0012" href="Images/55.jpg" media-type="image/jpeg" />
+    <item id="image_0013" href="Images/58.jpg" media-type="image/jpeg" />
+    <item id="image_0014" href="Images/67.jpg" media-type="image/jpeg" />
+    <item id="image_0015" href="Images/76.jpg" media-type="image/jpeg" />
+    <item id="image_0016" href="Images/80.jpg" media-type="image/jpeg" />
+    <item id="image_0017" href="Images/85.jpg" media-type="image/jpeg" />
+    <item id="image_0018" href="Images/96.jpg" media-type="image/jpeg" />
+    <item id="image_0019" href="Images/98.jpg" media-type="image/jpeg" />
+    <item id="image_0020" href="Images/104.jpg" media-type="image/jpeg" />
+    <item id="image_0021" href="Images/108.jpg" media-type="image/jpeg" />
+    <item id="image_0022" href="Images/114.jpg" media-type="image/jpeg" />
+    <item id="image_0023" href="Images/118.jpg" media-type="image/jpeg" />
+    <item id="image_0024" href="Images/123.jpg" media-type="image/jpeg" />
+    <item id="image_0025" href="Images/126.jpg" media-type="image/jpeg" />
+    <item id="image_0026" href="Images/130.jpg" media-type="image/jpeg" />
+    <item id="image_0027" href="Images/135.jpg" media-type="image/jpeg" />
+    <item id="image_0028" href="Images/141.jpg" media-type="image/jpeg" />
+    <item id="image_0029" href="Images/146.jpg" media-type="image/jpeg" />
+    <item id="image_0030" href="Images/154.jpg" media-type="image/jpeg" />
+    <item id="image_0031" href="Images/160.jpg" media-type="image/jpeg" />
+    <item id="image_0032" href="Images/164.jpg" media-type="image/jpeg" />
+    <item id="image_0033" href="Images/172.jpg" media-type="image/jpeg" />
+    <item id="image_0034" href="Images/180.jpg" media-type="image/jpeg" />
+    <item id="image_0035" href="Images/186.jpg" media-type="image/jpeg" />
+    <item id="image_0036" href="Images/194.jpg" media-type="image/jpeg" />
+    <item id="image_0037" href="Images/196.jpg" media-type="image/jpeg" />
+    <item id="image_0038" href="Images/201.jpg" media-type="image/jpeg" />
+    <item id="image_0039" href="Images/202.jpg" media-type="image/jpeg" />
+    <item id="image_0040" href="Images/212.jpg" media-type="image/jpeg" />
+    <item id="image_0041" href="Images/218.jpg" media-type="image/jpeg" />
+    <item id="image_0042" href="Images/226.jpg" media-type="image/jpeg" />
+    <item id="image_0043" href="Images/229.jpg" media-type="image/jpeg" />
+    <item id="image_0044" href="Images/235.jpg" media-type="image/jpeg" />
+    <item id="cover-image" href="Images/cover.jpg" media-type="image/jpeg" />
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="cov" />
+    <itemref idref="tp01" />
+    <itemref idref="toc" />
+    <itemref idref="dum01" />
+    <itemref idref="fm01" />
+    <itemref idref="fm02" />
+    <itemref idref="fmm01" />
+    <itemref idref="fmm02" />
+    <itemref idref="fmm03" />
+    <itemref idref="fm03" />
+    <itemref idref="fm04" />
+    <itemref idref="fm05" />
+    <itemref idref="fm06" />
+    <itemref idref="fm07" />
+    <itemref idref="fm08" />
+    <itemref idref="fm09" />
+    <itemref idref="fm10" />
+    <itemref idref="fm11" />
+    <itemref idref="fm12" />
+    <itemref idref="fm13" />
+    <itemref idref="fm14" />
+    <itemref idref="pt01" />
+    <itemref idref="ch01" />
+    <itemref idref="ch02" />
+    <itemref idref="ch03" />
+    <itemref idref="ind01" />
+    <itemref idref="ack01" />
+    <itemref idref="bm02" />
+    <itemref idref="cop01" />
+  </spine>
+</package>

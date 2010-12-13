@@ -1,0 +1,611 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__21">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__21">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part01chapter02.html#part01chapter02" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part01chapter02.html#page_11">&#xA0;&#xA0;2&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__21">WHO HAD A BETTER YEAR,</Run>
+      <LineBreak/>
+      <Run Tag="__21">NOMAR GARCIAPARRA OR ICHIRO SUZUKI?</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,24" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="19">
+      <Run Tag="xhtml/part01chapter02.html#part01chapter02section01">The Runs-Created Approach</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__21">I</Run>
+      <Run Tag="__21">n 2004 Seattle Mariner outfielder Ichiro Suzuki set the major league record for most hits in a season. In 1997 Boston Red Sox shortstop Nomar Garciaparra had what was considered a good (but not great) year. Their key statistics are presented in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter02.html#chapter02table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__21">table 2.1</Run>
+      </Hyperlink>
+      <Run Tag="__21">. (For the sake of simplicity, henceforth Suzuki will be referred to as &#x201C;Ichiro&#x201D; or &#x201C;Ichiro 2004&#x201D; and Garciaparra will be referred to as &#x201C;Nomar&#x201D; or &#x201C;Nomar 1997.&#x201D;)</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__21">Recall that a batter&#x2019;s slugging percentage is Total Bases (TB)/At Bats (AB) where</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__21">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__21">
+      <Table.Columns>
+        <TableColumn Width="30.0177619893428*"/>
+        <TableColumn Width="4.97335701598579*"/>
+        <TableColumn Width="36.9449378330373*"/>
+        <TableColumn Width="28.0639431616341*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__21">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__21">TB =</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__21">Singles + 2 &#xD7; Doubles (2B) + 3 &#xD7; Triples (3B)</Run>
+              <LineBreak/>
+              <Run Tag="__21">+ 4 &#xD7; Home Runs (HR).</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__21">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__21">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__21">We see that Ichiro had a higher batting average than Nomar, but because he hit many more doubles, triples, and home runs, Nomar had a much higher slugging percentage. Ichiro walked a few more times than Nomar did. So which player had a better hitting year?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__21">When a batter is hitting, he can cause good things (like hits or walks) to happen or cause bad things (outs) to happen. To compare hitters we must develop a metric that measures how the relative frequency of a batter&#x2019;s good events and bad events influence the number of runs the team scores.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__21">In 1979 Bill James developed the first version of his famous Runs Created Formula in an attempt to compute the number of runs &#x201C;created&#x201D; by a hitter during the course of a season. The most easily obtained data we have available to determine how batting events influence Runs Scored are season-long team batting statistics. A sample of this data is shown in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter02.html#chapter02figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__21">figure 2.1</Run>
+      </Hyperlink>
+      <Run Tag="__21">.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__21">&#xA0;</Run>
+    </Paragraph>
+    <Table Tag="__21">
+      <Table.Columns>
+        <TableColumn Width="20*"/>
+        <TableColumn Width="20*"/>
+        <TableColumn Width="20*"/>
+        <TableColumn Width="20*"/>
+        <TableColumn Width="20*"/>
+      </Table.Columns>
+      <TableRowGroup>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph/>
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__21">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell ColumnSpan="3" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run FontFamily="times new roman" FontWeight="Bold" FontSize="11" Tag="xhtml/part01chapter02.html#chapter02table01">TABLE 2.1</Run>
+              <LineBreak/>
+              <Run Tag="xhtml/part01chapter02.html#chapter02table01">Statistics for Ichiro Suzuki and Nomar Garciaparra</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__21">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">Event</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">Ichiro 2004</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,4,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">Nomar 1997</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">AB</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">704</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">684</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">Batting average</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">.372</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">.306</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">SLG</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">.455</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">.534</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">Hits</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">262</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">209</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">Singles</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">225</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">124</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">2B</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">24</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">44</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">3B</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">5</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">11</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">HR</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">8</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">30</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+        <TableRow FontSize="13">
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">BB + HBP</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">53</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell BorderThickness="0,0,0,1" BorderBrush="#FF000000" TextAlignment="Left" FontSize="13">
+            <Paragraph TextIndent="0" Margin="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="11">
+              <Run Tag="__22">41</Run>
+            </Paragraph>
+          </TableCell>
+          <TableCell TextAlignment="Left" FontSize="13">
+            <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+              <Run Tag="__22">&#xA0;</Run>
+            </Paragraph>
+          </TableCell>
+        </TableRow>
+      </TableRowGroup>
+    </Table>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__22">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/852108b8-8c31-4bb3-93dd-7ae8ea309ba2.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter02.html#chapter02figure01">Figure 2.1. Team batting data for 2000 season. See file teams.xls.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__22">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter02.html#rfnpage_012">James realized there should be a way to predict the runs for each team from hits, singles, 2B, 3B, HR, outs, and BB + HBP.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter02.html#fnpage_012">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter02.html#rfnpage_012">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter02.html#rfnpage_012"> Using his great intuition, James came up with the following relatively simple formula.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part01chapter02.html#page_13">&#xA0;</Run>
+      <Image Source="/Resources/f640392c-a1e9-4fea-9755-4966fb516cde.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__22">As we will soon see, (1) does an amazingly good job of predicting how many runs a team scores in a season from hits, BB, HBP, AB, 2B, 3B, and HR. What is the rationale for (1)? To score runs you need to have runners on base, and then you need to advance them toward home plate: (Hits + Walks + HBP) is basically the number of base runners the team will have in a season. The other part of the equation, </Run>
+      <Image Source="/Resources/59db9ded-fee4-430b-bf92-23a0663df83d.jpg" Stretch="Uniform" Width="120" Height="39" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__22"> measures the rate at which runners are advanced per plate appearance. Therefore (1) is multiplying the number of base runners by the rate at which they are advanced. Using the information in </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter02.html#chapter02figure01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__22">figure 2.1</Run>
+      </Hyperlink>
+      <Run Tag="__22"> we can compute Runs Created for the 2000 Anaheim Angels.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/987f4a28-553d-46fe-9707-778ea684b5a5.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter02.html#rfnpage_013">Actually, the 2000 Anaheim Angels scored 864 runs, so Runs Created overestimated the actual number of runs by around 9%. The file teams.xls calculates Runs Created for each team during the 2000&#x2013;2006 seasons</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter02.html#fnpage_013">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter02.html#rfnpage_013">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter02.html#rfnpage_013"> and compares Runs Created to actual Runs Scored. We find that Runs Created was off by an average of 28 runs per team. Since the average team scored 775 runs, we find an average error of less than 4% when we try to use (1) to predict team Runs Scored. It is amazing that this simple, intuitively appealing formula does such a good job of predicting runs scored by a team. Even though more complex versions of Runs Created more accurately predict actual Runs Scored, the simplicity of (1) has caused this formula to continue to be widely used by the baseball community.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__23">Beware Blind Extrapolation!</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__23">The problem with any version of Runs Created is that the formula is based on team statistics. A typical team has a batting average of .265, hits home runs on 3% of all plate appearances, and has a walk or HBP in around 10% of all plate appearances. Contrast these numbers to those of Barry Bonds&#x2019;s great 2004 season in which he had a batting average of .362, hit a HR on 7% of all plate appearances, and received a walk or HBP during approximately 39% of his plate appearances. One of the first ideas taught in business statistics class is the following: do not use a relationship that is fit to a data set to make predictions for data that are very different from the data used to fit the relationship. Following this logic, we should not expect a Runs Created Formula based on team data to accurately predict the runs created by a superstar such as Barry Bonds or by a very poor player. In </Run>
+      <Hyperlink NavigateUri="part01chapter04.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__23">chapter 4</Run>
+      </Hyperlink>
+      <Run Tag="__23"> we will remedy this problem.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__23">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,0,0,0" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="xhtml/part01chapter02.html#page_14">Ichiro vs. Nomar</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__23">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__23">Despite this caveat, let&#x2019;s plunge ahead and use (1) to compare Ichiro Suzuki&#x2019;s 2004 season to Nomar Garciaparra&#x2019;s 1997 season. Let&#x2019;s also compare Runs Created for Barry Bonds&#x2019;s 2004 season to compare his statistics with those of the other two players. (See </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter02.html#chapter02figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__23">figure 2.2</Run>
+      </Hyperlink>
+      <Run Tag="__23">.)</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/a58da47e-b669-4506-8e2f-485b67a1c12a.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter02.html#chapter02figure02">Figure 2.2. Runs Created for Bonds, Suzuki, and Garciaparra. See file teams.xls.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__24">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__24">We see that Ichiro created 133 runs and Nomar created 126 runs. Bonds created 186 runs. This indicates that Ichiro 2004 had a slightly better hitting year than Nomar 1997. Of course Bonds&#x2019;s performance in 2004 was vastly superior to that of the other two players.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__24">Runs Created Per Game</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter02.html#rfnpage_014">A major problem with any Runs Created metric is that a bad hitter with 700 plate appearances might create more runs than a superstar with 400 plate appearances. In </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter02.html#chapter02figure03">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter02.html#rfnpage_014">Figure 2.3</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter02.html#rfnpage_014"> we compare the statistics of two hypothetical players: Christian and Gregory. Christian had a batting average of .257 while Gregory had a batting average of .300. Gregory walked more often per plate appearance and had more extra-base hits. Yet Runs Created says Christian was a better player. To solve this problem we need to understand that hitters consume a scarce resource: outs. During most games a team bats for nine innings and gets 27 outs (3 outs &#xD7; 9 innings = 27).</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part01chapter02.html#fnpage_014">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter02.html#rfnpage_014">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter02.html#rfnpage_014"> We can now compute Runs Created per game. To see how this works let&#x2019;s look at the data for Ichiro 2004 (</Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter02.html#chapter02figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter02.html#rfnpage_014">figure 2.2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter02.html#rfnpage_014">).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Run Tag="xhtml/part01chapter02.html#page_15">&#xA0;</Run>
+      <Image Source="/Resources/f07e3493-0141-434a-b9cd-561e0a87cb14.jpg" Stretch="Uniform"/>
+    </Paragraph>
+    <Paragraph Margin="0,8,0,16" TextAlignment="Center" FontFamily="times new roman" FontSize="12">
+      <Run Tag="xhtml/part01chapter02.html#chapter02figure03">Figure 2.3. Christian and Gregory&#x2019;s fictitious statistics.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__24">How did we compute outs? Essentially all AB except for hits and errors result in an out. Approximately 1.8% of all AB result in errors. Therefore, we computed outs in column I as AB &#x2013; Hits &#x2013;.018(AB) = .982(AB) &#x2013; Hits. Hitters also create &#x201C;extra&#x201D; outs through sacrifice flies (SF), sacrifice bunts (SAC), caught stealing (CS), and grounding into double plays (GIDP). In 2004 Ichiro created 22 of these extra outs. As shown in cell T219, he &#x201C;used&#x201D; up 451.3 outs for the Mariners. This is equivalent to </Run>
+      <Image Source="/Resources/a73b4a90-2f43-45d6-b0e0-880211722558.jpg" Stretch="Uniform" Width="100" Height="40" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__24"> games. Therefore, Ichiro created </Run>
+      <Image Source="/Resources/66ee163f-6298-4049-878e-260f38a27362.jpg" Stretch="Uniform" Width="100" Height="32" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+      <Run Tag="__24"> runs per game. More formally, runs created per game</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,16,0,16" TextAlignment="Center">
+      <Image Source="/Resources/7026336a-3501-4e8e-ac5f-55c08ca5713e.jpg" Stretch="Uniform" Width="450" Height="63" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part01chapter02.html#page_16">Equation (2) simply states that Runs Created per game is Runs Created by batter divided by number of games&#x2019; worth of outs used by the batter. </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter02.html#chapter02figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter02.html#page_16">Figure 2.2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter02.html#page_16"> shows that Barry Bonds created an amazing 20.65 runs per game. </Run>
+      <Hyperlink NavigateUri="xhtml/part01chapter02.html#chapter02figure02">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter02.html#page_16">Figure 2.2</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter02.html#page_16"> also makes it clear that Ichiro in 2004 was a much more valuable hitter than was Nomar in 1997. After all, Ichiro created 7.88 runs per game while Nomar created 1.16 fewer runs per game (6.72 runs). We also see that Runs Created per game rates Gregory as being 2.61 runs (5.88 &#x2013; 3.27) better per game than Christian. This resolves the problem that ordinary Runs Created allowed Christian to be ranked ahead of Gregory.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__25">Our estimate of Runs Created per game of 7.88 for Ichiro indicates that we believe a team consisting of nine Ichiros would score an average of 7.88 runs per game. Since no team consists of nine players like Ichiro, a more relevant question might be, how many runs would he create when batting with eight &#x201C;average hitters&#x201D;? In his book </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__25">Win Shares</Run>
+      <Run Tag="__25"> (2002) Bill James came up with a more complex version of Runs Created that answers this question. I will address this question in chapters 3 and 4.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter02.html#rfnpage_012">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter02.html#fnpage_012">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter02.html#fnpage_012"> Of course, we are leaving out things like Sacrifice Hits, Sacrifice Flies, Stolen Bases and Caught Stealing. Later versions of Runs Created use these events to compute Runs Created. See </Run>
+      <Hyperlink NavigateUri="http://danagonistes.blogspot.com/2004/10/brief-history-of-run-estimation-runs.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter02.html#fnpage_012">http://danagonistes.blogspot.com/2004/10/brief-history-of-run-estimation-runs.html</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter02.html#fnpage_012"> for an excellent summary of the evolution of Runs Created.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter02.html#rfnpage_013">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter02.html#fnpage_013">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter02.html#fnpage_013"> The data come from Sean Lahman&#x2019;s fabulous baseball database, </Run>
+      <Hyperlink NavigateUri="http://baseball1.com/statistics">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part01chapter02.html#fnpage_013">http://baseball1.com/statistics</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part01chapter02.html#fnpage_013">/.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part01chapter02.html#rfnpage_014">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part01chapter02.html#fnpage_014">3</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part01chapter02.html#fnpage_014"> Since the home team does not bat in the ninth inning when they are ahead and some games go into extra innings, average outs per game is not exactly 27. For the years 2001&#x2013;6, average outs per game was 26.72.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

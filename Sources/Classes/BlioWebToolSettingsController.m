@@ -8,7 +8,6 @@
 
 #import "BlioWebToolSettingsController.h"
 #import "BlioAppSettingsConstants.h"
-//#import "BlioBookViewController.h"
 
 @implementation BlioWebToolSettingsController
 
@@ -18,7 +17,7 @@
 	self = [super init];
 	if (self)
 	{
-		self.title = NSLocalizedString(@"Web Tools",@"\"Web Tools\" view controller title.");
+		self.title = NSLocalizedString(@"Reference Tools",@"\"Reference Tools\" view controller title.");
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 200);
 		}		

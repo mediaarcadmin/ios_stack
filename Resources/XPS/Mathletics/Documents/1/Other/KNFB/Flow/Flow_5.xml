@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__8">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__8">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="21" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="24">
+      <Run Tag="xhtml/frontmatter01.html#frontmatter01" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="24" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/frontmatter01.html#page_xi">PREFACE</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__8">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="__8">I</Run>
+      <Run Tag="__8">f you have picked up this book you surely love sports and you probably like math. You may have read Michael Lewis&#x2019;s great book </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__8">Moneyball</Run>
+      <Run Tag="__8">, which describes how the Oakland A&#x2019;s used mathematical analysis to help them compete successfully with the New York Yankees even though the average annual payroll for the A&#x2019;s is less than 40 percent of that of the Yankees. After reading </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__8">Moneyball</Run>
+      <Run Tag="__8">, you might have been curious about how the math models described in the book actually work. You may have heard how a former night watchman, Bill James, revolutionized the way baseball professionals evaluate players. You probably want to know exactly how James and other &#x201C;sabermetricians&#x201D; used mathematics to change the way hitters, pitchers, and fielders are evaluated. You might have heard about the analysis of Berkeley economic professor David Romer that showed that NFL teams should rarely punt on fourth down. How did Romer use mathematics to come up with his controversial conclusion? You might have heard how Mark Cuban used math models (and his incredible business savvy) to revitalize the moribund Dallas Mavericks franchise. What mathematical models does Cuban use to evaluate NBA players and lineups? Maybe you bet once in a while on NFL games and wonder whether math can help you do better financially. How can math determine the true probability of a team winning a game, winning the NCAA tournament, or just covering the point spread? Maybe you think the NBA could have used math to spot Tim Donaghy&#x2019;s game fixing before being informed about it by the FBI. This book will show you how a statistical analysis would have &#x201C;red flagged&#x201D; Donaghy as a potential fixer.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__8">If </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="__8">Moneyball</Run>
+      <Run Tag="__8"> or day-to-day sports viewing has piqued your interest in how mathematics is used (or can be used) to make decisions in sports and sports gambling, this book is for you. I hope when you finish reading the book you will love math almost as much as you love sports.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/frontmatter01.html#page_xii">To date there has been no book that explains how the people running Major League Baseball, basketball, and football teams and Las Vegas sports bookies use math. The goal of </Run>
+      <Run FontFamily="times new roman" FontStyle="Italic" FontSize="14" Tag="xhtml/frontmatter01.html#page_xii">Mathletics</Run>
+      <Run Tag="xhtml/frontmatter01.html#page_xii"> is to demonstrate how simple arithmetic, probability theory, and statistics can be combined with a large dose of common sense to better evaluate players and game strategy in America&#x2019;s major sports. I will also show how math can be used to rank sports teams and evaluate sports bets.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__8">Throughout the book you will see references to Excel files (e.g., Standings.xls). These files may be downloaded from the book&#x2019;s Web site, </Run>
+      <Hyperlink NavigateUri="http://www.waynewinston.edu">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__8">http://www.waynewinston.edu</Run>
+      </Hyperlink>
+      <Run Tag="__8">).</Run>
+    </Paragraph>
+  </Section>
+</Flow>

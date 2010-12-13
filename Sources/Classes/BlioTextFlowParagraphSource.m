@@ -394,13 +394,12 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 break;
             }
         }
+        if(bestWordOffset) {
+            bestWordOffset--;
+        }        
         if(bestWordOffset == words.count) {
             bestParagraph = nextParagraph; 
             bestWordOffset = 0;
-        } else {
-            if(bestWordOffset) {
-                bestWordOffset--;
-            }
         }
         [comparisonPoint release];
         

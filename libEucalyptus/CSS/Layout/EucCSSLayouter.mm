@@ -13,7 +13,6 @@
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 
-#import "EucCSSLayouter_Package.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutDocumentRun.h"
@@ -30,58 +29,6 @@
 #import <vector>
 #import <utility>
 using namespace std;
-
-extern "C" {
-    
-CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style, 
-                                 css_fixed size, 
-                                 css_unit units, 
-                                 CGFloat percentageBase,
-                                 CGFloat scaleFactor)
-{
-    CGFloat ret = FIXTOFLT(size);
- 
-    switch(units) {
-        case CSS_UNIT_EX:
-            NSCParameterAssert(units != CSS_UNIT_EX);
-            break;
-        case CSS_UNIT_EM:
-        {
-            css_fixed fontSize = css_fixed();
-            css_unit fontUnit = css_unit();
-            css_computed_font_size(computed_style, &fontSize, &fontUnit);
-            NSCParameterAssert(fontUnit == CSS_UNIT_PX || fontUnit == CSS_UNIT_PT);
-            ret = FIXTOFLT(FMUL(size, fontSize));
-        }
-            break;
-        case CSS_UNIT_IN:
-            ret *= 2.54f;        // Convert to cm.
-        case CSS_UNIT_CM:  
-            ret *= 10.0f;          // Convert to mm.
-        case CSS_UNIT_MM:
-            ret *= 0.155828221f; // mm per point on an iPhone screen.
-            break;
-        case CSS_UNIT_PC:
-            ret *= 12.0f;
-            break;
-        case CSS_UNIT_PX:
-        case CSS_UNIT_PT:
-            break;
-        case CSS_UNIT_PCT:
-            ret = percentageBase * (ret * 0.01f);
-            break;
-        default:
-            THWarn(@"Unexpected unit %ld (%f size) - not converting.", (long)units, (double)ret);
-            break;
-    }
-    
-    if(units != CSS_UNIT_PCT) {
-        ret *= scaleFactor;
-    }
-    return roundf(ret);
-}
-
-}
 
 @implementation EucCSSLayouter
 
@@ -429,13 +376,16 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         
         THPair *activeFloats = nil;
         
-        while(!reachedBottomOfFrame && !closedLastNode && currentDocumentNode) {            
+        BOOL pageBreakForced = NO;
+        
+        while(!pageBreakForced && !reachedBottomOfFrame && !closedLastNode && currentDocumentNode) {            
             // Find the node's parent, closing open blocks until we reach it.
             EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
             EucCSSIntermediateDocumentNode *currentPositionedBlockNode;
             while((currentPositionedBlockNode = currentPositionedBlock.documentNode) != currentDocumentNodeBlockLevelParent) {
                 CGFloat contentHeightToCloseAt = nextAbsoluteY - [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds 
                                                                                          toContainer:nil].origin.y;
+
                 [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:NO];
                 nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
                 
@@ -538,16 +488,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             
             reachedBottomOfFrame = nextAbsoluteY >= maxAbsoluteY;
         }
-        
-        if(!reachedBottomOfFrame) {
-        }        
-        
+
         if(closedLastNode) {
             *returningCompleted = YES;
             EucCSSLayoutPoint fakeNextPoint = { nextRunNodeKey, 0, 0 };
             *returningNextPoint = fakeNextPoint;
         } else {
-            if(reachedBottomOfFrame) {
+            if(reachedBottomOfFrame || pageBreakForced) {
                 *returningCompleted = NO;
                 EucCSSLayoutPoint nextPoint;
                 BOOL nextPointValid = [self _trimBlockToFrame:frame 

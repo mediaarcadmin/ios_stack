@@ -12,16 +12,25 @@
 
 + (id)timerWithName:(NSString *)name
 {
-    return [[[[self class] alloc] initWithName:name] autorelease];
+    if(THWillLog()) {
+        return [[[[self class] alloc] initWithName:name] autorelease];
+    } else {
+        return nil;
+    }
 }
 
 - (id)initWithName:(NSString *)name
 {
-    if((self = [super init])) {
-        _name = [name retain];
-        _creationTime = CFAbsoluteTimeGetCurrent();
+    if(THWillLog()) {
+        if((self = [super init])) {
+            _name = [name retain];
+            _creationTime = CFAbsoluteTimeGetCurrent();
+        }
+        return self;
+    } else {
+        [self release];
+        return nil;
     }
-    return self;
 }
 
 - (void)dealloc

@@ -1,0 +1,322 @@
+<?xml version="1.0"?>
+<Flow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Garamond">
+  <Section BreakPageBefore="True" BreakColumnBefore="True">
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__309">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__309">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" BorderThickness="0,0,0,0" BorderBrush="#FF000000" TextAlignment="Center" LineHeight="28" LineStackingStrategy="BlockLineHeight" FontFamily="times new roman" FontWeight="Bold" FontSize="32">
+      <Run Tag="xhtml/part04chapter50.html#part04chapter50" xml:space="preserve"/>
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="32" Foreground="#FFFFFFFF" Background="#FF000000" Tag="xhtml/part04chapter50.html#page_331">&#xA0;&#xA0;50&#xA0;&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Normal" FontSize="21">
+      <Run Tag="__309">COMPARING PLAYERS FROM</Run>
+      <LineBreak/>
+      <Run Tag="__309">DIFFERENT ERAS</Run>
+    </Paragraph>
+    <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontSize="14">
+      <Run Tag="__309">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Normal" FontSize="40" Tag="xhtml/part04chapter50.html#pa04-ch50-fn1">I</Run>
+      <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn1">n </Run>
+      <Hyperlink NavigateUri="part01chapter15.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn1">chapter 15</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn1"> we tried to determine whether it would be likely that Ted Williams would hit .400 if he were to play today. Our analysis required that we compared the pitching and fielding abilities of players from different eras. In </Run>
+      <Hyperlink NavigateUri="part01chapter15.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn1">chapter 15</Run>
+      </Hyperlink>
+      <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn1"> we used a fairly simplistic approach and found that it was unlikely that Ted Williams would hit .400 today. In this chapter we use our WINVAL ratings to determine whether the players in the NBA have improved or declined in quality since 2000. The end of the chapter summarizes the results of Berry, Reese, and Larkey, who analyzed the change in player quality over time for Major League Baseball, professional hockey, and professional golf.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part04chapter50.html#fn1-pa04-ch50">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn1">1</Run>
+        </Hyperlink>
+      </Span>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__309">Analyzing Change in NBA Player Quality, 2000&#x2013;7</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__309">We have WINVAL player ratings for all NBA players for the 2000&#x2013;7 seasons. For example, if Dirk Nowitzki had a +10 rating for the 2004&#x2013;5 season, that would indicate that per 48 minutes, if Nowitzki played instead of an average 2004&#x2013;5 player, then our best estimate is that the team would improve their performance by 10 points per 48 minutes. We can use our WINVAL ratings to estimate the relative level of player abilities during the 2000&#x2013;7 seasons. Let&#x2019;s arbitrarily assign the 2006&#x2013;7 season a strength level of 0. If our model estimates, for example, that the 2003&#x2013;4 season has a strength level of +4, that would mean, on average, players in 2003&#x2013;4 were 4 points better than players in 2006&#x2013;7. Each &#x201C;data point&#x201D; is a player&#x2019;s WINVAL rating for a given season. We restricted our analysis to players who played at least 1,000 minutes during a season. We used the Excel Solver to estimate:</Run>
+    </Paragraph>
+    <List MarkerStyle="Disc" Margin="24,16,0,16" TextAlignment="Left" Tag="__309">
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="xhtml/part04chapter50.html#page_332">for each player, an overall ability level relative to 2006&#x2013;7 players (e.g., if we come up with a +10 estimate for Nowitzki, during our years of data he averaged playing 10 points better per 48 minutes than an average 2006&#x2013;7 player); and</Run>
+        </Paragraph>
+      </ListItem>
+      <ListItem Margin="0,4,0,4" TextAlignment="Left" FontFamily="times new roman" FontSize="14">
+        <Paragraph>
+          <Run Tag="__309">an overall ability level for each season (e.g., if we obtain an estimate of &#x2013;3 for the 2002&#x2013;3 season, we would estimate players during the 2002&#x2013;3 season were 3 points worse than 2006&#x2013;7 players per 48 minutes).</Run>
+        </Paragraph>
+      </ListItem>
+    </List>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">Let&#x2019;s continue using Dirk Nowitzki as our example. We would hope that during each year</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="96,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">(Dirk&#x2019;s ability relative to 2006&#x2013;7 season)</Run>
+    </Paragraph>
+    <Paragraph Margin="96,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;&#xA0;&#xA0;&#xA0;= (Dirk&#x2019;s rating during year x)</Run>
+    </Paragraph>
+    <Paragraph Margin="96,1,0,1" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;+ (year x strength relative to 2006&#x2013;7).&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;(1)</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">For example, if Dirk had a +10 rating during 2002&#x2013;3 and players during the 2002&#x2013;3 season averaged 5 points better in ability than players during the 2006&#x2013;7 season, then we would estimate that relative to 2006&#x2013;7 players Dirk was 15 points better (per 48 minutes) than an average 2006&#x2013;7 player. Rearranging equation (1) we can obtain</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="48,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">(Dirk&#x2019;s rating during year x)</Run>
+    </Paragraph>
+    <Paragraph Margin="48,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;&#xA0;&#xA0;= (Dirk&#x2019;s ability relative to 2006&#x2013;7 season)</Run>
+    </Paragraph>
+    <Paragraph Margin="48,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#x2013; (year x strength relative to 2006&#x2013;7 season).&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; (2)</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">We know the left side of (2) but we do not know either of the quantities on the right-hand side of (2). Following our approach to rating teams in </Run>
+      <Hyperlink NavigateUri="part04chapter40.html">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__310">chapter 40</Run>
+      </Hyperlink>
+      <Run Tag="__310">, we use the Excel Solver to choose each player&#x2019;s rating relative to 2006&#x2013;7 and each season&#x2019;s average player rating relative to 2006&#x2013;7 to minimize the sum over all players and seasons.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">(player rating during year x) &#x2013; {(player&#x2019;s ability relative to 2006&#x2013;7 season) &#x2013; (year x strength relative to 2006&#x2013;7 season)})</Run>
+      <Run BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11" Tag="__310">2</Run>
+      <Run Tag="__310">.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">After running this optimization we can find the estimates of player strength for each season relative to 2006&#x2013;7. For example, the average level of player ability in the 2000&#x2013;2001 season was 0.78 points worse than an average 2006&#x2013;7 player. For example, the 2005&#x2013;6 season player strength was virtually indistinguishable from that of the 2006&#x2013;7 season, as illustrated in </Run>
+      <Hyperlink NavigateUri="xhtml/part04chapter50.html#chapter50table01">
+        <Hyperlink.TextDecorations>
+          <TextDecorationCollection/>
+        </Hyperlink.TextDecorations>
+        <Run Tag="__310">table 50.1</Run>
+      </Hyperlink>
+      <Run Tag="__310">.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter50.html#page_333">Twenty years from now we should have about thirty years of player rating data. This will enable us to settle the debates about whether the NBA stars of the 2020s are better than LeBron James, Kobe Bryant, and Dirk Nowitzki.</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__310">&#xA0;</Run>
+    </Paragraph>
+    <Section Margin="16,16,16,16" FontFamily="times new roman" FontSize="12" Tag="__310">
+      <Paragraph Margin="0,16,0,0" TextAlignment="Left" FontFamily="times new roman" FontSize="12">
+        <Run FontFamily="times new roman" FontWeight="Bold" FontSize="12" Tag="xhtml/part04chapter50.html#chapter50table01">TABLE 50.1</Run>
+        <LineBreak/>
+        <Run Tag="xhtml/part04chapter50.html#chapter50table01">Season Strengths Relative to 2006&#x2013;7</Run>
+      </Paragraph>
+      <Table Tag="__310">
+        <Table.Columns>
+          <TableColumn Width="139"/>
+          <TableColumn Width="208"/>
+        </Table.Columns>
+        <TableRowGroup>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="4,4,4,4" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">Season</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="4,4,4,4" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">Relative Player Strength</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="1,1,1,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">1999&#x2013;2000</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="1,1,1,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">&#x2013;0.32</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">2000&#x2013;2001</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">&#x2013;0.78</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">2001&#x2013;2</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">&#x2013;0.56</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">2002&#x2013;3</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">&#x2013;0.69</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">2003&#x2013;4</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__310">&#x2013;0.17</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__311">2004&#x2013;5</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__311">&#x2013;0.53</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__311">2005&#x2013;6</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__311">&#x2013;0.02</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+          <TableRow FontFamily="times new roman" FontSize="9">
+            <TableCell BorderThickness="1,1,1,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="3,3,0,3" BorderBrush="#FF000000" TextAlignment="Justify" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__311">2006&#x2013;7</Run>
+              </Paragraph>
+            </TableCell>
+            <TableCell BorderThickness="1,1,1,1" BorderBrush="#FF000000" TextAlignment="Left" FontFamily="times new roman" FontSize="9">
+              <Paragraph Margin="0,3,0,3" BorderBrush="#FF000000" TextAlignment="Center" FontFamily="times new roman" FontSize="11">
+                <Run Tag="__311">0</Run>
+              </Paragraph>
+            </TableCell>
+          </TableRow>
+        </TableRowGroup>
+      </Table>
+    </Section>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Span FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+        <Run Tag="__311">Bridging Eras in Sports: A More</Run>
+        <LineBreak/>
+        <Run Tag="__311">Sophisticated Approach</Run>
+      </Span>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn2">Berry, Reese, and Larkey have analyzed the changes over time in abilities of National Hockey League (NHL) players, golfers, and MLB players.</Run>
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="11">
+        <Hyperlink NavigateUri="xhtml/part04chapter50.html#fn2-pa04-ch50">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn2">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part04chapter50.html#pa04-ch50-fn2"> Their major goal was to compare the abilities of players from different eras. They used 1996 as their &#x201C;base&#x201D; season. They developed equations similar to (1) and (2) for their analysis but also included for each player some additional terms to measure the influence of a player&#x2019;s age on the player&#x2019;s performance. The sections that follow summarize their results.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="__311">Aging in Hockey, Golf, and Baseball</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__311">BRL found that hockey players improve steadily in their ability to score points (points = assists + goals) until age 27 and then experience a sharp decline in ability. They found that golfers improve until age 30&#x2013;34, with there being little difference in a golfer&#x2019;s ability in the 30&#x2013;34 age range. For baseball, BRL found that home run&#x2013;hitting ability increases until age 29 and then drops off. Batting ability peaks at age 27 and then drops off, but not as steeply as hockey ability drops off post-peak.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="0" Margin="0,24,0,16" TextAlignment="Center" FontFamily="times new roman" FontWeight="Bold" FontSize="14">
+      <Run FontFamily="times new roman" FontWeight="Bold" FontSize="14" Tag="xhtml/part04chapter50.html#page_334">Comparing the All-Time Greats</Run>
+    </Paragraph>
+    <Paragraph Margin="0,1,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__311">BRL found that Mario Lemieux and Wayne Gretzky were the two greatest hockey players (non-goalies) of all time. BRL estimated that at their physical peak, Mario Lemieux would be a 187-point player and Wayne Gretzky would be a 181-point player. They determined that Gordie Howe was the best &#x201C;old-timer,&#x201D; estimating him to be a 119-point player. Again, these numbers are predictions for how the player would perform in the base year (1996).</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__311">BRL determined that Jack Nicklaus, Tom Watson, and Ben Hogan were the three best golfers of all time. For example, BRL projected that in a Grand Slam tournament in 1996, Nicklaus (at his peak) would average 70.42 strokes per round, Watson (at his peak) would average 70.72 shots per round, while Hogan (at his peak) would average 71.12 shots per round. Tiger Woods was just beginning his legendary career and BRL estimated that Woods in his peak would average 71.77 strokes per round in a 1997 Grand Slam tournament. In hindsight, it is clear that this estimate underestimated Woods&#x2019;s abilities.</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,0,0,0" TextAlignment="Justify" FontFamily="times new roman" FontSize="14">
+      <Run Tag="__311">BRL estimate that the best all-time hitter for average was the legendary Ty Cobb. They estimate that if he were at his peak in 1996 he would have hit .368. Second on the list was Hall of Famer Tony Gwynn. If at his peak in 1996, Gwynn was estimated to be a .363 hitter. Finally, Mark McGwire was estimated to be the best home run hitter of all time. BRL estimated that if McGwire was at his peak in 1996 he would have averaged 0.104 home runs per at bat. Second on the list was Texas Ranger Juan Gonzales, who was projected to hit 0.098 home runs per at bat during 1996 if he had been at his peak. The legendary Babe Ruth was estimated to hit 0.094 home runs per at bat in 1996 if he were at his peak. BRL did their study before Barry Bonds&#x2019;s home run hitting really took off, so they estimate that if at his peak Bonds would have hit only 0.079 home runs per at bat in 1996. BRL&#x2019;s work shows how a sophisticated mathematical model can answer age-old questions such as who is the greatest home run hitter of all time?</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part04chapter50.html#pa04-ch50-fn1">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part04chapter50.html#fn1-pa04-ch50">1</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part04chapter50.html#fn1-pa04-ch50"> Berry, Reese, and Larkey, &#x201C;Bridging Different Eras in Sports.&#x201D;</Run>
+    </Paragraph>
+    <Paragraph TextIndent="16" Margin="0,4,0,4" TextAlignment="Justify" FontFamily="times new roman" FontSize="12">
+      <Span BaselineAlignment="Superscript" FontFamily="times new roman" FontSize="9">
+        <Hyperlink NavigateUri="xhtml/part04chapter50.html#pa04-ch50-fn2">
+          <Hyperlink.TextDecorations>
+            <TextDecorationCollection/>
+          </Hyperlink.TextDecorations>
+          <Run Tag="xhtml/part04chapter50.html#fn2-pa04-ch50">2</Run>
+        </Hyperlink>
+      </Span>
+      <Run Tag="xhtml/part04chapter50.html#fn2-pa04-ch50"> Ibid.</Run>
+    </Paragraph>
+  </Section>
+</Flow>

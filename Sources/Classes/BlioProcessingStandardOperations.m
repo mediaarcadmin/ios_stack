@@ -8,7 +8,6 @@
 
 #import "BlioProcessingStandardOperations.h"
 #import "ZipArchive.h"
-//#import "BlioDrmManager.h"
 #import "BlioDrmSessionManager.h"
 #import "NSString+BlioAdditions.h"
 #import "BlioAlertManager.h"
@@ -966,8 +965,8 @@
 						// the parsed feature is not listed in the app's compatibility dictionary or the book requires a higher version than our compatibility version
 
 						BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
-						[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-													 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INCOMPATIBLE_FEATURE",nil,[NSBundle mainBundle],@"The book, \"%@\" contains features that cannot be taken advantage of by this version of the Blio app. In order to enjoy this book, please check the iTunes App Store for an update to this App.",@"Alert message informing the end-user that an incompatible feature was found during the processing of a book, and prompting the end-user to visit the iTunes App Store."),book.title]
+						[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Advanced Book Features",@"\"Advanced Book Features\" Alert message title")
+													 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INCOMPATIBLE_FEATURE",nil,[NSBundle mainBundle],@"The book \"%@\" has features that require the latest version of Blio. Please check the App Store for a Blio update.",@"Alert message informing the end-user that an incompatible feature was found during the processing of a book, and prompting the end-user to visit the iTunes App Store."),book.title]
 													delegate:nil
 										   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 										   otherButtonTitles:nil];

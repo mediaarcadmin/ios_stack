@@ -102,7 +102,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	return NSLocalizedStringWithDefaultValue(@"DOWNLOAD_VOICES_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Voices take approximately 50MB of storage each, and may take time to download. Do not quit Blio while download is in progress.",@"Explanatory message that appears at the bottom of the Available Voices table within Download Voices View.");
+	return NSLocalizedStringWithDefaultValue(@"DOWNLOAD_VOICES_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Voices take some time to download. Do not quit Blio while download is in progress.",@"Explanatory message that appears at the bottom of the Available Voices table within Download Voices View.");
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
