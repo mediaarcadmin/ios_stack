@@ -246,15 +246,17 @@
 - (void)didMoveToSuperview
 {
     if(self.superview) {
-        EucSelector *aSelector = [[EucSelector alloc] init];
-        aSelector.shouldSniffTouches = YES;
-        aSelector.shouldTrackSingleTapsOnHighights = NO;
-        aSelector.dataSource = self;
-        aSelector.delegate =  self;
-        [aSelector attachToView:self];
-        [aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
-        self.selector = aSelector;
-        [aSelector release];   
+		if (self.textFlow) {
+			EucSelector *aSelector = [[EucSelector alloc] init];
+			aSelector.shouldSniffTouches = YES;
+			aSelector.shouldTrackSingleTapsOnHighights = NO;
+			aSelector.dataSource = self;
+			aSelector.delegate =  self;
+			[aSelector attachToView:self];
+			[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
+			self.selector = aSelector;
+			[aSelector release]; 
+		}
     } else {
         EucPageTurningView *aPageTurningView = self.pageTurningView;
         if(aPageTurningView) {
@@ -311,15 +313,16 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	self.lastBlock = nil;
 	self.accessibilityElements = nil;
-	
-	EucSelector *aSelector = [[EucSelector alloc] init];
-	aSelector.shouldSniffTouches = YES;
-	aSelector.dataSource = self;
-	aSelector.delegate =  self;
-	[aSelector attachToView:self];
-	[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
-	self.selector = aSelector;
-	[aSelector release];
+	if (self.textFlow) {
+		EucSelector *aSelector = [[EucSelector alloc] init];
+		aSelector.shouldSniffTouches = YES;
+		aSelector.dataSource = self;
+		aSelector.delegate =  self;
+		[aSelector attachToView:self];
+		[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
+		self.selector = aSelector;
+		[aSelector release];
+	}
 }
 
 - (UIImage *)dimPageImage
