@@ -469,6 +469,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 	[self.navigationController.toolbar setBarStyle:UIBarStyleDefault];
 	[self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
+	[self.navigationController.toolbar setTranslucent:NO];
+	[self.navigationController.navigationBar setTranslucent:NO];
 	
 	sortSegmentedControl.tintColor = tintColor;
     [self.navigationController.toolbar setTintColor:tintColor];
