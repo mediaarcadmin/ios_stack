@@ -235,6 +235,8 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
         if(fontWeight == CSS_FONT_WEIGHT_BOLD ||
            fontWeight == CSS_FONT_WEIGHT_BOLDER) {
             styleFlags |= THStringRendererFontStyleFlagBold;
+        } else if(fontWeight > CSS_FONT_WEIGHT_500) {
+            styleFlags |= THStringRendererFontStyleFlagBold;
         }
         //// TODO: handle other weights.
         

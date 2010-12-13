@@ -1,19 +1,42 @@
 * { margin:0; padding:0; border:0; }
 Flow { text-align:justify; display:block }
 Section { display:block }
-Paragraph { display:block; margin-bottom:19px; margin-top:19px }
+Paragraph { display:block; margin-bottom:19px; margin-top:19px; border-style: solid; }
 
 LineBreak:before { content:"\A"; white-space:pre-line; }
 :link { color:blue }
 
-*[FontWeight="Bold"] { font-weight:bold }
+*[FontWeight="Black"] { font-weight:900 }
+*[FontWeight="Bold"] { font-weight:700 }
+*[FontWeight="DemiBold"] { font-weight:600 }
+*[FontWeight="ExtraBlack"] { font-weight:900 }
+*[FontWeight="ExtraBold"] { font-weight:800 }
+*[FontWeight="ExtraLight"] { font-weight:200 }
+*[FontWeight="Heavy"] { font-weight:900 }
+*[FontWeight="Light"] { font-weight:300 }
+*[FontWeight="Medium"] { font-weight:500 }
+*[FontWeight="Normal"] { font-weight:400 }
+*[FontWeight="Regular"] { font-weight:400 }
+*[FontWeight="SemiBold"] { font-weight:600 }
+*[FontWeight="Thin"] { font-weight:100 }
+*[FontWeight="UltraBlack"] { font-weight:900 }
+*[FontWeight="UltraBold"] { font-weight:800 }
+*[FontWeight="UltraLight"] { font-weight:200 }
+
+*[FontStyle="Normal"] { font-style:normal }
 *[FontStyle="Italic"] { font-style:italic }
+*[FontStyle="Oblique"] { font-style:oblique }
+
+/* Not yet handled by libCSS.
 *[BreakPageBefore="True"] { page-break-before:always }
 *[BreakColumnBefore="True"] { page-break-before:always }
+*/
+
 *[TextAlignment="Justify"] { text-align:justify }
 *[TextAlignment="Center"] { text-align:center }
 *[TextAlignment="Left"] { text-align:left }
 *[TextAlignment="Right"] { text-align:right }
+
 *[BaselineAlignment="Top"] { vertical-align:top }
 *[BaselineAlignment="Center"] { vertical-align:middle }
 *[BaselineAlignment="Bottom"] { vertical-align:bottom }
