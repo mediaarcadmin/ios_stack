@@ -13,8 +13,9 @@
 #import "BlioAlertManager.h"
 #import "BlioStoreManager.h"
 #import "Reachability.h"
+#import "BlioImportManager.h"
 
-@implementation BlioProcessingCompleteOperation
+@implementation BlioProcessingAggregateOperation
 
 @synthesize alreadyCompletedOperations;
 
@@ -23,6 +24,43 @@
 	}
 	return self;
 }
+
+- (void)addDependency:(NSOperation *)operation {
+	[super addDependency:operation];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:operation];
+}
+- (void)removeDependency:(NSOperation *)operation {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationProgressNotification object:operation];
+	[super removeDependency:operation];
+}
+- (void)onProcessingProgressNotification:(NSNotification*)note {
+//	NSLog(@"%@ called for %@", NSStringFromSelector(_cmd),self.sourceSpecificID);
+	[self calculateProgress];
+}
+- (void)calculateProgress {
+	//	NSLog(@"alreadyCompletedOperations: %u",alreadyCompletedOperations);
+	float collectiveProgress = 0.0f;
+//	NSLog(@"self.dependencies: %@",self.dependencies);
+	for (NSOperation* op in self.dependencies) {
+		if ([op isKindOfClass:[BlioProcessingOperation class]]) {
+			collectiveProgress = collectiveProgress + ((BlioProcessingOperation*)op).percentageComplete;
+		}
+		else {
+			if (op.isFinished) collectiveProgress = collectiveProgress + 100;
+			else if (op.isExecuting) collectiveProgress = collectiveProgress + 50;
+			else if (op.isCancelled) NSLog(@"NSOperation of class %@ cancelled.",[[op class] description]);
+		}
+	}
+	NSUInteger newPercentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
+	if (newPercentageComplete != self.percentageComplete) {
+//		NSLog(@"%@ progress for %@: %u",[[self class] description],self.sourceSpecificID,newPercentageComplete);
+		self.percentageComplete = newPercentageComplete;
+	}
+}
+
+@end
+
+@implementation BlioProcessingCompleteOperation
 
 - (void)main {
     if ([self isCancelled]) {
@@ -74,36 +112,6 @@
 	
 //	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];
 	self.operationSuccess = YES;
-}
-- (void)addDependency:(NSOperation *)operation {
-	[super addDependency:operation];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:operation];
-}
-- (void)removeDependency:(NSOperation *)operation {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationProgressNotification object:operation];
-	[super removeDependency:operation];
-}
-- (void)onProcessingProgressNotification:(NSNotification*)note {
-	[self calculateProgress];
-}
-- (void)calculateProgress {
-//	NSLog(@"alreadyCompletedOperations: %u",alreadyCompletedOperations);
-	float collectiveProgress = 0.0f;
-//	NSLog(@"self.dependencies: %@",self.dependencies);
-	for (NSOperation* op in self.dependencies) {
-		if ([op isKindOfClass:[BlioProcessingOperation class]]) {
-			collectiveProgress = collectiveProgress + ((BlioProcessingOperation*)op).percentageComplete;
-		}
-		else {
-			if (op.isFinished) collectiveProgress = collectiveProgress + 100;
-			else if (op.isExecuting) collectiveProgress = collectiveProgress + 50;
-			else if (op.isCancelled) NSLog(@"NSOperation of class %@ cancelled.",[[op class] description]);
-		}
-	}
-	NSUInteger newPercentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
-	if (newPercentageComplete != self.percentageComplete) {
-		self.percentageComplete = newPercentageComplete;
-	}
 }
 - (void) dealloc {
 //	NSLog(@"BlioProcessingCompleteOperation dealloc entered");
@@ -288,7 +296,7 @@
 
 @implementation BlioProcessingDownloadOperation
 
-@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength;
+@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength,requestHTTPBody;
 
 - (void) dealloc {
 //	NSLog(@"BlioProcessingDownloadOperation %@ dealloc entered.",self);
@@ -303,6 +311,7 @@
     self.connection = nil;
     self.headConnection = nil;
     self.downloadFile = nil;
+	self.requestHTTPBody = nil;
     [super dealloc];
 }
 
@@ -474,6 +483,13 @@
 		}
 		else resume = NO;
 	}
+	if (requestHTTPBody) {
+		NSLog(@"requestHTTPBody found! including it via POST...");
+		[aRequest setHTTPMethod:@"POST"];
+		[aRequest setHTTPBody:requestHTTPBody];
+		[aRequest setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+		NSLog(@"data length: %u",[requestHTTPBody length]);
+	}
 	NSURLConnection *aConnection = [[NSURLConnection alloc] initWithRequest:aRequest delegate:self];
 	[aRequest release];
 	
@@ -499,13 +515,13 @@
 	}	
 }
 - (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
-//	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
+	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
 	self.expectedContentLength = [response expectedContentLength];
 
 	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
 	
 	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] && theConnection == headConnection) {		
-//		NSLog(@"headConnection httpResponse.statusCode: %i",httpResponse.statusCode);
+		NSLog(@"headConnection httpResponse.statusCode: %i",httpResponse.statusCode);
 		if (httpResponse.statusCode/100 != 2) {
 			// we are not getting valid response; try again from scratch.
 			resume = NO;
@@ -514,12 +530,12 @@
 		}
 		else {
 			
-//			NSLog(@"inspecting header fields...");
+			NSLog(@"inspecting header fields...");
 			NSString * acceptRanges = nil;
 			for (id key in httpResponse.allHeaderFields)
 			{
 				NSString * keyString = (NSString*)key;
-//				NSLog(@"keyString: %@",keyString);
+				NSLog(@"keyString: %@",keyString);
 				if ([[keyString lowercaseString] isEqualToString:[@"Accept-Ranges" lowercaseString]]) {
 					acceptRanges = [httpResponse.allHeaderFields objectForKey:keyString];
 					break;
@@ -553,13 +569,21 @@
 	}
 	else if (theConnection == connection) {
 		if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]]) {  // i.e. we're not a file:// download
-//			NSLog(@"downloadConnection httpResponse.statusCode: %i",httpResponse.statusCode);
+			NSLog(@"downloadConnection httpResponse.statusCode: %i",httpResponse.statusCode);
 			if (httpResponse.statusCode != 206 && resume == YES && forceReprocess == NO) {
 				// we are not getting partial content; try again from scratch.
 				// TODO: just erase previous progress and keep using this connection instead of starting from scratch
 				resume = NO;
 				[theConnection cancel];
 				[self startDownload];
+			}
+			else {
+				NSLog(@"inspecting header fields for download connection...");
+				for (id key in httpResponse.allHeaderFields)
+				{
+					NSString * keyString = (NSString*)key;
+					NSLog(@"keyString: %@ value: %@",keyString, [httpResponse.allHeaderFields valueForKey:key]);
+				}							
 			}
 		}		
 	}
@@ -1144,6 +1168,18 @@
 		[aZipArchive UnzipCloseFile];
 	} else {
         NSLog(@"Failed to open zipfile at path: %@", temporaryPath);
+		if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) {
+			NSLog(@"File does exist, moving to Documents directory for debugging...");
+			NSError * moveError;
+			NSString *debugPath = [[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
+			NSLog(@"debugPath: %@",debugPath);
+			if (![[NSFileManager defaultManager] copyItemAtPath:temporaryPath toPath:debugPath error:&moveError]) {
+				NSLog(@"ERROR: could not move unzippable downloaded voice to Documents directory for debugging! %@,%@",[moveError localizedDescription],[moveError userInfo]);
+			}
+		}
+		else NSLog(@"because file does not exist!");
+		if (expectedContentLength != NSURLResponseUnknownLength) NSLog(@"expectedContentLength: %lld",expectedContentLength);
+
     }
     
 	[aZipArchive release];

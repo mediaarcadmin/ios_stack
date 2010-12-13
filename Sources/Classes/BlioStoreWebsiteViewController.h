@@ -33,4 +33,5 @@ static const NSInteger kBlioStoreBuyBooksTag = 5;
 @property (nonatomic, retain) BlioStoreWebsitePhoneContentView * phoneContentView;
 -(void)updateLogin;
 -(void)updateExplanation;
+- (void)launchWebsite:(id)sender;
 @end

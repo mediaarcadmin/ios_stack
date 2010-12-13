@@ -10,7 +10,7 @@
 
 @implementation CCInAppPurchaseProduct 
 
-@synthesize dateCreated,description,isActive,langCode,lastModified,name,price,productId;
+@synthesize dateCreated,description,isActive,langCode,lastModified,name,price,productId,product;
 -(void)dealloc {
 	self.dateCreated = nil;
 	self.description = nil;
@@ -20,6 +20,7 @@
 	self.name = nil;
 	self.price = nil;
 	self.productId = nil;
+	self.product = nil;
 	[super dealloc];
 }
 @end
@@ -56,13 +57,22 @@
 	return[[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:CCInAppPurchaseURL]] autorelease];
 }
 -(CCInAppPurchaseResponse*)responseFromData:(NSData*)data {
+	if (data) {
+		// should create a PurchaseProductResponse object.
+	}
 	return nil;
 }
 @end
 
 @implementation CCInAppPurchaseFetchProductsRequest
 
+-(NSURLRequest*)URLRequest {
+	NSString * fullURL = [NSString stringWithFormat:@"%@%@",CCInAppPurchaseURL,@"activeproducts"];
+	return[[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:fullURL]] autorelease];
+}
+
 -(CCInAppPurchaseResponse*)responseFromData:(NSData*)data {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 	_response = [[CCInAppPurchaseFetchProductsResponse alloc] init];
 	NSXMLParser * responseParser = [[NSXMLParser alloc] initWithData:data];
 	[responseParser setDelegate:self];
@@ -137,9 +147,9 @@
 //</product>
 @end
 
-@implementation CCInAppPurchasePurchaseProductsRequest 
+@implementation CCInAppPurchasePurchaseProductRequest 
 
-@synthesize productId,hardwareId;
+@synthesize productId,hardwareId, HTTPBody;
 
 -(id)initWithProductID:(NSString*)aProductId hardwareID:(NSString*)aHardwareId {
 	if((self = [super init])) {
@@ -151,6 +161,7 @@
 -(void) dealloc {
 	self.productId = nil;
 	self.hardwareId = nil;
+	self.HTTPBody = nil;
 	[super dealloc];
 }
 -(NSURLRequest*)URLRequest {
@@ -158,6 +169,7 @@
 		NSString * parameteredURL = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@",CCInAppPurchaseURL,hardwareId,productId];
 		NSMutableURLRequest * urlRequest = [[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:parameteredURL]] autorelease];
 		[urlRequest setHTTPMethod:@"POST"];
+		if (HTTPBody) [urlRequest setHTTPBody:HTTPBody];
 		return urlRequest;
 	}
 	return nil;

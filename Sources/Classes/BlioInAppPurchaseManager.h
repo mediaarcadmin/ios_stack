@@ -11,7 +11,15 @@
 #import <StoreKit/StoreKit.h>
 #import "CCInAppPurchaseService.h"
 
-static NSString* const BlioInAppPurchaseProductsUpdated = @"BlioInAppPurchaseProductsUpdated";
+static NSString * const BlioInAppPurchaseProductsFetchStarted = @"BlioInAppPurchaseProductsFetchStarted";
+static NSString * const BlioInAppPurchaseProductsFetchFailed = @"BlioInAppPurchaseProductsFetchFailed";
+static NSString * const BlioInAppPurchaseProductsFetchFinished = @"BlioInAppPurchaseProductsFetchFinished";
+static NSString * const BlioInAppPurchaseProductsUpdated = @"BlioInAppPurchaseProductsUpdated";
+static NSString * const BlioInAppPurchaseTransactionFailed = @"BlioInAppPurchaseTransactionFailed";
+static NSString * const BlioInAppPurchaseTransactionRestored = @"BlioInAppPurchaseTransactionRestored";
+static NSString * const BlioInAppPurchaseTransactionPurchased = @"BlioInAppPurchaseTransactionPurchased";
+
+static NSString * const BlioInAppPurchaseNotificationTransactionKey = @"BlioInAppPurchaseNotificationTransactionKey";
 
 @interface BlioInAppPurchaseVoice : NSObject {
 	NSString * dateCreated;
@@ -26,12 +34,20 @@ static NSString* const BlioInAppPurchaseProductsUpdated = @"BlioInAppPurchasePro
 
 @end
 
-@interface BlioInAppPurchaseManager : NSObject<CCInAppPurchaseConnectionDelegate,SKProductsRequestDelegate> {
-	NSArray * products;
+@interface BlioInAppPurchaseManager : NSObject<CCInAppPurchaseConnectionDelegate,SKProductsRequestDelegate,SKPaymentTransactionObserver> {
+	NSMutableArray * inAppProducts;
+	BOOL isFetchingProducts;
 }
-@property (nonatomic, retain) NSArray * products;
-
+@property (nonatomic, retain) NSMutableArray * inAppProducts;
+@property (nonatomic, assign) BOOL isFetchingProducts;
 +(BlioInAppPurchaseManager*)sharedInAppPurchaseManager;
+- (BOOL)canMakePurchases;
+-(void)purchaseProductWithID:(NSString*)anID;
+-(BOOL)isPurchasingProductWithID:(NSString*)anID;
 -(void)fetchProductsFromProductServer;
-
+- (void) failedTransaction:(SKPaymentTransaction *)transaction;
+- (void) restoreTransaction:(SKPaymentTransaction *)transaction;
+- (void) completeTransaction:(SKPaymentTransaction *)transaction;
+- (BOOL)verifyReceipt:(SKPaymentTransaction *)transaction;
+- (NSString *)encode:(const uint8_t *)input length:(NSInteger)length;
 @end

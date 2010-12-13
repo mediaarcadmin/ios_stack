@@ -101,11 +101,18 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 -(NSArray*)availableVoicesForUse {
 	return [AcapelaSpeech availableVoices];
-	return nil;
+}
+	-(NSArray*)availableVoiceNamesForUse {
+	NSArray * availableVoices = [AcapelaSpeech availableVoices];
+	NSMutableArray * availableVoiceNames = [NSMutableArray arrayWithCapacity:[availableVoices count]];
+	for (NSString * voice in availableVoices) {
+		[availableVoiceNames addObject:[BlioAcapelaAudioManager voiceNameForVoice:voice]];
+	}
+	return availableVoiceNames;
 }
 -(NSArray*)availableVoicesForDownload {
 	NSMutableArray * voices = [NSMutableArray array];
-	NSArray * availableVoicesForUse = [self availableVoicesForUse];
+	NSArray * availableVoicesForUse = [AcapelaSpeech availableVoices];
 	for (NSString * key in self.voiceData) {
 		if (![availableVoicesForUse containsObject:key]) [voices addObject:key];
 	}
@@ -281,7 +288,6 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		}
 	}
 }
-
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		NSLog(@"BlioAcapelaManager onProcessingCompleteNotification entered");
