@@ -302,7 +302,7 @@ static void *background_init_thread(void * arg) {
 	}	
 	
     
-    BOOL openedBook;
+    BOOL openedBook = NO;
     
     NSArray *openBookIDs = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioOpenBookKey];
     if(openBookIDs.count == 2) {
