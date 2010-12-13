@@ -122,6 +122,35 @@
 	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];    
 }
 
+- (void)checkDevice {
+	// Check that this is the same device as last time.
+	NSString* thisDevice = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey];
+    if ( !thisDevice )
+		// First time, so just store the id.
+		[[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey]; 
+	else if ([thisDevice compare:[[UIDevice currentDevice] uniqueIdentifier]] != NSOrderedSame ) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be re-downloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end-user that the password must contain at least one digit.")
+									delegate:nil 
+						   cancelButtonTitle:nil
+						   otherButtonTitles:@"OK", nil];
+		
+		// Delete the secure store.
+		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+		NSString *documentsDirectory = [paths objectAtIndex:0];
+		NSString* strDataStore = [documentsDirectory stringByAppendingString:@"/playready.hds"];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:strDataStore]) {
+			NSError * error;
+			if (![[NSFileManager defaultManager] removeItemAtPath:strDataStore error:&error]) {
+				NSLog(@"WARNING: deletion of PlayReady store failed. %@, %@", error, [error userInfo]);
+			}
+		}
+		
+		// Delete paid books.
+		[self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
+	}
+}
+
 - (BOOL)canOpenURL:(NSURL *)url {
     if ([url isFileURL]) {
 		NSString * file = [url path]; 
@@ -301,6 +330,7 @@ static void *background_init_thread(void * arg) {
 		[self.processingManager resumeProcessing];
 	}	
 	
+	[self checkDevice];
     
     BOOL openedBook = NO;
     
