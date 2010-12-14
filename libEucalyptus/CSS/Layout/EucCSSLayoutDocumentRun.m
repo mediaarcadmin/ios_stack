@@ -346,8 +346,6 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                       maxHeight:(CGFloat)maxHeight
                       minHeight:(CGFloat)minHeight
 {
-    CGSize imageSize = { CGImageGetWidth(image), CGImageGetHeight(image) };
-
     // Sanitise the input.
     if(minHeight > maxHeight) {
         maxHeight = minHeight;
@@ -356,69 +354,39 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         maxWidth = minWidth;
     }
     
+    if(specifiedWidth == CGFLOAT_MAX && specifiedHeight == CGFLOAT_MAX) {
+        specifiedWidth = CGImageGetWidth(image);
+        specifiedHeight = CGImageGetHeight(image);
+    } else if(specifiedWidth == CGFLOAT_MAX) {
+        specifiedWidth = (CGFloat)CGImageGetWidth(image) / (CGFloat)CGImageGetHeight(image) * specifiedHeight;
+    } else if(specifiedHeight == CGFLOAT_MAX) {
+        specifiedHeight = (CGFloat)CGImageGetHeight(image) / (CGFloat)CGImageGetWidth(image) * specifiedWidth;
+    }
+    
     // Work out the size.
-    CGSize computedSize;
-    if(specifiedWidth != CGFLOAT_MAX && 
-       specifiedHeight != CGFLOAT_MAX) {
-        computedSize.width = specifiedWidth;
-        computedSize.height = specifiedHeight;
-    } else if(specifiedWidth == CGFLOAT_MAX && specifiedHeight != CGFLOAT_MAX) {
-        computedSize.height = specifiedHeight;
-        computedSize.width = specifiedHeight * (imageSize.width / imageSize.height);
-    } else if(specifiedWidth != CGFLOAT_MAX && specifiedHeight == CGFLOAT_MAX){
-        computedSize.width = specifiedWidth;
-        computedSize.height = specifiedWidth * (imageSize.height / imageSize.width);
-    } else {
-        computedSize = imageSize;
-        computedSize.width *= _scaleFactor;
-        computedSize.height *= _scaleFactor;
-    }
-           
-    computedSize.width = roundf(computedSize.width);
-    computedSize.height = roundf(computedSize.height);
+    // From http://www.w3.org/TR/CSS2/visudet.html#min-max-widths
+    CGFloat w = specifiedWidth;
+    CGFloat h = specifiedHeight;
     
-    // Re-run to work out conflicts.
-    if(computedSize.width > maxWidth) {
-        return [self _computedSizeForImage:image
-                            specifiedWidth:maxWidth
-                           specifiedHeight:specifiedHeight 
-                                  maxWidth:maxWidth
-                                  minWidth:minWidth 
-                                 maxHeight:maxHeight
-                                 minHeight:minHeight];
-    }
+    CGFloat W, H;
     
-    if(computedSize.width < minWidth) {
-        return [self _computedSizeForImage:image
-                            specifiedWidth:minWidth
-                           specifiedHeight:specifiedHeight 
-                                  maxWidth:maxWidth
-                                  minWidth:minWidth 
-                                 maxHeight:maxHeight
-                                 minHeight:minHeight];
+         if(w > maxWidth)                         { W = maxWidth,                       H = MAX(maxWidth * h/w, minHeight); }
+    else if(w < minWidth)                         { W = minWidth,                       H = MIN(minWidth * h/w, maxHeight); }
+    else if(h > maxHeight)                        { W = MAX(maxHeight * w/h, minWidth), H = maxHeight;                      }
+    else if(h < minHeight)	                      { W = MIN(minHeight * w/h, maxWidth), H = minHeight;                      }
+    else if((w > maxWidth) && (h > maxHeight)) {
+             if(maxWidth/w <= maxHeight/h)        { W = maxWidth,                       H = MAX(minHeight, maxWidth * h/w); }
+        else if(maxWidth/w > maxHeight/h)         { W = MAX(minWidth, maxHeight * w/h), H = maxHeight;                      }
     }
-    
-    if(computedSize.height > maxHeight) {
-        return [self _computedSizeForImage:image
-                            specifiedWidth:specifiedHeight
-                           specifiedHeight:maxHeight 
-                                  maxWidth:maxWidth
-                                  minWidth:minWidth 
-                                 maxHeight:maxHeight
-                                 minHeight:minHeight];
+    else if((w < minWidth) && (h < minHeight)) {
+             if(minWidth/w <= minHeight/h)        { W = MIN(maxWidth, minHeight * w/h), H = minHeight;                      }
+        else if(minWidth/w > minHeight/h)         { W = minWidth,                       H = MIN(maxHeight, minWidth * h/w); }
     }
-    
-    if(computedSize.height < minHeight) {
-        return [self _computedSizeForImage:image
-                            specifiedWidth:specifiedHeight
-                           specifiedHeight:minHeight 
-                                  maxWidth:maxWidth
-                                  minWidth:minWidth 
-                                 maxHeight:maxHeight
-                                 minHeight:minHeight];
-    }
-    
-    return computedSize;
+    else if((w < minWidth) && (h > maxHeight))    { W = minWidth,                       H = maxHeight;                      }
+    else if((w > maxWidth) && (h < minHeight))    { W = maxWidth,                       H = minHeight;                      }
+    else                                          { W = w,                              H = h;                              }
+ 
+    return CGSizeMake(roundf(W), roundf(H));
 }
 
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode
@@ -1148,10 +1116,12 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 
                 widthChanged = YES;
             } else {
-                lastLineMaxY = lineOrigin.y + newLine.frame.size.height;
-                [lines addObject:newLine];
-                
-                lineOrigin.y = lastLineMaxY;
+                if(newLine.componentWidth != 0) {
+                    lastLineMaxY = lineOrigin.y + newLine.frame.size.height;
+                    [lines addObject:newLine];
+                    
+                    lineOrigin.y = lastLineMaxY;
+                }
                 lastLineBreakInfo = thisLineBreakInfo;
                 if(!firstTryAtLine) {
                     firstTryAtLine = YES;

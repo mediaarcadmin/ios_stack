@@ -309,9 +309,11 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
         css_computed_style *style;
         while(style = node.computedStyle,
               !style || css_computed_display(style, NO) != CSS_DISPLAY_BLOCK) {
-            EucCSSLayoutPositionedLineLineBox parentNodeBox = lineBoxForDocumentNode(node, scaleFactor);
-            _adjustLineBoxToContainLineBox(&lineBox, &parentNodeBox);
-            node = node.parent;
+            if(style) {
+                EucCSSLayoutPositionedLineLineBox parentNodeBox = lineBoxForDocumentNode(node, scaleFactor);
+                _adjustLineBoxToContainLineBox(&lineBox, &parentNodeBox);
+                node = node.parent;
+            }
         }
               
         _lineBox = lineBox;
@@ -384,9 +386,14 @@ static inline void _adjustParentsToContainRenderItem(EucCSSLayoutPositionedLineR
 static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode *node, CGFloat scaleFactor, EucCSSLayoutPositionedLineRenderItem **currentRenderItem, size_t *renderItemCount, size_t *renderItemCapacity, EucCSSLayoutPositionedLineRenderItem **renderItems)
 {
     css_computed_style *style = node.computedStyle;
-    BOOL doParent = (!style || css_computed_display(style, NO) != CSS_DISPLAY_BLOCK);
+    BOOL doParent = css_computed_display(style, NO) != CSS_DISPLAY_BLOCK;
     if(doParent) {
-        _accumulateParentLineBoxesInto(node.parent, scaleFactor, currentRenderItem, renderItemCount, renderItemCapacity, renderItems);
+        EucCSSIntermediateDocumentNode *parent = node.parent;
+        if(!parent.computedStyle) {
+            // An inline text node, skip it.
+            parent = parent.parent;
+        }
+        _accumulateParentLineBoxesInto(parent, scaleFactor, currentRenderItem, renderItemCount, renderItemCapacity, renderItems);
     }
     (*currentRenderItem)->kind = EucCSSLayoutPositionedLineRenderItemKindOpenNode;
     (*currentRenderItem)->parentIndex = doParent ? *currentRenderItem - *renderItems - 1 : NSUIntegerMax;
@@ -394,10 +401,11 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
     (*currentRenderItem)->item.openNodeInfo.node = node;
     (*currentRenderItem)->item.openNodeInfo.implicit = YES;
     
-    if(doParent) {
-        _adjustParentsToContainRenderItem(*renderItems, *renderItemCount, *currentRenderItem - *renderItems);
-    }
     _incrementRenderitemsCount(currentRenderItem, renderItemCount, renderItemCapacity, renderItems);
+
+    if(doParent) {
+        _adjustParentsToContainRenderItem(*renderItems, *renderItemCount, *currentRenderItem - *renderItems - 1);
+    }
 }
 
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems
@@ -422,7 +430,6 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         CGFloat spacesRemaining = 0.0f;
         
         EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
-        
         
         switch(_align) {
             case CSS_TEXT_ALIGN_CENTER:
@@ -450,35 +457,15 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                 xPosition += _indent;
         }
 
-        CGFloat pointSize = 0.0f;
-        CGFloat ascender = 0.0f;
-        CGFloat xHeight = 0.0f;
         
-        BOOL doParents;
+        EucCSSIntermediateDocumentNode *parentNode = componentInfos[0].documentNode.parent;
+        _accumulateParentLineBoxesInto(parentNode, scaleFactor, &renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
         
-        EucCSSIntermediateDocumentNode *node = componentInfos[0].documentNode;
-        if(componentInfos[0].kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
-            css_computed_style *style = node.computedStyle;
-            doParents = (!style || css_computed_display(style, NO) != CSS_DISPLAY_BLOCK);
-            if(doParents) {
-                node = node.parent;
-            }
-        } else {
-            if(componentInfos[0].kind == EucCSSLayoutDocumentRunComponentKindFloat) {
-                // We don't want the float's attributes!
-                node = node.parent;
-            }
-            pointSize = [node textPointSizeAtScaleFactor:scaleFactor];
-            ascender = [node textAscenderAtScaleFactor:scaleFactor];
-            doParents = YES;           
-        }
+        CGFloat pointSize = [parentNode textPointSizeAtScaleFactor:scaleFactor];
+        CGFloat ascender = [parentNode textAscenderAtScaleFactor:scaleFactor];        
+        CGFloat xHeight = [parentNode xHeightAtScaleFactor:scaleFactor];        
         
-        if(doParents) {
-            _accumulateParentLineBoxesInto(node, scaleFactor, &renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
-            _renderItems[0].origin.x = xPosition;
-        }
-        
-        NSUInteger parentIndex = doParents ? _renderItemCount - 1 : NSUIntegerMax;
+        NSUInteger parentIndex = _renderItemCount - 1;
         
         CGFloat thisNodeAbsoluteX = xPosition;
         
@@ -505,7 +492,6 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
                     renderItem->parentIndex = parentIndex;
                     renderItem->origin.x = xPosition - thisNodeAbsoluteX;
-                    renderItem->origin.y = _renderItems[parentIndex].lineBox.baseline - ascender;
                     
                     renderItem->lineBox.width = info->width;
                     renderItem->lineBox.height = pointSize;
@@ -528,7 +514,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
                         renderItem->parentIndex = parentIndex;
                         renderItem->origin.x = xPosition - thisNodeAbsoluteX;
-                        
+
                         renderItem->lineBox.width = info->contents.hyphenationInfo.widthAfterHyphen;
                         renderItem->lineBox.height = pointSize;
                         renderItem->lineBox.baseline = ascender;
