@@ -202,7 +202,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.book = newBook;
         self.delegate = aDelegate;
         self.wantsFullScreenLayout = YES;
-        [self initialiseControls];
         self.historyStack = [NSMutableArray array];
         
         self.coverView = [self.delegate coverViewViewForOpening];
@@ -934,6 +933,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 
+    [self initialiseControls];
 }
 
 - (void)layoutNavigationToolbar {
