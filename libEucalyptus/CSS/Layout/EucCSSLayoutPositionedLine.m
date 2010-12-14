@@ -467,6 +467,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         
         NSUInteger parentIndex = _renderItemCount - 1;
         
+        _renderItems[0].origin.x = xPosition;
         CGFloat thisNodeAbsoluteX = xPosition;
         
         uint32_t i;
