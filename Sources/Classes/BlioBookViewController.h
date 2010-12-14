@@ -76,6 +76,8 @@ typedef enum {
 @interface BlioBookViewController : UIViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
     BOOL _firstAppearance;
     
+    UIView *_rootView;
+    
     BlioBook *_book;
     
     UIView<BlioBookView> *_bookView;

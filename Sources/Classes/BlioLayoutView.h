@@ -15,9 +15,8 @@
 #import "BlioLayoutDataSource.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucPageTurningView.h>
-#import <libEucalyptus/THAccessibilityElement.h>
 
-@interface BlioLayoutView : BlioSelectableBookView <EucPageTurningViewDelegate, EucPageTurningViewBitmapDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, THAccessibilityElementDelegate> {
+@interface BlioLayoutView : BlioSelectableBookView <EucPageTurningViewDelegate, EucPageTurningViewBitmapDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate> {
     NSManagedObjectID *bookID;
     EucPageTurningView *pageTurningView;
     UIImage *pageTexture;

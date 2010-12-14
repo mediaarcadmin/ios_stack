@@ -28,6 +28,5 @@
 @optional
 - (void)thAccessibilityElementDidBecomeFocused:(THAccessibilityElement *)element;
 - (void)thAccessibilityElementDidLoseFocus:(THAccessibilityElement *)element;
-- (BOOL)thAccessibilityElementAccessibilityScroll:(UIAccessibilityScrollDirection)direction;
 
 @end
