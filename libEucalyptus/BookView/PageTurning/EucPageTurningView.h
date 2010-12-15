@@ -97,8 +97,9 @@ typedef enum EucPageTurningViewAnimationFlags {
     GLuint _bookEdgeTexture;
     THVec2 _pageEdgeTextureCoordinates[Y_VERTEX_COUNT][2];
     
+    GLuint _alphaWhiteTexture;
+    GLuint _whiteTexture;
     GLuint _checkerboardTexture;
-    GLuint _alphaWhiteZoomedContent;
     
     UITouch *_touch;
     NSTimeInterval _touchBeganTime;
