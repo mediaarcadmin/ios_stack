@@ -162,7 +162,12 @@
 		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_INVALID_CREDENTIALS",nil,[NSBundle mainBundle],@"An invalid username or password was entered. Please try again.",@"Alert message when user attempts to login with invalid login credentials.");
 		passwordField.text = @"";
 	}
-	else loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
+	else if ( loginResult == BlioLoginResultError ) { 
+		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
+	}
+	else if ( loginResult == BlioLoginResultConnectionError ) {
+		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_CONNECTION_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to an network connection error. Please check the availability of your Internet connection and try again later.",@"Alert message when the login web service has failed.");
+	}
 	[activityIndicatorView stopAnimating];
 	if (loginErrorText != nil) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Login Error",@"\"Login Error\" alert message title") 
