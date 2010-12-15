@@ -38,6 +38,9 @@
 -(BOOL)isLoggedIn {
 	return [self hasValidToken];
 }
+-(NSString*)loginHostname {
+	return nil;
+}
 -(NSString*)username {
 	if ([self isLoggedIn]) return currentUsername;
 	else return nil;

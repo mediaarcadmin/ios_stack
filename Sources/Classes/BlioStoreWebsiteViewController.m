@@ -294,7 +294,7 @@
 }
 - (void)openModalLogin:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-	[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+	[[BlioStoreManager sharedInstance] showLoginViewForSourceID:BlioBookSourceOnlineStore];
 }
 - (void)openModalCreateAccount:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
@@ -302,11 +302,9 @@
 }
 -(void)loginDismissed:(NSNotification*)note {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-//	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-//		[self updateLogin];
-//		[self updateExplanation];
-//	}
-	[self launchWebsite:nil];
+	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		[self launchWebsite:nil];
+	}
 }
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

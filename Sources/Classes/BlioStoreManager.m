@@ -180,12 +180,15 @@
 	return nil;
 }
 -(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {	
-	[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+//	[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginWithUsername:user password:password];
+}
+-(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID {
+	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginHostname];
 }
 -(void)storeHelper:(BlioStoreHelper*)storeHelper receivedLoginResult:(NSInteger)loginResult {
 	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
-	[[UIApplication sharedApplication] endIgnoringInteractionEvents];
+//	[[UIApplication sharedApplication] endIgnoringInteractionEvents];
 	if (loginResult == BlioLoginResultInvalidPassword && isShowingLoginView == NO) {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
 	}
@@ -195,6 +198,9 @@
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];		
+	}
+	else if (loginResult == BlioLoginResultConnectionError && isShowingLoginView == NO) {
+		
 	}
 	else if (isShowingLoginView == YES) {
 		[loginViewController receivedLoginResult:loginResult];		

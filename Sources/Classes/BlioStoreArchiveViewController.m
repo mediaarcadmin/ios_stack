@@ -41,8 +41,6 @@
 -(void) loadView {
 	[super loadView];
 	noResultsLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
-	noBooksText = NSLocalizedString(@"There are no books in your Archive.",@"\"There are no books in your Archive.\" indicator"); 
-	loadingBooksText = NSLocalizedString(@"Retrieving books into your Archive...",@"\"Retrieving books into your Archive.\" indicator"); 
 	noResultsLabel.textAlignment = UITextAlignmentCenter;
 	noResultsLabel.font = [UIFont systemFontOfSize:14.0];
 	noResultsLabel.textColor = [UIColor colorWithRed:108.0/255.0 green:108.0/255.0 blue:108.0/255.0 alpha:1.0];
@@ -333,8 +331,9 @@
 		noResultsLabel.frame = self.view.bounds;
 		noResultsLabel.hidden = NO;
 		tableView.scrollEnabled = NO;
-		if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) noResultsLabel.text = loadingBooksText;
-		else noResultsLabel.text = noBooksText;
+		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) noResultsLabel.text = NSLocalizedString(@"You must be logged in to view your Archive.",@"\"You must be logged in to view your Archive.\" indicator");
+		else if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) noResultsLabel.text = NSLocalizedString(@"Retrieving books into your Archive...",@"\"Retrieving books into your Archive.\" indicator");
+		else noResultsLabel.text = NSLocalizedString(@"There are no books in your Archive.",@"\"There are no books in your Archive.\" indicator");
 	}
 	else {
 		noResultsLabel.hidden = YES;
