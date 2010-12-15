@@ -240,7 +240,7 @@
 }
 -(void)updateExplanation {
 	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"To buy books, you must visit the blioreader.com website.  Purchased books will download the next time you start Blio.",@"Explanation text for how to buy books through the website/mobile Safari.");
+		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse our virtual bookshelves, filled with today's hot titles as well as a range of full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.",@"Explanation text for how to buy books through the website/mobile Safari.");
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
 			labelTitle = [NSString stringWithFormat:@"%@ %@",labelTitle,getStarted];
@@ -249,7 +249,7 @@
 	}
 	else {
 		CGRect explanationFrame = explanationLabel.frame;
-		NSString * explanationText = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION_IPAD",nil,[NSBundle mainBundle],@"Enjoy a vast selection of cookbooks, travel guides, how-to books, schoolbooks, art books, children's stories, and magazines. Relax, learn, work, or play! The smart display lets you insert highlights, notes, videos, and even webpages. Selected books also go hands-free with Blio's read-aloud feature.\n\nFlexible & accessible. Shop endless titles, right from the Blio Bookstore, with access to over one million free books and a huge library of today's bestsellers. Then, take your library on the road by syncing to your favorite on-the-go mobile device.",@"Explanation text for how to buy books through the website/mobile Safari (for iPad)");
+		NSString * explanationText = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION_IPAD",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse our virtual bookshelves, filled with today's hot titles and a range of full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.\n\nMany books can be read aloud in Blio, with the words highlighted as they are spoken.  And many books preserve the original print layout, which can be navigated by block using Blio's ReadLogic eliminating the need to scroll and zoom.  With Blio, you can now read eBooks as never before.",@"Explanation text for how to buy books through the website/mobile Safari (for iPad)");
 //		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 //			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
 //			explanationText = [NSString stringWithFormat:@"%@ %@",explanationText,getStarted];
