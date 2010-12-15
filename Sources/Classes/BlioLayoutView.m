@@ -1633,7 +1633,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             frame.origin.x += tapZoneWidth;
             frame = [self convertRect:frame toView:self.window];
             
-            THAccessibilityElement *toolbarTapButton = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            UIAccessibilityElement *toolbarTapButton = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             toolbarTapButton.accessibilityFrame = frame;
             toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book page", @"Accessibility title for previous page tap zone");
             if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] >= NSOrderedSame) {
@@ -1641,14 +1641,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             } else {
                 toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone on devices without three-finger swipe support");
             }
-            toolbarTapButton.delegate = self;
             
             [accessibilityElements addObject:toolbarTapButton];
             [toolbarTapButton release];
         }        
         
         {
-            THAccessibilityElement *nextPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
             if (self.pageTurningView.rightPageIndex >= (self.pageCount - 1))  {
                 nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
@@ -1668,7 +1667,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         }      
         
         {
-            THAccessibilityElement *previousPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
 			if (self.pageTurningView.isTwoUp) {
 				if (self.pageTurningView.leftPageIndex <= 0)  {
@@ -1685,7 +1684,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
             previousPageTapZone.accessibilityFrame = frame;
             previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
-            previousPageTapZone.delegate = self;
             
             self.prevZone = previousPageTapZone;
             
@@ -1752,7 +1750,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
-- (BOOL)thAccessibilityElementAccessibilityScroll:(UIAccessibilityScrollDirection)direction 
+- (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
 {
     return [self.pageTurningView accessibilityScroll:direction];
 }

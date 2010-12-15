@@ -482,7 +482,8 @@ pageNumberFontStyleFlags:(THStringRendererFontStyleFlags)pageNumberFontStyleFlag
 - (CGRect)contentRect
 {
     if([_pageTextView respondsToSelector:@selector(contentRect)]) {
-        return [_pageTextView contentRect];
+        CGPoint textViewOrigin = _pageTextView.frame.origin;
+        return CGRectOffset([_pageTextView contentRect], textViewOrigin.x, textViewOrigin.y);
     } else {
         return self.bounds;
     }
