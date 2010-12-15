@@ -85,11 +85,7 @@
 
 		}
 		else {
-//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Vault. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Vault. In the meantime, previously synced books will display.")]
-//										delegate:self
-//							   cancelButtonTitle:@"OK"
-//							   otherButtonTitles:nil];
+			// Show alert?
 			userDismissedLogin = YES;
 		}
 	}
@@ -255,15 +251,6 @@
 {
 	if (buttonIndex == 1) {
 		if ([[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore] && currBook) [self enqueueBook:currBook];
-//		BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-//		if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
-//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-//										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-//										delegate:self 
-//							   cancelButtonTitle:nil
-//							   otherButtonTitles:@"OK", nil];
-//		[drmSessionManager release];
-//		}
 //	else if ( currBook != nil )
 //		[self enqueueBook:currBook]; 
 	}
