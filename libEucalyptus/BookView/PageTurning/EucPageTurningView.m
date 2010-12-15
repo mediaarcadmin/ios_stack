@@ -2632,11 +2632,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return _accessibilityScrollUnderway;
 }
 
-- (BOOL)thAccessibilityElementAccessibilityScroll:(UIAccessibilityScrollDirection)direction 
-{
-    return [self accessibilityScroll:direction];
-}
-
 - (BOOL)stepPageForwards:(BOOL)forwards
 {
     BOOL ret = NO;

@@ -425,7 +425,6 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 - (void)_renderPositionedLine:(EucCSSLayoutPositionedLine *)line 
 {
     THLogVerbose(@"Positioned Line: %@", NSStringFromCGRect(line.absoluteFrame));
-    
     //CGContextStrokeRectWithWidth(_cgContext, line.contentBounds, 0.5);
 
     EucCSSLayoutPositionedLineRenderItem *renderItems = line.renderItems;

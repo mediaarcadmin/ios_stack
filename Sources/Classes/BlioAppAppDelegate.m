@@ -148,6 +148,9 @@
 		
 		// Delete paid books.
 		[self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
+	
+		// Reset the id for this device.
+		[[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey]; 
 	}
 }
 
@@ -319,6 +322,8 @@ static void *background_init_thread(void * arg) {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
+	
+	[self checkDevice];
 
 	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
@@ -329,8 +334,6 @@ static void *background_init_thread(void * arg) {
 		}
 		[self.processingManager resumeProcessing];
 	}	
-	
-	[self checkDevice];
     
     BOOL openedBook = NO;
     

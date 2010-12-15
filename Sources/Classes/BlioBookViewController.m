@@ -66,6 +66,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @interface BlioBookViewController ()
 
+@property (nonatomic, retain) UIView *rootView;
+
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
 @property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
 @property (nonatomic, retain) BlioModalPopoverController *viewSettingsPopover;
@@ -121,6 +123,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @end
 
 @implementation BlioBookViewController
+
+@synthesize rootView = _rootView;
 
 @synthesize book = _book;
 @synthesize bookView = _bookView;
@@ -198,7 +202,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.book = newBook;
         self.delegate = aDelegate;
         self.wantsFullScreenLayout = YES;
-        [self initialiseControls];
         self.historyStack = [NSMutableArray array];
         
         self.coverView = [self.delegate coverViewViewForOpening];
@@ -267,12 +270,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     _pageJumpView = nil;
 	
-	thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:self.view.bounds];
+	thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:self.rootView.bounds];
 	thumbPreview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	thumbPreview.userInteractionEnabled = NO;
 	thumbPreview.alpha = 0.01f;
 	thumbPreview.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7f];
-	[self.view addSubview:thumbPreview];
+	[self.rootView addSubview:thumbPreview];
 	
 }
 
@@ -499,7 +502,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		return;
 	}
     
-    [self.view addSubview:self.coverView];
+    [self.rootView addSubview:self.coverView];
 			
 	CGRect coverRect = [[self bookView] firstPageRect];
     CGFloat coverRectXScale = CGRectGetWidth(coverRect) / CGRectGetWidth(self.coverView.frame);
@@ -774,11 +777,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [titleView setAuthor:[self.book authorsWithStandardFormat]];              
                 
                 if ([_bookView wantsTouchesSniffed]) {
-                    [(THEventCapturingWindow *)self.view.window addTouchObserver:self forView:_bookView];            
+                    [(THEventCapturingWindow *)self.rootView.window addTouchObserver:self forView:_bookView];            
                 }                
                 
-                [self.view addSubview:_bookView];
-                [self.view sendSubviewToBack:_bookView];
+                [self.rootView addSubview:_bookView];
+                [self.rootView sendSubviewToBack:_bookView];
             }
             
             // Pretend that we last saved this page number, so that we 
@@ -882,13 +885,37 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     UIView *root = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
     // Changed to grey background to match Layout View surround color when rotating
     root.backgroundColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
-    root.opaque = YES;
-    if(_bookView) {
-        [root addSubview:_bookView];
-        [root sendSubviewToBack:_bookView];
-    }
+    root.opaque = YES;    
     self.view = root;
+
+    if(&UIAccessibilityPageScrolledNotification != NULL) {
+        // There's a bug in the original implementation (iOS 4.2) of accessibility 
+        // scrolling (i.e. supporting three-finger-swipe) in iOS that means that
+        // it doesn't work unless the view that implements it is inside a 
+        // UIScrollView, so we create an otherwise-inoperative UIScrollView here
+        // to put our book view inside.
+        // In the future, an extra && ![[UIDevice currentDevice] compareSystemVersion:<version where bug is fixed>] < NSOrderedSame
+        // can be added to stop doing this when the bug is fixed.
+        UIScrollView *fakeScrollView = [[UIScrollView alloc] initWithFrame:root.bounds];
+        fakeScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        fakeScrollView.scrollEnabled = NO;
+        fakeScrollView.delaysContentTouches = NO;
+        fakeScrollView.canCancelContentTouches = NO;
+        fakeScrollView.backgroundColor = root.backgroundColor;
+        fakeScrollView.opaque = YES;    
+        [root addSubview:fakeScrollView];
+        self.rootView = fakeScrollView;
+        [fakeScrollView release];
+    } else {
+        self.rootView = root;
+    }
+    
     [root release];
+    
+    if(_bookView) {
+        [self.rootView addSubview:_bookView];
+        [self.rootView sendSubviewToBack:_bookView];
+    }    
     
     UIButton *aPauseButton = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *pauseImage = [UIImage imageNamed:@"button-tts-pause.png"];
@@ -901,11 +928,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aPauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
     [aPauseButton setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
     [aPauseButton setAlpha:0];
-    [self.view addSubview:aPauseButton];
+    [self.rootView addSubview:aPauseButton];
     self.pauseButton = aPauseButton;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 
+    [self initialiseControls];
 }
 
 - (void)layoutNavigationToolbar {
@@ -1230,6 +1258,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)viewDidUnload
 {
     self.bookView = nil;
+    self.rootView = nil;
 }
 
 - (void)didReceiveMemoryWarning 
@@ -1694,7 +1723,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[self setPageJumpSliderPreview];
         
         _pageJumpView.layer.zPosition = 5;
-        [self.view addSubview:_pageJumpView];
+        [self.rootView addSubview:_pageJumpView];
     }
     
     CGSize sz = _pageJumpView.bounds.size;
@@ -1840,19 +1869,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             _lastSavedPageNumber = self.bookView.pageNumber;
         }
 		if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
-            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
+            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
             self.bookView = ePubView;
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey]; 
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
-            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
+            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; 
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
-            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds bookID:self.book.objectID animated:NO];
+            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
             speedReadView.delegate = self;
             self.bookView = speedReadView;     
             [speedReadView release];
@@ -2514,7 +2543,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.view viewWithTag:ACTIVITY_INDICATOR];
+	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.rootView viewWithTag:ACTIVITY_INDICATOR];
 	[activityIndicator stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
 	NSLog(@"Error loading web page: %@",errorMsg);
@@ -2763,7 +2792,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated {
     [self setToolbarsForModalOverlayActive:YES];
-    UIView *container = self.view;
+    UIView *container = self.rootView;
     
     BlioNotesView *aNotesView = [[BlioNotesView alloc] initWithRange:range note:note];
     [aNotesView setDelegate:self];
@@ -3202,7 +3231,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		CGFloat sliderMaxMinDiff = sliderMax - sliderMin;
 		CGFloat sliderValue = _pageJumpSlider.value;
 	
-		CGRect sliderFrame = [_pageJumpView convertRect:_pageJumpSlider.frame toView:self.view];
+		CGRect sliderFrame = [_pageJumpView convertRect:_pageJumpSlider.frame toView:self.rootView];
 		CGFloat xCoord = CGRectGetMinX(sliderFrame) + ((sliderValue-sliderMin)/sliderMaxMinDiff) * CGRectGetWidth(sliderFrame);	
 		CGFloat yCoord = CGRectGetMidY(sliderFrame);
 		
