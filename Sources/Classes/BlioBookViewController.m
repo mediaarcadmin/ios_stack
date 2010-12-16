@@ -3331,15 +3331,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[UIView commitAnimations];
 }
 
-- (void)layoutSubviews {
-	CGRect viewBounds = self.bounds;
-	BOOL isLandscape = CGRectGetWidth(viewBounds) > CGRectGetHeight(viewBounds);
-	
+- (void)layoutSubviews {	
 	[super layoutSubviews];
 	
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && isLandscape) {
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+		CGRect viewBounds = self.bounds;
+		BOOL isLandscape = CGRectGetWidth(viewBounds) > CGRectGetHeight(viewBounds);
+
 		CGRect thumbFrame = thumbImage.frame;
-		thumbFrame.origin.y += kBlioBookSliderPreviewPhoneLandscapeOffset;
+		thumbFrame.origin.y = floorf((CGRectGetHeight(self.frame) - CGRectGetHeight(thumbFrame)) / 2.0f);
+		if (isLandscape) {
+			thumbFrame.origin.y += kBlioBookSliderPreviewPhoneLandscapeOffset;
+		}
+		
 		thumbImage.frame = thumbFrame;
 	}
 }
