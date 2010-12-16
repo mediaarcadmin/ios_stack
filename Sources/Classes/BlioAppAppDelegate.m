@@ -325,7 +325,7 @@ static void *background_init_thread(void * arg) {
 	
 	[self checkDevice];
 
-	if (self.networkStatus != NotReachable) {
+	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			NSDictionary * loginCredentials = [[BlioStoreManager sharedInstance] savedLoginCredentials];
 			if (loginCredentials && [loginCredentials objectForKey:@"username"] && [loginCredentials objectForKey:@"password"]) {

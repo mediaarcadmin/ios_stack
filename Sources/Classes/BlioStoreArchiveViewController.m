@@ -41,8 +41,6 @@
 -(void) loadView {
 	[super loadView];
 	noResultsLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
-	noBooksText = NSLocalizedString(@"There are no books in your Archive.",@"\"There are no books in your Archive.\" indicator"); 
-	loadingBooksText = NSLocalizedString(@"Retrieving books into your Archive...",@"\"Retrieving books into your Archive.\" indicator"); 
 	noResultsLabel.textAlignment = UITextAlignmentCenter;
 	noResultsLabel.font = [UIFont systemFontOfSize:14.0];
 	noResultsLabel.textColor = [UIColor colorWithRed:108.0/255.0 green:108.0/255.0 blue:108.0/255.0 alpha:1.0];
@@ -87,11 +85,7 @@
 
 		}
 		else {
-//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-//										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_UPDATING_PAID_BOOKS_VAULT",nil,[NSBundle mainBundle],@"Login is required to update your Vault. In the meantime, only previously synced books will display.",@"Alert message informing the end-user that login is required to update the Vault. In the meantime, previously synced books will display.")]
-//										delegate:self
-//							   cancelButtonTitle:@"OK"
-//							   otherButtonTitles:nil];
+			// Show alert?
 			userDismissedLogin = YES;
 		}
 	}
@@ -257,15 +251,6 @@
 {
 	if (buttonIndex == 1) {
 		if ([[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore] && currBook) [self enqueueBook:currBook];
-//		BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-//		if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] ) {
-//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"An Error Has Occurred...",@"\"An Error Has Occurred...\" alert message title") 
-//										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-//										delegate:self 
-//							   cancelButtonTitle:nil
-//							   otherButtonTitles:@"OK", nil];
-//		[drmSessionManager release];
-//		}
 //	else if ( currBook != nil )
 //		[self enqueueBook:currBook]; 
 	}
@@ -333,8 +318,9 @@
 		noResultsLabel.frame = self.view.bounds;
 		noResultsLabel.hidden = NO;
 		tableView.scrollEnabled = NO;
-		if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) noResultsLabel.text = loadingBooksText;
-		else noResultsLabel.text = noBooksText;
+		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) noResultsLabel.text = NSLocalizedString(@"You must be logged in to view your Archive.",@"\"You must be logged in to view your Archive.\" indicator");
+		else if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) noResultsLabel.text = NSLocalizedString(@"Retrieving books into your Archive...",@"\"Retrieving books into your Archive.\" indicator");
+		else noResultsLabel.text = NSLocalizedString(@"There are no books in your Archive.",@"\"There are no books in your Archive.\" indicator");
 	}
 	else {
 		noResultsLabel.hidden = YES;

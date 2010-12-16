@@ -190,7 +190,7 @@
             // Actually, don't use displaylink - it causes lots of jittering
             // during interaction on early devices.
             // Use CADisplayLink, if available.
-            Class displayLinkClass = NSClassFromString(@"CADisplayLink");
+            Class displayLinkClass = nil;// NSClassFromString(@"CADisplayLink");
             if(displayLinkClass) {
                 if(!self.animationTimer) {
                     id displayLink = objc_msgSend(displayLinkClass, @selector(displayLinkWithTarget:selector:), self, @selector(drawView));

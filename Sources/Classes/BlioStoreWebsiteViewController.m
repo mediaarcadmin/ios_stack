@@ -240,16 +240,16 @@
 }
 -(void)updateExplanation {
 	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse our virtual bookshelves, filled with today's hot titles as well as a range of full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.",@"Explanation text for how to buy books through the website/mobile Safari.");
-		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
-			labelTitle = [NSString stringWithFormat:@"%@ %@",labelTitle,getStarted];
-		}
+		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse today's hot titles as well as full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.",@"Explanation text for how to buy books through the website/mobile Safari.");
+		//if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		//	NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
+		//	labelTitle = [NSString stringWithFormat:@"%@ %@",labelTitle,getStarted];
+		//}
 		explanationLabel.text = labelTitle;
 	}
 	else {
 		CGRect explanationFrame = explanationLabel.frame;
-		NSString * explanationText = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION_IPAD",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse our virtual bookshelves, filled with today's hot titles and a range of full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.\n\nMany books can be read aloud in Blio, with the words highlighted as they are spoken.  And many books preserve the original print layout, which can be navigated by block using Blio's ReadLogic eliminating the need to scroll and zoom.  With Blio, you can now read eBooks as never before.",@"Explanation text for how to buy books through the website/mobile Safari (for iPad)");
+		NSString * explanationText = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION_IPAD",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse today's hot titles as well as full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.\n\nMany books can be read aloud in Blio by a TTS voice (separate purchase required) or recorded audio, displaying words highlighted as they are spoken.  And many books preserve the original print layout, which can be navigated by block with Blio's ReadLogic eliminating the need to scroll and zoom.  Head to Blio for the coolest digital reading experience available today.",@"Explanation text for how to buy books through the website/mobile Safari (for iPad)");
 //		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 //			NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
 //			explanationText = [NSString stringWithFormat:@"%@ %@",explanationText,getStarted];
@@ -266,10 +266,10 @@
 	}
 	else {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention...\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"LOGIN_BEFORE_BROWSING_WEBSTORE",nil,[NSBundle mainBundle],@"You are currently not logged in. By inputting your username and password now, Blio will be able to automatically download purchases you make in the webstore when you return. Would you like to input your username and password now?",@"Alert Text encouraging the end-user to login before leaving for the webstore.")
+									 message:NSLocalizedStringWithDefaultValue(@"LOGIN_BEFORE_BROWSING_WEBSTORE",nil,[NSBundle mainBundle],@"If you log in now, Blio will be able to automatically download your bookstore purchases when you return. Would you like to log in?  You'll be able to create an account if you don't yet have one.",@"Alert Text encouraging the end-user to log in before leaving for the webstore.")
 									delegate:self 
 						   cancelButtonTitle:nil
-						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button title"),NSLocalizedString(@"Login",@"\"Login\" button title"),nil];	
+						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button title"),NSLocalizedString(@"Log in",@"\"Log in\" button title"),nil];	
 	}
 }
 - (void)launchWebsite:(id)sender {	
@@ -294,7 +294,7 @@
 }
 - (void)openModalLogin:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-	[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+	[[BlioStoreManager sharedInstance] showLoginViewForSourceID:BlioBookSourceOnlineStore];
 }
 - (void)openModalCreateAccount:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
@@ -302,11 +302,9 @@
 }
 -(void)loginDismissed:(NSNotification*)note {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-//	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-//		[self updateLogin];
-//		[self updateExplanation];
-//	}
-	[self launchWebsite:nil];
+	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		[self launchWebsite:nil];
+	}
 }
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

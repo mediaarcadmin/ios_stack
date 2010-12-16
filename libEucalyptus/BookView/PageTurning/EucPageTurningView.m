@@ -294,14 +294,23 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    _alphaWhiteZoomedContent = [_texturePool unusedTexture];
-    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
-    uint32_t whiteSquare[4] = { 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &whiteSquare);
+    _alphaWhiteTexture = [_texturePool unusedTexture];
+    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
+    uint32_t alphaSquare = 0x00000000;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &alphaSquare);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
+    _whiteTexture = [_texturePool unusedTexture];
+    glBindTexture(GL_TEXTURE_2D, _whiteTexture);
+    uint32_t whiteSquare = 0xffffffff;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &whiteSquare);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);    
     
     _checkerboardTexture = [_texturePool unusedTexture];
     glBindTexture(GL_TEXTURE_2D, _checkerboardTexture);
@@ -409,8 +418,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(_checkerboardTexture) {
         glDeleteTextures(1, &_checkerboardTexture);
     }
-    if(_alphaWhiteZoomedContent) {
-        glDeleteTextures(1, &_alphaWhiteZoomedContent);
+    if(_whiteTexture) {
+        glDeleteTextures(1, &_whiteTexture);
+    }
+    if(_alphaWhiteTexture) {
+        glDeleteTextures(1, &_alphaWhiteTexture);
     }
     if(_blankPageTexture) {
         glDeleteTextures(1, &_blankPageTexture);
@@ -1007,7 +1019,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         [self _prepareForTurnForwards:forwards];
 
         _viewportTouchPoint = CGPointMake(forwards ? _viewportLogicalSize.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-        _touchVelocity = CGPointMake(forwards ? -0.6f : 0.6f, 0.0f);
+        _touchVelocity = CGPointMake(forwards ? -1.0f : 1.0f, 0.0f);
         
         CGFloat percentage = (CGFloat)pageCount / 512.0f;
         if(pageCount == 1) {
@@ -1284,10 +1296,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
             if(forwards) {
                 _viewportTouchPoint = CGPointMake(_rightPageRect.size.width, _viewportLogicalSize.height * 0.5f);
-                _touchVelocity = CGPointMake(-0.6f, 0.0f);
+                _touchVelocity = CGPointMake(-1.0f, 0.0f);
             } else {
                 _viewportTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? -_leftPageRect.size.width : 0.0f, _viewportLogicalSize.height * 0.5f);
-                _touchVelocity = CGPointMake(0.6f, 0.0f);
+                _touchVelocity = CGPointMake(1.0f, 0.0f);
             }
             
             NSUInteger pageCount;
@@ -1585,15 +1597,15 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     lightPosition = THCATransform3DVec3Multiply(modelViewMatrix, lightPosition);
     glUniform3fv(glGetUniformLocation(_program, "uLight.position"), 1, (GLfloat *)&lightPosition);
     
-    glUniform4fv(glGetUniformLocation(_program, "uLight.ambientColor"), 1, (GLfloat *)&_ambientLightColor);
-    glUniform4fv(glGetUniformLocation(_program, "uLight.diffuseColor"), 1, (GLfloat *)&_diffuseLightColor);
+    glUniform3fv(glGetUniformLocation(_program, "uLight.ambientColor"), 1, (GLfloat *)&_ambientLightColor);
+    glUniform3fv(glGetUniformLocation(_program, "uLight.diffuseColor"), 1, (GLfloat *)&_diffuseLightColor);
 
     glUniform2f(glGetUniformLocation(_program, "uLight.attenuationFactors"), 
                 _constantAttenuationFactor + (_dimQuotient * (0.9f - 0.55f)), 
                 _linearAttenutaionFactor);
     
     // Set up the material.
-    glUniform4fv(glGetUniformLocation(_program, "uMaterial.specularColor"), 1, (GLfloat *)&_specularColor);
+    glUniform3fv(glGetUniformLocation(_program, "uMaterial.specularColor"), 1, (GLfloat *)&_specularColor);
     glUniform1f(glGetUniformLocation(_program, "uMaterial.shininess"), _shininess);
               
     // Tell the renderer id we're doing white-on-black.
@@ -1627,9 +1639,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGRect invisibleZoomedTextureRect = { { -1.0f, -1.0f } , { -1.0f, -1.0f } };
     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
+    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
     glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
+    glBindTexture(GL_TEXTURE_2D, _whiteTexture);
 
     // Enable the array attributes - they'll be set later.    
     
@@ -1662,7 +1674,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_pageContentsInformation[_rightFlatPageContentsIndex].texture) {
             glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex].texture); 
         } else {
-            glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+            glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 1, (GLfloat *)&contentsScaleForCheckerboard);
             glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
         }
         if(_pageContentsInformation[_rightFlatPageContentsIndex].zoomedTexture && _zoomFactor > 1.0f) {
@@ -1683,12 +1695,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         if(_pageContentsInformation[_rightFlatPageContentsIndex].highlightTexture) {
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
+            glBindTexture(GL_TEXTURE_2D, _whiteTexture); 
         }                
         if(_pageContentsInformation[_rightFlatPageContentsIndex].zoomedTexture && _zoomFactor > 1.0f) {
             glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
+            glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
         }
         if(!_pageContentsInformation[_rightFlatPageContentsIndex].texture) {
             glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
@@ -1716,7 +1728,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             if(_pageContentsInformation[leftFlatPageContentsIndex].texture) {
                 glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[leftFlatPageContentsIndex].texture); 
             } else {
-                glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+                glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 1, (GLfloat *)&contentsScaleForCheckerboard);
                 glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
             }
             if(_pageContentsInformation[leftFlatPageContentsIndex].zoomedTexture && _zoomFactor > 1.0f) {
@@ -1740,12 +1752,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             
             if(_pageContentsInformation[leftFlatPageContentsIndex].highlightTexture) {
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
+                glBindTexture(GL_TEXTURE_2D, _whiteTexture); 
             }                                
             if(_pageContentsInformation[leftFlatPageContentsIndex].zoomedTexture && _zoomFactor > 1.0f) {
                 glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, (GLfloat *)&invisibleZoomedTextureRect);
                 glActiveTexture(GL_TEXTURE2);
-                glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
+                glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
             }         
             if(!_pageContentsInformation[leftFlatPageContentsIndex].texture) {
                 glUniform2f(glGetUniformLocation(_program, "uContentsScale"), 1.0f, 1.0f);
@@ -1788,7 +1800,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_pageContentsInformation[_rightFlatPageContentsIndex-2].texture) {
             glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-2].texture); 
         } else {
-            glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+            glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 1, (GLfloat *)&contentsScaleForCheckerboard);
             glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
         }
         if(_pageContentsInformation[_rightFlatPageContentsIndex-2].zoomedTexture && _zoomFactor > 1.0f) {
@@ -1817,7 +1829,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             if(_pageContentsInformation[_rightFlatPageContentsIndex-1].texture) {
                 glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-1].texture); 
             } else {
-                glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 2, (GLfloat *)&contentsScaleForCheckerboard);
+                glUniform2fv(glGetUniformLocation(_program, "uContentsScale"), 1, (GLfloat *)&contentsScaleForCheckerboard);
                 glBindTexture(GL_TEXTURE_2D, _checkerboardTexture); 
             }
             if(_zoomFactor > 1.0f) {
@@ -1831,7 +1843,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                                  (GLfloat *)&invisibleZoomedTextureRect);
                     glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);                    
+                    glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);                    
                 }
             }
             if(_pageContentsInformation[_rightFlatPageContentsIndex-1].highlightTexture) {
@@ -1839,7 +1851,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 glBindTexture(GL_TEXTURE_2D, _pageContentsInformation[_rightFlatPageContentsIndex-1].highlightTexture); 
             } else {
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
+                glBindTexture(GL_TEXTURE_2D, _whiteTexture); 
             }
             glUniform1i(glGetUniformLocation(_program, "uFlipContentsX"), 1);
         } else {
@@ -1861,10 +1873,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         glUniform4fv(glGetUniformLocation(_program, "uZoomedTextureRect"), 4, 
                      (GLfloat *)&invisibleZoomedTextureRect);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent);
+        glBindTexture(GL_TEXTURE_2D, _alphaWhiteTexture);
         
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, _alphaWhiteZoomedContent); 
+        glBindTexture(GL_TEXTURE_2D, _whiteTexture); 
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -2328,8 +2340,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     _touchVelocity.x = 0;
                 } else if(absTouchVelocity < 0.2f) {
                     _touchVelocity.x = _touchVelocity.x < 0 ? -0.2f : 0.2f;
-                } else if(absTouchVelocity > 0.6f) {
-                    _touchVelocity.x = _touchVelocity.x < 0 ? -0.6f : 0.6f;
+                } else if(absTouchVelocity > 1.0f) {
+                    _touchVelocity.x = _touchVelocity.x < 0 ? -0.7f : 0.7f;
                 }
                 _touchVelocity.y = 0.0f;
             } 
@@ -3477,7 +3489,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(highlights && highlights.count) {                
             size_t bufferLength = minSize.width * minSize.height * 4;
             unsigned char *textureData = malloc(bufferLength);
-            uint32_t pattern = 0x00000000;
+            
+            // Fill with white - in the shader, the highlight texture is multiplied
+            // with the content texture.
+            uint32_t pattern = 0xffffffff;
             memset_pattern4(textureData, &pattern, bufferLength);
 
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -3506,7 +3521,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             CGContextRelease(textureContext);
             
-            
             THTimer *timer = [THTimer timerWithName:@"Convert to RGBA4444"];
             
             // Unpremultiply, and convert to RGBA4444 to save RAM.
@@ -3528,7 +3542,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             
             [timer report];
-            
             
             EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
             [eaglContext thPush];

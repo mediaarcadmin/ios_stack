@@ -68,6 +68,7 @@
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	currentUsername = [user retain];
 	currentPassword = [password retain];
+	NSLog(@"self.userNum: %i",self.userNum);
 	if (!self.userNum > 0) {
 		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
 		request.Service = DigitalLockerServiceRegistration;
@@ -82,7 +83,15 @@
 	}
 	else [self retrieveTokenWithUsername:user password:password];
 }
+-(NSString*)loginHostname {
+#ifdef TEST_MODE
+	return DigitalLockerGatewayURLTest;
+#else	
+	return DigitalLockerGatewayURLProduction;
+#endif
+}
 -(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
@@ -298,7 +307,7 @@
 -(BOOL) setDeviceRegistered:(BlioDeviceRegisteredStatus)targetStatus {
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
 		NSString * internetMessage = NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_DEREGISTRATION",nil,[NSBundle mainBundle],@"An internet connection is required to deregister this device.",@"Alert message when the user tries to deregister the device without an Internet connection.");
-		if (targetStatus == BlioDeviceRegisteredStatusRegistered) internetMessage = NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_REGISTRATION",nil,[NSBundle mainBundle],@"An internet connection is required to register this device.",@"Alert message when the user tries to register the device without an Internet connection.");
+		if (targetStatus == BlioDeviceRegisteredStatusRegistered) internetMessage = NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_DEREGISTRATION",nil,[NSBundle mainBundle],@"An internet connection is required to deregister this device.",@"Alert message when the user tries to deregister the device without an Internet connection.");
 		
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Not Found",@"\"Internet Connection Not Found\" alert message title")
 									 message:internetMessage
@@ -321,22 +330,14 @@
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
 	if ( targetStatus == BlioDeviceRegisteredStatusRegistered ) {
 		if ( ![drmSessionManager joinDomain:self.token domainName:@"novel"] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please try again later.",@"Alert message shown when device registration fails.")
-										delegate:nil 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
+			// Alert is shown by the drmSessionManager, to display error code.
 			[drmSessionManager release];
 			return NO;
 		} 
 	}
 	else {
 		if ( ![drmSessionManager leaveDomain:self.token] ) {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"DEREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to deregister device. Please try again later.",@"Alert message shown when device de-registration fails.")
-										delegate:nil 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
+			// Alert shown in drmSessionManager to display error code.
 			[drmSessionManager release];
 			return NO;
 		}
@@ -364,6 +365,7 @@
 	[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];
 }
 -(void)retrieveBooks {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 	if (![BlioStoreManager sharedInstance].processingDelegate) {
 		NSLog(@"ERROR: no processingManager set for BlioOnlineStoreHelper! Aborting retrieveBooks...");
 		return;
@@ -385,6 +387,7 @@
 	[vaultBinding release];
 }
 -(NSURL*)URLForBookWithID:(NSString*)isbn {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	vaultBinding.logXMLInOut = YES;
 	BookVault_RequestDownloadWithToken* downloadRequest = [[BookVault_RequestDownloadWithToken new] autorelease];
@@ -476,7 +479,7 @@
 }
 
 - (void)connection:(DigitalLockerConnection *)aConnection didFailWithError:(NSError *)error {
-	[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
+	[delegate storeHelper:self receivedLoginResult:BlioLoginResultConnectionError];
 	[aConnection release];
 }
 

@@ -268,6 +268,33 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		}
 	}
 }
+-(void)playSampleForVoiceName:(NSString *)aVoiceName {
+	if (self.sampleAudioPlayer && self.sampleAudioPlayer.playing == YES) [self.sampleAudioPlayer stop];
+	NSDictionary * voiceDictionary = nil;
+	for (id key in self.voiceData) {
+		if ([[[self.voiceData objectForKey:key] objectForKey:BlioVoiceDataVoiceNameKey] isEqualToString:aVoiceName]) {
+			voiceDictionary = [self.voiceData objectForKey:key];
+			break;
+		}
+	}
+	if (voiceDictionary) {
+		NSString * sampleFilename = nil;
+		sampleFilename = [voiceDictionary objectForKey:BlioVoiceDataSampleFilenameKey];
+		if (sampleFilename) {
+			NSError * sampleError = nil;
+			self.sampleAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"voiceSamples"] stringByAppendingPathComponent:sampleFilename]] error:&sampleError];
+			if (sampleError) {
+				NSLog(@"ERROR: AVAudioPlayer sample audio could not be initialized for voiceName: %@. Error: %@,%@",aVoiceName,sampleError,[sampleError userInfo]); 
+			}
+			else {						  
+				[self.sampleAudioPlayer play];
+			}
+		}
+	}
+	else {
+		NSLog(@"WARNING: Could not find appropriate voice dictionary for voice: %@",aVoiceName);
+	}
+}
 -(void)downloadVoice:(NSString*)aVoice {
 	if ([self.voiceData objectForKey:aVoice]) {
 		

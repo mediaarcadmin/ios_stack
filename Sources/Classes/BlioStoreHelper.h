@@ -41,6 +41,7 @@
 - (void)logout;
 -(BOOL)hasValidToken;
 -(BOOL)isLoggedIn;
+-(NSString*)loginHostname;
 -(BlioDeviceRegisteredStatus)deviceRegistered;
 -(BOOL) setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)targetStatus;
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status;

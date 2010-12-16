@@ -149,12 +149,17 @@
 
 @implementation CCInAppPurchasePurchaseProductRequest 
 
-@synthesize productId,hardwareId, HTTPBody;
+@synthesize productId,hardwareId, HTTPBody,testMode;
 
 -(id)initWithProductID:(NSString*)aProductId hardwareID:(NSString*)aHardwareId {
 	if((self = [super init])) {
 		self.productId = aProductId;
 		self.hardwareId = aHardwareId;
+#ifdef TEST_MODE
+		self.testMode = 1;
+#else	
+		self.testMode = 0;
+#endif
 	}
 	return self;
 }
@@ -166,7 +171,7 @@
 }
 -(NSURLRequest*)URLRequest {
 	if (hardwareId && productId) {
-		NSString * parameteredURL = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@",CCInAppPurchaseURL,hardwareId,productId];
+		NSString * parameteredURL = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@&testMode=%i",CCInAppPurchaseURL,hardwareId,productId,testMode];
 		NSMutableURLRequest * urlRequest = [[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:parameteredURL]] autorelease];
 		[urlRequest setHTTPMethod:@"POST"];
 		if (HTTPBody) [urlRequest setHTTPBody:HTTPBody];

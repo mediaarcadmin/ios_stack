@@ -14,6 +14,7 @@ typedef enum  {
 	BlioLoginResultSuccess = 0,
     BlioLoginResultInvalidPassword,
     BlioLoginResultError,
+	BlioLoginResultConnectionError
 } BlioLoginResult;
 
 typedef enum  {
@@ -127,6 +128,7 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 -(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID;
 -(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID;
 -(NSDictionary*)savedLoginCredentials;
+-(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Synchronously retrieves the URL for a book identified by a source-specific ID from the appropriate store helper.
 	@param sourceID The BlioBookSourceID of the book.
