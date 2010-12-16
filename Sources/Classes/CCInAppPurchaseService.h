@@ -75,10 +75,12 @@ static NSString* const CCInAppPurchaseURL = @"http://blio-in-app-purchase.crossc
 	NSString * hardwareId;
 	NSString * productId;
 	NSData * HTTPBody;
+	NSInteger testMode;
 }
 @property (nonatomic, copy) NSString * hardwareId;
 @property (nonatomic, copy) NSString * productId;
 @property (nonatomic, retain) NSData * HTTPBody;
+@property (nonatomic, assign) NSInteger testMode;
 @end
 @protocol CCInAppPurchaseConnectionDelegate<NSObject>
 

@@ -58,6 +58,7 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 -(NSArray*)availableVoicesForDownload;
 
 -(void)playSampleForVoice:(NSString *)aVoice;
+-(void)playSampleForVoiceName:(NSString *)aVoiceName;
 -(void)downloadVoice:(NSString *)aVoice;
 
 -(BlioProcessingDownloadAndUnzipVoiceOperation*)downloadVoiceOperationByVoice:(NSString*)aVoice;

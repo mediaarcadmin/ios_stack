@@ -375,7 +375,7 @@
 }
 -(void)onPlaySampleButtonPressed:(id)sender {
 	//	NSLog(@"onPlaySampleButtonPressed");
-	[[BlioAcapelaAudioManager sharedAcapelaAudioManager] playSampleForVoice:self.product.name];
+	[[BlioAcapelaAudioManager sharedAcapelaAudioManager] playSampleForVoiceName:self.product.name];
 }
 -(void)onDownloadButtonPressed:(id)sender {
 	//	NSLog(@"onDownloadButtonPressed");
