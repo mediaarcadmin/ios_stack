@@ -20,7 +20,7 @@
 	self = [super init];
 	if (self)
 	{
-		self.title = NSLocalizedString(@"End User License Agreement",@"\"End User License Agreement\" view controller title.");
+		self.title = NSLocalizedString(@"Terms of Use",@"\"Terms of Use\" view controller title.");
 		NSString* eulaText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/eula.html"] encoding:NSUTF8StringEncoding error:NULL];
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
 		[textView loadHTMLString:eulaText baseURL:nil];

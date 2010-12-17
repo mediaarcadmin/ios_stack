@@ -852,6 +852,18 @@
 		A382D3DB11C9159000CFEB88 /* Icon-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D811C9159000CFEB88 /* Icon-iPad.png */; };
 		A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
 		A38CDD7111E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */; };
+		A39305FF12BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
+		A393060012BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
+		A393060112BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
+		A393060512BAC03400949150 /* gnulesser-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060212BAC03400949150 /* gnulesser-license.html */; };
+		A393060612BAC03400949150 /* mit-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060312BAC03400949150 /* mit-license.html */; };
+		A393060712BAC03400949150 /* openfont-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060412BAC03400949150 /* openfont-license.html */; };
+		A393060812BAC03400949150 /* gnulesser-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060212BAC03400949150 /* gnulesser-license.html */; };
+		A393060912BAC03400949150 /* mit-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060312BAC03400949150 /* mit-license.html */; };
+		A393060A12BAC03400949150 /* openfont-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060412BAC03400949150 /* openfont-license.html */; };
+		A393060B12BAC03400949150 /* gnulesser-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060212BAC03400949150 /* gnulesser-license.html */; };
+		A393060C12BAC03400949150 /* mit-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060312BAC03400949150 /* mit-license.html */; };
+		A393060D12BAC03400949150 /* openfont-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060412BAC03400949150 /* openfont-license.html */; };
 		A39A8C8F11B97C0F00182D7E /* BlioLicenseClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */; };
 		A3A672B611304D7700138097 /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
 		A3A67376113078E300138097 /* BlioReadingVoiceSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioReadingVoiceSettingsViewController.m */; };
@@ -1695,6 +1707,10 @@
 		A383F2431174FA7A0049ED3A /* icon-cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-cart.png"; sourceTree = "<group>"; };
 		A38CDD6F11E60F9500C5C3D2 /* BlioPaidBooksSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioPaidBooksSettingsController.h; sourceTree = "<group>"; };
 		A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioPaidBooksSettingsController.m; sourceTree = "<group>"; };
+		A39305FE12BAC01A00949150 /* apache2-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "apache2-license.html"; sourceTree = "<group>"; };
+		A393060212BAC03400949150 /* gnulesser-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "gnulesser-license.html"; sourceTree = "<group>"; };
+		A393060312BAC03400949150 /* mit-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "mit-license.html"; sourceTree = "<group>"; };
+		A393060412BAC03400949150 /* openfont-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "openfont-license.html"; sourceTree = "<group>"; };
 		A3951B6411B31D4E000BCAC1 /* drmbcert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmbcert.h; path = DRM/drmbcert.h; sourceTree = "<group>"; };
 		A3951B6511B31D4E000BCAC1 /* ecurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ecurve.h; path = DRM/ecurve.h; sourceTree = "<group>"; };
 		A3951B6B11B31DCD000BCAC1 /* bignum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bignum.h; path = DRM/bignum.h; sourceTree = "<group>"; };
@@ -2207,6 +2223,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A393060212BAC03400949150 /* gnulesser-license.html */,
+				A393060312BAC03400949150 /* mit-license.html */,
+				A393060412BAC03400949150 /* openfont-license.html */,
+				A39305FE12BAC01A00949150 /* apache2-license.html */,
 				A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */,
 				A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */,
 				DCD4A4E4126F7F8E00A131B7 /* icon-add@2x.png */,
@@ -2898,7 +2918,7 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData.framework */,
+				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
 				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
@@ -3311,10 +3331,10 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData.framework */ = {
+		C986765B112411060070A03E /* GData */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = GData.framework;
+			path = GData;
 			remoteRef = C986765A112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3580,6 +3600,10 @@
 				7DA97C1212B273CC00F1FF75 /* paper-white~ipad.png in Resources */,
 				A3E5AF1912B2FD2A008F48C6 /* back-black@2x.png in Resources */,
 				A3E5AF1D12B2FD44008F48C6 /* forward-black@2x.png in Resources */,
+				A39305FF12BAC01A00949150 /* apache2-license.html in Resources */,
+				A393060512BAC03400949150 /* gnulesser-license.html in Resources */,
+				A393060612BAC03400949150 /* mit-license.html in Resources */,
+				A393060712BAC03400949150 /* openfont-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3809,6 +3833,10 @@
 				7DA97C1312B273CC00F1FF75 /* paper-white~ipad.png in Resources */,
 				A3E5AF1712B2FD2A008F48C6 /* back-black@2x.png in Resources */,
 				A3E5AF1B12B2FD44008F48C6 /* forward-black@2x.png in Resources */,
+				A393060112BAC01A00949150 /* apache2-license.html in Resources */,
+				A393060B12BAC03400949150 /* gnulesser-license.html in Resources */,
+				A393060C12BAC03400949150 /* mit-license.html in Resources */,
+				A393060D12BAC03400949150 /* openfont-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4039,6 +4067,10 @@
 				7DA97C1112B273CC00F1FF75 /* paper-white~ipad.png in Resources */,
 				A3E5AF1812B2FD2A008F48C6 /* back-black@2x.png in Resources */,
 				A3E5AF1C12B2FD44008F48C6 /* forward-black@2x.png in Resources */,
+				A393060012BAC01A00949150 /* apache2-license.html in Resources */,
+				A393060812BAC03400949150 /* gnulesser-license.html in Resources */,
+				A393060912BAC03400949150 /* mit-license.html in Resources */,
+				A393060A12BAC03400949150 /* openfont-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
