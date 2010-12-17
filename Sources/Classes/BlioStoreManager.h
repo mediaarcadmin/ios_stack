@@ -78,6 +78,7 @@ static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBook
 	@param sourceID The BlioBookSourceID for the login request.
  */
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID;
+-(void)showWelcomeViewForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Shows login view modally; input from the login view fields are then used to login for the given sourceID.
 	@param sourceID The BlioBookSourceID to be used when the end-user attempts to login.

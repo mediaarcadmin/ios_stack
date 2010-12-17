@@ -24,6 +24,7 @@
 #import "BlioDefaultViewController.h"
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/THUIDeviceAdditions.h>
+#import "BlioWelcomeViewController.h"
 
 @interface BlioAppAppDelegate ()
 
@@ -372,6 +373,11 @@ static void *background_init_thread(void * arg) {
         [self application:[UIApplication sharedApplication] handleOpenURL:url];
     }
     self.delayedURLOpens = nil;
+	
+	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) {
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"];
+		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
+	}	
 }
 
 
