@@ -1088,6 +1088,12 @@
 		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
 		DCC45AD311B458A400CBD491 /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
 		DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
+		DCC761D312BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */; };
+		DCC761D412BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */; };
+		DCC761D512BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */; };
+		DCC762B612BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC762B512BA6D6500B6EFAF /* UIButton+BlioAdditions.m */; };
+		DCC762B712BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC762B512BA6D6500B6EFAF /* UIButton+BlioAdditions.m */; };
+		DCC762B812BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC762B512BA6D6500B6EFAF /* UIButton+BlioAdditions.m */; };
 		DCC9B4ED1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */; };
 		DCC9B4EE1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */; };
 		DCC9B4EF1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */; };
@@ -1961,6 +1967,10 @@
 		DCC45ACB11B458A400CBD491 /* voiceSamples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = voiceSamples; sourceTree = "<group>"; };
 		DCC4696811B5C31400CBD491 /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Acapela For iPhone LF USEnglish Heather"; path = "TTS/Acapela For iPhone LF USEnglish Heather"; sourceTree = "<group>"; };
+		DCC761D112BA507200B6EFAF /* BlioWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioWelcomeViewController.h; sourceTree = "<group>"; };
+		DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioWelcomeViewController.m; sourceTree = "<group>"; };
+		DCC762B412BA6D6500B6EFAF /* UIButton+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+BlioAdditions.h"; sourceTree = "<group>"; };
+		DCC762B512BA6D6500B6EFAF /* UIButton+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+BlioAdditions.m"; sourceTree = "<group>"; };
 		DCC9B4EB1254E84600B17FBB /* BlioInAppPurchaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioInAppPurchaseManager.h; sourceTree = "<group>"; };
 		DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioInAppPurchaseManager.m; sourceTree = "<group>"; };
 		DCC9B5B0125535A800B17FBB /* CCInAppPurchaseService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCInAppPurchaseService.h; sourceTree = "<group>"; };
@@ -2148,6 +2158,8 @@
 				DC8BB5881278E7060044580E /* Additions */,
 				7DB195AF12B14CA20087E61F /* BlioDefaultViewController.h */,
 				7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */,
+				DCC761D112BA507200B6EFAF /* BlioWelcomeViewController.h */,
+				DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */,
 				1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */,
 				1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */,
 				A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */,
@@ -2889,7 +2901,7 @@
 				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -3059,6 +3071,8 @@
 				7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */,
 				7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */,
 				7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */,
+				DCC762B412BA6D6500B6EFAF /* UIButton+BlioAdditions.h */,
+				DCC762B512BA6D6500B6EFAF /* UIButton+BlioAdditions.m */,
 				7DB1913812031A8B0001017D /* NSString+BlioAdditions.h */,
 				7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */,
 				7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */,
@@ -3318,10 +3332,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -4165,6 +4179,8 @@
 				DCF0C27512B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 				7DB195B212B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
 				7DB349A912B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
+				DCC761D412BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
+				DCC762B712BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4301,6 +4317,8 @@
 				DCF0C27612B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 				7DB195B312B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
 				7DB349AA12B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
+				DCC761D512BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
+				DCC762B812BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4437,6 +4455,8 @@
 				DCF0C27412B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 				7DB195B112B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
 				7DB349A812B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
+				DCC761D312BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
+				DCC762B612BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
