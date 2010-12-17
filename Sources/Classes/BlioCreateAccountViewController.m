@@ -470,7 +470,7 @@
 	[activityIndicatorView stopAnimating];
 	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
 								 message:[NSString stringWithFormat:@"%@ %@",[error localizedDescription],NSLocalizedString(@"Please try again later.",@"\"Please try again later.\" alert view message supplement.")]
-								delegate:self 
+								delegate:nil 
 					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 					   otherButtonTitles:nil];
 	[aConnection release];
