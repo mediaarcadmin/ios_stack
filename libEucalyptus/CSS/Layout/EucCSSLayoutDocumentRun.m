@@ -166,12 +166,17 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 } else if(css_computed_display(inlineNodeStyle, false) != CSS_DISPLAY_BLOCK) {
                     // Open this node.
                     if(inlineNodeStyle && 
-                       css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM &&
-                       (_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutDocumentRunComponentKindHardBreak)) {
-                        EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
-                        info.documentNode = inlineNode.parent;
-                        info.width = 0;
-                        [self _addComponent:&info];
+                       css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM) {
+                        if(_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutDocumentRunComponentKindHardBreak) {
+                            EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
+                            info.documentNode = inlineNode.parent;
+                            info.width = 0;
+                            [self _addComponent:&info];
+                        } 
+                        
+                        // This is a bit of a hack to ensure we don't put extra spaces from the end 
+                        // of previous lines inside a list item.  The need for this may signify a 
+                        // deeper problem...
                         _previousInlineCharacterWasSpace = YES;
                         _alreadyInsertedSpace = YES;
                     }
