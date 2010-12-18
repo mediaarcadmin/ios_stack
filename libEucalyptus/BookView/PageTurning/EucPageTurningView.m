@@ -2135,14 +2135,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             translation.x /= _zoomFactor;
             translation.y /= _zoomFactor;
 
-            if(translation.x < -0.000001f && _isTurning >= 0) {
+            if((translation.x < -0.000001f && _isTurning == 0) || _isTurning > 0) {
                 pageTouchPoint = CGPointMake(_rightPageRect.size.width + translation.x,
                                              translation.y);
                 if(_isTurning != 1) {
                     [self _prepareForTurnForwards:YES];
                     oldViewportTouchX = pageTouchPoint.x;
                 }
-            } else if(translation.x > 0.000001f && _isTurning <= 0) {
+            } else if((translation.x > 0.000001f && _isTurning == 0) || _isTurning < 0) {
                 pageTouchPoint = CGPointMake(_rightPageFrame.origin.x > 0.0f ? (-_rightPageRect.size.width + translation.x) : translation.x,
                                              translation.y);
                 if(_isTurning != -1) {
@@ -2150,12 +2150,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     oldViewportTouchX = pageTouchPoint.x;
                 }
             } else {
-                if(_isTurning == 1 && self.isAnimating) {
-                    pageTouchPoint = CGPointMake(_stablePageVertices[_touchRow][X_VERTEX_COUNT - 1].x,
-                                                 translation.y);
-                } else {
-                    pageTouchPoint = CGPointMake(_rightPageRect.origin.x != 0.0f ? -_rightPageRect.size.width : 0, translation.y);
-                } 
+                pageTouchPoint = CGPointMake(oldViewportTouchX, translation.y);
             }
             if(_isTurning == 0) {
                 _animationFlags &= ~EucPageTurningViewAnimationFlagsDragTurn;
@@ -2167,6 +2162,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }            
         }
     }
+    
+    NSLog(@"%f, %f", pageTouchPoint.x, pageTouchPoint.y);
     
     NSTimeInterval thisTouchTime = [touch timestamp];
     if(_touchTime) {

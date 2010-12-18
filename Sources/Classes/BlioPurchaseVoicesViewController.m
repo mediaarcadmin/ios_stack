@@ -324,7 +324,7 @@
 				self.progressLabel.hidden = YES;
 				self.downloadButton.hidden = NO;
 				self.downloadButton.alpha = 0.65f;
-				[self.downloadButton setTitle:NSLocalizedString(@"Purchasing",@"\"Purchasing\" transition button label in purchase voices view.") forState:UIControlStateDisabled];
+				[self.downloadButton setTitle:NSLocalizedString(@"Processing",@"\"Processing\" transition button label in purchase voices view.") forState:UIControlStateDisabled];
 				self.downloadButton.enabled = NO;
 				//			[self.downloadButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];		
 				break;

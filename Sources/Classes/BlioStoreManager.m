@@ -13,6 +13,7 @@
 #import "BlioDrmSessionManager.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioCreateAccountViewController.h"
+#import "BlioWelcomeViewController.h"
 
 @implementation BlioStoreManager
 
@@ -92,17 +93,25 @@
 -(NSInteger)currentUserNum {
 	return self.currentStoreHelper.userNum;
 }
+-(void)showWelcomeViewForSourceID:(BlioBookSourceID)sourceID {
+	self.loginViewController = [[[BlioWelcomeViewController alloc] initWithSourceID:sourceID] autorelease];
+	UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+		modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+	}
+	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
+	isShowingLoginView = YES;	
+}
 -(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID {
 	self.loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
 	
 	UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 		modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 	}
-#endif	
 	
 	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
 	isShowingLoginView = YES;	

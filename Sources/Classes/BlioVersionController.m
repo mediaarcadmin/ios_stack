@@ -28,8 +28,12 @@
 		//NSString* versionText = [NSString stringWithFormat:@"<center><p style=font-family:arial;font-size:50px;>Blio</center></p><center><p style=font-family:arial;font-size:35px;><i>Beta version %@</i></p></center><p>",version];  
 		NSString* versionText = [NSString stringWithFormat:@"<html><body style=\"margin:20px 30px;\"><center><p style=font-family:arial;font-size:40px;><strong>Blio</strong> | <i>Version %@</i></p><hr></center>",version];
 		NSString* creditsText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/credits.html"] encoding:NSUTF8StringEncoding error:NULL];
+		NSString *resourcePath = [[[[NSBundle mainBundle] resourcePath]
+								   stringByReplacingOccurrencesOfString:@"/" withString:@"//"]
+								  stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-		[textView loadHTMLString:[versionText stringByAppendingString:creditsText] baseURL:nil];
+		[textView loadHTMLString:[versionText stringByAppendingString:creditsText] baseURL:[NSURL URLWithString:
+																							[NSString stringWithFormat:@"file:/%@//", resourcePath]]];
 		[textView setScalesPageToFit:YES];
 		self.view = textView;
 		//textView.delegate = self;
