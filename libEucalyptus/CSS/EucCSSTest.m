@@ -52,7 +52,8 @@ int main (int argc, const char * argv[]) {
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:xmlTree
                                                                                              forURL:[NSURL fileURLWithPath:xmlPath]
                                                                                          dataSource:dataSource
-                                                                                        baseCSSPath:[NSString stringWithUTF8String:argv[2]]
+                                                                                       baseCSSPaths:[NSArray arrayWithObject:[NSString stringWithUTF8String:argv[2]]]
+                                                                                       userCSSPaths:nil
                                                                                              isHTML:YES];
     
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
