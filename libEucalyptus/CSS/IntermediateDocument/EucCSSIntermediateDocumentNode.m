@@ -153,7 +153,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return [self.parent displayableNodeAfter:self under:under];
 }
 
-- (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under \
+- (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under
 {
    /* EucCSSIntermediateDocumentNode *nextNode = nil;
     
