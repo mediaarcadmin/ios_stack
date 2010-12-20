@@ -2421,11 +2421,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         moveToWordOffset = _audioBookManager.currentWordOffset;
 
 		++_audioBookManager.timeIx;
-        ++_audioBookManager.currentWordOffset;
+		++_audioBookManager.currentWordOffset;
         
         if ( _audioBookManager.currentWordOffset == _audioBookManager.blockWords.count ) {
             [self prepareTextToSpeakWithAudioManager:_audioBookManager];
-        }            
+        }   
+		if ( _audioBookManager.timeIx >= [_audioBookManager.wordTimes count] )
+			break;         
 	}
     
     if ( highlightShouldMove ) {

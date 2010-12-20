@@ -457,8 +457,12 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                 xPosition += _indent;
         }
 
-        
-        EucCSSIntermediateDocumentNode *parentNode = componentInfos[0].documentNode.parent;
+        EucCSSIntermediateDocumentNode *parentNode;
+        if(componentInfos[0].kind == EucCSSLayoutDocumentRunComponentKindCloseNode) {
+            parentNode = componentInfos[0].documentNode;
+        } else {
+            parentNode = componentInfos[0].documentNode.parent;
+        }
         _accumulateParentLineBoxesInto(parentNode, scaleFactor, &renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
         
         CGFloat pointSize = [parentNode textPointSizeAtScaleFactor:scaleFactor];

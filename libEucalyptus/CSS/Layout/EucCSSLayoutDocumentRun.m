@@ -166,12 +166,17 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 } else if(css_computed_display(inlineNodeStyle, false) != CSS_DISPLAY_BLOCK) {
                     // Open this node.
                     if(inlineNodeStyle && 
-                       css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM &&
-                       (_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutDocumentRunComponentKindHardBreak)) {
-                        EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
-                        info.documentNode = inlineNode.parent;
-                        info.width = 0;
-                        [self _addComponent:&info];
+                       css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM) {
+                        if(_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutDocumentRunComponentKindHardBreak) {
+                            EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
+                            info.documentNode = inlineNode.parent;
+                            info.width = 0;
+                            [self _addComponent:&info];
+                        } 
+                        
+                        // This is a bit of a hack to ensure we don't put extra spaces from the end 
+                        // of previous lines inside a list item.  The need for this may signify a 
+                        // deeper problem...
                         _previousInlineCharacterWasSpace = YES;
                         _alreadyInsertedSpace = YES;
                     }
@@ -368,7 +373,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     CGFloat w = specifiedWidth;
     CGFloat h = specifiedHeight;
     
-    CGFloat W, H;
+    CGFloat W = w, H = h;
     
          if(w > maxWidth)                         { W = maxWidth,                       H = MAX(maxWidth * h/w, minHeight); }
     else if(w < minWidth)                         { W = minWidth,                       H = MIN(minWidth * h/w, maxHeight); }
@@ -384,7 +389,6 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     }
     else if((w < minWidth) && (h > maxHeight))    { W = minWidth,                       H = maxHeight;                      }
     else if((w > maxWidth) && (h < minHeight))    { W = maxWidth,                       H = minHeight;                      }
-    else                                          { W = w,                              H = h;                              }
  
     return CGSizeMake(roundf(W), roundf(H));
 }
