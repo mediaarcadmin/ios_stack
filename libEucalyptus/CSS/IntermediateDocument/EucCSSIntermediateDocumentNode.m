@@ -142,8 +142,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
         }
         for(; i < childCount; ++i) {
             EucCSSIntermediateDocumentNode *prospectiveNextNode = [_document nodeForKey:childKeys[i]];
-            css_computed_style *style = [prospectiveNextNode computedStyle];
-            if(!style || css_computed_display(style, false) != CSS_DISPLAY_NONE) {
+            if(prospectiveNextNode.display != CSS_DISPLAY_NONE) {
                 return prospectiveNextNode;
             } 
         }
@@ -357,10 +356,8 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 - (EucCSSIntermediateDocumentNode *)blockLevelNode
 {
     EucCSSIntermediateDocumentNode *prospectiveNode = self;
-    css_computed_style *currentNodeStyle = self.computedStyle;
-    while(prospectiveNode && (!currentNodeStyle || css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK)) {
+    while(prospectiveNode && prospectiveNode.display != CSS_DISPLAY_BLOCK) {
         prospectiveNode = prospectiveNode.parent;
-        currentNodeStyle = prospectiveNode.computedStyle;
     }  
     return prospectiveNode;    
 }
@@ -414,6 +411,25 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 - (NSString *)name
 {
     return NSStringFromClass(self.class);
+}
+
+
+- (/*enum css_display_e*/ uint8_t)display
+{
+    if(!_display) {
+        css_computed_style *style = self.computedStyle;
+        if(style) {
+            _display = css_computed_display(self.computedStyle, false);
+        } else {
+            _display = CSS_DISPLAY_INLINE;
+        }
+    }
+    return _display;
+}
+
+- (EucCSSIntermediateDocumentNode *)generatedChildNodeForKey:(uint32_t)childKey
+{
+    return nil;
 }
 
 @end

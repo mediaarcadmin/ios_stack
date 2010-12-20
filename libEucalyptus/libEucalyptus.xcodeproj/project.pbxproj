@@ -122,8 +122,6 @@
 		7D19047711494CEA00375803 /* parserutilserror.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903E811494CEA00375803 /* parserutilserror.h */; };
 		7D19047811494CEA00375803 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D1903E911494CEA00375803 /* utils.c */; };
 		7D19047911494CEA00375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1903EA11494CEA00375803 /* utils.h */; };
-		7D239FC71261C134005B5D78 /* Readings in Resources */ = {isa = PBXBuildFile; fileRef = 7D239FB21261C134005B5D78 /* Readings */; };
-		7D239FC81261C134005B5D78 /* Readings in Resources */ = {isa = PBXBuildFile; fileRef = 7D239FB21261C134005B5D78 /* Readings */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
 		7D27117B124928110087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D27117A124928110087C4E3 /* Accelerate.framework */; };
@@ -395,6 +393,8 @@
 		7D5174041028BA14005F3C46 /* xmltok_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173B21028BA14005F3C46 /* xmltok_impl.h */; };
 		7D5174051028BA14005F3C46 /* xmltok_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173B31028BA14005F3C46 /* xmltok_ns.c */; };
 		7D51741D1028BA14005F3C46 /* expat_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173DE1028BA14005F3C46 /* expat_config.h */; };
+		7D520A5D12BF8C1F0065C1F9 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
+		7D520A6112BF8C370065C1F9 /* pg103.epub in Resources */ = {isa = PBXBuildFile; fileRef = 7DCA5804114985C7007EDB15 /* pg103.epub */; };
 		7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9711499DC0004F64DC /* EucCSSXMLTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D53BD9811499DC0004F64DC /* EucCSSXMLTree.m */; };
 		7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9F11499DCE004F64DC /* EucCSSXMLTreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3290,7 +3290,6 @@
 				7D4A006811DBA34E00DDA5B7 /* SelectionKnob.png in Resources */,
 				7D4A006911DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */,
 				7D0D925512130F7F00CD994D /* EPubOverrides.css in Resources */,
-				7D239FC71261C134005B5D78 /* Readings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3368,7 +3367,8 @@
 				7D4A009D11DBA34E00DDA5B7 /* SelectionKnob.png in Resources */,
 				7D4A009E11DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */,
 				7D0D92851213185B00CD994D /* EPubOverrides.css in Resources */,
-				7D239FC81261C134005B5D78 /* Readings in Resources */,
+				7D520A5D12BF8C1F0065C1F9 /* Down and out in the Magic Kingdom in Resources */,
+				7D520A6112BF8C370065C1F9 /* pg103.epub in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4363,6 +4363,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;

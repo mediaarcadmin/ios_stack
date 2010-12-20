@@ -15,7 +15,6 @@
     uint32_t _parentKey;    
 }
 
-- (id)initWithDocument:(EucCSSIntermediateDocument *)document 
-             parentKey:(uint32_t)parentKey;
+- (id)initWithDocument:(EucCSSIntermediateDocument *)document key:(uint32_t)key;
 
 @end

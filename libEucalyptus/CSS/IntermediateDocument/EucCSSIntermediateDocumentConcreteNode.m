@@ -15,6 +15,7 @@
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
+#import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 
 #import "EucCSSDocumentTree.h"
 #import "EucCSSDocumentTree_Package.h"
@@ -33,7 +34,7 @@
     if((self = [super init])) {
         _documentTreeNode = [documentTreeNode retain];
         self.document = document;
-        self.key = _documentTreeNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+        self.key = _documentTreeNode.key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
     }
     return self;
 }
@@ -253,9 +254,9 @@
 
 - (EucCSSIntermediateDocumentNode *)parent
 {
-    id<EucCSSDocumentTreeNode> parentDBNode = _documentTreeNode.parent;
-    if(parentDBNode) {
-        return [_document nodeForKey:parentDBNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
+    id<EucCSSDocumentTreeNode> parentDocumentTreeNode = _documentTreeNode.parent;
+    if(parentDocumentTreeNode) {
+        return [_document nodeForKey:parentDocumentTreeNode.key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS];
     } else {
         return nil;
     }    
@@ -272,22 +273,26 @@
     }
     _childCount = childCount;
     
+    uint32_t generatedCount = 0;
+    
     if(childCount) {
         uint32_t *children = malloc(childCount * sizeof(uint32_t));
         uint32_t *child = children;
         
         if(self.computedBeforeStyle) {
-            *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode;
+            *(child++) = self.key | ++generatedCount;
+            ++generatedCount;
         }
         
         id<EucCSSDocumentTreeNode> documentChild = _documentTreeNode.firstChild;
         while(documentChild) {
-             *(child++) = documentChild.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+             *(child++) = documentChild.key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
             documentChild = documentChild.nextSibling;
         }
         
         if(self.computedAfterStyle) {
-            *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode;
+            *(child++) = self.key | ++generatedCount;
+            ++generatedCount;
         }
         
         _childKeys = children;
@@ -311,5 +316,32 @@
     return _childKeys;    
 }
 
+
+- (EucCSSIntermediateDocumentNode *)generatedChildNodeForKey:(uint32_t)childKey
+{
+    EucCSSIntermediateDocumentNode *generatedChild = nil;
+    
+    uint32_t generationKey = childKey & EUC_CSS_INTERMEDIATE_DOCUMENT_NODE_KEY_FLAG_MASK;
+    switch(generationKey) {
+        case 1:
+            generatedChild = [[EucCSSIntermediateDocumentGeneratedContainerNode alloc] initWithDocument:self.document
+                                                                                                    key:childKey
+                                                                                         isBeforeParent:self.computedBeforeStyle ? YES : NO];
+            break;
+        case 3:
+            generatedChild = [[EucCSSIntermediateDocumentGeneratedContainerNode alloc] initWithDocument:self.document
+                                                                                                    key:childKey
+                                                                                         isBeforeParent:NO]; 
+            break;
+        case 2:
+        case 4:
+            generatedChild = [[EucCSSIntermediateDocumentGeneratedTextNode alloc] initWithDocument:self.document key:childKey];
+            break;
+        default:
+            THWarn(@"Unexpected generated child key %ld", (long)generationKey);            
+    }
+    
+    return [generatedChild autorelease];
+}
 
 @end

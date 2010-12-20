@@ -163,10 +163,9 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                     [self _accumulateFloatNode:inlineNode];
                     nextNode = [inlineNode.parent displayableNodeAfter:inlineNode under:underNode];
                     wasFloat = YES;
-                } else if(css_computed_display(inlineNodeStyle, false) != CSS_DISPLAY_BLOCK) {
+                } else if(inlineNode.display != CSS_DISPLAY_BLOCK) {
                     // Open this node.
-                    if(inlineNodeStyle && 
-                       css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM) {
+                    if(inlineNode.display == CSS_DISPLAY_LIST_ITEM) {
                         if(_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutDocumentRunComponentKindHardBreak) {
                             EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
                             info.documentNode = inlineNode.parent;
@@ -209,7 +208,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                         currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
                         [self _addComponent:&currentComponentInfo];
                         
-                        if(inlineNodeStyle && css_computed_display(inlineNodeStyle, false) == CSS_DISPLAY_LIST_ITEM) {
+                        if(inlineNode.display == CSS_DISPLAY_LIST_ITEM) {
                             EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
                             info.documentNode = inlineNode.parent;
                             info.width = 0;

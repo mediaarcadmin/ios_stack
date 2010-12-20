@@ -338,12 +338,10 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     }
     
     if(currentDocumentNode) {
-        css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
-
         CGRect bottomlessFrame = CGRectMake(frame.origin.x, frame.origin.x, frame.size.width, CGFLOAT_MAX);
         EucCSSLayoutPositionedBlock *currentPositionedBlock = nil;
         if(constructingAncestors) {
-            if(!currentNodeStyle || css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
+            if(currentDocumentNode.display != CSS_DISPLAY_BLOCK) {
                 EucCSSIntermediateDocumentNode *blockLevelParent = currentDocumentNode.blockLevelParent;
                 if(!blockLevelParent) {
                     blockLevelParent = document.rootNode;
@@ -407,7 +405,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 
                 if(!currentNodeStyle || 
                    css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE ||
-                   css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
+                   currentDocumentNode.display != CSS_DISPLAY_BLOCK) {
                     //THLog(@"Inline: %@", [currentDocumentNode name]);
                     
                     // This is an inline element - start a run.
@@ -452,7 +450,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 } else {
                     //THLog(@"Block: %@", [currentDocumentNode name]);
                     if(THWillLog()) {
-                        NSParameterAssert(css_computed_float(currentNodeStyle) == CSS_FLOAT_NONE);
+                        NSParameterAssert(css_computed_float(currentDocumentNode.computedStyle) == CSS_FLOAT_NONE);
                     }
                     BOOL hasPreviousSibling = [currentPositionedBlock.children count] != 0;
                     

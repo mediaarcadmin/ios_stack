@@ -25,6 +25,8 @@ struct css_computed_style;
     
     CGFloat _textPointSize;
     NSUInteger _lineHeightKind;
+    
+    /*enum css_display_e*/ uint8_t _display;
 }
 
 // Concrete:
@@ -65,6 +67,8 @@ struct css_computed_style;
 @property (nonatomic, readonly) NSString *name; // Will just return the class name - can be overridden to return e.g. 
                                                 // XML name of the underlying document node.  Just used for debugging.
 
+@property (nonatomic, readonly) /*enum css_display_e*/ uint8_t display; // Returns the display from the computed style.
+
 // Abstract:
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *parent;
@@ -72,5 +76,7 @@ struct css_computed_style;
 @property (nonatomic, readonly) uint32_t *childKeys;
 
 @property (nonatomic, readonly) struct css_computed_style *computedStyle;
+
+- (EucCSSIntermediateDocumentNode *)generatedChildNodeForKey:(uint32_t)childKey;
 
 @end

@@ -306,10 +306,8 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
         // Now take into acunt our parent nodes' affect on the line box.
         componentInfo = startComponentInfo;
         EucCSSIntermediateDocumentNode *node = componentInfo->documentNode.parent;
-        css_computed_style *style;
-        while(style = node.computedStyle,
-              !style || css_computed_display(style, NO) != CSS_DISPLAY_BLOCK) {
-            if(style) {
+        while(node.display != CSS_DISPLAY_BLOCK) {
+            if(node.computedStyle) {
                 EucCSSLayoutPositionedLineLineBox parentNodeBox = lineBoxForDocumentNode(node, scaleFactor);
                 _adjustLineBoxToContainLineBox(&lineBox, &parentNodeBox);
                 node = node.parent;
@@ -385,8 +383,7 @@ static inline void _adjustParentsToContainRenderItem(EucCSSLayoutPositionedLineR
 
 static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode *node, CGFloat scaleFactor, EucCSSLayoutPositionedLineRenderItem **currentRenderItem, size_t *renderItemCount, size_t *renderItemCapacity, EucCSSLayoutPositionedLineRenderItem **renderItems)
 {
-    css_computed_style *style = node.computedStyle;
-    BOOL doParent = css_computed_display(style, NO) != CSS_DISPLAY_BLOCK;
+    BOOL doParent = node.display != CSS_DISPLAY_BLOCK;
     if(doParent) {
         EucCSSIntermediateDocumentNode *parent = node.parent;
         if(!parent.computedStyle) {

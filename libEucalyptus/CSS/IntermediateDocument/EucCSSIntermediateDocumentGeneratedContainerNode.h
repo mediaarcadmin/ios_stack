@@ -20,7 +20,7 @@
 }
 
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document 
-             parentKey:(uint32_t)parentKey
+                   key:(uint32_t)key
         isBeforeParent:(BOOL)beforeParent;
 
 @end

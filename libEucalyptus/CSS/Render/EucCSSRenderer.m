@@ -331,7 +331,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 EucCSSIntermediateDocumentNode *siblingNode = [document nodeForKey:siblingKey];
                 css_computed_style *siblingStyle = siblingNode.computedStyle;
                 if(siblingStyle) {
-                    if(css_computed_display(siblingStyle, false) == CSS_DISPLAY_LIST_ITEM) {
+                    if(siblingNode.display == CSS_DISPLAY_LIST_ITEM) {
                         ++index;
                     }
                 }
@@ -457,7 +457,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                     
                     // List bullet
                     if(!renderItem->item.openNodeInfo.implicit &&
-                       css_computed_display(style, false) == CSS_DISPLAY_LIST_ITEM) {
+                       currentDocumentNode.display == CSS_DISPLAY_LIST_ITEM) {
                         CGPoint baselinePoint = CGPointMake(currentAbsoluteOrigin.x + renderItem->origin.x - roundf(5.0f * _currentScaleFactor),
                                                             renderItem->lineBox.baseline);
                         [self _renderListItemBulletForRenderItem:renderItem 
