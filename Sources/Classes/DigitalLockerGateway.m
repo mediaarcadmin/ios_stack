@@ -428,10 +428,10 @@ static NSString * SessionId = nil;
 
 #ifdef TEST_MODE
 		_gatewayURL = DigitalLockerGatewayURLTest;
-		NSLog(@"initializing DigitalLockerConnetion with test URL: %@",_gatewayURL);
+		NSLog(@"initializing DigitalLockerConnection with test URL: %@",_gatewayURL);
 #else	
 		_gatewayURL = DigitalLockerGatewayURLProduction;
-		NSLog(@"initializing DigitalLockerConnetion with production URL: %@",_gatewayURL);
+		NSLog(@"initializing DigitalLockerConnection with production URL: %@",_gatewayURL);
 #endif
 		
 		self.parserDelegateStack = [NSMutableArray array];

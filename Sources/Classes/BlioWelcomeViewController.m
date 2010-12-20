@@ -86,7 +86,7 @@
 		firstTimeUserTextView = [[UILabel alloc] initWithFrame:CGRectZero];
 		firstTimeUserTextView.lineBreakMode = UILineBreakModeWordWrap;
 		firstTimeUserTextView.numberOfLines = 0;
-		firstTimeUserTextView.text = NSLocalizedStringWithDefaultValue(@"FIRST_TIME_USER_TEXT",nil,[NSBundle mainBundle],@"We invite you to explore the free books in your library. You may also create an account so you can shop in the Blio bookstore where you'll find the latest titles from over a hundred top publishers.",@"First time user message on welcome view controller.");
+		firstTimeUserTextView.text = NSLocalizedStringWithDefaultValue(@"FIRST_TIME_USER_TEXT",nil,[NSBundle mainBundle],@"We invite you to explore the free books in your library. You may also create an account for the Blio bookstore where you'll find the latest titles from over a hundred top publishers.",@"First time user message on welcome view controller.");
 		[self addSubview:firstTimeUserTextView];
 		[firstTimeUserTextView release];
 		
@@ -112,7 +112,7 @@
 		[existingUserTextView release];
 
 		existingUserButton = [UIButton lightButton];
-		[existingUserButton setTitle:NSLocalizedString(@"Login",@"\"Login\" button title") forState:UIControlStateNormal];
+		[existingUserButton setTitle:NSLocalizedString(@"Log in",@"\"Log in\" button title") forState:UIControlStateNormal];
 		[self addSubview:existingUserButton];
 		[existingUserButton setAccessibilityHint:NSLocalizedString(@"Reveals the Login screen.", @"Accessibility hint for \"Login\" welcome screen button.")];
     }
