@@ -2162,9 +2162,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }            
         }
     }
-    
-    NSLog(@"%f, %f", pageTouchPoint.x, pageTouchPoint.y);
-    
+        
     NSTimeInterval thisTouchTime = [touch timestamp];
     if(_touchTime) {
         CGFloat difference = (CGFloat)(thisTouchTime - _touchTime);

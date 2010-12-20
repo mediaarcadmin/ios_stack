@@ -301,7 +301,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
         }        
         default:
         {
-            NSLog(@"Unsupported list style %ld", (long)listStyleType);
+            THWarn(@"Unsupported list style %ld", (long)listStyleType);
             listStyleType = CSS_LIST_STYLE_TYPE_DECIMAL;
             // Fall through.
         }            

@@ -373,7 +373,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     CGFloat w = specifiedWidth;
     CGFloat h = specifiedHeight;
     
-    CGFloat W, H;
+    CGFloat W = w, H = h;
     
          if(w > maxWidth)                         { W = maxWidth,                       H = MAX(maxWidth * h/w, minHeight); }
     else if(w < minWidth)                         { W = minWidth,                       H = MIN(minWidth * h/w, maxHeight); }
@@ -389,7 +389,6 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     }
     else if((w < minWidth) && (h > maxHeight))    { W = minWidth,                       H = maxHeight;                      }
     else if((w > maxWidth) && (h < minHeight))    { W = maxWidth,                       H = minHeight;                      }
-    else                                          { W = w,                              H = h;                              }
  
     return CGSizeMake(roundf(W), roundf(H));
 }
