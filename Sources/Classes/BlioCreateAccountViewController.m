@@ -481,6 +481,7 @@
 #pragma mark UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+	[activityIndicatorView startAnimating];
 	[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
 	[[BlioStoreManager sharedInstance] loginWithUsername:emailField.text password:passwordField.text sourceID:self.sourceID];
 }

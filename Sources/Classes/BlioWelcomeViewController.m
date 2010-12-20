@@ -313,4 +313,9 @@
 	BlioLoginViewController * loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
 	[self.navigationController pushViewController:loginViewController animated:YES];
 }
+- (void)receivedLoginResult:(BlioLoginResult)loginResult {
+	if ([self.navigationController.topViewController respondsToSelector:@selector(receivedLoginResult:)]) {
+		[(id)self.navigationController.topViewController receivedLoginResult:loginResult];
+	}
+}
 @end
