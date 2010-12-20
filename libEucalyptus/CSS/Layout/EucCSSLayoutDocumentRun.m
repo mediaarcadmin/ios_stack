@@ -855,7 +855,14 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         breaks[breaksCount].x0 = lineSoFarWidth;
         breaks[breaksCount].x1 = lineSoFarWidth;
         breaks[breaksCount].penalty = 0;
-        breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
+        if([self _textAlign] == CSS_TEXT_ALIGN_CENTER) {
+            // With a non-hard break at the end, the justifier will distribute
+            // the words evenly across all lines, giving a more pleasing
+            // centered block.
+            breaks[breaksCount].flags = 0;
+        } else {
+            breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
+        }
         breakInfos[breaksCount].point.word = _wordsCount + 1;
         breakInfos[breaksCount].point.element = 0;
         breakInfos[breaksCount].consumesComponent = NO;
