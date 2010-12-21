@@ -54,8 +54,10 @@ static NSString* const CCInAppPurchaseURL = @"http://blio-in-app-purchase.crossc
 @end
 
 @interface CCInAppPurchaseRequest : NSObject {
+	NSInteger testMode;
 
 }
+@property (nonatomic, assign) NSInteger testMode;
 @property (nonatomic, readonly) NSURLRequest * URLRequest;
 @property (nonatomic, readonly) Class responseClass;
 
@@ -75,12 +77,10 @@ static NSString* const CCInAppPurchaseURL = @"http://blio-in-app-purchase.crossc
 	NSString * hardwareId;
 	NSString * productId;
 	NSData * HTTPBody;
-	NSInteger testMode;
 }
 @property (nonatomic, copy) NSString * hardwareId;
 @property (nonatomic, copy) NSString * productId;
 @property (nonatomic, retain) NSData * HTTPBody;
-@property (nonatomic, assign) NSInteger testMode;
 @end
 @protocol CCInAppPurchaseConnectionDelegate<NSObject>
 

@@ -220,7 +220,17 @@
 	//send purchase request to bible touch servers
 	NSString *productId = transaction.payment.productIdentifier;
 	NSString *hardwareId = [[UIDevice currentDevice] uniqueIdentifier];
-	NSString *urlString = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@",CCInAppPurchaseURL, hardwareId, productId];
+	NSInteger testMode;
+#ifdef TEST_MODE
+	testMode = 1;
+	NSLog(@"DOWNLOAD IN-APP TEST MODE = 1");
+#else	
+	testMode = 0;
+	NSLog(@"DOWNLOAD IN-APP TEST MODE = 0");
+#endif
+	
+	
+	NSString *urlString = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@&testMode=%i",CCInAppPurchaseURL, hardwareId, productId,testMode];
 
 //	CCInAppPurchasePurchaseProductRequest * request = [[CCInAppPurchasePurchaseProductRequest alloc] initWithProductID:productId hardwareID:hardwareId];
 //	request.HTTPBody = postData;
