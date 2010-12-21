@@ -2564,8 +2564,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [aBookSearchController setMaxPrefixAndMatchLength:20];
             [aBookSearchController setMaxSuffixLength:100];
             
+			// Cannot use _returnToNavigationBarTint because it is not being set when launching directly to book
+			UIColor *tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
+			
             BlioBookSearchViewController *aSearchViewController = [[BlioBookSearchViewController alloc] init];
-            [aSearchViewController setTintColor:_returnToNavigationBarTint];
+            [aSearchViewController setTintColor:tintColor];
             [aSearchViewController setBookView:self.bookView];
             [aSearchViewController setBookSearchController:aBookSearchController]; // this retains the BlioBookSearchController
             [aBookSearchController setDelegate:aSearchViewController]; // this delegate is assigned to avoid a retain loop
