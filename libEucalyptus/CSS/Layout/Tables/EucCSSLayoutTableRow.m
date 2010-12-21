@@ -1,0 +1,16 @@
+//
+//  EucCSSLayoutTableRow.m
+//  libEucalyptus
+//
+//  Created by James Montgomerie on 21/12/2010.
+//  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
+//
+
+#import "EucCSSLayoutTableRow.h"
+
+
+@implementation EucCSSLayoutTableRow
+
+@synthesize cells = _cells;
+
+@end
