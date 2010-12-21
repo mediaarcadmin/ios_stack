@@ -17,7 +17,7 @@
 @property (nonatomic, retain) EucCSSIntermediateDocument *document;
 
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document;
-- (EucCSSLayoutRun *)RunForNodeWithKey:(uint32_t)nextRunNodeKey;
+- (EucCSSLayoutRun *)runForNodeWithKey:(uint32_t)nextRunNodeKey;
 - (EucCSSLayoutRun *)nextRunForRun:(EucCSSLayoutRun *)run;
 - (EucCSSLayoutRun *)previousRunForRun:(EucCSSLayoutRun *)run;
 

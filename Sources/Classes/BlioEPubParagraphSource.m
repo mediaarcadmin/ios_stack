@@ -16,7 +16,7 @@
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>
 #import <libEucalyptus/EucCSSLayouter.h>
-#import <libEucalyptus/EucCSSLayoutDocumentRun.h>
+#import <libEucalyptus/EucCSSLayoutRun.h>
 #import <libEucalyptus/EucCSSIntermediateDocumentNode.h>
 #import <libEucalyptus/THPair.h>
 
@@ -84,11 +84,11 @@
     
     EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:intermediateDocument];
     
-    EucCSSLayoutDocumentRun *newDocumentRun = [runExtractor documentRunForNodeWithKey:indexPoint.block];
+    EucCSSLayoutRun *newRun = [runExtractor runForNodeWithKey:indexPoint.block];
     
     [runExtractor release];
     
-    *paragraphIDOut = [THPair pairWithFirst:newDocumentRun second:indexPoint];
+    *paragraphIDOut = [THPair pairWithFirst:newRun second:indexPoint];
     *wordOffsetOut = indexPoint.word - 1;
 }
 
@@ -101,28 +101,28 @@
 
 - (NSArray *)wordsForParagraphWithID:(id)paragraphID
 {
-    return [(EucCSSLayoutDocumentRun *)((THPair *)paragraphID).first words];
+    return [(EucCSSLayoutRun *)((THPair *)paragraphID).first words];
 }
 
 - (id)nextParagraphIdForParagraphWithID:(id)paragraphID
 {
-    EucCSSLayoutDocumentRun *documentRun = (EucCSSLayoutDocumentRun *)((THPair *)paragraphID).first;
+    EucCSSLayoutRun *run = (EucCSSLayoutRun *)((THPair *)paragraphID).first;
     EucBookPageIndexPoint *indexPoint = (EucBookPageIndexPoint *)((THPair *)paragraphID).second;
 
-    EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:documentRun.startNode.document];
+    EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:run.startNode.document];
     
-    EucCSSLayoutDocumentRun *newDocumentRun = [runExtractor nextDocumentRunForDocumentRun:documentRun];
+    EucCSSLayoutRun *newRun = [runExtractor nextRunForRun:run];
     
     [runExtractor release];
 
     THPair *ret = nil;
-    if(newDocumentRun) {
+    if(newRun) {
         EucBookPageIndexPoint *newIndexPoint = [indexPoint copy];
-        newIndexPoint.block = newDocumentRun.id;
+        newIndexPoint.block = newRun.id;
         newIndexPoint.word = 0;
         newIndexPoint.element = 0;
         
-        ret = [THPair pairWithFirst:newDocumentRun second:newIndexPoint];
+        ret = [THPair pairWithFirst:newRun second:newIndexPoint];
         [newIndexPoint autorelease];        
     } else {
         EucBookPageIndexPoint *nextSourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
@@ -130,10 +130,10 @@
         EucCSSIntermediateDocument *intermediateDocument = [self.bUpeBook intermediateDocumentForIndexPoint:nextSourceIndexPoint];
         while(!ret && intermediateDocument) {
             EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:intermediateDocument];
-            newDocumentRun = [runExtractor documentRunForNodeWithKey:0];
-            if(newDocumentRun) {
-                nextSourceIndexPoint.block = newDocumentRun.id;
-                ret = [THPair pairWithFirst:newDocumentRun second:nextSourceIndexPoint];
+            newRun = [runExtractor runForNodeWithKey:0];
+            if(newRun) {
+                nextSourceIndexPoint.block = newRun.id;
+                ret = [THPair pairWithFirst:newRun second:nextSourceIndexPoint];
             } else {
                 // Maybe this source was empty - try the next one.
                 nextSourceIndexPoint.source = indexPoint.source + 1;

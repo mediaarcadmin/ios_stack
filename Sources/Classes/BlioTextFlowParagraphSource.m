@@ -21,7 +21,7 @@
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucCSSIntermediateDocumentNode.h>
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>
-#import <libEucalyptus/EucCSSLayoutDocumentRun.h>
+#import <libEucalyptus/EucCSSLayoutRun.h>
 
 #import "levenshtein_distance.h"
 
@@ -228,7 +228,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         [eucIndexPoint release];
         
         EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
-        EucCSSLayoutDocumentRun *documentRun = nil;
+        EucCSSLayoutRun *run = nil;
 
         NSUInteger lookForPageIndex = bookmarkPageIndex;
         
@@ -242,16 +242,16 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         NSUInteger upperBoundPageIndex = 0;
         BOOL upperBoundFound = NO;
 
-        documentRun = [runExtractor documentRunForNodeWithKey:0];
-        while(documentRun && !upperBoundFound) {
-            upperBoundRunKey = documentRun.id;
-            NSArray *thisParagraphTags = [documentRun attributeValuesForWordsForAttributeName:@"Tag"];
+        run = [runExtractor runForNodeWithKey:0];
+        while(run && !upperBoundFound) {
+            upperBoundRunKey = run.id;
+            NSArray *thisParagraphTags = [run attributeValuesForWordsForAttributeName:@"Tag"];
             for(NSString *tag in thisParagraphTags) {
                 if(tag != (NSString *)[NSNull null]) {
                     if([tag hasPrefix:@"__"]) {
                         NSUInteger pageIndex = [[tag substringFromIndex:2] integerValue];
                         if(pageIndex < lookForPageIndex) {
-                            lowerBoundRunKey = documentRun.id;
+                            lowerBoundRunKey = run.id;
                             lowerBoundPageIndex = pageIndex;
                         }
                         if(pageIndex > lookForPageIndex) {
@@ -262,7 +262,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                     }
                 }
             }
-            documentRun = [runExtractor nextDocumentRunForDocumentRun:documentRun];
+            run = [runExtractor nextRunForRun:run];
         }
         */
         // Above commented out code is the 'proper' way to do this, but this is
@@ -291,8 +291,8 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         uint32_t wordOffsets[MATCHING_WINDOW_SIZE];
                 
         uint32_t examiningRunKey = lowerBoundRunKey;
-        documentRun = [runExtractor documentRunForNodeWithKey:examiningRunKey];
-        examiningRunKey = documentRun.id;
+        run = [runExtractor runForNodeWithKey:examiningRunKey];
+        examiningRunKey = run.id;
         
         char emptyHash = [kNoWordPlaceholder hash] % 256;
         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
@@ -306,7 +306,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         uint32_t bestRunKey = examiningRunKey;
         uint32_t bestWordOffset = 0;
         
-        NSArray *runWords = documentRun.words;
+        NSArray *runWords = run.words;
         while(runWords && examiningRunKey <= upperBoundRunKey) {
             NSUInteger examiningWordOffset = 0;
             for(NSString *word in runWords) {
@@ -337,23 +337,23 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 }
                 ++examiningWordOffset;
             }
-            if(!documentRun) {
+            if(!run) {
                 runWords = nil;
             } else {
-                documentRun = [runExtractor nextDocumentRunForDocumentRun:documentRun];
-                examiningRunKey = documentRun.id;
-                if(!documentRun || examiningRunKey > upperBoundRunKey) {
+                run = [runExtractor nextRunForRun:run];
+                examiningRunKey = run.id;
+                if(!run || examiningRunKey > upperBoundRunKey) {
                     // Fake out some extra words at the end to aid in matching
                     // runs at the end of sections.
                     examiningRunKey = upperBoundRunKey;
-                    documentRun = nil;
+                    run = nil;
                     NSString *extraWords[MATCHING_WINDOW_SIZE / 2];
                     for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE / 2; ++i) {
                         extraWords[i] = kNoWordPlaceholder;
                     }
                     runWords = [NSArray arrayWithObjects:extraWords count:MATCHING_WINDOW_SIZE / 2];                        
                 } else {
-                    runWords = documentRun.words;
+                    runWords = run.words;
                 }
             }
         }
@@ -446,7 +446,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         
         uint32_t xamlFlowTreeKey = [paragraphID indexAtPosition:1];
         uint32_t documentKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:xamlFlowTreeKey];
-        EucCSSLayoutDocumentRun *wordContainingDocumentRun = [runExtractor documentRunForNodeWithKey:documentKey];
+        EucCSSLayoutRun *wordContainingRun = [runExtractor runForNodeWithKey:documentKey];
         
         NSUInteger startPageIndex = 0;
         NSUInteger endPageIndex = 0;
@@ -455,22 +455,22 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         // Find the page number of a /subsequent/ run in the XAML document
         // to bound our block search.
         {
-            EucCSSLayoutDocumentRun *testDocumentRun = wordContainingDocumentRun;
-            NSArray *thisParagraphTags = [testDocumentRun attributeValuesForWordsForAttributeName:@"Tag"];
+            EucCSSLayoutRun *testRun = wordContainingRun;
+            NSArray *thisParagraphTags = [testRun attributeValuesForWordsForAttributeName:@"Tag"];
             NSInteger testOffset = wordOffset + (MATCHING_WINDOW_SIZE / 2);
             NSString *thisPageTag = nil;
             do {
                 if(thisParagraphTags.count <= testOffset) {
                     testOffset -= thisParagraphTags.count;
                     do {
-                        testDocumentRun = [runExtractor nextDocumentRunForDocumentRun:testDocumentRun];
-                        thisParagraphTags = [testDocumentRun attributeValuesForWordsForAttributeName:@"Tag"];
-                    } while(testDocumentRun && thisParagraphTags.count == 0);
+                        testRun = [runExtractor nextRunForRun:testRun];
+                        thisParagraphTags = [testRun attributeValuesForWordsForAttributeName:@"Tag"];
+                    } while(testRun && thisParagraphTags.count == 0);
                 } else {
                     thisPageTag = [thisParagraphTags objectAtIndex:testOffset++];
                 }
-            } while(testDocumentRun && (thisPageTag == (NSString *)[NSNull null] || ![thisPageTag hasPrefix:@"__"]));
-            if(testDocumentRun) {
+            } while(testRun && (thisPageTag == (NSString *)[NSNull null] || ![thisPageTag hasPrefix:@"__"]));
+            if(testRun) {
                 endPageIndex = [[thisPageTag substringFromIndex:2] integerValue];
             }
         }
@@ -480,22 +480,22 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         // Find the page number of a /previous/ run in the XAML document
         // to bound our block search.
         {
-            EucCSSLayoutDocumentRun *testDocumentRun = wordContainingDocumentRun;
-            NSArray *thisParagraphTags = [testDocumentRun attributeValuesForWordsForAttributeName:@"Tag"];
+            EucCSSLayoutRun *testRun = wordContainingRun;
+            NSArray *thisParagraphTags = [testRun attributeValuesForWordsForAttributeName:@"Tag"];
             NSInteger testOffset = wordOffset - 1 - (MATCHING_WINDOW_SIZE / 2);
             NSString *thisPageTag = nil;
             do {
                 if(testOffset < 0) {
                     do {
-                        testDocumentRun = [runExtractor previousDocumentRunForDocumentRun:testDocumentRun];
-                        thisParagraphTags = [testDocumentRun attributeValuesForWordsForAttributeName:@"Tag"];
-                    } while(testDocumentRun && thisParagraphTags.count == 0);
+                        testRun = [runExtractor previousRunForRun:testRun];
+                        thisParagraphTags = [testRun attributeValuesForWordsForAttributeName:@"Tag"];
+                    } while(testRun && thisParagraphTags.count == 0);
                     testOffset = thisParagraphTags.count + testOffset;
                 } else {
                     thisPageTag = [thisParagraphTags objectAtIndex:testOffset--];
                 }
-            } while(testDocumentRun && (thisPageTag == (NSString *)[NSNull null] || ![thisPageTag hasPrefix:@"__"]));
-            if(testDocumentRun) {
+            } while(testRun && (thisPageTag == (NSString *)[NSNull null] || ![thisPageTag hasPrefix:@"__"]));
+            if(testRun) {
                 startPageIndex = [[thisPageTag substringFromIndex:2] integerValue];
             }
         }
@@ -531,15 +531,15 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         NSString *lookForStrings[MATCHING_WINDOW_SIZE];
         char lookForHashes[MATCHING_WINDOW_SIZE];
         {
-            EucCSSLayoutDocumentRun *testDocumentRun = wordContainingDocumentRun;
+            EucCSSLayoutRun *testRun = wordContainingRun;
             NSInteger middleWordOffset = wordOffset;
-            NSArray *runWords = testDocumentRun.words;
+            NSArray *runWords = testRun.words;
             if(middleWordOffset < MATCHING_WINDOW_SIZE / 2) {
-                EucCSSLayoutDocumentRun *previousDocumentRun = testDocumentRun;
+                EucCSSLayoutRun *previousRun = testRun;
                 while(middleWordOffset < MATCHING_WINDOW_SIZE / 2) {
-                    previousDocumentRun = [runExtractor previousDocumentRunForDocumentRun:previousDocumentRun];
-                    if(previousDocumentRun) {
-                        NSArray *previousWords = previousDocumentRun.words;
+                    previousRun = [runExtractor previousRunForRun:previousRun];
+                    if(previousRun) {
+                        NSArray *previousWords = previousRun.words;
                         runWords = [previousWords arrayByAddingObjectsFromArray:runWords];
                         middleWordOffset += previousWords.count;
                     } else {
@@ -553,11 +553,11 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 }
             }
             if(runWords.count - middleWordOffset < MATCHING_WINDOW_SIZE / 2 + 1) {
-                EucCSSLayoutDocumentRun *nextDocumentRun = testDocumentRun;
+                EucCSSLayoutRun *nextRun = testRun;
                 while(runWords.count - middleWordOffset < MATCHING_WINDOW_SIZE / 2 + 1) {
-                    nextDocumentRun = [runExtractor nextDocumentRunForDocumentRun:nextDocumentRun];
-                    if(nextDocumentRun) {
-                        NSArray *nextWords = nextDocumentRun.words;
+                    nextRun = [runExtractor nextRunForRun:nextRun];
+                    if(nextRun) {
+                        NSArray *nextWords = nextRun.words;
                         runWords = [runWords arrayByAddingObjectsFromArray:nextWords];
                     } else {
                         NSString *extraWords[MATCHING_WINDOW_SIZE / 2];
@@ -719,9 +719,9 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         
         uint32_t xamlFlowTreeKey = [paragraphID indexAtPosition:1];
         uint32_t documentKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:xamlFlowTreeKey];
-        EucCSSLayoutDocumentRun *wordsContainingDocumentRun = [runExtractor documentRunForNodeWithKey:documentKey];
+        EucCSSLayoutRun *wordsContainingRun = [runExtractor runForNodeWithKey:documentKey];
         
-        ret = [wordsContainingDocumentRun words];
+        ret = [wordsContainingRun words];
         
         [runExtractor release];
     } else {        
@@ -745,8 +745,8 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         
         uint32_t xamlFlowTreeKey = [paragraphID indexAtPosition:1];
         uint32_t documentKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:xamlFlowTreeKey];
-        EucCSSLayoutDocumentRun *thisParagraphRun = [runExtractor documentRunForNodeWithKey:documentKey];
-        EucCSSLayoutDocumentRun *nextParagraphRun = [runExtractor nextDocumentRunForDocumentRun:thisParagraphRun];
+        EucCSSLayoutRun *thisParagraphRun = [runExtractor runForNodeWithKey:documentKey];
+        EucCSSLayoutRun *nextParagraphRun = [runExtractor nextRunForRun:thisParagraphRun];
         
         if(nextParagraphRun) {
             NSUInteger indexes[2] = { [paragraphID indexAtPosition:0], [EucCSSIntermediateDocument documentTreeNodeKeyForKey:nextParagraphRun.id] };

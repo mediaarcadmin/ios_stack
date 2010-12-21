@@ -42,7 +42,7 @@
     }
 }
 
-- (EucCSSLayoutRun *)RunForNodeWithKey:(uint32_t)nextRunNodeKey;
+- (EucCSSLayoutRun *)runForNodeWithKey:(uint32_t)nextRunNodeKey;
 {
     EucCSSLayoutRun *ret = nil;
     
@@ -70,7 +70,7 @@
         do {
             if(currentDocumentNode.display != CSS_DISPLAY_BLOCK) {                
                 // This is an inline element - start a run.
-                ret = [EucCSSLayoutRun RunWithNode:currentDocumentNode
+                ret = [EucCSSLayoutRun runWithNode:currentDocumentNode
                                                     underLimitNode:currentDocumentNode.blockLevelParent
                                                              forId:nextRunNodeKey
                                                        scaleFactor:1.0f];
@@ -90,7 +90,7 @@
 - (EucCSSLayoutRun *)nextRunForRun:(EucCSSLayoutRun *)run
 {
     if(run.nextNodeInDocument) {
-        return [self RunForNodeWithKey:run.nextNodeInDocument.key];
+        return [self runForNodeWithKey:run.nextNodeInDocument.key];
     } else {
         return nil;
     }
@@ -108,7 +108,7 @@
         }
 
         if(previousNode) {
-            EucCSSLayoutRun *previousRun = [self RunForNodeWithKey:previousNode.key];
+            EucCSSLayoutRun *previousRun = [self runForNodeWithKey:previousNode.key];
             if(previousRun.id == run.id) {
                 // This happens if we're already at the first node.
                 return nil;

@@ -112,7 +112,7 @@ struct EucCSSLayoutRunBreakInfo;
 
 // This convenience constructor will return a cached node if one with the same
 // attibutes was requested recently.
-+ (id)RunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
++ (id)runWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
            underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
 forId:(uint32_t)id
 scaleFactor:(CGFloat)scaleFactor;

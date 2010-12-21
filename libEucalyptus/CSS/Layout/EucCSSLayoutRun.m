@@ -67,7 +67,7 @@ typedef struct EucCSSLayoutRunBreakInfo {
 #define RUN_CACHE_CAPACITY 48
 static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
 
-+ (id)RunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
++ (id)runWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
            underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
                     forId:(uint32_t)id
               scaleFactor:(CGFloat)scaleFactor

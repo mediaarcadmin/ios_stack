@@ -18,11 +18,11 @@
 @class EucCSSLayoutRun, EucCSSLayoutPositionedBlock;
 
 @interface EucCSSLayoutPositionedRun : EucCSSLayoutPositionedContainer {
-    EucCSSLayoutRun *_Run;
+    EucCSSLayoutRun *_run;
 }
 
-@property (nonatomic, retain, readonly) EucCSSLayoutRun *Run;
+@property (nonatomic, retain, readonly) EucCSSLayoutRun *run;
 
-- (id)initWithRun:(EucCSSLayoutRun *)Run;
+- (id)initWithRun:(EucCSSLayoutRun *)run;
 
 @end

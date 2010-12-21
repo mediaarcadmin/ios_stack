@@ -248,14 +248,14 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
 - (void)sizeToFitInWidth:(CGFloat)width
 {
     if(!_componentWidth) {
-        EucCSSLayoutRun *Run = ((EucCSSLayoutPositionedRun *)self.parent).Run; 
-        CGFloat scaleFactor = Run.scaleFactor;
+        EucCSSLayoutRun *run = ((EucCSSLayoutPositionedRun *)self.parent).run; 
+        CGFloat scaleFactor = run.scaleFactor;
                 
-        size_t componentsCount = Run.componentsCount;
+        size_t componentsCount = run.componentsCount;
         
-        uint32_t componentOffset = [Run pointToComponentOffset:_startPoint];
-        uint32_t afterEndComponentOffset = [Run pointToComponentOffset:_endPoint];
-        EucCSSLayoutRunComponentInfo *startComponentInfo = &(Run.componentInfos[componentOffset]);
+        uint32_t componentOffset = [run pointToComponentOffset:_startPoint];
+        uint32_t afterEndComponentOffset = [run pointToComponentOffset:_endPoint];
+        EucCSSLayoutRunComponentInfo *startComponentInfo = &(run.componentInfos[componentOffset]);
         EucCSSLayoutRunComponentInfo *componentInfo = startComponentInfo;
                         
         if(afterEndComponentOffset > componentsCount) {
@@ -408,12 +408,12 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems
 {
     if(!_renderItems) {
-        EucCSSLayoutRun *Run = ((EucCSSLayoutPositionedRun *)self.parent).Run;
-        CGFloat scaleFactor = Run.scaleFactor;
+        EucCSSLayoutRun *run = ((EucCSSLayoutPositionedRun *)self.parent).run;
+        CGFloat scaleFactor = run.scaleFactor;
         
-        size_t componentsCount = Run.componentsCount;
-        uint32_t startComponentOffset = [Run pointToComponentOffset:_startPoint];
-        uint32_t afterEndComponentOffset = [Run pointToComponentOffset:_endPoint];
+        size_t componentsCount = run.componentsCount;
+        uint32_t startComponentOffset = [run pointToComponentOffset:_startPoint];
+        uint32_t afterEndComponentOffset = [run pointToComponentOffset:_endPoint];
         
         _renderItems = calloc(sizeof(EucCSSLayoutPositionedLineRenderItem), componentsCount);
         size_t renderItemCapacity = componentsCount;
@@ -426,7 +426,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         CGFloat extraWidthNeeded = 0.0f;
         CGFloat spacesRemaining = 0.0f;
         
-        EucCSSLayoutRunComponentInfo *componentInfos = &(Run.componentInfos[startComponentOffset]);
+        EucCSSLayoutRunComponentInfo *componentInfos = &(run.componentInfos[startComponentOffset]);
         
         switch(_align) {
             case CSS_TEXT_ALIGN_CENTER:

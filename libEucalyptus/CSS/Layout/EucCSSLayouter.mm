@@ -236,13 +236,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     EucCSSLayoutPoint ret = {0};
     
     EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:node.document];
-    EucCSSLayoutRun *Run = [extractor RunForNodeWithKey:node.key];
+    EucCSSLayoutRun *run = [extractor runForNodeWithKey:node.key];
         
-    if(Run) {
-        EucCSSLayoutRunPoint RunPoint = [Run pointForNode:node];
-        ret.nodeKey = Run.id;
-        ret.word = RunPoint.word;
-        ret.element = RunPoint.element;
+    if(run) {
+        EucCSSLayoutRunPoint runPoint = [run pointForNode:node];
+        ret.nodeKey = run.id;
+        ret.word = runPoint.word;
+        ret.element = runPoint.element;
     }   
     
     [extractor release];
@@ -409,19 +409,19 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     //THLog(@"Inline: %@", [currentDocumentNode name]);
                     
                     // This is an inline element - start a run.
-                    EucCSSLayoutRun *Run = [EucCSSLayoutRun RunWithNode:currentDocumentNode
-                                                                                         underLimitNode:currentDocumentNode.blockLevelParent
-                                                                                                  forId:nextRunNodeKey
-                                                                                            scaleFactor:_scaleFactor];
+                    EucCSSLayoutRun *run = [EucCSSLayoutRun runWithNode:currentDocumentNode
+                                                         underLimitNode:currentDocumentNode.blockLevelParent
+                                                                  forId:nextRunNodeKey
+                                                            scaleFactor:_scaleFactor];
                     
                     CGRect frameWithMaxHeight = potentialFrame;
                     frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
                     // Position it.
-                    EucCSSLayoutPositionedRun *positionedRun = [Run positionRunForFrame:frameWithMaxHeight
-                                                                                    inContainer:currentPositionedBlock
-                                                                           startingAtWordOffset:wordOffset
-                                                                                  elementOffset:elementOffset
-                                                                         usingLayouterForFloats:self];
+                    EucCSSLayoutPositionedRun *positionedRun = [run positionRunForFrame:frameWithMaxHeight
+                                                                            inContainer:currentPositionedBlock
+                                                                   startingAtWordOffset:wordOffset
+                                                                          elementOffset:elementOffset
+                                                                 usingLayouterForFloats:self];
                     if(positionedRun) {
                         BOOL first = YES; // Break before first line doesn't count.
                         for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
@@ -445,7 +445,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         wordOffset = 0;
                     }
                     
-                    currentDocumentNode = Run.nextNodeInDocument;
+                    currentDocumentNode = run.nextNodeInDocument;
                     nextRunNodeKey = currentDocumentNode.key;
                 } else {
                     //THLog(@"Block: %@", [currentDocumentNode name]);
