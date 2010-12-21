@@ -1,3 +1,8 @@
+/*
+   TextFlow XAML styles not representable as CSS selectors are processed
+   explicitly in BlioTextFlowXAMLTreeNode.m
+*/
+
 * { margin:0; padding:0; border:0; }
 Flow { text-align:justify; display:block }
 Section { display:block }

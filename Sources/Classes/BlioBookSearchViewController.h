@@ -37,6 +37,6 @@
 
 - (void)showInController:(UINavigationController *)controller animated:(BOOL)animated;
 - (void)removeFromControllerAnimated:(BOOL)animated;
-- (BOOL)isSearchActive;
+- (BOOL)isSearchInline;
 
 @end
