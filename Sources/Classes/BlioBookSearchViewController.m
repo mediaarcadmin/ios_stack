@@ -42,6 +42,7 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 - (void)highlightCurrentSearchResult;
 - (void)setSearchStatus:(BlioBookSearchStatus)newStatus;
 - (void)refreshAccessibility;
+- (BOOL)isSearchActive;
 
 @end
 
@@ -157,6 +158,7 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
         
     if ([self.toolbar inlineMode]) {
         [self fadeOffScreen:animated removedOnCompletion:YES];
+		[self.toolbar setInlineMode:NO];
     } else {
         [self.navController.toolbar setAlpha:1];
         [self displayOffScreen:animated removedOnCompletion:YES];
@@ -609,6 +611,10 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 
 - (void)searchControllerDidCompleteSearch:(BlioBookSearchController *)aSearchController {
     [self setSearchStatus:kBlioBookSearchStatusComplete];
+}
+
+- (BOOL)isSearchInline {	
+	return [self.toolbar inlineMode];
 }
 
 - (BOOL)isSearchActive {

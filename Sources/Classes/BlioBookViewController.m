@@ -1322,7 +1322,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
         self.navigationController.toolbarHidden = YES;
-        if ([self.searchViewController isSearchActive] == YES) {
+        if ([self.searchViewController isSearchInline] == YES) {
             self.searchViewController.toolbarHidden = YES;
         }
         self.navigationController.navigationBar.hidden = YES;
@@ -1409,7 +1409,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateToolbarsVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
-            if ([self.searchViewController isSearchActive] == NO) {
+            if ([self.searchViewController isSearchInline] == NO) {
                 self.navigationController.toolbarHidden = NO;
             } else {
                 self.navigationController.toolbarHidden = YES;
@@ -1444,7 +1444,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         case kBlioLibraryToolbarsStateToolbarsVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
             [UIView setAnimationDuration:0];
-            if ([self.searchViewController isSearchActive] == NO) {
+            if ([self.searchViewController isSearchInline] == NO) {
                 self.navigationController.toolbar.alpha = 1;
             } else {
                 self.navigationController.toolbar.alpha = 0;
@@ -1457,7 +1457,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         default:
             [UIView setAnimationDuration:1.0/3.0];
             self.navigationController.toolbar.alpha = 0;
-            if ([self.searchViewController isSearchActive] == YES) {
+            if ([self.searchViewController isSearchInline] == YES) {
                 self.searchViewController.toolbar.alpha = 0;
             }
             
