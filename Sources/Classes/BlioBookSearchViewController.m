@@ -119,7 +119,9 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 }
 
 - (void)highlightCurrentSearchResult {
-    if (currentSearchResult >= [self.resultsController.searchResults count]) {
+	// Must cast the count to NSInteger otherwise the currentSearchresult is cast to NSUInteger
+	// and is therefore logically incorrect for when currentSearchresults < 0
+    if (currentSearchResult >= (NSInteger)[self.resultsController.searchResults count]) {
         currentSearchResult = 0;
     } else if (currentSearchResult < 0) {
         currentSearchResult = [self.resultsController.searchResults count] - 1;
