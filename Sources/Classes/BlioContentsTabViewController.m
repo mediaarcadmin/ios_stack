@@ -627,6 +627,16 @@ typedef enum {
     return [[self.book sortedNotes] count];
 }
 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animate {
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+		if ( editing )
+			[[(BlioContentsTabViewController*)self.navigationController doneButton] setEnabled:NO];
+		else 
+			[[(BlioContentsTabViewController*)self.navigationController doneButton] setEnabled:YES];
+	}
+	[super setEditing:editing animated:animate];
+}
+
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
