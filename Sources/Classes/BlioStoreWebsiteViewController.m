@@ -105,8 +105,11 @@
 		// Header
 		UILabel * headerLabel = [[[UILabel alloc] initWithFrame:CGRectMake(120,75,185,28)] autorelease];
 		headerLabel.font = [UIFont boldSystemFontOfSize:24.0f];
+//		headerLabel.font = [UIFont boldSystemFontOfSize:18.0f];
 		headerLabel.backgroundColor = [UIColor clearColor];
-		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
+		headerLabel.text = NSLocalizedString(@"BlioDigitalLocker.com",@"Buy Books View Header");
+		headerLabel.numberOfLines = 1;
+		headerLabel.adjustsFontSizeToFitWidth = YES;
 		[self.phoneContentView addSubview:headerLabel];
 		self.phoneContentView.headerLabel = headerLabel;
 		
@@ -140,6 +143,8 @@
 		[[launchButton layer] setBorderWidth:2.0f];
 		[[launchButton layer] setBorderColor:[[UIColor colorWithRed:100.0f/255.0f green:100.0f/255.0f blue:100.0f/255.0f alpha:1] CGColor]];
 		[launchButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+		launchButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+		launchButton.titleLabel.font = [UIFont systemFontOfSize:14.0f];
 //		[launchButton setBackgroundColor:[UIColor whiteColor]];
 //		CAGradientLayer * gradientLayer = [[CAGradientLayer alloc] init];
 //		[gradientLayer setBounds:[launchButton bounds]];
@@ -181,7 +186,7 @@
 		[contentView addSubview:headerLabel];
 		headerLabel.font = [UIFont boldSystemFontOfSize:45.0f];
 		headerLabel.backgroundColor = [UIColor clearColor];
-		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
+		headerLabel.text = NSLocalizedString(@"BlioDigitalLocker.com",@"Buy Books View Header");
 		// sub-header
 		UILabel * subHeaderLabel = [[[UILabel alloc] initWithFrame:CGRectMake(125,60,480,40)] autorelease];
 		[contentView addSubview:subHeaderLabel];
@@ -209,6 +214,8 @@
 		[[launchButton layer] setBorderWidth:2.0f];
 		[[launchButton layer] setBorderColor:[[UIColor colorWithRed:100.0f/255.0f green:100.0f/255.0f blue:100.0f/255.0f alpha:1] CGColor]];
 		[launchButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+		launchButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+		launchButton.titleLabel.font = [UIFont systemFontOfSize:16.0f];
 		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
 		[contentView addSubview:launchButton];
 		
@@ -228,13 +235,13 @@
 -(void)updateLogin {	
 	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
-		[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
+		[launchButton setTitle:NSLocalizedString(@"Open BlioDigitalLocker.com in Safari",@"Button label for opening BlioDigitalLocker.com in Mobile Safari.") forState:UIControlStateNormal];
 		createAccountButton.hidden = YES;
 	}
 	else {
 		[launchButton addTarget:self action:@selector(confirmLaunch:) forControlEvents:UIControlEventTouchUpInside];
 //		[launchButton setTitle:NSLocalizedString(@"Login",@"Button label for opening login window.") forState:UIControlStateNormal];
-		[launchButton setTitle:NSLocalizedString(@"Open blioreader.com in Safari",@"Button label for opening blioreader.com in Mobile Safari.") forState:UIControlStateNormal];
+		[launchButton setTitle:NSLocalizedString(@"Open BlioDigitalLocker.com in Safari",@"Button label for opening BlioDigitalLocker.com in Mobile Safari.") forState:UIControlStateNormal];
 		createAccountButton.hidden = NO;
 	}
 }

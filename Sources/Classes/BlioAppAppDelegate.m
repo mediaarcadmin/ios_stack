@@ -390,7 +390,7 @@ static void *background_init_thread(void * arg) {
 }
 
 -(void)loginDismissed:(NSNotification*)note {
-	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
+//	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
@@ -410,7 +410,7 @@ static void *background_init_thread(void * arg) {
 #pragma mark UIApplicationDelegate - Background Tasks
 
 -(void)applicationDidEnterBackground:(UIApplication *)application {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
     NSError *error;
     if (![[self managedObjectContext] save:&error])
         NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);
@@ -421,7 +421,7 @@ static void *background_init_thread(void * arg) {
 	NSLog(@"%@", NSStringFromSelector(_cmd));	
 }
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
 	if (self.networkStatus != NotReachable) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && ![[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
@@ -429,7 +429,7 @@ static void *background_init_thread(void * arg) {
 	}		
 }
 - (void)applicationWillResignActive:(UIApplication *)application {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
 }
 
 #pragma mark -

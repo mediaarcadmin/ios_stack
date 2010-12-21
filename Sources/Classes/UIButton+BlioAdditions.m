@@ -18,6 +18,8 @@
 	[[button layer] setBorderWidth:2.0f];
 	[[button layer] setBorderColor:[[UIColor colorWithRed:100.0f/255.0f green:100.0f/255.0f blue:100.0f/255.0f alpha:1] CGColor]];
 	[button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//	button.titleLabel.adjustsFontSizeToFitWidth = YES;
+//	button.titleLabel.font = [UIFont systemFontOfSize:14.0f];
 	[button setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
 	return button;
 }

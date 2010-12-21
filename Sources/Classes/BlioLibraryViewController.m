@@ -1861,7 +1861,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			BlioProcessingCompleteOperation * completeOp = [note object];
 			progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
-            NSLog(@"BlioLibraryGridViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
+//            NSLog(@"BlioLibraryGridViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
 	}
 }
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
