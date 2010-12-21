@@ -278,7 +278,8 @@
 //		UIButton* ctl = (UIButton*)sender;
 //		if ( ctl == launchButton ) {
 //			NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
-			NSURL* url = [[NSURL alloc] initWithString:@"http://bliodemo.crosscomm.net"];
+//			NSURL* url = [[NSURL alloc] initWithString:@"http://bliodemo.crosscomm.net"];
+			NSURL* url = [[NSURL alloc] initWithString:@"https://Iphone.Bliodigitallocker.com"];
 			
 			[[UIApplication sharedApplication] openURL:url];			  
 //		}
