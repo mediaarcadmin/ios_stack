@@ -305,6 +305,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 aBookView.delegate = self;
                 self.bookView = aBookView; 
                 [aBookView release];
+				for (UIBarButtonItem* item in self.toolbarItems)
+					if (item.action==@selector(toggleAudio:))
+						[item setEnabled:NO];
             }   
         }
             break;
@@ -1854,6 +1857,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return kBlioPageLayoutPlainText;
 }
 
+- (void)checkAudioEnable {
+	if (![self.book hasAudiobook] && (![self.book hasTTSRights] || !([self.book hasTextFlow] || [self.book hasEPub]))) 
+		self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
+	else 
+		self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
+}
+
 - (void)changePageLayout:(id)sender {
     
     BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
@@ -1874,18 +1884,25 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             ePubView.delegate = self;
             self.bookView = ePubView;
             [ePubView release];
-            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey]; 
+            [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];
+			// Audio enable status could have been changed by speedread, so confirm status.
+			[self checkAudioEnable];
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
             layoutView.delegate = self;
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; 
+			// Audio enable status could have been changed by speedread, so confirm status.
+			[self checkAudioEnable];
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
             speedReadView.delegate = self;
             self.bookView = speedReadView;     
             [speedReadView release];
+			for (UIBarButtonItem* item in self.toolbarItems)
+				if (item.action==@selector(toggleAudio:))
+					[item setEnabled:NO];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
         }
         
