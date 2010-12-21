@@ -2835,13 +2835,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)deleteNote:(NSManagedObject *)note {
+	NSManagedObject *noteRange = [note valueForKey:@"range"];
+	
     NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
     [notes removeObject:note];
     [[self managedObjectContext] deleteObject:note];
-    
+	[[self managedObjectContext] deleteObject:noteRange];
+
     NSError *error;
-    if (![[self managedObjectContext] save:&error])
+    if (![[self managedObjectContext] save:&error]) {
         NSLog(@"[BlioBookViewController deleteNote:] Save failed with error: %@, %@", error, [error userInfo]);
+	}
+	
+	[self refreshHighlights];
 }
 
 - (void)deleteBookmark:(NSManagedObject *)bookmark {
