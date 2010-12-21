@@ -54,7 +54,7 @@ typedef struct THCacheItem {
 
 - (BOOL)isItemInUse:(const void *)item
 {
-    return [((THCacheItem *)item)->value retainCount] > 1;
+    return [((THCacheItem *)item)->value thCacheObjectInUse];
 }
 
 - (void)cacheObject:(id)value forKey:(id)key
@@ -85,6 +85,16 @@ typedef struct THCacheItem {
 }
 
 @end
+
+@implementation NSObject (THCacheObjectInUse)
+
+- (BOOL)thCacheObjectInUse
+{
+    return self.retainCount > 1;
+}
+
+@end
+
 
 
 @implementation THIntegerToObjectCache

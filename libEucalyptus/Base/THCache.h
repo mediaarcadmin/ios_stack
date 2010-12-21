@@ -23,6 +23,12 @@
 
 @end
 
+@interface NSObject (THCacheObjectInUse)
+
+- (BOOL)thCacheObjectInUse;
+
+@end
+
 @interface THIntegerToObjectCache : THCacheBase <THCacheItemInUse> {}
 
 - (void)cacheObject:(id)value forKey:(uint32_t)key;
