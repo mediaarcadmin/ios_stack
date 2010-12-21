@@ -11,12 +11,12 @@
 
 @implementation EucCSSLayoutPositionedRun
 
-@synthesize documentRun = _documentRun;
+@synthesize Run = _Run;
 
-- (id)initWithDocumentRun:(EucCSSLayoutDocumentRun *)documentRun
+- (id)initWithRun:(EucCSSLayoutRun *)Run
 {
     if((self = [super init])) {
-        _documentRun = [documentRun retain];
+        _Run = [Run retain];
     }
     return self;
 }
@@ -24,7 +24,7 @@
 
 - (void)dealloc
 {
-    [_documentRun release];
+    [_Run release];
     
     [super dealloc];
 }

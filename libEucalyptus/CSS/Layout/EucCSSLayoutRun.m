@@ -1,5 +1,5 @@
 //
-//  EucCSSLayoutDocumentRun.m
+//  EucCSSLayoutRun.m
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
@@ -15,8 +15,8 @@
 
 #import "EucCSSInternal.h"
 #import "EucCSSLayouter.h"
-#import "EucCSSLayoutDocumentRun.h"
-#import "EucCSSLayoutDocumentRun_Package.h"
+#import "EucCSSLayoutRun.h"
+#import "EucCSSLayoutRun_Package.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSLayoutPositionedBlock.h"
@@ -38,20 +38,20 @@
 #import <pthread.h>
 #import <objc/runtime.h>
 
-typedef struct EucCSSLayoutDocumentRunBreakInfo {
-    EucCSSLayoutDocumentRunPoint point;
+typedef struct EucCSSLayoutRunBreakInfo {
+    EucCSSLayoutRunPoint point;
     BOOL consumesComponent;
-} EucCSSLayoutDocumentRunBreakInfo;
+} EucCSSLayoutRunBreakInfo;
 
-@interface EucCSSLayoutDocumentRun ()
-- (void)_addComponent:(EucCSSLayoutDocumentRunComponentInfo *)info;
+@interface EucCSSLayoutRun ()
+- (void)_addComponent:(EucCSSLayoutRunComponentInfo *)info;
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_accumulateFloatNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (CGFloat)_textIndentInWidth:(CGFloat)width;
 @end 
 
-@implementation EucCSSLayoutDocumentRun
+@implementation EucCSSLayoutRun
 
 @synthesize componentInfos = _componentInfos;
 @synthesize componentsCount = _componentsCount;
@@ -65,24 +65,24 @@ typedef struct EucCSSLayoutDocumentRunBreakInfo {
 @synthesize scaleFactor = _scaleFactor;
 
 #define RUN_CACHE_CAPACITY 48
-static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey";
+static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
 
-+ (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
++ (id)RunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
            underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
                     forId:(uint32_t)id
               scaleFactor:(CGFloat)scaleFactor
 {
-    EucCSSLayoutDocumentRun *ret = nil;
+    EucCSSLayoutRun *ret = nil;
     
     EucCSSIntermediateDocument *document = inlineNode.document;
     @synchronized(document) {
-        NSMutableArray *cachedRuns = objc_getAssociatedObject(document, EucCSSDocumentRunCacheKey);
+        NSMutableArray *cachedRuns = objc_getAssociatedObject(document, EucCSSRunCacheKey);
         if(!cachedRuns) {
             cachedRuns = [[NSMutableArray alloc] initWithCapacity:RUN_CACHE_CAPACITY];
-            objc_setAssociatedObject(document, EucCSSDocumentRunCacheKey, cachedRuns, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            objc_setAssociatedObject(document, EucCSSRunCacheKey, cachedRuns, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             [cachedRuns release];
         }
-        for(EucCSSLayoutDocumentRun *cachedRun in [cachedRuns reverseObjectEnumerator]) {
+        for(EucCSSLayoutRun *cachedRun in [cachedRuns reverseObjectEnumerator]) {
             if(cachedRun->_scaleFactor == scaleFactor &&
                cachedRun->_id == id &&
                cachedRun->_startNode.key == inlineNode.key &&
@@ -145,8 +145,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         
         BOOL reachedLimit = NO;
         
-        EucCSSLayoutDocumentRunComponentInfo currentComponentInfo = { EucCSSLayoutDocumentRunComponentKindNone };
-        static const EucCSSLayoutDocumentRunComponentInfo hardBreakInfo = { EucCSSLayoutDocumentRunComponentKindHardBreak };
+        EucCSSLayoutRunComponentInfo currentComponentInfo = { EucCSSLayoutRunComponentKindNone };
+        static const EucCSSLayoutRunComponentInfo hardBreakInfo = { EucCSSLayoutRunComponentKindHardBreak };
         
         BOOL wasFloat = NO;
         while(YES) {
@@ -166,8 +166,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 } else if(inlineNode.display != CSS_DISPLAY_BLOCK) {
                     // Open this node.
                     if(inlineNode.display == CSS_DISPLAY_LIST_ITEM) {
-                        if(_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutDocumentRunComponentKindHardBreak) {
-                            EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
+                        if(_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutRunComponentKindHardBreak) {
+                            EucCSSLayoutRunComponentInfo info = hardBreakInfo;
                             info.documentNode = inlineNode.parent;
                             info.width = 0;
                             [self _addComponent:&info];
@@ -180,7 +180,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                         _alreadyInsertedSpace = YES;
                     }
                     
-                    currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindOpenNode;
+                    currentComponentInfo.kind = EucCSSLayoutRunComponentKindOpenNode;
                     currentComponentInfo.documentNode = inlineNode;
                     [self _addComponent:&currentComponentInfo];
                     nextNode = [inlineNode nextDisplayableUnder:underNode];
@@ -205,11 +205,11 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                             // it's populated on node open).
                             currentComponentInfo.documentNode = inlineNode;
                         }
-                        currentComponentInfo.kind = EucCSSLayoutDocumentRunComponentKindCloseNode;
+                        currentComponentInfo.kind = EucCSSLayoutRunComponentKindCloseNode;
                         [self _addComponent:&currentComponentInfo];
                         
                         if(inlineNode.display == CSS_DISPLAY_LIST_ITEM) {
-                            EucCSSLayoutDocumentRunComponentInfo info = hardBreakInfo;
+                            EucCSSLayoutRunComponentInfo info = hardBreakInfo;
                             info.documentNode = inlineNode.parent;
                             info.width = 0;
                             [self _addComponent:&info];
@@ -250,12 +250,12 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     for(uint32_t i = 0; i < _componentsCount; ++i) {
         [_componentInfos[i].documentNode release];
 
-        EucCSSLayoutDocumentRunComponentKind kind = _componentInfos[i].kind;
-        if(kind == EucCSSLayoutDocumentRunComponentKindWord) {
+        EucCSSLayoutRunComponentKind kind = _componentInfos[i].kind;
+        if(kind == EucCSSLayoutRunComponentKindWord) {
             [_componentInfos[i].contents.stringInfo.string release];
-        } else if (kind == EucCSSLayoutDocumentRunComponentKindImage) { 
+        } else if (kind == EucCSSLayoutRunComponentKindImage) { 
             CFRelease(_componentInfos[i].contents.imageInfo.image);
-        } else if(kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+        } else if(kind == EucCSSLayoutRunComponentKindHyphenationRule) {
             [_componentInfos[i].contents.hyphenationInfo.beforeHyphen release];
             [_componentInfos[i].contents.hyphenationInfo.afterHyphen release];
         }
@@ -307,9 +307,9 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     return ret;
 }
 
-- (void)_addComponent:(EucCSSLayoutDocumentRunComponentInfo *)info
+- (void)_addComponent:(EucCSSLayoutRunComponentInfo *)info
 {
-    if(info->kind == EucCSSLayoutDocumentRunComponentKindWord) {
+    if(info->kind == EucCSSLayoutRunComponentKindWord) {
         ++_wordsCount;
         if(_wordToComponentCapacity == _wordsCount) {
             _wordToComponentCapacity += 128;
@@ -319,16 +319,16 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         _currentWordElementCount = 0;
         
         [info->contents.stringInfo.string retain];
-    } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
+    } else if(info->kind == EucCSSLayoutRunComponentKindImage) {
         CFRetain(info->contents.imageInfo.image);
-    } else if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+    } else if(info->kind == EucCSSLayoutRunComponentKindHyphenationRule) {
         [info->contents.hyphenationInfo.beforeHyphen retain];
         [info->contents.hyphenationInfo.afterHyphen retain];
     }
     
     if(_componentsCapacity == _componentsCount) {
         _componentsCapacity += 128;
-        _componentInfos = (EucCSSLayoutDocumentRunComponentInfo *)realloc(_componentInfos, _componentsCapacity * sizeof(EucCSSLayoutDocumentRunComponentInfo));
+        _componentInfos = (EucCSSLayoutRunComponentInfo *)realloc(_componentInfos, _componentsCapacity * sizeof(EucCSSLayoutRunComponentInfo));
     }
     
     info->point.word = _wordsCount;
@@ -411,9 +411,9 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         }
 #endif
         if(image) {
-            EucCSSLayoutDocumentRunComponentInfo info = { 0 };
+            EucCSSLayoutRunComponentInfo info = { 0 };
             info.documentNode = subnode;
-            info.kind = EucCSSLayoutDocumentRunComponentKindImage;
+            info.kind = EucCSSLayoutRunComponentKindImage;
             info.contents.imageInfo.image = image;
             [self _addComponent:&info];
             
@@ -524,8 +524,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     // The font size percentages should already be fully resolved.
     CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);             
 
-    EucCSSLayoutDocumentRunComponentInfo spaceInfo = { 0 };
-    spaceInfo.kind = EucCSSLayoutDocumentRunComponentKindSpace;
+    EucCSSLayoutRunComponentInfo spaceInfo = { 0 };
+    spaceInfo.kind = EucCSSLayoutRunComponentKindSpace;
     spaceInfo.documentNode = subnode;
     spaceInfo.width = [stringRenderer widthOfString:@" " pointSize:fontPixelSize];
     
@@ -547,8 +547,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 
                 word = [word stringWithSmartQuotes];
                 
-                EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                info.kind = EucCSSLayoutDocumentRunComponentKindWord;
+                EucCSSLayoutRunComponentInfo info = spaceInfo;
+                info.kind = EucCSSLayoutRunComponentKindWord;
                 info.contents.stringInfo.string = word;
                 info.width = [stringRenderer widthOfString:word pointSize:fontPixelSize];
                 [self _addComponent:&info];
@@ -556,8 +556,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                 if(shouldHyphenate && word.length > 4) {
                     NSArray *hyphenations = [_sharedHyphenator hyphenationsForWord:word];
                     
-                    EucCSSLayoutDocumentRunComponentInfo hyphenInfo = info;
-                    hyphenInfo.kind = EucCSSLayoutDocumentRunComponentKindHyphenationRule;
+                    EucCSSLayoutRunComponentInfo hyphenInfo = info;
+                    hyphenInfo.kind = EucCSSLayoutRunComponentKindHyphenationRule;
                     
                     for(THPair *hyphenatedPair in hyphenations) {
                         NSString *beforeBreak = hyphenatedPair.first;
@@ -630,8 +630,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                         string = (CFStringRef)[smartQuoted retain];
                                         wordNeedsSmartQuotes = NO;
                                     }
-                                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                                    info.kind = EucCSSLayoutDocumentRunComponentKindWord;
+                                    EucCSSLayoutRunComponentInfo info = spaceInfo;
+                                    info.kind = EucCSSLayoutRunComponentKindWord;
                                     info.contents.stringInfo.string = (NSString *)string;
                                     info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                                     [self _addComponent:&info];
@@ -639,8 +639,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                     if(shouldHyphenate && wordLength > 4) {
                                         NSArray *hyphenations = [_sharedHyphenator hyphenationsForWord:(NSString *)string];
                                         
-                                        EucCSSLayoutDocumentRunComponentInfo hyphenInfo = info;
-                                        hyphenInfo.kind = EucCSSLayoutDocumentRunComponentKindHyphenationRule;
+                                        EucCSSLayoutRunComponentInfo hyphenInfo = info;
+                                        hyphenInfo.kind = EucCSSLayoutRunComponentKindHyphenationRule;
                                         
                                         for(THPair *hyphenatedPair in hyphenations) {
                                             NSString *beforeBreak = hyphenatedPair.first;
@@ -658,8 +658,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                                 }
                             }
                             if(ch == 0x00A0) {
-                                EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                                info.kind = EucCSSLayoutDocumentRunComponentKindNonbreakingSpace;
+                                EucCSSLayoutRunComponentInfo info = spaceInfo;
+                                info.kind = EucCSSLayoutRunComponentKindNonbreakingSpace;
                                 [self _addComponent:&info];
                                 wordStart = cursor + 1;
                             } else {
@@ -673,8 +673,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                             switch(ch) {
                                 case 0x000A:
                                 {
-                                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                                    info.kind = EucCSSLayoutDocumentRunComponentKindHardBreak;
+                                    EucCSSLayoutRunComponentInfo info = spaceInfo;
+                                    info.kind = EucCSSLayoutRunComponentKindHardBreak;
                                     info.width = 0;
                                     [self _addComponent:&info];
                                     _alreadyInsertedSpace = YES;
@@ -725,8 +725,8 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                         string = (CFStringRef)[smartQuoted retain];
                         wordNeedsSmartQuotes = NO;
                     }                    
-                    EucCSSLayoutDocumentRunComponentInfo info = spaceInfo;
-                    info.kind = EucCSSLayoutDocumentRunComponentKindWord;
+                    EucCSSLayoutRunComponentInfo info = spaceInfo;
+                    info.kind = EucCSSLayoutRunComponentKindWord;
                     info.contents.stringInfo.string = (NSString *)string;
                     info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                     [self _addComponent:&info];
@@ -752,9 +752,9 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
 
 - (void)_accumulateFloatNode:(EucCSSIntermediateDocumentNode *)subnode
 {
-    EucCSSLayoutDocumentRunComponentInfo info = { 0 };
+    EucCSSLayoutRunComponentInfo info = { 0 };
     info.documentNode = subnode;
-    info.kind = EucCSSLayoutDocumentRunComponentKindFloat;
+    info.kind = EucCSSLayoutRunComponentKindFloat;
     [self _addComponent:&info];    
     
     if(!_floatComponentIndexes) {
@@ -768,7 +768,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     if(!_potentialBreaks) {
         int breaksCapacity = _componentsCount + 1;
         THBreak *breaks = (THBreak *)malloc(breaksCapacity * sizeof(THBreak));
-        EucCSSLayoutDocumentRunBreakInfo *breakInfos = (EucCSSLayoutDocumentRunBreakInfo *)malloc(breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
+        EucCSSLayoutRunBreakInfo *breakInfos = (EucCSSLayoutRunBreakInfo *)malloc(breaksCapacity * sizeof(EucCSSLayoutRunBreakInfo));
         int breaksCount = 0;
         
         EucCSSIntermediateDocumentNode *currentInlineNodeWithStyle = _startNode;
@@ -781,17 +781,17 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         CGFloat lineSoFarWidth = 0.0f;
         CGFloat lastWordWidth = 0.0f;
         for(NSUInteger i = 0; i < _componentsCount; ++i) {
-            EucCSSLayoutDocumentRunComponentInfo componentInfo = _componentInfos[i];
+            EucCSSLayoutRunComponentInfo componentInfo = _componentInfos[i];
             switch(componentInfo.kind) {
-                case EucCSSLayoutDocumentRunComponentKindSpace:
-                case EucCSSLayoutDocumentRunComponentKindNonbreakingSpace:
+                case EucCSSLayoutRunComponentKindSpace:
+                case EucCSSLayoutRunComponentKindNonbreakingSpace:
                     {
                         if(whiteSpaceModel != CSS_WHITE_SPACE_PRE && 
                            whiteSpaceModel != CSS_WHITE_SPACE_NOWRAP) {
                             breaks[breaksCount].x0 = lineSoFarWidth;
                             lineSoFarWidth += _componentInfos[i].width;
                             breaks[breaksCount].x1 = lineSoFarWidth;
-                            breaks[breaksCount].penalty = componentInfo.kind == EucCSSLayoutDocumentRunComponentKindNonbreakingSpace ? 1024 : 0;
+                            breaks[breaksCount].penalty = componentInfo.kind == EucCSSLayoutRunComponentKindNonbreakingSpace ? 1024 : 0;
                             breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
                             breakInfos[breaksCount].point = _componentInfos[i].point;
                             breakInfos[breaksCount].consumesComponent = YES;
@@ -799,7 +799,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                         }
                     }
                     break;
-                case EucCSSLayoutDocumentRunComponentKindHardBreak:
+                case EucCSSLayoutRunComponentKindHardBreak:
                     {
                         breaks[breaksCount].x0 = lineSoFarWidth;
                         lineSoFarWidth += _componentInfos[i].width;
@@ -811,26 +811,26 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
                         ++breaksCount;                                        
                     }
                     break;
-                case EucCSSLayoutDocumentRunComponentKindOpenNode:
+                case EucCSSLayoutRunComponentKindOpenNode:
                     {
                         currentInlineNodeWithStyle = _componentInfos[i].documentNode;
                         whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(currentInlineNodeWithStyle.computedStyle);
                     }
                     break;
-                case EucCSSLayoutDocumentRunComponentKindCloseNode:
+                case EucCSSLayoutRunComponentKindCloseNode:
                     {
                         NSParameterAssert(_componentInfos[i].documentNode == currentInlineNodeWithStyle);
                         currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
                         whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(currentInlineNodeWithStyle.computedStyle);
                     }
                     break;
-                case EucCSSLayoutDocumentRunComponentKindWord:
+                case EucCSSLayoutRunComponentKindWord:
                     {
                         lastWordWidth = _componentInfos[i].width;
                         lineSoFarWidth += lastWordWidth;
                     }
                     break;
-                case EucCSSLayoutDocumentRunComponentKindHyphenationRule:
+                case EucCSSLayoutRunComponentKindHyphenationRule:
                     {
                         breaks[breaksCount].x0 = lineSoFarWidth + _componentInfos[i].contents.hyphenationInfo.widthBeforeHyphen - lastWordWidth;
                         breaks[breaksCount].x1 = lineSoFarWidth - _componentInfos[i].contents.hyphenationInfo.widthAfterHyphen;
@@ -848,7 +848,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
             if(breaksCount >= breaksCapacity) {
                 breaksCapacity += _componentsCount;
                 breaks = (THBreak *)realloc(breaks, breaksCapacity * sizeof(THBreak));
-                breakInfos = (EucCSSLayoutDocumentRunBreakInfo *)realloc(breakInfos, breaksCapacity * sizeof(EucCSSLayoutDocumentRunBreakInfo));
+                breakInfos = (EucCSSLayoutRunBreakInfo *)realloc(breakInfos, breaksCapacity * sizeof(EucCSSLayoutRunBreakInfo));
             }                                            
         }
         breaks[breaksCount].x0 = lineSoFarWidth;
@@ -873,7 +873,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     }
 }
 
-- (uint32_t)pointToComponentOffset:(EucCSSLayoutDocumentRunPoint)point
+- (uint32_t)pointToComponentOffset:(EucCSSLayoutRunPoint)point
 {
     if(point.word > _wordsCount) {
         // This is an 'off the end' marker (i.e. an endpoint to line that
@@ -894,7 +894,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         return nil;
     }    
     
-    EucCSSLayoutPositionedRun *ret = [[EucCSSLayoutPositionedRun alloc] initWithDocumentRun:self];
+    EucCSSLayoutPositionedRun *ret = [[EucCSSLayoutPositionedRun alloc] initWithRun:self];
     
     if(_sizeDependentComponentIndexes) {
         free(_potentialBreaks);
@@ -934,7 +934,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         
         NSUInteger startBreakOffset = 0;
         for(;;) {
-            EucCSSLayoutDocumentRunPoint point = _potentialBreakInfos[startBreakOffset].point;
+            EucCSSLayoutRunPoint point = _potentialBreakInfos[startBreakOffset].point;
             if(startBreakOffset < _potentialBreaksCount && 
                (point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset))) {
                 ++startBreakOffset;
@@ -954,7 +954,7 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         if(startBreakOffset) {
             indentationOffset = -_potentialBreaks[startBreakOffset].x1;
             
-            EucCSSLayoutDocumentRunPoint point = { wordOffset, elementOffset };
+            EucCSSLayoutRunPoint point = { wordOffset, elementOffset };
             lineStartComponent = [self pointToComponentOffset:point];
             uint32_t firstBreakComponent = [self pointToComponentOffset:_potentialBreakInfos[startBreakOffset].point];
             for(uint32_t i = lineStartComponent; i < firstBreakComponent; ++i) {
@@ -968,18 +968,18 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
         int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
         int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, thisLineWidth, 0, usedBreakIndexes);
         
-        EucCSSLayoutDocumentRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
+        EucCSSLayoutRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
         
         for(int i = 0; i < usedBreakCount && !widthChanged; ++i) {
-            EucCSSLayoutDocumentRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
+            EucCSSLayoutRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
             EucCSSLayoutPositionedLine *newLine = [[EucCSSLayoutPositionedLine alloc] init];
             newLine.parent = ret;
             
-            EucCSSLayoutDocumentRunPoint lineStartPoint;
-            EucCSSLayoutDocumentRunPoint lineEndPoint;
+            EucCSSLayoutRunPoint lineStartPoint;
+            EucCSSLayoutRunPoint lineEndPoint;
             
             if(lastLineBreakInfo.consumesComponent) {
-                EucCSSLayoutDocumentRunPoint point = lastLineBreakInfo.point;
+                EucCSSLayoutRunPoint point = lastLineBreakInfo.point;
                 uint32_t componentOffset = [self pointToComponentOffset:point];
                 ++componentOffset;
                 if(componentOffset >= _componentsCount) {
@@ -1159,14 +1159,14 @@ static NSString * const EucCSSDocumentRunCacheKey = @"EucCSSDocumentRunCacheKey"
     return [ret autorelease];
 }
 
-- (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node
+- (EucCSSLayoutRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node
 {
     for(size_t i = 0; i < _componentsCount; ++i) {
         if(_componentInfos[i].documentNode == node) {
             return _componentInfos[i].point;
         }
     }
-    EucCSSLayoutDocumentRunPoint ret = {0};
+    EucCSSLayoutRunPoint ret = {0};
     return ret;
 }
 

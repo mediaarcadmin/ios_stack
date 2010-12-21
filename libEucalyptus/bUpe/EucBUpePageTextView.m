@@ -149,8 +149,8 @@
 }
 
 static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayoutPositionedRun *rhs, void *context) {
-    uint32_t lhsId = lhs.documentRun.id;
-    uint32_t rhsId = rhs.documentRun.id;
+    uint32_t lhsId = lhs.Run.id;
+    uint32_t rhsId = rhs.Run.id;
     if(lhsId < rhsId) {
         return NSOrderedAscending;
     } else if (lhsId > rhsId) {
@@ -172,13 +172,13 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
 
 - (NSArray *)blockIdentifiers
 {
-    return [[[self _runs] valueForKey:@"documentRun"] valueForKey:@"id"];
+    return [[[self _runs] valueForKey:@"Run"] valueForKey:@"id"];
 }
 
 - (EucCSSLayoutPositionedRun *)_runWithKey:(uint32_t)key
 {
     for(EucCSSLayoutPositionedRun *run in [self _runs]) {
-        if(key == run.documentRun.id) {
+        if(key == run.Run.id) {
             return run;
         }
     }

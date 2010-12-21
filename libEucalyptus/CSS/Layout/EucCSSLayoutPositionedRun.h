@@ -15,14 +15,14 @@
 
 #import "EucCSSLayoutPositionedContainer.h"
 
-@class EucCSSLayoutDocumentRun, EucCSSLayoutPositionedBlock;
+@class EucCSSLayoutRun, EucCSSLayoutPositionedBlock;
 
 @interface EucCSSLayoutPositionedRun : EucCSSLayoutPositionedContainer {
-    EucCSSLayoutDocumentRun *_documentRun;
+    EucCSSLayoutRun *_Run;
 }
 
-@property (nonatomic, retain, readonly) EucCSSLayoutDocumentRun *documentRun;
+@property (nonatomic, retain, readonly) EucCSSLayoutRun *Run;
 
-- (id)initWithDocumentRun:(EucCSSLayoutDocumentRun *)documentRun;
+- (id)initWithRun:(EucCSSLayoutRun *)Run;
 
 @end

@@ -17,7 +17,7 @@
 #import <vector>
 #endif
 
-#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutRun.h"
 
 @class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock;
 

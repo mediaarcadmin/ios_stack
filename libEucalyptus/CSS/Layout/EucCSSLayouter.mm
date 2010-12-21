@@ -15,7 +15,7 @@
 
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
-#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutRun.h"
 #import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSLayoutRunExtractor.h"
 
@@ -236,13 +236,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     EucCSSLayoutPoint ret = {0};
     
     EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:node.document];
-    EucCSSLayoutDocumentRun *documentRun = [extractor documentRunForNodeWithKey:node.key];
+    EucCSSLayoutRun *Run = [extractor RunForNodeWithKey:node.key];
         
-    if(documentRun) {
-        EucCSSLayoutDocumentRunPoint documentRunPoint = [documentRun pointForNode:node];
-        ret.nodeKey = documentRun.id;
-        ret.word = documentRunPoint.word;
-        ret.element = documentRunPoint.element;
+    if(Run) {
+        EucCSSLayoutRunPoint RunPoint = [Run pointForNode:node];
+        ret.nodeKey = Run.id;
+        ret.word = RunPoint.word;
+        ret.element = RunPoint.element;
     }   
     
     [extractor release];
@@ -409,7 +409,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     //THLog(@"Inline: %@", [currentDocumentNode name]);
                     
                     // This is an inline element - start a run.
-                    EucCSSLayoutDocumentRun *documentRun = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
+                    EucCSSLayoutRun *Run = [EucCSSLayoutRun RunWithNode:currentDocumentNode
                                                                                          underLimitNode:currentDocumentNode.blockLevelParent
                                                                                                   forId:nextRunNodeKey
                                                                                             scaleFactor:_scaleFactor];
@@ -417,7 +417,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     CGRect frameWithMaxHeight = potentialFrame;
                     frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
                     // Position it.
-                    EucCSSLayoutPositionedRun *positionedRun = [documentRun positionRunForFrame:frameWithMaxHeight
+                    EucCSSLayoutPositionedRun *positionedRun = [Run positionRunForFrame:frameWithMaxHeight
                                                                                     inContainer:currentPositionedBlock
                                                                            startingAtWordOffset:wordOffset
                                                                                   elementOffset:elementOffset
@@ -426,7 +426,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         BOOL first = YES; // Break before first line doesn't count.
                         for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
                             if(!first) {
-                                EucCSSLayoutDocumentRunPoint startPoint = line.startPoint;
+                                EucCSSLayoutRunPoint startPoint = line.startPoint;
                                 EucCSSLayoutPoint breakPoint = { nextRunNodeKey, startPoint.word, startPoint.element };                                
                                 pageBreaks.push_back(make_pair(breakPoint, line));
                             } else {
@@ -445,7 +445,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         wordOffset = 0;
                     }
                     
-                    currentDocumentNode = documentRun.nextNodeInDocument;
+                    currentDocumentNode = Run.nextNodeInDocument;
                     nextRunNodeKey = currentDocumentNode.key;
                 } else {
                     //THLog(@"Block: %@", [currentDocumentNode name]);

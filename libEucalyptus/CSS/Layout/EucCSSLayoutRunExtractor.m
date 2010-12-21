@@ -10,7 +10,7 @@
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
-#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutRun.h"
 
 #import <libcss/libcss.h>
 
@@ -42,9 +42,9 @@
     }
 }
 
-- (EucCSSLayoutDocumentRun *)documentRunForNodeWithKey:(uint32_t)nextRunNodeKey;
+- (EucCSSLayoutRun *)RunForNodeWithKey:(uint32_t)nextRunNodeKey;
 {
-    EucCSSLayoutDocumentRun *ret = nil;
+    EucCSSLayoutRun *ret = nil;
     
     EucCSSIntermediateDocumentNode* currentDocumentNode = [self _layoutNodeForKey:nextRunNodeKey];
     
@@ -70,7 +70,7 @@
         do {
             if(currentDocumentNode.display != CSS_DISPLAY_BLOCK) {                
                 // This is an inline element - start a run.
-                ret = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
+                ret = [EucCSSLayoutRun RunWithNode:currentDocumentNode
                                                     underLimitNode:currentDocumentNode.blockLevelParent
                                                              forId:nextRunNodeKey
                                                        scaleFactor:1.0f];
@@ -87,17 +87,17 @@
     return ret;
 }
 
-- (EucCSSLayoutDocumentRun *)nextDocumentRunForDocumentRun:(EucCSSLayoutDocumentRun *)run
+- (EucCSSLayoutRun *)nextRunForRun:(EucCSSLayoutRun *)run
 {
     if(run.nextNodeInDocument) {
-        return [self documentRunForNodeWithKey:run.nextNodeInDocument.key];
+        return [self RunForNodeWithKey:run.nextNodeInDocument.key];
     } else {
         return nil;
     }
 }
 
 
-- (EucCSSLayoutDocumentRun *)previousDocumentRunForDocumentRun:(EucCSSLayoutDocumentRun *)run
+- (EucCSSLayoutRun *)previousRunForRun:(EucCSSLayoutRun *)run
 {
     EucCSSIntermediateDocumentNode *previousNode = [self.document nodeForKey:run.id].previous;
     if(previousNode) {
@@ -108,7 +108,7 @@
         }
 
         if(previousNode) {
-            EucCSSLayoutDocumentRun *previousRun = [self documentRunForNodeWithKey:previousNode.key];
+            EucCSSLayoutRun *previousRun = [self RunForNodeWithKey:previousNode.key];
             if(previousRun.id == run.id) {
                 // This happens if we're already at the first node.
                 return nil;

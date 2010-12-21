@@ -1,5 +1,5 @@
 //
-//  EucCSSLayoutDocumentRun.h
+//  EucCSSLayoutRun.h
 //  LibCSSTest
 //
 //  Created by James Montgomerie on 12/01/2010.
@@ -16,56 +16,56 @@
 @class EucCSSIntermediateDocument, EucCSSLayouter, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
 struct THBreak;
 
-typedef struct EucCSSLayoutDocumentRunPoint {
+typedef struct EucCSSLayoutRunPoint {
     uint32_t word;
     uint32_t element;
-} EucCSSLayoutDocumentRunPoint;
+} EucCSSLayoutRunPoint;
 
-typedef enum EucCSSLayoutDocumentRunComponentKind {
-    EucCSSLayoutDocumentRunComponentKindNone = 0,
-    EucCSSLayoutDocumentRunComponentKindSpace,
-    EucCSSLayoutDocumentRunComponentKindNonbreakingSpace,
-    EucCSSLayoutDocumentRunComponentKindHardBreak,
-    EucCSSLayoutDocumentRunComponentKindWord,
-    EucCSSLayoutDocumentRunComponentKindHyphenationRule,
-    EucCSSLayoutDocumentRunComponentKindImage,
-    EucCSSLayoutDocumentRunComponentKindOpenNode,
-    EucCSSLayoutDocumentRunComponentKindCloseNode,
-    EucCSSLayoutDocumentRunComponentKindFloat,
-} EucCSSLayoutDocumentRunComponentKind;
+typedef enum EucCSSLayoutRunComponentKind {
+    EucCSSLayoutRunComponentKindNone = 0,
+    EucCSSLayoutRunComponentKindSpace,
+    EucCSSLayoutRunComponentKindNonbreakingSpace,
+    EucCSSLayoutRunComponentKindHardBreak,
+    EucCSSLayoutRunComponentKindWord,
+    EucCSSLayoutRunComponentKindHyphenationRule,
+    EucCSSLayoutRunComponentKindImage,
+    EucCSSLayoutRunComponentKindOpenNode,
+    EucCSSLayoutRunComponentKindCloseNode,
+    EucCSSLayoutRunComponentKindFloat,
+} EucCSSLayoutRunComponentKind;
 
-typedef struct EucCSSLayoutDocumentRunStringInfo {
+typedef struct EucCSSLayoutRunStringInfo {
     NSString *string;
-} EucCSSLayoutDocumentRunStringInfo;
+} EucCSSLayoutRunStringInfo;
 
-typedef struct EucCSSLayoutDocumentRunHyphenationInfo {
+typedef struct EucCSSLayoutRunHyphenationInfo {
     NSString *beforeHyphen;
     CGFloat widthBeforeHyphen;
     NSString *afterHyphen;
     CGFloat widthAfterHyphen;
-} EucCSSLayoutDocumentRunHyphenationInfo;
+} EucCSSLayoutRunHyphenationInfo;
 
-typedef struct EucCSSLayoutDocumentRunImageInfo {
+typedef struct EucCSSLayoutRunImageInfo {
     CGImageRef image;
     CGSize scaledSize;
     CGFloat scaledLineHeight;
-} EucCSSLayoutDocumentRunImageInfo;
+} EucCSSLayoutRunImageInfo;
 
-typedef struct EucCSSLayoutDocumentRunComponentInfo {
-    EucCSSLayoutDocumentRunComponentKind kind;
-    EucCSSLayoutDocumentRunPoint point;
+typedef struct EucCSSLayoutRunComponentInfo {
+    EucCSSLayoutRunComponentKind kind;
+    EucCSSLayoutRunPoint point;
     EucCSSIntermediateDocumentNode *documentNode;
     CGFloat width;
     union {
-        EucCSSLayoutDocumentRunStringInfo stringInfo;
-        EucCSSLayoutDocumentRunHyphenationInfo hyphenationInfo;
-        EucCSSLayoutDocumentRunImageInfo imageInfo;
+        EucCSSLayoutRunStringInfo stringInfo;
+        EucCSSLayoutRunHyphenationInfo hyphenationInfo;
+        EucCSSLayoutRunImageInfo imageInfo;
     } contents;
-} EucCSSLayoutDocumentRunComponentInfo;
+} EucCSSLayoutRunComponentInfo;
 
-struct EucCSSLayoutDocumentRunBreakInfo;
+struct EucCSSLayoutRunBreakInfo;
 
-@interface EucCSSLayoutDocumentRun : NSObject {
+@interface EucCSSLayoutRun : NSObject {
     uint32_t _id;
     
     EucCSSIntermediateDocument *_document;
@@ -80,7 +80,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     
     size_t _componentsCount;
     size_t _componentsCapacity;
-    EucCSSLayoutDocumentRunComponentInfo *_componentInfos;
+    EucCSSLayoutRunComponentInfo *_componentInfos;
     
     size_t _wordsCount;
     size_t _wordToComponentCapacity;
@@ -97,7 +97,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
     NSMutableArray *_floatComponentIndexes;
     
     struct THBreak *_potentialBreaks;
-    struct EucCSSLayoutDocumentRunBreakInfo *_potentialBreakInfos;
+    struct EucCSSLayoutRunBreakInfo *_potentialBreakInfos;
     int _potentialBreaksCount;
     
     EucSharedHyphenator *_sharedHyphenator;
@@ -112,7 +112,7 @@ struct EucCSSLayoutDocumentRunBreakInfo;
 
 // This convenience constructor will return a cached node if one with the same
 // attibutes was requested recently.
-+ (id)documentRunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
++ (id)RunWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
            underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
 forId:(uint32_t)id
 scaleFactor:(CGFloat)scaleFactor;
@@ -128,7 +128,7 @@ scaleFactor:(CGFloat)scaleFactor;
                                      elementOffset:(uint32_t)elementOffset
                             usingLayouterForFloats:(EucCSSLayouter *)layouter;
 
-- (EucCSSLayoutDocumentRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
+- (EucCSSLayoutRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
 
 - (NSArray *)words;
 - (NSArray *)attributeValuesForWordsForAttributeName:(NSString *)attribute;
