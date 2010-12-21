@@ -67,13 +67,10 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
     
     EucCSSLayoutRunPoint _startPoint;
     EucCSSLayoutRunPoint _endPoint;
-    
     CGFloat _componentWidth;
 
-    EucCSSLayoutPositionedLineLineBox _lineBox;
-    CGFloat _baseline;
+    BOOL _heightCalculated;
 
-    
     CGFloat _indent;
     uint8_t _align;
     
@@ -83,13 +80,13 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
 
 @property (nonatomic, assign) EucCSSLayoutRunPoint startPoint;
 @property (nonatomic, assign) EucCSSLayoutRunPoint endPoint;
+@property (nonatomic, assign) CGFloat componentWidth;
 
 @property (nonatomic, assign) CGFloat indent;
 @property (nonatomic, assign) CGFloat baseline;
 
 @property (nonatomic, assign) uint8_t align;
 
-@property (nonatomic, readonly) CGFloat componentWidth;
 
 - (size_t)renderItemCount;
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems;

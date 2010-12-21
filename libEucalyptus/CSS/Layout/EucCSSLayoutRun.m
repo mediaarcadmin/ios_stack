@@ -949,29 +949,27 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         
         // Work out an offset to compensate the pre-calculated 
         // line lengths in the breaks array.
-        CGFloat indentationOffset;
+        CGFloat alreadyUsedComponentWidth;
         uint32_t lineStartComponent;
         if(startBreakOffset) {
-            indentationOffset = -_potentialBreaks[startBreakOffset].x1;
+            alreadyUsedComponentWidth = _potentialBreaks[startBreakOffset - 1].x1;
             
             EucCSSLayoutRunPoint point = { wordOffset, elementOffset };
             lineStartComponent = [self pointToComponentOffset:point];
-            uint32_t firstBreakComponent = [self pointToComponentOffset:_potentialBreakInfos[startBreakOffset].point];
-            for(uint32_t i = lineStartComponent; i < firstBreakComponent; ++i) {
-                indentationOffset += _componentInfos[i].width;
-            }
         } else {
+            alreadyUsedComponentWidth = 0;
             lineStartComponent = 0;
-            indentationOffset = textIndent;
         }
         
         int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
-        int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, indentationOffset, thisLineWidth, 0, usedBreakIndexes);
+        int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, textIndent - alreadyUsedComponentWidth, thisLineWidth, 0, usedBreakIndexes);
         
         EucCSSLayoutRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
         
+        int lastBreakIndex = INT_MAX;
         for(int i = 0; i < usedBreakCount && !widthChanged; ++i) {
-            EucCSSLayoutRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[usedBreakIndexes[i] + startBreakOffset];
+            int thisBreakIndex = usedBreakIndexes[i] + startBreakOffset;
+            EucCSSLayoutRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[thisBreakIndex];
             EucCSSLayoutPositionedLine *newLine = [[EucCSSLayoutPositionedLine alloc] init];
             newLine.parent = ret;
             
@@ -1000,6 +998,19 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
             
             newLine.startPoint = lineStartPoint;
             newLine.endPoint = lineEndPoint;
+            
+            CGFloat lineComponentWidth;
+            lineComponentWidth = _potentialBreaks[thisBreakIndex].x0;
+            if(lastBreakIndex == INT_MAX) {
+                lineComponentWidth -= alreadyUsedComponentWidth;
+            } else {
+                lineComponentWidth -= _potentialBreaks[lastBreakIndex].x1;
+            }
+            newLine.componentWidth = lineComponentWidth;
+            
+            newLine.frame = CGRectMake(lineOrigin.x, lineOrigin.y, 0, 0);
+            
+            [newLine sizeToFitInWidth:thisLineWidth];            
             
             if(nextFloatComponentOffset != NSUIntegerMax && 
                nextFloatComponentOffset >= [self pointToComponentOffset:lineStartPoint] &&
@@ -1048,17 +1059,15 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                 textIndent = 0.0f;
             }
             if(textAlign == CSS_TEXT_ALIGN_JUSTIFY &&
-               (_potentialBreaks[usedBreakIndexes[i] + startBreakOffset].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) {
+               (_potentialBreaks[thisBreakIndex].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) {
                 newLine.align = CSS_TEXT_ALIGN_DEFAULT;
             } else {
                 newLine.align = textAlign;
             }
-            
-            newLine.frame = CGRectMake(lineOrigin.x, lineOrigin.y, 0, 0);
-            [newLine sizeToFitInWidth:thisLineWidth];
+
             
             // Calculate available width for line of this height.
-            
+    
             CGFloat availableWidth;
             THPair *floats = [container floatsOverlappingYPoint:lineOrigin.y + frame.origin.y 
                                                          height:newLine.frame.size.height];
@@ -1133,6 +1142,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                     lineOrigin.y = lastLineMaxY;
                 }
                 lastLineBreakInfo = thisLineBreakInfo;
+                lastBreakIndex = thisBreakIndex;
                 if(!firstTryAtLine) {
                     firstTryAtLine = YES;
                 }

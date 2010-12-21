@@ -125,9 +125,13 @@ static BOOL _adjustLineBoxToContainLineBox(EucCSSLayoutPositionedLineLineBox *co
             break;*/
     }
     
-    containerLineBox->width += containedLineBox->width;
-    
     return changed;
+}
+
+static BOOL _adjustLineBoxToContainLineBoxIncludingWidth(EucCSSLayoutPositionedLineLineBox *containerLineBox, EucCSSLayoutPositionedLineLineBox *containedLineBox)
+{
+    containerLineBox->width += containedLineBox->width;
+    return _adjustLineBoxToContainLineBox(containerLineBox, containedLineBox);;
 }
 
 static inline void _placeRenderItemInRenderItem(EucCSSLayoutPositionedLineRenderItem *child, EucCSSLayoutPositionedLineRenderItem *parent)
@@ -194,16 +198,15 @@ static EucCSSLayoutPositionedLineLineBox lineBoxForComponentInfo(EucCSSLayoutRun
 {    
     if(componentInfo->kind == EucCSSLayoutRunComponentKindImage) {
         EucCSSLayoutPositionedLineLineBox imageLineBox = {
-            componentInfo->contents.imageInfo.scaledSize.width,
+            0,
             componentInfo->contents.imageInfo.scaledSize.height,
             componentInfo->contents.imageInfo.scaledSize.height,
-            CSS_VERTICAL_ALIGN_BASELINE
+            CSS_VERTICAL_ALIGN_BASELINE,
+            0
         };
         return imageLineBox;
     } else {
-        EucCSSLayoutPositionedLineLineBox componentLineBox = lineBoxForDocumentNode(componentInfo->documentNode, scaleFactor);
-        componentLineBox.width = componentInfo->width;
-        return componentLineBox;
+        return lineBoxForDocumentNode(componentInfo->documentNode, scaleFactor);
     }
 }
 
@@ -231,13 +234,10 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
             _adjustLineBoxToContainLineBox(&myLineBox, &imageLineBox);
         } else {
             if(info->kind != EucCSSLayoutRunComponentKindHyphenationRule) {
-                myLineBox.width += info->width;
             }
         }
         ++i, ++info;
     }
-    
-    /// TODO:  Subtract the width vs hypenated width difference for first node if it's a hyphenation rule at the end.
     
     *componentOffset = i;
     *componentInfo = info;
@@ -247,7 +247,7 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
 
 - (void)sizeToFitInWidth:(CGFloat)width
 {
-    if(!_componentWidth) {
+    if(!_heightCalculated) {
         EucCSSLayoutRun *run = ((EucCSSLayoutPositionedRun *)self.parent).run; 
         CGFloat scaleFactor = run.scaleFactor;
                 
@@ -255,7 +255,7 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
         
         uint32_t componentOffset = [run pointToComponentOffset:_startPoint];
         uint32_t afterEndComponentOffset = [run pointToComponentOffset:_endPoint];
-        EucCSSLayoutRunComponentInfo *startComponentInfo = &(run.componentInfos[componentOffset]);
+        EucCSSLayoutRunComponentInfo *startComponentInfo = run.componentInfos + componentOffset;
         EucCSSLayoutRunComponentInfo *componentInfo = startComponentInfo;
                         
         if(afterEndComponentOffset > componentsCount) {
@@ -263,12 +263,9 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
         }
                 
         EucCSSLayoutPositionedLineLineBox lineBox = { 0 };
+        lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
         
         while(componentOffset < afterEndComponentOffset) {
-            // May not come in here if the line contains no components (e.g. 
-            // it contains some floats but is in an otherwise an empty block 
-            // node)
-            
             while(componentOffset < afterEndComponentOffset && 
                   componentInfo->kind == EucCSSLayoutRunComponentKindFloat) {
                 ++componentOffset;
@@ -277,11 +274,7 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
             if(componentOffset >= afterEndComponentOffset) {
                 break;
             }
-            
-            if(componentInfo->kind == EucCSSLayoutRunComponentKindHyphenationRule) {
-                lineBox.width = componentInfo->contents.hyphenationInfo.widthAfterHyphen - componentInfo->width;
-            }            
-            
+                        
             EucCSSLayoutPositionedLineLineBox subnodeLineBox = processNode(&componentOffset, &componentInfo, afterEndComponentOffset, scaleFactor);
             NSCParameterAssert(componentOffset == afterEndComponentOffset || 
                                componentInfo->kind == EucCSSLayoutRunComponentKindCloseNode);
@@ -293,35 +286,24 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
                 ++componentInfo;
             }
         }
-
-        // Stopping 'just before' a hyphen component really means that we stop
-        // after the first part of the hyphenated word.
-        if(componentOffset < componentsCount) {
-            if(componentInfo->kind == EucCSSLayoutRunComponentKindHyphenationRule) {
-                lineBox.width -= componentInfo->width;
-                lineBox.width += componentInfo->contents.hyphenationInfo.widthBeforeHyphen;
-            }
-        }
         
-        // Now take into acunt our parent nodes' affect on the line box.
+        // Now take into account our parent nodes' affect on the line box.
         componentInfo = startComponentInfo;
         EucCSSIntermediateDocumentNode *node = componentInfo->documentNode.parent;
         while(node.display != CSS_DISPLAY_BLOCK) {
             if(node.computedStyle) {
                 EucCSSLayoutPositionedLineLineBox parentNodeBox = lineBoxForDocumentNode(node, scaleFactor);
-                _adjustLineBoxToContainLineBox(&lineBox, &parentNodeBox);
+                _adjustLineBoxToContainLineBox(&parentNodeBox, &lineBox);
                 node = node.parent;
+                lineBox = parentNodeBox;
             }
         }
-              
-        _lineBox = lineBox;
-        
-        _componentWidth = lineBox.width;
-        _baseline = lineBox.baseline;
-        
+
         CGRect frame = self.frame;
         frame.size = CGSizeMake(width, lineBox.height);
         self.frame = frame;
+        
+        _heightCalculated = YES;
     } else {
         CGRect frame = self.frame;
         frame.size.width = width;
@@ -361,7 +343,7 @@ static inline void _adjustParentsToContainRenderItem(EucCSSLayoutPositionedLineR
     NSUInteger parentIndex = renderItems[childIndex].parentIndex;
     if(parentIndex != NSUIntegerMax) {
         // Expand the size of the parent, if necessary.
-        BOOL sizeChanged = _adjustLineBoxToContainLineBox(&renderItems[parentIndex].lineBox, &renderItems[childIndex].lineBox);
+        BOOL sizeChanged = _adjustLineBoxToContainLineBoxIncludingWidth(&renderItems[parentIndex].lineBox, &renderItems[childIndex].lineBox);
         
         // If the size or baseline of the parent changed.
         if(sizeChanged) {
