@@ -515,13 +515,13 @@
 	}	
 }
 - (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
-	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
+//	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
 	self.expectedContentLength = [response expectedContentLength];
 
 	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
 	
 	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] && theConnection == headConnection) {		
-		NSLog(@"headConnection httpResponse.statusCode: %i",httpResponse.statusCode);
+//		NSLog(@"headConnection httpResponse.statusCode: %i",httpResponse.statusCode);
 		if (httpResponse.statusCode/100 != 2) {
 			// we are not getting valid response; try again from scratch.
 			resume = NO;
@@ -530,18 +530,18 @@
 		}
 		else {
 			
-			NSLog(@"inspecting header fields...");
+//			NSLog(@"inspecting header fields...");
 			NSString * acceptRanges = nil;
 			for (id key in httpResponse.allHeaderFields)
 			{
 				NSString * keyString = (NSString*)key;
-				NSLog(@"keyString: %@",keyString);
+//				NSLog(@"keyString: %@",keyString);
 				if ([[keyString lowercaseString] isEqualToString:[@"Accept-Ranges" lowercaseString]]) {
 					acceptRanges = [httpResponse.allHeaderFields objectForKey:keyString];
 					break;
 				}
 			}			
-			NSLog(@"Accept-Ranges: %@",acceptRanges);
+//			NSLog(@"Accept-Ranges: %@",acceptRanges);
 			if (acceptRanges == nil) {
 				//  most servers accept byte ranges without explicitly saying so- will try partial download.
 				resume = YES;
@@ -578,12 +578,12 @@
 				[self startDownload];
 			}
 			else {
-				NSLog(@"inspecting header fields for download connection...");
-				for (id key in httpResponse.allHeaderFields)
-				{
-					NSString * keyString = (NSString*)key;
-					NSLog(@"keyString: %@ value: %@",keyString, [httpResponse.allHeaderFields valueForKey:key]);
-				}							
+//				NSLog(@"inspecting header fields for download connection...");
+//				for (id key in httpResponse.allHeaderFields)
+//				{
+//					NSString * keyString = (NSString*)key;
+//					NSLog(@"keyString: %@ value: %@",keyString, [httpResponse.allHeaderFields valueForKey:key]);
+//				}							
 			}
 		}		
 	}
