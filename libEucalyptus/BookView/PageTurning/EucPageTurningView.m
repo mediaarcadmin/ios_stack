@@ -1134,7 +1134,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             // We need to generate contiguous data to upload, and we need to be
             // able to access the context's backing data.
             
-            THLog(@"Inefficient bitmap handling - having to copy image in context returned by RGBABitmapContextForPageAtIndex in order to to upload")
+            THLog(@"Inefficient bitmap handling - having to copy image in context returned by RGBABitmapContextForPageAtIndex in order to to upload");
             
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
             textureData = malloc(bufferLength);
