@@ -86,9 +86,8 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
             [cachedRuns release];
         }
         for(EucCSSLayoutRun *cachedRun in [cachedRuns reverseObjectEnumerator]) {
-            if(cachedRun->_id == id &&
-               cachedRun->_startNode.key == inlineNode.key &&
-               cachedRun->_underNode.key == underNode.key) {
+            if(cachedRun->_id == id) {
+                NSParameterAssert(cachedRun->_startNode.key == inlineNode.key && cachedRun->_underNode.key == underNode.key);
                 ret = cachedRun;
                 break;
             }

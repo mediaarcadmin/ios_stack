@@ -422,7 +422,7 @@ typedef struct EucCSSLayoutSizedRunBreakInfo {
             }
         }        
         if(startBreakOffset >= _potentialBreaksCount) {
-            return nil;
+            break;
         }
         int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
         

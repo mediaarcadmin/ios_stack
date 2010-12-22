@@ -182,11 +182,7 @@ static EucCSSLayoutPositionedLineLineBox lineBoxForDocumentNode(EucCSSIntermedia
     } else {
         myLineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
     }
-    
-    css_fixed verticalAlignSize = verticalAlignSize;
-    css_unit verticalAlignSizeUnit = verticalAlignSizeUnit;
-    
-    
+        
     CGFloat halfLeading = halfLeading;
     halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([node lineHeightAtScaleFactor:scaleFactor], 
                                                               [node textPointSizeAtScaleFactor:scaleFactor],

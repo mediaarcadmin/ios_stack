@@ -2593,6 +2593,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             [pageIndexes addObject:[NSNumber numberWithUnsignedInteger:_pageContentsInformation[3].pageIndex]];
         }
         description = [_bitmapDataSource pageTurningViewAccessibilityPageDescriptionForPagesAtIndexes:pageIndexes];
+        [pageIndexes release];
     } else {
         description = [_viewDataSource pageTurningViewAccessibilityPageDescriptionForView:_pageContentsInformation[3].view];
     }
