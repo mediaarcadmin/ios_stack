@@ -51,7 +51,7 @@
 
 @implementation CCInAppPurchaseRequest 
 
-@synthesize	responseClass;
+@synthesize	responseClass,testMode;
 
 -(NSURLRequest*)URLRequest {
 	return[[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:CCInAppPurchaseURL]] autorelease];
@@ -66,8 +66,23 @@
 
 @implementation CCInAppPurchaseFetchProductsRequest
 
+-(id)init {
+	if((self = [super init])) {
+#ifdef TEST_MODE
+		self.testMode = 1;
+		NSLog(@"TEST MODE = 1");
+#else	
+		self.testMode = 0;
+		NSLog(@"TEST MODE = 0");
+#endif
+	}
+	return self;
+}
+
+
 -(NSURLRequest*)URLRequest {
-	NSString * fullURL = [NSString stringWithFormat:@"%@%@",CCInAppPurchaseURL,@"activeproducts"];
+	NSString * fullURL = [NSString stringWithFormat:@"%@activeproducts?testMode=%i",CCInAppPurchaseURL,testMode];
+	NSLog(@"fetch products URL: %@",fullURL);
 	return[[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:fullURL]] autorelease];
 }
 
@@ -149,7 +164,7 @@
 
 @implementation CCInAppPurchasePurchaseProductRequest 
 
-@synthesize productId,hardwareId, HTTPBody,testMode;
+@synthesize productId,hardwareId, HTTPBody;
 
 -(id)initWithProductID:(NSString*)aProductId hardwareID:(NSString*)aHardwareId {
 	if((self = [super init])) {
@@ -157,8 +172,10 @@
 		self.hardwareId = aHardwareId;
 #ifdef TEST_MODE
 		self.testMode = 1;
+		NSLog(@"TEST MODE = 1");
 #else	
 		self.testMode = 0;
+		NSLog(@"TEST MODE = 0");
 #endif
 	}
 	return self;

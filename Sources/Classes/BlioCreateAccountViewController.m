@@ -232,7 +232,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	if (section == 0) return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CREATE_ACCOUNT_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Passwords must have a minimum of 8 characters, including at least one upper case and one digit. Characters %@ are not allowed.",@"Explanatory message that appears at the bottom of the Create Account fields."),BlioPasswordInvalidCharacters];
+	if (section == 0) return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"CREATE_ACCOUNT_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Passwords must have a minimum of %u characters, including at least one upper case and one digit. Characters %@ are not allowed.",@"Explanatory message that appears at the bottom of the Create Account fields."),BlioPasswordCharacterLengthMinimum,BlioPasswordInvalidCharacters];
 	return nil;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -379,7 +379,7 @@
 			[passwordField becomeFirstResponder];
 			return NO;
 		}	
-		// check to make sure password field is at least 6 characters in length
+		// check to make sure password field is at least BlioPasswordCharacterLengthMinimum characters in length
 		if ([passwordField.text length] < BlioPasswordCharacterLengthMinimum) {
 			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Invalid Password",@"\"Invalid Password\" alert message title") 
 										 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"PASSWORD_MUST_CONTAIN_MINIMUM_NUMBER_OF_CHARACTERS",nil,[NSBundle mainBundle],@"Please make sure your password contains at least %u characters.",@"Alert Text informing the end-user that the password must contain the minimum number of characters."),BlioPasswordCharacterLengthMinimum]

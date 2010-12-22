@@ -12,7 +12,7 @@
 #import "BlioStoreManager.h"
 
 static NSString * const BlioPasswordInvalidCharacters = @"&\"<>'";
-static const NSUInteger BlioPasswordCharacterLengthMinimum = 8;
+static const NSUInteger BlioPasswordCharacterLengthMinimum = 6;
 
 @interface BlioCreateAccountViewController : BlioLoginViewController <DigitalLockerConnectionDelegate,BlioLoginResultReceiver> {
 	UITextField* confirmPasswordField;

@@ -68,7 +68,7 @@
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	currentUsername = [user retain];
 	currentPassword = [password retain];
-	NSLog(@"self.userNum: %i",self.userNum);
+//	NSLog(@"self.userNum: %i",self.userNum);
 	if (!self.userNum > 0) {
 		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
 		request.Service = DigitalLockerServiceRegistration;
@@ -91,7 +91,7 @@
 #endif
 }
 -(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
 	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
@@ -365,7 +365,7 @@
 	[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];
 }
 -(void)retrieveBooks {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
 	if (![BlioStoreManager sharedInstance].processingDelegate) {
 		NSLog(@"ERROR: no processingManager set for BlioOnlineStoreHelper! Aborting retrieveBooks...");
 		return;

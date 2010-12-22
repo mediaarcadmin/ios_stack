@@ -139,6 +139,15 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     return self;
 }
 
+- (void)didMoveToWindow {
+    UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation]; 
+    
+    if (UIInterfaceOrientationIsLandscape(i)) {
+        self.frame = CGRectMake(0, -160, 480, 480);
+    }
+}
+
+
 
 - (CGFloat)fontPointSize {
     return (currentFontSize-20.0)*8.0/100.0+14;
