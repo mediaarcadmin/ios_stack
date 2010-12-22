@@ -10,9 +10,15 @@
 #import <pthread.h>
 
 @interface THCacheBase : NSObject {
-    pthread_rwlock_t _cacheRWLock;
-    CFMutableSetRef _cacheSet;
+    pthread_mutex_t _cacheMutex;
+    CFMutableSetRef _currentCacheSet;
+    CFMutableSetRef _lastGenerationCacheSet;
+    
+    NSUInteger _generationLifetime;
+    NSUInteger _insertionsThisGeneration;
 }
+
+@property (nonatomic, assign) NSUInteger generationLifetime;
 
 // To override:
 - (CFIndex)itemSize;

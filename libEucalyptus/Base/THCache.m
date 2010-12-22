@@ -9,6 +9,15 @@
 #import "THCache.h"
 #import "THLog.h"
 
+@implementation NSObject (THCacheObjectInUse)
+
+- (BOOL)thCacheObjectInUse
+{
+    return self.retainCount > 1;
+}
+
+@end
+
 @implementation THCache
 
 typedef struct THCacheItem {
@@ -59,19 +68,19 @@ typedef struct THCacheItem {
 
 - (void)cacheObject:(id)value forKey:(id)key
 {    
-    pthread_rwlock_wrlock(&_cacheRWLock);
+    pthread_mutex_lock(&_cacheMutex);
 
     THCacheItem item = { self, key, value };
     [self cacheItem:&item];
     
-    pthread_rwlock_unlock(&_cacheRWLock);
+    pthread_mutex_unlock(&_cacheMutex);
 }
 
 - (id)objectForKey:(id)key
 {
     id ret;
     
-    pthread_rwlock_rdlock(&_cacheRWLock);
+    pthread_mutex_lock(&_cacheMutex);
     THCacheItem probeItem = { self, key };
     const THCacheItem *item = [self retrieveItem:&probeItem];
     if(item) {
@@ -79,23 +88,12 @@ typedef struct THCacheItem {
     } else {
         ret = nil;
     }
-    pthread_rwlock_unlock(&_cacheRWLock);
+    pthread_mutex_unlock(&_cacheMutex);
     
     return ret;
 }
 
 @end
-
-@implementation NSObject (THCacheObjectInUse)
-
-- (BOOL)thCacheObjectInUse
-{
-    return self.retainCount > 1;
-}
-
-@end
-
-
 
 @implementation THIntegerToObjectCache
 
@@ -136,24 +134,24 @@ typedef struct THIntegerToObjectCacheItem {
 
 - (BOOL)isItemInUse:(const void *)item
 {
-    return [((THCacheItem *)item)->value retainCount] > 1;
+    return [((THIntegerToObjectCacheItem *)item)->value thCacheObjectInUse];
 }
 
 - (void)cacheObject:(id)value forKey:(uint32_t)key
 {    
-    pthread_rwlock_wrlock(&_cacheRWLock);
+    pthread_mutex_lock(&_cacheMutex);
     
     THIntegerToObjectCacheItem item = { self, key, value};
     [self cacheItem:&item];
     
-    pthread_rwlock_unlock(&_cacheRWLock);
+    pthread_mutex_unlock(&_cacheMutex);
 }
 
 - (id)objectForKey:(uint32_t)key
 {
     id ret;
     
-    pthread_rwlock_rdlock(&_cacheRWLock);
+    pthread_mutex_lock(&_cacheMutex);
     THIntegerToObjectCacheItem probeItem = { self, key, 0 };
     const THCacheItem *item = [self retrieveItem:&probeItem];
     if(item) {
@@ -161,7 +159,7 @@ typedef struct THIntegerToObjectCacheItem {
     } else {
         ret = nil;
     }
-    pthread_rwlock_unlock(&_cacheRWLock);
+    pthread_mutex_unlock(&_cacheMutex);
 
     return ret;
 }
@@ -216,24 +214,24 @@ typedef struct THStringAndIntegerToObjectCacheItem {
 
 - (BOOL)isItemInUse:(const void *)item
 {
-    return [((THStringAndIntegerToObjectCacheItem *)item)->value retainCount] > 1;
+    return [((THStringAndIntegerToObjectCacheItem *)item)->value thCacheObjectInUse];
 }
 
 - (void)cacheObject:(id)value forStringKey:(NSString *)stringKey integerKey:(uint32_t)integerKey
 {    
-    pthread_rwlock_wrlock(&_cacheRWLock);
+    pthread_mutex_lock(&_cacheMutex);
     
     THStringAndIntegerToObjectCacheItem item = { self, stringKey, integerKey, value };
     [self cacheItem:&item];
     
-    pthread_rwlock_unlock(&_cacheRWLock);
+    pthread_mutex_unlock(&_cacheMutex);
 }
 
 - (id)objectForStringKey:(NSString *)stringKey integerKey:(uint32_t)integerKey
 {
     id ret;
     
-    pthread_rwlock_rdlock(&_cacheRWLock);
+    pthread_mutex_lock(&_cacheMutex);
     THStringAndIntegerToObjectCacheItem probeItem = { self, stringKey, integerKey } ;
     const THStringAndIntegerToObjectCacheItem *item = [self retrieveItem:&probeItem];
     if(item) {
@@ -241,7 +239,7 @@ typedef struct THStringAndIntegerToObjectCacheItem {
     } else {
         ret = nil;
     }
-    pthread_rwlock_unlock(&_cacheRWLock);
+    pthread_mutex_unlock(&_cacheMutex);
     
     return ret;
 }
@@ -293,21 +291,21 @@ typedef struct THStringAndFloatToCGFloatCacheItem {
     return [((THStringAndFloatToCGFloatCacheItem *)item)->stringKey hash] ^ (((THStringAndFloatToCGFloatCacheItem *)item)->numberKey.integerKey * 2654435761);
 }
 
-- (void)cacheCGFloat:(CGFloat)value forStringKey:(NSString *)stringKey cgFloatKet:(CGFloat)cgFloatKey
+- (void)cacheCGFloat:(CGFloat)value forStringKey:(NSString *)stringKey cgFloatKey:(CGFloat)cgFloatKey
 {    
-    pthread_rwlock_wrlock(&_cacheRWLock);
+    pthread_mutex_lock(&_cacheMutex);
     
     THStringAndFloatToCGFloatCacheItem item = { self, stringKey, { cgFloatKey }, value };
     [self cacheItem:&item];
     
-    pthread_rwlock_unlock(&_cacheRWLock);
+    pthread_mutex_unlock(&_cacheMutex);
 }
 
-- (CGFloat)cgFloatForStringKey:(NSString *)stringKey cgFloatKet:(CGFloat)cgFloatKey
+- (CGFloat)cgFloatForStringKey:(NSString *)stringKey cgFloatKey:(CGFloat)cgFloatKey
 {
     CGFloat ret;
     
-    pthread_rwlock_rdlock(&_cacheRWLock);
+    pthread_mutex_lock(&_cacheMutex);
     THStringAndFloatToCGFloatCacheItem probeItem = { self, stringKey, { cgFloatKey } } ;
     const THStringAndFloatToCGFloatCacheItem *item = [self retrieveItem:&probeItem];
     if(item) {
@@ -315,7 +313,7 @@ typedef struct THStringAndFloatToCGFloatCacheItem {
     } else {
         ret = 0.0f;
     }
-    pthread_rwlock_unlock(&_cacheRWLock);
+    pthread_mutex_unlock(&_cacheMutex);
     
     return ret;
 }

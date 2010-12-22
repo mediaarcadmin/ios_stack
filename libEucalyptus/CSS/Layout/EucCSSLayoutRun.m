@@ -27,6 +27,7 @@
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSDocumentTreeNode.h"
 #import "THStringRenderer.h"
+#import "THCache.h"
 #import "THNSStringSmartQuotes.h"
 #import "THPair.h"
 #import "THLog.h"
@@ -79,35 +80,25 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     
     EucCSSIntermediateDocument *document = inlineNode.document;
     @synchronized(document) {
-        NSMutableArray *cachedRuns = objc_getAssociatedObject(document, EucCSSRunCacheKey);
+        THIntegerToObjectCache *cachedRuns = objc_getAssociatedObject(document, EucCSSRunCacheKey);
         if(!cachedRuns) {
-            cachedRuns = [[NSMutableArray alloc] initWithCapacity:RUN_CACHE_CAPACITY];
+            cachedRuns = [[THIntegerToObjectCache alloc] init];
+            cachedRuns.generationLifetime = 48;
             objc_setAssociatedObject(document, EucCSSRunCacheKey, cachedRuns, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             [cachedRuns release];
         }
-        for(EucCSSLayoutRun *cachedRun in [cachedRuns reverseObjectEnumerator]) {
-            if(cachedRun->_id == id) {
-                NSParameterAssert(cachedRun->_startNode.key == inlineNode.key && cachedRun->_underNode.key == underNode.key);
-                ret = cachedRun;
-                break;
-            }
-        }
-        if(ret) {
-            [ret retain];
-            [cachedRuns removeObject:ret];
-            // We'll add it again at the end to keep the last-used
-            // eviction working.
-        }
+        ret = [cachedRuns objectForKey:id];
         if(!ret) {
             ret = [[[self class] alloc] initWithNode:inlineNode
                                       underLimitNode:underNode 
                                                forId:id];
+            [cachedRuns cacheObject:ret forKey:id];
+            [ret autorelease];
+        } else {
+            if(THWillLog()) {
+                NSParameterAssert(ret.startNode == inlineNode && ret.underNode == underNode);
+            }
         }
-        if(cachedRuns.count == RUN_CACHE_CAPACITY) {
-            [cachedRuns removeObjectAtIndex:0];
-        }
-        [cachedRuns addObject:ret];
-        [ret release];
     }
     return ret;
 }

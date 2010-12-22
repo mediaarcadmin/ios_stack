@@ -13,15 +13,9 @@
 #import <UIKit/UIKit.h>
 #endif
 
-static BOOL sDontReallyCache;
-static pthread_once_t sDontReallyCacheOnceControl = PTHREAD_ONCE_INIT;
-
 @implementation THCacheBase
 
-static void readDontReallyCacheDefault()
-{
-    sDontReallyCache = [[NSUserDefaults standardUserDefaults] boolForKey:@"THCacheDontReallyCache"];
-}
+@synthesize generationLifetime = _generationLifetime;
 
 static const void *THCacheItemRetain(CFAllocatorRef allocator, const void *item)
 {
@@ -61,15 +55,14 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 - (id)init
 {
     if((self = [super init])) {
-        pthread_once(&sDontReallyCacheOnceControl, readDontReallyCacheDefault);
-        pthread_rwlock_init(&_cacheRWLock, NULL);
+        pthread_mutex_init(&_cacheMutex, NULL);
 #if TARGET_OS_IPHONE
         [[NSNotificationCenter defaultCenter] addObserver:self 
                                                  selector:@selector(_didReceiveMemoryWarning)
                                                      name:UIApplicationDidReceiveMemoryWarningNotification
                                                    object:[UIApplication sharedApplication]];
 #endif        
-        _cacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
+        _currentCacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
     }
     return self;
 }
@@ -82,9 +75,12 @@ static const CFSetCallBacks THCacheSetCallBacks = {
                                                   object:[UIApplication sharedApplication]];
 #endif
     
-    CFRelease(_cacheSet);
+    if(_lastGenerationCacheSet) {
+        CFRelease(_lastGenerationCacheSet);
+    }
+    CFRelease(_currentCacheSet);
     
-    pthread_rwlock_destroy(&_cacheRWLock);
+    pthread_mutex_destroy(&_cacheMutex);
     
     [super dealloc];
 }
@@ -102,41 +98,107 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 
 - (CFHashCode)hashItem:(const void *)item { return 0; }
 
+- (void)_cycleGenerations
+{
+    if([self respondsToSelector:@selector(isItemInUse:)]) {
+        // Save all the still-in-use values from the old generation.
+        CFIndex setCount = CFSetGetCount(_lastGenerationCacheSet);
+        const void **items = malloc(sizeof(void *) * setCount);
+        CFSetGetValues(_lastGenerationCacheSet, items);
+        for(CFIndex i = 0; i < setCount; ++i) { 
+            if([(id<THCacheItemInUse>)self isItemInUse:items[i]]) {
+                CFSetSetValue(_currentCacheSet, items[i]);
+            }
+        }
+        free(items);
+    } 
+    
+    // Get rid of the old generation, and 
+    CFRelease(_lastGenerationCacheSet);
+    _lastGenerationCacheSet = _currentCacheSet;
+    _currentCacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
+    
+    _insertionsThisGeneration = 0;
+}
+
 - (void)_didReceiveMemoryWarning
 {
-    THLog(@"Cache had %ld items - emptying...", (long)CFSetGetCount(_cacheSet));
+    pthread_mutex_lock(&_cacheMutex);
     
-    pthread_rwlock_wrlock(&_cacheRWLock);
+    if(_lastGenerationCacheSet) {
+        THLog(@"Cache had %ld items - emptying...", (long)CFSetGetCount(_currentCacheSet) +  (long)CFSetGetCount(_lastGenerationCacheSet));
+    } else {
+        THLog(@"Cache had %ld items - emptying...", (long)CFSetGetCount(_currentCacheSet));
+    }
     
     if([self respondsToSelector:@selector(isItemInUse:)]) {
-        CFIndex setCount = CFSetGetCount(_cacheSet);
+        CFIndex setCount = CFSetGetCount(_currentCacheSet);
         const void **items = malloc(sizeof(void *) * setCount);
-        CFSetGetValues(_cacheSet, items);
+        CFSetGetValues(_currentCacheSet, items);
         for(CFIndex i = 0; i < setCount; ++i) { 
             if(![(id<THCacheItemInUse>)self isItemInUse:items[i]]) {
-                CFSetRemoveValue(_cacheSet, items[i]);
+                CFSetRemoveValue(_currentCacheSet, items[i]);
             }
         }
         free(items);
     } else {
-        CFRelease(_cacheSet);
-        _cacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
+        CFRelease(_currentCacheSet);
+        _currentCacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
     }
 
-    pthread_rwlock_unlock(&_cacheRWLock);
-    THLog(@"Cache has %ld items.", (long)CFSetGetCount(_cacheSet));
+    if(_generationLifetime) {
+        [self _cycleGenerations];
+    }
+
+    THLog(@"Cache has %ld items.", (long)CFSetGetCount(_lastGenerationCacheSet ?: _currentCacheSet));
+
+    pthread_mutex_unlock(&_cacheMutex);
+}
+
+- (void)setGenerationLifetime:(NSUInteger)generationLifetime
+{
+    pthread_mutex_lock(&_cacheMutex);
+    if(generationLifetime > 0) {
+        _generationLifetime = generationLifetime;
+        if(!_lastGenerationCacheSet) {
+            _lastGenerationCacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
+        }
+    } else {
+        if(_generationLifetime) {
+            [self _cycleGenerations];
+            CFRelease(_currentCacheSet);
+            _currentCacheSet = _lastGenerationCacheSet;
+            _lastGenerationCacheSet = nil;
+            _generationLifetime = 0;
+        }
+    }
+    pthread_mutex_unlock(&_cacheMutex);
 }
 
 - (void)cacheItem:(void *)item
 {
-    if(!sDontReallyCache) {
-        CFSetSetValue(_cacheSet, item);
+    if(_lastGenerationCacheSet) {
+        CFSetRemoveValue(_lastGenerationCacheSet, item);
+    }
+    CFSetSetValue(_currentCacheSet, item);
+    if(_generationLifetime) {
+        if(++_insertionsThisGeneration > _generationLifetime) {
+            [self _cycleGenerations];
+        }
     }
 }
 
 - (const void *)retrieveItem:(void *)probeItem
 {
-    return CFSetGetValue(_cacheSet, probeItem);
+    const void *ret = CFSetGetValue(_currentCacheSet, probeItem);
+    if(!ret && _lastGenerationCacheSet) {
+        ret = CFSetGetValue(_lastGenerationCacheSet, probeItem);
+        if(ret) {
+            CFSetSetValue(_currentCacheSet, ret);
+            CFSetRemoveValue(_lastGenerationCacheSet, ret);
+        }
+    }
+    return ret;
 }
 
 @end

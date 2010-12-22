@@ -51,6 +51,7 @@ typedef struct EucCSSLayoutSizedRunBreakInfo {
     [_run release];
     
     free(_potentialBreaks);
+    free(_potentialBreakInfos);
     free(_componentWidthInfos);
     
     [super dealloc];

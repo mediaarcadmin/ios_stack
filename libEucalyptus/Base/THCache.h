@@ -16,16 +16,16 @@
 
 #import "THCacheBase.h"
 
+@interface NSObject (THCacheObjectInUse)
+
+- (BOOL)thCacheObjectInUse;
+
+@end
+
 @interface THCache : THCacheBase <THCacheItemInUse> {}
 
 - (void)cacheObject:(id)value forKey:(id)key;
 - (id)objectForKey:(id)key;
-
-@end
-
-@interface NSObject (THCacheObjectInUse)
-
-- (BOOL)thCacheObjectInUse;
 
 @end
 
@@ -46,7 +46,7 @@
 
 @interface THStringAndFloatToCGFloatCache : THCacheBase {}
 
-- (void)cacheCGFloat:(CGFloat)value forStringKey:(NSString *)stringKey cgFloatKet:(CGFloat)cgFloatKey;
-- (CGFloat)cgFloatForStringKey:(NSString *)stringKey cgFloatKet:(CGFloat)cgFloatKey;
+- (void)cacheCGFloat:(CGFloat)value forStringKey:(NSString *)stringKey cgFloatKey:(CGFloat)cgFloatKey;
+- (CGFloat)cgFloatForStringKey:(NSString *)stringKey cgFloatKey:(CGFloat)cgFloatKey;
 
 @end
