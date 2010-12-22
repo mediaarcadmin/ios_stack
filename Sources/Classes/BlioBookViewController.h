@@ -115,6 +115,7 @@ typedef enum {
     BOOL _TTSEnabled;
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
+	BOOL _audioEnabled;
     
     id<BlioParagraphSource> _audioParagraphSource;
     
@@ -168,6 +169,7 @@ typedef enum {
 
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic, assign) BOOL audioPlaying;
+@property (nonatomic, assign) BOOL audioEnabled;
 
 @property (nonatomic, assign) BOOL motionControlsEnabled;
 
