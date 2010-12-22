@@ -407,6 +407,8 @@
 		7D5D69C410C2D33200BBF826 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC07E0554694100DB518D /* libEucalyptus.a */; };
 		7D5D69C710C2D33200BBF826 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5171CA1028B6AE005F3C46 /* libexpat.a */; };
 		7D5D69C810C2D33200BBF826 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5170CE1028AD1B005F3C46 /* libhyphenate.a */; };
+		7D61C31A12C1180D003120CC /* EucCSSLayoutSizedRun.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D61C31812C1180D003120CC /* EucCSSLayoutSizedRun.h */; };
+		7D61C31B12C1180D003120CC /* EucCSSLayoutSizedRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D61C31912C1180D003120CC /* EucCSSLayoutSizedRun.m */; };
 		7D653B8111AFD17000C47DC6 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */; };
 		7D653B8211AFD17000C47DC6 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */; };
 		7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D658C6D103DEAD900EB5003 /* THImageFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1197,6 +1199,8 @@
 		7D58226811F858AB00D4150C /* EucCSSLayoutPositionedContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutPositionedContainer.m; sourceTree = "<group>"; };
 		7D589BAD125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageTurningPageContentsInformation.h; sourceTree = "<group>"; };
 		7D589BAE125D67ED00ECD5DA /* EucPageTurningPageContentsInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageTurningPageContentsInformation.m; sourceTree = "<group>"; };
+		7D61C31812C1180D003120CC /* EucCSSLayoutSizedRun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutSizedRun.h; sourceTree = "<group>"; };
+		7D61C31912C1180D003120CC /* EucCSSLayoutSizedRun.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutSizedRun.m; sourceTree = "<group>"; };
 		7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EucConfiguration.plist; sourceTree = "<group>"; };
 		7D658C6D103DEAD900EB5003 /* THImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THImageFactory.h; sourceTree = "<group>"; };
 		7D658C6E103DEAD900EB5003 /* THImageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THImageFactory.m; sourceTree = "<group>"; };
@@ -2302,6 +2306,8 @@
 				7D23415D1149602300C318E7 /* EucCSSLayoutRun.h */,
 				7D23415F1149602300C318E7 /* EucCSSLayoutRun_Package.h */,
 				7D23415E1149602300C318E7 /* EucCSSLayoutRun.m */,
+				7D61C31812C1180D003120CC /* EucCSSLayoutSizedRun.h */,
+				7D61C31912C1180D003120CC /* EucCSSLayoutSizedRun.m */,
 				7D58226711F858AB00D4150C /* EucCSSLayoutPositionedContainer.h */,
 				7D58226811F858AB00D4150C /* EucCSSLayoutPositionedContainer.m */,
 				7D2341621149602300C318E7 /* EucCSSLayoutPositionedLine.h */,
@@ -2915,6 +2921,7 @@
 				7DF161A012C0C5090045904F /* EucCSSLayoutTableColumn.h in Headers */,
 				7DF161A612C0C5190045904F /* EucCSSLayoutTableCell.h in Headers */,
 				7DF163B412C0CCB20045904F /* EucCSSLayoutTableBox.h in Headers */,
+				7D61C31A12C1180D003120CC /* EucCSSLayoutSizedRun.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3573,6 +3580,7 @@
 				7DF161A112C0C5090045904F /* EucCSSLayoutTableColumn.m in Sources */,
 				7DF161A712C0C5190045904F /* EucCSSLayoutTableCell.m in Sources */,
 				7DF163B512C0CCB20045904F /* EucCSSLayoutTableBox.m in Sources */,
+				7D61C31B12C1180D003120CC /* EucCSSLayoutSizedRun.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

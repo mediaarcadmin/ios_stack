@@ -72,8 +72,7 @@
                 // This is an inline element - start a run.
                 ret = [EucCSSLayoutRun runWithNode:currentDocumentNode
                                                     underLimitNode:currentDocumentNode.blockLevelParent
-                                                             forId:nextRunNodeKey
-                                                       scaleFactor:1.0f];
+                                                             forId:nextRunNodeKey];
                 
             } else {
                 // This is a block-level element.

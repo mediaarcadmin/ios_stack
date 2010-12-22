@@ -17,6 +17,7 @@
 #import "EucCSSLayouter.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSRenderer.h"
+#import "EucCSSLayoutSizedRun.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
 
@@ -149,8 +150,8 @@
 }
 
 static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayoutPositionedRun *rhs, void *context) {
-    uint32_t lhsId = lhs.run.id;
-    uint32_t rhsId = rhs.run.id;
+    uint32_t lhsId = lhs.sizedRun.run.id;
+    uint32_t rhsId = rhs.sizedRun.run.id;
     if(lhsId < rhsId) {
         return NSOrderedAscending;
     } else if (lhsId > rhsId) {
@@ -172,13 +173,13 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
 
 - (NSArray *)blockIdentifiers
 {
-    return [[[self _positionedRuns] valueForKey:@"run"] valueForKey:@"id"];
+    return [[[[self _positionedRuns] valueForKey:@"sizedRun"]  valueForKey:@"run"] valueForKey:@"id"];
 }
 
 - (EucCSSLayoutPositionedRun *)_positionedRunWithKey:(uint32_t)key
 {
     for(EucCSSLayoutPositionedRun *positionedRun in [self _positionedRuns]) {
-        if(key == positionedRun.run.id) {
+        if(key == positionedRun.sizedRun.run.id) {
             return positionedRun;
         }
     }

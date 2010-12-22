@@ -69,7 +69,7 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
     EucCSSLayoutRunPoint _endPoint;
     CGFloat _componentWidth;
 
-    BOOL _heightCalculated;
+    CGRect _parentFrame;
 
     CGFloat _indent;
     uint8_t _align;
@@ -87,6 +87,7 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
 
 @property (nonatomic, assign) uint8_t align;
 
+- (void)sizeToFitInWidth:(CGFloat)width parentFrame:(CGRect)parentFrame;
 
 - (size_t)renderItemCount;
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems;

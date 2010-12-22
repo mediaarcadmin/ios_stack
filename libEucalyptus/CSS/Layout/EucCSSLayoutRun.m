@@ -48,7 +48,6 @@ typedef struct EucCSSLayoutRunBreakInfo {
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode;
 - (void)_accumulateFloatNode:(EucCSSIntermediateDocumentNode *)subnode;
-- (CGFloat)_textIndentInWidth:(CGFloat)width;
 @end 
 
 @implementation EucCSSLayoutRun
@@ -57,20 +56,24 @@ typedef struct EucCSSLayoutRunBreakInfo {
 @synthesize componentsCount = _componentsCount;
 @synthesize wordToComponent = _wordToComponent;
 
+@synthesize sizeDependentComponentIndexes = _sizeDependentComponentIndexes;
+@synthesize floatComponentIndexes = _floatComponentIndexes;
+
 @synthesize startNode = _startNode;
 @synthesize underNode = _underNode;
 @synthesize id = _id;
 @synthesize nextNodeUnderLimitNode = _nextNodeUnderLimitNode;
 @synthesize nextNodeInDocument = _nextNodeInDocument;
-@synthesize scaleFactor = _scaleFactor;
+
+@synthesize wordsCount = _wordsCount;
+
 
 #define RUN_CACHE_CAPACITY 48
 static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
 
 + (id)runWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
-           underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
-                    forId:(uint32_t)id
-              scaleFactor:(CGFloat)scaleFactor
+   underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
+            forId:(uint32_t)id
 {
     EucCSSLayoutRun *ret = nil;
     
@@ -83,8 +86,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
             [cachedRuns release];
         }
         for(EucCSSLayoutRun *cachedRun in [cachedRuns reverseObjectEnumerator]) {
-            if(cachedRun->_scaleFactor == scaleFactor &&
-               cachedRun->_id == id &&
+            if(cachedRun->_id == id &&
                cachedRun->_startNode.key == inlineNode.key &&
                cachedRun->_underNode.key == underNode.key) {
                 ret = cachedRun;
@@ -100,8 +102,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         if(!ret) {
             ret = [[[self class] alloc] initWithNode:inlineNode
                                       underLimitNode:underNode 
-                                               forId:id 
-                                         scaleFactor:scaleFactor];
+                                               forId:id];
         }
         if(cachedRuns.count == RUN_CACHE_CAPACITY) {
             [cachedRuns removeObjectAtIndex:0];
@@ -111,19 +112,15 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     }
     return ret;
 }
-        
+ 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
              forId:(uint32_t)id
-       scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {        
         _sharedHyphenator = [[EucSharedHyphenator sharedHyphenator] retain];
 
         _id = id;
-        
-        _scaleFactor = scaleFactor;
-        
         
         _startNode = [inlineNode retain];
         _underNode = [underNode retain];
@@ -169,7 +166,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                         if(_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutRunComponentKindHardBreak) {
                             EucCSSLayoutRunComponentInfo info = hardBreakInfo;
                             info.documentNode = inlineNode.parent;
-                            info.width = 0;
                             [self _addComponent:&info];
                         } 
                         
@@ -211,7 +207,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                         if(inlineNode.display == CSS_DISPLAY_LIST_ITEM) {
                             EucCSSLayoutRunComponentInfo info = hardBreakInfo;
                             info.documentNode = inlineNode.parent;
-                            info.width = 0;
                             [self _addComponent:&info];
                             _previousInlineCharacterWasSpace = YES;
                             _alreadyInsertedSpace = YES;
@@ -254,7 +249,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         if(kind == EucCSSLayoutRunComponentKindWord) {
             [_componentInfos[i].contents.stringInfo.string release];
         } else if (kind == EucCSSLayoutRunComponentKindImage) { 
-            CFRelease(_componentInfos[i].contents.imageInfo.image);
+            [_componentInfos[i].contents.imageInfo.imageURL release];
         } else if(kind == EucCSSLayoutRunComponentKindHyphenationRule) {
             [_componentInfos[i].contents.hyphenationInfo.beforeHyphen release];
             [_componentInfos[i].contents.hyphenationInfo.afterHyphen release];
@@ -282,7 +277,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     [super dealloc];
 }
 
-- (CGFloat)_textIndentInWidth:(CGFloat)width;
+- (CGFloat)textIndentInWidth:(CGFloat)width atScaleFactor:(CGFloat)scaleFactor
 {
     CGFloat ret = 0.0f;
     
@@ -291,12 +286,12 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         css_fixed length = 0;
         css_unit unit = (css_unit)0;
         css_computed_text_indent(style, &length, &unit);
-        ret = EucCSSLibCSSSizeToPixels(style, length, unit, width, _scaleFactor);
+        ret = EucCSSLibCSSSizeToPixels(style, length, unit, width, scaleFactor);
     }
     return ret;
 }
 
-- (uint8_t)_textAlign;
+- (uint8_t)textAlign
 {
     uint8_t ret = CSS_TEXT_ALIGN_DEFAULT;
     
@@ -320,7 +315,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         
         [info->contents.stringInfo.string retain];
     } else if(info->kind == EucCSSLayoutRunComponentKindImage) {
-        CFRetain(info->contents.imageInfo.image);
+        [info->contents.imageInfo.imageURL retain];
     } else if(info->kind == EucCSSLayoutRunComponentKindHyphenationRule) {
         [info->contents.hyphenationInfo.beforeHyphen retain];
         [info->contents.hyphenationInfo.afterHyphen retain];
@@ -342,170 +337,21 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     ++_currentWordElementCount;
 }
 
-- (CGSize)_computedSizeForImage:(CGImageRef)image
-                 specifiedWidth:(CGFloat)specifiedWidth
-                specifiedHeight:(CGFloat)specifiedHeight
-                       maxWidth:(CGFloat)maxWidth
-                       minWidth:(CGFloat)minWidth
-                      maxHeight:(CGFloat)maxHeight
-                      minHeight:(CGFloat)minHeight
-{
-    // Sanitise the input.
-    if(minHeight > maxHeight) {
-        maxHeight = minHeight;
-    }
-    if(minWidth > maxWidth) {
-        maxWidth = minWidth;
-    }
-    
-    if(specifiedWidth == CGFLOAT_MAX && specifiedHeight == CGFLOAT_MAX) {
-        specifiedWidth = CGImageGetWidth(image);
-        specifiedHeight = CGImageGetHeight(image);
-    } else if(specifiedWidth == CGFLOAT_MAX) {
-        specifiedWidth = (CGFloat)CGImageGetWidth(image) / (CGFloat)CGImageGetHeight(image) * specifiedHeight;
-    } else if(specifiedHeight == CGFLOAT_MAX) {
-        specifiedHeight = (CGFloat)CGImageGetHeight(image) / (CGFloat)CGImageGetWidth(image) * specifiedWidth;
-    }
-    
-    // Work out the size.
-    // From http://www.w3.org/TR/CSS2/visudet.html#min-max-widths
-    CGFloat w = specifiedWidth;
-    CGFloat h = specifiedHeight;
-    
-    CGFloat W = w, H = h;
-    
-         if(w > maxWidth)                         { W = maxWidth,                       H = MAX(maxWidth * h/w, minHeight); }
-    else if(w < minWidth)                         { W = minWidth,                       H = MIN(minWidth * h/w, maxHeight); }
-    else if(h > maxHeight)                        { W = MAX(maxHeight * w/h, minWidth), H = maxHeight;                      }
-    else if(h < minHeight)	                      { W = MIN(minHeight * w/h, maxWidth), H = minHeight;                      }
-    else if((w > maxWidth) && (h > maxHeight)) {
-             if(maxWidth/w <= maxHeight/h)        { W = maxWidth,                       H = MAX(minHeight, maxWidth * h/w); }
-        else if(maxWidth/w > maxHeight/h)         { W = MAX(minWidth, maxHeight * w/h), H = maxHeight;                      }
-    }
-    else if((w < minWidth) && (h < minHeight)) {
-             if(minWidth/w <= minHeight/h)        { W = MIN(maxWidth, minHeight * w/h), H = minHeight;                      }
-        else if(minWidth/w > minHeight/h)         { W = minWidth,                       H = MIN(maxHeight, minWidth * h/w); }
-    }
-    else if((w < minWidth) && (h > maxHeight))    { W = minWidth,                       H = maxHeight;                      }
-    else if((w > maxWidth) && (h < minHeight))    { W = maxWidth,                       H = minHeight;                      }
- 
-    return CGSizeMake(roundf(W), roundf(H));
-}
-
 - (void)_accumulateImageNode:(EucCSSIntermediateDocumentNode *)subnode
 {
-    NSData *imageData = [subnode.document.dataSource dataForURL:[subnode imageSource]];
-
-    if(imageData) {
-        CGImageRef image = NULL;
-#if TARGET_OS_IPHONE
-        image = [UIImage imageWithData:imageData].CGImage;
-        if(image) {
-            CFRetain(image);
-        }
-#else
-        CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)imageData, NULL);
-        if(imageSource) {
-            image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
-            CFRelease(imageSource);
-        }
-#endif
-        if(image) {
-            EucCSSLayoutRunComponentInfo info = { 0 };
-            info.documentNode = subnode;
-            info.kind = EucCSSLayoutRunComponentKindImage;
-            info.contents.imageInfo.image = image;
-            [self _addComponent:&info];
-            
-            if(!_sizeDependentComponentIndexes) {
-                _sizeDependentComponentIndexes = [[NSMutableArray alloc] init];
-            }
-            [_sizeDependentComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];
-            
-            _previousInlineCharacterWasSpace = NO;
-            //_seenNonSpace = YES;
-            
-            CFRelease(image);
-        }
+    NSURL *imageURL = [subnode imageSource];
+    EucCSSLayoutRunComponentInfo info = { 0 };
+    info.documentNode = subnode;
+    info.kind = EucCSSLayoutRunComponentKindImage;
+    info.contents.imageInfo.imageURL = imageURL;
+    [self _addComponent:&info];
+    
+    if(!_sizeDependentComponentIndexes) {
+        _sizeDependentComponentIndexes = [[NSMutableArray alloc] init];
     }
-}
-
-- (void)_recalculateSizeDependentComponentSizesForFrame:(CGRect)frame
-{
-    for(NSNumber *indexNumber in _sizeDependentComponentIndexes) {
-        size_t offset = [indexNumber integerValue];
-        
-        CGImageRef image = _componentInfos[offset].contents.imageInfo.image;
-        EucCSSIntermediateDocumentNode *subnode = _componentInfos[offset].documentNode;
-        
-        CGFloat specifiedWidth = CGFLOAT_MAX;
-        CGFloat specifiedHeight = CGFLOAT_MAX;
-        
-        CGFloat maxWidth = CGFLOAT_MAX;
-        CGFloat maxHeight = CGFLOAT_MAX;
-        
-        CGFloat minWidth = 1;
-        CGFloat minHeight = 1;
-        
-        css_fixed length = 0;
-        css_unit unit = (css_unit)0;
-        css_computed_style *nodeStyle = subnode.computedStyle;
-        if(nodeStyle) {
-            uint8_t widthKind = css_computed_width(nodeStyle, &length, &unit);
-            if(widthKind == CSS_WIDTH_SET) {
-                specifiedWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
-            }
-            
-            uint8_t maxWidthKind = css_computed_max_width(nodeStyle, &length, &unit);
-            if (maxWidthKind == CSS_MAX_WIDTH_SET) {
-                maxWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
-            } 
-            
-            uint8_t heightKind = css_computed_height(nodeStyle, &length, &unit);
-            if (heightKind == CSS_HEIGHT_SET) {
-                if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
-                    // Assume no intrinsic height;
-                } else {
-                    specifiedHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
-                }
-            } 
-        
-            uint8_t maxHeightKind = css_computed_max_height(nodeStyle, &length, &unit);
-            if (maxHeightKind == CSS_MAX_HEIGHT_SET) {
-                if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
-                    // Assume no max height;
-                } else {
-                    maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
-                }
-            } 
-        }
-        /*
-        if(specifiedWidth == CGFLOAT_MAX) {
-            [subnode 
-        }
-        */
-        
-        if(maxWidth == CGFLOAT_MAX) {
-            maxWidth = frame.size.width;
-        }
-        
-        CGSize calculatedSize = [self _computedSizeForImage:image
-                                             specifiedWidth:specifiedWidth
-                                            specifiedHeight:specifiedHeight
-                                                   maxWidth:maxWidth
-                                                   minWidth:minWidth
-                                                  maxHeight:maxHeight
-                                                  minHeight:minHeight];
-        
-        _componentInfos[offset].width = calculatedSize.width;
-        _componentInfos[offset].contents.imageInfo.scaledSize = CGSizeMake(calculatedSize.width, calculatedSize.height);
-        
-        if(css_computed_line_height(nodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
-            _componentInfos[offset].contents.imageInfo.scaledLineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, _scaleFactor);
-        } else {
-            _componentInfos[offset].contents.imageInfo.scaledLineHeight = calculatedSize.height;
-        }  
-    }
+    [_sizeDependentComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];
+    
+    _previousInlineCharacterWasSpace = NO;
 }
 
 - (void)_accumulateTextNode:(EucCSSIntermediateDocumentNode *)subnode 
@@ -515,21 +361,11 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     
     enum css_white_space_e whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(subnodeStyle);
     
-    THStringRenderer *stringRenderer = subnode.stringRenderer;
-    
-    css_fixed length = 0;
-    css_unit unit = (css_unit)0;
-    css_computed_font_size(subnodeStyle, &length, &unit);
-    
-    // The font size percentages should already be fully resolved.
-    CGFloat fontPixelSize = EucCSSLibCSSSizeToPixels(subnodeStyle, length, unit, 0, _scaleFactor);             
-
     EucCSSLayoutRunComponentInfo spaceInfo = { 0 };
     spaceInfo.kind = EucCSSLayoutRunComponentKindSpace;
     spaceInfo.documentNode = subnode;
-    spaceInfo.width = [stringRenderer widthOfString:@" " pointSize:fontPixelSize];
     
-    uint8_t textAlign = [self _textAlign];
+    uint8_t textAlign = [self textAlign];
     
     // CSS3 may have a way of specifying this.
     BOOL shouldHyphenate =  (textAlign == CSS_TEXT_ALIGN_LEFT || textAlign == CSS_TEXT_ALIGN_JUSTIFY) && 
@@ -550,7 +386,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                 EucCSSLayoutRunComponentInfo info = spaceInfo;
                 info.kind = EucCSSLayoutRunComponentKindWord;
                 info.contents.stringInfo.string = word;
-                info.width = [stringRenderer widthOfString:word pointSize:fontPixelSize];
                 [self _addComponent:&info];
                 
                 if(shouldHyphenate && word.length > 4) {
@@ -562,11 +397,9 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                     for(THPair *hyphenatedPair in hyphenations) {
                         NSString *beforeBreak = hyphenatedPair.first;
                         hyphenInfo.contents.hyphenationInfo.beforeHyphen = beforeBreak;
-                        hyphenInfo.contents.hyphenationInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
                         
                         NSString *afterBreak = hyphenatedPair.second;
                         hyphenInfo.contents.hyphenationInfo.afterHyphen = afterBreak;
-                        hyphenInfo.contents.hyphenationInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
                         
                         [self _addComponent:&hyphenInfo];
                     }
@@ -633,7 +466,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                                     EucCSSLayoutRunComponentInfo info = spaceInfo;
                                     info.kind = EucCSSLayoutRunComponentKindWord;
                                     info.contents.stringInfo.string = (NSString *)string;
-                                    info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                                     [self _addComponent:&info];
                                     
                                     if(shouldHyphenate && wordLength > 4) {
@@ -645,11 +477,9 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                                         for(THPair *hyphenatedPair in hyphenations) {
                                             NSString *beforeBreak = hyphenatedPair.first;
                                             hyphenInfo.contents.hyphenationInfo.beforeHyphen = beforeBreak;
-                                            hyphenInfo.contents.hyphenationInfo.widthBeforeHyphen = [stringRenderer widthOfString:beforeBreak pointSize:fontPixelSize];
                                             
                                             NSString *afterBreak = hyphenatedPair.second;
                                             hyphenInfo.contents.hyphenationInfo.afterHyphen = afterBreak;
-                                            hyphenInfo.contents.hyphenationInfo.widthAfterHyphen = [stringRenderer widthOfString:afterBreak pointSize:fontPixelSize];
                                             
                                             [self _addComponent:&hyphenInfo];
                                         }
@@ -675,7 +505,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                                 {
                                     EucCSSLayoutRunComponentInfo info = spaceInfo;
                                     info.kind = EucCSSLayoutRunComponentKindHardBreak;
-                                    info.width = 0;
                                     [self _addComponent:&info];
                                     _alreadyInsertedSpace = YES;
                                     break;  
@@ -728,7 +557,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                     EucCSSLayoutRunComponentInfo info = spaceInfo;
                     info.kind = EucCSSLayoutRunComponentKindWord;
                     info.contents.stringInfo.string = (NSString *)string;
-                    info.width = [stringRenderer widthOfString:(NSString *)string pointSize:fontPixelSize];
                     [self _addComponent:&info];
                     CFRelease(string);
                 }
@@ -763,116 +591,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     [_floatComponentIndexes addObject:[NSNumber numberWithInteger:_componentsCount - 1]];    
 }
 
-- (void)_ensurePotentialBreaksCalculated
-{
-    if(!_potentialBreaks) {
-        int breaksCapacity = _componentsCount + 1;
-        THBreak *breaks = (THBreak *)malloc(breaksCapacity * sizeof(THBreak));
-        EucCSSLayoutRunBreakInfo *breakInfos = (EucCSSLayoutRunBreakInfo *)malloc(breaksCapacity * sizeof(EucCSSLayoutRunBreakInfo));
-        int breaksCount = 0;
-        
-        EucCSSIntermediateDocumentNode *currentInlineNodeWithStyle = _startNode;
-        if(currentInlineNodeWithStyle.isTextNode) {
-            currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
-        }
-        
-        enum css_white_space_e whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(currentInlineNodeWithStyle.computedStyle);
-        
-        CGFloat lineSoFarWidth = 0.0f;
-        CGFloat lastWordWidth = 0.0f;
-        for(NSUInteger i = 0; i < _componentsCount; ++i) {
-            EucCSSLayoutRunComponentInfo componentInfo = _componentInfos[i];
-            switch(componentInfo.kind) {
-                case EucCSSLayoutRunComponentKindSpace:
-                case EucCSSLayoutRunComponentKindNonbreakingSpace:
-                    {
-                        if(whiteSpaceModel != CSS_WHITE_SPACE_PRE && 
-                           whiteSpaceModel != CSS_WHITE_SPACE_NOWRAP) {
-                            breaks[breaksCount].x0 = lineSoFarWidth;
-                            lineSoFarWidth += _componentInfos[i].width;
-                            breaks[breaksCount].x1 = lineSoFarWidth;
-                            breaks[breaksCount].penalty = componentInfo.kind == EucCSSLayoutRunComponentKindNonbreakingSpace ? 1024 : 0;
-                            breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISSPACE;
-                            breakInfos[breaksCount].point = _componentInfos[i].point;
-                            breakInfos[breaksCount].consumesComponent = YES;
-                            ++breaksCount;
-                        }
-                    }
-                    break;
-                case EucCSSLayoutRunComponentKindHardBreak:
-                    {
-                        breaks[breaksCount].x0 = lineSoFarWidth;
-                        lineSoFarWidth += _componentInfos[i].width;
-                        breaks[breaksCount].x1 = lineSoFarWidth;
-                        breaks[breaksCount].penalty = 0;
-                        breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
-                        breakInfos[breaksCount].point = _componentInfos[i].point;
-                        breakInfos[breaksCount].consumesComponent = YES;
-                        ++breaksCount;                                        
-                    }
-                    break;
-                case EucCSSLayoutRunComponentKindOpenNode:
-                    {
-                        currentInlineNodeWithStyle = _componentInfos[i].documentNode;
-                        whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(currentInlineNodeWithStyle.computedStyle);
-                    }
-                    break;
-                case EucCSSLayoutRunComponentKindCloseNode:
-                    {
-                        NSParameterAssert(_componentInfos[i].documentNode == currentInlineNodeWithStyle);
-                        currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
-                        whiteSpaceModel = (enum css_white_space_e)css_computed_white_space(currentInlineNodeWithStyle.computedStyle);
-                    }
-                    break;
-                case EucCSSLayoutRunComponentKindWord:
-                    {
-                        lastWordWidth = _componentInfos[i].width;
-                        lineSoFarWidth += lastWordWidth;
-                    }
-                    break;
-                case EucCSSLayoutRunComponentKindHyphenationRule:
-                    {
-                        breaks[breaksCount].x0 = lineSoFarWidth + _componentInfos[i].contents.hyphenationInfo.widthBeforeHyphen - lastWordWidth;
-                        breaks[breaksCount].x1 = lineSoFarWidth - _componentInfos[i].contents.hyphenationInfo.widthAfterHyphen;
-                        breaks[breaksCount].penalty = 0;
-                        breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHYPHEN;
-                        breakInfos[breaksCount].point = _componentInfos[i].point;
-                        breakInfos[breaksCount].consumesComponent = NO;
-                        ++breaksCount;                                                                
-                    }
-                    break;
-                default:
-                    lineSoFarWidth += _componentInfos[i].width;
-            }
-            
-            if(breaksCount >= breaksCapacity) {
-                breaksCapacity += _componentsCount;
-                breaks = (THBreak *)realloc(breaks, breaksCapacity * sizeof(THBreak));
-                breakInfos = (EucCSSLayoutRunBreakInfo *)realloc(breakInfos, breaksCapacity * sizeof(EucCSSLayoutRunBreakInfo));
-            }                                            
-        }
-        breaks[breaksCount].x0 = lineSoFarWidth;
-        breaks[breaksCount].x1 = lineSoFarWidth;
-        breaks[breaksCount].penalty = 0;
-        if([self _textAlign] == CSS_TEXT_ALIGN_CENTER) {
-            // With a non-hard break at the end, the justifier will distribute
-            // the words evenly across all lines, giving a more pleasing
-            // centered block.
-            breaks[breaksCount].flags = 0;
-        } else {
-            breaks[breaksCount].flags = TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK;
-        }
-        breakInfos[breaksCount].point.word = _wordsCount + 1;
-        breakInfos[breaksCount].point.element = 0;
-        breakInfos[breaksCount].consumesComponent = NO;
-        ++breaksCount;
-        
-        _potentialBreaks = breaks;
-        _potentialBreaksCount = breaksCount;
-        _potentialBreakInfos = breakInfos;
-    }
-}
-
 - (uint32_t)pointToComponentOffset:(EucCSSLayoutRunPoint)point
 {
     if(point.word > _wordsCount) {
@@ -882,291 +600,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     } else {
         return _wordToComponent[point.word] + point.element;
     }
-}
-
-- (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
-                                       inContainer:(EucCSSLayoutPositionedBlock *)container
-                              startingAtWordOffset:(uint32_t)wordOffset 
-                                     elementOffset:(uint32_t)elementOffset
-                            usingLayouterForFloats:(EucCSSLayouter *)layouter
-{    
-    if(_componentsCount == 0) {
-        return nil;
-    }    
-    
-    EucCSSLayoutPositionedRun *ret = [[EucCSSLayoutPositionedRun alloc] initWithRun:self];
-    
-    if(_sizeDependentComponentIndexes) {
-        free(_potentialBreaks);
-        _potentialBreaks = NULL;
-        free(_potentialBreakInfos);
-        _potentialBreakInfos = NULL;
-        [self _recalculateSizeDependentComponentSizesForFrame:frame];
-    }
-    [self _ensurePotentialBreaksCalculated];
-        
-    CGFloat textIndent;
-    if(elementOffset == 0 && wordOffset == 0) {
-        textIndent = [self _textIndentInWidth:frame.size.width];
-    } else {
-        textIndent = 0.0f;
-    }
-    
-    NSMutableArray *lines = [[NSMutableArray alloc] init];
-    CGPoint lineOrigin = CGPointZero;
-    CGFloat lastLineMaxY = 0;
-    
-    BOOL firstTryAtLine = YES;
-    CGFloat thisLineWidth = frame.size.width;
-    
-    uint8_t textAlign = [self _textAlign];
-    
-    NSUInteger floatComponentIndexesOffset = NSUIntegerMax;
-    NSUInteger nextFloatComponentOffset = NSUIntegerMax;
-    if(_floatComponentIndexes) {
-        floatComponentIndexesOffset = 0;
-        nextFloatComponentOffset = [[_floatComponentIndexes objectAtIndex:floatComponentIndexesOffset] integerValue];
-    } 
-       
-    BOOL widthChanged;
-    do {
-        widthChanged = NO;
-        
-        NSUInteger startBreakOffset = 0;
-        for(;;) {
-            EucCSSLayoutRunPoint point = _potentialBreakInfos[startBreakOffset].point;
-            if(startBreakOffset < _potentialBreaksCount && 
-               (point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset))) {
-                ++startBreakOffset;
-            } else {
-                break;
-            }
-        }        
-        if(startBreakOffset >= _potentialBreaksCount) {
-            return nil;
-        }
-        int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
-        
-        // Work out an offset to compensate the pre-calculated 
-        // line lengths in the breaks array.
-        CGFloat alreadyUsedComponentWidth;
-        uint32_t lineStartComponent;
-        if(startBreakOffset) {
-            alreadyUsedComponentWidth = _potentialBreaks[startBreakOffset - 1].x1;
-            
-            EucCSSLayoutRunPoint point = { wordOffset, elementOffset };
-            lineStartComponent = [self pointToComponentOffset:point];
-        } else {
-            alreadyUsedComponentWidth = 0;
-            lineStartComponent = 0;
-        }
-        
-        int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
-        int usedBreakCount = th_just_with_floats(_potentialBreaks + startBreakOffset, maxBreaksCount, textIndent - alreadyUsedComponentWidth, thisLineWidth, 0, usedBreakIndexes);
-        
-        EucCSSLayoutRunBreakInfo lastLineBreakInfo = { _componentInfos[lineStartComponent].point, NO };
-        
-        int lastBreakIndex = INT_MAX;
-        for(int i = 0; i < usedBreakCount && !widthChanged; ++i) {
-            int thisBreakIndex = usedBreakIndexes[i] + startBreakOffset;
-            EucCSSLayoutRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[thisBreakIndex];
-            EucCSSLayoutPositionedLine *newLine = [[EucCSSLayoutPositionedLine alloc] init];
-            newLine.parent = ret;
-            
-            EucCSSLayoutRunPoint lineStartPoint;
-            EucCSSLayoutRunPoint lineEndPoint;
-            
-            if(lastLineBreakInfo.consumesComponent) {
-                EucCSSLayoutRunPoint point = lastLineBreakInfo.point;
-                uint32_t componentOffset = [self pointToComponentOffset:point];
-                ++componentOffset;
-                if(componentOffset >= _componentsCount) {
-                    // This is off the end of the components array.
-                    // This must be an empty line at the end of a run.
-                    // We remove this - the only way it can happen is if the last
-                    // line ends in a newline (e.g. <br>), and we're about to add
-                    // an implicit newline at the end of the block anyway.
-                    [newLine release];        
-                    break;
-                } else {
-                    lineStartPoint = _componentInfos[componentOffset].point;
-                }
-            } else {
-                lineStartPoint = lastLineBreakInfo.point;
-            }
-            lineEndPoint = thisLineBreakInfo.point;
-            
-            newLine.startPoint = lineStartPoint;
-            newLine.endPoint = lineEndPoint;
-            
-            CGFloat lineComponentWidth;
-            lineComponentWidth = _potentialBreaks[thisBreakIndex].x0;
-            if(lastBreakIndex == INT_MAX) {
-                lineComponentWidth -= alreadyUsedComponentWidth;
-            } else {
-                lineComponentWidth -= _potentialBreaks[lastBreakIndex].x1;
-            }
-            newLine.componentWidth = lineComponentWidth;
-            
-            newLine.frame = CGRectMake(lineOrigin.x, lineOrigin.y, 0, 0);
-            
-            [newLine sizeToFitInWidth:thisLineWidth];            
-            
-            if(nextFloatComponentOffset != NSUIntegerMax && 
-               nextFloatComponentOffset >= [self pointToComponentOffset:lineStartPoint] &&
-               nextFloatComponentOffset < [self pointToComponentOffset:lineEndPoint]) {
-                // A float is on this line.  Place the float.
-        
-                BOOL completed = NO;
-                EucCSSLayoutPoint returnedPoint = { 0 };
-
-                EucCSSIntermediateDocumentNode *floatNode = _componentInfos[nextFloatComponentOffset].documentNode;
-                
-                EucCSSLayoutPoint floatPoint = { floatNode.key, 0, 0 };
-                CGRect floatPotentialFrame = CGRectMake(0, 0, frame.size.width, CGFLOAT_MAX);
-                EucCSSLayoutPositionedBlock *floatBlock = [layouter _layoutFromPoint:floatPoint
-                                                                             inFrame:floatPotentialFrame
-                                                                  returningNextPoint:&returnedPoint
-                                                                  returningCompleted:&completed 
-                                                                    lastBlockNodeKey:floatPoint.nodeKey
-                                                               constructingAncestors:NO];
-                
-                [floatBlock shrinkToFit];       
-                
-                [container addFloatChild:floatBlock 
-                              atContentY:lineOrigin.y
-                                  onLeft:css_computed_float(floatNode.computedStyle) == CSS_FLOAT_LEFT];
-                
-                if(THWillLog()) {
-                    // Sanity check - was this consumed properly?
-                    NSParameterAssert(completed == YES);
-                    EucCSSIntermediateDocumentNode *afterFloat = [floatNode.parent displayableNodeAfter:floatNode
-                                                                                                  under:nil];
-                    NSParameterAssert(returnedPoint.nodeKey == afterFloat.key);
-                }    
-                
-                // This float is consumed!
-                ++floatComponentIndexesOffset;
-                if(floatComponentIndexesOffset >= _floatComponentIndexes.count) {
-                    nextFloatComponentOffset = NSUIntegerMax;
-                } else {
-                    nextFloatComponentOffset = [[_floatComponentIndexes objectAtIndex:floatComponentIndexesOffset] integerValue];
-                }
-            }
-        
-            if(textIndent) {
-                newLine.indent = textIndent;
-                textIndent = 0.0f;
-            }
-            if(textAlign == CSS_TEXT_ALIGN_JUSTIFY &&
-               (_potentialBreaks[thisBreakIndex].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) {
-                newLine.align = CSS_TEXT_ALIGN_DEFAULT;
-            } else {
-                newLine.align = textAlign;
-            }
-
-            
-            // Calculate available width for line of this height.
-    
-            CGFloat availableWidth;
-            THPair *floats = [container floatsOverlappingYPoint:lineOrigin.y + frame.origin.y 
-                                                         height:newLine.frame.size.height];
-            if(floats) {
-                CGFloat leftX = 0;
-                CGFloat rightX = frame.size.width;
-                for(EucCSSLayoutPositionedContainer *thisFloat in floats.first) {
-                    CGRect floatFrame = [thisFloat frameInRelationTo:container];;
-                    CGFloat floatMaxX = CGRectGetMaxX(floatFrame);
-                    if(floatMaxX > leftX) {
-                        leftX = floatMaxX;
-                    }
-                }
-                for(EucCSSLayoutPositionedContainer *thisFloat in floats.second) {
-                    CGRect floatFrame = [thisFloat frameInRelationTo:container];
-                    CGFloat floatMinX = CGRectGetMinX(floatFrame);
-                    if(floatMinX < rightX) {
-                        rightX = floatMinX;
-                    }
-                }
-                availableWidth = rightX - leftX;
-                
-                CGRect newlineFrame = newLine.frame;
-                newlineFrame.origin.x = leftX;
-                newLine.frame = newlineFrame;
-            } else {
-                availableWidth = frame.size.width;
-            }
-            
-            // Is the available width != the used width?
-            if(availableWidth != thisLineWidth) {                 
-                THLogVerbose(@"Recalculating for float");
-                if(firstTryAtLine) {
-                    // We'll loop and try this line again with the real available width.
-                    thisLineWidth = availableWidth;
-                    firstTryAtLine = NO;
-                } else {
-                    // We can't fit this line in the width.
-                    // We'll loop and try this line again after the first float
-                    // ends.
-                    CGFloat nextY = CGFLOAT_MAX;
-                    
-                    for(EucCSSLayoutPositionedContainer *thisFloat in floats.first) {
-                        CGRect floatFrame = thisFloat.frame;
-                        CGFloat floatMaxY = CGRectGetMaxY([thisFloat frameInRelationTo:container]);
-                        floatMaxY -= floatFrame.origin.y;
-                        if(floatMaxY < nextY) {
-                            nextY = floatMaxY;
-                        }
-                    }
-                    for(EucCSSLayoutPositionedContainer *thisFloat in floats.second) {
-                        CGRect floatFrame = thisFloat.frame;
-                        CGFloat floatMaxY = CGRectGetMaxY([thisFloat frameInRelationTo:container]);
-                        floatMaxY -= floatFrame.origin.y;
-                        if(floatMaxY < nextY) {
-                            nextY = floatMaxY;
-                        }
-                    }
-                    lineOrigin.y = nextY;
-                    firstTryAtLine = YES;
-                }
-                
-                wordOffset = newLine.startPoint.word;
-                elementOffset = newLine.startPoint.element;
-                
-                widthChanged = YES;
-            } else {
-                if(newLine.componentWidth != 0) {
-                    lastLineMaxY = lineOrigin.y + newLine.frame.size.height;
-                    [lines addObject:newLine];
-                    
-                    lineOrigin.y = lastLineMaxY;
-                }
-                lastLineBreakInfo = thisLineBreakInfo;
-                lastBreakIndex = thisBreakIndex;
-                if(!firstTryAtLine) {
-                    firstTryAtLine = YES;
-                }
-            } 
-            [newLine release];        
-        }
-    } while(widthChanged);
-
-    if(lines.count) {
-        ret.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY);
-        ret.children = lines;
-    } else {
-        [ret release];
-        ret = nil;
-    }
-    
-    
-    [lines release];
-    
-    if(ret) {
-        [container addChild:ret];
-    }
-    
-    return [ret autorelease];
 }
 
 - (EucCSSLayoutRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node

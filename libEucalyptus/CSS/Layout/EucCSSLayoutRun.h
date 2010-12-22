@@ -40,22 +40,17 @@ typedef struct EucCSSLayoutRunStringInfo {
 
 typedef struct EucCSSLayoutRunHyphenationInfo {
     NSString *beforeHyphen;
-    CGFloat widthBeforeHyphen;
     NSString *afterHyphen;
-    CGFloat widthAfterHyphen;
 } EucCSSLayoutRunHyphenationInfo;
 
 typedef struct EucCSSLayoutRunImageInfo {
-    CGImageRef image;
-    CGSize scaledSize;
-    CGFloat scaledLineHeight;
+    NSURL *imageURL;
 } EucCSSLayoutRunImageInfo;
 
 typedef struct EucCSSLayoutRunComponentInfo {
     EucCSSLayoutRunComponentKind kind;
     EucCSSLayoutRunPoint point;
     EucCSSIntermediateDocumentNode *documentNode;
-    CGFloat width;
     union {
         EucCSSLayoutRunStringInfo stringInfo;
         EucCSSLayoutRunHyphenationInfo hyphenationInfo;
@@ -75,14 +70,12 @@ struct EucCSSLayoutRunBreakInfo;
     
     EucCSSIntermediateDocumentNode *_nextNodeUnderLimitNode;
     EucCSSIntermediateDocumentNode *_nextNodeInDocument;
-    
-    CGFloat _scaleFactor;
-    
+        
     size_t _componentsCount;
     size_t _componentsCapacity;
     EucCSSLayoutRunComponentInfo *_componentInfos;
     
-    size_t _wordsCount;
+    uint32_t _wordsCount;
     size_t _wordToComponentCapacity;
     uint32_t *_wordToComponent;
     
@@ -108,28 +101,24 @@ struct EucCSSLayoutRunBreakInfo;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *underNode;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *nextNodeUnderLimitNode;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *nextNodeInDocument;
-@property (nonatomic, assign, readonly) CGFloat scaleFactor;
+
+@property (nonatomic, assign, readonly) uint8_t textAlign;
+- (CGFloat)textIndentInWidth:(CGFloat)width atScaleFactor:(CGFloat)scaleFactor;
+
 
 // This convenience constructor will return a cached node if one with the same
 // attibutes was requested recently.
 + (id)runWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
    underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
-            forId:(uint32_t)id
-      scaleFactor:(CGFloat)scaleFactor;
+            forId:(uint32_t)id;
 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)node 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
-             forId:(uint32_t)id
-       scaleFactor:(CGFloat)scaleFactor;
-
-- (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
-                                       inContainer:(EucCSSLayoutPositionedBlock *)container
-                              startingAtWordOffset:(uint32_t)wordOffset 
-                                     elementOffset:(uint32_t)elementOffset
-                            usingLayouterForFloats:(EucCSSLayouter *)layouter;
+             forId:(uint32_t)id;
 
 - (EucCSSLayoutRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;
 
+@property (nonatomic, assign, readonly) uint32_t wordsCount;
 - (NSArray *)words;
 - (NSArray *)attributeValuesForWordsForAttributeName:(NSString *)attribute;
 

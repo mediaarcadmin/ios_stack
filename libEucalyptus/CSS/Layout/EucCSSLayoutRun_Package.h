@@ -11,9 +11,12 @@
 
 @interface EucCSSLayoutRun ()
 
-@property (nonatomic, readonly) size_t componentsCount;
-@property (nonatomic, readonly) EucCSSLayoutRunComponentInfo *componentInfos;
-@property (nonatomic, readonly) uint32_t *wordToComponent;
+@property (nonatomic, assign, readonly) size_t componentsCount;
+@property (nonatomic, assign, readonly) EucCSSLayoutRunComponentInfo *componentInfos;
+@property (nonatomic, assign, readonly) uint32_t *wordToComponent;
+
+@property (nonatomic, retain, readonly) NSArray *sizeDependentComponentIndexes;
+@property (nonatomic, retain, readonly) NSArray *floatComponentIndexes;
 
 - (uint32_t)pointToComponentOffset:(EucCSSLayoutRunPoint)point;
 

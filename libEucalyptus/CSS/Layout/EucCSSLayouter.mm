@@ -16,6 +16,7 @@
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutRun.h"
+#import "EucCSSLayoutSizedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSLayoutRunExtractor.h"
 
@@ -411,17 +412,23 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     // This is an inline element - start a run.
                     EucCSSLayoutRun *run = [EucCSSLayoutRun runWithNode:currentDocumentNode
                                                          underLimitNode:currentDocumentNode.blockLevelParent
-                                                                  forId:nextRunNodeKey
-                                                            scaleFactor:_scaleFactor];
+                                                                  forId:nextRunNodeKey];
+                    EucCSSLayoutSizedRun *sizedRun = [[EucCSSLayoutSizedRun alloc] initWithRun:run 
+                                                                                   scaleFactor:_scaleFactor];
                     
                     CGRect frameWithMaxHeight = potentialFrame;
                     frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
+                    if(!pageBreaks.empty()) {
+                        frameWithMaxHeight.size.height += CGRectGetMinY([pageBreaks.back().second absoluteFrame]) - frame.origin.y;
+                    }
                     // Position it.
-                    EucCSSLayoutPositionedRun *positionedRun = [run positionRunForFrame:frameWithMaxHeight
-                                                                            inContainer:currentPositionedBlock
-                                                                   startingAtWordOffset:wordOffset
-                                                                          elementOffset:elementOffset
-                                                                 usingLayouterForFloats:self];
+                    EucCSSLayoutPositionedRun *positionedRun = [sizedRun positionRunForFrame:frameWithMaxHeight
+                                                                                 inContainer:currentPositionedBlock
+                                                                        startingAtWordOffset:wordOffset
+                                                                               elementOffset:elementOffset
+                                                                      usingLayouterForFloats:self];
+                    [sizedRun release];
+                    
                     if(positionedRun) {
                         BOOL first = YES; // Break before first line doesn't count.
                         for(EucCSSLayoutPositionedLine *line in positionedRun.children) {

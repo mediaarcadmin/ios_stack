@@ -8,6 +8,11 @@
 
 #import <libcss/libcss.h>
 
+#import <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
+
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
@@ -428,6 +433,35 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 {
     uint32_t documentTreeNodeKey = key >> EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
     return 100.0f * ((float)documentTreeNodeKey) / ((float)_documentTree.lastKey);
+}
+
+- (NSData *)dataForURL:(NSURL *)url
+{
+    return [_dataSource dataForURL:url];
+}
+
+- (CGImageRef)imageForURL:(NSURL *)url
+{
+    CGImageRef image = NULL;
+
+    NSData *imageData = [self dataForURL:url];
+    if(imageData) {
+        #if TARGET_OS_IPHONE
+            image = [UIImage imageWithData:imageData].CGImage;
+            if(image) {
+                CFRetain(image);
+            }
+        #else
+            CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)imageData, NULL);
+            if(imageSource) {
+                image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+                CFRelease(imageSource);
+            }
+        #endif
+    }
+    
+    [(id)image autorelease];
+    return image;
 }
 
 - (void)dealloc 
