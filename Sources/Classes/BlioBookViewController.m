@@ -1419,7 +1419,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if ([self.searchViewController isSearchInline] == NO) {
                 self.navigationController.toolbarHidden = NO;
             } else {
-                self.navigationController.toolbarHidden = YES;
+                self.navigationController.toolbarHidden = NO;
                 self.searchViewController.toolbarHidden = NO;
             }
             self.navigationController.navigationBarHidden = NO;
@@ -1490,6 +1490,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)toggleToolbars:(BlioLibraryToolbarsState)toolbarState
 {
+    //NSLog(@"toolbar state %d", toolbarState);
     // We do this with performSelector afterDelay 0 so that if something else
     // happens later in this event loop cycle (i.e. a tap-turn starts), the 
     // toggle can be cancelled.
