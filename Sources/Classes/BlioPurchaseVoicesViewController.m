@@ -99,11 +99,12 @@
 }
 
 
-/*
+
  - (void)viewWillAppear:(BOOL)animated {
- [super viewWillAppear:animated];
- }
- */
+	 [super viewWillAppear:animated];
+ 	 self.activityIndicatorView.hidden = NO;
+}
+ 
 /*
  - (void)viewDidAppear:(BOOL)animated {
  [super viewDidAppear:animated];
@@ -114,11 +115,12 @@
  [super viewWillDisappear:animated];
  }
  */
-/*
+
  - (void)viewDidDisappear:(BOOL)animated {
- [super viewDidDisappear:animated];
- }
- */
+	 [super viewDidDisappear:animated];
+	 self.activityIndicatorView.hidden = YES;
+}
+ 
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
