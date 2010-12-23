@@ -10,12 +10,15 @@
 #import <pthread.h>
 
 @interface THCacheBase : NSObject {
-    pthread_mutex_t _cacheMutex;
+@private
     CFMutableSetRef _currentCacheSet;
     CFMutableSetRef _lastGenerationCacheSet;
     
     NSUInteger _generationLifetime;
     NSUInteger _insertionsThisGeneration;
+
+@protected
+    pthread_mutex_t _cacheMutex;
 }
 
 @property (nonatomic, assign) NSUInteger generationLifetime;
@@ -36,5 +39,8 @@
 @protocol THCacheItemInUse
 
 - (BOOL)isItemInUse:(const void *)item;
+
+@optional
+@property (nonatomic, assign) BOOL conserveItemsInUse;  // Treated as YES if not implemented.
 
 @end

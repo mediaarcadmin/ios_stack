@@ -26,6 +26,21 @@ typedef struct THCacheItem {
     id value;
 } THCacheItem;
 
+- (id)init
+{
+    if((self = [super init])) {
+        self.conserveItemsInUse = YES;
+    }
+    return self;
+}
+
+- (BOOL)isItemInUse:(const void *)item
+{
+    return [((THCacheItem *)item)->value thCacheObjectInUse];
+}
+
+@synthesize conserveItemsInUse = _conserveItemsInUse;
+
 - (CFIndex)itemSize
 {
     return sizeof(THCacheItem);
@@ -59,11 +74,6 @@ typedef struct THCacheItem {
 - (CFHashCode)hashItem:(const void *)item
 {
     return [((THCacheItem *)item)->key hash];
-}
-
-- (BOOL)isItemInUse:(const void *)item
-{
-    return [((THCacheItem *)item)->value thCacheObjectInUse];
 }
 
 - (void)cacheObject:(id)value forKey:(id)key
@@ -103,6 +113,21 @@ typedef struct THIntegerToObjectCacheItem {
     id value;
 } THIntegerToObjectCacheItem;
 
+- (id)init
+{
+    if((self = [super init])) {
+        self.conserveItemsInUse = YES;
+    }
+    return self;
+}
+
+- (BOOL)isItemInUse:(const void *)item
+{
+    return [((THIntegerToObjectCacheItem *)item)->value thCacheObjectInUse];
+}
+
+@synthesize conserveItemsInUse = _conserveItemsInUse;
+
 - (CFIndex)itemSize
 {
     return sizeof(THIntegerToObjectCacheItem);
@@ -130,11 +155,6 @@ typedef struct THIntegerToObjectCacheItem {
 - (CFHashCode)hashItem:(const void *)item
 {
     return ((THIntegerToObjectCacheItem *)item)->key * 2654435761;
-}
-
-- (BOOL)isItemInUse:(const void *)item
-{
-    return [((THIntegerToObjectCacheItem *)item)->value thCacheObjectInUse];
 }
 
 - (void)cacheObject:(id)value forKey:(uint32_t)key
@@ -177,6 +197,21 @@ typedef struct THStringAndIntegerToObjectCacheItem {
     id value;
 } THStringAndIntegerToObjectCacheItem;
 
+- (id)init
+{
+    if((self = [super init])) {
+        self.conserveItemsInUse = YES;
+    }
+    return self;
+}
+
+- (BOOL)isItemInUse:(const void *)item
+{
+    return [((THStringAndIntegerToObjectCacheItem *)item)->value thCacheObjectInUse];
+}
+
+@synthesize conserveItemsInUse = _conserveItemsInUse;
+
 - (CFIndex)itemSize
 {
     return sizeof(THStringAndIntegerToObjectCacheItem);
@@ -212,11 +247,6 @@ typedef struct THStringAndIntegerToObjectCacheItem {
     return [((THStringAndIntegerToObjectCacheItem *)item)->stringKey hash] ^ (((THStringAndIntegerToObjectCacheItem *)item)->integerKey * 2654435761);
 }
 
-- (BOOL)isItemInUse:(const void *)item
-{
-    return [((THStringAndIntegerToObjectCacheItem *)item)->value thCacheObjectInUse];
-}
-
 - (void)cacheObject:(id)value forStringKey:(NSString *)stringKey integerKey:(uint32_t)integerKey
 {    
     pthread_mutex_lock(&_cacheMutex);
@@ -246,10 +276,10 @@ typedef struct THStringAndIntegerToObjectCacheItem {
 
 @end
 
-@implementation THStringAndFloatToCGFloatCache
+@implementation THStringAndCGFloatToCGFloatCache
 
 typedef struct THStringAndFloatToCGFloatCacheItem {
-    THStringAndFloatToCGFloatCache *self;
+    THStringAndCGFloatToCGFloatCache *self;
     NSString *stringKey;
     union {
         CGFloat cgFloatKey;

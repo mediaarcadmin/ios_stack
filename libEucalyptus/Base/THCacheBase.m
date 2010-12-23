@@ -100,7 +100,8 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 
 - (void)_cycleGenerations
 {
-    if([self respondsToSelector:@selector(isItemInUse:)]) {
+    if([self respondsToSelector:@selector(isItemInUse:)] &&
+       (![self respondsToSelector:@selector(conserveItemsInUse)] || [(id<THCacheItemInUse>)self conserveItemsInUse])) {
         // Save all the still-in-use values from the old generation.
         CFIndex setCount = CFSetGetCount(_lastGenerationCacheSet);
         const void **items = malloc(sizeof(void *) * setCount);
@@ -118,6 +119,10 @@ static const CFSetCallBacks THCacheSetCallBacks = {
     _lastGenerationCacheSet = _currentCacheSet;
     _currentCacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
     
+    if(CFSetGetCount(_lastGenerationCacheSet) > _generationLifetime) {
+        THWarn(@"Cache has more items in use from last generation (%ld) than generation lifetime (%ld)", (long)CFSetGetCount(_lastGenerationCacheSet), (long)_generationLifetime);
+    }
+    
     _insertionsThisGeneration = 0;
 }
 
@@ -131,7 +136,9 @@ static const CFSetCallBacks THCacheSetCallBacks = {
         THLog(@"Cache had %ld items - emptying...", (long)CFSetGetCount(_currentCacheSet));
     }
     
-    if([self respondsToSelector:@selector(isItemInUse:)]) {
+    if([self respondsToSelector:@selector(isItemInUse:)] &&
+       (![self respondsToSelector:@selector(conserveItemsInUse)] || [(id<THCacheItemInUse>)self conserveItemsInUse])) {
+        THLog(@"Conserving items in use in current cache set...");
         CFIndex setCount = CFSetGetCount(_currentCacheSet);
         const void **items = malloc(sizeof(void *) * setCount);
         CFSetGetValues(_currentCacheSet, items);

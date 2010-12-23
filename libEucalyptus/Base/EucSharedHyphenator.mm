@@ -61,6 +61,7 @@ static EucSharedHyphenator *sSharedHyphenator;
     if((self = [super init])) {
         _hyphenator = SharedHyphenator::sharedHyphenator();
         _cache = [[THCache alloc] init];
+        _cache.conserveItemsInUse = NO;
     }
     return self;
 }
