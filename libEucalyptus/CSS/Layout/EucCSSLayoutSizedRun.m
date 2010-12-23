@@ -283,7 +283,14 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
 {
     if(!_componentWidthInfos) {
         [self _processComponentsForWidths];
+    } else if(THWillLog()) {
+        if(_run.sizeDependentComponentIndexes && !CGRectEqualToRect(frame, _lastSizeDependentComponentCalculationFrame)) {
+            THLog(@"Sized run resizing - was %@, now %@", 
+                  NSStringFromCGRect(_lastSizeDependentComponentCalculationFrame), 
+                  NSStringFromCGRect(frame));
+        }
     }
+
     NSArray *sizeDependentComponentIndexes = _run.sizeDependentComponentIndexes;
     if(sizeDependentComponentIndexes && !CGRectEqualToRect(frame, _lastSizeDependentComponentCalculationFrame)) {
         [self _processSizeDependentComponentsAtIndexes:sizeDependentComponentIndexes forFrame:frame];

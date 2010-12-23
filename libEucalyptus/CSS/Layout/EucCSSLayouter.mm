@@ -352,10 +352,18 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                   inFrame:bottomlessFrame
                                                    afterInternalPageBreak:YES];               
             } else {
+                // We set afterInternalPageBreak to YES on anything but the root 
+                // node in order to remove its top margin.  The CSS spec says:
+                
+                // 5.4. Allowed page breaks
+                // In the normal flow, page breaks may occur at the following places:
+                // 1. In the vertical margin between block boxes (or rows in a table).
+                //    When a page break occurs here, the computed values of the relevant
+                //    'margin-top' and 'margin-bottom' properties are set to '0'.
                 positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode
                                                        returningInnermost:&currentPositionedBlock
                                                                   inFrame:bottomlessFrame
-                                                   afterInternalPageBreak:wordOffset != 0 || elementOffset != 0];
+                                                   afterInternalPageBreak:nodeKey != document.rootNode.key];
                 currentDocumentNode = currentDocumentNode.nextDisplayable;
             } 
         } else {
@@ -370,7 +378,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         BOOL reachedBottomOfFrame = NO;
         
         uint32_t nextRunNodeKey = nodeKey;
-        CGFloat nextAbsoluteY = [positionedRoot convertRect:positionedRoot.contentBounds toContainer:nil].origin.y;
+        CGFloat nextAbsoluteY = [currentPositionedBlock convertRect:currentPositionedBlock.contentBounds toContainer:nil].origin.y;
         CGFloat maxAbsoluteY = CGRectGetMaxY(frame);
         
         THPair *activeFloats = nil;
@@ -402,88 +410,128 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 potentialFrame.origin.y = nextAbsoluteY - [currentPositionedBlock convertRect:potentialFrame 
                                                                                   toContainer:nil].origin.y;
 
+                enum css_display_e currentNodeDisplay = (enum css_display_e)currentDocumentNode.display;
                 css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
+                if(currentNodeStyle && css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE) {
+                    // Floats should be processed by the inline processing code.
+                    currentNodeDisplay = CSS_DISPLAY_INLINE;
+                }
                 
-                if(!currentNodeStyle || 
-                   css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE ||
-                   currentDocumentNode.display != CSS_DISPLAY_BLOCK) {
-                    //THLog(@"Inline: %@", [currentDocumentNode name]);
-                    
-                    // This is an inline element - start a run.
-                    EucCSSLayoutRun *run = [EucCSSLayoutRun runWithNode:currentDocumentNode
-                                                         underLimitNode:currentDocumentNode.blockLevelParent
-                                                                  forId:nextRunNodeKey];
-                    EucCSSLayoutSizedRun *sizedRun = [EucCSSLayoutSizedRun sizedRunWithRun:run 
-                                                                               scaleFactor:_scaleFactor];
-                    
-                    CGRect frameWithMaxHeight = potentialFrame;
-                    frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
-                    if(!pageBreaks.empty()) {
-                        frameWithMaxHeight.size.height += CGRectGetMinY([pageBreaks.back().second absoluteFrame]) - frame.origin.y;
+                switch(currentNodeDisplay) {
+                    case CSS_DISPLAY_INHERIT:
+                    {
+                        NSLog(@"Unexpected node with display:inherit");
+                        currentDocumentNode = currentDocumentNode.nextDisplayable;
+                        break;
                     }
-                    // Position it.
-                    EucCSSLayoutPositionedRun *positionedRun = [sizedRun positionRunForFrame:frameWithMaxHeight
-                                                                                 inContainer:currentPositionedBlock
-                                                                        startingAtWordOffset:wordOffset
-                                                                               elementOffset:elementOffset
-                                                                      usingLayouterForFloats:self];
-                    
-                    if(positionedRun) {
-                        BOOL first = YES; // Break before first line doesn't count.
-                        for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
-                            if(!first) {
-                                EucCSSLayoutRunPoint startPoint = line.startPoint;
-                                EucCSSLayoutPoint breakPoint = { nextRunNodeKey, startPoint.word, startPoint.element };                                
-                                pageBreaks.push_back(make_pair(breakPoint, line));
-                            } else {
-                                first = NO;
-                            }
+                    case CSS_DISPLAY_NONE:
+                    {
+                        NSLog(@"Unexpected node with display:none");
+                        currentDocumentNode = currentDocumentNode.nextDisplayable;
+                        break;
+                    }
+                    case CSS_DISPLAY_BLOCK:
+                    {
+                        //THLog(@"Block: %@", [currentDocumentNode name]);
+                        if(THWillLog()) {
+                            NSParameterAssert(css_computed_float(currentDocumentNode.computedStyle) == CSS_FLOAT_NONE);
                         }
-                        nextAbsoluteY = CGRectGetMaxY([positionedRun absoluteFrame]);
-                    
-                        activeFloats = [currentPositionedBlock floatsOverlappingYPoint:nextAbsoluteY height:0];
+                        BOOL hasPreviousSibling = [currentPositionedBlock.children count] != 0;
+                        
+                        if(currentDocumentNode.isImageNode) {
+                            THLog(@"Image: %@", [currentDocumentNode.imageSource absoluteString]);
+                        }
+                        EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
+                        [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
+                        [currentPositionedBlock addChild:newBlock];
+                        if(activeFloats) {
+                            newBlock.intrudingLeftFloats = activeFloats.first;
+                            newBlock.intrudingRightFloats = activeFloats.second;
+                        }
+                        
+                        nextAbsoluteY = [newBlock convertRect:newBlock.contentBounds toContainer:nil].origin.y;
+                        
+                        if(hasPreviousSibling) {
+                            EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
+                            pageBreaks.push_back(make_pair(breakPoint, newBlock));
+                        }                
+                        
+                        currentPositionedBlock = [newBlock autorelease];
+                        
+                        // First run in a block has the ID of the block it's in.
+                        nextRunNodeKey = currentDocumentNode.key;  
+                        
+                        currentDocumentNode = currentDocumentNode.nextDisplayable;
+                        
+                        break;
                     }
-                                 
-                    if(elementOffset) {
-                        elementOffset = 0;
-                    }
-                    if(wordOffset) {
-                        wordOffset = 0;
-                    }
-                    
-                    currentDocumentNode = run.nextNodeInDocument;
-                    nextRunNodeKey = currentDocumentNode.key;
-                } else {
-                    //THLog(@"Block: %@", [currentDocumentNode name]);
-                    if(THWillLog()) {
-                        NSParameterAssert(css_computed_float(currentDocumentNode.computedStyle) == CSS_FLOAT_NONE);
-                    }
-                    BOOL hasPreviousSibling = [currentPositionedBlock.children count] != 0;
-                    
-                    if(currentDocumentNode.isImageNode) {
-                        THLog(@"Image: %@", [currentDocumentNode.imageSource absoluteString]);
-                    }
-                    EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
-                    [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
-                    [currentPositionedBlock addChild:newBlock];
-                    if(activeFloats) {
-                        newBlock.intrudingLeftFloats = activeFloats.first;
-                        newBlock.intrudingRightFloats = activeFloats.second;
-                    }
-                    
-                    nextAbsoluteY = [newBlock convertRect:newBlock.contentBounds toContainer:nil].origin.y;
-                    
-                    if(hasPreviousSibling) {
-                        EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
-                        pageBreaks.push_back(make_pair(breakPoint, newBlock));
-                    }                
-                    
-                    currentPositionedBlock = [newBlock autorelease];
-                    
-                    // First run in a block has the ID of the block it's in.
-                    nextRunNodeKey = currentDocumentNode.key;  
-                    
-                    currentDocumentNode = currentDocumentNode.nextDisplayable;
+                    case CSS_DISPLAY_TABLE:
+                    case CSS_DISPLAY_INLINE_TABLE:
+                    case CSS_DISPLAY_TABLE_ROW_GROUP:
+                    case CSS_DISPLAY_TABLE_HEADER_GROUP:
+                    case CSS_DISPLAY_TABLE_FOOTER_GROUP:
+                    case CSS_DISPLAY_TABLE_ROW:
+                    case CSS_DISPLAY_TABLE_COLUMN_GROUP:
+                    case CSS_DISPLAY_TABLE_COLUMN:
+                    case CSS_DISPLAY_TABLE_CELL:
+                    case CSS_DISPLAY_TABLE_CAPTION:
+                    case CSS_DISPLAY_LIST_ITEM:
+                    case CSS_DISPLAY_RUN_IN:
+                    case CSS_DISPLAY_INLINE_BLOCK:
+                    case CSS_DISPLAY_INLINE:
+                    {
+                        //THLog(@"Inline: %@", [currentDocumentNode name]);
+                        
+                        // This is an inline element - start a run.
+                        EucCSSLayoutRun *run = [EucCSSLayoutRun runWithNode:currentDocumentNode
+                                                             underLimitNode:currentDocumentNode.blockLevelParent
+                                                                      forId:nextRunNodeKey];
+                        EucCSSLayoutSizedRun *sizedRun = [EucCSSLayoutSizedRun sizedRunWithRun:run 
+                                                                                   scaleFactor:_scaleFactor];
+                        
+                        CGRect frameWithMaxHeight = potentialFrame;
+                        frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
+                        if(!pageBreaks.empty()) {
+                            frameWithMaxHeight.size.height += CGRectGetMinY([pageBreaks.back().second absoluteFrame]) - frame.origin.y;
+                        }
+                        // Position it.
+                        EucCSSLayoutPositionedRun *positionedRun = [sizedRun positionRunForFrame:frameWithMaxHeight
+                                                                                     inContainer:currentPositionedBlock
+                                                                            startingAtWordOffset:wordOffset
+                                                                                   elementOffset:elementOffset
+                                                                          usingLayouterForFloats:self];
+                        
+                        if(positionedRun) {
+                            if([[run.words componentsJoinedByString:@" "] hasPrefix:@"A young man of"]) {
+                                NSLog(@"fdsfdsfdsfds");
+                            }
+                            BOOL first = YES; // Break before first line doesn't count.
+                            for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
+                                if(!first) {
+                                    EucCSSLayoutRunPoint startPoint = line.startPoint;
+                                    EucCSSLayoutPoint breakPoint = { nextRunNodeKey, startPoint.word, startPoint.element };                                
+                                    pageBreaks.push_back(make_pair(breakPoint, line));
+                                } else {
+                                    first = NO;
+                                }
+                            }
+                            nextAbsoluteY = CGRectGetMaxY([positionedRun absoluteFrame]);
+                            
+                            activeFloats = [currentPositionedBlock floatsOverlappingYPoint:nextAbsoluteY height:0];
+                        }
+                        
+                        if(elementOffset) {
+                            elementOffset = 0;
+                        }
+                        if(wordOffset) {
+                            wordOffset = 0;
+                        }
+                        
+                        currentDocumentNode = run.nextNodeInDocument;
+                        nextRunNodeKey = currentDocumentNode.key;
+                        
+                        break;
+                    }   
                 }
             } else {
                 nextRunNodeKey = currentDocumentNode.key;
@@ -549,7 +597,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                          inFrame:(CGRect)frame
                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                              returningCompleted:(BOOL *)returningCompleted;
+                              returningCompleted:(BOOL *)returningCompleted
 {    
     EucCSSLayoutPositionedBlock *ret = [self _layoutFromPoint:point
                                                       inFrame:frame
