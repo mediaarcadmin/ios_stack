@@ -413,8 +413,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     EucCSSLayoutRun *run = [EucCSSLayoutRun runWithNode:currentDocumentNode
                                                          underLimitNode:currentDocumentNode.blockLevelParent
                                                                   forId:nextRunNodeKey];
-                    EucCSSLayoutSizedRun *sizedRun = [[EucCSSLayoutSizedRun alloc] initWithRun:run 
-                                                                                   scaleFactor:_scaleFactor];
+                    EucCSSLayoutSizedRun *sizedRun = [EucCSSLayoutSizedRun sizedRunWithRun:run 
+                                                                               scaleFactor:_scaleFactor];
                     
                     CGRect frameWithMaxHeight = potentialFrame;
                     frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
@@ -427,7 +427,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                         startingAtWordOffset:wordOffset
                                                                                elementOffset:elementOffset
                                                                       usingLayouterForFloats:self];
-                    [sizedRun release];
                     
                     if(positionedRun) {
                         BOOL first = YES; // Break before first line doesn't count.
@@ -491,7 +490,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 currentDocumentNode = currentDocumentNode.nextDisplayable;
             }
             
-            reachedBottomOfFrame = nextAbsoluteY >= maxAbsoluteY;
+            reachedBottomOfFrame = nextAbsoluteY >= maxAbsoluteY;            
         }
 
         if(closedLastNode) {

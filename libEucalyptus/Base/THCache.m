@@ -157,11 +157,16 @@ typedef struct THIntegerToObjectCacheItem {
     return ((THIntegerToObjectCacheItem *)item)->key * 2654435761;
 }
 
+- (NSString *)describeItem:(const void *)item
+{
+    return [NSString stringWithFormat:@"%ld -> { %@ }", (long)(((THIntegerToObjectCacheItem *)item)->key), [((THIntegerToObjectCacheItem *)item)->value description]]; 
+}
+
 - (void)cacheObject:(id)value forKey:(uint32_t)key
 {    
     pthread_mutex_lock(&_cacheMutex);
     
-    THIntegerToObjectCacheItem item = { self, key, value};
+    THIntegerToObjectCacheItem item = { self, key, value };
     [self cacheItem:&item];
     
     pthread_mutex_unlock(&_cacheMutex);
@@ -239,7 +244,7 @@ typedef struct THStringAndIntegerToObjectCacheItem {
     THStringAndIntegerToObjectCacheItem *item1 = (THStringAndIntegerToObjectCacheItem *)item1In;
     THStringAndIntegerToObjectCacheItem *item2 = (THStringAndIntegerToObjectCacheItem *)item2In;
     
-    return item1->integerKey == item2->integerKey && [item1->stringKey isEqual:item2->stringKey];
+    return item1->integerKey == item2->integerKey && [item1->stringKey isEqualToString:item2->stringKey];
 }
 
 - (CFHashCode)hashItem:(const void *)item
@@ -275,6 +280,99 @@ typedef struct THStringAndIntegerToObjectCacheItem {
 }
 
 @end
+
+@implementation THObjectAndCGFloatToObjectCache
+
+typedef struct THObjectAndCGFloatToObjectCacheItem {
+    THObjectAndCGFloatToObjectCache *self;
+    id objectKey;
+    union {
+        CGFloat cgFloatKey;
+        NSUInteger integerKey;
+    } numberKey;
+    id value;
+} THObjectAndCGFloatToObjectCacheItem;
+
+- (id)init
+{
+    if((self = [super init])) {
+        self.conserveItemsInUse = YES;
+    }
+    return self;
+}
+
+- (BOOL)isItemInUse:(const void *)item
+{
+    return [((THObjectAndCGFloatToObjectCacheItem *)item)->value thCacheObjectInUse];
+}
+
+@synthesize conserveItemsInUse = _conserveItemsInUse;
+
+- (CFIndex)itemSize
+{
+    return sizeof(THObjectAndCGFloatToObjectCacheItem);
+}
+
+- (void)copyItemContents:(const void *)item1In intoEmptyItem:(void *)item2In
+{
+    THObjectAndCGFloatToObjectCacheItem *item1 = (THObjectAndCGFloatToObjectCacheItem *)item1In;
+    THObjectAndCGFloatToObjectCacheItem *item2 = (THObjectAndCGFloatToObjectCacheItem *)item2In;
+    
+    memcpy(item2, item1, sizeof(THObjectAndCGFloatToObjectCacheItem));
+    [item2->objectKey retain];
+    [item2->value retain];
+}
+
+- (void)releaseItemContents:(void *)itemIn
+{
+    THObjectAndCGFloatToObjectCacheItem *item = (THObjectAndCGFloatToObjectCacheItem *)itemIn;
+    [item->objectKey release];
+    [item->value release];
+}
+
+- (Boolean)item:(const void *)item1In isEqualToItem:(const void *)item2In
+{
+    THObjectAndCGFloatToObjectCacheItem *item1 = (THObjectAndCGFloatToObjectCacheItem *)item1In;
+    THObjectAndCGFloatToObjectCacheItem *item2 = (THObjectAndCGFloatToObjectCacheItem *)item2In;
+    
+    return item1->numberKey.integerKey == item2->numberKey.integerKey && [item1->objectKey isEqual:item2->objectKey];
+}
+
+- (CFHashCode)hashItem:(const void *)item
+{
+    return [((THObjectAndCGFloatToObjectCacheItem *)item)->objectKey hash] ^ (((THObjectAndCGFloatToObjectCacheItem *)item)->numberKey.integerKey * 2654435761);
+}
+
+- (void)cacheObject:(id)value forObjectKey:(id)objectKey cgFloatKey:(CGFloat)cgFloatKey;
+{    
+    pthread_mutex_lock(&_cacheMutex);
+    
+    THObjectAndCGFloatToObjectCacheItem item = { self, objectKey, { cgFloatKey }, value };
+    [self cacheItem:&item];
+    
+    pthread_mutex_unlock(&_cacheMutex);
+}
+
+- (id)objectForObjectKey:(id)objectKey cgFloatKey:(CGFloat)cgFloatKey;
+{
+    id ret;
+    
+    pthread_mutex_lock(&_cacheMutex);
+    THObjectAndCGFloatToObjectCacheItem probeItem = { self, objectKey, { cgFloatKey } } ;
+    const THObjectAndCGFloatToObjectCacheItem *item = [self retrieveItem:&probeItem];
+    if(item) {
+        ret = [[item->value retain] autorelease];
+    } else {
+        ret = nil;
+    }
+    pthread_mutex_unlock(&_cacheMutex);
+    
+    return ret;
+}
+
+@end
+
+
 
 @implementation THStringAndCGFloatToCGFloatCache
 

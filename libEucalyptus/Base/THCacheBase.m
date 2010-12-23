@@ -33,6 +33,11 @@ static void THCacheItemRelease(CFAllocatorRef allocator, const void *item)
     CFAllocatorDeallocate(allocator, (void *)item);
 }
 
+static CFStringRef THCacheItemCopyDescription(const void *item)
+{
+    return (CFStringRef)[[*((THCacheBase **)item) describeItem:item] copy];
+}
+
 static Boolean THCacheItemEqual(const void *item1, const void *item2)
 {    
     return [*((THCacheBase **)item1) item:item1 isEqualToItem:item2];
@@ -47,7 +52,7 @@ static const CFSetCallBacks THCacheSetCallBacks = {
     0,
     THCacheItemRetain,
     THCacheItemRelease,
-    NULL,
+    THCacheItemCopyDescription,
     THCacheItemEqual,
     THCacheItemHash
 };
@@ -98,6 +103,11 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 
 - (CFHashCode)hashItem:(const void *)item { return 0; }
 
+- (NSString *)describeItem:(const void *)item
+{
+    return [NSString stringWithFormat:@"%p", item]; 
+}
+
 - (void)_cycleGenerations
 {
     if([self respondsToSelector:@selector(isItemInUse:)] &&
@@ -106,22 +116,27 @@ static const CFSetCallBacks THCacheSetCallBacks = {
         CFIndex setCount = CFSetGetCount(_lastGenerationCacheSet);
         const void **items = malloc(sizeof(void *) * setCount);
         CFSetGetValues(_lastGenerationCacheSet, items);
+        NSUInteger reused = 0;
         for(CFIndex i = 0; i < setCount; ++i) { 
             if([(id<THCacheItemInUse>)self isItemInUse:items[i]]) {
+                ++reused;
                 CFSetSetValue(_currentCacheSet, items[i]);
             }
         }
         free(items);
+        
+        if(reused) {
+            THWarn(@"Cache has items in use in previous generation (%ld).  Generation lifetime (%ld)", (long)reused, (long)_generationLifetime);
+            /*CFStringRef description = CFCopyDescription(_lastGenerationCacheSet);
+             NSLog(@"%@", (NSString *)description);
+             CFRelease(description);*/
+        }        
     } 
     
     // Get rid of the old generation, and 
     CFRelease(_lastGenerationCacheSet);
     _lastGenerationCacheSet = _currentCacheSet;
     _currentCacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
-    
-    if(CFSetGetCount(_lastGenerationCacheSet) > _generationLifetime) {
-        THWarn(@"Cache has more items in use from last generation (%ld) than generation lifetime (%ld)", (long)CFSetGetCount(_lastGenerationCacheSet), (long)_generationLifetime);
-    }
     
     _insertionsThisGeneration = 0;
 }
@@ -182,20 +197,20 @@ static const CFSetCallBacks THCacheSetCallBacks = {
     pthread_mutex_unlock(&_cacheMutex);
 }
 
-- (void)cacheItem:(void *)item
+- (void)cacheItem:(const void *)item
 {
     if(_lastGenerationCacheSet) {
         CFSetRemoveValue(_lastGenerationCacheSet, item);
     }
     CFSetSetValue(_currentCacheSet, item);
     if(_generationLifetime) {
-        if(++_insertionsThisGeneration > _generationLifetime) {
+        if(++_insertionsThisGeneration >= _generationLifetime) {
             [self _cycleGenerations];
         }
     }
 }
 
-- (const void *)retrieveItem:(void *)probeItem
+- (const void *)retrieveItem:(const void *)probeItem
 {
     const void *ret = CFSetGetValue(_currentCacheSet, probeItem);
     if(!ret && _lastGenerationCacheSet) {
@@ -203,6 +218,14 @@ static const CFSetCallBacks THCacheSetCallBacks = {
         if(ret) {
             CFSetSetValue(_currentCacheSet, ret);
             CFSetRemoveValue(_lastGenerationCacheSet, ret);
+            if(_generationLifetime && ++_insertionsThisGeneration >= _generationLifetime) {
+                [self _cycleGenerations];
+                ret = [self retrieveItem:probeItem];
+            } else {
+                // Otherwise, we've got garbage because this item was destroyed in 
+                // CFSetRemoveValue, since retaining copies.*/
+                ret = CFSetGetValue(_currentCacheSet, probeItem);
+            }
         }
     }
     return ret;

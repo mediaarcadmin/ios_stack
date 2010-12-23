@@ -47,6 +47,11 @@ typedef union EucCSSLayoutSizedRunWidthInfo {
 @property (nonatomic, retain, readonly) EucCSSLayoutRun *run;
 @property (nonatomic, assign, readonly) CGFloat scaleFactor;
 
+// This convenience constructor will return a cached node if one with the same
+// attibutes was requested recently.
++ (id)sizedRunWithRun:(EucCSSLayoutRun *)run
+          scaleFactor:(CGFloat)scaleFactor;
+
 - (id)initWithRun:(EucCSSLayoutRun *)run
       scaleFactor:(CGFloat)scaleFactor;
 

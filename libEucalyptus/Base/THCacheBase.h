@@ -29,10 +29,11 @@
 - (void)releaseItemContents:(void *)item;
 - (Boolean)item:(const void *)item1 isEqualToItem:(const void *)item2;
 - (CFHashCode)hashItem:(const void *)item;
+- (NSString *)describeItem:(const void *)item;
 
 // To call:
-- (void)cacheItem:(void *)item;
-- (const void *)retrieveItem:(void *)probeItem;
+- (void)cacheItem:(const void *)item;
+- (const void *)retrieveItem:(const void *)probeItem;
 
 @end
 

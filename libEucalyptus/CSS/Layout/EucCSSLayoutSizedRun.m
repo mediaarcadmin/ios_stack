@@ -21,8 +21,11 @@
 
 #import "THStringRenderer.h"
 #import "THPair.h"
+#import "THCache.h"
 #import "THLog.h"
 #import "th_just_with_floats.h"
+
+#import <objc/runtime.h>
 
 #import <libcss/libcss.h>
 
@@ -35,6 +38,45 @@ typedef struct EucCSSLayoutSizedRunBreakInfo {
 
 @synthesize run = _run;
 @synthesize scaleFactor = _scaleFactor;
+
+
+#define SIZED_RUN_CACHE_CAPACITY 12
+static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSizedRunPerScaleFactorCacheCacheKey";
+
++ (id)sizedRunWithRun:(EucCSSLayoutRun *)run
+          scaleFactor:(CGFloat)scaleFactor
+{
+    EucCSSLayoutSizedRun *ret = nil;
+    
+    EucCSSIntermediateDocument *document = run.document;
+    @synchronized(document) {
+        THIntegerToObjectCache *perScaleFactorCacheCache = objc_getAssociatedObject(document, EucCSSSizedRunPerScaleFactorCacheCacheKey);
+        if(!perScaleFactorCacheCache) {
+            perScaleFactorCacheCache = [[THIntegerToObjectCache alloc] init];
+            perScaleFactorCacheCache.conserveItemsInUse = NO;
+            objc_setAssociatedObject(document, EucCSSSizedRunPerScaleFactorCacheCacheKey, perScaleFactorCacheCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            [perScaleFactorCacheCache release];
+        }
+        uint32_t intKey = *((uint32_t *)(&scaleFactor));
+        THCache *sizedRunsCache = [perScaleFactorCacheCache objectForKey:intKey];
+        if(!sizedRunsCache) {
+            sizedRunsCache = [[THCache alloc] init];
+            sizedRunsCache.generationLifetime = SIZED_RUN_CACHE_CAPACITY;
+            sizedRunsCache.conserveItemsInUse = NO;
+            [perScaleFactorCacheCache cacheObject:sizedRunsCache forKey:intKey];
+            [sizedRunsCache release];
+        }
+        ret = [sizedRunsCache objectForKey:run];
+        if(!ret) {
+            ret = [[[self class] alloc] initWithRun:run
+                                        scaleFactor:scaleFactor];
+            [sizedRunsCache cacheObject:ret forKey:run];
+            [ret autorelease];
+        } 
+    }
+    return ret;
+}
+
 
 - (id)initWithRun:(EucCSSLayoutRun *)run
       scaleFactor:(CGFloat)scaleFactor

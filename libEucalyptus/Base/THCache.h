@@ -49,6 +49,14 @@
 
 @end
 
+@interface THObjectAndCGFloatToObjectCache : THCacheBase <THCacheItemInUse> {
+    BOOL _conserveItemsInUse;
+}
+
+- (void)cacheObject:(id)value forObjectKey:(id)objectKey cgFloatKey:(CGFloat)cgFloatKey;
+- (id)objectForObjectKey:(id)objectKey cgFloatKey:(CGFloat)cgFloatKey;
+
+@end
 
 @interface THStringAndCGFloatToCGFloatCache : THCacheBase {}
 

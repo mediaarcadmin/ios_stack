@@ -60,16 +60,17 @@ typedef struct EucCSSLayoutRunBreakInfo {
 @synthesize sizeDependentComponentIndexes = _sizeDependentComponentIndexes;
 @synthesize floatComponentIndexes = _floatComponentIndexes;
 
+@synthesize id = _id;
+@synthesize document = _document;
 @synthesize startNode = _startNode;
 @synthesize underNode = _underNode;
-@synthesize id = _id;
 @synthesize nextNodeUnderLimitNode = _nextNodeUnderLimitNode;
 @synthesize nextNodeInDocument = _nextNodeInDocument;
 
 @synthesize wordsCount = _wordsCount;
 
 
-#define RUN_CACHE_CAPACITY 48
+#define RUN_CACHE_CAPACITY 256
 static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
 
 + (id)runWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
@@ -83,7 +84,8 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         THIntegerToObjectCache *cachedRuns = objc_getAssociatedObject(document, EucCSSRunCacheKey);
         if(!cachedRuns) {
             cachedRuns = [[THIntegerToObjectCache alloc] init];
-            cachedRuns.generationLifetime = 48;
+            cachedRuns.generationLifetime = RUN_CACHE_CAPACITY;
+            cachedRuns.conserveItemsInUse = YES;
             objc_setAssociatedObject(document, EucCSSRunCacheKey, cachedRuns, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             [cachedRuns release];
         }
@@ -648,6 +650,11 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     }
     
     return attributeValues;    
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%@, %@", [self class], [[self words] componentsJoinedByString:@" "]];
 }
 
 @end
