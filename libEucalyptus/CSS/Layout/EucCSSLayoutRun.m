@@ -152,28 +152,31 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                     [self _accumulateFloatNode:inlineNode];
                     nextNode = [inlineNode.parent displayableNodeAfter:inlineNode under:underNode];
                     wasFloat = YES;
-                } else if(inlineNode.display != CSS_DISPLAY_BLOCK) {
-                    // Open this node.
-                    if(inlineNode.display == CSS_DISPLAY_LIST_ITEM) {
-                        if(_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutRunComponentKindHardBreak) {
-                            EucCSSLayoutRunComponentInfo info = hardBreakInfo;
-                            info.documentNode = inlineNode.parent;
-                            [self _addComponent:&info];
-                        } 
+                } else { 
+                    enum css_display_e inlineNodeDisplay = (enum css_display_e)inlineNode.display;
+                    if(inlineNodeDisplay == CSS_DISPLAY_INLINE || inlineNodeDisplay == CSS_DISPLAY_LIST_ITEM) {
+                        // Open this node.
+                        if(inlineNodeDisplay == CSS_DISPLAY_LIST_ITEM) {
+                            if(_componentsCount > 0 && _componentInfos[_componentsCount - 1].kind != EucCSSLayoutRunComponentKindHardBreak) {
+                                EucCSSLayoutRunComponentInfo info = hardBreakInfo;
+                                info.documentNode = inlineNode.parent;
+                                [self _addComponent:&info];
+                            } 
+                            
+                            // This is a bit of a hack to ensure we don't put extra spaces from the end 
+                            // of previous lines inside a list item.  The need for this may signify a 
+                            // deeper problem...
+                            _previousInlineCharacterWasSpace = YES;
+                            _alreadyInsertedSpace = YES;
+                        }
                         
-                        // This is a bit of a hack to ensure we don't put extra spaces from the end 
-                        // of previous lines inside a list item.  The need for this may signify a 
-                        // deeper problem...
-                        _previousInlineCharacterWasSpace = YES;
-                        _alreadyInsertedSpace = YES;
+                        currentComponentInfo.kind = EucCSSLayoutRunComponentKindOpenNode;
+                        currentComponentInfo.documentNode = inlineNode;
+                        [self _addComponent:&currentComponentInfo];
+                        nextNode = [inlineNode nextDisplayableUnder:underNode];
+                    } else {
+                        break;
                     }
-                    
-                    currentComponentInfo.kind = EucCSSLayoutRunComponentKindOpenNode;
-                    currentComponentInfo.documentNode = inlineNode;
-                    [self _addComponent:&currentComponentInfo];
-                    nextNode = [inlineNode nextDisplayableUnder:underNode];
-                } else {
-                    break;
                 }
             } else {
                 break;   

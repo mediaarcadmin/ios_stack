@@ -431,6 +431,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         break;
                     }
                     case CSS_DISPLAY_BLOCK:
+                    case CSS_DISPLAY_RUN_IN:
+                    case CSS_DISPLAY_INLINE_BLOCK:
                     {
                         //THLog(@"Block: %@", [currentDocumentNode name]);
                         if(THWillLog()) {
@@ -475,9 +477,11 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     case CSS_DISPLAY_TABLE_COLUMN:
                     case CSS_DISPLAY_TABLE_CELL:
                     case CSS_DISPLAY_TABLE_CAPTION:
+                    {
+                        currentDocumentNode = currentDocumentNode.nextDisplayable;
+                        break;
+                    }
                     case CSS_DISPLAY_LIST_ITEM:
-                    case CSS_DISPLAY_RUN_IN:
-                    case CSS_DISPLAY_INLINE_BLOCK:
                     case CSS_DISPLAY_INLINE:
                     {
                         //THLog(@"Inline: %@", [currentDocumentNode name]);
