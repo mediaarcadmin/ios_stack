@@ -502,9 +502,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                           usingLayouterForFloats:self];
                         
                         if(positionedRun) {
-                            if([[run.words componentsJoinedByString:@" "] hasPrefix:@"A young man of"]) {
-                                NSLog(@"fdsfdsfdsfds");
-                            }
                             BOOL first = YES; // Break before first line doesn't count.
                             for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
                                 if(!first) {
