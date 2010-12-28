@@ -75,6 +75,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
 
 + (id)runWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
    underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
+   stopBeforeNode:(EucCSSIntermediateDocumentNode *)stopBeforeNode
             forId:(uint32_t)id
 {
     EucCSSLayoutRun *ret = nil;
@@ -93,6 +94,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         if(!ret) {
             ret = [[[self class] alloc] initWithNode:inlineNode
                                       underLimitNode:underNode 
+                                      stopBeforeNode:stopBeforeNode
                                                forId:id];
             [cachedRuns cacheObject:ret forKey:id];
             [ret autorelease];
@@ -107,6 +109,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
  
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
+    stopBeforeNode:(EucCSSIntermediateDocumentNode *)stopBeforeNode
              forId:(uint32_t)id
 {
     if((self = [super init])) {        
@@ -139,6 +142,10 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         
         BOOL wasFloat = NO;
         while(YES) {
+            if(inlineNode == stopBeforeNode) {
+                break;
+            }            
+            
             EucCSSIntermediateDocumentNode *nextNode = nil;
             
             if(inlineNode.isTextNode) {

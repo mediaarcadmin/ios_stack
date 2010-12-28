@@ -10,6 +10,17 @@
 
 @implementation EucCSSLayoutTableCaption
 
-@synthesize run = _run;
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node
+{
+    if((self = [super initWithNode:node])) {
+        // Generate contents now?
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [super dealloc]; 
+}
 
 @end

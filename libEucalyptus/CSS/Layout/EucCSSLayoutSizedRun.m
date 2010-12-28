@@ -558,6 +558,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
                                                                   returningNextPoint:&returnedPoint
                                                                   returningCompleted:&completed 
                                                                     lastBlockNodeKey:floatPoint.nodeKey
+                                                               stopBeforeNodeWithKey:0
                                                                constructingAncestors:NO];
                 
                 [floatBlock shrinkToFit];       

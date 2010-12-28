@@ -12,9 +12,9 @@
 @class EucCSSLayoutRun;
 
 @interface EucCSSLayoutTableCell : EucCSSLayoutTableBox {
-    EucCSSLayoutRun *_run;
+    uint32_t _lastBlockNodeKey;
+    uint32_t _stopBeforeNodeKey;
 }
 
-@property (nonatomic, retain) EucCSSLayoutRun *run;
 
 @end

@@ -16,7 +16,9 @@
     EucCSSLayoutTableTable *_table;
 }
 
-@property (nonatomic, retain) EucCSSLayoutTableCaption *caption;
-@property (nonatomic, retain) EucCSSLayoutTableTable *table;
+@property (nonatomic, retain, readonly) EucCSSLayoutTableCaption *caption;
+@property (nonatomic, retain, readonly) EucCSSLayoutTableTable *table;
+
+- (EucCSSIntermediateDocumentNode *)accumulateCaptionNode:(EucCSSIntermediateDocumentNode *)captionNode;
 
 @end

@@ -49,6 +49,7 @@ typedef struct EucCSSLayoutPoint
                                returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
                                returningCompleted:(BOOL *)returningCompleted
                                  lastBlockNodeKey:(uint32_t)lastBlockNodeKey
+                            stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
                             constructingAncestors:(BOOL)constructingAncestors;
 
 - (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;

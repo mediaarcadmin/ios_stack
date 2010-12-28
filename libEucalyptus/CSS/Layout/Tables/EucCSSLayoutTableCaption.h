@@ -9,12 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "EucCSSLayoutTableBox.h"
 
-@class EucCSSLayoutRun;
-
-@interface EucCSSLayoutTableCaption : EucCSSLayoutTableBox {
-    EucCSSLayoutRun *_run;
-}
-
-@property (nonatomic, retain) EucCSSLayoutRun *run;
+@interface EucCSSLayoutTableCaption : EucCSSLayoutTableBox {}
 
 @end

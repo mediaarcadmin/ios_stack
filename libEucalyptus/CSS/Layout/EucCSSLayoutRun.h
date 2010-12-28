@@ -111,10 +111,12 @@ struct EucCSSLayoutRunBreakInfo;
 // attibutes was requested recently.
 + (id)runWithNode:(EucCSSIntermediateDocumentNode *)inlineNode 
    underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
+   stopBeforeNode:(EucCSSIntermediateDocumentNode *)stopBeforeNode
             forId:(uint32_t)id;
 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)node 
     underLimitNode:(EucCSSIntermediateDocumentNode *)underNode
+    stopBeforeNode:(EucCSSIntermediateDocumentNode *)stopBeforeNode
              forId:(uint32_t)id;
 
 - (EucCSSLayoutRunPoint)pointForNode:(EucCSSIntermediateDocumentNode *)node;

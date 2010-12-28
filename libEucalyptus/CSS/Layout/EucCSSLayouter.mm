@@ -20,6 +20,8 @@
 #import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSLayoutRunExtractor.h"
 
+#import "EucCSSLayoutTableWrapper.h"
+
 #import "THStringRenderer.h"
 #import "THPair.h"
 #import "THLog.h"
@@ -265,11 +267,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
                                returningCompleted:(BOOL *)returningCompleted
                                  lastBlockNodeKey:(uint32_t)lastBlockNodeKey
+                            stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
                             constructingAncestors:(BOOL)constructingAncestors
 {
     EucCSSLayoutPositionedBlock *positionedRoot = nil;      
     
     /*
+     
         In the normal flow, page breaks can occur at the following places:
     
              1) In the vertical margin between block boxes. When an unforced 
@@ -330,12 +334,18 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     EucCSSIntermediateDocument *document = self.document;
     EucCSSIntermediateDocumentNode* currentDocumentNode = [self _layoutNodeForKey:nodeKey];
 
-    
     EucCSSIntermediateDocumentNode *lastBlockNode;
     if(lastBlockNodeKey) {
         lastBlockNode = [_document nodeForKey:lastBlockNodeKey];
     } else {
         lastBlockNode = nil;
+    }
+    
+    EucCSSIntermediateDocumentNode *stopBeforeNode;
+    if(stopBeforeNodeKey) {
+        stopBeforeNode = [_document nodeForKey:stopBeforeNodeKey];
+    } else {
+        stopBeforeNode = nil;
     }
     
     if(currentDocumentNode) {
@@ -385,7 +395,12 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         
         BOOL pageBreakForced = NO;
         
-        while(!pageBreakForced && !reachedBottomOfFrame && !closedLastNode && currentDocumentNode) {            
+        while(!pageBreakForced && !reachedBottomOfFrame && 
+              !closedLastNode && currentDocumentNode) {     
+            if(currentDocumentNode == stopBeforeNode) {
+                break;
+            }
+            
             // Find the node's parent, closing open blocks until we reach it.
             EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
             EucCSSIntermediateDocumentNode *currentPositionedBlockNode;
@@ -420,13 +435,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 switch(currentNodeDisplay) {
                     case CSS_DISPLAY_INHERIT:
                     {
-                        NSLog(@"Unexpected node with display:inherit");
+                        THWarn(@"Unexpected node with display:inherit");
                         currentDocumentNode = currentDocumentNode.nextDisplayable;
                         break;
                     }
                     case CSS_DISPLAY_NONE:
                     {
-                        NSLog(@"Unexpected node with display:none");
+                        THWarn(@"Unexpected node with display:none");
                         currentDocumentNode = currentDocumentNode.nextDisplayable;
                         break;
                     }
@@ -478,7 +493,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     case CSS_DISPLAY_TABLE_CELL:
                     case CSS_DISPLAY_TABLE_CAPTION:
                     {
-                        currentDocumentNode = currentDocumentNode.nextDisplayable;
+                        EucCSSLayoutTableWrapper *table = [[EucCSSLayoutTableWrapper alloc] initWithNode:currentDocumentNode];
+                        currentDocumentNode = table.nextNodeInDocument;
                         break;
                     }
                     case CSS_DISPLAY_LIST_ITEM:
@@ -489,6 +505,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         // This is an inline element - start a run.
                         EucCSSLayoutRun *run = [EucCSSLayoutRun runWithNode:currentDocumentNode
                                                              underLimitNode:currentDocumentNode.blockLevelParent
+                                                             stopBeforeNode:stopBeforeNode
                                                                       forId:nextRunNodeKey];
                         EucCSSLayoutSizedRun *sizedRun = [EucCSSLayoutSizedRun sizedRunWithRun:run 
                                                                                    scaleFactor:_scaleFactor];
@@ -604,7 +621,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                       inFrame:frame
                                            returningNextPoint:returningNextPoint
                                            returningCompleted:returningCompleted
-                                             lastBlockNodeKey:nil
+                                             lastBlockNodeKey:0
+                                        stopBeforeNodeWithKey:0
                                         constructingAncestors:YES];
     return ret;
 }

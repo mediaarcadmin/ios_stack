@@ -72,6 +72,7 @@
                 // This is an inline element - start a run.
                 ret = [EucCSSLayoutRun runWithNode:currentDocumentNode
                                                     underLimitNode:currentDocumentNode.blockLevelParent
+                                                    stopBeforeNode:nil
                                                              forId:nextRunNodeKey];
                 
             } else {

@@ -12,8 +12,12 @@
 
 @interface EucCSSLayoutTableBox : NSObject {
     EucCSSIntermediateDocumentNode *_documentNode;
+    EucCSSIntermediateDocumentNode *_nextNodeInDocument;
 }
 
 @property (nonatomic, retain) EucCSSIntermediateDocumentNode *documentNode;
+@property (nonatomic, retain) EucCSSIntermediateDocumentNode *nextNodeInDocument;
+
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node;
 
 @end

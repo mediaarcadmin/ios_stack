@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "EucCSSLayoutTableBox.h"
 
-@class EucCSSLayoutTableHeaderGroup, EucCSSLayoutTableFooterGroup;
+@class EucCSSIntermediateDocumentNode, EucCSSLayoutTableWrapper, EucCSSLayoutTableHeaderGroup, EucCSSLayoutTableFooterGroup;
 
 @interface EucCSSLayoutTableTable : EucCSSLayoutTableBox {
     EucCSSLayoutTableHeaderGroup *_headerGroup;
-    NSArray *_rowGroups;
+    NSMutableArray *_rowGroups;
     EucCSSLayoutTableFooterGroup *_footerGroup;
     
-    NSArray *_columnGroups;
+    NSMutableArray *_columnGroups;
 }
 
 @property (nonatomic, retain) EucCSSLayoutTableHeaderGroup *headerGroup;
@@ -24,5 +24,7 @@
 @property (nonatomic, retain) EucCSSLayoutTableFooterGroup *footerGroup;
 
 @property (nonatomic, retain) NSArray *columnGroups;
+
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper;
 
 @end
