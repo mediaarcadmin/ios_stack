@@ -122,13 +122,15 @@ ErrorExit:
 	}
 ErrorExit:
 	if (dr != DRM_SUCCESS) {
-		//NSLog(@"DRM commit error: %08X",dr);
+		NSLog(@"DRM commit error: %08X",dr);
+		/*
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:[NSLocalizedStringWithDefaultValue(@"REPORTING_FAILED",nil,[NSBundle mainBundle],@"There was an error in book processing. Please contact Blio technical support with the error code: ",@"Alert message shown when book reporting fails.")
 											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
 									delegate:nil 
 						   cancelButtonTitle:nil
 						   otherButtonTitles:@"OK", nil];
+		 */
         return NO;
 	}
     return YES;
@@ -171,11 +173,46 @@ ErrorExit:
 			NSRange valRange;
 			valRange.location = beginTagRange.location + beginTagRange.length;
 			valRange.length = endTagRange.location - valRange.location;
-			NSLog(@"Extracted id:  %@", [xmlStr substringWithRange:valRange]);
 			return [xmlStr substringWithRange:valRange];
 		}
 	}
 	return nil;
+}
+
+- (BOOL)checkPriorityError:(DRM_RESULT)result {
+	if (result==DRM_E_SERVER_COMPUTER_LIMIT_REACHED || result==DRM_E_SERVER_DEVICE_LIMIT_REACHED) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"OVER_DEVICE_LIMIT",nil,[NSBundle mainBundle],@"You are at your limit of five registered devices.  You must deregister another device before you can register this one.",@"Description of device limit error.")
+									delegate:nil 
+						   cancelButtonTitle:nil
+						   otherButtonTitles:@"OK", nil];
+		return YES;
+	}
+	else if (result==DRM_E_LICEVAL_LICENSE_REVOKED) { 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"LICENSE_REVOKED",nil,[NSBundle mainBundle],@"The license for one your books has been revoked.  Please contact Blio technical support.",@"Description of license revocation.")
+									delegate:nil 
+						   cancelButtonTitle:nil
+						   otherButtonTitles:@"OK", nil];
+		return YES;
+	}
+	else if (result==DRM_E_CERTIFICATE_REVOKED) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"CERTIFICATE_REVOKED",nil,[NSBundle mainBundle],@"A certificate on your device has been revoked.  Please contact Blio technical support.",@"Description of certificate revocation.")
+									delegate:nil 
+						   cancelButtonTitle:nil
+						   otherButtonTitles:@"OK", nil];
+		return YES;
+	}
+	else if (result==DRM_E_DEVCERT_REVOKED) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"DEVICE_REVOKED",nil,[NSBundle mainBundle],@"Your device certificate has been revoked.  Please contact Blio technical support.",@"Description of device certificate revocation.")
+									delegate:nil 
+						   cancelButtonTitle:nil
+						   otherButtonTitles:@"OK", nil];
+		return YES;
+	}
+	return NO;
 }
 
 - (BOOL)leaveDomain:(NSString*)token {
@@ -268,10 +305,20 @@ ErrorExit:
 		return YES;
 	}
 	
+	// Not clear why result and status codes are not the same, but
+	// we check both to be sure.  Though no priority errors are
+	// expected for leaving a domain.
+	if ([self checkPriorityError:dr2])
+		return NO;
+	else if (([self checkPriorityError:dr]))
+		// I don't expect to ever get here, if there's a priority 
+		// condition it should be returned by the server.
+		return NO;
+	
 	//NSLog(@"DRM error leaving domain: %08X", dr);
 	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 								 message:[NSLocalizedStringWithDefaultValue(@"DEREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to deregister device. Please contact Blio technical support with the error code: ",@"Alert message shown when device deregistration fails.")
-										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
+										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr2]]
 								delegate:nil 
 					   cancelButtonTitle:nil
 					   otherButtonTitles:@"OK", nil];
@@ -279,7 +326,6 @@ ErrorExit:
 }
 
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name {
-	NSLog(@"BlioDrmSessionManager joinDomain:%@ domainName:%@",token,name);
 	DRM_RESULT dr = DRM_SUCCESS;
     DRM_RESULT dr2 = DRM_SUCCESS;
     DRM_DOMAIN_ID oDomainID;
@@ -342,8 +388,6 @@ ErrorExit:
 #else
 	[self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionJoinDomain];
 #endif
-	
-	
 	//NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
 	@synchronized (self) {
 		ChkDR( Drm_JoinDomain_ProcessResponse( drmIVars->drmAppContext,
@@ -373,10 +417,19 @@ ErrorExit:
 		return YES;
 	}
 	
+	// Not clear why result and status codes are not the same, but
+	// they're not always so we check both to be sure. 
+	if ([self checkPriorityError:dr2])
+		return NO;
+	else if (([self checkPriorityError:dr]))
+		// I don't expect to ever get here, if there's a priority 
+		// condition it should be returned by the server.
+		return NO;
+	
 	//NSLog(@"DRM error joining domain: %08X", dr);
 	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 								 message:[NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please contact Blio technical support with the error code: ",@"Alert message shown when device registration fails.")
-										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
+										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr2]]
 								delegate:nil 
 					   cancelButtonTitle:nil
 					   otherButtonTitles:@"OK", nil];
@@ -593,25 +646,34 @@ ErrorExit:
 }
 
 - (BOOL)getLicense:(NSString*)token {
-    BOOL ret = NO;
     
     if ( !self.drmInitialized ) {
 		NSLog(@"DRM error: license cannot be acquired because DRM is not initialized.");
-		return ret;
+		return NO;
 	}
 	
 	DRM_RESULT dr = DRM_SUCCESS;
 	ChkDR([self checkDomain:token]);
 	
-ErrorExit:
-	if ( dr != DRM_SUCCESS ) {
-		NSLog(@"DRM license error: %08X", dr);
-		ret = NO;
-	} else {
+ErrorExit:	
+	if ( dr == DRM_SUCCESS || dr == DRM_S_FALSE || dr == DRM_S_MORE_DATA  ) {
 		NSLog(@"DRM license successfully acquired for bookID: %@", self.headerBookID);
-		ret = YES;
+		return YES;
 	}
-    return ret;
+	if ([self checkPriorityError:dr])
+		return NO;
+	// Not sure at this point whether to report to the user or just log.
+	NSLog(@"DRM license acquisition error: %08X",dr);
+	/*
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+								 message:[NSLocalizedStringWithDefaultValue(@"LICENSE_ACQUISITION_FAILED",nil,[NSBundle mainBundle],@"Unable to obtain license for book. Please contact Blio technical support with the error code: ",@"Alert message shown when device registration fails.")
+										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
+								delegate:nil 
+					   cancelButtonTitle:nil
+					   otherButtonTitles:@"OK", nil];
+	*/
+	return NO;
+	
 }
 
 - (BOOL)bindToLicense {

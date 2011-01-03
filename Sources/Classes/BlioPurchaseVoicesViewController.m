@@ -55,6 +55,11 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFailed:) name:BlioInAppPurchaseProductsFetchFailed object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFinished:) name:BlioInAppPurchaseProductsFetchFinished object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsUpdated:) name:BlioInAppPurchaseProductsUpdated object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionFailed object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionRestored object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionPurchased object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];		
+	
 	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) {
 		[[BlioInAppPurchaseManager sharedInAppPurchaseManager] fetchProductsFromProductServer];
 		[self.tableView reloadData];
@@ -94,11 +99,12 @@
 }
 
 
-/*
+
  - (void)viewWillAppear:(BOOL)animated {
- [super viewWillAppear:animated];
- }
- */
+	 [super viewWillAppear:animated];
+ 	 self.activityIndicatorView.hidden = NO;
+}
+ 
 /*
  - (void)viewDidAppear:(BOOL)animated {
  [super viewDidAppear:animated];
@@ -109,11 +115,12 @@
  [super viewWillDisappear:animated];
  }
  */
-/*
+
  - (void)viewDidDisappear:(BOOL)animated {
- [super viewDidDisappear:animated];
- }
- */
+	 [super viewDidDisappear:animated];
+	 self.activityIndicatorView.hidden = YES;
+}
+ 
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -159,6 +166,7 @@
     BlioPurchaseVoiceTableViewCell *cell = (BlioPurchaseVoiceTableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[BlioPurchaseVoiceTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.delegate = self;
     }
     
     // Configure the cell...
@@ -206,7 +214,9 @@
  return YES;
  }
  */
-
+-(void)inAppPurchaseTransactionDone:(NSNotification*)note {
+	[self.activityIndicatorView stopAnimating];
+}
 
 #pragma mark -
 #pragma mark Table view delegate
@@ -220,6 +230,14 @@
 	 [self.navigationController pushViewController:detailViewController animated:YES];
 	 [detailViewController release];
 	 */
+}
+
+#pragma mark -
+#pragma mark BlioPurchaseVoiceViewDelegate
+
+-(void)purchaseProductWithID:(NSString*)productID {
+	[self.activityIndicatorView startAnimating];
+	[[BlioInAppPurchaseManager sharedInAppPurchaseManager] purchaseProductWithID:productID];
 }
 
 
@@ -237,7 +255,7 @@
 
 @implementation BlioPurchaseVoiceTableViewCell
 
-@synthesize downloadButton,product,progressView,progressLabel;
+@synthesize downloadButton,product,progressView,progressLabel,delegate;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -381,7 +399,7 @@
 	//	NSLog(@"onDownloadButtonPressed");
 	if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] canMakePurchases]) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchasing];
-		[[BlioInAppPurchaseManager sharedInAppPurchaseManager] purchaseProductWithID:self.product.productId];
+		[self.delegate purchaseProductWithID:self.product.productId];
 	}
 	else {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")

@@ -216,8 +216,9 @@
 	[super dealloc];
 }
 -(void) start{
-	NSURLConnection * connection = [[NSURLConnection alloc] initWithRequest:_request.URLRequest delegate:self startImmediately:NO];
-	[connection start];
+	[[NSURLConnection alloc] initWithRequest:_request.URLRequest delegate:self];
+//	NSURLConnection * connection = [[NSURLConnection alloc] initWithRequest:_request.URLRequest delegate:self startImmediately:NO];
+//	[connection start];
 }
 -(CCInAppPurchaseRequest*)request {
 	return _request;

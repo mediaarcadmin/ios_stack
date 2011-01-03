@@ -140,6 +140,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize currentPageColor = _currentPageColor;
 
 @synthesize audioPlaying = _audioPlaying;
+@synthesize audioEnabled = _audioEnabled;
 @synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize motionControlsEnabled;
@@ -244,9 +245,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (_TTSEnabled) {
         
         if (![self.book hasAudiobook] && (![self.book hasTTSRights] || !([self.book hasTextFlow] || [self.book hasEPub]))) {
+			self.audioEnabled = NO;
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
+			
         }
 		else {
+			self.audioEnabled = YES;
             self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
             
             if ([self.book hasAudiobook]) {
@@ -1415,7 +1419,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if ([self.searchViewController isSearchInline] == NO) {
                 self.navigationController.toolbarHidden = NO;
             } else {
-                self.navigationController.toolbarHidden = YES;
+                self.navigationController.toolbarHidden = NO;
                 self.searchViewController.toolbarHidden = NO;
             }
             self.navigationController.navigationBarHidden = NO;
@@ -1486,6 +1490,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)toggleToolbars:(BlioLibraryToolbarsState)toolbarState
 {
+    //NSLog(@"toolbar state %d", toolbarState);
     // We do this with performSelector afterDelay 0 so that if something else
     // happens later in this event loop cycle (i.e. a tap-turn starts), the 
     // toggle can be cancelled.
@@ -1857,13 +1862,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return kBlioPageLayoutPlainText;
 }
 
-- (void)checkAudioEnable {
-	if (![self.book hasAudiobook] && (![self.book hasTTSRights] || !([self.book hasTextFlow] || [self.book hasEPub]))) 
-		self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:NO];
-	else 
-		self.toolbarItems = [self _toolbarItemsWithTTSInstalled:YES enabled:YES];
-}
-
 - (void)changePageLayout:(id)sender {
     
     BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
@@ -1886,7 +1884,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];
 			// Audio enable status could have been changed by speedread, so confirm status.
-			[self checkAudioEnable];
+			if ( self.audioEnabled )
+				for (UIBarButtonItem* item in self.toolbarItems)
+					if (item.action==@selector(toggleAudio:))
+						[item setEnabled:YES];
+				
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
             layoutView.delegate = self;
@@ -1894,7 +1896,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; 
 			// Audio enable status could have been changed by speedread, so confirm status.
-			[self checkAudioEnable];
+			if ( self.audioEnabled )
+				for (UIBarButtonItem* item in self.toolbarItems)
+					if (item.action==@selector(toggleAudio:))
+						[item setEnabled:YES];
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
             speedReadView.delegate = self;

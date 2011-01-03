@@ -26,7 +26,14 @@ static const CGFloat kBlioVoiceDownloadProgressViewWidth = 100.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewHeight = 10.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 10.0f;
 
-@interface BlioPurchaseVoicesViewController : UITableViewController {
+@protocol BlioPurchaseVoiceViewDelegate
+
+-(void)purchaseProductWithID:(NSString*)productID;
+
+@end
+
+
+@interface BlioPurchaseVoicesViewController : UITableViewController<BlioPurchaseVoiceViewDelegate> {
 	NSMutableArray * availableVoicesForPurchase;
 	BlioRoundedRectActivityView * activityIndicatorView;
 }
@@ -42,12 +49,14 @@ static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 10.0f;
 	UIProgressView * progressView;
 	UILabel * progressLabel;
 	BlioVoiceDownloadButtonState buttonState;
+	id<BlioPurchaseVoiceViewDelegate> delegate;
 }
 
 @property (nonatomic, retain) UIButton * downloadButton;
 @property (nonatomic, retain) CCInAppPurchaseProduct * product;
 @property (nonatomic, retain) UIProgressView * progressView;
 @property (nonatomic, retain) UILabel * progressLabel;
+@property (nonatomic, assign) id<BlioPurchaseVoiceViewDelegate> delegate;
 
 -(void)configureWithInAppPurchaseProduct:(CCInAppPurchaseProduct*)aProduct;
 -(void)setDownloadButtonState:(BlioVoiceDownloadButtonState)buttonState;
