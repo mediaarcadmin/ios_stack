@@ -385,11 +385,6 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
     }    
 }
 
-- (CGRect)openRectFromYPoint:(CGFloat)yPoint ofMinimumWidth:(CGFloat)minWidth
-{   
-    return CGRectZero;
-}
-
 - (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height
 {
     NSMutableArray *leftRet = nil;
