@@ -89,10 +89,6 @@ struct EucCSSLayoutRunBreakInfo;
     NSMutableArray *_sizeDependentComponentIndexes;
     NSMutableArray *_floatComponentIndexes;
     
-    struct THBreak *_potentialBreaks;
-    struct EucCSSLayoutRunBreakInfo *_potentialBreakInfos;
-    int _potentialBreaksCount;
-    
     EucSharedHyphenator *_sharedHyphenator;
 }
 

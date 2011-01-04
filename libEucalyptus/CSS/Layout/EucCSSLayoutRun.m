@@ -259,9 +259,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     }
     free(_componentInfos);
     free(_wordToComponent);
-    
-    free(_potentialBreaks);
-    free(_potentialBreakInfos);
 
     [_startNode release];
     [_underNode release];
