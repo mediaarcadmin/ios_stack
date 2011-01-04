@@ -417,19 +417,18 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     return _potentialBreaks;
 }
 
-- (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
-                                       inContainer:(EucCSSLayoutPositionedBlock *)container
-                              startingAtWordOffset:(uint32_t)wordOffset 
-                                     elementOffset:(uint32_t)elementOffset
-                            usingLayouterForFloats:(EucCSSLayouter *)layouter
+- (NSMutableArray *)_linesForFrame:(CGRect)frame
+                       inContainer:(EucCSSLayoutPositionedBlock *)container
+              startingAtWordOffset:(uint32_t)wordOffset 
+                     elementOffset:(uint32_t)elementOffset
+            usingLayouterForFloats:(EucCSSLayouter *)layouter
+                           getMaxY:(CGFloat *)lastLineMaxYOut
 {
     NSUInteger componentsCount = _run.componentsCount;    
     if(componentsCount == 0) {
         return nil;
     }    
-    
-    EucCSSLayoutPositionedRun *ret = [[EucCSSLayoutPositionedRun alloc] initWithSizedRun:self];
-    
+        
     EucCSSLayoutRunComponentInfo *componentInfos = _run.componentInfos;
     THBreak *potentialBreaks = [self _potentialBreaksForFrame:frame];
     
@@ -500,7 +499,6 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
             int thisBreakIndex = usedBreakIndexes[i] + startBreakOffset;
             EucCSSLayoutSizedRunBreakInfo thisLineBreakInfo = _potentialBreakInfos[thisBreakIndex];
             EucCSSLayoutPositionedLine *newLine = [[EucCSSLayoutPositionedLine alloc] init];
-            newLine.parent = ret;
             
             EucCSSLayoutRunPoint lineStartPoint;
             EucCSSLayoutRunPoint lineEndPoint;
@@ -595,7 +593,6 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
                 newLine.align = textAlign;
             }
             
-            
             // Calculate available width for line of this height.
             
             CGFloat availableWidth;
@@ -681,22 +678,44 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         }
     } while(widthChanged);
     
-    if(lines.count) {
-        ret.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY);
-        ret.children = lines;
+    if(!lines.count) {
+        [lines release];
+        lines = nil;
+        *lastLineMaxYOut = 0.0f;
     } else {
-        [ret release];
-        ret = nil;
+        [lines autorelease];
+        *lastLineMaxYOut = lastLineMaxY;
     }
     
+    return lines;
+}    
+
+- (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
+                                       inContainer:(EucCSSLayoutPositionedBlock *)container
+                              startingAtWordOffset:(uint32_t)wordOffset 
+                                     elementOffset:(uint32_t)elementOffset
+                            usingLayouterForFloats:(EucCSSLayouter *)layouter
+{
+    CGFloat lastLineMaxY = 0.0f;
     
-    [lines release];
+    NSMutableArray *lines = [self _linesForFrame:frame
+                                     inContainer:container
+                            startingAtWordOffset:wordOffset 
+                                   elementOffset:elementOffset
+                          usingLayouterForFloats:layouter
+                                         getMaxY:&lastLineMaxY];
+        
+    EucCSSLayoutPositionedRun *ret = nil;
     
-    if(ret) {
+    if(lines) {
+        ret = [[[EucCSSLayoutPositionedRun alloc] initWithSizedRun:self] autorelease];
+        ret.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, lastLineMaxY);
+        [lines setValue:ret forKey:@"parent"];
+        ret.children = lines;
         [container addChild:ret];
-    }
+    }     
     
-    return [ret autorelease];
+    return ret;
 }
 
 @end
