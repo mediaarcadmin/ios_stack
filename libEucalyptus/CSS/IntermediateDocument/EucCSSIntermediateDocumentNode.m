@@ -414,7 +414,6 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return NSStringFromClass(self.class);
 }
 
-
 - (/*enum css_display_e*/ uint8_t)display
 {
     if(!_display) {
@@ -431,6 +430,16 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 - (EucCSSIntermediateDocumentNode *)generatedChildNodeForKey:(uint32_t)childKey
 {
     return nil;
+}
+
+- (NSUInteger)rowSpan
+{
+    return 1;
+}
+
+- (NSUInteger)columnSpan
+{
+    return 1;
 }
 
 @end

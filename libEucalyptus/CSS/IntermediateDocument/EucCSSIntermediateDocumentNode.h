@@ -69,6 +69,9 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) /*enum css_display_e*/ uint8_t display; // Returns the display from the computed style.
 
+@property (nonatomic, readonly) NSUInteger rowSpan;
+@property (nonatomic, readonly) NSUInteger columnSpan;
+
 // Abstract:
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *parent;

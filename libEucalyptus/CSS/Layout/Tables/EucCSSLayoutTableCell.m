@@ -32,18 +32,27 @@
     } 
     return self;
 }
-/*
+
 - (NSUInteger)columnSpan
 {
     NSUInteger ret = 1;
+    EucCSSIntermediateDocumentNode *node = self.documentNode;
     if(node.display == CSS_DISPLAY_TABLE_CELL) {
-        css_computed_style *style = node.style
-        css_computed_cel
-    
+        ret = [node columnSpan];
     }
     return ret;
 }
-*/
+
+- (NSUInteger)rowSpan
+{
+    NSUInteger ret = 1;
+    EucCSSIntermediateDocumentNode *node = self.documentNode;
+    if(node.display == CSS_DISPLAY_TABLE_CELL) {
+        ret = [node rowSpan];
+    }
+    return ret;
+}
+
 - (void)dealloc
 {
     [_stopBeforeNode release];

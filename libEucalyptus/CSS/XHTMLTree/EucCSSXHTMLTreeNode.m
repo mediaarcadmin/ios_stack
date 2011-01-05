@@ -38,4 +38,16 @@
     return [self attributeWithName:@"id"];
 }
 
+- (NSUInteger)columnSpan
+{
+    NSUInteger colSpan = [[self attributeWithName:@"colspan"] integerValue];
+    return MAX(colSpan, 1); 
+}
+
+- (NSUInteger)rowSpan
+{
+    NSUInteger rowSpan = [[self attributeWithName:@"rowspan"] integerValue];
+    return MAX(rowSpan, 1); 
+}
+
 @end

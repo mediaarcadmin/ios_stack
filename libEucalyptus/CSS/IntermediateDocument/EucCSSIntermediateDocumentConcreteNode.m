@@ -443,4 +443,24 @@
     return [generatedChild autorelease];
 }
 
+- (NSUInteger)rowSpan
+{
+    if([_documentTreeNode respondsToSelector:@selector(rowSpan)]) {
+        NSUInteger ret = [_documentTreeNode rowSpan];
+        return MAX(ret, 1);
+    } else {
+        return [super rowSpan];
+    }
+}
+
+- (NSUInteger)columnSpan
+{
+    if([_documentTreeNode respondsToSelector:@selector(columnSpan)]) {
+        NSUInteger ret = [_documentTreeNode columnSpan];
+        return MAX(ret, 1);
+    } else {
+        return [super columnSpan];
+    }
+}
+
 @end
