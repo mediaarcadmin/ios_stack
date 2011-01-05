@@ -184,6 +184,15 @@ static NSString *xamlColorToCSSColor(NSString *color)
     return [self attributeWithName:@"NavigateUri"];
 }
 
+- (NSString *)CSSID
+{
+    NSString *tag = [self tag];
+    if(![tag hasPrefix:@"__"]) {
+        return tag;
+    }
+    return nil;
+}
+
 - (NSString *)tag
 {
     if(!_tag) {
@@ -192,7 +201,5 @@ static NSString *xamlColorToCSSColor(NSString *color)
     }
     return _tag;
 }
-
-
 
 @end

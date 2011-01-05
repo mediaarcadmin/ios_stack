@@ -13,6 +13,8 @@
 		7D034F9D10C2CD820085778B /* TransitionTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D034F9710C2CD820085778B /* TransitionTestMain.m */; };
 		7D034F9E10C2CD820085778B /* TransitionTestMainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */; };
 		7D034F9F10C2CD820085778B /* TransitionTestRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */; };
+		7D03760712D4A20300B341BE /* EucCSSXHTMLTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D03760512D4A20300B341BE /* EucCSSXHTMLTreeNode.h */; };
+		7D03760812D4A20300B341BE /* EucCSSXHTMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D03760612D4A20300B341BE /* EucCSSXHTMLTreeNode.m */; };
 		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
 		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */; };
@@ -691,6 +693,8 @@
 		7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestMainWindow.xib; sourceTree = "<group>"; };
 		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
 		7D035B6811ECD03B00F39592 /* Pride and Prejudice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Pride and Prejudice"; sourceTree = "<group>"; };
+		7D03760512D4A20300B341BE /* EucCSSXHTMLTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSXHTMLTreeNode.h; sourceTree = "<group>"; };
+		7D03760612D4A20300B341BE /* EucCSSXHTMLTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSXHTMLTreeNode.m; sourceTree = "<group>"; };
 		7D05483D122EF101002B72C9 /* EucSelectorKnob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorKnob.h; sourceTree = "<group>"; };
 		7D05483E122EF101002B72C9 /* EucSelectorKnob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorKnob.m; sourceTree = "<group>"; };
 		7D0D818211075E2A00C672AC /* EucSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelector.h; sourceTree = "<group>"; };
@@ -1501,6 +1505,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		7D03760212D4A1EB00B341BE /* XHTMLTree */ = {
+			isa = PBXGroup;
+			children = (
+				7D03760512D4A20300B341BE /* EucCSSXHTMLTreeNode.h */,
+				7D03760612D4A20300B341BE /* EucCSSXHTMLTreeNode.m */,
+			);
+			path = XHTMLTree;
+			sourceTree = "<group>";
+		};
 		7D0D817D11075E0E00C672AC /* Selector */ = {
 			isa = PBXGroup;
 			children = (
@@ -2257,6 +2270,7 @@
 				7DF4A34A11EF839C00F6A4DD /* EucLibCSSUtils.m */,
 				7D2341401149602300C318E7 /* DocumentTree */,
 				7D53BD8D11499D68004F64DC /* XMLTree */,
+				7D03760212D4A1EB00B341BE /* XHTMLTree */,
 				7D2341511149602300C318E7 /* IntermediateDocument */,
 				7D23415C1149602300C318E7 /* Layout */,
 				7D23416C1149602300C318E7 /* Render */,
@@ -2922,6 +2936,7 @@
 				7DF161A612C0C5190045904F /* EucCSSLayoutTableCell.h in Headers */,
 				7DF163B412C0CCB20045904F /* EucCSSLayoutTableBox.h in Headers */,
 				7D61C31A12C1180D003120CC /* EucCSSLayoutSizedRun.h in Headers */,
+				7D03760712D4A20300B341BE /* EucCSSXHTMLTreeNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3581,6 +3596,7 @@
 				7DF161A712C0C5190045904F /* EucCSSLayoutTableCell.m in Sources */,
 				7DF163B512C0CCB20045904F /* EucCSSLayoutTableBox.m in Sources */,
 				7D61C31B12C1180D003120CC /* EucCSSLayoutSizedRun.m in Sources */,
+				7D03760812D4A20300B341BE /* EucCSSXHTMLTreeNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

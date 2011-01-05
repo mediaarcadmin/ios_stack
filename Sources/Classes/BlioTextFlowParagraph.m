@@ -92,4 +92,9 @@
     return nil;
 }
 
+- (NSString *)CSSID
+{
+    return nil;
+}
+
 @end

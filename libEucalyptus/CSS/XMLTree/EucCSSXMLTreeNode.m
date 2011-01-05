@@ -89,25 +89,27 @@
 
 - (BOOL)isImageNode
 {
-    return [@"img" caseInsensitiveCompare:self.name] == NSOrderedSame;
+    return NO;
 }
 
 - (NSString *)imageSourceURLString
 {
-    return [self attributeWithName:@"src"];
+    return nil;
 }    
 
 - (BOOL)isHyperlinkNode
 {
-    if([@"a" caseInsensitiveCompare:self.name] == NSOrderedSame) {
-        return [self attributeWithName:@"href"].length != 0;
-    }
     return NO;
 }
 
 - (NSString *)hyperlinkURLString
 {
-    return [self attributeWithName:@"href"];
+    return NO;
+}
+
+- (NSString *)CSSID
+{
+    return nil;
 }
 
 @end

@@ -32,4 +32,6 @@
 - (BOOL)isHyperlinkNode;
 - (NSString *)hyperlinkURLString;
 
+- (NSString *)CSSID;
+
 @end

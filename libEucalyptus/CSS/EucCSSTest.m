@@ -5,6 +5,7 @@
 #import "EucCSSInternal.h"
 
 #import "EucCSSXMLTree.h"
+#import "EucCSSXHTMLTreeNode.h"
 
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
@@ -45,7 +46,7 @@ int main (int argc, const char * argv[]) {
         
     NSString *xmlPath = [NSString stringWithUTF8String:argv[3]];
     NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:xmlPath];
-    EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData];
+    EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]];
     [xmlData release];
     
     SimpleEucCSSIntermediateDocumentDataSource *dataSource = [[SimpleEucCSSIntermediateDocumentDataSource alloc] init];
