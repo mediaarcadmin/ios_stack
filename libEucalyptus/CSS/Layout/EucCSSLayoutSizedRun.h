@@ -13,6 +13,8 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+#import "EucCSSLayoutSizedContainer.h"
+
 struct THBreak;
 struct EucCSSLayoutSizedRunBreakInfo;
 
@@ -29,11 +31,10 @@ typedef union EucCSSLayoutSizedRunWidthInfo {
     EucCSSLayoutSizedRunHyphenWidths hyphenWidths;
 } EucCSSLayoutSizedRunWidthInfo;
 
-@interface EucCSSLayoutSizedRun : NSObject {
+@interface EucCSSLayoutSizedRun : EucCSSLayoutSizedContainer {
     EucCSSLayoutRun *_run;
     
     CGRect _frame;
-    CGFloat _scaleFactor;
     
     CGRect _lastSizeDependentComponentCalculationFrame;
     
@@ -45,7 +46,6 @@ typedef union EucCSSLayoutSizedRunWidthInfo {
 }
 
 @property (nonatomic, retain, readonly) EucCSSLayoutRun *run;
-@property (nonatomic, assign, readonly) CGFloat scaleFactor;
 
 // This convenience constructor will return a cached node if one with the same
 // attibutes was requested recently.

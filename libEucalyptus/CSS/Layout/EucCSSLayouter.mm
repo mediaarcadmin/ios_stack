@@ -13,19 +13,23 @@
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 
+#import "EucCSSLayoutSizedBlock.h"
 #import "EucCSSLayoutPositionedBlock.h"
-#import "EucCSSLayoutPositionedRun.h"
+
 #import "EucCSSLayoutRun.h"
 #import "EucCSSLayoutSizedRun.h"
-#import "EucCSSLayoutPositionedLine.h"
+#import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutRunExtractor.h"
 
+#import "EucCSSLayoutPositionedLine.h"
+
 #import "EucCSSLayoutTableWrapper.h"
+#import "EucCSSLayoutSizedTable.h"
+#import "EucCSSLayoutPositionedTable.h"
 
 #import "THStringRenderer.h"
 #import "THPair.h"
 #import "THLog.h"
-#import "th_just_with_floats.h"
 
 #import <libcss/libcss.h>
 
@@ -262,6 +266,145 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     }
 }
 
+- (EucCSSLayoutSizedBlock *)sizedBlockFromNodeWithKey:(uint32_t)nodeKey
+                                stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
+{
+    EucCSSLayoutSizedBlock *sizedRoot = nil;
+
+    EucCSSIntermediateDocumentNode *currentDocumentNode = [self _layoutNodeForKey:nodeKey];
+
+    EucCSSIntermediateDocumentNode *stopBeforeNode;
+    if(stopBeforeNodeKey) {
+        stopBeforeNode = [_document nodeForKey:stopBeforeNodeKey];
+    } else {
+        stopBeforeNode = nil;
+    }    
+    
+    if(currentDocumentNode) {
+        if(!stopBeforeNodeKey) {
+            sizedRoot = [[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
+        } else {
+            sizedRoot = [[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:nil scaleFactor:_scaleFactor];
+        }
+        
+        EucCSSLayoutSizedBlock *currentSizedBlock = sizedRoot;
+        currentDocumentNode = currentDocumentNode.nextDisplayable;
+        
+        BOOL closedLastNode = NO;
+        
+        uint32_t nextRunNodeKey = nodeKey;
+        while(!closedLastNode) {             
+            if(currentDocumentNode == stopBeforeNode) {
+                break;
+            }
+            
+            // Find the node's parent, closing open blocks until we reach it.
+            EucCSSIntermediateDocumentNode *currentDocumentNodeBlockLevelParent = currentDocumentNode.blockLevelParent;
+            EucCSSIntermediateDocumentNode *currentPositionedBlockNode;
+            while((currentPositionedBlockNode = currentSizedBlock.documentNode) != currentDocumentNodeBlockLevelParent) {
+                currentSizedBlock = (EucCSSLayoutSizedBlock *)currentSizedBlock.parent;
+                if(currentSizedBlock == sizedRoot) {
+                    closedLastNode = YES;
+                    break;
+                }
+            }
+            
+            if(!closedLastNode) {
+                enum css_display_e currentNodeDisplay = (enum css_display_e)currentDocumentNode.display;
+                css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
+                if(currentNodeStyle && css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE) {
+                    // Floats should be processed by the inline processing code.
+                    currentNodeDisplay = CSS_DISPLAY_INLINE;
+                }
+                
+                switch(currentNodeDisplay) {
+                    case CSS_DISPLAY_INHERIT:
+                    {
+                        THWarn(@"Unexpected node with display:inherit");
+                        currentDocumentNode = currentDocumentNode.nextDisplayable;
+                        break;
+                    }
+                    case CSS_DISPLAY_NONE:
+                    {
+                        THWarn(@"Unexpected node with display:none");
+                        currentDocumentNode = currentDocumentNode.nextDisplayable;
+                        break;
+                    }
+                    case CSS_DISPLAY_BLOCK:
+                    case CSS_DISPLAY_RUN_IN:
+                    case CSS_DISPLAY_INLINE_BLOCK:
+                    {
+                        //THLog(@"Block: %@", [currentDocumentNode name]);
+                        if(THWillLog()) {
+                            NSParameterAssert(css_computed_float(currentDocumentNode.computedStyle) == CSS_FLOAT_NONE);
+                        }
+                        
+                        if(currentDocumentNode.isImageNode) {
+                            THLog(@"Image: %@", [currentDocumentNode.imageSource absoluteString]);
+                        }
+                        EucCSSLayoutSizedBlock *newBlock = [[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:_scaleFactor];
+                        [currentSizedBlock addChild:newBlock];
+                        currentSizedBlock = newBlock;
+                        [newBlock release];
+                        
+                        // First run in a block has the ID of the block it's in.
+                        nextRunNodeKey = currentDocumentNode.key;  
+                        
+                        currentDocumentNode = currentDocumentNode.nextDisplayable;
+                        
+                        break;
+                    }
+                    case CSS_DISPLAY_TABLE:
+                    case CSS_DISPLAY_INLINE_TABLE:
+                    case CSS_DISPLAY_TABLE_ROW_GROUP:
+                    case CSS_DISPLAY_TABLE_HEADER_GROUP:
+                    case CSS_DISPLAY_TABLE_FOOTER_GROUP:
+                    case CSS_DISPLAY_TABLE_ROW:
+                    case CSS_DISPLAY_TABLE_COLUMN_GROUP:
+                    case CSS_DISPLAY_TABLE_COLUMN:
+                    case CSS_DISPLAY_TABLE_CELL:
+                    case CSS_DISPLAY_TABLE_CAPTION:
+                    {
+                        EucCSSLayoutTableWrapper *tableWrapper = [[EucCSSLayoutTableWrapper alloc] initWithNode:currentDocumentNode
+                                                                                                       layouter:self];
+                        EucCSSLayoutSizedTable *sizedTable = [[EucCSSLayoutSizedTable alloc] initWithTableWrapper:tableWrapper
+                                                                                                      scaleFactor:_scaleFactor];
+                        [currentSizedBlock addChild:sizedTable];
+                        [sizedTable release];
+                        
+                        currentDocumentNode = tableWrapper.nextNodeInDocument;
+                        
+                        [tableWrapper release];
+                        break;
+                    }
+                    case CSS_DISPLAY_LIST_ITEM:
+                    case CSS_DISPLAY_INLINE:
+                    {
+                        //THLog(@"Inline: %@", [currentDocumentNode name]);
+                        
+                        // This is an inline element - start a run.
+                        EucCSSLayoutRun *run = [EucCSSLayoutRun runWithNode:currentDocumentNode
+                                                             underLimitNode:currentDocumentNode.blockLevelParent
+                                                             stopBeforeNode:stopBeforeNode
+                                                                      forId:nextRunNodeKey];
+                        EucCSSLayoutSizedRun *sizedRun = [EucCSSLayoutSizedRun sizedRunWithRun:run 
+                                                                                   scaleFactor:_scaleFactor];
+                        
+                        if(sizedRun) {
+                            [currentSizedBlock addChild:sizedRun];
+                        }
+                        currentDocumentNode = run.nextNodeInDocument;
+                        nextRunNodeKey = currentDocumentNode.key;
+                        break;
+                    }   
+                }
+            } 
+        }
+    }
+    
+    return sizedRoot;
+}
+
 - (EucCSSLayoutPositionedBlock *)_layoutFromPoint:(EucCSSLayoutPoint)point
                                           inFrame:(CGRect)frame
                                returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
@@ -332,7 +475,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     uint32_t elementOffset = point.element;
     
     EucCSSIntermediateDocument *document = self.document;
-    EucCSSIntermediateDocumentNode* currentDocumentNode = [self _layoutNodeForKey:nodeKey];
+    EucCSSIntermediateDocumentNode *currentDocumentNode = [self _layoutNodeForKey:nodeKey];
 
     EucCSSIntermediateDocumentNode *lastBlockNode;
     if(lastBlockNodeKey) {
@@ -473,7 +616,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                             pageBreaks.push_back(make_pair(breakPoint, newBlock));
                         }                
                         
-                        currentPositionedBlock = [newBlock autorelease];
+                        currentPositionedBlock = newBlock;
+                        [newBlock release];
                         
                         // First run in a block has the ID of the block it's in.
                         nextRunNodeKey = currentDocumentNode.key;  
@@ -493,8 +637,22 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     case CSS_DISPLAY_TABLE_CELL:
                     case CSS_DISPLAY_TABLE_CAPTION:
                     {
-                        EucCSSLayoutTableWrapper *table = [[EucCSSLayoutTableWrapper alloc] initWithNode:currentDocumentNode];
-                        currentDocumentNode = table.nextNodeInDocument;
+                        EucCSSLayoutTableWrapper *tableWrapper = [[EucCSSLayoutTableWrapper alloc] initWithNode:currentDocumentNode layouter:self];
+                        EucCSSLayoutSizedTable *sizedTable = [[EucCSSLayoutSizedTable alloc] initWithTableWrapper:tableWrapper
+                                                                                                      scaleFactor:_scaleFactor];
+                        EucCSSLayoutPositionedTable *positionedTable = [[EucCSSLayoutPositionedTable alloc] initWithSizedTable:sizedTable];
+                        
+                        
+                        [positionedTable positionInFrame:potentialFrame afterInternalPageBreak:NO];
+                        [currentPositionedBlock addChild:positionedTable];
+                        
+                        currentDocumentNode = tableWrapper.nextNodeInDocument;
+                        nextRunNodeKey = currentDocumentNode.key;
+                        nextAbsoluteY = CGRectGetMaxY([positionedTable absoluteFrame]);
+
+                        [positionedTable release];
+                        [sizedTable release];
+                        [tableWrapper release];
                         break;
                     }
                     case CSS_DISPLAY_LIST_ITEM:

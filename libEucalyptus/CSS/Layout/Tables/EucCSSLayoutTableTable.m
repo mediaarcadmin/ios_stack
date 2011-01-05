@@ -28,7 +28,7 @@
 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper
 {
-    if((self = [super initWithNode:node])) {
+    if((self = [super initWithNode:node wrapper:wrapper])) {
         enum css_display_e nodeDisplay = (enum css_display_e)node.display;
         BOOL inRealTableNode = (nodeDisplay == CSS_DISPLAY_TABLE || nodeDisplay == CSS_DISPLAY_INLINE_TABLE);
 
@@ -91,15 +91,15 @@
                     if(currentNodeDisplay == CSS_DISPLAY_TABLE_HEADER_GROUP && !_headerGroup) {
                         // First header group wins - others treated like 
                         // regular row groups.
-                        _headerGroup = [[EucCSSLayoutTableHeaderGroup alloc] initWithNode:currentDocumentNode];
+                        _headerGroup = [[EucCSSLayoutTableHeaderGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                         rowGroup = _headerGroup;
                     } else if(currentNodeDisplay == CSS_DISPLAY_TABLE_FOOTER_GROUP && !_footerGroup) {
                         // First footer group wins - others treated like 
                         // regular row groups.
-                        _footerGroup = [[EucCSSLayoutTableFooterGroup alloc] initWithNode:currentDocumentNode];
+                        _footerGroup = [[EucCSSLayoutTableFooterGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                         rowGroup = _footerGroup;
                     } else {
-                        rowGroup =[[EucCSSLayoutTableRowGroup alloc] initWithNode:currentDocumentNode];
+                        rowGroup =[[EucCSSLayoutTableRowGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                         if(!_rowGroups) {
                             _rowGroups = [[NSMutableArray alloc] init];
                         }
@@ -112,7 +112,7 @@
                 case CSS_DISPLAY_TABLE_COLUMN_GROUP:
                 case CSS_DISPLAY_TABLE_COLUMN:
                 {
-                    EucCSSLayoutTableColumnGroup *columnGroup =[[EucCSSLayoutTableColumnGroup alloc] initWithNode:currentDocumentNode];
+                    EucCSSLayoutTableColumnGroup *columnGroup =[[EucCSSLayoutTableColumnGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                     if(!_columnGroups) {
                         _columnGroups = [[NSMutableArray alloc] init];
                     }

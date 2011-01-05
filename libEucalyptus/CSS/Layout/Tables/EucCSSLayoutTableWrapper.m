@@ -23,33 +23,37 @@
 
 @implementation EucCSSLayoutTableWrapper
 
+@synthesize layouter = _layouter;
 @synthesize caption = _caption;
 @synthesize table = _table;
 
-- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node layouter:(EucCSSLayouter *)layouter
 {
-    if((self = [super initWithNode:node])) {
-        _table = [[EucCSSLayoutTableTable alloc] initWithNode:node];
+    if((self = [super initWithNode:node wrapper:self])) {
+        _layouter = [layouter retain];
+        _table = [[EucCSSLayoutTableTable alloc] initWithNode:node wrapper:self];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [_nextNodeInDocument release];
-
+    [_layouter release];
+    [_caption release];
+    [_table release];
+    
     [super dealloc];
 }
 
 - (EucCSSIntermediateDocumentNode *)accumulateCaptionNode:(EucCSSIntermediateDocumentNode *)captionNode
 {
-    EucCSSLayoutTableCaption *caption = [[EucCSSLayoutTableCaption alloc] initWithNode:captionNode];
+    EucCSSLayoutTableCaption *caption = [[EucCSSLayoutTableCaption alloc] initWithNode:captionNode wrapper:self];
     EucCSSIntermediateDocumentNode *nextNodeInDocument = [[caption.nextNodeInDocument retain] autorelease];
     if(!self.caption) {
         // In a malformed table with more than one caption, first caption wins.
         self.caption = caption;
-        [caption release];
     }
+    [caption release];
     return nextNodeInDocument;
 }
 

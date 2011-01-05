@@ -25,6 +25,4 @@
 
 @property (nonatomic, retain) NSArray *columnGroups;
 
-- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper;
-
 @end

@@ -14,9 +14,9 @@
 
 @implementation EucCSSLayoutTableColumn
 
-- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper
 {
-    if((self = [super initWithNode:node])) {
+    if((self = [super initWithNode:node wrapper:wrapper])) {
         NSParameterAssert(node.display == CSS_DISPLAY_TABLE_COLUMN);
     }
     return self;

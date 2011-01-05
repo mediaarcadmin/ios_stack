@@ -17,9 +17,9 @@
 
 @synthesize cells = _cells;
 
-- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper
 {
-    if((self = [super initWithNode:node])) {
+    if((self = [super initWithNode:node wrapper:wrapper])) {
         enum css_display_e nodeDisplay = (enum css_display_e)node.display;
         BOOL inRealTableRow = (nodeDisplay == CSS_DISPLAY_TABLE_ROW);
         
@@ -49,7 +49,7 @@
                 }
             }
             
-            EucCSSLayoutTableCell *cell = [[EucCSSLayoutTableCell alloc] initWithNode:currentDocumentNode];
+            EucCSSLayoutTableCell *cell = [[EucCSSLayoutTableCell alloc] initWithNode:currentDocumentNode wrapper:wrapper];
             [cellsBuild addObject:cell];
             currentDocumentNode = cell.nextNodeInDocument;
             [cell release];            

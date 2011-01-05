@@ -14,6 +14,7 @@
 #import "THStringRenderer.h"
 #import "THPair.h"
 #import "THCache.h"
+#import "THLog.h"
 #import "LWCNSStringAdditions.h"
 #import <libcss/libcss.h>
 

@@ -17,9 +17,9 @@
 
 @synthesize columns = _columns;
 
-- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper
 {
-    if((self = [super initWithNode:node])) {
+    if((self = [super initWithNode:node wrapper:wrapper])) {
         enum css_display_e nodeDisplay = (enum css_display_e)node.display;
         BOOL inRealTableColumnGroup = (nodeDisplay == CSS_DISPLAY_TABLE_COLUMN_GROUP);
 
@@ -46,7 +46,7 @@
             }
             
             if(currentNodeDisplay == CSS_DISPLAY_TABLE_COLUMN) {
-                EucCSSLayoutTableColumn *column = [[EucCSSLayoutTableColumn alloc] initWithNode:currentDocumentNode];
+                EucCSSLayoutTableColumn *column = [[EucCSSLayoutTableColumn alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                 [columnsBuild addObject:column];
                 currentDocumentNode = column.nextNodeInDocument;
                 [column release];

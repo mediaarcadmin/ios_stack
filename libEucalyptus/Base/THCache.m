@@ -109,8 +109,8 @@ typedef struct THCacheItem {
 
 typedef struct THIntegerToObjectCacheItem {
     THIntegerToObjectCache *self;
-    uint32_t key;
     id value;
+    uint32_t key;
 } THIntegerToObjectCacheItem;
 
 - (id)init
@@ -166,7 +166,7 @@ typedef struct THIntegerToObjectCacheItem {
 {    
     pthread_mutex_lock(&_cacheMutex);
     
-    THIntegerToObjectCacheItem item = { self, key, value };
+    THIntegerToObjectCacheItem item = { self, value, key };
     [self cacheItem:&item];
     
     pthread_mutex_unlock(&_cacheMutex);
@@ -177,8 +177,8 @@ typedef struct THIntegerToObjectCacheItem {
     id ret;
     
     pthread_mutex_lock(&_cacheMutex);
-    THIntegerToObjectCacheItem probeItem = { self, key, 0 };
-    const THCacheItem *item = [self retrieveItem:&probeItem];
+    THIntegerToObjectCacheItem probeItem = { self, NULL, key};
+    const THIntegerToObjectCacheItem *item = [self retrieveItem:&probeItem];
     if(item) {
         ret = [[item->value retain] autorelease];
     } else {

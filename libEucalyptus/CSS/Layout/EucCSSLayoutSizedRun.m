@@ -37,8 +37,6 @@ typedef struct EucCSSLayoutSizedRunBreakInfo {
 @implementation EucCSSLayoutSizedRun
 
 @synthesize run = _run;
-@synthesize scaleFactor = _scaleFactor;
-
 
 #define SIZED_RUN_CACHE_CAPACITY 12
 static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSizedRunPerScaleFactorCacheCacheKey";
@@ -77,13 +75,11 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     return ret;
 }
 
-
 - (id)initWithRun:(EucCSSLayoutRun *)run
       scaleFactor:(CGFloat)scaleFactor
 {
-    if((self = [super init])) {
+    if((self = [super initWithScaleFactor:scaleFactor])) {
         _run = [run retain];
-        _scaleFactor = scaleFactor;
     }
     return self;
 }
@@ -112,22 +108,24 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     
     EucCSSIntermediateDocumentNode *currentNode = currentComponentInfo->documentNode.parent;
     
+    CGFloat scaleFactor = self.scaleFactor;
+    
     for(; currentComponentInfo < afterEndComponentInfo; ++currentComponentInfo, ++currentWidthInfo) {
         switch(currentComponentInfo->kind) {
             case EucCSSLayoutRunComponentKindSpace:
             case EucCSSLayoutRunComponentKindNonbreakingSpace:
                 currentWidthInfo->width = [currentNode.stringRenderer widthOfString:@" "
-                                                                          pointSize:[currentNode textPointSizeAtScaleFactor:_scaleFactor]];
+                                                                          pointSize:[currentNode textPointSizeAtScaleFactor:scaleFactor]];
                 break;
             case EucCSSLayoutRunComponentKindWord:
                 currentWidthInfo->width = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.stringInfo.string
-                                                                          pointSize:[currentNode textPointSizeAtScaleFactor:_scaleFactor]];
+                                                                          pointSize:[currentNode textPointSizeAtScaleFactor:scaleFactor]];
                 break;
             case EucCSSLayoutRunComponentKindHyphenationRule:
                 currentWidthInfo->hyphenWidths.widthBeforeHyphen = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.hyphenationInfo.beforeHyphen
-                                                                                                   pointSize:[currentNode textPointSizeAtScaleFactor:_scaleFactor]];
+                                                                                                   pointSize:[currentNode textPointSizeAtScaleFactor:scaleFactor]];
                 currentWidthInfo->hyphenWidths.widthAfterHyphen = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.hyphenationInfo.afterHyphen
-                                                                                                   pointSize:[currentNode textPointSizeAtScaleFactor:_scaleFactor]];
+                                                                                                   pointSize:[currentNode textPointSizeAtScaleFactor:scaleFactor]];
                 break;
             /*case EucCSSLayoutRunComponentKindImage:
                 // Will be processed as size-dependent
@@ -165,8 +163,9 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     }
     
     if(specifiedWidth == CGFLOAT_MAX && specifiedHeight == CGFLOAT_MAX) {
-        specifiedWidth = CGImageGetWidth(image) * _scaleFactor;
-        specifiedHeight = CGImageGetHeight(image) * _scaleFactor;
+        CGFloat scaleFactor = self.scaleFactor;
+        specifiedWidth = CGImageGetWidth(image) * scaleFactor;
+        specifiedHeight = CGImageGetHeight(image) * scaleFactor;
     } else if(specifiedWidth == CGFLOAT_MAX) {
         specifiedWidth = (CGFloat)CGImageGetWidth(image) / (CGFloat)CGImageGetHeight(image) * specifiedHeight;
     } else if(specifiedHeight == CGFLOAT_MAX) {
@@ -223,18 +222,20 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         CGFloat minWidth = 1;
         CGFloat minHeight = 1;
         
+        CGFloat scaleFactor = self.scaleFactor;
+        
         css_fixed length = 0;
         css_unit unit = (css_unit)0;
         css_computed_style *nodeStyle = subnode.computedStyle;
         if(nodeStyle) {
             uint8_t widthKind = css_computed_width(nodeStyle, &length, &unit);
             if(widthKind == CSS_WIDTH_SET) {
-                specifiedWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
+                specifiedWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, scaleFactor);
             }
             
             uint8_t maxWidthKind = css_computed_max_width(nodeStyle, &length, &unit);
             if (maxWidthKind == CSS_MAX_WIDTH_SET) {
-                maxWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, _scaleFactor);
+                maxWidth = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.width, scaleFactor);
             } 
             
             uint8_t heightKind = css_computed_height(nodeStyle, &length, &unit);
@@ -242,7 +243,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
                 if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
                     // Assume no intrinsic height;
                 } else {
-                    specifiedHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
+                    specifiedHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, scaleFactor);
                 }
             } 
             
@@ -251,7 +252,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
                 if(unit == CSS_UNIT_PCT && frame.size.height == CGFLOAT_MAX) {
                     // Assume no max height;
                 } else {
-                    maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, _scaleFactor);
+                    maxHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, frame.size.height, scaleFactor);
                 }
             } 
         }
@@ -270,7 +271,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         componentWidthInfos[index].size = CGSizeMake(calculatedSize.width, calculatedSize.height);
         
         /*if(css_computed_line_height(nodeStyle, &length, &unit) != CSS_LINE_HEIGHT_NORMAL) {
-            componentInfos[index].contents.imageInfo.scaledLineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, _scaleFactor);
+            componentInfos[index].contents.imageInfo.scaledLineHeight = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, calculatedSize.height, scaleFactor);
         } else {
             componentInfos[index].contents.imageInfo.scaledLineHeight = calculatedSize.height;
         }*/ 
@@ -427,7 +428,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     if(componentsCount == 0) {
         return nil;
     }    
-    
+        
     EucCSSLayoutPositionedRun *ret = [[EucCSSLayoutPositionedRun alloc] initWithSizedRun:self];
     
     EucCSSLayoutRunComponentInfo *componentInfos = _run.componentInfos;
@@ -435,7 +436,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     
     CGFloat textIndent;
     if(elementOffset == 0 && wordOffset == 0) {
-        textIndent = [_run textIndentInWidth:frame.size.width atScaleFactor:_scaleFactor];
+        textIndent = [_run textIndentInWidth:frame.size.width atScaleFactor:self.scaleFactor];
     } else {
         textIndent = 0.0f;
     }
@@ -689,7 +690,6 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         ret = nil;
     }
     
-    
     [lines release];
     
     if(ret) {
@@ -697,6 +697,46 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     }
     
     return [ret autorelease];
+}
+
+- (CGFloat)minWidth
+{
+    THBreak *potentialBreaks = [self _potentialBreaksForFrame:CGRectMake(0, 0, 0, CGFLOAT_MAX)];
+    
+    CGFloat minWidth = 0;
+    int potentialBreaksCount = _potentialBreaksCount;
+
+    CGFloat lastX1 = 0;
+    for(int i = 0; i < potentialBreaksCount; ++i) {
+        CGFloat thisWidth = potentialBreaks[i].x0 - lastX1;
+        if(thisWidth > minWidth) {
+            minWidth = thisWidth;
+        }
+        lastX1 = potentialBreaks[i].x1;
+    }
+    
+    return minWidth;
+}
+
+- (CGFloat)maxWidth
+{
+    THBreak *potentialBreaks = [self _potentialBreaksForFrame:CGRectMake(0, 0, CGFLOAT_MAX, CGFLOAT_MAX)];
+    
+    CGFloat maxWidth = 0;
+    int potentialBreaksCount = _potentialBreaksCount;
+
+    CGFloat lastX1 = 0;
+    for(int i = 0; i < potentialBreaksCount; ++i) {
+        if((potentialBreaks[i].flags & TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) == TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK) {
+            CGFloat thisWidth = potentialBreaks[i].x0 - lastX1;
+            if(thisWidth > maxWidth) {
+                maxWidth = thisWidth;
+            }
+            lastX1 = potentialBreaks[i].x1;
+        }
+    }
+    
+    return maxWidth;
 }
 
 @end

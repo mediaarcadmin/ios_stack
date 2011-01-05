@@ -12,12 +12,14 @@
 
 @implementation EucCSSLayoutTableBox
 
+@synthesize wrapper = _wrapper;
 @synthesize documentNode = _documentNode;
 @synthesize nextNodeInDocument = _nextNodeInDocument;
 
-- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper
 {
     if((self = [super init])) {
+        _wrapper = wrapper;
         _documentNode = [node retain];
         _nextNodeInDocument = [[node.parent displayableNodeAfter:node under:nil] retain];
     }

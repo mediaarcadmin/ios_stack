@@ -16,6 +16,7 @@
 #import "EucCSSLayoutRun_Package.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
+#import "EucCSSLayoutPositionedTable.h"
 #import "EucCSSRenderer.h"
 #import "THNSStringAdditions.h"
 #import "THStringRenderer.h"
@@ -542,6 +543,11 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     CGContextRestoreGState(_cgContext);
     
     THLogVerbose(@"Positioned Line End");
+}
+
+- (void)_renderPositionedTable:(EucCSSLayoutPositionedTable *)table 
+{
+    CGContextStrokeRectWithWidth(_cgContext, table.contentBounds, 0.5);
 }
 
 @end

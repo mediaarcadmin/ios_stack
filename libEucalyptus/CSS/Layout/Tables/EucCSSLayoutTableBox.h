@@ -8,16 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-@class EucCSSIntermediateDocumentNode;
+@class EucCSSLayoutTableWrapper, EucCSSIntermediateDocumentNode;
 
 @interface EucCSSLayoutTableBox : NSObject {
+    EucCSSLayoutTableWrapper *_wrapper;
     EucCSSIntermediateDocumentNode *_documentNode;
     EucCSSIntermediateDocumentNode *_nextNodeInDocument;
 }
 
+@property (nonatomic, assign) EucCSSLayoutTableWrapper *wrapper;
 @property (nonatomic, retain) EucCSSIntermediateDocumentNode *documentNode;
 @property (nonatomic, retain) EucCSSIntermediateDocumentNode *nextNodeInDocument;
 
-- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node;
+- (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper;
 
 @end

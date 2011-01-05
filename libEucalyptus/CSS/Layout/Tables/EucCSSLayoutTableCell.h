@@ -12,9 +12,7 @@
 @class EucCSSLayoutRun;
 
 @interface EucCSSLayoutTableCell : EucCSSLayoutTableBox {
-    uint32_t _lastBlockNodeKey;
-    uint32_t _stopBeforeNodeKey;
+    EucCSSIntermediateDocumentNode *_stopBeforeNode;
 }
-
 
 @end
