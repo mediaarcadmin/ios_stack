@@ -123,14 +123,16 @@ ErrorExit:
 ErrorExit:
 	if (dr != DRM_SUCCESS) {
 		//NSLog(@"DRM commit error: %08X",dr);
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-									 message:[NSLocalizedStringWithDefaultValue(@"REPORTING_FAILED",nil,[NSBundle mainBundle],@"There was an error in book processing. Please contact Blio technical support with the error code: ",@"Alert message shown when book reporting fails.")
+		[BlioAlertManager showAlertOfSuppressedType:BlioDrmReportReadingFailureAlertType
+											  title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+											message:[NSLocalizedStringWithDefaultValue(@"REPORTING_FAILED",nil,[NSBundle mainBundle],@"There was an error in book processing. Please contact Blio technical support with the error code: ",@"Alert message shown when book reporting fails.")
 											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
-									delegate:nil 
-						   cancelButtonTitle:nil
-						   otherButtonTitles:@"OK", nil];
+										   delegate:nil 
+								  cancelButtonTitle:nil
+								  otherButtonTitles:@"OK", nil];
         return NO;
 	}
+	[BlioAlertManager removeSuppressionForAlertType:BlioDrmReportReadingFailureAlertType];
     return YES;
 }
 

@@ -400,7 +400,8 @@
 		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
 			NSLog(@"SOAP error for VaultContents: %@",err);
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
+			[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
+											  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"The server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
 										delegate:nil 
 							   cancelButtonTitle:nil
@@ -408,6 +409,7 @@
 			return nil;
 		}
 		else if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
+			[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
 			NSString* url = [bodyPart RequestDownloadWithTokenResult].Url;
 //			NSLog(@"Book download url is %@",url);
 			return [NSURL URLWithString:url];
@@ -422,7 +424,8 @@
 								   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];				
 			}
 			else {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
+				[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
+													  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
 										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"The server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
 										delegate:nil 
 							   cancelButtonTitle:nil

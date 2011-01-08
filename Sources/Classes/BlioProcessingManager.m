@@ -14,6 +14,7 @@
 #import "BlioAlertManager.h"
 #import "NSString+BlioAdditions.h"
 #import "BlioImportManager.h"
+#import "BlioDrmSessionManager.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -206,7 +207,8 @@
 }
 
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
-//	NSLog(@"BlioProcessingManager enqueueBook: %@ placeholderOnly: %i",aBook, placeholderOnly);
+	[BlioAlertManager removeSuppressionForAlertType:BlioDrmReportReadingFailureAlertType];
+	[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
      NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
