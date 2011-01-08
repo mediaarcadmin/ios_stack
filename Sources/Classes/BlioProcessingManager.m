@@ -30,6 +30,7 @@
 @synthesize preAvailabilityQueue, postAvailabilityQueue;
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.preAvailabilityQueue cancelAllOperations];
     [self.postAvailabilityQueue cancelAllOperations];
     self.preAvailabilityQueue = nil;
@@ -47,6 +48,8 @@
         NSOperationQueue *aPostAvailabilityQueue = [[NSOperationQueue alloc] init];
         self.postAvailabilityQueue = aPostAvailabilityQueue;
         [aPostAvailabilityQueue release];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onReprocessCoverThumbnailNotification:) name:BlioProcessingReprocessCoverThumbnailNotification object:nil];
     }
     return self;
 }
@@ -207,7 +210,7 @@
 }
 
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
-	[BlioAlertManager removeSuppressionForAlertType:BlioDrmReportReadingFailureAlertType];
+	[BlioAlertManager removeSuppressionForAlertType:BlioDrmFailureAlertType];
 	[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
@@ -897,6 +900,11 @@
     [fetchRequest release];
 	
 	// end resume previous processing operations
+}
+-(void) onReprocessCoverThumbnailNotification:(NSNotification*)note {
+	if ([[note userInfo] objectForKey:@"bookID"]) {
+		[self addCoverOpToBookOps:nil forBook:[[BlioBookManager sharedBookManager] bookWithID:[[note userInfo] objectForKey:@"bookID"]] manifestLocation:nil withDependency:nil];
+	}
 }
 -(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook {
 //	NSLog(@"BlioProcessingManager reprocessCoverThumbnailsForBook entered");
