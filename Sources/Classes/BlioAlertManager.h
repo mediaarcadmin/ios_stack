@@ -8,9 +8,9 @@
 #import <Foundation/Foundation.h>
 
 @interface BlioAlertManager : NSObject {
-	NSMutableArray * suppressedAlertTypes;
+	NSMutableDictionary * suppressedAlertTypes;
 }
-@property (nonatomic,retain) NSMutableArray * suppressedAlertTypes;
+@property (nonatomic,retain) NSMutableDictionary * suppressedAlertTypes;
 
 +(BlioAlertManager*)sharedInstance;
 +(void)showAlert:(UIAlertView*)alert;

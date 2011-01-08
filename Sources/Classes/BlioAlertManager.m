@@ -16,7 +16,7 @@
 	static BlioAlertManager * sharedAlertManager = nil;
 	if (sharedAlertManager == nil) {
 		sharedAlertManager = [[BlioAlertManager alloc] init];
-		sharedAlertManager.suppressedAlertTypes = [NSMutableArray array];
+		sharedAlertManager.suppressedAlertTypes = [NSMutableDictionary dictionary];
 	}
 	
 	return sharedAlertManager;
@@ -56,8 +56,15 @@
 			   cancelButtonTitle:(NSString *)cancelButtonTitle
 			   otherButtonTitles:(NSString *)otherButtonTitles, ...
 {
-	if ([[BlioAlertManager sharedInstance].suppressedAlertTypes containsObject:alertType]) return;
-	[[BlioAlertManager sharedInstance].suppressedAlertTypes addObject:alertType];
+	NSMutableArray * alertTypeStrings = [[BlioAlertManager sharedInstance].suppressedAlertTypes objectForKey:alertType];
+	if (alertTypeStrings) {
+		if ([alertTypeStrings containsObject:message]) return;
+		else [alertTypeStrings addObject:message];
+	}
+	else {
+		alertTypeStrings = [NSMutableArray arrayWithObject:message];
+		[[BlioAlertManager sharedInstance].suppressedAlertTypes setObject:alertTypeStrings forKey:alertType];
+	}
     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
                                                      message:message
                                                     delegate:delegate
@@ -77,7 +84,7 @@
     [alert show];	
 }
 +(void)removeSuppressionForAlertType:(NSString*)alertType {
-	[[BlioAlertManager sharedInstance].suppressedAlertTypes removeObject:alertType];
+	[[BlioAlertManager sharedInstance].suppressedAlertTypes removeObjectForKey:alertType];
 }
 -(void)dealloc {
 	self.suppressedAlertTypes = nil;

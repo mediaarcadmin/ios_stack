@@ -345,7 +345,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-		
+	/*	
         [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
                                               authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
 											coverPath:nil
@@ -358,7 +358,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-/*		
+		
         [self.processingDelegate enqueueBookWithTitle:@"Frommer's Maui" 
                                               authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
 											coverPath:nil
