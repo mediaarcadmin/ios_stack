@@ -298,7 +298,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return _stringRenderer;
 }
 
-- (CGFloat)textPointSizeAtScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)textPointSizeWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
@@ -306,31 +306,31 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return roundf(_textPointSize * scaleFactor);
 }
 
-- (CGFloat)textAscenderAtScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)textAscenderWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     } 
-    return [_stringRenderer ascenderForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
+    return [_stringRenderer ascenderForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
 }
 
-- (CGFloat)xHeightAtScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)xHeightWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     } 
-    return [_stringRenderer xHeightForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
+    return [_stringRenderer xHeightForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
 }
 
-- (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)lineHeightWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     }  
     
     css_computed_style *style = NULL;
-    css_fixed size = size; 
-    css_unit units = units; 
+    css_fixed size; 
+    css_unit units; 
 
     if(!_lineHeightKind) {
         style = self.computedStyle;
@@ -341,7 +341,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     }
     
     if(_lineHeightKind == CSS_LINE_HEIGHT_NORMAL) {
-        return [_stringRenderer lineSpacingForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
+        return [_stringRenderer lineSpacingForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
     } else {
         if(!style) {
             style = self.computedStyle;
@@ -350,7 +350,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
             }
             css_computed_line_height(style, &size, &units);             
         }
-        return EucCSSLibCSSSizeToPixels(style, size, units, [self textPointSizeAtScaleFactor:scaleFactor], scaleFactor);
+        return EucCSSLibCSSSizeToPixels(style, size, units, [self textPointSizeWithScaleFactor:scaleFactor], scaleFactor);
     }
 }
 

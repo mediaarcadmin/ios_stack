@@ -100,7 +100,7 @@ struct EucCSSLayoutRunBreakInfo;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *nextNodeInDocument;
 
 @property (nonatomic, assign, readonly) uint8_t textAlign;
-- (CGFloat)textIndentInWidth:(CGFloat)width atScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)textIndentInWidth:(CGFloat)width initWithScaleFactor:(CGFloat)scaleFactor;
 
 
 // This convenience constructor will return a cached node if one with the same

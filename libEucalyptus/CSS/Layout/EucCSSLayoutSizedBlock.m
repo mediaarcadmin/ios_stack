@@ -68,8 +68,8 @@
     if(_documentNode) {
         css_computed_style *style = _documentNode.computedStyle;
         if(style) {
-            css_fixed width;
-            css_unit unit;
+            css_fixed width = 0;
+            css_unit unit = (css_unit)0;
             if(css_computed_width(style, &width, &unit) == CSS_WIDTH_SET &&
                unit != CSS_UNIT_PCT) {
                 CGFloat specifiedWidth = EucCSSLibCSSSizeToPixels(style, width, unit, 0, _scaleFactor);
@@ -82,7 +82,7 @@
             }            
         }
     }
-    return ret;// + _widthAddition;
+    return ceilf(ret);// + _widthAddition;
 }
 
 - (CGFloat)maxWidth
@@ -92,8 +92,8 @@
     if(_documentNode) {
         css_computed_style *style = _documentNode.computedStyle;
         if(style) {
-            css_fixed width;
-            css_unit unit;
+            css_fixed width = 0;
+            css_unit unit = (css_unit)0;
             if(css_computed_max_width(style, &width, &unit) == CSS_WIDTH_SET &&
                unit != CSS_UNIT_PCT) {
                 CGFloat specifiedWidth = EucCSSLibCSSSizeToPixels(style, width, unit, 0, _scaleFactor);
@@ -102,7 +102,7 @@
         }
     }
 
-    return ret; // + _widthAddition;
+    return ceilf(ret);// + _widthAddition;
 }
 
 @end

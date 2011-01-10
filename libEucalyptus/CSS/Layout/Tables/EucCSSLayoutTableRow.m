@@ -76,4 +76,9 @@
     [super dealloc];
 }
 
+- (BOOL)documentNodeIsRepresentative
+{
+    return self.documentNode.display == CSS_DISPLAY_TABLE_ROW;
+}
+
 @end

@@ -276,7 +276,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     [super dealloc];
 }
 
-- (CGFloat)textIndentInWidth:(CGFloat)width atScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)textIndentInWidth:(CGFloat)width initWithScaleFactor:(CGFloat)scaleFactor
 {
     CGFloat ret = 0.0f;
     

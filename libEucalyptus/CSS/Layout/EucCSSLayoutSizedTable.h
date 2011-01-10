@@ -23,7 +23,6 @@
     NSMutableDictionary *_cellMap;
     CFMutableDictionaryRef _sizedContainers;
     
-    
     NSUInteger _columnCount;
     NSUInteger _rowCount;
     

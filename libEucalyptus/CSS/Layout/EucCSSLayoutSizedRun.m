@@ -115,17 +115,17 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
             case EucCSSLayoutRunComponentKindSpace:
             case EucCSSLayoutRunComponentKindNonbreakingSpace:
                 currentWidthInfo->width = [currentNode.stringRenderer widthOfString:@" "
-                                                                          pointSize:[currentNode textPointSizeAtScaleFactor:scaleFactor]];
+                                                                          pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
                 break;
             case EucCSSLayoutRunComponentKindWord:
                 currentWidthInfo->width = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.stringInfo.string
-                                                                          pointSize:[currentNode textPointSizeAtScaleFactor:scaleFactor]];
+                                                                          pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
                 break;
             case EucCSSLayoutRunComponentKindHyphenationRule:
                 currentWidthInfo->hyphenWidths.widthBeforeHyphen = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.hyphenationInfo.beforeHyphen
-                                                                                                   pointSize:[currentNode textPointSizeAtScaleFactor:scaleFactor]];
+                                                                                                   pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
                 currentWidthInfo->hyphenWidths.widthAfterHyphen = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.hyphenationInfo.afterHyphen
-                                                                                                   pointSize:[currentNode textPointSizeAtScaleFactor:scaleFactor]];
+                                                                                                   pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
                 break;
             /*case EucCSSLayoutRunComponentKindImage:
                 // Will be processed as size-dependent
@@ -436,7 +436,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     
     CGFloat textIndent;
     if(elementOffset == 0 && wordOffset == 0) {
-        textIndent = [_run textIndentInWidth:frame.size.width atScaleFactor:self.scaleFactor];
+        textIndent = [_run textIndentInWidth:frame.size.width initWithScaleFactor:self.scaleFactor];
     } else {
         textIndent = 0.0f;
     }

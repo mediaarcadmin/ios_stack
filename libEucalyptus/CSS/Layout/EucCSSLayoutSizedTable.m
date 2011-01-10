@@ -53,7 +53,7 @@
                 NSUInteger cellCount = 0;
                 NSMutableDictionary *rowCells = [self _cellsForRow:rowCount];
                 for(EucCSSLayoutTableCell *cell in row.cells) {
-                    EucCSSLayoutSizedContainer *sizedCellContents = [cell sizedContentsWithScaleFactor:_scaleFactor];
+                    EucCSSLayoutSizedContainer *sizedCellContents = [cell sizedContentsWithScaleFactor:scaleFactor];
                     CFDictionarySetValue(_sizedContainers, cell, sizedCellContents);
                     
                     NSUInteger columnSpan = cell.columnSpan;
@@ -102,7 +102,7 @@
         _rowCount = rowCount;
         
         THLog(@"Table with [%ld, %ld] cells", (long)columnCount, (long)rowCount);
-        
+
         /*
          From http://www.w3.org/TR/CSS2/tables.html:
          
@@ -136,36 +136,140 @@
             together they are at least as wide as the column group's 'width'.
          
          This gives a maximum and minimum width for each column.
-         
-        */         
+        */
+
         _columnMinWidths = calloc(columnCount, sizeof(CGFloat));
         _columnMaxWidths = calloc(columnCount, sizeof(CGFloat));
-        CGFloat max = CGFLOAT_MAX;
-        if(sizeof(CGFloat) == 4) {
-            memset_pattern4(_columnMaxWidths, &max, columnCount * sizeof(CGFloat))
-        } else {
-            NSParameterAssert(CGFLOAT_IS_DOUBLE);
-            memset_pattern8(_columnMaxWidths, &max, columnCount * sizeof(CGFloat))
+
+        // First, get the column widths if any (sort of step 1, above)
+        {
+            NSUInteger columnIndex = 0;
+            for(EucCSSLayoutTableColumnGroup *columnGroup in tableWrapper.table.columnGroups) {
+                for(EucCSSLayoutTableColumn *column in columnGroup.columns) {
+                    CGFloat minWidth = [column widthWithScaleFactor:scaleFactor];
+                    if(minWidth != CGFLOAT_MAX) {
+                        _columnMinWidths[columnIndex] = minWidth; 
+                    }
+                    ++columnIndex;
+                }
+            }
+        }
+        
+        // Step 3, above:
+        for(NSUInteger rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+            NSNumber *rowNumber = [[NSNumber alloc] initWithUnsignedInteger:rowIndex];
+            
+            for(NSUInteger columnIndex = 0; columnIndex < columnCount;) {
+                NSNumber *columnNumber = [[NSNumber alloc] initWithUnsignedInteger:columnIndex];
+                
+                EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowNumber] objectForKey:columnNumber];
+                NSUInteger columnSpan = cell.columnSpan;
+                if(columnSpan == 1) {
+                    EucCSSLayoutSizedContainer *sizedCellContents = (EucCSSLayoutSizedContainer *)CFDictionaryGetValue(_sizedContainers, cell);
+                    CGFloat minWidth = sizedCellContents.minWidth;
+                    if(minWidth > _columnMinWidths[columnIndex]) {
+                        _columnMinWidths[columnIndex] = minWidth;
+                    } else {
+                        minWidth = _columnMinWidths[columnIndex];
+                    }
+                    CGFloat maxWidth = sizedCellContents.maxWidth;
+                    maxWidth = MAX(maxWidth, minWidth);
+                    if(maxWidth > _columnMaxWidths[columnIndex]) {
+                        _columnMaxWidths[columnIndex] = maxWidth;
+                    }
+                }
+                
+                [columnNumber release];
+                columnIndex += columnSpan;
+            }
+            [rowNumber release];
+        }
+        
+        // Step 4, above:
+        for(NSUInteger row = 0; row < rowCount; ++row) {
+            NSNumber *rowNumber = [[NSNumber alloc] initWithUnsignedInteger:row];
+            
+            for(NSUInteger columnIndex = 0; columnIndex < columnCount;) {
+                NSNumber *columnNumber = [[NSNumber alloc] initWithUnsignedInteger:columnIndex];
+                
+                EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowNumber] objectForKey:columnNumber];
+                NSUInteger columnSpan = cell.columnSpan;
+                if(columnSpan > 1) {
+                    CGFloat spannedMin = 0, spannedMax = 0;
+                    for(NSUInteger i = 0; i < columnSpan; ++i) {
+                        spannedMin += _columnMinWidths[columnIndex + i];
+                        spannedMax += _columnMaxWidths[columnIndex + i];
+                    }
+                    EucCSSLayoutSizedContainer *sizedCellContents = (EucCSSLayoutSizedContainer *)CFDictionaryGetValue(_sizedContainers, cell);
+                    CGFloat minWidth = sizedCellContents.minWidth;
+                    {
+                        CGFloat remainingMinSpannedWidth = minWidth - spannedMin;
+                        if(remainingMinSpannedWidth > 0) {
+                            NSUInteger remainingColumnsToSpan = columnSpan;
+                            for(NSUInteger i = 0; i < columnSpan; ++i) {
+                                CGFloat addition = roundf(remainingMinSpannedWidth / remainingColumnsToSpan);
+                                _columnMinWidths[columnIndex + i] += addition;
+                                remainingMinSpannedWidth -= addition;
+                                --remainingColumnsToSpan;
+                            }                        
+                        }
+                    }
+                    {
+                        CGFloat maxWidth = sizedCellContents.maxWidth;
+                        maxWidth = MAX(minWidth, maxWidth);
+                        CGFloat remainingMaxSpannedWidth = maxWidth - spannedMax;
+                        if(remainingMaxSpannedWidth > 0) {
+                            NSUInteger remainingColumnsToSpan = columnSpan;
+                            for(NSUInteger i = 0; i < columnSpan; ++i) {
+                                CGFloat addition = roundf(remainingMaxSpannedWidth / remainingColumnsToSpan);
+                                _columnMaxWidths[columnIndex + i] += addition;
+                                remainingMaxSpannedWidth -= addition;
+                                --remainingColumnsToSpan;
+                            }                        
+                        }
+                    }
+                }
+                
+                [columnNumber release];
+                columnIndex += columnSpan;
+            }
+            [rowNumber release];
+        }
+        
+        // Step 5, above:
+        {
+            NSUInteger columnIndex = 0;
+            for(EucCSSLayoutTableColumnGroup *columnGroup in tableWrapper.table.columnGroups) {
+                NSUInteger columnSpan = columnGroup.columns.count;
+                CGFloat minWidth = [columnGroup widthWithScaleFactor:scaleFactor];
+                if(minWidth != CGFLOAT_MAX) {
+                    CGFloat spannedMin = 0;
+                    for(NSUInteger i = 0; i < columnSpan; ++i) {
+                        spannedMin += _columnMinWidths[columnIndex + i];
+                    }
+                    CGFloat remainingMinSpannedWidth = minWidth - spannedMin;
+                    if(remainingMinSpannedWidth > 0) {
+                        NSUInteger remainingColumnsToSpan = columnSpan;
+                        for(NSUInteger i = 0; i < columnSpan; ++i) {
+                            CGFloat addition = roundf(remainingMinSpannedWidth / remainingColumnsToSpan);
+                            _columnMinWidths[columnIndex + i] += addition;
+                            remainingMinSpannedWidth -= addition;
+                        }                        
+                    }
+                }
+                columnIndex += columnSpan;
+            }
         }
     }
     return self;
 }
 
-// TODO: non-fixed layout.
 // TODO: take into account margins etc.
-
 - (CGFloat)minWidth
 {
     CGFloat ret = 0.0f;
-    NSMutableDictionary *firstRow = [self _cellsForRow:0];
-    for(NSUInteger i = 0; i < _columnCount;) {
-        EucCSSLayoutTableCell *cell = [firstRow objectForKey:[NSNumber numberWithUnsignedInteger:i]];
-        EucCSSLayoutSizedContainer *container = (EucCSSLayoutSizedContainer *)CFDictionaryGetValue(_sizedContainers, cell);
-        
-        NSParameterAssert(container);
-
-        ret += container.minWidth;
-        i += cell.columnSpan;
+    for(NSUInteger i = 0; i < _columnCount; ++i) {
+        ret += _columnMinWidths[i];
     }    
     return ret;
 }
@@ -173,21 +277,8 @@
 - (CGFloat)maxWidth
 {
     CGFloat ret = 0.0f;
-    NSMutableDictionary *firstRow = [self _cellsForRow:0];
-    for(NSUInteger i = 0; i < _columnCount;) {
-        EucCSSLayoutTableCell *cell = [firstRow objectForKey:[NSNumber numberWithUnsignedInteger:i]];
-        EucCSSLayoutSizedContainer *container = (EucCSSLayoutSizedContainer *)CFDictionaryGetValue(_sizedContainers, cell);
-        
-        NSParameterAssert(container);
-        
-        CGFloat cellMaxWidth = container.maxWidth;
-        if(cellMaxWidth != CGFLOAT_MAX) {
-            ret += cellMaxWidth;
-            i += cell.columnSpan;
-        } else {
-            ret = CGFLOAT_MAX;
-            break;
-        }
+    for(NSUInteger i = 0; i < _columnCount; ++i) {
+        ret += _columnMaxWidths[i];
     }    
     return ret;
 }

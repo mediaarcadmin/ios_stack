@@ -10,6 +10,10 @@
 
 #import "EucCSSIntermediateDocumentNode.h"
 
+#import "EucCSSInternal.h"
+
+#import <libcss/libcss.h>
+
 @implementation EucCSSLayoutTableBox
 
 @synthesize wrapper = _wrapper;
@@ -32,6 +36,31 @@
     [_nextNodeInDocument release];
     
     [super dealloc];
+}
+
+- (BOOL)documentNodeIsRepresentative
+{
+    return NO;
+}
+
+- (CGFloat)widthWithScaleFactor:(CGFloat)scaleFactor
+{
+    CGFloat ret = CGFLOAT_MAX;
+ 
+    if(self.documentNodeIsRepresentative) {
+        css_computed_style *nodeStyle = self.documentNode.computedStyle;
+        if(nodeStyle) {
+            css_fixed length = 0;
+            css_unit unit = (css_unit)0;
+            
+            uint8_t widthKind = css_computed_width(nodeStyle, &length, &unit);
+            if(widthKind == CSS_WIDTH_SET) {
+                ret = EucCSSLibCSSSizeToPixels(nodeStyle, length, unit, 0, scaleFactor);
+            }
+        }
+    }
+    
+    return ret;
 }
 
 @end

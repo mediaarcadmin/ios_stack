@@ -49,10 +49,10 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 
-- (CGFloat)textPointSizeAtScaleFactor:(CGFloat)scaleFactor;
-- (CGFloat)textAscenderAtScaleFactor:(CGFloat)scaleFactor;
-- (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor;
-- (CGFloat)xHeightAtScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)textPointSizeWithScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)textAscenderWithScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)lineHeightWithScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)xHeightWithScaleFactor:(CGFloat)scaleFactor;
 
 // Overridable:
 @property (nonatomic, readonly) BOOL isTextNode;  // Default: NO

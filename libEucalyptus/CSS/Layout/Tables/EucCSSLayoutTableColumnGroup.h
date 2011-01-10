@@ -13,6 +13,6 @@
     NSArray *_columns;
 }
 
-@property (nonatomic, retain) NSArray *columns;
+@property (nonatomic, retain, readonly) NSArray *columns;
 
 @end

@@ -11,6 +11,8 @@
 
 #import "EucCSSIntermediateDocumentNode.h"
 
+#import "EucCSSInternal.h"
+
 #import <libcss/libcss.h>
 
 @implementation EucCSSLayoutTableColumnGroup
@@ -74,6 +76,11 @@
     [_columns release];
  
     [super dealloc];
+}
+
+- (BOOL)documentNodeIsRepresentative
+{
+    return self.documentNode.display == CSS_DISPLAY_TABLE_COLUMN_GROUP;
 }
 
 @end

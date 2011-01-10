@@ -76,4 +76,10 @@
     [super dealloc];
 }
 
+- (BOOL)documentNodeIsRepresentative
+{
+    uint8_t display = self.documentNode.display;
+    return display == CSS_DISPLAY_TABLE_ROW_GROUP || display == CSS_DISPLAY_TABLE_HEADER_GROUP || display == CSS_DISPLAY_TABLE_FOOTER_GROUP;
+}
+
 @end

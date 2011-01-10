@@ -278,7 +278,7 @@
         uint32_t *childKeys = _childKeys;
         for(NSUInteger i = 0; i < _childCount; ++i) {
             EucCSSIntermediateDocumentNode *childNode = [document nodeForKey:childKeys[i]];
-            uint8_t childDisplay = childDisplay;
+            uint8_t childDisplay = childNode.display;
             
             if(myDisplay == CSS_DISPLAY_TABLE_COLUMN_GROUP && 
                childDisplay != CSS_DISPLAY_TABLE_COLUMN) {

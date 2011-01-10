@@ -8,6 +8,10 @@
 
 #import "EucCSSLayoutTableCaption.h"
 
+#import "EucCSSIntermediateDocumentNode.h"
+
+#import <libcss/libcss.h>
+
 @implementation EucCSSLayoutTableCaption
 
 - (id)initWithNode:(EucCSSIntermediateDocumentNode *)node wrapper:(EucCSSLayoutTableWrapper *)wrapper
@@ -21,6 +25,11 @@
 - (void)dealloc
 {
     [super dealloc]; 
+}
+
+- (BOOL)documentNodeIsRepresentative
+{
+    return self.documentNode.display == CSS_DISPLAY_TABLE_CAPTION;
 }
 
 @end

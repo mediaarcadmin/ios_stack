@@ -72,4 +72,9 @@
                                             scaleFactor:scaleFactor];
 }
 
+- (BOOL)documentNodeIsRepresentative
+{
+    return self.documentNode.display == CSS_DISPLAY_TABLE_CELL;
+}
+
 @end

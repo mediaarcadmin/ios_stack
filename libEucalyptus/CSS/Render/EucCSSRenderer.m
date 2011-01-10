@@ -93,6 +93,9 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     entityClassName = [entityClassName substringFromIndex:12]; // 12 for "EucCSSLayout"
     SEL selector = NSSelectorFromString([NSString stringWithFormat:@"_render%@:", entityClassName]);
     ((id(*)(id, SEL, id))objc_msgSend)(self, selector, layoutEntity);
+    
+    
+    
     CGContextRestoreGState(_cgContext);
 
     /*
@@ -413,7 +416,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     
     THStringRenderer *stringRenderer = documentNode.stringRenderer;
     
-    CGFloat pointSize = [documentNode textPointSizeAtScaleFactor:_currentScaleFactor];
+    CGFloat pointSize = [documentNode textPointSizeWithScaleFactor:_currentScaleFactor];
     CGFloat bulletWidth = [stringRenderer widthOfString:bulletString pointSize:pointSize];
     
     [stringRenderer drawString:bulletString 
@@ -450,7 +453,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 css_computed_style *style = currentDocumentNode.computedStyle;
                 if(style) {
                     // Color.
-                    css_color color = color; 
+                    css_color color; 
                     if(css_computed_color(style, &color) == CSS_COLOR_COLOR) {
                         CGContextSetFillColorWithCSSColor(_cgContext, color);
                         CGContextSetStrokeColorWithCSSColor(_cgContext, color);

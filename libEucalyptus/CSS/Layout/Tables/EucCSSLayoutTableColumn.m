@@ -22,4 +22,9 @@
     return self;
 }
 
+- (BOOL)documentNodeIsRepresentative
+{
+    return self.documentNode.display == CSS_DISPLAY_TABLE_COLUMN;
+}
+
 @end
