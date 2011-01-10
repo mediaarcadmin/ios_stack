@@ -455,7 +455,6 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         
         CGFloat pointSize = [parentNode textPointSizeWithScaleFactor:scaleFactor];
         CGFloat ascender = [parentNode textAscenderWithScaleFactor:scaleFactor];        
-        CGFloat xHeight = [parentNode xHeightWithScaleFactor:scaleFactor];        
         
         NSUInteger parentIndex = _renderItemCount - 1;
         
@@ -570,7 +569,6 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     
                     pointSize = [node textPointSizeWithScaleFactor:scaleFactor];
                     ascender = [node textAscenderWithScaleFactor:scaleFactor];
-                    xHeight = [node xHeightWithScaleFactor:scaleFactor];
                     
                     xPosition += widthInfo->width;                    
                     break;
@@ -597,7 +595,6 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
 
                     pointSize = [node.parent textPointSizeWithScaleFactor:scaleFactor];
                     ascender = [node.parent textAscenderWithScaleFactor:scaleFactor];     
-                    xHeight = [node.parent xHeightWithScaleFactor:scaleFactor];
                     
                     break;
                 }
