@@ -87,9 +87,6 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, BlioCoverViewDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
     BlioLibraryBookView *_currentBookView;
-    UIImageView *_currentPoppedBookCover;
-    BOOL _bookCoverPopped;
-    BOOL _firstPageRendered;
     BOOL _didEdit;
     BlioLibraryLayout _libraryLayout;
     BlioLogoView *logoView;
@@ -113,16 +110,11 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	NSMutableArray * libraryItems;
 	NSMutableArray * sortLibraryItems;
 	UIColor * tintColor;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	UIPopoverController * settingsPopoverController;
-#endif
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) BlioLibraryBookView *currentBookView;
-@property (nonatomic, retain) UIImageView *currentPoppedBookCover;
-@property (nonatomic) BOOL bookCoverPopped;
-@property (nonatomic) BOOL firstPageRendered;
 @property (nonatomic, retain) UITableView *tableView;
 @property (nonatomic, retain) MRGridView *gridView;
 @property (nonatomic, readonly) NSInteger columnCount;
@@ -134,10 +126,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) UIButton * libraryVaultButton;
 @property (nonatomic, assign) BOOL showArchiveCell;
 @property (nonatomic, retain) UIColor * tintColor;
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @property (nonatomic, retain) UIPopoverController * settingsPopoverController;
-#endif
 
 -(void)configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath;
 -(void)configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index;

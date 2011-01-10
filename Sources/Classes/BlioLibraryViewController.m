@@ -47,16 +47,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @property (nonatomic, retain) BlioBookViewController *openBookViewController;
 
 - (void)bookSelected:(BlioLibraryBookView *)bookView;
+- (IBAction)changeLibraryLayout:(id)sender;
 
 @end
 
 @implementation BlioLibraryViewController
 
 @synthesize currentBookView = _currentBookView;
-@synthesize currentPoppedBookCover = _currentPoppedBookCover;
 @synthesize libraryLayout = _libraryLayout;
-@synthesize bookCoverPopped = _bookCoverPopped;
-@synthesize firstPageRendered = _firstPageRendered;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize processingDelegate = _processingDelegate;
 @synthesize fetchedResultsController = _fetchedResultsController;
@@ -69,10 +67,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize libraryVaultButton;
 @synthesize showArchiveCell;
 @synthesize tintColor;
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 @synthesize settingsPopoverController;
-#endif
 
 - (id)init {
 	if ((self = [super init])) {
@@ -87,7 +82,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.managedObjectContext = nil;
     self.currentBookView = nil;
-    self.currentPoppedBookCover = nil;
 	self.tableView = nil;
 	self.gridView = nil;
     self.fetchedResultsController = nil;
@@ -96,9 +90,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.openBookViewController = nil;
 	self.libraryVaultButton = nil;
 	self.tintColor = nil;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	self.settingsPopoverController = nil;
-#endif
 
     [super dealloc];
 }
@@ -107,12 +99,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	NSString * libraryBackgroundFilename = @"librarybackground.png";
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		libraryBackgroundFilename = @"librarybackground-iPad.png";
 	}
-#endif
-	
 
 	UIImageView * backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:libraryBackgroundFilename]];
 	backgroundImageView.frame = self.view.bounds;
@@ -162,21 +151,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.logoView = aLogoView;
     [aLogoView release];
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		[self.gridView setCellSize:CGSizeMake(kBlioLibraryGridBookWidthPad,kBlioLibraryGridBookHeightPad) withBorderSize:kBlioLibraryGridBookSpacingPad];
 	}
 	else {
 		[self.gridView setCellSize:CGSizeMake(kBlioLibraryGridBookWidthPhone,kBlioLibraryGridBookHeightPhone) withBorderSize:kBlioLibraryGridBookSpacing];
 	}
-#else
-	[self.gridView setCellSize:CGSizeMake(kBlioLibraryGridBookWidth,kBlioLibraryGridBookHeight) withBorderSize:kBlioLibraryGridBookSpacing];
-#endif
+
 	[self.view addSubview:aGridView];
     [aGridView release];
 	self.gridView.gridDelegate = self;
 	self.gridView.gridDataSource = self;
 }
+
 
 - (void)viewDidLoad {
     // N.B. on iOS 4.0 it is important to set the toolbar tint before adding the UIBarButtonItems
@@ -215,7 +202,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [[segmentedControl imageForSegmentAtIndex:1] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
     
     [segmentedControl setSelectedSegmentIndex:loadedLibraryLayout];
-	
+    
+    // This will not get automatically called by the setSelectedSegmentIndex:
+    // above if it does not change the selected index.
+    [self changeLibraryLayout:segmentedControl]; 
     
     UIBarButtonItem *libraryLayoutButton = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
     self.navigationItem.leftBarButtonItem = libraryLayoutButton;
@@ -520,10 +510,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)viewDidUnload {
-	if (sortSegmentedControl) {
-		[sortSegmentedControl release];
-		sortSegmentedControl = nil;
-	}
+    [sortSegmentedControl release];
+    sortSegmentedControl = nil;
+    
+    self.tableView = nil;
+    self.gridView = nil;
+    self.libraryVaultButton = nil;
+    
+    self.libraryLayout = 0;
 }
 
 - (NSInteger)columnCount {
@@ -1345,7 +1339,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.librarySortType = (BlioLibrarySortType)[sender selectedSegmentIndex];
 }
 
-- (void)changeLibraryLayout:(id)sender {
+- (IBAction)changeLibraryLayout:(id)sender {
     
     BlioLibraryLayout newLayout = (BlioLibraryLayout)[sender selectedSegmentIndex];
     
@@ -1582,12 +1576,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		CGFloat bookWidth = kBlioLibraryGridBookWidthPhone;
 		CGFloat bookHeight = kBlioLibraryGridBookHeightPhone;
 		
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			bookWidth = kBlioLibraryGridBookWidthPad;
 			bookHeight = kBlioLibraryGridBookHeightPad;
 		}
-#endif
+
         BlioLibraryBookView* aBookView = [[BlioLibraryBookView alloc] initWithFrame:CGRectMake(0,0, bookWidth, bookHeight)];
 		//        [aBookView addTarget:self.delegate action:@selector(bookTouched:)
 		//            forControlEvents:UIControlEventTouchUpInside];
