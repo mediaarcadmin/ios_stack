@@ -1332,7 +1332,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if ([self.searchViewController isSearchInline] == YES) {
             self.searchViewController.toolbarHidden = YES;
         }
-        self.navigationController.navigationBar.hidden = YES;
+        self.navigationController.navigationBarHidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
     } else {
         if (![self audioPlaying])
@@ -1423,7 +1423,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 self.searchViewController.toolbarHidden = NO;
             }
             self.navigationController.navigationBarHidden = NO;
-            self.navigationController.navigationBar.hidden = NO;
             
             break;
         default:
