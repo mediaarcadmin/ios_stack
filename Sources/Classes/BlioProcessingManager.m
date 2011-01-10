@@ -436,8 +436,9 @@
 		}
 	}
 
+	// for TextFlow situations that do not involve XPS
 	manifestLocation = [aBook manifestLocationForKey:BlioManifestTextFlowKey];
-	if (manifestLocation) {
+	if (manifestLocation && ![aBook manifestLocationForKey:BlioManifestXPSKey]) {
 		if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationTextflow] || placeholderOnly) {
 			alreadyCompletedOperations++;
 			url = nil;
@@ -856,6 +857,7 @@
             for(BlioProcessingOperation *beforeOp in newTextFlowPreAvailOps) {
                 [preAvailOp addDependency:beforeOp];
             }
+			if (dependencyOp) [preAvailOp addDependency:dependencyOp];
             [self.preAvailabilityQueue addOperation:preAvailOp];
             [bookOps addObject:preAvailOp];
         }
@@ -885,12 +887,12 @@
 		if ([results count] > 0) {
 			NSLog(@"Found non-paused incomplete or failed book results, will resume..."); 
 			for (BlioBook * book in results) {
-				if ([[book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+				if ([[book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore && [[book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateFailed) {
 					if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && [[book valueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
 						[self enqueueBook:book];
 					}
 				}
-				else [self enqueueBook:book];
+				[self enqueueBook:book];
 			}			
 		}
 		else {
@@ -935,7 +937,7 @@
 			
 		}
 		else {
-			NSLog(@"No incomplete paid book results to resume."); 
+			NSLog(@"No incomplete book results to resume."); 
 		}
 	}
     [fetchRequest release];
@@ -1014,14 +1016,14 @@
     }
     else {
 		if ([results count] > 0) {
-			NSLog(@"Found %i non-paused incomplete book results, will resume...",[results count]); 
+			NSLog(@"Found %i non-paused incomplete book results, will resume suspended processing...",[results count]); 
 			for (BlioBook * book in results) {
 				[self enqueueBook:book];
 			}
 			
 		}
 		else {
-			NSLog(@"No incomplete paid book results to resume."); 
+			NSLog(@"No incomplete book results to resume suspended processing."); 
 		}
 	}
     [fetchRequest release];
@@ -1047,14 +1049,14 @@
     }
     else {
 		if ([results count] > 0) {
-			NSLog(@"Found %i non-paused incomplete book results, will resume...",[results count]); 
+			NSLog(@"Found %i non-paused incomplete book results, will suspend...",[results count]); 
 			for (BlioBook * book in results) {
 				[self suspendProcessingForBook:book];
 			}
 			
 		}
 		else {
-			NSLog(@"No incomplete paid book results to resume."); 
+			NSLog(@"No incomplete paid book results to suspend."); 
 		}
 	}
     [fetchRequest release];

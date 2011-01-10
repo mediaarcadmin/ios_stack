@@ -155,6 +155,7 @@
 	if (password) [loginCredentials setObject:[NSString stringWithString:password] forKey:@"password"];
 	 
 	 [[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID {
 	NSLog(@"saveRegistrationAccountID: %@, serviceID: %@",accountID,serviceID);
