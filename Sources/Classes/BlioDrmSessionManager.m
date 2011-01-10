@@ -181,7 +181,8 @@ ErrorExit:
 
 - (BOOL)checkPriorityError:(DRM_RESULT)result {
 	if (result==DRM_E_SERVER_COMPUTER_LIMIT_REACHED || result==DRM_E_SERVER_DEVICE_LIMIT_REACHED) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+		[BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+									 title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"OVER_DEVICE_LIMIT",nil,[NSBundle mainBundle],@"You are at your limit of five registered devices.  You must deregister another device before you can register this one.",@"Description of device limit error.")
 									delegate:nil 
 						   cancelButtonTitle:nil
@@ -189,7 +190,8 @@ ErrorExit:
 		return YES;
 	}
 	else if (result==DRM_E_LICEVAL_LICENSE_REVOKED) { 
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+		[BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+											  title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"LICENSE_REVOKED",nil,[NSBundle mainBundle],@"The license for one your books has been revoked.  Please contact Blio technical support.",@"Description of license revocation.")
 									delegate:nil 
 						   cancelButtonTitle:nil
@@ -197,7 +199,8 @@ ErrorExit:
 		return YES;
 	}
 	else if (result==DRM_E_CERTIFICATE_REVOKED) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+		[BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+											  title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"CERTIFICATE_REVOKED",nil,[NSBundle mainBundle],@"A certificate on your device has been revoked.  Please contact Blio technical support.",@"Description of certificate revocation.")
 									delegate:nil 
 						   cancelButtonTitle:nil
@@ -205,7 +208,8 @@ ErrorExit:
 		return YES;
 	}
 	else if (result==DRM_E_DEVCERT_REVOKED) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+		[BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+											  title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"DEVICE_REVOKED",nil,[NSBundle mainBundle],@"Your device certificate has been revoked.  Please contact Blio technical support.",@"Description of device certificate revocation.")
 									delegate:nil 
 						   cancelButtonTitle:nil

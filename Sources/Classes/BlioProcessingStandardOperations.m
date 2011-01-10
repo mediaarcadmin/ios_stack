@@ -165,7 +165,7 @@
 - (id)init {
     if((self = [super init])) {
         attemptsMade = 0;
-		attemptsMaximum = 3;	
+		attemptsMaximum = 1;	
     }
     
     return self;
