@@ -41,15 +41,16 @@
 @property (nonatomic, retain) NSArray *intrudingLeftFloats;
 @property (nonatomic, retain) NSArray *intrudingRightFloats;
 
-- (void)addFloatChild:(EucCSSLayoutPositionedContainer *)child 
-           atContentY:(CGFloat)contentY
-               onLeft:(BOOL)onLeft;
-
-- (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height;
-
 - (CGRect)frameInRelationTo:(EucCSSLayoutPositionedContainer *)otherContainer;
 - (CGRect)convertRect:(CGRect)rect toContainer:(EucCSSLayoutPositionedContainer *)container;
 - (CGRect)absoluteFrame;
+
+- (void)addChild:(EucCSSLayoutPositionedContainer *)child;
+
+- (void)addFloatChild:(EucCSSLayoutPositionedContainer *)child 
+           atContentY:(CGFloat)contentY
+               onLeft:(BOOL)onLeft;
+- (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height;
 
 @property (nonatomic, assign, readonly) CGFloat minimumWidth; // Just returns the current width.
 - (void)sizeToFitInWidth:(CGFloat)width;                      // Default behaviour does nothing.

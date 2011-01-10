@@ -110,6 +110,15 @@
     [self sizeToFitInWidth:self.minimumWidth];
 }
 
+- (void)addChild:(EucCSSLayoutPositionedContainer *)child
+{
+    if(!_children) {
+        _children = [[NSMutableArray alloc] init]; 
+    }
+    [_children addObject:child];
+    child.parent = self;
+}    
+
 - (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height
 {
     NSMutableArray *leftRet = nil;

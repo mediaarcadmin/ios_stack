@@ -46,6 +46,4 @@ struct css_computed_style;
 
 - (void)closeBottomWithContentHeight:(CGFloat)height atInternalPageBreak:(BOOL)atInternalPageBreak;
 
-- (void)addChild:(EucCSSLayoutPositionedContainer *)child;
-
 @end
