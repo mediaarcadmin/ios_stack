@@ -23,6 +23,7 @@
         _documentNode = [documentNode retain];
         _children = [[NSMutableArray alloc] init];
         
+        /*
         css_computed_style *computedStyle = documentNode.computedStyle;
         css_fixed fixed = 0;
         css_unit unit = 0;
@@ -41,6 +42,7 @@
         _widthAddition += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, scaleFactor);
         css_computed_padding_right(computedStyle, &fixed, &unit);
         _widthAddition += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, scaleFactor);
+        */
     }    
     return self;
 }
@@ -61,12 +63,46 @@
 
 - (CGFloat)minWidth
 {
-    return [[_children valueForKey:@"@max.minWidth"] floatValue] + _widthAddition;
+    CGFloat ret;
+    ret = [[_children valueForKeyPath:@"@max.minWidth"] floatValue];
+    if(_documentNode) {
+        css_computed_style *style = _documentNode.computedStyle;
+        if(style) {
+            css_fixed width;
+            css_unit unit;
+            if(css_computed_width(style, &width, &unit) == CSS_WIDTH_SET &&
+               unit != CSS_UNIT_PCT) {
+                CGFloat specifiedWidth = EucCSSLibCSSSizeToPixels(style, width, unit, 0, _scaleFactor);
+                ret = MAX(specifiedWidth, ret);
+            }
+            if(css_computed_min_width(style, &width, &unit) == CSS_WIDTH_SET &&
+               unit != CSS_UNIT_PCT) {
+                CGFloat specifiedWidth = EucCSSLibCSSSizeToPixels(style, width, unit, 0, _scaleFactor);
+                ret = MAX(specifiedWidth, ret);
+            }            
+        }
+    }
+    return ret;// + _widthAddition;
 }
 
 - (CGFloat)maxWidth
 {
-    return [[_children valueForKey:@"@max.maxWidth"] floatValue] + _widthAddition;
+    CGFloat ret = [[_children valueForKeyPath:@"@max.maxWidth"] floatValue];// + _widthAddition;
+    
+    if(_documentNode) {
+        css_computed_style *style = _documentNode.computedStyle;
+        if(style) {
+            css_fixed width;
+            css_unit unit;
+            if(css_computed_max_width(style, &width, &unit) == CSS_WIDTH_SET &&
+               unit != CSS_UNIT_PCT) {
+                CGFloat specifiedWidth = EucCSSLibCSSSizeToPixels(style, width, unit, 0, _scaleFactor);
+                ret = MIN(specifiedWidth, ret);
+            }
+        }
+    }
+
+    return ret; // + _widthAddition;
 }
 
 @end

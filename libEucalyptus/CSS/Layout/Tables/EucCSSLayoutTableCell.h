@@ -7,12 +7,23 @@
 //
 
 #import <Foundation/Foundation.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
+
 #import "EucCSSLayoutTableBox.h"
 
-@class EucCSSLayoutRun;
+@class EucCSSLayoutSizedContainer;
 
 @interface EucCSSLayoutTableCell : EucCSSLayoutTableBox {
     EucCSSIntermediateDocumentNode *_stopBeforeNode;
 }
+
+@property (nonatomic, assign, readonly) NSUInteger columnSpan;
+@property (nonatomic, assign, readonly) NSUInteger rowSpan;
+
+- (EucCSSLayoutSizedContainer *)sizedContentsWithScaleFactor:(CGFloat)scaleFactor;
 
 @end

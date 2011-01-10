@@ -7,8 +7,13 @@
 //
 
 #import "EucCSSLayoutTableCell.h"
+#import "EucCSSLayoutTableWrapper.h"
 
 #import "EucCSSIntermediateDocumentNode.h"
+
+#import "EucCSSLayouter.h"
+#import "EucCSSLayoutSizedBlock.h"
+#import "EucCSSLayoutSizedContainer.h"
 
 #import <libcss/libcss.h>
 
@@ -33,6 +38,13 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [_stopBeforeNode release];
+    
+    [super dealloc];
+}
+
 - (NSUInteger)columnSpan
 {
     NSUInteger ret = 1;
@@ -53,11 +65,11 @@
     return ret;
 }
 
-- (void)dealloc
+- (EucCSSLayoutSizedContainer *)sizedContentsWithScaleFactor:(CGFloat)scaleFactor
 {
-    [_stopBeforeNode release];
-    
-    [super dealloc];
+    return [_wrapper.layouter sizedBlockFromNodeWithKey:self.documentNode.key
+                                  stopBeforeNodeWithKey:_stopBeforeNode.key
+                                            scaleFactor:scaleFactor];
 }
 
 @end

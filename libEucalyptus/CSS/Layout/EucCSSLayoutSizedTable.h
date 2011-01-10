@@ -19,6 +19,17 @@
 
 @interface EucCSSLayoutSizedTable: EucCSSLayoutSizedContainer {
     EucCSSLayoutTableWrapper *_tableWrapper;
+    
+    NSMutableDictionary *_cellMap;
+    CFMutableDictionaryRef _sizedContainers;
+    
+    
+    NSUInteger _columnCount;
+    NSUInteger _rowCount;
+    
+    CGFloat *_columnMinWidths;
+    CGFloat *_columnMaxWidths;
+    //EucCSSLayoutSizedContainer ***_cellContainers;
 }
 
 - (id)initWithTableWrapper:(EucCSSLayoutTableWrapper *)tableWrapper

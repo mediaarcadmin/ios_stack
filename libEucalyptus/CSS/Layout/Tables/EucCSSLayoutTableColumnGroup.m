@@ -32,26 +32,31 @@
         
         NSMutableArray *columnsBuild = [[NSMutableArray alloc] init];
         for(;;) {
-            enum css_display_e currentNodeDisplay = (enum css_display_e)currentDocumentNode.display;
+            if(currentDocumentNode.isTextNode &&
+               [currentDocumentNode.text rangeOfCharacterFromSet:[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet]].location == NSNotFound) {
+                currentDocumentNode = currentDocumentNode.nextDisplayable;
+            } else {  
+                enum css_display_e currentNodeDisplay = (enum css_display_e)currentDocumentNode.display;
 
-            if(inRealTableColumnGroup) {
-                if(currentDocumentNode.parent != node) {
-                    break;
+                if(inRealTableColumnGroup) {
+                    if(currentDocumentNode.parent != node) {
+                        break;
+                    }
+                } else {
+                    if(currentDocumentNode.parent != node.parent ||
+                       currentNodeDisplay != CSS_DISPLAY_TABLE_COLUMN) {
+                        break;
+                    }
                 }
-            } else {
-                if(currentDocumentNode.parent != node.parent ||
-                   currentNodeDisplay != CSS_DISPLAY_TABLE_COLUMN) {
-                    break;
+                
+                if(currentNodeDisplay == CSS_DISPLAY_TABLE_COLUMN) {
+                    EucCSSLayoutTableColumn *column = [[EucCSSLayoutTableColumn alloc] initWithNode:currentDocumentNode wrapper:wrapper];
+                    [columnsBuild addObject:column];
+                    currentDocumentNode = column.nextNodeInDocument;
+                    [column release];
+                } else {
+                    currentDocumentNode = [node displayableNodeAfter:currentDocumentNode under:nil];
                 }
-            }
-            
-            if(currentNodeDisplay == CSS_DISPLAY_TABLE_COLUMN) {
-                EucCSSLayoutTableColumn *column = [[EucCSSLayoutTableColumn alloc] initWithNode:currentDocumentNode wrapper:wrapper];
-                [columnsBuild addObject:column];
-                currentDocumentNode = column.nextNodeInDocument;
-                [column release];
-            } else {
-                currentDocumentNode = [node displayableNodeAfter:currentDocumentNode under:nil];
             }
         }
         

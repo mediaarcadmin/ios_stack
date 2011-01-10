@@ -31,29 +31,33 @@
         
         NSMutableArray *rowsBuild = [[NSMutableArray alloc] init];
         for(;;) {
-            if(inRealTableRowGroup) {
-                if(currentDocumentNode.parent != node) {
-                    break;
-                } 
-            } else {
-                if(currentDocumentNode.parent != node.parent) {
-                    break;
-                } else {
-                    enum css_display_e currentNodeDisplay = (enum css_display_e)currentDocumentNode.display;
-                    if(currentNodeDisplay == CSS_DISPLAY_TABLE_ROW ||
-                       currentNodeDisplay == CSS_DISPLAY_TABLE_COLUMN ||
-                       currentNodeDisplay == CSS_DISPLAY_TABLE_ROW_GROUP ||
-                       currentNodeDisplay == CSS_DISPLAY_TABLE_COLUMN_GROUP ||
-                       currentNodeDisplay == CSS_DISPLAY_TABLE_CAPTION) {
+            if(currentDocumentNode.isTextNode &&
+               [currentDocumentNode.text rangeOfCharacterFromSet:[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet]].location == NSNotFound) {
+                currentDocumentNode = currentDocumentNode.nextDisplayable;
+            } else {  
+                if(inRealTableRowGroup) {
+                    if(currentDocumentNode.parent != node) {
                         break;
+                    } 
+                } else {
+                    if(currentDocumentNode.parent != node.parent) {
+                        break;
+                    } else {
+                        enum css_display_e currentNodeDisplay = (enum css_display_e)currentDocumentNode.display;
+                        if(currentNodeDisplay == CSS_DISPLAY_TABLE_COLUMN ||
+                           currentNodeDisplay == CSS_DISPLAY_TABLE_ROW_GROUP ||
+                           currentNodeDisplay == CSS_DISPLAY_TABLE_COLUMN_GROUP ||
+                           currentNodeDisplay == CSS_DISPLAY_TABLE_CAPTION) {
+                            break;
+                        }
                     }
                 }
+                
+                EucCSSLayoutTableRow *row = [[EucCSSLayoutTableRow alloc] initWithNode:currentDocumentNode wrapper:wrapper];
+                [rowsBuild addObject:row];
+                currentDocumentNode = row.nextNodeInDocument;
+                [row release];        
             }
-            
-            EucCSSLayoutTableRow *row = [[EucCSSLayoutTableRow alloc] initWithNode:currentDocumentNode wrapper:wrapper];
-            [rowsBuild addObject:row];
-            currentDocumentNode = row.nextNodeInDocument;
-            [row release];            
         }
         
         if(!inRealTableRowGroup) {

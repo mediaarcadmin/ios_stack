@@ -87,7 +87,8 @@ int main (int argc, const char * argv[]) {
         EucCSSLayoutPositionedBlock *positionedBlock = [layouter layoutFromPoint:layoutPoint
                                                                          inFrame:frame
                                                               returningNextPoint:&layoutPoint
-                                                              returningCompleted:&completed];
+                                                              returningCompleted:&completed
+                                                                     scaleFactor:1.0f];
         
         CGContextSaveGState(renderingContext);
         const CGFloat white[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };

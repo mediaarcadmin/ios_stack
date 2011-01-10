@@ -21,7 +21,7 @@
     EucCSSIntermediateDocumentNode *_documentNode;
     NSMutableArray *_children;
     
-    CGFloat _widthAddition;
+    //CGFloat _widthAddition;
 }
 
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *documentNode;

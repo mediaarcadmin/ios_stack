@@ -83,14 +83,14 @@
         layoutPoint.word = point.word;
         layoutPoint.element = point.element;
         
-        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] initWithDocument:document
-                                                                scaleFactor:_scaleFactor];
+        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] initWithDocument:document];
         
         BOOL isComplete = NO;
         positionedBlock = [layouter layoutFromPoint:layoutPoint
                                             inFrame:[self bounds]
                                  returningNextPoint:&layoutPoint
-                                 returningCompleted:&isComplete];
+                                 returningCompleted:&isComplete
+                                        scaleFactor:_scaleFactor];
         
         if(isComplete) {
             ret = [[EucBookPageIndexPoint alloc] init];

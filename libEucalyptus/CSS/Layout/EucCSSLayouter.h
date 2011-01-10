@@ -30,22 +30,21 @@ typedef struct EucCSSLayoutPoint
 
 @interface EucCSSLayouter : NSObject {
     EucCSSIntermediateDocument *_document;
-    CGFloat _scaleFactor;
 }
 
 @property (nonatomic, retain) EucCSSIntermediateDocument *document;
-@property (nonatomic, assign) CGFloat scaleFactor;
 
-- (id)initWithDocument:(EucCSSIntermediateDocument *)document
-           scaleFactor:(CGFloat)scaleFactor;
+- (id)initWithDocument:(EucCSSIntermediateDocument *)document;
 
 - (EucCSSLayoutSizedBlock *)sizedBlockFromNodeWithKey:(uint32_t)nodeKey
-                                stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey;
+                                stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
+                                          scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                          inFrame:(CGRect)frame
                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                              returningCompleted:(BOOL *)returningCompleted;
+                              returningCompleted:(BOOL *)returningCompleted
+                                     scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedBlock *)_layoutFromPoint:(EucCSSLayoutPoint)point
                                           inFrame:(CGRect)frame
@@ -53,7 +52,8 @@ typedef struct EucCSSLayoutPoint
                                returningCompleted:(BOOL *)returningCompleted
                                  lastBlockNodeKey:(uint32_t)lastBlockNodeKey
                             stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
-                            constructingAncestors:(BOOL)constructingAncestors;
+                            constructingAncestors:(BOOL)constructingAncestors
+                                      scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;
 
