@@ -14,10 +14,19 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+@class THPair;
+
 @interface EucCSSLayoutPositionedContainer : NSObject { 
     EucCSSLayoutPositionedContainer *_parent;
     CGRect _frame;
     NSMutableArray *_children;
+    
+    
+    NSMutableArray *_leftFloatChildren;
+    NSMutableArray *_rightFloatChildren;
+    
+    NSArray *_intrudingLeftFloats;
+    NSArray *_intrudingRightFloats;    
 }
 
 @property (nonatomic, assign) EucCSSLayoutPositionedContainer *parent;
@@ -25,6 +34,18 @@
 @property (nonatomic, assign, readonly) CGRect contentRect;
 @property (nonatomic, assign, readonly) CGRect contentBounds;
 @property (nonatomic, retain) NSMutableArray *children;
+
+@property (nonatomic, retain, readonly) NSArray *leftFloatChildren;
+@property (nonatomic, retain, readonly) NSArray *rightFloatChildren;
+
+@property (nonatomic, retain) NSArray *intrudingLeftFloats;
+@property (nonatomic, retain) NSArray *intrudingRightFloats;
+
+- (void)addFloatChild:(EucCSSLayoutPositionedContainer *)child 
+           atContentY:(CGFloat)contentY
+               onLeft:(BOOL)onLeft;
+
+- (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height;
 
 - (CGRect)frameInRelationTo:(EucCSSLayoutPositionedContainer *)otherContainer;
 - (CGRect)convertRect:(CGRect)rect toContainer:(EucCSSLayoutPositionedContainer *)container;
