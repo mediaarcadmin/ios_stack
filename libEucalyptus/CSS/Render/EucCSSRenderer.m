@@ -111,123 +111,125 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 {
     THLogVerbose(@"Positioned Block: %@", NSStringFromCGRect(block.absoluteFrame));
     
-    CGRect borderRect = block.borderRect;
-    css_computed_style *computedStyle = block.computedStyle;
-    css_color color;
-    if(css_computed_background_color(computedStyle, &color) != CSS_BACKGROUND_COLOR_TRANSPARENT) {
-        //color = 0xff000000;
-        CGContextSaveGState(_cgContext);
-        CGContextSetFillColorWithCSSColor(_cgContext, color);  
-        CGContextFillRect(_cgContext, borderRect);
-        CGContextRestoreGState(_cgContext);
-    }
-    
-    CGRect paddingRect = block.paddingRect;
-    if(!CGRectEqualToRect(borderRect, paddingRect)) {        
-        // Non-zero border width.
-        
-        CGPoint maskPoints[4];
-
-        // Top.
-        {
-            enum css_border_style_e borderStyle;
-            if((borderStyle = css_computed_border_top_style(computedStyle)) != CSS_BORDER_STYLE_NONE) {
-                if(css_computed_border_top_color(computedStyle, &color) != CSS_BORDER_COLOR_TRANSPARENT) {
-                    CGContextSaveGState(_cgContext);
-                    CGMutablePathRef maskPath = CGPathCreateMutable();
-                    maskPoints[0] = CGPointMake(CGRectGetMinX(borderRect), CGRectGetMinY(borderRect));
-                    maskPoints[1] = CGPointMake(CGRectGetMaxX(borderRect), CGRectGetMinY(borderRect));
-                    maskPoints[2] = CGPointMake(CGRectGetMaxX(paddingRect), CGRectGetMinY(paddingRect));
-                    maskPoints[3] = CGPointMake(CGRectGetMinX(paddingRect), CGRectGetMinY(paddingRect));
-                    CGPathAddLines(maskPath, 0, maskPoints, 4);
-                    CGContextAddPath(_cgContext, maskPath);
-                    CGContextClip(_cgContext);
-                    CGContextSetStrokeColorWithCSSColor(_cgContext, color);
-                    CGPoint linePoints[2] = { 
-                        CGPointMake((maskPoints[0].x + maskPoints[3].x) * 0.5f, (maskPoints[0].y + maskPoints[3].y) * 0.5f),
-                        CGPointMake((maskPoints[1].x + maskPoints[2].x) * 0.5f, (maskPoints[1].y + maskPoints[2].y) * 0.5f),
-                    };    
-                    CGContextStrokeLineSegments(_cgContext, linePoints, 2);
-                    CGPathRelease(maskPath);
-                    CGContextRestoreGState(_cgContext);                
-                }
-            }
+    css_computed_style *computedStyle = block.documentNode.computedStyle;
+    if(computedStyle) {
+        CGRect borderRect = block.borderRect;
+        css_color color;
+        if(css_computed_background_color(computedStyle, &color) != CSS_BACKGROUND_COLOR_TRANSPARENT) {
+            //color = 0xff000000;
+            CGContextSaveGState(_cgContext);
+            CGContextSetFillColorWithCSSColor(_cgContext, color);  
+            CGContextFillRect(_cgContext, borderRect);
+            CGContextRestoreGState(_cgContext);
         }
 
-        // Right.
-        {
-            enum css_border_style_e borderStyle;
-            if((borderStyle = css_computed_border_right_style(computedStyle)) != CSS_BORDER_STYLE_NONE) {
-                if(css_computed_border_right_color(computedStyle, &color) != CSS_BORDER_COLOR_TRANSPARENT) {
-                    CGContextSaveGState(_cgContext);
-                    CGMutablePathRef maskPath = CGPathCreateMutable();
-                    maskPoints[0] = CGPointMake(CGRectGetMaxX(borderRect), CGRectGetMinY(borderRect));
-                    maskPoints[1] = CGPointMake(CGRectGetMaxX(borderRect), CGRectGetMaxY(borderRect));
-                    maskPoints[2] = CGPointMake(CGRectGetMaxX(paddingRect), CGRectGetMaxY(paddingRect));
-                    maskPoints[3] = CGPointMake(CGRectGetMaxX(paddingRect), CGRectGetMinY(paddingRect));
-                    CGPathAddLines(maskPath, 0, maskPoints, 4);
-                    CGContextAddPath(_cgContext, maskPath);
-                    CGContextClip(_cgContext);
-                    CGContextSetStrokeColorWithCSSColor(_cgContext, color);
-                    CGPoint linePoints[2] = { 
-                        CGPointMake((maskPoints[0].x + maskPoints[3].x) * 0.5f, (maskPoints[0].y + maskPoints[3].y) * 0.5f),
-                        CGPointMake((maskPoints[1].x + maskPoints[2].x) * 0.5f, (maskPoints[1].y + maskPoints[2].y) * 0.5f),
-                    };    
-                    CGContextStrokeLineSegments(_cgContext, linePoints, 2);
-                    CGPathRelease(maskPath);
-                    CGContextRestoreGState(_cgContext);
+        CGRect paddingRect = block.paddingRect;
+        if(!CGRectEqualToRect(borderRect, paddingRect)) {        
+            // Non-zero border width.
+            
+            CGPoint maskPoints[4];
+
+            // Top.
+            {
+                enum css_border_style_e borderStyle;
+                if((borderStyle = css_computed_border_top_style(computedStyle)) != CSS_BORDER_STYLE_NONE) {
+                    if(css_computed_border_top_color(computedStyle, &color) != CSS_BORDER_COLOR_TRANSPARENT) {
+                        CGContextSaveGState(_cgContext);
+                        CGMutablePathRef maskPath = CGPathCreateMutable();
+                        maskPoints[0] = CGPointMake(CGRectGetMinX(borderRect), CGRectGetMinY(borderRect));
+                        maskPoints[1] = CGPointMake(CGRectGetMaxX(borderRect), CGRectGetMinY(borderRect));
+                        maskPoints[2] = CGPointMake(CGRectGetMaxX(paddingRect), CGRectGetMinY(paddingRect));
+                        maskPoints[3] = CGPointMake(CGRectGetMinX(paddingRect), CGRectGetMinY(paddingRect));
+                        CGPathAddLines(maskPath, 0, maskPoints, 4);
+                        CGContextAddPath(_cgContext, maskPath);
+                        CGContextClip(_cgContext);
+                        CGContextSetStrokeColorWithCSSColor(_cgContext, color);
+                        CGPoint linePoints[2] = { 
+                            CGPointMake((maskPoints[0].x + maskPoints[3].x) * 0.5f, (maskPoints[0].y + maskPoints[3].y) * 0.5f),
+                            CGPointMake((maskPoints[1].x + maskPoints[2].x) * 0.5f, (maskPoints[1].y + maskPoints[2].y) * 0.5f),
+                        };    
+                        CGContextStrokeLineSegments(_cgContext, linePoints, 2);
+                        CGPathRelease(maskPath);
+                        CGContextRestoreGState(_cgContext);                
+                    }
                 }
             }
-        }
 
-        // Bottom.
-        {
-            enum css_border_style_e borderStyle;
-            if((borderStyle = css_computed_border_bottom_style(computedStyle)) != CSS_BORDER_STYLE_NONE) {
-                if(css_computed_border_bottom_color(computedStyle, &color) != CSS_BORDER_COLOR_TRANSPARENT) {
-                    CGContextSaveGState(_cgContext);
-                    CGMutablePathRef maskPath = CGPathCreateMutable();
-                    maskPoints[0] = CGPointMake(CGRectGetMinX(borderRect), CGRectGetMaxY(borderRect));
-                    maskPoints[1] = CGPointMake(CGRectGetMaxX(borderRect), CGRectGetMaxY(borderRect));
-                    maskPoints[2] = CGPointMake(CGRectGetMaxX(paddingRect), CGRectGetMaxY(paddingRect));
-                    maskPoints[3] = CGPointMake(CGRectGetMinX(paddingRect), CGRectGetMaxY(paddingRect));
-                    CGPathAddLines(maskPath, 0, maskPoints, 4);
-                    CGContextAddPath(_cgContext, maskPath);
-                    CGContextClip(_cgContext);
-                    CGContextSetStrokeColorWithCSSColor(_cgContext, color);
-                    CGPoint linePoints[2] = { 
-                        CGPointMake((maskPoints[0].x + maskPoints[3].x) * 0.5f, (maskPoints[0].y + maskPoints[3].y) * 0.5f),
-                        CGPointMake((maskPoints[1].x + maskPoints[2].x) * 0.5f, (maskPoints[1].y + maskPoints[2].y) * 0.5f),
-                    };    
-                    CGContextStrokeLineSegments(_cgContext, linePoints, 2);
-                    CGPathRelease(maskPath);
-                    CGContextRestoreGState(_cgContext);
+            // Right.
+            {
+                enum css_border_style_e borderStyle;
+                if((borderStyle = css_computed_border_right_style(computedStyle)) != CSS_BORDER_STYLE_NONE) {
+                    if(css_computed_border_right_color(computedStyle, &color) != CSS_BORDER_COLOR_TRANSPARENT) {
+                        CGContextSaveGState(_cgContext);
+                        CGMutablePathRef maskPath = CGPathCreateMutable();
+                        maskPoints[0] = CGPointMake(CGRectGetMaxX(borderRect), CGRectGetMinY(borderRect));
+                        maskPoints[1] = CGPointMake(CGRectGetMaxX(borderRect), CGRectGetMaxY(borderRect));
+                        maskPoints[2] = CGPointMake(CGRectGetMaxX(paddingRect), CGRectGetMaxY(paddingRect));
+                        maskPoints[3] = CGPointMake(CGRectGetMaxX(paddingRect), CGRectGetMinY(paddingRect));
+                        CGPathAddLines(maskPath, 0, maskPoints, 4);
+                        CGContextAddPath(_cgContext, maskPath);
+                        CGContextClip(_cgContext);
+                        CGContextSetStrokeColorWithCSSColor(_cgContext, color);
+                        CGPoint linePoints[2] = { 
+                            CGPointMake((maskPoints[0].x + maskPoints[3].x) * 0.5f, (maskPoints[0].y + maskPoints[3].y) * 0.5f),
+                            CGPointMake((maskPoints[1].x + maskPoints[2].x) * 0.5f, (maskPoints[1].y + maskPoints[2].y) * 0.5f),
+                        };    
+                        CGContextStrokeLineSegments(_cgContext, linePoints, 2);
+                        CGPathRelease(maskPath);
+                        CGContextRestoreGState(_cgContext);
+                    }
                 }
             }
-        }
 
-        // Left.
-        {
-            enum css_border_style_e borderStyle;
-            if((borderStyle = css_computed_border_left_style(computedStyle)) != CSS_BORDER_STYLE_NONE) {
-                if(css_computed_border_left_color(computedStyle, &color) != CSS_BORDER_COLOR_TRANSPARENT) {
-                    CGContextSaveGState(_cgContext);
-                    CGMutablePathRef maskPath = CGPathCreateMutable();
-                    maskPoints[0] = CGPointMake(CGRectGetMinX(borderRect), CGRectGetMaxY(borderRect));
-                    maskPoints[1] = CGPointMake(CGRectGetMinX(borderRect), CGRectGetMinY(borderRect));
-                    maskPoints[2] = CGPointMake(CGRectGetMinX(paddingRect), CGRectGetMinY(paddingRect));
-                    maskPoints[3] = CGPointMake(CGRectGetMinX(paddingRect), CGRectGetMaxY(paddingRect));
-                    CGPathAddLines(maskPath, 0, maskPoints, 4);
-                    CGContextAddPath(_cgContext, maskPath);
-                    CGContextClip(_cgContext);
-                    CGContextSetStrokeColorWithCSSColor(_cgContext, color);
-                    CGPoint linePoints[2] = { 
-                        CGPointMake((maskPoints[0].x + maskPoints[3].x) * 0.5f, (maskPoints[0].y + maskPoints[3].y) * 0.5f),
-                        CGPointMake((maskPoints[1].x + maskPoints[2].x) * 0.5f, (maskPoints[1].y + maskPoints[2].y) * 0.5f),
-                    };    
-                    CGContextStrokeLineSegments(_cgContext, linePoints, 2);
-                    CGPathRelease(maskPath);
-                    CGContextRestoreGState(_cgContext);
+            // Bottom.
+            {
+                enum css_border_style_e borderStyle;
+                if((borderStyle = css_computed_border_bottom_style(computedStyle)) != CSS_BORDER_STYLE_NONE) {
+                    if(css_computed_border_bottom_color(computedStyle, &color) != CSS_BORDER_COLOR_TRANSPARENT) {
+                        CGContextSaveGState(_cgContext);
+                        CGMutablePathRef maskPath = CGPathCreateMutable();
+                        maskPoints[0] = CGPointMake(CGRectGetMinX(borderRect), CGRectGetMaxY(borderRect));
+                        maskPoints[1] = CGPointMake(CGRectGetMaxX(borderRect), CGRectGetMaxY(borderRect));
+                        maskPoints[2] = CGPointMake(CGRectGetMaxX(paddingRect), CGRectGetMaxY(paddingRect));
+                        maskPoints[3] = CGPointMake(CGRectGetMinX(paddingRect), CGRectGetMaxY(paddingRect));
+                        CGPathAddLines(maskPath, 0, maskPoints, 4);
+                        CGContextAddPath(_cgContext, maskPath);
+                        CGContextClip(_cgContext);
+                        CGContextSetStrokeColorWithCSSColor(_cgContext, color);
+                        CGPoint linePoints[2] = { 
+                            CGPointMake((maskPoints[0].x + maskPoints[3].x) * 0.5f, (maskPoints[0].y + maskPoints[3].y) * 0.5f),
+                            CGPointMake((maskPoints[1].x + maskPoints[2].x) * 0.5f, (maskPoints[1].y + maskPoints[2].y) * 0.5f),
+                        };    
+                        CGContextStrokeLineSegments(_cgContext, linePoints, 2);
+                        CGPathRelease(maskPath);
+                        CGContextRestoreGState(_cgContext);
+                    }
+                }
+            }
+
+            // Left.
+            {
+                enum css_border_style_e borderStyle;
+                if((borderStyle = css_computed_border_left_style(computedStyle)) != CSS_BORDER_STYLE_NONE) {
+                    if(css_computed_border_left_color(computedStyle, &color) != CSS_BORDER_COLOR_TRANSPARENT) {
+                        CGContextSaveGState(_cgContext);
+                        CGMutablePathRef maskPath = CGPathCreateMutable();
+                        maskPoints[0] = CGPointMake(CGRectGetMinX(borderRect), CGRectGetMaxY(borderRect));
+                        maskPoints[1] = CGPointMake(CGRectGetMinX(borderRect), CGRectGetMinY(borderRect));
+                        maskPoints[2] = CGPointMake(CGRectGetMinX(paddingRect), CGRectGetMinY(paddingRect));
+                        maskPoints[3] = CGPointMake(CGRectGetMinX(paddingRect), CGRectGetMaxY(paddingRect));
+                        CGPathAddLines(maskPath, 0, maskPoints, 4);
+                        CGContextAddPath(_cgContext, maskPath);
+                        CGContextClip(_cgContext);
+                        CGContextSetStrokeColorWithCSSColor(_cgContext, color);
+                        CGPoint linePoints[2] = { 
+                            CGPointMake((maskPoints[0].x + maskPoints[3].x) * 0.5f, (maskPoints[0].y + maskPoints[3].y) * 0.5f),
+                            CGPointMake((maskPoints[1].x + maskPoints[2].x) * 0.5f, (maskPoints[1].y + maskPoints[2].y) * 0.5f),
+                        };    
+                        CGContextStrokeLineSegments(_cgContext, linePoints, 2);
+                        CGPathRelease(maskPath);
+                        CGContextRestoreGState(_cgContext);
+                    }
                 }
             }
         }
@@ -240,9 +242,12 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
         CGContextTranslateCTM(_cgContext, contentRect.origin.x, contentRect.origin.y);
     }
     
-    if(css_computed_color(computedStyle, &color) == CSS_COLOR_COLOR) {
-        CGContextSetFillColorWithCSSColor(_cgContext, color);
-        CGContextSetStrokeColorWithCSSColor(_cgContext, color);
+    if(computedStyle) {
+        css_color color;
+        if(css_computed_color(computedStyle, &color) == CSS_COLOR_COLOR) {
+            CGContextSetFillColorWithCSSColor(_cgContext, color);
+            CGContextSetStrokeColorWithCSSColor(_cgContext, color);
+        }
     }
     for(id subEntity in block.children) {
         [self _render:subEntity];

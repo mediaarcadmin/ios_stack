@@ -7,8 +7,14 @@
 //
 
 #import "EucCSSLayoutSizedBlock.h"
+
 #import "EucCSSInternal.h"
+
 #import "EucCSSIntermediateDocumentNode.h"
+
+#import "EucCSSLayouter.h"
+#import "EucCSSLayoutPositionedContainer.h"
+
 #import <libcss/libcss.h>
 
 @implementation EucCSSLayoutSizedBlock
@@ -103,6 +109,15 @@
     }
 
     return ceilf(ret);// + _widthAddition;
+}
+
+- (EucCSSLayoutPositionedContainer *)positionInContainer:(EucCSSLayoutPositionedContainer *)container
+                                                forFrame:(CGRect)frame
+                                    startingAtWordOffset:(uint32_t)wordOffset 
+                                           elementOffset:(uint32_t)elementOffset
+                                           usingLayouter:(EucCSSLayouter *)layouter
+{
+    return nil;
 }
 
 @end

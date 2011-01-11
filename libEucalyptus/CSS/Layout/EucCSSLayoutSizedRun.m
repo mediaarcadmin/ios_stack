@@ -12,6 +12,7 @@
 #import "EucCSSLayoutRun.h"
 #import "EucCSSLayoutRun_Package.h"
 
+#import "EucCSSLayoutPositionedContainer.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSLayoutPositionedBlock.h"
@@ -419,7 +420,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
 }
 
 - (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
-                                       inContainer:(EucCSSLayoutPositionedBlock *)container
+                                       inContainer:(EucCSSLayoutPositionedContainer *)container
                               startingAtWordOffset:(uint32_t)wordOffset 
                                      elementOffset:(uint32_t)elementOffset
                             usingLayouterForFloats:(EucCSSLayouter *)layouter

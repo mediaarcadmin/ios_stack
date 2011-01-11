@@ -32,8 +32,6 @@ struct css_computed_style;
 @property (nonatomic, retain) EucCSSIntermediateDocumentNode *documentNode;
 @property (nonatomic, assign) CGFloat scaleFactor;
 
-@property (nonatomic, assign, readonly) struct css_computed_style *computedStyle;
-
 @property (nonatomic, assign, readonly) CGRect borderRect;
 @property (nonatomic, assign, readonly) CGRect paddingRect;
 @property (nonatomic, assign, readonly) CGRect contentRect;

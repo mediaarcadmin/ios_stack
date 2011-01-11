@@ -56,11 +56,6 @@
     [super dealloc];
 }
 
-- (css_computed_style *)computedStyle
-{
-    return _documentNode.computedStyle;
-}
-
 - (void)positionInFrame:(CGRect)frame
  afterInternalPageBreak:(BOOL)afterInternalPageBreak
 {

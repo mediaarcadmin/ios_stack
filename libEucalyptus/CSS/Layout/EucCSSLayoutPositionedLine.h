@@ -60,8 +60,6 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
     NSString *altText;
 } EucCSSLayoutPositionedLineRenderItem;
 
-
-
 @interface EucCSSLayoutPositionedLine : EucCSSLayoutPositionedContainer {
     EucCSSLayoutPositionedRun *_positionedRun;
     

@@ -18,7 +18,7 @@
 struct THBreak;
 struct EucCSSLayoutSizedRunBreakInfo;
 
-@class EucCSSLayoutRun;
+@class EucCSSLayoutRun, EucCSSLayoutPositionedContainer;
 
 typedef struct EucCSSLayoutSizedRunHyphenWidths {
     CGFloat widthBeforeHyphen;
@@ -58,7 +58,7 @@ typedef union EucCSSLayoutSizedRunWidthInfo {
 - (EucCSSLayoutSizedRunWidthInfo *)componentWidthInfosForFrame:(CGRect)frame;
 
 - (EucCSSLayoutPositionedRun *)positionRunForFrame:(CGRect)frame
-                                       inContainer:(EucCSSLayoutPositionedBlock *)container
+                                       inContainer:(EucCSSLayoutPositionedContainer *)container
                               startingAtWordOffset:(uint32_t)wordOffset 
                                      elementOffset:(uint32_t)elementOffset
                             usingLayouterForFloats:(EucCSSLayouter *)layouter;
