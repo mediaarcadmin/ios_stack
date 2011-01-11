@@ -16,6 +16,7 @@
 #define MAX_URL_SIZE	1024
 
 //static const NSInteger BlioDrmManagerInitialLicenseCooldownTime = 10;
+static NSString * const BlioDrmFailureAlertType = @"BlioDrmFailureAlertType";
 
 struct BlioDrmSessionManagerDrmIVars; 
 

@@ -9,6 +9,8 @@
 #import <CoreData/CoreData.h>
 #import "BlioProcessing.h"
 
+static NSString * const BlioProcessingReprocessCoverThumbnailNotification = @"BlioProcessingReprocessCoverThumbnailNotification";
+
 @interface BlioProcessingManager : NSObject <BlioProcessingDelegate> {
     NSOperationQueue *preAvailabilityQueue;
     NSOperationQueue *postAvailabilityQueue;

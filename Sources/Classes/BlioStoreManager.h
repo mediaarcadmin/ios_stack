@@ -27,6 +27,8 @@ static NSString * const BlioLoginFinished = @"BlioLoginFinished";
 static NSString * const BlioStoreRetrieveBooksStarted = @"BlioStoreRetrieveBooksStarted";
 static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBooksFinished";
 
+static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFailureAlertType";
+
 @protocol BlioLoginResultReceiver
 
 - (void)receivedLoginResult:(BlioLoginResult)loginResult;
