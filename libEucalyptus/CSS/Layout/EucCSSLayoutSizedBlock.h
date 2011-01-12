@@ -15,13 +15,11 @@
 
 #import "EucCSSLayoutSizedContainer.h"
 
-@class EucCSSIntermediateDocumentNode;
+@class EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock;
 
 @interface EucCSSLayoutSizedBlock : EucCSSLayoutSizedContainer {
     EucCSSIntermediateDocumentNode *_documentNode;
-    NSMutableArray *_children;
-    
-    //CGFloat _widthAddition;
+    CGFloat _widthAddition;
 }
 
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *documentNode;
@@ -29,6 +27,8 @@
 - (id)initWithDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode
                scaleFactor:(CGFloat)scaleFactor;
 
-- (void)addChild:(EucCSSLayoutSizedContainer *)child;
+- (EucCSSLayoutPositionedBlock *)positionBlockForFrame:(CGRect)frame
+                                           inContainer:(EucCSSLayoutPositionedContainer *)container
+                                         usingLayouter:(EucCSSLayouter *)layouter;
 
 @end

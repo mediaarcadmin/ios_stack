@@ -17,6 +17,7 @@
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
 #import "EucCSSLayoutPositionedTable.h"
+#import "EucCSSLayoutPositionedTableCell.h"
 #import "EucCSSRenderer.h"
 #import "THNSStringAdditions.h"
 #import "THStringRenderer.h"
@@ -434,7 +435,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 - (void)_renderPositionedLine:(EucCSSLayoutPositionedLine *)line 
 {
     THLogVerbose(@"Positioned Line: %@", NSStringFromCGRect(line.absoluteFrame));
-    //CGContextStrokeRectWithWidth(_cgContext, line.contentBounds, 0.5);
+    CGContextStrokeRectWithWidth(_cgContext, line.contentBounds, 0.5);
 
     EucCSSLayoutPositionedLineRenderItem *renderItems = line.renderItems;
     size_t renderItemsCount = line.renderItemCount;
@@ -553,9 +554,42 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     THLogVerbose(@"Positioned Line End");
 }
 
+- (void)_renderPositionedTableCell:(EucCSSLayoutPositionedTableCell *)tableCell 
+{
+    CGContextSaveGState(_cgContext);
+    
+    CGRect contentRect = tableCell.contentRect;
+    if(!CGPointEqualToPoint(contentRect.origin, CGPointZero)) {
+        CGContextTranslateCTM(_cgContext, contentRect.origin.x, contentRect.origin.y);
+    }
+    
+    for(EucCSSLayoutPositionedContainer *child in tableCell.children) {
+        [self _render:child];
+    }
+    
+    CGContextRestoreGState(_cgContext);
+}
+
 - (void)_renderPositionedTable:(EucCSSLayoutPositionedTable *)table 
 {
-    CGContextStrokeRectWithWidth(_cgContext, table.contentBounds, 0.5);
+    //CGContextStrokeRectWithWidth(_cgContext, table.contentBounds, 0.5);
+    CGContextSaveGState(_cgContext);
+    
+    CGRect contentRect = table.contentRect;
+    if(!CGPointEqualToPoint(contentRect.origin, CGPointZero)) {
+        CGContextTranslateCTM(_cgContext, contentRect.origin.x, contentRect.origin.y);
+    }
+    
+    for(NSUInteger rowIndex = 0; rowIndex < table.rowCount; ++rowIndex) {
+        for(NSUInteger columnIndex = 0; columnIndex < table.columnCount; ++columnIndex) {
+            EucCSSLayoutPositionedTableCell *cell = [table positionedCellForColumn:columnIndex row:rowIndex];
+            if(cell) {
+                [self _render:cell];
+            }
+        }
+    }
+    
+    CGContextRestoreGState(_cgContext);
 }
 
 @end

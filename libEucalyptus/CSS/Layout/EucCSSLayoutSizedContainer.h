@@ -2,7 +2,7 @@
 //  EucCSSLayoutSizedContainer.h
 //  libEucalyptus
 //
-//  Created by James Montgomerie on 04/01/2011.
+//  Created by James Montgomerie on 11/01/2011.
 //  Copyright 2011 Things Made Out Of Other Things. All rights reserved.
 //
 
@@ -13,22 +13,20 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@interface EucCSSLayoutSizedContainer : NSObject {
-    CGFloat _scaleFactor;
-    EucCSSLayoutSizedContainer *_parent;
+#import <Foundation/Foundation.h>
+
+#import "EucCSSLayoutSizedEntity.h"
+
+@class EucCSSLayoutPositionedContainer, EucCSSLayouter;
+
+@interface EucCSSLayoutSizedContainer : EucCSSLayoutSizedEntity {
+    NSMutableArray *_children;
 }
-
-- (id)initWithScaleFactor:(CGFloat)scaleFactor;
-
-@property (nonatomic, assign, readonly) CGFloat scaleFactor;
-@property (nonatomic, assign) EucCSSLayoutSizedContainer *parent;
-
-// Overridable - defaults are for 0-sized empty object.
-
 
 @property (nonatomic, retain, readonly) NSArray *children;
 
-@property (nonatomic, assign, readonly) CGFloat minWidth;
-@property (nonatomic, assign, readonly) CGFloat maxWidth;
+- (void)addChild:(EucCSSLayoutSizedEntity *)child;
+- (void)positionChildrenInContainer:(EucCSSLayoutPositionedContainer *)container
+                      usingLayouter:(EucCSSLayouter *)layouter;
 
 @end

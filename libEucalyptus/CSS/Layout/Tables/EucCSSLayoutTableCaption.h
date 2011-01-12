@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "EucCSSLayoutTableBox.h"
 
+@class EucCSSLayoutSizedBlock;
+
 @interface EucCSSLayoutTableCaption : EucCSSLayoutTableBox {}
+
+- (EucCSSLayoutSizedBlock *)sizedContentsWithScaleFactor:(CGFloat)scaleFactor;
 
 @end

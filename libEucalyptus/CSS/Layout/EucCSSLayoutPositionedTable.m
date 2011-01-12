@@ -8,41 +8,51 @@
 
 #import "EucCSSLayoutPositionedTable.h"
 
-#import "EucCSSLayoutSizedTable.h"
+#import "EucCSSLayoutPositionedTableCell.h"
 
 @implementation EucCSSLayoutPositionedTable
 
-- (id)initWithSizedTable:(EucCSSLayoutSizedTable *)sizedTable 
+@synthesize rowCount = _rowCount;
+@synthesize columnCount = _columnCount;
+
+- (id)initWithColumnCount:(NSUInteger)columnCount rowCount:(NSUInteger)rowCount
 {
     if((self = [super init])) {
-        _sizedTable = [sizedTable retain];
+        _columnCount = columnCount;
+        _rowCount = rowCount;
+        
+        _cells = malloc(sizeof(EucCSSLayoutPositionedTableCell **) * columnCount);
+        for(NSUInteger i = 0; i < columnCount; ++i) {
+            _cells[i] = calloc(rowCount, sizeof(EucCSSLayoutPositionedTableCell *));
+        }
     }
     return self;
 }
 
+- (void)setPositionedCell:(EucCSSLayoutPositionedTableCell *)cell forColumn:(NSUInteger)columnIndex row:(NSUInteger)rowIndex
+{
+    if(_cells[columnIndex][rowIndex] != cell) {
+        [_cells[columnIndex][rowIndex] release];
+        _cells[columnIndex][rowIndex] = [cell retain];
+    }
+}
+
+- (EucCSSLayoutPositionedTableCell *)positionedCellForColumn:(NSUInteger)columnIndex row:(NSUInteger)rowIndex
+{
+    return _cells[columnIndex][rowIndex];
+}
+
 - (void)dealloc
 {
-    [_sizedTable release];
+    for(NSUInteger i = 0; i < _columnCount; ++i) {
+        for(NSUInteger j = 0; j < _rowCount; ++j) {
+            [_cells[i][j] release];
+        }
+        free(_cells[i]);
+    }
+    free(_cells);
     
     [super dealloc];
 }
-
-- (void)positionInFrame:(CGRect)frame
- afterInternalPageBreak:(BOOL)afterInternalPageBreak
-{
-    if(_sizedTable.maxWidth < frame.size.width) {
-        frame.size.width = _sizedTable.maxWidth;
-    }
-    if(_sizedTable.minWidth > frame.size.width) {
-        frame.size.width = _sizedTable.minWidth;
-    }
-    
-    frame.size.height = 5;
-    
-    // Calculate height properly.
-    // Place horizontally.
-    
-    self.frame = frame;
-}    
 
 @end

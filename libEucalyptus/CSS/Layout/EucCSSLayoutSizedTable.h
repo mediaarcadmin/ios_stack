@@ -13,15 +13,17 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-#import "EucCSSLayoutSizedContainer.h"
+#import "EucCSSLayoutSizedEntity.h"
 
-@class EucCSSLayoutTableWrapper;
+@class EucCSSLayoutTableWrapper, EucCSSLayoutSizedBlock, EucCSSLayoutPositionedContainer, EucCSSLayoutPositionedTable, EucCSSLayouter;
 
-@interface EucCSSLayoutSizedTable: EucCSSLayoutSizedContainer {
+@interface EucCSSLayoutSizedTable: EucCSSLayoutSizedEntity {
     EucCSSLayoutTableWrapper *_tableWrapper;
     
     NSMutableDictionary *_cellMap;
-    CFMutableDictionaryRef _sizedContainers;
+    CFMutableDictionaryRef _sizedCells;
+    
+    EucCSSLayoutSizedBlock *_sizedCaptionBlock;
     
     NSUInteger _columnCount;
     NSUInteger _rowCount;
@@ -31,7 +33,18 @@
     //EucCSSLayoutSizedContainer ***_cellContainers;
 }
 
+@property (nonatomic, assign, readonly) CGFloat cellsMinWidth;
+@property (nonatomic, assign, readonly) CGFloat cellsMaxWidth;
+
+@property (nonatomic, retain, readonly) EucCSSLayoutSizedBlock *sizedCaptionBlock;
+
 - (id)initWithTableWrapper:(EucCSSLayoutTableWrapper *)tableWrapper
                scaleFactor:(CGFloat)scaleFactor;
+
+- (CGFloat)widthInContainingBlockOfWidth:(CGFloat)width;
+
+- (EucCSSLayoutPositionedTable *)positionTableForFrame:(CGRect)frame
+                                           inContainer:(EucCSSLayoutPositionedContainer *)container
+                                         usingLayouter:(EucCSSLayouter *)layouter;
 
 @end

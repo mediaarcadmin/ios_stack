@@ -7,8 +7,13 @@
 //
 
 #import "EucCSSLayoutPositionedContainer.h"
+#import "EucCSSLayoutPositionedBlock.h"
+
+#import "EucCSSIntermediateDocumentNode.h"
 
 #import "THPair.h"
+
+#import <libcss/libcss.h>
 
 @implementation EucCSSLayoutPositionedContainer
 
@@ -117,6 +122,13 @@
     }
     [_children addObject:child];
     child.parent = self;
+    
+    if([child isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
+        EucCSSLayoutPositionedBlock *subBlock = (EucCSSLayoutPositionedBlock *)child;
+        if(css_computed_float(subBlock.documentNode.computedStyle) == CSS_FLOAT_NONE) {
+            [subBlock collapseTopMarginUpwards];
+        }
+    }    
 }    
 
 - (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height
@@ -299,6 +311,11 @@
     child.frame = childFrame;
     
     child.parent = self;
+}
+
+- (void)closeBottomWithContentHeight:(CGFloat)height
+{
+    _frame.size.height = height;
 }
 
 @end

@@ -1,24 +1,30 @@
 //
-//  EucCSSLayoutSizedBlock.m
+//  EucCSSLayoutSizedTableCell.m
 //  libEucalyptus
 //
-//  Created by James Montgomerie on 04/01/2011.
+//  Created by James Montgomerie on 11/01/2011.
 //  Copyright 2011 Things Made Out Of Other Things. All rights reserved.
 //
 
+#import "EucCSSLayoutSizedTableCell.h"
+
+#import "EucCSSLayoutSizedTable.h"
 #import "EucCSSLayoutSizedBlock.h"
+#import "EucCSSLayoutSizedRun.h"
+
 
 #import "EucCSSInternal.h"
 
 #import "EucCSSIntermediateDocumentNode.h"
 
+#import "EucCSSLayoutPositionedTable.h"
+#import "EucCSSLayoutPositionedTableCell.h"
+
 #import "EucCSSLayouter.h"
-#import "EucCSSLayoutPositionedContainer.h"
-#import "EucCSSLayoutPositionedBlock.h"
 
 #import <libcss/libcss.h>
 
-@implementation EucCSSLayoutSizedBlock
+@implementation EucCSSLayoutSizedTableCell
 
 @synthesize documentNode = _documentNode;
 
@@ -33,16 +39,6 @@
             css_fixed fixed = 0;
             css_unit unit = 0;
             
-            css_computed_margin_left(computedStyle, &fixed, &unit);
-            _widthAddition += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, scaleFactor);
-            css_computed_margin_right(computedStyle, &fixed, &unit);
-            _widthAddition += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, scaleFactor);
-
-            css_computed_border_left_width(computedStyle, &fixed, &unit);
-            _widthAddition += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, scaleFactor);
-            css_computed_border_right_width(computedStyle, &fixed, &unit);
-            _widthAddition += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, scaleFactor);
-
             css_computed_padding_left(computedStyle, &fixed, &unit);
             _widthAddition += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, 0, scaleFactor);
             css_computed_padding_right(computedStyle, &fixed, &unit);
@@ -62,6 +58,7 @@
 - (CGFloat)minWidth
 {
     CGFloat ret = [super minWidth];
+    
     if(_documentNode) {
         css_computed_style *style = _documentNode.computedStyle;
         if(style) {
@@ -79,6 +76,7 @@
             }            
         }
     }
+    
     return ret + _widthAddition;
 }
 
@@ -98,21 +96,28 @@
             }
         }
     }
-
+    
     return ret + _widthAddition;
 }
 
-- (EucCSSLayoutPositionedBlock *)positionBlockForFrame:(CGRect)frame
-                                           inContainer:(EucCSSLayoutPositionedContainer *)container
-                                         usingLayouter:(EucCSSLayouter *)layouter
+- (EucCSSLayoutPositionedTableCell *)positionCellForFrame:(CGRect)cellFrame
+                                                  inTable:(EucCSSLayoutPositionedTable *)positionedTable
+                                            atColumnIndex:(NSUInteger)columnIndex
+                                                 rowIndex:(NSUInteger)rowIndex
+                                            usingLayouter:(EucCSSLayouter *)layouter
 {
-    EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:self.documentNode
-                                                                                          scaleFactor:self.scaleFactor];
-    [newBlock positionInFrame:frame afterInternalPageBreak:NO];
+    EucCSSLayoutPositionedTableCell *positionedCell = [[EucCSSLayoutPositionedTableCell alloc] initWithSizedTableCell:self];
+    positionedCell.frame = cellFrame;
     
-    [self positionChildrenInContainer:newBlock usingLayouter:layouter];
+    [self positionChildrenInContainer:positionedCell usingLayouter:layouter];
     
-    return newBlock;
+    [positionedTable setPositionedCell:positionedCell
+                             forColumn:columnIndex
+                                   row:rowIndex];
+    
+    [positionedCell release];
+    
+    return positionedCell;
 }
 
 @end

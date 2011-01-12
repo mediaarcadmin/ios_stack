@@ -14,6 +14,7 @@
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 
 #import "EucCSSLayoutSizedBlock.h"
+#import "EucCSSLayoutSizedTableCell.h"
 #import "EucCSSLayoutPositionedBlock.h"
 
 #import "EucCSSLayoutRun.h"
@@ -265,11 +266,11 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     }
 }
 
-- (EucCSSLayoutSizedBlock *)sizedBlockFromNodeWithKey:(uint32_t)startNodeKey
-                                stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
-                                          scaleFactor:(CGFloat)scaleFactor
+- (EucCSSLayoutSizedContainer *)sizedContainerFromNodeWithKey:(uint32_t)startNodeKey
+                                        stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
+                                                  scaleFactor:(CGFloat)scaleFactor
 {
-    EucCSSLayoutSizedBlock *sizedRoot = nil;
+    EucCSSLayoutSizedContainer *sizedRoot = nil;
 
     EucCSSIntermediateDocumentNode *startNode = [self _layoutNodeForKey:startNodeKey];
     EucCSSIntermediateDocumentNode *currentDocumentNode = startNode;
@@ -277,15 +278,19 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     if(currentDocumentNode) {
         EucCSSIntermediateDocumentNode *stopBeforeNode;
         if(stopBeforeNodeKey) {
-            sizedRoot = [[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:nil scaleFactor:scaleFactor];
+            sizedRoot = [[EucCSSLayoutSizedTableCell alloc] initWithDocumentNode:nil scaleFactor:scaleFactor];
             stopBeforeNode = [self _layoutNodeForKey:stopBeforeNodeKey];
         } else {
-            sizedRoot = [[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:scaleFactor];
+            if(startNode.display == CSS_DISPLAY_TABLE_CELL) {
+                sizedRoot = [[EucCSSLayoutSizedTableCell alloc] initWithDocumentNode:currentDocumentNode scaleFactor:scaleFactor];
+            } else {
+                sizedRoot = [[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:scaleFactor];
+            }
             stopBeforeNode = [startNode.parent displayableNodeAfter:startNode under:nil];
             currentDocumentNode = currentDocumentNode.nextDisplayable;
         }    
 
-        EucCSSLayoutSizedBlock *currentSizedBlock = sizedRoot;
+        EucCSSLayoutSizedContainer *currentSizedContainer = sizedRoot;
         
         BOOL closedLastNode = NO;
         
@@ -303,10 +308,11 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 currentDocumentNodeBlockLevelParent = startNode;
             }
             EucCSSIntermediateDocumentNode *currentPositionedBlockNode;
-            while((currentPositionedBlockNode = currentSizedBlock.documentNode) != nil && 
+            while([currentSizedContainer respondsToSelector:@selector(documentNode)] &&
+                  (currentPositionedBlockNode = ((EucCSSLayoutSizedBlock *)currentSizedContainer).documentNode) != nil && 
                   currentPositionedBlockNode != currentDocumentNodeBlockLevelParent) {
-                currentSizedBlock = (EucCSSLayoutSizedBlock *)currentSizedBlock.parent;
-                if(currentSizedBlock == sizedRoot) {
+                currentSizedContainer = (EucCSSLayoutSizedBlock *)currentSizedContainer.parent;
+                if(currentSizedContainer == sizedRoot) {
                     closedLastNode = YES;
                     break;
                 }
@@ -347,8 +353,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         }
                         EucCSSLayoutSizedBlock *newBlock = [[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:currentDocumentNode 
                                                                                                     scaleFactor:scaleFactor];
-                        [currentSizedBlock addChild:newBlock];
-                        currentSizedBlock = newBlock;
+                        [currentSizedContainer addChild:newBlock];
+                        currentSizedContainer = newBlock;
                         [newBlock release];
                         
                         // First run in a block has the ID of the block it's in.
@@ -373,7 +379,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                                                        layouter:self];
                         EucCSSLayoutSizedTable *sizedTable = [[EucCSSLayoutSizedTable alloc] initWithTableWrapper:tableWrapper
                                                                                                       scaleFactor:scaleFactor];
-                        [currentSizedBlock addChild:sizedTable];
+                        [currentSizedContainer addChild:sizedTable];
                         [sizedTable release];
                         
                         currentDocumentNode = tableWrapper.nextNodeInDocument;
@@ -395,7 +401,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                                    scaleFactor:scaleFactor];
                         
                         if(sizedRun) {
-                            [currentSizedBlock addChild:sizedRun];
+                            [currentSizedContainer addChild:sizedRun];
                         }
                         currentDocumentNode = run.nextNodeInDocument;
                         nextRunNodeKey = currentDocumentNode.key;
@@ -647,17 +653,14 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         EucCSSLayoutTableWrapper *tableWrapper = [[EucCSSLayoutTableWrapper alloc] initWithNode:currentDocumentNode layouter:self];
                         EucCSSLayoutSizedTable *sizedTable = [[EucCSSLayoutSizedTable alloc] initWithTableWrapper:tableWrapper
                                                                                                       scaleFactor:scaleFactor];
-                        EucCSSLayoutPositionedTable *positionedTable = [[EucCSSLayoutPositionedTable alloc] initWithSizedTable:sizedTable];
-                        
-                        
-                        [positionedTable positionInFrame:potentialFrame afterInternalPageBreak:NO];
-                        [currentPositionedBlock addChild:positionedTable];
+                        EucCSSLayoutPositionedTable *positionedTable = [sizedTable positionTableForFrame:potentialFrame
+                                                                                             inContainer:currentPositionedBlock
+                                                                                           usingLayouter:self];
                         
                         currentDocumentNode = tableWrapper.nextNodeInDocument;
                         nextRunNodeKey = currentDocumentNode.key;
                         nextAbsoluteY = CGRectGetMaxY([positionedTable absoluteFrame]);
 
-                        [positionedTable release];
                         [sizedTable release];
                         [tableWrapper release];
                         break;

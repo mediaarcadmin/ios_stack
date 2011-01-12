@@ -16,7 +16,6 @@
 #import <libcss/libcss.h>
 
 @interface EucCSSLayoutPositionedBlock ()
-- (void)_collapseTopMarginUpwards;
 
 @property (nonatomic, assign) CGRect borderRect;
 @property (nonatomic, assign) CGRect paddingRect;
@@ -186,7 +185,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                 _borderRect.origin.y += topMarginDifference;
                 if(oldTopMarginHeight == 0.0f) {
                     // Further collapse the margin upwards, if possible.
-                    [self _collapseTopMarginUpwards];
+                    [self collapseTopMarginUpwards];
                 }            
             }
             frame.size.height = CGRectGetMaxY(_contentRect);
@@ -199,16 +198,9 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
     }
 }
 
-- (void)addChild:(EucCSSLayoutPositionedContainer *)child
+- (void)closeBottomWithContentHeight:(CGFloat)height
 {
-    [super addChild:child];
-
-    if([child isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
-        EucCSSLayoutPositionedBlock *subBlock = (EucCSSLayoutPositionedBlock *)child;
-        if(css_computed_float(subBlock.documentNode.computedStyle) == CSS_FLOAT_NONE) {
-            [subBlock _collapseTopMarginUpwards];
-        }
-    }
+    [self closeBottomWithContentHeight:height atInternalPageBreak:NO];
 }
 
 - (id)_previousSibling
@@ -222,7 +214,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
     return ret;
 }
 
-- (void)_collapseTopMarginUpwards
+- (void)collapseTopMarginUpwards
 {
     //NSParameterAssert(self.children.count == 0);
     if(self.children.count != 0) {

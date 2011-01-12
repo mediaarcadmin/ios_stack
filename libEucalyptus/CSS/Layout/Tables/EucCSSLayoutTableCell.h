@@ -15,7 +15,7 @@
 
 #import "EucCSSLayoutTableBox.h"
 
-@class EucCSSLayoutSizedContainer;
+@class EucCSSLayoutSizedTableCell;
 
 @interface EucCSSLayoutTableCell : EucCSSLayoutTableBox {
     EucCSSIntermediateDocumentNode *_stopBeforeNode;
@@ -24,6 +24,6 @@
 @property (nonatomic, assign, readonly) NSUInteger columnSpan;
 @property (nonatomic, assign, readonly) NSUInteger rowSpan;
 
-- (EucCSSLayoutSizedContainer *)sizedContentsWithScaleFactor:(CGFloat)scaleFactor;
+- (EucCSSLayoutSizedTableCell *)sizedTableCellWithScaleFactor:(CGFloat)scaleFactor;
 
 @end

@@ -13,12 +13,12 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-#import "EucCSSLayoutSizedContainer.h"
+#import "EucCSSLayoutSizedEntity.h"
 
 struct THBreak;
 struct EucCSSLayoutSizedRunBreakInfo;
 
-@class EucCSSLayoutRun, EucCSSLayoutPositionedContainer;
+@class EucCSSLayoutRun, EucCSSLayouter, EucCSSLayoutPositionedContainer, EucCSSLayoutPositionedRun;
 
 typedef struct EucCSSLayoutSizedRunHyphenWidths {
     CGFloat widthBeforeHyphen;
@@ -31,7 +31,7 @@ typedef union EucCSSLayoutSizedRunWidthInfo {
     EucCSSLayoutSizedRunHyphenWidths hyphenWidths;
 } EucCSSLayoutSizedRunWidthInfo;
 
-@interface EucCSSLayoutSizedRun : EucCSSLayoutSizedContainer {
+@interface EucCSSLayoutSizedRun : EucCSSLayoutSizedEntity {
     EucCSSLayoutRun *_run;
     
     CGRect _frame;

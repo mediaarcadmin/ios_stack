@@ -15,15 +15,21 @@
 
 #import "EucCSSLayoutPositionedContainer.h"
 
-@class EucCSSLayoutSizedTable;
+@class EucCSSLayoutPositionedTableCell;
 
 @interface EucCSSLayoutPositionedTable : EucCSSLayoutPositionedContainer {
-    EucCSSLayoutSizedTable *_sizedTable;
+    NSUInteger _columnCount;
+    NSUInteger _rowCount;
+    
+    EucCSSLayoutPositionedTableCell ***_cells;
 }
 
-- (id)initWithSizedTable:(EucCSSLayoutSizedTable *)sizedTable;
-    
-- (void)positionInFrame:(CGRect)frame
- afterInternalPageBreak:(BOOL)afterInternalPageBreak;
+@property (nonatomic, assign, readonly) NSUInteger rowCount;
+@property (nonatomic, assign, readonly) NSUInteger columnCount;
+
+- (id)initWithColumnCount:(NSUInteger)columnCount rowCount:(NSUInteger)rowCount;
+
+- (void)setPositionedCell:(EucCSSLayoutPositionedTableCell *)cell forColumn:(NSUInteger)columnIndex row:(NSUInteger)rowIndex;
+- (EucCSSLayoutPositionedTableCell *)positionedCellForColumn:(NSUInteger)columnIndex row:(NSUInteger)rowIndex;
 
 @end

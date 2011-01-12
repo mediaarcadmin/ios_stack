@@ -12,8 +12,7 @@
 #import "EucCSSIntermediateDocumentNode.h"
 
 #import "EucCSSLayouter.h"
-#import "EucCSSLayoutSizedBlock.h"
-#import "EucCSSLayoutSizedContainer.h"
+#import "EucCSSLayoutSizedTableCell.h"
 
 #import <libcss/libcss.h>
 
@@ -65,11 +64,13 @@
     return ret;
 }
 
-- (EucCSSLayoutSizedContainer *)sizedContentsWithScaleFactor:(CGFloat)scaleFactor
+- (EucCSSLayoutSizedTableCell *)sizedTableCellWithScaleFactor:(CGFloat)scaleFactor
 {
-    return [_wrapper.layouter sizedBlockFromNodeWithKey:self.documentNode.key
-                                  stopBeforeNodeWithKey:_stopBeforeNode.key
-                                            scaleFactor:scaleFactor];
+    EucCSSLayoutSizedContainer *container = [_wrapper.layouter sizedContainerFromNodeWithKey:self.documentNode.key
+                                                                       stopBeforeNodeWithKey:_stopBeforeNode.key
+                                                                                 scaleFactor:scaleFactor];
+    NSParameterAssert([container isKindOfClass:[EucCSSLayoutSizedTableCell class]]);
+    return (EucCSSLayoutSizedTableCell *)container;
 }
 
 - (BOOL)documentNodeIsRepresentative

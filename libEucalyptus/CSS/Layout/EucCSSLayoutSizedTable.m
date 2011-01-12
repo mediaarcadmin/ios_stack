@@ -7,8 +7,11 @@
 //
 
 #import "EucCSSLayoutSizedTable.h"
+#import "EucCSSLayoutSizedTableCell.h"
+#import "EucCSSLayoutSizedBlock.h"
 
 #import "EucCSSLayoutTableWrapper.h"
+#import "EucCSSLayoutTableCaption.h"
 #import "EucCSSLayoutTableTable.h"
 #import "EucCSSLayoutTableColumnGroup.h"
 #import "EucCSSLayoutTableColumn.h"
@@ -16,7 +19,17 @@
 #import "EucCSSLayoutTableRow.h"
 #import "EucCSSLayoutTableCell.h"
 
+#import "EucCSSLayoutPositionedTable.h"
+#import "EucCSSLayoutPositionedTableCell.h"
+
+#import "EucCSSIntermediateDocumentNode.h"
+
+#import "EucCSSInternal.h"
+
+#import "THPair.h"
 #import "THLog.h"
+
+#import <libcss/libcss.h>
 
 @implementation EucCSSLayoutSizedTable
 
@@ -41,7 +54,7 @@
         _tableWrapper = [tableWrapper retain];
         
         _cellMap = [[NSMutableDictionary alloc] init];
-        _sizedContainers = CFDictionaryCreateMutable(kCFAllocatorDefault,
+        _sizedCells = CFDictionaryCreateMutable(kCFAllocatorDefault,
                                                      0,
                                                      &kCFTypeDictionaryKeyCallBacks,
                                                      &kCFTypeDictionaryValueCallBacks);
@@ -53,8 +66,8 @@
                 NSUInteger cellCount = 0;
                 NSMutableDictionary *rowCells = [self _cellsForRow:rowCount];
                 for(EucCSSLayoutTableCell *cell in row.cells) {
-                    EucCSSLayoutSizedContainer *sizedCellContents = [cell sizedContentsWithScaleFactor:scaleFactor];
-                    CFDictionarySetValue(_sizedContainers, cell, sizedCellContents);
+                    EucCSSLayoutSizedTableCell *sizedCell = [cell sizedTableCellWithScaleFactor:scaleFactor];
+                    CFDictionarySetValue(_sizedCells, cell, sizedCell);
                     
                     NSUInteger columnSpan = cell.columnSpan;
                     NSUInteger rowSpan = cell.rowSpan;
@@ -165,7 +178,7 @@
                 EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowNumber] objectForKey:columnNumber];
                 NSUInteger columnSpan = cell.columnSpan;
                 if(columnSpan == 1) {
-                    EucCSSLayoutSizedContainer *sizedCellContents = (EucCSSLayoutSizedContainer *)CFDictionaryGetValue(_sizedContainers, cell);
+                    EucCSSLayoutSizedEntity *sizedCellContents = (EucCSSLayoutSizedEntity *)CFDictionaryGetValue(_sizedCells, cell);
                     CGFloat minWidth = sizedCellContents.minWidth;
                     if(minWidth > _columnMinWidths[columnIndex]) {
                         _columnMinWidths[columnIndex] = minWidth;
@@ -200,7 +213,7 @@
                         spannedMin += _columnMinWidths[columnIndex + i];
                         spannedMax += _columnMaxWidths[columnIndex + i];
                     }
-                    EucCSSLayoutSizedContainer *sizedCellContents = (EucCSSLayoutSizedContainer *)CFDictionaryGetValue(_sizedContainers, cell);
+                    EucCSSLayoutSizedEntity *sizedCellContents = (EucCSSLayoutSizedEntity *)CFDictionaryGetValue(_sizedCells, cell);
                     CGFloat minWidth = sizedCellContents.minWidth;
                     {
                         CGFloat remainingMinSpannedWidth = minWidth - spannedMin;
@@ -265,7 +278,7 @@
 }
 
 // TODO: take into account margins etc.
-- (CGFloat)minWidth
+- (CGFloat)cellsMinWidth
 {
     CGFloat ret = 0.0f;
     for(NSUInteger i = 0; i < _columnCount; ++i) {
@@ -274,7 +287,22 @@
     return ret;
 }
 
-- (CGFloat)maxWidth
+- (CGFloat)minWidth
+{
+    CGFloat cellsMin = self.cellsMinWidth;
+    
+    EucCSSLayoutSizedBlock *sizedCaptionBlock = self.sizedCaptionBlock;
+    CGFloat capMin;
+    if(sizedCaptionBlock) {
+        capMin = [sizedCaptionBlock minWidth];
+    } else {
+        capMin = 0.0f;
+    }
+    
+    return MAX(cellsMin, capMin);
+}
+
+- (CGFloat)cellsMaxWidth
 {
     CGFloat ret = 0.0f;
     for(NSUInteger i = 0; i < _columnCount; ++i) {
@@ -283,10 +311,210 @@
     return ret;
 }
 
+- (CGFloat)maxWidth
+{
+    CGFloat cellsMax = self.cellsMaxWidth;
+    
+    EucCSSLayoutSizedBlock *sizedCaptionBlock = self.sizedCaptionBlock;
+    CGFloat capMax;
+    if(sizedCaptionBlock) {
+        capMax = [sizedCaptionBlock maxWidth];
+    } else {
+        capMax = 0.0f;
+    }
+    
+    return MAX(cellsMax, capMax);
+}
+
+- (EucCSSLayoutSizedBlock *)sizedCaptionBlock
+{
+    if(!_sizedCaptionBlock) {
+        EucCSSLayoutTableCaption *caption = _tableWrapper.caption;
+        if(caption) {
+            _sizedCaptionBlock = [caption sizedContentsWithScaleFactor:_scaleFactor];
+        }
+    }
+    return _sizedCaptionBlock;
+}
+
+- (CGFloat)widthInContainingBlockOfWidth:(CGFloat)width
+{    
+    CGFloat tableWidth = 0.0f;
+        
+    EucCSSLayoutTableTable *table = _tableWrapper.table;
+
+    enum css_width_e widthKind;
+    if(table.documentNodeIsRepresentative) {
+        css_fixed tableWidthFixed = 0;
+        css_unit tableWidthUnit = 0;
+        css_computed_style *style = table.documentNode.computedStyle;
+        widthKind = (enum css_width_e)css_computed_width(style, &tableWidthFixed, &tableWidthUnit);
+        if(widthKind == CSS_WIDTH_SET) {
+            tableWidth = EucCSSLibCSSSizeToPixels(style, tableWidthFixed, tableWidthUnit, width, _scaleFactor);
+        } else {
+            if(widthKind != CSS_WIDTH_AUTO) {
+                THWarn(@"Unexpected width kind %ld for table", (long)widthKind);
+            }
+            widthKind = CSS_WIDTH_AUTO;
+        }
+    } else {
+        widthKind = CSS_WIDTH_AUTO;
+    }
+
+    if(widthKind == CSS_WIDTH_AUTO) {
+        CGFloat capMin = self.sizedCaptionBlock.minWidth;
+        CGFloat cellMin = self.cellsMinWidth;
+        tableWidth = MAX(capMin, cellMin);
+        tableWidth = MAX(tableWidth, width);
+    } else {
+        // tableWidth currently holds the computed specified value.
+        CGFloat capMin = self.sizedCaptionBlock.minWidth;
+        CGFloat cellMin = self.cellsMinWidth;
+        tableWidth = MAX(tableWidth, width);
+        tableWidth = MAX(tableWidth, capMin);
+        tableWidth = MAX(tableWidth, cellMin);
+    }
+    
+    return tableWidth;
+}
+
+- (EucCSSLayoutPositionedTable *)positionTableForFrame:(CGRect)frame
+                                           inContainer:(EucCSSLayoutPositionedContainer *)container
+                                         usingLayouter:(EucCSSLayouter *)layouter
+{
+    EucCSSLayoutPositionedTable *positionedTable = [[EucCSSLayoutPositionedTable alloc] initWithColumnCount:_columnCount
+                                                                                                   rowCount:_rowCount];
+
+    CGFloat width = [self widthInContainingBlockOfWidth:frame.size.width];
+    
+    positionedTable.frame = frame;
+    
+    CGFloat *columnWidths = calloc(_columnCount, sizeof(CGFloat));
+    CGFloat cellsMinWidth = self.cellsMinWidth;
+    
+    CGFloat accumulatedColumnWidth = 0;
+    for(NSUInteger i = 0; i < _columnCount; ++i) {
+        CGFloat colWidth = (_columnMinWidths[i] / cellsMinWidth) * width;
+        colWidth = MIN(colWidth, _columnMaxWidths[i]);
+        colWidth = floorf(colWidth);
+        columnWidths[i] = colWidth;
+        accumulatedColumnWidth += colWidth;
+    }
+    
+    if(_columnCount) {
+        CGFloat notAccountedForWidth = width - accumulatedColumnWidth;
+        BOOL allAtMax = NO;
+        while(notAccountedForWidth > 0) {
+            BOOL foundNonMax = NO;
+            for(NSUInteger i = 0; notAccountedForWidth > 0 && i < _columnCount; ++i) {
+                if(allAtMax || columnWidths[i] < _columnMaxWidths[i]) {
+                    ++columnWidths[i];
+                    --notAccountedForWidth;
+                    foundNonMax = YES;
+                }
+            }
+            allAtMax = !foundNonMax;
+        }
+    }
+    
+    NSMutableArray *currentRowSpanningCells = [[NSMutableArray alloc] init];
+    CFMutableSetRef placedCells = CFSetCreateMutable(kCFAllocatorDefault,
+                                                     _rowCount * _columnCount,
+                                                     &kCFTypeSetCallBacks);
+    CFMutableSetRef rowPositionedCells = CFSetCreateMutable(kCFAllocatorDefault,
+                                                            _columnCount,
+                                                            &kCFTypeSetCallBacks);
+    
+    CGRect cellFrame = frame;
+
+    for(NSUInteger rowIndex = 0; rowIndex < _rowCount; ++rowIndex) {
+        NSNumber *rowIndexNumber = [[NSNumber alloc] initWithUnsignedInteger:rowIndex];
+        
+        // Place all the cells for this row.
+        CGFloat rowHeight = 0.0f;
+        for(NSUInteger columnIndex = 0; columnIndex < _columnCount;) {
+            NSNumber *columnIndexNumber = [[NSNumber alloc] initWithUnsignedInteger:columnIndex];
+            EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowIndexNumber] objectForKey:columnIndexNumber];
+            NSUInteger columnSpan = cell.columnSpan;
+            if(!CFSetContainsValue(placedCells, cell)) {
+                EucCSSLayoutSizedTableCell *sizedCell = (EucCSSLayoutSizedTableCell *)CFDictionaryGetValue(_sizedCells, cell);
+                                
+                cellFrame.size.width = columnWidths[columnIndex];
+                
+                EucCSSLayoutPositionedTableCell *positionedCell = [sizedCell positionCellForFrame:cellFrame
+                                                                                          inTable:positionedTable
+                                                                                    atColumnIndex:columnIndex
+                                                                                         rowIndex:rowIndex
+                                                                                    usingLayouter:layouter];
+                CGFloat cellHeight = positionedCell.frame.size.height;
+                if(cellHeight > rowHeight) {
+                    rowHeight = cellHeight;
+                }
+                
+                NSUInteger rowSpan = cell.rowSpan;
+                if(rowSpan > 1) {
+                    [currentRowSpanningCells addPairWithFirst:positionedCell 
+                                                       second:[NSNumber numberWithUnsignedInteger:rowIndex + rowSpan - 1]];
+                }
+                
+                CFSetAddValue(placedCells, cell);
+                CFSetAddValue(rowPositionedCells, positionedCell);
+                cellFrame.origin.x += cellFrame.size.width;
+            }
+            columnIndex += columnSpan;
+            
+            [columnIndexNumber release];
+        }
+        
+        // TODO: Align the tops.
+        // for(EucCSSLayoutPositionedTableCell cell in 
+        
+        // Do we have any spanned cells ending in this row?
+        for(THPair *columnAndEndRowIndex in currentRowSpanningCells) {
+            NSUInteger endRowIndex = [columnAndEndRowIndex.second unsignedIntegerValue];
+            if(endRowIndex == rowIndex) {
+                EucCSSLayoutPositionedTableCell *positionedCell = columnAndEndRowIndex.first;
+                // TODO: take into account vertical alignment = middle and bottom.
+                CGFloat needsExtra = (cellFrame.origin.y + rowHeight) - CGRectGetMaxY(positionedCell.frame);
+                if(needsExtra > 0) {
+                    [positionedCell setExtraPaddingBottom:needsExtra]; 
+                } else {
+                    rowHeight += needsExtra;
+                }
+            }
+        }        
+        
+        // Pad the heights to make equal.
+        for(EucCSSLayoutPositionedTableCell *positionedCell in (NSSet *)rowPositionedCells) {
+            // TODO: take into account vertical alignment = middle and bottom.
+            CGFloat needsExtra = (cellFrame.origin.y + rowHeight) - CGRectGetMaxY(positionedCell.frame);
+            [positionedCell setExtraPaddingBottom:needsExtra]; 
+        }
+        
+        cellFrame.origin.x = frame.origin.x;
+        cellFrame.origin.y += rowHeight;
+
+        CFSetRemoveAllValues(rowPositionedCells);
+        
+        [rowIndexNumber release];
+    }
+    
+    [currentRowSpanningCells release];
+    CFRelease(rowPositionedCells);
+    CFRelease(placedCells);
+    free(columnWidths);
+    
+    [positionedTable closeBottomWithContentHeight:cellFrame.origin.y];
+    
+    [container addChild:positionedTable];
+    
+    return [positionedTable autorelease];
+}
+
 - (void)dealloc
 {
-    if(_sizedContainers) {
-        CFRelease(_sizedContainers);
+    if(_sizedCells) {
+        CFRelease(_sizedCells);
     }
     free(_columnMinWidths);
     free(_columnMaxWidths);

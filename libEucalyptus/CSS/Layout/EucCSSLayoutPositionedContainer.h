@@ -52,6 +52,8 @@
                onLeft:(BOOL)onLeft;
 - (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height;
 
+- (void)closeBottomWithContentHeight:(CGFloat)height;
+
 @property (nonatomic, assign, readonly) CGFloat minimumWidth; // Just returns the current width.
 - (void)sizeToFitInWidth:(CGFloat)width;                      // Default behaviour does nothing.
 - (void)shrinkToFit;

@@ -19,7 +19,7 @@
 
 #import "EucCSSLayoutRun.h"
 
-@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutSizedBlock, EucCSSLayoutPositionedBlock;
+@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutSizedContainer, EucCSSLayoutPositionedBlock;
 
 typedef struct EucCSSLayoutPoint
 {
@@ -36,9 +36,9 @@ typedef struct EucCSSLayoutPoint
 
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document;
 
-- (EucCSSLayoutSizedBlock *)sizedBlockFromNodeWithKey:(uint32_t)nodeKey
-                                stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
-                                          scaleFactor:(CGFloat)scaleFactor;
+- (EucCSSLayoutSizedContainer *)sizedContainerFromNodeWithKey:(uint32_t)startNodeKey
+                                        stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
+                                                  scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                          inFrame:(CGRect)frame
