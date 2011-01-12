@@ -10,6 +10,10 @@
 #import "BlioProcessing.h"
 
 static NSString * const BlioProcessingReprocessCoverThumbnailNotification = @"BlioProcessingReprocessCoverThumbnailNotification";
+static NSString * const BlioProcessingLicenseAcquisitionTokenRequiredNotification = @"BlioProcessingLicenseAcquisitionTokenRequiredNotification";
+static NSString * const BlioProcessingDownloadPaidBookTokenRequiredNotification = @"BlioProcessingDownloadPaidBookTokenRequiredNotification";
+static NSString * const BlioProcessingDownloadPaidBookNonMatchingUserNotification = @"BlioProcessingDownloadPaidBookNonMatchingUserNotification";
+static NSString * const BlioProcessingLicenseAcquisitionNonMatchingUserNotification = @"BlioProcessingLicenseAcquisitionNonMatchingUserNotification";
 
 @interface BlioProcessingManager : NSObject <BlioProcessingDelegate> {
     NSOperationQueue *preAvailabilityQueue;

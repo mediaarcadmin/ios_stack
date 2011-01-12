@@ -17,7 +17,7 @@
 
 @implementation BlioStoreManager
 
-@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews,currentStoreHelper;
+@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews,currentStoreHelper,initialLoginCheckFinished;
 @synthesize processingDelegate = _processingDelegate;
 
 +(BlioStoreManager*)sharedInstance
@@ -35,6 +35,7 @@
 		self.storeHelpers = [NSMutableDictionary dictionaryWithCapacity:1];
 		self.deviceRegistrationPromptAlertViews = [NSMutableDictionary dictionaryWithCapacity:1];
 		[self addStoreHelper:[[[BlioOnlineStoreHelper alloc] init] autorelease]];
+		initialLoginCheckFinished = NO;
 	}
 	return self;
 }
@@ -190,7 +191,6 @@
 	return nil;
 }
 -(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {	
-//	[[UIApplication sharedApplication] beginIgnoringInteractionEvents];
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginWithUsername:user password:password];
 }
 -(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID {
@@ -198,7 +198,7 @@
 }
 -(void)storeHelper:(BlioStoreHelper*)storeHelper receivedLoginResult:(NSInteger)loginResult {
 	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
-//	[[UIApplication sharedApplication] endIgnoringInteractionEvents];
+	initialLoginCheckFinished = YES;
 	if (loginResult == BlioLoginResultInvalidPassword && isShowingLoginView == NO) {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
 	}

@@ -61,6 +61,7 @@ static NSString * const BlioManifestEPubKey = @"BlioManifestEPubKey";
 static NSString * const BlioManifestPDFKey = @"BlioManifestPDFKey";
 static NSString * const BlioManifestTextFlowKey = @"BlioManifestTextFlowKey";
 static NSString * const BlioManifestXPSKey = @"BlioManifestXPSKey";
+static NSString * const BlioManifestLicenseAcquisitionCompleteKey = @"BlioManifestLicenseAcquisitionCompleteKey";
 static NSString * const BlioManifestCoverKey = @"CoverImage";
 static NSString * const BlioManifestThumbnailDirectoryKey = @"BlioManifestThumbnailDirectoryKey";
 static NSString * const BlioManifestRightsKey = @"BlioManifestRightsKey";
