@@ -14,10 +14,12 @@
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/EucChapterNameFormatting.h>
 #import "NSArray+BlioAdditions.h"
+#import "BlioLayoutHyperlink.h"
 
 @interface BlioLayoutPDFDataSource()
 
 @property (nonatomic, retain) NSArray *tableOfContents;
+@property (nonatomic, retain) NSDictionary *namesDictionary;
 
 @end
 
@@ -25,6 +27,7 @@
 
 @synthesize data;
 @synthesize tableOfContents; // Lazily loaded - see -(NSArray *)tableOfContents
+@synthesize namesDictionary; // Lazily loaded - see -(NSDictionary *)namesDictionary
 
 - (void)dealloc {
     [pdfLock lock];
@@ -32,6 +35,10 @@
     self.data = nil;
     [pdfLock unlock];
     [pdfLock release];
+	
+	[tableOfContents release], tableOfContents = nil;
+	[namesDictionary release], namesDictionary = nil;
+	
     [super dealloc];
 }
 
@@ -98,11 +105,6 @@
     
     return mediaRect;
 }
-
-- (CGFloat)dpiRatio {
-    return 72/96.0f;
-}
-
 
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect
@@ -197,10 +199,6 @@
     return nil;
 }
 
-- (NSArray *)hyperlinksForPage:(NSInteger)page {
-    return nil;
-}
-
 - (void)closeDocument {
     [pdfLock lock];
     if (pdf) CGPDFDocumentRelease(pdf);
@@ -246,11 +244,11 @@ static NSInteger pageNumberFromPageDictionary(CGPDFDictionaryRef target) {
 		}
 		target = parent;
 	}
+
 	return pageNumber + 1;
 }
 
 static NSInteger pageNumberFromDestArray(CGPDFArrayRef array) {
-	
 	CGPDFDictionaryRef page;
 	if (CGPDFArrayGetDictionary(array, 0, &page)) {		
 		return pageNumberFromPageDictionary(page);
@@ -259,30 +257,269 @@ static NSInteger pageNumberFromDestArray(CGPDFArrayRef array) {
 	return -1;
 }
 
-static NSInteger pageNumberFromAction(CGPDFDictionaryRef action) {
+static NSInteger pageNumberFromDestinationString(NSString *dest, void *context) {	
+	
+	NSDictionary *names = (NSDictionary *)context;
+	
+	id match = nil;
+	
+	if (dest) {
+		match = [names objectForKey:dest];
+	}
+	
+	if (match) {
+		return [match integerValue];
+	} else {
+		return -1;
+	}
+}
+
+static NSInteger pageNumberFromAction(CGPDFDictionaryRef action, void *context) {
 	const char *name;
 	CGPDFArrayRef dest;
 	
+	CGPDFStringRef string;
+	NSString *destString = nil;
+		
 	if (CGPDFDictionaryGetName(action, "S", &name)) {
 		if (strcmp(name, "GoTo") == 0) {
 			if (CGPDFDictionaryGetArray(action, "D", &dest)) {
 				return pageNumberFromDestArray(dest);
+			} else if (CGPDFDictionaryGetString(action, "D", &string)) {
+				destString = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
+				return pageNumberFromDestinationString(destString, context);
 			}
+		} else if (strcmp(name, "URI") == 0) {
+			// Do nothing as we don't yet support URI actions
+			//if (CGPDFDictionaryGetString(action, "URI", &string)) {
+//				destString = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
+//				NSLog(@"Skipping Link annotation with URI %@", destString);
+//			}
 		}
 	}
 	
 	return -1;
 }
 
+/*
+void dictionaryInfoFunction ( const char *key,CGPDFObjectRef object, void *info ) { 
+	NSLog(@"Processing Dictionary Info");
+	
+	NSString *keyStr = [NSString stringWithCString:key encoding:NSUTF8StringEncoding];
+	CGPDFDictionaryRef contentDict = (CGPDFDictionaryRef)info;
+	
+	CGPDFObjectType objectType = CGPDFObjectGetType(object);
+	if(objectType == kCGPDFObjectTypeDictionary)
+	{
+		CGPDFDictionaryRef value  = NULL;
+		CGPDFDictionaryGetDictionary(contentDict, key, &value);
+		NSLog(@"Value for key %@ is dictionary of size %d",keyStr,CGPDFDictionaryGetCount(value));
+		CGPDFDictionaryApplyFunction(value, dictionaryInfoFunction, value);
+	}
+	else if(objectType == kCGPDFObjectTypeArray)
+	{
+		CGPDFArrayRef value  = NULL;
+		CGPDFDictionaryGetArray(contentDict, key, &value);
+		NSLog(@"Value for key %@ is array of size %d",keyStr,CGPDFArrayGetCount(value));
+	}
+	else if(objectType == kCGPDFObjectTypeStream)
+	{
+		CGPDFStreamRef value  = NULL;
+		CGPDFDictionaryGetStream(contentDict, key, &value);
+		NSLog(@"Processing for key %@ is stream",keyStr);
+		CGPDFDataFormat dataFormat;
+		CFDataRef streamData = CGPDFStreamCopyData(value, &dataFormat);
+		CFShow(streamData);
+		NSString *contentString = [[NSString alloc]initWithBytes:[(NSData*)streamData bytes] length:[(NSData*)streamData length] encoding:NSUTF8StringEncoding];
+		NSLog(@"%@",contentString);
+		
+	}
+	else if(objectType == kCGPDFObjectTypeInteger)
+	{
+		CGPDFInteger integerValue;
+		CGPDFDictionaryGetInteger(contentDict, key, &integerValue);
+		NSLog(@"Processing for Key %@ is int value %d",keyStr,integerValue);
+		
+	}
+	else if(objectType == kCGPDFObjectTypeName)
+	{
+		const char *name;
+		CGPDFDictionaryGetName(contentDict, key, &name);
+		NSLog(@"Processing for key %@ name value %@",keyStr,[NSString stringWithCString:name encoding:NSUTF8StringEncoding]);
+	}
+	else if(objectType == kCGPDFObjectTypeString)
+	{
+		CGPDFStringRef string;
+		NSString *title = nil;
+		
+		CGPDFDictionaryGetString(contentDict, key, &string);
+		title = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
+		NSLog(@"Processing for key %@ string value %@",keyStr,title);
+	}
+}
+
+void arrayInfoFunction ( size_t index,CGPDFObjectRef object, void *info ) { 
+	NSLog(@"Processing Array Info");
+	
+	NSString *keyStr = [NSString stringWithFormat:@"%d", index];
+	CGPDFArrayRef contentArray = (CGPDFArrayRef)info;
+	
+	CGPDFObjectType objectType = CGPDFObjectGetType(object);
+	if(objectType == kCGPDFObjectTypeDictionary)
+	{
+		CGPDFDictionaryRef value  = NULL;
+		CGPDFArrayGetDictionary(contentArray, index, &value);
+		NSLog(@"Value for array entry %@ is dictionary of size %d",keyStr,CGPDFDictionaryGetCount(value));
+		CGPDFDictionaryApplyFunction(value, dictionaryInfoFunction, value);
+	}
+	else if(objectType == kCGPDFObjectTypeArray)
+	{
+		CGPDFArrayRef value  = NULL;
+		CGPDFArrayGetArray(contentArray, index, &value);
+		NSLog(@"Value for array entry %@ is array of size %d",keyStr,CGPDFArrayGetCount(value));
+	}
+	else if(objectType == kCGPDFObjectTypeStream)
+	{
+		CGPDFStreamRef value  = NULL;
+		CGPDFArrayGetStream(contentArray, index, &value);
+		NSLog(@"Processing for array entry %@ is stream ",keyStr);
+		CGPDFDataFormat dataFormat;
+		CFDataRef streamData = CGPDFStreamCopyData(value, &dataFormat);
+		CFShow(streamData);
+		NSString *contentString = [[NSString alloc]initWithBytes:[(NSData*)streamData bytes] length:[(NSData*)streamData length] encoding:NSUTF8StringEncoding];
+		NSLog(@"%@",contentString);
+		
+	}
+	else if(objectType == kCGPDFObjectTypeInteger)
+	{
+		CGPDFInteger integerValue;
+		CGPDFArrayGetInteger(contentArray, index, &integerValue);
+		NSLog(@"Processing for array entry %@ is int value %d",keyStr,integerValue);
+		
+	}
+	else if(objectType == kCGPDFObjectTypeName)
+	{
+		const char *name;
+		CGPDFArrayGetName(contentArray, index, &name);
+		NSLog(@"Processing for array entry %@ is name value %@",keyStr,[NSString stringWithCString:name encoding:NSUTF8StringEncoding]);
+	}
+	else if(objectType == kCGPDFObjectTypeString)
+	{
+		CGPDFStringRef string;
+		NSString *title = nil;
+		
+		CGPDFArrayGetString(contentArray, index, &string);
+		title = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
+		NSLog(@"Processing for array entry %@ is string value %@",keyStr,title);
+	}
+}
+*/
+
+static void parse_names_array(CGPDFArrayRef names, void* context) {
+	NSMutableDictionary *namesDict = (NSMutableDictionary *)context;
+	
+	size_t numNames = CGPDFArrayGetCount(names);
+	size_t nameNum;
+
+	NSInteger pageNum = -1;
+	NSString *nameString = nil;
+	
+	for (nameNum = 0; nameNum < numNames; ++nameNum) {
+		CGPDFObjectRef arrayObj;
+		if (CGPDFArrayGetObject(names, nameNum, &arrayObj)) {
+			//arrayInfoFunction(nameNum, arrayObj, names);
+			
+			CGPDFObjectType objectType = CGPDFObjectGetType(arrayObj);
+			if(objectType == kCGPDFObjectTypeString)
+			{
+				CGPDFStringRef string;
+				CGPDFArrayGetString(names, nameNum, &string);
+				nameString = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
+			}
+			else if (objectType == kCGPDFObjectTypeDictionary)
+			{
+				CGPDFDictionaryRef dict;
+				CGPDFArrayRef dest;
+				
+				CGPDFArrayGetDictionary(names, nameNum, &dict);
+				if (CGPDFDictionaryGetArray(dict, "D", &dest)) {
+					pageNum = pageNumberFromDestArray(dest);
+				}
+				else 
+				{
+					// Could be a GoTo action according to 8.2.1 of PDF 1.7 spec
+					//NSLog(@"Unhandled names array dictionary type");
+				}
+
+			}
+			else if (objectType == kCGPDFObjectTypeArray)
+			{
+				CGPDFArrayRef dest;
+				if (CGPDFArrayGetArray(names, nameNum, &dest)) {
+					pageNum = pageNumberFromDestArray(dest);
+				}
+				
+
+			}
+			else 
+			{
+				//NSLog(@"Unhandled names array object");
+			}
+					
+			if ((pageNum > -1) && (nameString != nil)) {
+				//NSLog(@"Adding page %d destination named %@", pageNum, nameString);
+				[namesDict setObject:[NSNumber numberWithInt:pageNum] forKey:nameString];
+				pageNum = -1;
+				nameString = nil;
+			}
+		}
+	}
+
+	
+}
+
+static void
+parse_names_node(CGPDFDictionaryRef node, void* context)
+{
+	
+    if (node == NULL) {
+		return;
+	}
+	
+	//CGPDFDictionaryApplyFunction(node, dictionaryInfoFunction, node);
+	
+	CGPDFArrayRef kids, names;
+	CGPDFDictionaryRef dests;
+	
+		if (CGPDFDictionaryGetArray(node, "Kids", &kids)) {
+			size_t numKids = CGPDFArrayGetCount(kids);
+			size_t kidNum;
+			for (kidNum = 0; kidNum < numKids; ++kidNum) {
+				CGPDFDictionaryRef kid;
+				if (CGPDFArrayGetDictionary(kids, kidNum, &kid))
+				{
+					parse_names_node(kid, context);
+				}
+			}
+		} else if (CGPDFDictionaryGetArray(node, "Names", &names)) {
+			parse_names_array(names, context);
+		} else if (CGPDFDictionaryGetDictionary(node, "Dests", &dests)) {
+			parse_names_node(dests, context);
+		}
+
+}
+
 static void
 parse_outline_items(int indent, CGPDFDocumentRef document,
-					CGPDFDictionaryRef outline, void* context)
+					CGPDFDictionaryRef outline, void* context, void* names)
 {
     bool isOpen;
 
     CGPDFStringRef string;
+	CGPDFArrayRef destArray;
+	const char *destName;
+	NSString *destString = nil;
     CGPDFDictionaryRef first, action;
-	CGPDFArrayRef dest;
     CGPDFInteger count;
     NSString *title = nil;
 	
@@ -291,18 +528,26 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
     if (document == NULL || outline == NULL)
 		return;
 	
+	
 	NSMutableArray *toc = (NSMutableArray *)context;
+	NSDictionary *namesDict = (NSDictionary *)names;
 	
     do {
 		title = NULL;
 		if (CGPDFDictionaryGetString(outline, "Title", &string)) {
-			title = (NSString *)CGPDFStringCopyTextString(string);
+			title = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
 		}
-		
+				
 		if (CGPDFDictionaryGetDictionary(outline, "A", &action)) {
-			num = pageNumberFromAction(action);
-		} else if (CGPDFDictionaryGetArray(outline, "Dest", &dest)) {
-			num = pageNumberFromDestArray(dest);
+			num = pageNumberFromAction(action, namesDict);
+		}  else if (CGPDFDictionaryGetName(outline, "Dest", &destName)) {
+			destString = [[[NSString alloc] initWithCString:destName encoding:NSUTF8StringEncoding] autorelease];
+			num = pageNumberFromDestinationString(destString, namesDict);
+		}  else if (CGPDFDictionaryGetString(outline, "Dest", &string)) {
+			destString = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
+			num = pageNumberFromDestinationString(destString, namesDict);
+		} else if (CGPDFDictionaryGetArray(outline, "Dest", &destArray)) {
+			num = pageNumberFromDestArray(destArray);
 		}
 		
 		isOpen = true;
@@ -322,12 +567,44 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
 		}
 		
 		if (CGPDFDictionaryGetDictionary(outline, "First", &first))
-			parse_outline_items(indent + 1, document, first, context);
+			parse_outline_items(indent + 1, document, first, context, names);
 		
     } while (CGPDFDictionaryGetDictionary(outline, "Next", &outline));
 }
 
+- (NSDictionary *)parseNames {
+	
+	NSMutableDictionary *namesDict = [NSMutableDictionary dictionary];
+	
+	[pdfLock lock];
+    if (nil == pdf) {
+        [self openDocumentWithoutLock];
+    }
+	
+    if(pdf) {
+		
+        CGPDFDictionaryRef catalog, names;
+        catalog = CGPDFDocumentGetCatalog(pdf);
+		
+		if (CGPDFDictionaryGetDictionary(catalog, "Names", &names)) {
+			parse_names_node(names, namesDict);
+		}
+		
+	}
+	[pdfLock unlock];
+	
+	
+	return namesDict;
+	
+}
+
 - (NSArray *)parseTOC {
+	
+	// Construct the names dictionary before applying the lock
+	if (!namesDictionary) {
+		self.namesDictionary = [self parseNames];
+	}
+	
 	NSMutableArray *toc = [NSMutableArray array];
 	
 	[pdfLock lock];
@@ -340,10 +617,11 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
         // http://www.adobe.com/content/dam/Adobe/en/devnet/pdf/pdfs/pdf_reference_archives/PDFReference16.pdf
         
         CGPDFDictionaryRef catalog, outline, first;
+		
         catalog = CGPDFDocumentGetCatalog(pdf);
         if (CGPDFDictionaryGetDictionary(catalog, "Outlines", &outline)) {
             if (CGPDFDictionaryGetDictionary(outline, "First", &first)) {
-                parse_outline_items(0, pdf, first, toc);
+                parse_outline_items(0, pdf, first, toc, self.namesDictionary);
             }
         }
     }
@@ -359,7 +637,7 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
     if(makeArtificialFrontEnrty) {
         BlioTOCEntry *tocEntry = [[BlioTOCEntry alloc] init];
         tocEntry.name = NSLocalizedString(@"Front of book", @"Name for the single table-of-contents entry for the front page of a book that does not specify a TOC entry for the front page");
-        [toc addObject:tocEntry];
+        [toc insertObject:tocEntry atIndex:0];
         [tocEntry release];
     }
     
@@ -371,6 +649,141 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
 		self.tableOfContents = [self parseTOC];
     }
     return tableOfContents;
+}
+
+- (NSDictionary *)namesDictionary {
+	if (!namesDictionary) {
+		self.namesDictionary = [self parseNames];
+	}
+	
+	return namesDictionary;
+}
+
+- (NSArray *)hyperlinksForPage:(NSInteger)pageNumber {
+    NSMutableArray *hyperlinks = [NSMutableArray array];
+	
+	// Construct the names dictionary before applying the lock
+	if (!namesDictionary) {
+		self.namesDictionary = [self parseNames];
+	}
+	
+	[pdfLock lock];
+    if (nil == pdf) {
+        [self openDocumentWithoutLock];
+        if (nil == pdf) {
+            [pdfLock unlock];
+            return hyperlinks;
+        }
+    }
+	
+	CGPDFPageRef page = CGPDFDocumentGetPage(pdf, pageNumber);
+    CGPDFDictionaryRef pageDictionary = CGPDFPageGetDictionary(page);
+	
+	CGPDFInteger pageRotate = 0;
+	CGPDFDictionaryGetInteger( pageDictionary, "Rotate", &pageRotate ); 
+	CGRect pageRect = CGRectIntegral( CGPDFPageGetBoxRect( page, kCGPDFMediaBox ));
+	if( pageRotate == 90 || pageRotate == 270 ) {
+		CGFloat temp = pageRect.size.width;
+		pageRect.size.width = pageRect.size.height;
+		pageRect.size.height = temp;
+	}
+	
+	CGAffineTransform trans = CGAffineTransformIdentity;
+	trans = CGAffineTransformTranslate(trans, 0, pageRect.size.height);
+	trans = CGAffineTransformScale(trans, 1.0, -1.0);
+	
+    CGPDFArrayRef outputArray;
+	//CGPDFDictionaryApplyFunction(pageDictionary, dictionaryInfoFunction, pageDictionary);
+    if(!CGPDFDictionaryGetArray(pageDictionary, "Annots", &outputArray)) {
+		[pdfLock unlock];
+        return hyperlinks;
+    }
+	
+    int arrayCount = CGPDFArrayGetCount( outputArray );
+    if(!arrayCount) {
+		[pdfLock unlock];
+        return hyperlinks;
+    }
+	
+    for( int j = 0; j < arrayCount; ++j ) {
+		
+        CGPDFObjectRef aDictObj;
+        if(!CGPDFArrayGetObject(outputArray, j, &aDictObj)) {
+            [pdfLock unlock];
+			return hyperlinks;
+        }
+		
+        CGPDFDictionaryRef annotDict;
+        if(!CGPDFObjectGetValue(aDictObj, kCGPDFObjectTypeDictionary, &annotDict)) {
+            [pdfLock unlock];
+			return hyperlinks;
+        }
+		
+		int num = -1;
+		int arrayCount = 0;
+		const char *name;
+		
+		if (!(CGPDFDictionaryGetName(annotDict, "Subtype", &name) && (strcmp(name, "Link") == 0))) {
+			continue;
+		}
+		
+		CGPDFArrayRef rectArray;
+        if(CGPDFDictionaryGetArray(annotDict, "Rect", &rectArray)) {
+            arrayCount = CGPDFArrayGetCount( rectArray );
+        }
+		
+		CGPDFDictionaryRef action;
+		CGPDFArrayRef destArray;
+		const char *destName;
+		CGPDFStringRef string;
+		NSString *destString = nil;
+		
+		if (CGPDFDictionaryGetDictionary(annotDict, "A", &action)) {
+			num = pageNumberFromAction(action, self.namesDictionary);
+		}  else if (CGPDFDictionaryGetName(annotDict, "Dest", &destName)) {
+			destString = [[[NSString alloc] initWithCString:destName encoding:NSUTF8StringEncoding] autorelease];
+			num = pageNumberFromDestinationString(destString, self.namesDictionary);
+		}  else if (CGPDFDictionaryGetString(annotDict, "Dest", &string)) {
+			destString = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
+			num = pageNumberFromDestinationString(destString, self.namesDictionary);
+		} else if (CGPDFDictionaryGetArray(annotDict, "Dest", &destArray)) {
+			num = pageNumberFromDestArray(destArray);
+		}
+		
+		if ((arrayCount == 4) && (num > -1)) {
+			CGPDFReal coords[4];
+			for( int k = 0; k < arrayCount; ++k ) {
+				
+				coords[k] = 0;
+				
+				CGPDFObjectRef rectObj;
+				CGPDFReal coord;
+				
+				if (CGPDFArrayGetObject(rectArray, k, &rectObj)) {
+					if (CGPDFObjectGetValue(rectObj, kCGPDFObjectTypeReal, &coord)) {
+						coords[k] = coord;
+					}
+				}
+			}      
+			
+			CGRect hyperlinkRect = CGRectMake(coords[0],coords[1],coords[2],coords[3]);
+			
+			if (!CGRectEqualToRect(hyperlinkRect, CGRectNull)) {
+				hyperlinkRect.size.width -= hyperlinkRect.origin.x;
+				hyperlinkRect.size.height -= hyperlinkRect.origin.y;
+				hyperlinkRect = CGRectApplyAffineTransform(hyperlinkRect, trans);
+				
+				BlioLayoutHyperlink *blioHyperlink = [[BlioLayoutHyperlink alloc] initWithLink:[NSString stringWithFormat:@"%d", num] rect:hyperlinkRect];
+				[hyperlinks addObject:blioHyperlink];
+				[blioHyperlink release];
+			}
+		}
+		
+	}
+	
+	[pdfLock unlock];
+		
+    return hyperlinks;
 }
 
 #pragma mark -

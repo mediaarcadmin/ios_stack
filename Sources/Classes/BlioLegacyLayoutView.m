@@ -697,9 +697,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     
     CGFloat inset = -kBlioLegacyLayoutShadow;
     CGRect insetBounds = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(-inset, -inset, -inset, -inset));
-    CGFloat dpiRatio = [self.dataSource dpiRatio];
-    CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
-    
+   // CGFloat dpiRatio = [self.dataSource dpiRatio];
+//    CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
+    CGAffineTransform dpiScale = CGAffineTransformIdentity;
+	
     CGRect cropRect = [self.dataSource cropRectForPage:page];
     CGAffineTransform pageTransform = transformRectToFitRect(cropRect, insetBounds, true);
     CGRect scaledCropRect = CGRectApplyAffineTransform(cropRect, pageTransform);
@@ -2629,9 +2630,9 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return mediaRect;
 }
 
-- (CGFloat)dpiRatio {
-    return 72/96.0f;
-}
+//- (CGFloat)dpiRatio {
+//    return 72/96.0f;
+//}
 
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
     //NSLog(@"drawPage %d inContext %@ inRect: %@ withTransform %@ andBounds %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(rect), NSStringFromCGAffineTransform(transform), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));

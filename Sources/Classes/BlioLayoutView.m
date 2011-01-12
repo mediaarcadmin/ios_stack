@@ -629,18 +629,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 
     CGAffineTransform pageTransform = transformRectToFitRect(pageCrop, pageFrame, false);
-    
-    CGFloat dpiRatio = [self.dataSource dpiRatio];
-    
-    if (dpiRatio != 1) {
-        CGAffineTransform dpiScale = CGAffineTransformMakeScale(dpiRatio, dpiRatio);
-        
-        CGRect mediaRect = [self.dataSource mediaRectForPage:pageIndex + 1];
-        CGAffineTransform mediaAdjust = CGAffineTransformMakeTranslation(pageCrop.origin.x - mediaRect.origin.x, pageCrop.origin.y - mediaRect.origin.y);
-        CGAffineTransform textTransform = CGAffineTransformConcat(dpiScale, mediaAdjust);
-        CGAffineTransform viewTransform = CGAffineTransformConcat(textTransform, pageTransform);
-        return viewTransform;
-    }
         
     return pageTransform;
 }
@@ -1490,11 +1478,19 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)hyperlinkTapped:(NSString *)link {
     hyperlinkTapped = YES;
-    BlioTextFlowReference *reference = [self.textFlow referenceForReferenceId:link];
+	
+	if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+		NSInteger page = [link integerValue];
+		if (page) {
+			[self goToPageNumber:page animated:YES];
+		}
+	} else {
+		BlioTextFlowReference *reference = [self.textFlow referenceForReferenceId:link];
     
-    if (reference) {
-        [self goToPageNumber:reference.pageIndex + 1 animated:YES];
-    }
+		if (reference) {
+			[self goToPageNumber:reference.pageIndex + 1 animated:YES];
+		}
+	}
 }
 
 - (NSArray *)hyperlinksForPage:(NSInteger)page {

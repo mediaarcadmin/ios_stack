@@ -16,7 +16,6 @@
 
 - (CGRect)cropRectForPage:(NSInteger)page;
 - (CGRect)mediaRectForPage:(NSInteger)page;
-- (CGFloat)dpiRatio;
 
 - (void)openDocumentIfRequired;
 - (void)closeDocumentIfRequired;

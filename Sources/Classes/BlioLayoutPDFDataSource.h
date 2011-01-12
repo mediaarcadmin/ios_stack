@@ -16,10 +16,12 @@
     CGPDFDocumentRef pdf;
     NSLock *pdfLock;
 	NSArray *tableOfContents;
+	NSDictionary *namesDictionary;
 }
 
 @property (nonatomic, retain) NSData *data;
 @property (nonatomic, retain, readonly) NSArray *tableOfContents;
+@property (nonatomic, retain, readonly) NSDictionary *namesDictionary;
 
 - (id)initWithPath:(NSString *)aPath;
 
