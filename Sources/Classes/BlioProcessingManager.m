@@ -23,7 +23,7 @@
 - (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
 - (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
 
-@end
+@end 
 
 @implementation BlioProcessingManager
 
@@ -50,6 +50,10 @@
         [aPostAvailabilityQueue release];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onReprocessCoverThumbnailNotification:) name:BlioProcessingReprocessCoverThumbnailNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingTokenRequiredNotification:) name:BlioProcessingLicenseAcquisitionTokenRequiredNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingTokenRequiredNotification:) name:BlioProcessingDownloadPaidBookTokenRequiredNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingNonMatchingUserNotification:) name:BlioProcessingLicenseAcquisitionNonMatchingUserNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingNonMatchingUserNotification:) name:BlioProcessingDownloadPaidBookNonMatchingUserNotification object:nil];
     }
     return self;
 }
@@ -206,12 +210,17 @@
 	}
 }
 -(void) enqueueBook:(BlioBook*)aBook {
+	[self enqueueBook:aBook resetProcessingAlertSuppression:YES];
+}
+-(void) enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue {
+	if (resetValue) {
+		[BlioAlertManager removeSuppressionForAlertType:BlioDrmFailureAlertType];
+		[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
+	}
 	[self enqueueBook:aBook placeholderOnly:NO];
 }
 
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly {
-	[BlioAlertManager removeSuppressionForAlertType:BlioDrmFailureAlertType];
-	[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
 
 	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
      NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
@@ -639,24 +648,30 @@
 
 			NSMutableArray * xpsOps = [NSMutableArray array];
 
-			BlioProcessingOperation * licenseOp = [self operationByClass:[BlioProcessingLicenseAcquisitionOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
-			if (!licenseOp || licenseOp.isCancelled) {
-				
-				
-				licenseOp = [[[BlioProcessingLicenseAcquisitionOperation alloc] init] autorelease];
-				licenseOp.bookID = bookID;
-				licenseOp.sourceID = sourceID;
-				licenseOp.sourceSpecificID = sourceSpecificID;
-				licenseOp.cacheDirectory = cacheDir;
-				licenseOp.tempDirectory = tempDir;
-                if (paidBookOp) [licenseOp addDependency:paidBookOp];
-				[self.preAvailabilityQueue addOperation:licenseOp];
-			} else {
-				if (paidBookOp && ![[licenseOp dependencies] containsObject:paidBookOp]) [licenseOp addDependency:paidBookOp];
-
-            }
-			[xpsOps addObject:licenseOp];
-			[bookOps addObject:licenseOp];
+			BlioProcessingOperation * licenseOp = nil;
+			
+			if (![aBook hasManifestValueForKey:BlioManifestLicenseAcquisitionCompleteKey]) {
+			
+				licenseOp = [self operationByClass:[BlioProcessingLicenseAcquisitionOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (!licenseOp || licenseOp.isCancelled) {
+					
+					
+					licenseOp = [[[BlioProcessingLicenseAcquisitionOperation alloc] init] autorelease];
+					licenseOp.bookID = bookID;
+					licenseOp.sourceID = sourceID;
+					licenseOp.sourceSpecificID = sourceSpecificID;
+					licenseOp.cacheDirectory = cacheDir;
+					licenseOp.tempDirectory = tempDir;
+					if (paidBookOp) [licenseOp addDependency:paidBookOp];
+					[self.preAvailabilityQueue addOperation:licenseOp];
+				} else {
+					if (paidBookOp && ![[licenseOp dependencies] containsObject:paidBookOp]) [licenseOp addDependency:paidBookOp];
+					
+				}
+				[xpsOps addObject:licenseOp];
+				[bookOps addObject:licenseOp];				
+			}
+			
 			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!manifestOp || manifestOp.isCancelled) {
 				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
@@ -665,7 +680,7 @@
 				manifestOp.sourceSpecificID = sourceSpecificID;
 				manifestOp.cacheDirectory = cacheDir;
 				manifestOp.tempDirectory = tempDir;
-                [manifestOp addDependency:licenseOp];
+				if (licenseOp) [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
 				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
@@ -681,12 +696,12 @@
 				[self addCoverOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];
 			}
 			
-			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
-				alreadyCompletedOperations++;
-				url = nil;
-			} else {
+//			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+//				alreadyCompletedOperations++;
+//				url = nil;
+//			} else {
 				[self addTextFlowOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];                  			
-			}
+//			}
 						
 			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
 			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
@@ -886,13 +901,16 @@
     else {
 		if ([results count] > 0) {
 			NSLog(@"Found non-paused incomplete or failed book results, will resume..."); 
+			[BlioAlertManager removeSuppressionForAlertType:BlioDrmFailureAlertType];
+			[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
 			for (BlioBook * book in results) {
-				if ([[book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore && [[book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateFailed) {
-					if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && [[book valueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
-						[self enqueueBook:book];
+				if ([[book valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+					//					if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && [[book valueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
+					if ([[book valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateFailed || [[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+						[self enqueueBook:book resetProcessingAlertSuppression:NO];
 					}
 				}
-				[self enqueueBook:book];
+				else [self enqueueBook:book resetProcessingAlertSuppression:NO];
 			}			
 		}
 		else {
@@ -906,6 +924,26 @@
 -(void) onReprocessCoverThumbnailNotification:(NSNotification*)note {
 	if ([[note userInfo] objectForKey:@"bookID"]) {
 		[self addCoverOpToBookOps:nil forBook:[[BlioBookManager sharedBookManager] bookWithID:[[note userInfo] objectForKey:@"bookID"]] manifestLocation:nil withDependency:nil];
+	}
+}
+-(void) onProcessingTokenRequiredNotification:(NSNotification*)note {
+	if ([BlioStoreManager sharedInstance].initialLoginCheckFinished == YES) {
+		[BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+											  title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+											message:NSLocalizedStringWithDefaultValue(@"TOKEN_REQUIRED_FOR_PROCESSING",nil,[NSBundle mainBundle],@"Login is required to process the paid books in your library. Would you like to login now?",@"Alert informing the user that login is required to process paid books, and prompting the user to login.")
+										   delegate:self 
+								  cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" alertview login option")
+								  otherButtonTitles:@"OK", nil];	
+	}
+}
+-(void) onProcessingNonMatchingUserNotification:(NSNotification*)note {
+	if ([BlioStoreManager sharedInstance].initialLoginCheckFinished == YES) {
+		[BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+											  title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+											message:NSLocalizedStringWithDefaultValue(@"MATCHING_USER_REQUIRED_FOR_PROCESSING",nil,[NSBundle mainBundle],@"In order to process your paid books successfully, you must be logged in as the same user who purchased the books.",@"Alert informing the user that the correct user must be logged in to process paid books owned by given user.")
+										   delegate:nil 
+								  cancelButtonTitle:nil
+								  otherButtonTitles:@"OK", nil];	
 	}
 }
 -(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook {
@@ -931,8 +969,10 @@
     else {
 		if ([results count] > 0) {
 			NSLog(@"Found %i non-paused incomplete book results, will resume...",[results count]); 
+			[BlioAlertManager removeSuppressionForAlertType:BlioDrmFailureAlertType];
+			[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
 			for (BlioBook * book in results) {
-				[self enqueueBook:book];
+				[self enqueueBook:book resetProcessingAlertSuppression:NO];
 			}
 			
 		}
@@ -1017,8 +1057,10 @@
     else {
 		if ([results count] > 0) {
 			NSLog(@"Found %i non-paused incomplete book results, will resume suspended processing...",[results count]); 
+			[BlioAlertManager removeSuppressionForAlertType:BlioDrmFailureAlertType];
+			[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
 			for (BlioBook * book in results) {
-				[self enqueueBook:book];
+				[self enqueueBook:book resetProcessingAlertSuppression:NO];
 			}
 			
 		}
@@ -1320,6 +1362,15 @@
 		}
 	}
 	return tempArray;
+}
+#pragma mark -
+#pragma mark UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+	if (buttonIndex == 1) {
+		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+	}
+	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
 }
 
 @end

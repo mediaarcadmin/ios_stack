@@ -44,6 +44,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 	UIViewController<BlioLoginResultReceiver> *loginViewController;
     id<BlioProcessingDelegate> _processingDelegate;
 	BlioStoreHelper * currentStoreHelper;
+	BOOL initialLoginCheckFinished;
 }
 
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;
@@ -53,6 +54,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 @property (nonatomic) BOOL isShowingLoginView;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) BlioStoreHelper * currentStoreHelper;
+@property (nonatomic, assign) BOOL initialLoginCheckFinished;
 
 /**
 	Returns the shared BlioStoreManager instance.

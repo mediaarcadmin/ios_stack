@@ -81,6 +81,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
 -(void) enqueueBook:(BlioBook*)aBook;
+-(void) enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue;
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
 - (void) resumeProcessing;
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;

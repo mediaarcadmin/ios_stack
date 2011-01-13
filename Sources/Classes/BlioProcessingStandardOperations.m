@@ -215,7 +215,18 @@
 	NSLog(@"License Acquisition will use token: %@",[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]);
 	if ([[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] == nil) {
 		NSLog(@"ERROR: no valid token, cancelling BlioProcessingLicenseAcquisitionOperation...");
+		NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
+		[userInfo setObject:self.bookID forKey:@"bookID"];
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingLicenseAcquisitionTokenRequiredNotification object:self userInfo:userInfo];
 		[self cancel];
+	}
+	if ([[self getBookValueForKey:@"userNum"] intValue] != [[BlioStoreManager sharedInstance] currentUserNum]) {
+		NSLog(@"Book userNum and currentUserNum do not match! Cancelling BlioProcessingLicenseAcquisitionOperation...");
+		NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
+		[userInfo setObject:self.bookID forKey:@"bookID"];
+		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingLicenseAcquisitionNonMatchingUserNotification object:self userInfo:userInfo];
+		[self cancel];
+		return;						
 	}
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
@@ -265,10 +276,13 @@
 		attemptsMade++;
 	}
 	[drmSessionManager release];
-	//if (!self.operationSuccess) {
-	//	[drmSessionManager resetLicenseCooldownTimer];
-	//} 
 	self.operationSuccess = acquisitionSuccess;
+	
+	if (self.operationSuccess) {
+		NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestLicenseAcquisitionCompleteKey];		
+	} 
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {
 		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
@@ -718,26 +732,40 @@
 	
 	if (self.url == nil) {
 		if ([[BlioStoreManager sharedInstance] tokenForSourceID:self.sourceID]) {
-			// app will contact Store for a new limited-lifetime URL.
-			NSURL * newXPSURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:sourceID sourceSpecificID:sourceSpecificID];
-			if (newXPSURL) {
-				NSLog(@"new XPS URL: %@",[newXPSURL absoluteString]);
-				self.url = newXPSURL;
-				
-//				// set manifest location for record-keeping purposes (though the app will likely request a new URL at a later time should this one fail now.)
-//				NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-//				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:BlioManifestEntryLocationKey];
-//				[manifestEntry setValue:[newXPSURL absoluteString] forKey:BlioManifestEntryPathKey];
-//				[self setBookManifestValue:manifestEntry forKey:BlioManifestXPSKey];		
+			if ([[self getBookValueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
+				// app will contact Store for a new limited-lifetime URL.
+				NSURL * newXPSURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (newXPSURL) {
+					NSLog(@"new XPS URL: %@",[newXPSURL absoluteString]);
+					self.url = newXPSURL;
+					
+					//				// set manifest location for record-keeping purposes (though the app will likely request a new URL at a later time should this one fail now.)
+					//				NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+					//				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:BlioManifestEntryLocationKey];
+					//				[manifestEntry setValue:[newXPSURL absoluteString] forKey:BlioManifestEntryPathKey];
+					//				[self setBookManifestValue:manifestEntry forKey:BlioManifestXPSKey];		
+					
+				}
+				else {
+					NSLog(@"new XPS URL was not able to be obtained from server! Cancelling BlioProcessingDownloadPaidBookOperation...");
+					[self cancel];
+					return;
+				}
 			}
 			else {
-				NSLog(@"new XPS URL was not able to be obtained from server! Cancelling BlioProcessingDownloadPaidBookOperation...");
+				NSLog(@"Book userNum and currentUserNum do not match! Cancelling BlioProcessingDownloadPaidBookOperation...");
+				NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
+				[userInfo setObject:self.bookID forKey:@"bookID"];
+				[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookNonMatchingUserNotification object:self userInfo:userInfo];
 				[self cancel];
-				return;
+				return;				
 			}
 		}
 		else {
 			NSLog(@"App does not have valid token! Cancelling BlioProcessingDownloadPaidBookOperation...");
+			NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
+			[userInfo setObject:self.bookID forKey:@"bookID"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookTokenRequiredNotification object:self userInfo:userInfo];
 			[self cancel];
 			return;
 		}
