@@ -191,8 +191,7 @@
 {
     THPair *ret = nil;
     if(pageNumber >= 1 && pageNumber <= _globalPageCount) {
-        THPair *indexPointRange = [_currentBookPageIndex filteredIndexPointRangeForPage:pageNumber];
-        EucBookPageIndexPoint *indexPoint = indexPointRange.first;
+        EucBookPageIndexPoint *indexPoint = [_currentBookPageIndex filteredIndexPointForPage:pageNumber];
         
         CGRect frame = CGRectMake(0, 0, _pageSize.width, _pageSize.height);
         EucPageView *pageView = [[self class] blankPageViewWithFrame:frame
@@ -207,11 +206,13 @@
             pageView.fullBleed = fullBleed;
         }
         
-        [(EucBUpePageTextView *)pageView.pageTextView layoutPageFromPoint:indexPoint
-                                                                   inBook:_book
-                                                             centerOnPage:fullBleed];
-
+        EucBookPageIndexPoint *afterPageIndexPoint = [(EucBUpePageTextView *)pageView.pageTextView layoutPageFromPoint:indexPoint
+                                                                                                                inBook:_book
+                                                                                                          centerOnPage:fullBleed];
+        
+        THPair *indexPointRange = [[THPair alloc] initWithFirst:indexPoint second:afterPageIndexPoint];
         ret = [THPair pairWithFirst:pageView second:indexPointRange];
+        [indexPointRange release];
     } 
     
     THLog(@"Returning page %ld, %@", (long)pageNumber, ret);

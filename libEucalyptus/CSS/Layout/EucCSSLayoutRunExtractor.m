@@ -51,20 +51,22 @@
     if(currentDocumentNode) {
         css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
         
-        if(!currentNodeStyle || css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
+        if(!currentNodeStyle || 
+           css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE ||
+           css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
             EucCSSIntermediateDocumentNode* previousNode = NULL;
             css_computed_style *previousStyle = NULL;
             do {
                 previousNode = currentDocumentNode.previous;
                 previousStyle = previousNode.computedStyle;
                 if(previousNode.blockLevelParent.key == currentDocumentNode.blockLevelParent.key &&
-                   previousNode && (!previousStyle || css_computed_display(previousStyle, false) != CSS_DISPLAY_BLOCK)) {
+                   previousNode && (!previousStyle || css_computed_display(previousStyle, false) != CSS_DISPLAY_BLOCK || css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE)) {
                     currentDocumentNode = previousNode;
                     currentNodeStyle = previousStyle;
                 }
             } while(previousNode.blockLevelParent.key == currentDocumentNode.blockLevelParent.key &&
-                    previousNode && (!previousStyle || css_computed_display(previousStyle, false) != CSS_DISPLAY_BLOCK));
-            if(previousStyle && css_computed_display(previousStyle, false) == CSS_DISPLAY_BLOCK) {
+                    previousNode && (!previousStyle || css_computed_display(previousStyle, false) != CSS_DISPLAY_BLOCK || css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE));
+            if(previousStyle && css_computed_display(previousStyle, false) == CSS_DISPLAY_BLOCK && css_computed_float(currentNodeStyle) == CSS_FLOAT_NONE) {
                 if(previousNode == currentDocumentNode.parent) {
                     currentDocumentNode = previousNode;
                     currentNodeStyle = currentDocumentNode.computedStyle;
@@ -75,7 +77,9 @@
         
         do {
             css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
-            if(!currentNodeStyle || css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {                
+            if(!currentNodeStyle || 
+               css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE ||
+               css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
                 // This is an inline element - start a run.
                 ret = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
                                                     underLimitNode:currentDocumentNode.blockLevelParent
@@ -110,7 +114,9 @@
     if(previousNode) {
         css_computed_style *previousNodeStyle = previousNode.computedStyle;
 
-        while(previousNodeStyle && css_computed_display(previousNodeStyle, false) == CSS_DISPLAY_BLOCK) {
+        while(previousNodeStyle && 
+              css_computed_display(previousNodeStyle, false) == CSS_DISPLAY_BLOCK && 
+              css_computed_float(previousNodeStyle) == CSS_FLOAT_NONE) {
             // If the previous node was a block, there's no run between it and
             // this run, so we have to move further back.
             previousNode = previousNode.previous;
