@@ -26,6 +26,8 @@ struct css_computed_style;
     CGFloat _textPointSize;
     NSUInteger _lineHeightKind;
     
+    uint32_t _topLevelTableParentKey;
+    
     /*enum css_display_e*/ uint8_t _display;
 }
 
@@ -35,6 +37,8 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *blockLevelNode;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *blockLevelParent;
+
+@property (nonatomic, readonly) uint32_t topLevelTableParentKey;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *previous;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *next;

@@ -13,20 +13,25 @@
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 
-#import "EucCSSLayoutSizedBlock.h"
-#import "EucCSSLayoutSizedTableCell.h"
-#import "EucCSSLayoutPositionedBlock.h"
+#import "EucCSSLayoutRunExtractor.h"
 
 #import "EucCSSLayoutRun.h"
 #import "EucCSSLayoutSizedRun.h"
 #import "EucCSSLayoutPositionedRun.h"
-#import "EucCSSLayoutRunExtractor.h"
 
 #import "EucCSSLayoutPositionedLine.h"
 
+#import "EucCSSLayoutSizedBlock.h"
+#import "EucCSSLayoutPositionedBlock.h"
+
 #import "EucCSSLayoutTableWrapper.h"
+#import "EucCSSLayoutTableTable.h"
+#import "EucCSSLayoutTableRowGroup.h"
+#import "EucCSSLayoutTableRow.h"
 #import "EucCSSLayoutSizedTable.h"
+#import "EucCSSLayoutSizedTableCell.h"
 #import "EucCSSLayoutPositionedTable.h"
+#import "EucCSSLayoutPositionedTableCell.h"
 
 #import "THStringRenderer.h"
 #import "THPair.h"
@@ -485,6 +490,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     uint32_t wordOffset = point.word;
     uint32_t elementOffset = point.element;
     
+    NSUInteger rowOffset = 0;
+    
     EucCSSIntermediateDocument *document = self.document;
     EucCSSIntermediateDocumentNode *currentDocumentNode = [self _layoutNodeForKey:startNodeKey];
     
@@ -506,7 +513,17 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         CGRect bottomlessFrame = CGRectMake(frame.origin.x, frame.origin.x, frame.size.width, CGFLOAT_MAX);
         EucCSSLayoutPositionedBlock *currentPositionedBlock = nil;
         if(constructingAncestors) {
-        	css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle
+            uint32_t topLevelTableParentKey = currentDocumentNode.topLevelTableParentKey;
+            
+            if(topLevelTableParentKey != UINT32_MAX) {
+                EucCSSIntermediateDocumentNode *topLevelTableParent = [self.document nodeForKey:topLevelTableParentKey];
+                EucCSSLayoutTableWrapper *tableWrapper = [[EucCSSLayoutTableWrapper alloc] initWithNode:topLevelTableParent layouter:self];
+                rowOffset = [tableWrapper rowForDocumentNode:currentDocumentNode];
+                currentDocumentNode = topLevelTableParent;
+                
+            }
+            
+        	css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
             if(!currentNodeStyle || 
                css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE ||
                css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
@@ -653,12 +670,34 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                     case CSS_DISPLAY_TABLE_CELL:
                     case CSS_DISPLAY_TABLE_CAPTION:
                     {
+                        BOOL hasPreviousSibling = [currentPositionedBlock.children count] != 0;
+
                         EucCSSLayoutTableWrapper *tableWrapper = [[EucCSSLayoutTableWrapper alloc] initWithNode:currentDocumentNode layouter:self];
                         EucCSSLayoutSizedTable *sizedTable = [[EucCSSLayoutSizedTable alloc] initWithTableWrapper:tableWrapper
                                                                                                       scaleFactor:scaleFactor];
                         EucCSSLayoutPositionedTable *positionedTable = [sizedTable positionTableForFrame:potentialFrame
                                                                                              inContainer:currentPositionedBlock
-                                                                                           usingLayouter:self];
+                                                                                           usingLayouter:self
+                                                                                           fromRowOffset:rowOffset];
+                        
+                        if(rowOffset) {
+                            rowOffset = 0;
+                        } else {
+                            if(hasPreviousSibling) {
+                                EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
+                                pageBreaks.push_back(make_pair(breakPoint, positionedTable));
+                            }                        
+                        }                            
+                        
+                        //if(positionedTable.size.height > ) {
+                        NSUInteger rowCount = positionedTable.rowCount;
+                        for(NSUInteger rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+                            EucCSSLayoutPositionedTableCell *startCell = [positionedTable positionedCellForColumn:0 row:rowIndex];
+                            EucCSSLayoutPoint breakPoint = { startCell.sizedTableCell.documentNode.key, 0, 0 };
+                            pageBreaks.push_back(make_pair(breakPoint, startCell));
+                        }
+                        //}
+                        
                         
                         currentDocumentNode = tableWrapper.nextNodeInDocument;
                         nextRunNodeKey = currentDocumentNode.key;

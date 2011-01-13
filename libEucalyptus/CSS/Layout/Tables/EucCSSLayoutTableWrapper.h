@@ -25,4 +25,8 @@
 
 - (EucCSSIntermediateDocumentNode *)accumulateCaptionNode:(EucCSSIntermediateDocumentNode *)captionNode;
 
+// The number returned from thie is ONE-INDEXED!  Row '0' is the table caption.
+- (NSUInteger)rowForDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode;
+
+
 @end

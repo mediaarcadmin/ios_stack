@@ -368,6 +368,25 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return self.parent.blockLevelNode;
 }
 
+- (uint32_t)topLevelTableParentKey
+{
+    if(!_topLevelTableParentKey) {
+        EucCSSIntermediateDocumentNode* parent = self.parent;
+        if(parent) {
+            _topLevelTableParentKey = parent.topLevelTableParentKey;
+        } else {
+            _topLevelTableParentKey = UINT32_MAX;
+        }
+        if(_topLevelTableParentKey == UINT32_MAX) {
+            uint8_t display = self.display;
+            if(display >= CSS_DISPLAY_TABLE && display <= CSS_DISPLAY_TABLE_CAPTION) {
+                _topLevelTableParentKey = _key;
+            }
+        }
+    } 
+    return _topLevelTableParentKey;
+}
+
 - (BOOL)isTextNode
 {
     return NO;

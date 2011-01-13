@@ -26,7 +26,7 @@
                scaleFactor:(CGFloat)scaleFactor;
 {
     if((self = [super initWithScaleFactor:scaleFactor])) {
-        if(_documentNode) {
+        if(documentNode) {
             _documentNode = [documentNode retain];
             
             css_computed_style *computedStyle = documentNode.computedStyle;

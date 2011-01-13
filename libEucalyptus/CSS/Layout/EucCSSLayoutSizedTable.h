@@ -47,4 +47,9 @@
                                            inContainer:(EucCSSLayoutPositionedContainer *)container
                                          usingLayouter:(EucCSSLayouter *)layouter;
 
+- (EucCSSLayoutPositionedTable *)positionTableForFrame:(CGRect)frame
+                                           inContainer:(EucCSSLayoutPositionedContainer *)container
+                                         usingLayouter:(EucCSSLayouter *)layouter
+                                         fromRowOffset:(NSUInteger)rowOffset;
+
 @end

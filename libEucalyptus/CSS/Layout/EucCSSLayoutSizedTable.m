@@ -378,9 +378,18 @@
     return tableWidth;
 }
 
+
 - (EucCSSLayoutPositionedTable *)positionTableForFrame:(CGRect)frame
                                            inContainer:(EucCSSLayoutPositionedContainer *)container
                                          usingLayouter:(EucCSSLayouter *)layouter
+{
+    return [self positionTableForFrame:frame inContainer:container usingLayouter:layouter fromRowOffset:0];
+}
+
+- (EucCSSLayoutPositionedTable *)positionTableForFrame:(CGRect)frame
+                                           inContainer:(EucCSSLayoutPositionedContainer *)container
+                                         usingLayouter:(EucCSSLayouter *)layouter
+                                         fromRowOffset:(NSUInteger)rowOffset
 {
     EucCSSLayoutPositionedTable *positionedTable = [[EucCSSLayoutPositionedTable alloc] initWithColumnCount:_columnCount
                                                                                                    rowCount:_rowCount];
@@ -428,75 +437,77 @@
     CGRect cellFrame = frame;
 
     for(NSUInteger rowIndex = 0; rowIndex < _rowCount; ++rowIndex) {
-        NSNumber *rowIndexNumber = [[NSNumber alloc] initWithUnsignedInteger:rowIndex];
-        
-        // Place all the cells for this row.
-        CGFloat rowHeight = 0.0f;
-        for(NSUInteger columnIndex = 0; columnIndex < _columnCount;) {
-            NSNumber *columnIndexNumber = [[NSNumber alloc] initWithUnsignedInteger:columnIndex];
-            EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowIndexNumber] objectForKey:columnIndexNumber];
-            NSUInteger columnSpan = cell.columnSpan;
-            if(!CFSetContainsValue(placedCells, cell)) {
-                EucCSSLayoutSizedTableCell *sizedCell = (EucCSSLayoutSizedTableCell *)CFDictionaryGetValue(_sizedCells, cell);
-                                
-                cellFrame.size.width = columnWidths[columnIndex];
-                
-                EucCSSLayoutPositionedTableCell *positionedCell = [sizedCell positionCellForFrame:cellFrame
-                                                                                          inTable:positionedTable
-                                                                                    atColumnIndex:columnIndex
-                                                                                         rowIndex:rowIndex
-                                                                                    usingLayouter:layouter];
-                CGFloat cellHeight = positionedCell.frame.size.height;
-                if(cellHeight > rowHeight) {
-                    rowHeight = cellHeight;
-                }
-                
-                NSUInteger rowSpan = cell.rowSpan;
-                if(rowSpan > 1) {
-                    [currentRowSpanningCells addPairWithFirst:positionedCell 
-                                                       second:[NSNumber numberWithUnsignedInteger:rowIndex + rowSpan - 1]];
-                }
-                
-                CFSetAddValue(placedCells, cell);
-                CFSetAddValue(rowPositionedCells, positionedCell);
-                cellFrame.origin.x += cellFrame.size.width;
-            }
-            columnIndex += columnSpan;
+        if(rowOffset == 0 || rowIndex > rowOffset - 1) {
+            // Place all the cells for this row.
+            NSNumber *rowIndexNumber = [[NSNumber alloc] initWithUnsignedInteger:rowIndex];
             
-            [columnIndexNumber release];
-        }
-        
-        // TODO: Align the tops.
-        // for(EucCSSLayoutPositionedTableCell cell in 
-        
-        // Do we have any spanned cells ending in this row?
-        for(THPair *columnAndEndRowIndex in currentRowSpanningCells) {
-            NSUInteger endRowIndex = [columnAndEndRowIndex.second unsignedIntegerValue];
-            if(endRowIndex == rowIndex) {
-                EucCSSLayoutPositionedTableCell *positionedCell = columnAndEndRowIndex.first;
+            CGFloat rowHeight = 0.0f;
+            for(NSUInteger columnIndex = 0; columnIndex < _columnCount;) {
+                NSNumber *columnIndexNumber = [[NSNumber alloc] initWithUnsignedInteger:columnIndex];
+                EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowIndexNumber] objectForKey:columnIndexNumber];
+                NSUInteger columnSpan = cell.columnSpan;
+                if(!CFSetContainsValue(placedCells, cell)) {
+                    EucCSSLayoutSizedTableCell *sizedCell = (EucCSSLayoutSizedTableCell *)CFDictionaryGetValue(_sizedCells, cell);
+                                    
+                    cellFrame.size.width = columnWidths[columnIndex];
+                    
+                    EucCSSLayoutPositionedTableCell *positionedCell = [sizedCell positionCellForFrame:cellFrame
+                                                                                              inTable:positionedTable
+                                                                                        atColumnIndex:columnIndex
+                                                                                             rowIndex:rowIndex
+                                                                                        usingLayouter:layouter];
+                    CGFloat cellHeight = positionedCell.frame.size.height;
+                    if(cellHeight > rowHeight) {
+                        rowHeight = cellHeight;
+                    }
+                    
+                    NSUInteger rowSpan = cell.rowSpan;
+                    if(rowSpan > 1) {
+                        [currentRowSpanningCells addPairWithFirst:positionedCell 
+                                                           second:[NSNumber numberWithUnsignedInteger:rowIndex + rowSpan - 1]];
+                    }
+                    
+                    CFSetAddValue(placedCells, cell);
+                    CFSetAddValue(rowPositionedCells, positionedCell);
+                    cellFrame.origin.x += cellFrame.size.width;
+                }
+                columnIndex += columnSpan;
+                
+                [columnIndexNumber release];
+            }
+            
+            // TODO: Align the tops.
+            // for(EucCSSLayoutPositionedTableCell cell in 
+            
+            // Do we have any spanned cells ending in this row?
+            for(THPair *columnAndEndRowIndex in currentRowSpanningCells) {
+                NSUInteger endRowIndex = [columnAndEndRowIndex.second unsignedIntegerValue];
+                if(endRowIndex == rowIndex) {
+                    EucCSSLayoutPositionedTableCell *positionedCell = columnAndEndRowIndex.first;
+                    // TODO: take into account vertical alignment = middle and bottom.
+                    CGFloat needsExtra = (cellFrame.origin.y + rowHeight) - CGRectGetMaxY(positionedCell.frame);
+                    if(needsExtra > 0) {
+                        [positionedCell setExtraPaddingBottom:needsExtra]; 
+                    } else {
+                        rowHeight += needsExtra;
+                    }
+                }
+            }        
+            
+            // Pad the heights to make equal.
+            for(EucCSSLayoutPositionedTableCell *positionedCell in (NSSet *)rowPositionedCells) {
                 // TODO: take into account vertical alignment = middle and bottom.
                 CGFloat needsExtra = (cellFrame.origin.y + rowHeight) - CGRectGetMaxY(positionedCell.frame);
-                if(needsExtra > 0) {
-                    [positionedCell setExtraPaddingBottom:needsExtra]; 
-                } else {
-                    rowHeight += needsExtra;
-                }
+                [positionedCell setExtraPaddingBottom:needsExtra]; 
             }
-        }        
-        
-        // Pad the heights to make equal.
-        for(EucCSSLayoutPositionedTableCell *positionedCell in (NSSet *)rowPositionedCells) {
-            // TODO: take into account vertical alignment = middle and bottom.
-            CGFloat needsExtra = (cellFrame.origin.y + rowHeight) - CGRectGetMaxY(positionedCell.frame);
-            [positionedCell setExtraPaddingBottom:needsExtra]; 
-        }
-        
-        cellFrame.origin.x = frame.origin.x;
-        cellFrame.origin.y += rowHeight;
+            
+            cellFrame.origin.x = frame.origin.x;
+            cellFrame.origin.y += rowHeight;
 
-        CFSetRemoveAllValues(rowPositionedCells);
-        
-        [rowIndexNumber release];
+            CFSetRemoveAllValues(rowPositionedCells);
+            
+            [rowIndexNumber release];
+        }
     }
     
     [currentRowSpanningCells release];

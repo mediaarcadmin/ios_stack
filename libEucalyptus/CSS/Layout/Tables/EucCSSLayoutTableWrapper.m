@@ -9,6 +9,8 @@
 #import "EucCSSLayoutTableWrapper.h"
 #import "EucCSSLayoutTableTable.h"
 #import "EucCSSLayoutTableCaption.h"
+#import "EucCSSLayoutTableRowGroup.h"
+#import "EucCSSLayoutTableRow.h"
 
 #import "EucCSSIntermediateDocumentNode.h"
 
@@ -55,6 +57,26 @@
     }
     [caption release];
     return nextNodeInDocument;
+}
+
+- (NSUInteger)rowForDocumentNode:(EucCSSIntermediateDocumentNode *)documentNode
+{
+    NSUInteger rowNumber = 0;
+    
+    if(_caption.documentNode != documentNode) {
+        rowNumber = 1;
+        NSUInteger examiningRow = 1;
+        for(EucCSSLayoutTableRowGroup *rowGroup in self.table.rowGroups) {
+            for(EucCSSLayoutTableRow *row in rowGroup.rows) {
+                if(documentNode.key >= row.documentNode.key) {
+                    rowNumber = examiningRow;
+                }
+                ++examiningRow;
+            }
+        }
+    }
+    
+    return rowNumber;
 }
 
 @end
