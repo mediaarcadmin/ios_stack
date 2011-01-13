@@ -328,8 +328,11 @@ ErrorExit:
 					   otherButtonTitles:@"OK", nil];
 	return NO;
 }
-
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name {
+	return [self joinDomain:token domainName:name alertAlways:NO];
+}
+
+- (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name alertAlways:(BOOL)alertFlag {
 	DRM_RESULT dr = DRM_SUCCESS;
     DRM_RESULT dr2 = DRM_SUCCESS;
     DRM_DOMAIN_ID oDomainID;
@@ -431,12 +434,23 @@ ErrorExit:
 		return NO;
 	
 	//NSLog(@"DRM error joining domain: %08X", dr);
+	if (alertFlag) {
 	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 								 message:[NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please contact Blio technical support with the error code: ",@"Alert message shown when device registration fails.")
 										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr2]]
 								delegate:nil 
 					   cancelButtonTitle:nil
 					   otherButtonTitles:@"OK", nil];
+	}
+	else {
+		[BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+												title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+											  message:[NSLocalizedStringWithDefaultValue(@"REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to register device. Please contact Blio technical support with the error code: ",@"Alert message shown when device registration fails.")
+													   stringByAppendingString:[NSString stringWithFormat:@"%08X", dr2]]
+											 delegate:nil 
+									cancelButtonTitle:nil
+									otherButtonTitles:@"OK", nil];
+	}
 	return NO;
 }
 

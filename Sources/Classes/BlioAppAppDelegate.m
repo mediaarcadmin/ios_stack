@@ -332,9 +332,12 @@ static void *background_init_thread(void * arg) {
 			if (loginCredentials && [loginCredentials objectForKey:@"username"] && [loginCredentials objectForKey:@"password"]) {
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 			}
+			else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
 		}
-		[self.processingManager resumeProcessing];
-	}	
+		else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+	}
+	else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+	[self.processingManager resumeProcessing];
     
     BOOL openedBook = NO;
     

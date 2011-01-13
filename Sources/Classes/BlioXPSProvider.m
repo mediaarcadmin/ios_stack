@@ -245,10 +245,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
     return mediaRect;
 }
 
-- (CGFloat)dpiRatio {
-    return 1;
-}
-
 void XPSPageCompleteCallback(void *userdata, RasterImageInfo *data) {
 	BlioXPSProvider *provider = (BlioXPSProvider *)userdata;	
 	provider.imageInfo = data;

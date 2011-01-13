@@ -107,6 +107,7 @@
                 BlioTextFlowCombinedBlock *newCombinedBlock = [[BlioTextFlowCombinedBlock alloc] init];
                 [newCombinedBlock.blocks addObject:block];
                 [combinedBlocks addObject:newCombinedBlock];
+				[newCombinedBlock release];
             }
         }
             

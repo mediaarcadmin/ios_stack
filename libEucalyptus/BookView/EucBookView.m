@@ -650,14 +650,15 @@
             id elementId;
             if(isFirstBlock) {
                 if(elementIdCount) {
-                    while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                    while(elementIdIndex < elementIdCount &&
+                          [[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
                         ++elementIdIndex;
                     }
                 }
                 isFirstBlock = NO;
             }
             
-            if(elementIdCount) {
+            if(elementIdIndex < elementIdCount) {
                 do {
                     elementId = [elementIds objectAtIndex:elementIdIndex];
                     [nonCoalescedRects addObjectsFromArray:[pageTextView rectsForElementWithIdentifier:elementId

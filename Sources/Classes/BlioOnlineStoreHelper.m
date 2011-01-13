@@ -329,7 +329,7 @@
 	}
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
 	if ( targetStatus == BlioDeviceRegisteredStatusRegistered ) {
-		if ( ![drmSessionManager joinDomain:self.token domainName:@"novel"] ) {
+		if ( ![drmSessionManager joinDomain:self.token domainName:@"novel" alertAlways:YES] ) {
 			// Alert is shown by the drmSessionManager, to display error code.
 			[drmSessionManager release];
 			return NO;
@@ -382,8 +382,10 @@
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	//vaultBinding.logXMLInOut = YES;
 	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
+//	BookVault_VaultContentsWithTokenEx* vaultContentsRequest = [[BookVault_VaultContentsWithTokenEx new] autorelease];
 	vaultContentsRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
 	[vaultBinding VaultContentsWithTokenAsyncUsingParameters:vaultContentsRequest delegate:bookVaultDelegate];
+//	[vaultBinding VaultContentsWithTokenExAsyncUsingParameters:vaultContentsRequest delegate:bookVaultDelegate];
 	[vaultBinding release];
 }
 -(NSURL*)URLForBookWithID:(NSString*)isbn {

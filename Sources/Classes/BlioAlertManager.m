@@ -56,15 +56,19 @@
 			   cancelButtonTitle:(NSString *)cancelButtonTitle
 			   otherButtonTitles:(NSString *)otherButtonTitles, ...
 {
-	NSMutableArray * alertTypeStrings = [[BlioAlertManager sharedInstance].suppressedAlertTypes objectForKey:alertType];
-	if (alertTypeStrings) {
-		if ([alertTypeStrings containsObject:message]) return;
-		else [alertTypeStrings addObject:message];
+	BOOL isRepeat = NO;
+	@synchronized(self) {
+		NSMutableArray * alertTypeStrings = [[BlioAlertManager sharedInstance].suppressedAlertTypes objectForKey:alertType];
+		if (alertTypeStrings) {
+			if ([alertTypeStrings containsObject:message]) isRepeat = YES;
+			else [alertTypeStrings addObject:message];
+		}
+		else {
+			alertTypeStrings = [NSMutableArray arrayWithObject:message];
+			[[BlioAlertManager sharedInstance].suppressedAlertTypes setObject:alertTypeStrings forKey:alertType];
+		}
 	}
-	else {
-		alertTypeStrings = [NSMutableArray arrayWithObject:message];
-		[[BlioAlertManager sharedInstance].suppressedAlertTypes setObject:alertTypeStrings forKey:alertType];
-	}
+	if (isRepeat) return;
     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
                                                      message:message
                                                     delegate:delegate

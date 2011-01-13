@@ -101,21 +101,6 @@
     return [self indexPointForPage:[self _filteredPageToPage:pageNumber]];
 }
 
-- (THPair *)filteredIndexPointRangeForPage:(NSUInteger)pageNumber
-{
-    EucBookPageIndexPoint *start = [self indexPointForPage:[self _filteredPageToPage:pageNumber]];
-    
-    NSUInteger endPageNumber = pageNumber + 1;
-    EucBookPageIndexPoint *end;
-    if(endPageNumber <= self.filteredLastPageNumber) {
-        end = [self indexPointForPage:[self _filteredPageToPage:endPageNumber]];
-    } else {
-        end = nil;
-    }
-        
-    return [THPair pairWithFirst:start second:end];
-}
-
 - (NSUInteger)filteredPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
     return [self _pageToFilteredPage:[self pageForIndexPoint:indexPoint]];
