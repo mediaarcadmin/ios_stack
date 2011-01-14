@@ -138,8 +138,14 @@
     if([[url absoluteString] isEqualToString:@"textflow:coverimage"]) {
         return [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] manifestDataForKey:BlioManifestCoverKey];
     } else if([[url scheme] isEqualToString:@"textflow"]) {
+		NSString *componentPath = [[url absoluteURL] path];
+		NSString *relativePath = [url relativeString];		
+		if ([relativePath length] && ([relativePath characterAtIndex:0] != '/')) {
+			componentPath = [BlioXPSEncryptedTextFlowDir stringByAppendingPathComponent:relativePath];
+		}
+		
         BlioXPSProvider *provider = [[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:self.bookID];
-        NSData *ret = [provider dataForComponentAtPath:[[url absoluteURL] path]];
+        NSData *ret = [provider dataForComponentAtPath:componentPath];
         [[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:self.bookID];
         return ret;
     }
