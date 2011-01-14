@@ -22,7 +22,7 @@
 {
     if((self = [super initWithNode:node wrapper:wrapper])) {
         enum css_display_e nodeDisplay = (enum css_display_e)node.display;
-        BOOL inRealTableRowGroup = (nodeDisplay == CSS_DISPLAY_TABLE_ROW_GROUP);
+        BOOL inRealTableRowGroup = (nodeDisplay == CSS_DISPLAY_TABLE_ROW_GROUP) || (nodeDisplay == CSS_DISPLAY_TABLE_HEADER_GROUP) || (nodeDisplay == CSS_DISPLAY_TABLE_FOOTER_GROUP);
         
         EucCSSIntermediateDocumentNode *currentDocumentNode = node;      
         if(inRealTableRowGroup) {

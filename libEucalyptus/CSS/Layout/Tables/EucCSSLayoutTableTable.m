@@ -93,7 +93,7 @@
                         EucCSSLayoutTableRowGroup *rowGroup;
                         // TODO: support header and footer groups in the rest
                         // of the code before reinstating this.
-                        /*if(currentNodeDisplay == CSS_DISPLAY_TABLE_HEADER_GROUP && !_headerGroup) {
+                        if(currentNodeDisplay == CSS_DISPLAY_TABLE_HEADER_GROUP && !_headerGroup) {
                             // First header group wins - others treated like 
                             // regular row groups.
                             _headerGroup = [[EucCSSLayoutTableHeaderGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
@@ -103,8 +103,8 @@
                             // regular row groups.
                             _footerGroup = [[EucCSSLayoutTableFooterGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                             rowGroup = _footerGroup;
-                        } else */{
-                            rowGroup =[[EucCSSLayoutTableRowGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
+                        } else {
+                            rowGroup = [[EucCSSLayoutTableRowGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                             if(!_rowGroups) {
                                 _rowGroups = [[NSMutableArray alloc] init];
                             }

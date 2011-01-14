@@ -99,52 +99,54 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
 - (void)_processComponentsForWidths
 {
     NSUInteger componentsCount = _run.componentsCount;
-    EucCSSLayoutRunComponentInfo *componentInfos = _run.componentInfos;
-    EucCSSLayoutSizedRunWidthInfo *componentWidthInfos = malloc(sizeof(EucCSSLayoutSizedRunWidthInfo) * _run.componentsCount);
-    
-    EucCSSLayoutRunComponentInfo *currentComponentInfo = componentInfos;
-    EucCSSLayoutSizedRunWidthInfo *currentWidthInfo = componentWidthInfos;
-    
-    EucCSSLayoutRunComponentInfo *afterEndComponentInfo = componentInfos + componentsCount;
-    
-    EucCSSIntermediateDocumentNode *currentNode = currentComponentInfo->documentNode.parent;
-    
-    CGFloat scaleFactor = self.scaleFactor;
-    
-    for(; currentComponentInfo < afterEndComponentInfo; ++currentComponentInfo, ++currentWidthInfo) {
-        switch(currentComponentInfo->kind) {
-            case EucCSSLayoutRunComponentKindSpace:
-            case EucCSSLayoutRunComponentKindNonbreakingSpace:
-                currentWidthInfo->width = [currentNode.stringRenderer widthOfString:@" "
-                                                                          pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
-                break;
-            case EucCSSLayoutRunComponentKindWord:
-                currentWidthInfo->width = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.stringInfo.string
-                                                                          pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
-                break;
-            case EucCSSLayoutRunComponentKindHyphenationRule:
-                currentWidthInfo->hyphenWidths.widthBeforeHyphen = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.hyphenationInfo.beforeHyphen
-                                                                                                   pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
-                currentWidthInfo->hyphenWidths.widthAfterHyphen = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.hyphenationInfo.afterHyphen
-                                                                                                   pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
-                break;
-            /*case EucCSSLayoutRunComponentKindImage:
-                // Will be processed as size-dependent
-                break;*/
-            case EucCSSLayoutRunComponentKindOpenNode:
-                currentNode = currentComponentInfo->documentNode;
-                currentWidthInfo->width = 0;
-                break;
-            case EucCSSLayoutRunComponentKindCloseNode:
-                currentNode = currentComponentInfo->documentNode.parent;
-                currentWidthInfo->width = 0;
-                break;
-            default:
-                currentWidthInfo->width = 0;
+    if(componentsCount) {
+        EucCSSLayoutRunComponentInfo *componentInfos = _run.componentInfos;
+        EucCSSLayoutSizedRunWidthInfo *componentWidthInfos = malloc(sizeof(EucCSSLayoutSizedRunWidthInfo) * _run.componentsCount);
+        
+        EucCSSLayoutRunComponentInfo *currentComponentInfo = componentInfos;
+        EucCSSLayoutSizedRunWidthInfo *currentWidthInfo = componentWidthInfos;
+        
+        EucCSSLayoutRunComponentInfo *afterEndComponentInfo = componentInfos + componentsCount;
+        
+        EucCSSIntermediateDocumentNode *currentNode = currentComponentInfo->documentNode.parent;
+        
+        CGFloat scaleFactor = self.scaleFactor;
+        
+        for(; currentComponentInfo < afterEndComponentInfo; ++currentComponentInfo, ++currentWidthInfo) {
+            switch(currentComponentInfo->kind) {
+                case EucCSSLayoutRunComponentKindSpace:
+                case EucCSSLayoutRunComponentKindNonbreakingSpace:
+                    currentWidthInfo->width = [currentNode.stringRenderer widthOfString:@" "
+                                                                              pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
+                    break;
+                case EucCSSLayoutRunComponentKindWord:
+                    currentWidthInfo->width = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.stringInfo.string
+                                                                              pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
+                    break;
+                case EucCSSLayoutRunComponentKindHyphenationRule:
+                    currentWidthInfo->hyphenWidths.widthBeforeHyphen = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.hyphenationInfo.beforeHyphen
+                                                                                                       pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
+                    currentWidthInfo->hyphenWidths.widthAfterHyphen = [currentNode.stringRenderer widthOfString:currentComponentInfo->contents.hyphenationInfo.afterHyphen
+                                                                                                       pointSize:[currentNode textPointSizeWithScaleFactor:scaleFactor]];
+                    break;
+                /*case EucCSSLayoutRunComponentKindImage:
+                    // Will be processed as size-dependent
+                    break;*/
+                case EucCSSLayoutRunComponentKindOpenNode:
+                    currentNode = currentComponentInfo->documentNode;
+                    currentWidthInfo->width = 0;
+                    break;
+                case EucCSSLayoutRunComponentKindCloseNode:
+                    currentNode = currentComponentInfo->documentNode.parent;
+                    currentWidthInfo->width = 0;
+                    break;
+                default:
+                    currentWidthInfo->width = 0;
+            }
         }
+        
+        _componentWidthInfos = componentWidthInfos;
     }
-    
-    _componentWidthInfos = componentWidthInfos;
 }
 
 - (CGSize)_computedSizeForImage:(CGImageRef)image
@@ -307,7 +309,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
 - (THBreak *)_potentialBreaksForFrame:(CGRect)frame
 {
     EucCSSLayoutSizedRunWidthInfo *componentWidthInfos = [self componentWidthInfosForFrame:frame];
-    if(!_potentialBreaks) {
+    if(componentWidthInfos && !_potentialBreaks) {
         NSUInteger componentsCount = _run.componentsCount;
         EucCSSLayoutRunComponentInfo *componentInfos = _run.componentInfos;
 
