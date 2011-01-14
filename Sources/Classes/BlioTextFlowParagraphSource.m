@@ -441,6 +441,12 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         eucIndexPoint.source = [paragraphID indexAtPosition:0];
         EucCSSIntermediateDocument *document = [self.xamlEucBook intermediateDocumentForIndexPoint:eucIndexPoint];
         [eucIndexPoint release];
+
+        if(!document) {
+            ret = [[BlioBookmarkPoint alloc] init];
+            ret.layoutPage = self.textFlow.lastPageIndex + 2; // + 2 to get 1-based, and off-the-end.
+            return [ret autorelease];
+        }
         
         EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
         
@@ -469,7 +475,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 } else {
                     thisPageTag = [thisParagraphTags objectAtIndex:testOffset++];
                 }
-            } while(testDocumentRun && (thisPageTag == (NSString *)[NSNull null] || ![thisPageTag hasPrefix:@"__"]));
+            } while(testDocumentRun && ![thisPageTag hasPrefix:@"__"]);
             if(testDocumentRun) {
                 endPageIndex = [[thisPageTag substringFromIndex:2] integerValue];
             }
@@ -494,7 +500,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 } else {
                     thisPageTag = [thisParagraphTags objectAtIndex:testOffset--];
                 }
-            } while(testDocumentRun && (thisPageTag == (NSString *)[NSNull null] || ![thisPageTag hasPrefix:@"__"]));
+            } while(testDocumentRun && ![thisPageTag hasPrefix:@"__"]);
             if(testDocumentRun) {
                 startPageIndex = [[thisPageTag substringFromIndex:2] integerValue];
             }

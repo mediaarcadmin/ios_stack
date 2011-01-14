@@ -24,7 +24,6 @@
 @property (nonatomic, readonly) NSUInteger filteredLastPageNumber;
 
 - (EucBookPageIndexPoint *)filteredIndexPointForPage:(NSUInteger)pageNumber;
-- (THPair *)filteredIndexPointRangeForPage:(NSUInteger)pageNumber;
 - (NSUInteger)filteredPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
 @end

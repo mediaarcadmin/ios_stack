@@ -352,6 +352,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
     }
     self.temporaryHighlightLayers = nil;
     self.temporarilyHighlightedRange = nil;
+	[self _clearSelectionCaches];
 }
 
 
