@@ -117,7 +117,7 @@
                     case CSS_DISPLAY_TABLE_COLUMN_GROUP:
                     case CSS_DISPLAY_TABLE_COLUMN:
                     {
-                        EucCSSLayoutTableColumnGroup *columnGroup =[[EucCSSLayoutTableColumnGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
+                        EucCSSLayoutTableColumnGroup *columnGroup = [[EucCSSLayoutTableColumnGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                         if(!_columnGroups) {
                             _columnGroups = [[NSMutableArray alloc] init];
                         }

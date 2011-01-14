@@ -110,8 +110,10 @@
                                                                                           scaleFactor:self.scaleFactor];
     [newBlock positionInFrame:frame afterInternalPageBreak:NO];
     
-    [self positionChildrenInContainer:newBlock usingLayouter:layouter];
+    [container addChild:newBlock];
     
+    [self positionChildrenInContainer:newBlock usingLayouter:layouter];
+
     return newBlock;
 }
 

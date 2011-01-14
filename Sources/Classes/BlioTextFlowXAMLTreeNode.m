@@ -202,4 +202,28 @@ static NSString *xamlColorToCSSColor(NSString *color)
     return _tag;
 }
 
+- (NSUInteger)columnSpan
+{
+    NSString *spanString = [self attributeWithName:@"ColumnSpan"];
+    if(spanString) {
+        NSUInteger ret = [spanString integerValue];
+        if(ret != 0) {
+            return ret;
+        }
+    }
+    return 1;
+}
+
+- (NSUInteger)rowSpan
+{
+    NSString *spanString = [self attributeWithName:@"RowSpan"];
+    if(spanString) {
+        NSUInteger ret = [spanString integerValue];
+        if(ret != 0) {
+            return ret;
+        }
+    }
+    return 1;
+}
+
 @end

@@ -96,7 +96,7 @@
 
 - (void)setExtraPaddingBottom:(CGFloat)extraPaddingBottom
 {
-    CGFloat difference = _extraPaddingBottom - extraPaddingBottom;
+    CGFloat difference =  extraPaddingBottom - _extraPaddingBottom;
     CGRect frame = self.frame;
     frame.size.height += difference;
     self.frame = frame;

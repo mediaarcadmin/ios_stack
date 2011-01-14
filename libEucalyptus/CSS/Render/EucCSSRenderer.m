@@ -558,6 +558,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
 {
     CGContextSaveGState(_cgContext);
     
+    CGContextStrokeRectWithWidth(_cgContext, tableCell.contentRect, 0.25);
+    
     CGRect contentRect = tableCell.contentRect;
     if(!CGPointEqualToPoint(contentRect.origin, CGPointZero)) {
         CGContextTranslateCTM(_cgContext, contentRect.origin.x, contentRect.origin.y);
@@ -585,6 +587,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
             EucCSSLayoutPositionedTableCell *cell = [table positionedCellForColumn:columnIndex row:rowIndex];
             if(cell) {
                 [self _render:cell];
+                CGContextStrokeRectWithWidth(_cgContext, cell.frame, 0.25);
             }
         }
     }

@@ -176,20 +176,25 @@
                 NSNumber *columnNumber = [[NSNumber alloc] initWithUnsignedInteger:columnIndex];
                 
                 EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowNumber] objectForKey:columnNumber];
-                NSUInteger columnSpan = cell.columnSpan;
-                if(columnSpan == 1) {
-                    EucCSSLayoutSizedEntity *sizedCellContents = (EucCSSLayoutSizedEntity *)CFDictionaryGetValue(_sizedCells, cell);
-                    CGFloat minWidth = sizedCellContents.minWidth;
-                    if(minWidth > _columnMinWidths[columnIndex]) {
-                        _columnMinWidths[columnIndex] = minWidth;
-                    } else {
-                        minWidth = _columnMinWidths[columnIndex];
+                NSUInteger columnSpan;
+                if(cell) {
+                    columnSpan = cell.columnSpan;
+                    if(columnSpan == 1) {
+                        EucCSSLayoutSizedEntity *sizedCellContents = (EucCSSLayoutSizedEntity *)CFDictionaryGetValue(_sizedCells, cell);
+                        CGFloat minWidth = sizedCellContents.minWidth;
+                        if(minWidth > _columnMinWidths[columnIndex]) {
+                            _columnMinWidths[columnIndex] = minWidth;
+                        } else {
+                            minWidth = _columnMinWidths[columnIndex];
+                        }
+                        CGFloat maxWidth = sizedCellContents.maxWidth;
+                        maxWidth = MAX(maxWidth, minWidth);
+                        if(maxWidth > _columnMaxWidths[columnIndex]) {
+                            _columnMaxWidths[columnIndex] = maxWidth;
+                        }
                     }
-                    CGFloat maxWidth = sizedCellContents.maxWidth;
-                    maxWidth = MAX(maxWidth, minWidth);
-                    if(maxWidth > _columnMaxWidths[columnIndex]) {
-                        _columnMaxWidths[columnIndex] = maxWidth;
-                    }
+                } else {
+                    columnSpan = 1;
                 }
                 
                 [columnNumber release];
@@ -206,43 +211,47 @@
                 NSNumber *columnNumber = [[NSNumber alloc] initWithUnsignedInteger:columnIndex];
                 
                 EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowNumber] objectForKey:columnNumber];
-                NSUInteger columnSpan = cell.columnSpan;
-                if(columnSpan > 1) {
-                    CGFloat spannedMin = 0, spannedMax = 0;
-                    for(NSUInteger i = 0; i < columnSpan; ++i) {
-                        spannedMin += _columnMinWidths[columnIndex + i];
-                        spannedMax += _columnMaxWidths[columnIndex + i];
-                    }
-                    EucCSSLayoutSizedEntity *sizedCellContents = (EucCSSLayoutSizedEntity *)CFDictionaryGetValue(_sizedCells, cell);
-                    CGFloat minWidth = sizedCellContents.minWidth;
-                    {
-                        CGFloat remainingMinSpannedWidth = minWidth - spannedMin;
-                        if(remainingMinSpannedWidth > 0) {
-                            NSUInteger remainingColumnsToSpan = columnSpan;
-                            for(NSUInteger i = 0; i < columnSpan; ++i) {
-                                CGFloat addition = roundf(remainingMinSpannedWidth / remainingColumnsToSpan);
-                                _columnMinWidths[columnIndex + i] += addition;
-                                remainingMinSpannedWidth -= addition;
-                                --remainingColumnsToSpan;
-                            }                        
+                NSUInteger columnSpan;
+                if(cell) {
+                    columnSpan = cell.columnSpan;
+                    if(columnSpan > 1) {
+                        CGFloat spannedMin = 0, spannedMax = 0;
+                        for(NSUInteger i = 0; i < columnSpan; ++i) {
+                            spannedMin += _columnMinWidths[columnIndex + i];
+                            spannedMax += _columnMaxWidths[columnIndex + i];
+                        }
+                        EucCSSLayoutSizedEntity *sizedCellContents = (EucCSSLayoutSizedEntity *)CFDictionaryGetValue(_sizedCells, cell);
+                        CGFloat minWidth = sizedCellContents.minWidth;
+                        {
+                            CGFloat remainingMinSpannedWidth = minWidth - spannedMin;
+                            if(remainingMinSpannedWidth > 0) {
+                                NSUInteger remainingColumnsToSpan = columnSpan;
+                                for(NSUInteger i = 0; i < columnSpan; ++i) {
+                                    CGFloat addition = roundf(remainingMinSpannedWidth / remainingColumnsToSpan);
+                                    _columnMinWidths[columnIndex + i] += addition;
+                                    remainingMinSpannedWidth -= addition;
+                                    --remainingColumnsToSpan;
+                                }                        
+                            }
+                        }
+                        {
+                            CGFloat maxWidth = sizedCellContents.maxWidth;
+                            maxWidth = MAX(minWidth, maxWidth);
+                            CGFloat remainingMaxSpannedWidth = maxWidth - spannedMax;
+                            if(remainingMaxSpannedWidth > 0) {
+                                NSUInteger remainingColumnsToSpan = columnSpan;
+                                for(NSUInteger i = 0; i < columnSpan; ++i) {
+                                    CGFloat addition = roundf(remainingMaxSpannedWidth / remainingColumnsToSpan);
+                                    _columnMaxWidths[columnIndex + i] += addition;
+                                    remainingMaxSpannedWidth -= addition;
+                                    --remainingColumnsToSpan;
+                                }                        
+                            }
                         }
                     }
-                    {
-                        CGFloat maxWidth = sizedCellContents.maxWidth;
-                        maxWidth = MAX(minWidth, maxWidth);
-                        CGFloat remainingMaxSpannedWidth = maxWidth - spannedMax;
-                        if(remainingMaxSpannedWidth > 0) {
-                            NSUInteger remainingColumnsToSpan = columnSpan;
-                            for(NSUInteger i = 0; i < columnSpan; ++i) {
-                                CGFloat addition = roundf(remainingMaxSpannedWidth / remainingColumnsToSpan);
-                                _columnMaxWidths[columnIndex + i] += addition;
-                                remainingMaxSpannedWidth -= addition;
-                                --remainingColumnsToSpan;
-                            }                        
-                        }
-                    }
+                } else {
+                    columnSpan = 1;
                 }
-                
                 [columnNumber release];
                 columnIndex += columnSpan;
             }
@@ -445,31 +454,39 @@
             for(NSUInteger columnIndex = 0; columnIndex < _columnCount;) {
                 NSNumber *columnIndexNumber = [[NSNumber alloc] initWithUnsignedInteger:columnIndex];
                 EucCSSLayoutTableCell *cell = [[_cellMap objectForKey:rowIndexNumber] objectForKey:columnIndexNumber];
-                NSUInteger columnSpan = cell.columnSpan;
-                if(!CFSetContainsValue(placedCells, cell)) {
-                    EucCSSLayoutSizedTableCell *sizedCell = (EucCSSLayoutSizedTableCell *)CFDictionaryGetValue(_sizedCells, cell);
-                                    
-                    cellFrame.size.width = columnWidths[columnIndex];
-                    
-                    EucCSSLayoutPositionedTableCell *positionedCell = [sizedCell positionCellForFrame:cellFrame
-                                                                                              inTable:positionedTable
-                                                                                        atColumnIndex:columnIndex
-                                                                                             rowIndex:rowIndex
-                                                                                        usingLayouter:layouter];
-                    CGFloat cellHeight = positionedCell.frame.size.height;
-                    if(cellHeight > rowHeight) {
-                        rowHeight = cellHeight;
-                    }
-                    
-                    NSUInteger rowSpan = cell.rowSpan;
-                    if(rowSpan > 1) {
-                        [currentRowSpanningCells addPairWithFirst:positionedCell 
-                                                           second:[NSNumber numberWithUnsignedInteger:rowIndex + rowSpan - 1]];
-                    }
-                    
-                    CFSetAddValue(placedCells, cell);
-                    CFSetAddValue(rowPositionedCells, positionedCell);
-                    cellFrame.origin.x += cellFrame.size.width;
+                NSUInteger columnSpan;
+                if(cell) {
+                    columnSpan = cell.columnSpan;
+                    if(!CFSetContainsValue(placedCells, cell)) {
+                        EucCSSLayoutSizedTableCell *sizedCell = (EucCSSLayoutSizedTableCell *)CFDictionaryGetValue(_sizedCells, cell);
+                               
+                        cellFrame.size.width = columnWidths[columnIndex];
+                        for(NSUInteger i = 1; i < columnSpan; ++i) {
+                            cellFrame.size.width += columnWidths[columnIndex + i];
+                        }
+                        
+                        EucCSSLayoutPositionedTableCell *positionedCell = [sizedCell positionCellForFrame:cellFrame
+                                                                                                  inTable:positionedTable
+                                                                                            atColumnIndex:columnIndex
+                                                                                                 rowIndex:rowIndex
+                                                                                            usingLayouter:layouter];
+                        CGFloat cellHeight = positionedCell.frame.size.height;
+                        if(cellHeight > rowHeight) {
+                            rowHeight = cellHeight;
+                        }
+                        
+                        NSUInteger rowSpan = cell.rowSpan;
+                        if(rowSpan > 1) {
+                            [currentRowSpanningCells addPairWithFirst:positionedCell 
+                                                               second:[NSNumber numberWithUnsignedInteger:rowIndex + rowSpan - 1]];
+                        }
+                        
+                        CFSetAddValue(placedCells, cell);
+                        CFSetAddValue(rowPositionedCells, positionedCell);
+                        cellFrame.origin.x += cellFrame.size.width;
+                    } 
+                } else {
+                    columnSpan = 1;
                 }
                 columnIndex += columnSpan;
                 
@@ -529,14 +546,6 @@
     }
     free(_columnMinWidths);
     free(_columnMaxWidths);
-    
-    /*for(NSUInteger i = 0; i < _rowCount; ++i) {
-        for(NSUInteger j = 0; j < _columnCount; ++j) {
-            [_cellContainers[i][j] release];
-        }
-        free(_cellContainers[i]);
-    }
-    free(_cellContainers);*/
     
     [_cellMap release];
     [_tableWrapper release];
