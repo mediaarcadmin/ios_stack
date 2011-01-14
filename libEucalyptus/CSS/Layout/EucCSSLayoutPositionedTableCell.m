@@ -118,6 +118,7 @@
 
             css_computed_padding_bottom(computedStyle, &fixed, &unit);
             frame.size.height += EucCSSLibCSSSizeToPixels(computedStyle, fixed, unit, frame.size.width, scaleFactor);
+            frame.size.height += _extraPaddingBottom;
         }
     //}
     self.frame = frame;

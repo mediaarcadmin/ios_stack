@@ -78,10 +78,10 @@
                                          elementOffset:0
                                 usingLayouterForFloats:layouter];
         }
-        contentRect.origin.x += positionedChild.frame.size.height;
+        contentRect.origin.y += positionedChild.frame.size.height;
     }
     
-    [positionedContainer closeBottomWithContentHeight:contentRect.origin.x];
+    [positionedContainer closeBottomWithContentHeight:contentRect.origin.y];
 }
 
 @end
