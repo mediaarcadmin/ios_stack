@@ -240,13 +240,18 @@
 		for (BookVault_BookOwnershipInfo * bookOwnershipInfo in _BookOwnershipInfoArray) {
 			
 			// check to see if BlioBook record is already in the persistent store
-			
-			if ([[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID ISBN:bookOwnershipInfo.ISBN] == nil) {
+			BlioBook * preExistingBook = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID ISBN:bookOwnershipInfo.ISBN];
+			if (preExistingBook == nil) {
+				newISBNs++;
+				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+			}
+			else if ([[preExistingBook valueForKey:@"productType"] intValue] != [bookOwnershipInfo.ProductTypeId intValue]) {
+				[[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
 			}
 			else {
-				NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",bookOwnershipInfo.ISBN);
+				NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",bookOwnershipInfo.ISBN);	
 			}
 		}
 		if (newISBNs == 0) [self assessRetrieveBooksProgress];
@@ -301,6 +306,7 @@
 						}
 					}
 				}
+				NSLog(@"aProductType: %i",aProductType);
 				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
 																				   authors:authors   
 																				 coverPath:coverURL
@@ -327,7 +333,7 @@
 	[self assessRetrieveBooksProgress];
 }
 -(void)assessRetrieveBooksProgress {
-	if (responseCount == [_isbns count] || newISBNs == 0) { 
+	if (responseCount == newISBNs || newISBNs == 0) { 
 		NSString * ISBNMetadataResponseAlertText = nil;
 		if (successfulResponseCount == 0 && newISBNs > 0) {
 			// we didn't get any successful responses, though we have a need for ISBN metadata.
