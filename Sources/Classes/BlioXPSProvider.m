@@ -725,6 +725,11 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
             encrypted = YES;
             gzipped = YES;
         }
+    } else if (([directory rangeOfString:BlioXPSEncryptedTextFlowDir].location != NSNotFound) && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
+        if (self.bookIsEncrypted) {
+            encrypted = YES;
+        }
+        cached = YES;
     }
         
     if (cached) {

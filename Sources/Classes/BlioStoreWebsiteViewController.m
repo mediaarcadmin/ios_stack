@@ -286,7 +286,7 @@
 //		if ( ctl == launchButton ) {
 //			NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
 //			NSURL* url = [[NSURL alloc] initWithString:@"http://bliodemo.crosscomm.net"];
-			NSURL* url = [[NSURL alloc] initWithString:@"https://Iphone.Bliodigitallocker.com"];
+			NSURL* url = [[[NSURL alloc] initWithString:[[BlioStoreManager sharedInstance] currentStoreURL]] autorelease];
 			
 			[[UIApplication sharedApplication] openURL:url];			  
 //		}

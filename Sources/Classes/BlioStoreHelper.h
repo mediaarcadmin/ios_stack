@@ -24,6 +24,7 @@
 	NSInteger siteID;
 	NSString* siteKey;
 	NSInteger userNum;
+	NSString* storeURL;
 }
 @property (nonatomic, retain) NSDate* timeout;
 @property (nonatomic, readonly) NSString *username;
@@ -36,7 +37,9 @@
 @property (nonatomic, assign) NSInteger siteID;
 @property (nonatomic, retain) NSString *siteKey;
 @property (nonatomic, assign) NSInteger userNum;
+@property (nonatomic, retain) NSString *storeURL;
 
+-(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID;
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password;
 - (void)logout;
 -(BOOL)hasValidToken;

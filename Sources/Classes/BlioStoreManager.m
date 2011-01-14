@@ -53,6 +53,12 @@
 	[storeHelpers setObject:helper forKey:[NSNumber numberWithInt:helper.sourceID]];
 	if (!currentStoreHelper) self.currentStoreHelper = helper;
 }
+-(NSString*)currentStoreURL {
+	return self.currentStoreHelper.storeURL;
+}
+-(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
+	[self.currentStoreHelper buyBookWithSourceSpecificID:sourceSpecificID];
+}
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID {
 	// first check to see if login info is in NSUserDefaults
 	

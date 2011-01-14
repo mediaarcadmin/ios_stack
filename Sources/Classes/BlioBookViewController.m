@@ -29,6 +29,8 @@
 #import "BlioModalPopoverController.h"
 #import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
+#import "BlioStoreManager.h"
+#import "UIButton+BlioAdditions.h"
 
 static const CGFloat kBlioBookSliderPreviewWidthPad = 180;
 static const CGFloat kBlioBookSliderPreviewHeightPad = 180;
@@ -228,14 +230,29 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 } 
  
 - (void)initialiseControls {
-    EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
-    CGRect frame = titleView.frame;
-    frame.size.width = [[UIScreen mainScreen] bounds].size.width;
-    [titleView setFrame:frame];
-    titleView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
-    self.navigationItem.titleView = titleView;
-    [titleView release];
-    
+	if ([[self.book valueForKey:@"productType"] intValue] == BlioProductTypePreview) {
+		UIButton * buyNowButton = [UIButton buyButton];
+		[buyNowButton setTitle:NSLocalizedString(@"BUY NOW",@"\"BUY NOW\" button label") forState:UIControlStateNormal];
+		CGSize textSize = [buyNowButton.titleLabel.text sizeWithFont:buyNowButton.titleLabel.font];
+		CGFloat buttonHeight = 30;
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+			buttonHeight = 24;
+		}
+		
+		buyNowButton.bounds = CGRectMake(0, 0, textSize.width + 30, buttonHeight);
+		[buyNowButton setAccessibilityHint:NSLocalizedString(@"Opens the book details page within the Blio web store.",@"\"BUY NOW\" button accessibility hint")];
+		[buyNowButton addTarget:self action:@selector(buyBook:) forControlEvents:UIControlEventTouchUpInside];
+		self.navigationItem.titleView = buyNowButton;
+	}
+	else {
+		EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
+		CGRect frame = titleView.frame;
+		frame.size.width = [[UIScreen mainScreen] bounds].size.width;
+		[titleView setFrame:frame];
+		titleView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
+		self.navigationItem.titleView = titleView;
+		[titleView release];
+    }
     _firstAppearance = YES;
     
     self.audioPlaying = NO;
@@ -779,10 +796,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         if(_bookView) {
             if(self.isViewLoaded) {
-                EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
-                [titleView setTitle:[self.book title]];
-                [titleView setAuthor:[self.book authorsWithStandardFormat]];              
-                
+				if ([self.navigationItem.titleView isKindOfClass:[EucBookTitleView class]]) {
+					EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
+					[titleView setTitle:[self.book title]];
+					[titleView setAuthor:[self.book authorsWithStandardFormat]];              
+				}                
                 if ([_bookView wantsTouchesSniffed]) {
                     [(THEventCapturingWindow *)self.rootView.window addTouchObserver:self forView:_bookView];            
                 }                
@@ -1088,11 +1106,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             UIWindow *window = self.navigationController.view.window;
             [(THEventCapturingWindow *)window addTouchObserver:self forView:_bookView];
         }
-        
-        EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
-        [titleView setTitle:[self.book title]];
-        [titleView setAuthor:[self.book authorsWithStandardFormat]];
-        
+        if ([self.navigationItem.titleView isKindOfClass:[EucBookTitleView class]]) {
+			EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
+			[titleView setTitle:[self.book title]];
+			[titleView setAuthor:[self.book authorsWithStandardFormat]];
+		}        
         [self setNavigationBarButtons];
 		
 		[self updatePageJumpPanelForPage:self.bookView.pageNumber animated:NO];
@@ -2147,7 +2165,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     [self setToolbarsForModalOverlayActive:NO];
 }
-
+- (void)buyBook:(id)sender {
+	[[BlioStoreManager sharedInstance] buyBookWithSourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
+}
 #pragma mark -
 #pragma mark TTS Handling 
 

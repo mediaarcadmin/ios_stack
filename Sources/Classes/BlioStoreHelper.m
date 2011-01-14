@@ -11,7 +11,7 @@
 
 @implementation BlioStoreHelper
 
-@synthesize delegate, timeout, token, sourceID, storeTitle, siteID, siteKey, userNum, isRetrievingBooks,downloadNewBooks;
+@synthesize delegate, timeout, token, sourceID, storeTitle, siteID, siteKey, userNum, isRetrievingBooks,downloadNewBooks,storeURL;
 
 -(void) dealloc {
 	if (currentUsername) [currentUsername release];
@@ -20,9 +20,12 @@
 	self.timeout = nil;
 	self.storeTitle = nil;
 	self.siteKey = nil;
+	self.storeURL = nil;
 	[super dealloc];
 }
-
+-(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
+	// abstract method	
+}
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	// abstract method	
 	

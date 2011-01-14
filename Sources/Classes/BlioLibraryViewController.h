@@ -145,6 +145,8 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     UIView *errorView;
     BlioBook *book;
 	id delegate;
+	CGFloat xInset;
+	CGFloat yInset;
 }
 
 @property (nonatomic, retain) UIImageView *imageView;
@@ -153,6 +155,8 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, retain) BlioBook *book;
 @property (nonatomic, readonly) UIImage *image;
 @property (nonatomic, assign) id delegate;
+@property (nonatomic, readonly) CGFloat xInset;
+@property (nonatomic, readonly) CGFloat yInset;
 
 - (void)setBook:(BlioBook *)newBook forLayout:(BlioLibraryLayout)layout;
 - (BlioCoverView *)coverView;
@@ -193,6 +197,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     NSArray *accessibilityElements;
 	NSString * librarySortKey;
 	UIImageView * statusBadge;
+	UIImageView * previewBadge;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
@@ -208,6 +213,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) NSArray *accessibilityElements;
 @property (nonatomic, retain) UIImageView *statusBadge;
+@property (nonatomic, retain) UIImageView *previewBadge;
 
 -(void)listenToProcessingNotifications;
 -(void)stopListeningToProcessingNotifications;
@@ -225,6 +231,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
     id delegate;
 	NSUInteger layoutPageEquivalentCount;
 	UIImageView * statusBadge;
+	UIImageView * previewBadge;
 }
 
 @property (nonatomic, retain) BlioLibraryBookView *bookView;
@@ -237,6 +244,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 @property (nonatomic, assign) BlioBook *book;
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, retain) UIImageView *statusBadge;
+@property (nonatomic, retain) UIImageView *previewBadge;
 
 -(void)resetAuthorText;
 //-(void)resetProgressSlider;
