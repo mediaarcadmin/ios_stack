@@ -62,6 +62,20 @@ breakBothLoops:
     return _rowCount - _truncatedRowCount;
 }
 
+- (NSArray *)children
+{
+    NSMutableArray *buildChildren = [[NSMutableArray alloc] initWithCapacity:_rowCount * _columnCount];
+    for(NSUInteger rowIndex = 0; rowIndex < _rowCount; ++rowIndex) {
+        for(NSUInteger columnIndex = 0; columnIndex < _columnCount; ++columnIndex) {
+            EucCSSLayoutPositionedTableCell *cell = _cells[columnIndex][rowIndex];
+            if(cell) {
+                [buildChildren addObject:cell];
+            }
+        }
+    }
+    return [buildChildren autorelease];
+}
+
 - (void)dealloc
 {
     for(NSUInteger i = 0; i < _columnCount; ++i) {
