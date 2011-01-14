@@ -53,11 +53,11 @@
             EucCSSIntermediateDocumentNode* previousNode = NULL;
             do {
                 previousNode = currentDocumentNode.previous;
-                if(previousNode.blockLevelParent.key == currentDocumentNode.blockLevelParent.key &&
+                if(previousNode.parent.key == currentDocumentNode.parent.key &&
                    previousNode && !previousNode.isLayoutRunBreaker) {
                     currentDocumentNode = previousNode;
                 }
-            } while(previousNode.blockLevelParent.key == currentDocumentNode.blockLevelParent.key &&
+            } while(previousNode.parent.key == currentDocumentNode.parent.key &&
                     previousNode && !previousNode.isLayoutRunBreaker);
             if(previousNode.isLayoutRunBreaker) {
                 if(previousNode == currentDocumentNode.parent) {
@@ -90,7 +90,8 @@
 - (EucCSSLayoutRun *)nextRunForRun:(EucCSSLayoutRun *)run
 {
     if(run.nextNodeInDocument) {
-        return [self runForNodeWithKey:run.nextNodeInDocument.key];
+        EucCSSLayoutRun *nextRun = [self runForNodeWithKey:run.nextNodeInDocument.key];
+        return nextRun;
     } else {
         return nil;
     }
