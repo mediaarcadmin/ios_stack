@@ -437,7 +437,7 @@
     CGRect cellFrame = frame;
 
     for(NSUInteger rowIndex = 0; rowIndex < _rowCount; ++rowIndex) {
-        if(rowOffset == 0 || rowIndex > rowOffset - 1) {
+        if(rowOffset == 0 || rowIndex >= rowOffset - 1) {
             // Place all the cells for this row.
             NSNumber *rowIndexNumber = [[NSNumber alloc] initWithUnsignedInteger:rowIndex];
             

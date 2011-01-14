@@ -163,6 +163,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         ++pageBreakReverseIterator;
     } 
     
+    // If we found a usable break:
     if(pageBreakReverseIterator != pageBreakReverseIteratorEnd) {
         EucCSSLayoutPoint point = pageBreakReverseIterator->first;
         EucCSSLayoutPositionedContainer *element = pageBreakReverseIterator->second;
@@ -195,6 +196,19 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 rangeToRemove.length = childrenCount - rangeToRemove.location;       
                 [children removeObjectsInRange:rangeToRemove];
             }
+        } else if([element isKindOfClass:[EucCSSLayoutPositionedTableCell class]]) {
+            EucCSSLayoutPositionedTableCell *cell = (EucCSSLayoutPositionedTableCell *)element;
+            EucCSSLayoutPositionedTable *table;
+            
+            EucCSSLayoutPositionedContainer *potentialTable = (EucCSSLayoutPositionedBlock *)element;
+            do {
+                potentialTable = potentialTable.parent;
+            } while(![potentialTable isKindOfClass:[EucCSSLayoutPositionedTable class]]);
+            table = (EucCSSLayoutPositionedTable *)potentialTable;
+            
+            [table truncateFromRowContainingPositionedCell:cell];
+            
+            block = (EucCSSLayoutPositionedBlock *)table.parent;
         } else {
             // Remove all the blocks from this one on from its parent.
             block = (EucCSSLayoutPositionedBlock *)element;

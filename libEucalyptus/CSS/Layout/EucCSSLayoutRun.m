@@ -666,4 +666,25 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
 
 @end
 
+@implementation EucCSSIntermediateDocumentNode (EusCSSLayoutRunAdditions) 
+
+- (BOOL)isLayoutRunBreaker 
+{
+    css_computed_style *style = self.computedStyle;
+    if(style) {
+        if(css_computed_float(style) != CSS_FLOAT_NONE) {
+            return NO;
+        }
+        uint8_t display = css_computed_display(style, NO);
+        if(display == CSS_DISPLAY_INLINE ||
+           display == CSS_DISPLAY_LIST_ITEM) {
+            return NO;
+        }
+    } else {
+        return NO;
+    }
+    return YES;
+}
+
+@end
 

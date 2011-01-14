@@ -35,11 +35,31 @@
         [_cells[columnIndex][rowIndex] release];
         _cells[columnIndex][rowIndex] = [cell retain];
     }
+    cell.parent = self;
 }
 
 - (EucCSSLayoutPositionedTableCell *)positionedCellForColumn:(NSUInteger)columnIndex row:(NSUInteger)rowIndex
 {
     return _cells[columnIndex][rowIndex];
+}
+
+- (void)truncateFromRowContainingPositionedCell:(EucCSSLayoutPositionedTableCell *)positionedCell
+{
+    for(NSUInteger i = 0; i < _columnCount; ++i) {
+        for(NSUInteger j = 0; j < _rowCount; ++j) {
+            if(_cells[i][j] == positionedCell) {
+                _truncatedRowCount = _rowCount - j;
+                goto breakBothLoops;
+            }
+        }
+    }
+breakBothLoops:
+    ;
+}
+
+- (NSUInteger)rowCount
+{
+    return _rowCount - _truncatedRowCount;
 }
 
 - (void)dealloc

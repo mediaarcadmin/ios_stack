@@ -21,6 +21,8 @@
     NSUInteger _columnCount;
     NSUInteger _rowCount;
     
+    NSUInteger _truncatedRowCount;
+    
     EucCSSLayoutPositionedTableCell ***_cells;
 }
 
@@ -31,5 +33,7 @@
 
 - (void)setPositionedCell:(EucCSSLayoutPositionedTableCell *)cell forColumn:(NSUInteger)columnIndex row:(NSUInteger)rowIndex;
 - (EucCSSLayoutPositionedTableCell *)positionedCellForColumn:(NSUInteger)columnIndex row:(NSUInteger)rowIndex;
+
+- (void)truncateFromRowContainingPositionedCell:(EucCSSLayoutPositionedTableCell *)positionedCell;
 
 @end

@@ -13,7 +13,9 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-@class EucCSSIntermediateDocument, EucCSSLayouter, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
+#import "EucCSSIntermediateDocumentNode.h"
+
+@class EucCSSIntermediateDocument, EucCSSLayouter, EucCSSLayoutPositionedBlock, EucCSSLayoutPositionedRun, EucSharedHyphenator;
 struct THBreak;
 
 typedef struct EucCSSLayoutRunPoint {
@@ -120,5 +122,11 @@ struct EucCSSLayoutRunBreakInfo;
 @property (nonatomic, assign, readonly) uint32_t wordsCount;
 - (NSArray *)words;
 - (NSArray *)attributeValuesForWordsForAttributeName:(NSString *)attribute;
+
+@end
+
+@interface EucCSSIntermediateDocumentNode (EusCSSLayoutRunAdditions) 
+
+@property (nonatomic, assign, readonly) BOOL isLayoutRunBreaker;
 
 @end
