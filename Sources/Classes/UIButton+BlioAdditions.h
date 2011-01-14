@@ -12,4 +12,5 @@
 @interface UIButton (BlioAdditions)
 
 +(UIButton*)lightButton;
++(UIButton*)buyButton;
 @end

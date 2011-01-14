@@ -23,6 +23,11 @@ typedef enum {
 	BlioBookSourceGoogleBooks = 6
 } BlioBookSourceID;
 
+typedef enum {
+	BlioProductTypeFull = 1,
+	BlioProductTypePreview = 2
+} BlioProductType;
+
 static NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
 static NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
 static NSString * const BlioProcessingOperationCompleteNotification = @"BlioProcessingOperationCompleteNotification";
@@ -71,20 +76,18 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 
 @protocol BlioProcessingDelegate
 @required
-//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-//			   audiobookPath:(NSString *)audiobookPath;
-//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-//			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
+- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID ISBN:(NSString*)anISBN productType:(BlioProductType)aProductType  placeholderOnly:(BOOL)placeholderOnly;
 -(void) enqueueBook:(BlioBook*)aBook;
 -(void) enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue;
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
 - (void) resumeProcessing;
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+-(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID ISBN:(NSString*)anISBN;
 -(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook;
 - (void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource;
 - (BlioProcessingCompleteOperation *)processingCompleteOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;

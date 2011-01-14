@@ -32,6 +32,7 @@ static NSString * const BlioIOSStoreSiteKey = @"B870B960A5B4CB53363BB10855FDC351
 
 @interface BlioOnlineStoreHelper : BlioStoreHelper <DigitalLockerConnectionDelegate> {
 	NSMutableArray* _isbns; // array of ISBN numbers
+	NSMutableArray* _BookOwnershipInfoArray; // array of ISBN numbers
 	NSInteger newISBNs;
 	NSInteger responseCount;
 	NSInteger successfulResponseCount;

@@ -60,24 +60,14 @@
 
 #pragma mark -
 #pragma mark BlioProcessingDelegate
-//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-//			   audiobookPath:(NSString *)audiobookPath {
-//	// for legacy compatibility (pre-sourceID and sourceSpecificID)
-//	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
-//					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:(NSString *)xpsPath textFlowPath:textFlowPath 
-//				 audiobookPath:audiobookPath sourceID:BlioBookSourceLocalBundle sourceSpecificID:title placeholderOnly:NO];
-//}
-//- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
-//					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-//			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
-//	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath 
-//					  ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath 
-//				 audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID placeholderOnly:NO];    
-//}
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
+	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID ISBN:nil productType:BlioProductTypeFull placeholderOnly:placeholderOnly];
+}
+- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
+			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID ISBN:(NSString*)anISBN productType:(BlioProductType)aProductType placeholderOnly:(BOOL)placeholderOnly {    
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (nil != moc) {
         
@@ -136,6 +126,8 @@
         [aBook setValue:title forKey:@"title"];
         [aBook setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
         [aBook setValue:sourceSpecificID forKey:@"sourceSpecificID"];
+        [aBook setValue:[NSNumber numberWithInt:aProductType] forKey:@"productType"];
+        if (anISBN) [aBook setValue:anISBN forKey:@"isbn"];
 		
 		if (sourceID == BlioBookSourceOnlineStore) {
 			NSInteger siteNum = [[BlioStoreManager sharedInstance] currentSiteNum];
@@ -1021,6 +1013,28 @@
 	}
 	else if ([results count] > 1) {
 		NSLog(@"WARNING: multiple books found with same sourceID and sourceSpecificID!");
+	}
+	return nil;
+}
+-(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID ISBN:(NSString*)anISBN {
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@ && isbn == %@",[NSNumber numberWithInt:sourceID],anISBN]];
+	
+	NSError *errorExecute = nil;
+	NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+	[fetchRequest release];
+	if (errorExecute) {
+		NSLog(@"Error searching for paid book in MOC. %@, %@", errorExecute, [errorExecute userInfo]);
+		return nil;
+	}
+	if ([results count] == 1) {
+		return (BlioBook*)[results objectAtIndex:0];
+	}
+	else if ([results count] > 1) {
+		NSLog(@"WARNING: multiple books found with same sourceID and ISBN!");
 	}
 	return nil;
 }

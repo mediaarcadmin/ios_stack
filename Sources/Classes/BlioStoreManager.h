@@ -64,6 +64,8 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 -(void)saveUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID;
 -(NSDictionary*)registrationRecords;
+-(NSString*)currentStoreURL;
+-(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID;
 /**
  Passes the request to login with the included credentials to the appropriate store helper.
  @param user The username for the login request (usually the email address).
