@@ -398,12 +398,12 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
     
     //NSData *data = [self.book manifestDataForKey:[pageRange fileName]];
     NSData *data = [self.book textFlowDataWithPath:[pageRange fileName]];
-    
+    	
         if (nil == data) return nil;
         
         NSUInteger dataLength = [data length];
-        NSUInteger offset = (NSUInteger)[targetMarker byteIndex];
-        if (offset >= dataLength) {
+        NSUInteger offset = (NSUInteger)[targetMarker byteIndex] - 1;
+        if (offset >= (dataLength - 1)) {
             return nil;
         }
         
@@ -417,7 +417,7 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
         
         // Parse anything before the first marker in the file
         NSUInteger firstFragmentLength = [firstMarker byteIndex] - 1;
-        if (!XML_Parse(context.parser, [data bytes], firstFragmentLength - 1, XML_FALSE)) {
+        if (!XML_Parse(context.parser, [data bytes], firstFragmentLength, XML_FALSE)) {
             enum XML_Error errorCode = XML_GetErrorCode(context.parser);
             if (errorCode != XML_ERROR_ABORTED) {
                 char *error = (char *)XML_ErrorString(errorCode);
@@ -429,8 +429,8 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
             NSLog(@"offset is too large");
             return nil;
         }
-        
-        NSUInteger targetFragmentLength = dataLength - offset;
+
+        NSUInteger targetFragmentLength = dataLength - [targetMarker byteIndex];
         const void* offsetBytes = [data bytes] + offset;
           
         @try {
@@ -1218,7 +1218,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
         //NSData *data = [self getBookManifestDataForKey:[pageRange fileName]];
         NSData *data = [self getBookTextFlowDataWithPath:[pageRange fileName]];
-        
+
         if (!data) {
             NSLog(@"Could not pre-parse TextFlow because TextFlow file did not exist with name: %@.", [pageRange fileName]);
 			self.operationSuccess = NO;
