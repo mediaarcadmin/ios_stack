@@ -97,26 +97,27 @@
 			NSLog(@"Error getting executeFetchRequest results. %@, %@", errorExecute, [errorExecute userInfo]);
 			return;
 		}
-		if ([results count] > 1) {
-			NSLog(@"WARNING: More than one book found with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID); 
-		} else if ([results count] == 1) {
+		if ([results count] >= 1) {
+			if ([results count] != 1) NSLog(@"WARNING: More than one book found with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID); 
+			aBook = [results objectAtIndex:0];
 
 			NSLog(@"Processing Manager: Found Book in context already"); 
 			
-			if (placeholderOnly) {
-				NSLog(@"Therefore no need to fulfill a placeholderOnly enqueue new book command. Aborting...");
-				return;
+			NSLog(@"pre-existing productType: %i",[[aBook valueForKey:@"productType"] intValue]);
+			NSLog(@"enqueued productType: %i",aProductType);
+			if ([[aBook valueForKey:@"productType"] intValue] == aProductType) {
+				if (placeholderOnly) {
+					NSLog(@"Therefore no need to fulfill a placeholderOnly enqueue new book command. Aborting...");
+					return;
+				}
+				if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+					NSLog(@"WARNING: enqueue method called on already complete book with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID);
+					NSLog(@"Aborting enqueue by prematurely returning...");
+					return;
+				}
 			}
-			
-			aBook = [results objectAtIndex:0];
-			
-			
-			if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
-				NSLog(@"WARNING: enqueue method called on already complete book with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID);
-				NSLog(@"Aborting enqueue by prematurely returning...");
-				return;
-			}
-		} else {
+		} 
+		else {
 			// create a new book in context from scratch
 //			NSLog(@"Processing Manager: Creating new book"); 
             aBook = [NSEntityDescription insertNewObjectForEntityForName:@"BlioBook" inManagedObjectContext:moc];
@@ -566,12 +567,12 @@
 				[self addCoverOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];
 			}
 			
-			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
-				alreadyCompletedOperations++;
-				url = nil;
-			} else {
+//			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+//				alreadyCompletedOperations++;
+//				url = nil;
+//			} else {
 				[self addTextFlowOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];                  			
-			}
+//			}
 			
 			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
 			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
@@ -1218,6 +1219,9 @@
 	
 }
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave {
+	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+	[userInfo setObject:aBook.objectID forKey:@"bookID"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingWillDeleteBookNotification object:self userInfo:userInfo];
 	// if book is processing, stop all associated operations
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) [self stopProcessingForBook:aBook];
 	

@@ -152,6 +152,8 @@ typedef enum {
     
     NSMutableArray *historyStack;
 	BlioBookSliderPreview *thumbPreview;
+	
+	BOOL ignoreSave;
 }
 
 // Designated initializers.

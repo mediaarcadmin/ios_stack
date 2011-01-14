@@ -14,6 +14,7 @@ static NSString * const BlioProcessingLicenseAcquisitionTokenRequiredNotificatio
 static NSString * const BlioProcessingDownloadPaidBookTokenRequiredNotification = @"BlioProcessingDownloadPaidBookTokenRequiredNotification";
 static NSString * const BlioProcessingDownloadPaidBookNonMatchingUserNotification = @"BlioProcessingDownloadPaidBookNonMatchingUserNotification";
 static NSString * const BlioProcessingLicenseAcquisitionNonMatchingUserNotification = @"BlioProcessingLicenseAcquisitionNonMatchingUserNotification";
+static NSString * const BlioProcessingWillDeleteBookNotification = @"BlioProcessingWillDeleteBookNotification";
 
 @interface BlioProcessingManager : NSObject <BlioProcessingDelegate> {
     NSOperationQueue *preAvailabilityQueue;

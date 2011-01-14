@@ -84,7 +84,7 @@
     if ([self isCancelled]) {
         [self willChangeValueForKey:@"isFinished"];
         finished = YES;
-		NSLog(@"Operation cancelled, will prematurely abort start");
+		NSLog(@"BlioFlowPaginateOperation cancelled, will prematurely abort start");
         [self didChangeValueForKey:@"isFinished"];
         [pool drain];
         return;
@@ -198,7 +198,6 @@
                                                        object:paginator];
                 
             
-            NSLog(@"Beginning pagination for %@", eucBook.title);
             [paginator paginateBookInBackground:eucBook saveImagesTo:nil];
         }
     }
