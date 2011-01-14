@@ -8,12 +8,15 @@
 
 #import <libcss/libcss.h>
 
+#import <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
+
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
-#import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
-#import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 
 #import "EucCSSDocumentTree.h"
 #import "EucCSSDocumentTreeNode.h"
@@ -366,29 +369,22 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (EucCSSIntermediateDocumentNode *)rootNode
 {
-    return [self nodeForKey:_documentTree.root.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
+    return [self nodeForKey:_documentTree.root.key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS];
 }
 
 - (EucCSSIntermediateDocumentNode *)nodeForKey:(uint32_t)key
 {
     EucCSSIntermediateDocumentNode *node = [_keyToExtantNode objectForKey:key];
     if(!node) {
-        uint32_t keyKind = key & EucCSSIntermediateDocumentNodeKeyFlagMask;
-        if(keyKind != 0) {
-            if(keyKind < EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode) {
-                node = [[EucCSSIntermediateDocumentGeneratedContainerNode alloc] initWithDocument:self 
-                                                                             parentKey:key ^ keyKind 
-                                                                        isBeforeParent:(keyKind == EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode)];
-            } else {
-                NSParameterAssert((keyKind & EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode) == EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode);
-                node = [[EucCSSIntermediateDocumentGeneratedTextNode alloc] initWithDocument:self
-                                                                        parentKey:key ^ EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode];
+        uint32_t nonGeneratedKey = key & ~EUC_CSS_INTERMEDIATE_DOCUMENT_NODE_KEY_FLAG_MASK;
+        if(nonGeneratedKey == key) {
+            id<EucCSSDocumentTreeNode> documentTreeNode = [_documentTree nodeForKey:key >> EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS];
+            if(documentTreeNode) {
+                node = [[EucCSSIntermediateDocumentConcreteNode alloc] initWithDocumentTreeNode:documentTreeNode inDocument:self];
             }
         } else {
-            id<EucCSSDocumentTreeNode> dbNode = [_documentTree nodeForKey:key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
-            if(dbNode) {
-                node = [[EucCSSIntermediateDocumentConcreteNode alloc] initWithDocumentTreeNode:dbNode inDocument:self];
-            }
+            EucCSSIntermediateDocumentNode *nonGeneratedNode = [self nodeForKey:nonGeneratedKey];
+            node = [[nonGeneratedNode generatedChildNodeForKey:key] retain];
         }
         if(node) {
             [_keyToExtantNode cacheObject:node forKey:key];
@@ -400,21 +396,21 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 - (uint32_t)nodeKeyForId:(NSString *)identifier
 {
-    id<EucCSSDocumentTreeNode> dbNode = [[_documentTree idToNode] objectForKey:identifier];
-    return dbNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+    id<EucCSSDocumentTreeNode> documentTreeNode = [[_documentTree idToNode] objectForKey:identifier];
+    return documentTreeNode.key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
 }
 
 - (NSDictionary *)idToNodeKey
 {
     NSMutableDictionary *ret = nil;
     if([_documentTree respondsToSelector:@selector(idToNode)]) {
-        NSDictionary *idToDbNode = [_documentTree idToNode];
-        NSUInteger count = idToDbNode.count;
+        NSDictionary *idToDocumentTreeNode = [_documentTree idToNode];
+        NSUInteger count = idToDocumentTreeNode.count;
         if(count) {
             ret = [[NSMutableDictionary alloc] initWithCapacity:count];
-            for(id identifier in [idToDbNode keyEnumerator]) {
-                id<EucCSSDocumentTreeNode> dbNode = [[_documentTree idToNode] objectForKey:identifier];
-                [ret setObject:[NSNumber numberWithUnsignedInt:dbNode.key]
+            for(id identifier in [idToDocumentTreeNode keyEnumerator]) {
+                id<EucCSSDocumentTreeNode> documentTreeNode = [[_documentTree idToNode] objectForKey:identifier];
+                [ret setObject:[NSNumber numberWithUnsignedInt:documentTreeNode.key]
                         forKey:identifier];
             }
         }
@@ -424,19 +420,48 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
 
 + (uint32_t)documentTreeNodeKeyForKey:(uint32_t)key
 {
-    NSParameterAssert((key & EucCSSIntermediateDocumentNodeKeyFlagMask) == 0);
-    return key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+    NSParameterAssert((key & EUC_CSS_INTERMEDIATE_DOCUMENT_NODE_KEY_FLAG_MASK) == 0);
+    return key >> EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
 }
 
 + (uint32_t)keyForDocumentTreeNodeKey:(uint32_t)key
 {
-    return key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+    return key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
 }
 
 - (float)estimatedPercentageForNodeWithKey:(uint32_t)key
 {
-    uint32_t dbNodeKey = key >> EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
-    return 100.0f * ((float)dbNodeKey) / ((float)_documentTree.lastKey);
+    uint32_t documentTreeNodeKey = key >> EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
+    return 100.0f * ((float)documentTreeNodeKey) / ((float)_documentTree.lastKey);
+}
+
+- (NSData *)dataForURL:(NSURL *)url
+{
+    return [_dataSource dataForURL:url];
+}
+
+- (CGImageRef)imageForURL:(NSURL *)url
+{
+    CGImageRef image = NULL;
+
+    NSData *imageData = [self dataForURL:url];
+    if(imageData) {
+        #if TARGET_OS_IPHONE
+            image = [UIImage imageWithData:imageData].CGImage;
+            if(image) {
+                CFRetain(image);
+            }
+        #else
+            CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)imageData, NULL);
+            if(imageSource) {
+                image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+                CFRelease(imageSource);
+            }
+        #endif
+    }
+    
+    [(id)image autorelease];
+    return image;
 }
 
 - (void)dealloc 
@@ -457,7 +482,7 @@ css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_strin
     if(_lwcContext) {
         lwc_context_unref(_lwcContext);
     }
-
+    
     [super dealloc];
 }
 

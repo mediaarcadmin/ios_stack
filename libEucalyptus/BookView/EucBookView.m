@@ -1011,7 +1011,7 @@ static void LineFromCGPointsCGRectIntersectionPoints(CGPoint points[2], CGRect b
             _accumulatedScaleTime += (end - start);
             
             if(fmodf(_scaleCount, 20.0) == 0) {
-                THLog(@"Scale generation rate: %f scaled views/s", (_scaleCount / _accumulatedScaleTime))
+                THLog(@"Scale generation rate: %f scaled views/s", (_scaleCount / _accumulatedScaleTime));
             }            
         }
     }

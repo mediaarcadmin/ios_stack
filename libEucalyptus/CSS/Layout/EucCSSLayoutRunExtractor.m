@@ -10,7 +10,7 @@
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
-#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutRun.h"
 
 #import <libcss/libcss.h>
 
@@ -42,49 +42,38 @@
     }
 }
 
-- (EucCSSLayoutDocumentRun *)documentRunForNodeWithKey:(uint32_t)nextRunNodeKey;
+- (EucCSSLayoutRun *)runForNodeWithKey:(uint32_t)nextRunNodeKey;
 {
-    EucCSSLayoutDocumentRun *ret = nil;
+    EucCSSLayoutRun *ret = nil;
     
     EucCSSIntermediateDocumentNode* currentDocumentNode = [self _layoutNodeForKey:nextRunNodeKey];
     
     if(currentDocumentNode) {
-        css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
-        
-        if(!currentNodeStyle || 
-           css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE ||
-           css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
+        if(!currentDocumentNode.isLayoutRunBreaker) {
             EucCSSIntermediateDocumentNode* previousNode = NULL;
-            css_computed_style *previousStyle = NULL;
             do {
                 previousNode = currentDocumentNode.previous;
-                previousStyle = previousNode.computedStyle;
-                if(previousNode.blockLevelParent.key == currentDocumentNode.blockLevelParent.key &&
-                   previousNode && (!previousStyle || css_computed_display(previousStyle, false) != CSS_DISPLAY_BLOCK || css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE)) {
+                if(previousNode.parent.key == currentDocumentNode.parent.key &&
+                   previousNode && !previousNode.isLayoutRunBreaker) {
                     currentDocumentNode = previousNode;
-                    currentNodeStyle = previousStyle;
                 }
-            } while(previousNode.blockLevelParent.key == currentDocumentNode.blockLevelParent.key &&
-                    previousNode && (!previousStyle || css_computed_display(previousStyle, false) != CSS_DISPLAY_BLOCK || css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE));
-            if(previousStyle && css_computed_display(previousStyle, false) == CSS_DISPLAY_BLOCK && css_computed_float(currentNodeStyle) == CSS_FLOAT_NONE) {
+            } while(previousNode.parent.key == currentDocumentNode.parent.key &&
+                    previousNode && !previousNode.isLayoutRunBreaker);
+            if(previousNode.isLayoutRunBreaker) {
                 if(previousNode == currentDocumentNode.parent) {
                     currentDocumentNode = previousNode;
-                    currentNodeStyle = currentDocumentNode.computedStyle;
                 }
             }
         }        
         nextRunNodeKey = currentDocumentNode.key;
         
         do {
-            css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
-            if(!currentNodeStyle || 
-               css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE ||
-               css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK) {
+            if(!currentDocumentNode.isLayoutRunBreaker) {
                 // This is an inline element - start a run.
-                ret = [EucCSSLayoutDocumentRun documentRunWithNode:currentDocumentNode
-                                                    underLimitNode:currentDocumentNode.blockLevelParent
-                                                             forId:nextRunNodeKey
-                                                       scaleFactor:1.0f];
+                ret = [EucCSSLayoutRun runWithNode:currentDocumentNode
+                                    underLimitNode:currentDocumentNode.blockLevelParent
+                                    stopBeforeNode:nil
+                                             forId:nextRunNodeKey];
                 
             } else {
                 // This is a block-level element.
@@ -98,33 +87,29 @@
     return ret;
 }
 
-- (EucCSSLayoutDocumentRun *)nextDocumentRunForDocumentRun:(EucCSSLayoutDocumentRun *)run
+- (EucCSSLayoutRun *)nextRunForRun:(EucCSSLayoutRun *)run
 {
     if(run.nextNodeInDocument) {
-        return [self documentRunForNodeWithKey:run.nextNodeInDocument.key];
+        EucCSSLayoutRun *nextRun = [self runForNodeWithKey:run.nextNodeInDocument.key];
+        return nextRun;
     } else {
         return nil;
     }
 }
 
 
-- (EucCSSLayoutDocumentRun *)previousDocumentRunForDocumentRun:(EucCSSLayoutDocumentRun *)run
+- (EucCSSLayoutRun *)previousRunForRun:(EucCSSLayoutRun *)run
 {
     EucCSSIntermediateDocumentNode *previousNode = [self.document nodeForKey:run.id].previous;
     if(previousNode) {
-        css_computed_style *previousNodeStyle = previousNode.computedStyle;
-
-        while(previousNodeStyle && 
-              css_computed_display(previousNodeStyle, false) == CSS_DISPLAY_BLOCK && 
-              css_computed_float(previousNodeStyle) == CSS_FLOAT_NONE) {
+        while(previousNode.isLayoutRunBreaker) {
             // If the previous node was a block, there's no run between it and
             // this run, so we have to move further back.
             previousNode = previousNode.previous;
-            previousNodeStyle = previousNode.computedStyle;
         }
 
         if(previousNode) {
-            EucCSSLayoutDocumentRun *previousRun = [self documentRunForNodeWithKey:previousNode.key];
+            EucCSSLayoutRun *previousRun = [self runForNodeWithKey:previousNode.key];
             if(previousRun.id == run.id) {
                 // This happens if we're already at the first node.
                 return nil;

@@ -15,6 +15,7 @@
 #import "EucCSSIntermediateDocument_Package.h"
 #import "EucCSSIntermediateDocumentConcreteNode.h"
 #import "EucCSSIntermediateDocumentGeneratedContainerNode.h"
+#import "EucCSSIntermediateDocumentGeneratedTextNode.h"
 
 #import "EucCSSDocumentTree.h"
 #import "EucCSSDocumentTree_Package.h"
@@ -33,7 +34,7 @@
     if((self = [super init])) {
         _documentTreeNode = [documentTreeNode retain];
         self.document = document;
-        self.key = _documentTreeNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+        self.key = _documentTreeNode.key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
     }
     return self;
 }
@@ -253,12 +254,111 @@
 
 - (EucCSSIntermediateDocumentNode *)parent
 {
-    id<EucCSSDocumentTreeNode> parentDBNode = _documentTreeNode.parent;
-    if(parentDBNode) {
-        return [_document nodeForKey:parentDBNode.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS];
+    id<EucCSSDocumentTreeNode> parentDocumentTreeNode = _documentTreeNode.parent;
+    if(parentDocumentTreeNode) {
+        return [_document nodeForKey:parentDocumentTreeNode.key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS];
     } else {
         return nil;
     }    
+}
+
+- (void)tableRemoveIrrelevantBoxes
+{
+    EucCSSIntermediateDocument *document = self.document;
+    uint8_t myDisplay = self.display;
+    
+    
+    // 1. Remove irrelevant boxes: 
+    
+    if(myDisplay == CSS_DISPLAY_TABLE_COLUMN) {
+        // 1.1. All child boxes of a 'table-column' parent are treated as if they had 'display: none'.
+        free(_childKeys);
+    } else {
+        NSMutableIndexSet *toRemove = [[NSIndexSet alloc] init];
+        uint32_t *childKeys = _childKeys;
+        for(NSUInteger i = 0; i < _childCount; ++i) {
+            EucCSSIntermediateDocumentNode *childNode = [document nodeForKey:childKeys[i]];
+            uint8_t childDisplay = childNode.display;
+            
+            if(myDisplay == CSS_DISPLAY_TABLE_COLUMN_GROUP && 
+               childDisplay != CSS_DISPLAY_TABLE_COLUMN) {
+                // 1.2. If a child C of a 'table-column-group' parent is not a
+                // 'table-column' box, then it is treated as if it had 'display: none'.
+                [toRemove addIndex:i];
+            }
+            if(childNode.isTextNode) {
+                if([childNode.text rangeOfCharacterFromSet:[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet]].location == NSNotFound) {
+                    // 1.3. If a child C of a tabular container P is an anonymous inline
+                    // box that contains only white space, and its immediately
+                    // preceding and following siblings, if any, are proper table
+                    // descendants of P and are either 'table-caption' or internal
+                    // table boxes, then it is treated as if it had 'display: none'.
+                    // A box D is a proper table descendant of A if D can be a
+                    // descendant of A without causing the generation of any
+                    // intervening 'table' or 'inline-table' boxes.
+                    
+                    // 1.4. If a box B is an anonymous inline containing only white
+                    // space, and is between two immediate siblings each of
+                    // which is either an internal table box or a 'table-caption'
+                    // box then B is treated as if it had 'display: none'.
+
+                    // TODO: Think we might be misinterpreting the this - these seem to be the same...
+
+                    
+                    BOOL doRemove = YES;
+                    if(i >= 1) {
+                        EucCSSIntermediateDocumentNode *previousSibling = [document nodeForKey:childKeys[i - 1]];
+                        uint8_t previousSiblingDisplay = previousSibling.display;
+                        if(previousSiblingDisplay != CSS_DISPLAY_TABLE_CAPTION &&
+                           previousSiblingDisplay != CSS_DISPLAY_TABLE_ROW &&
+                           previousSiblingDisplay != CSS_DISPLAY_TABLE_ROW_GROUP &&
+                           previousSiblingDisplay != CSS_DISPLAY_TABLE_FOOTER_GROUP &&
+                           previousSiblingDisplay != CSS_DISPLAY_TABLE_HEADER_GROUP &&
+                           previousSiblingDisplay != CSS_DISPLAY_TABLE_COLUMN &&
+                           previousSiblingDisplay != CSS_DISPLAY_TABLE_COLUMN_GROUP &&
+                           previousSiblingDisplay != CSS_DISPLAY_TABLE_CELL) {
+                            doRemove = NO;
+                        }
+                    } 
+                    if(i < _childCount - 2) {
+                        EucCSSIntermediateDocumentNode *nextSibling = [document nodeForKey:childKeys[i + 1]];
+                        uint8_t nextSiblingDisplay = nextSibling.display;
+                        if(nextSiblingDisplay != CSS_DISPLAY_TABLE_CAPTION &&
+                           nextSiblingDisplay != CSS_DISPLAY_TABLE_ROW &&
+                           nextSiblingDisplay != CSS_DISPLAY_TABLE_ROW_GROUP &&
+                           nextSiblingDisplay != CSS_DISPLAY_TABLE_FOOTER_GROUP &&
+                           nextSiblingDisplay != CSS_DISPLAY_TABLE_HEADER_GROUP &&
+                           nextSiblingDisplay != CSS_DISPLAY_TABLE_COLUMN &&
+                           nextSiblingDisplay != CSS_DISPLAY_TABLE_COLUMN_GROUP &&
+                           nextSiblingDisplay != CSS_DISPLAY_TABLE_CELL) {
+                            doRemove = NO;
+                        }
+                    }
+                    if(doRemove) {
+                        [toRemove addIndex:i];
+                    }
+                }
+            }
+        }
+        NSUInteger toRemoveCount = toRemove.count;
+        if(toRemoveCount) {
+            uint32_t *newChildKeys = NULL;
+            NSUInteger newChildCount = _childCount - toRemoveCount;
+            if(newChildCount > 0) {
+                newChildKeys = malloc(sizeof(uint32_t) * newChildCount);
+                NSUInteger i = 0, j = 0;
+                for(; i < _childCount; ++i, ++j) {
+                    if(![toRemove containsIndex:i]) {
+                        newChildKeys[j++] = _childKeys[i];
+                    }
+                }
+            }
+            free(_childKeys);
+            _childKeys = newChildKeys;
+            _childCount = newChildCount;
+        }
+        [toRemove release];
+    }
 }
 
 - (void)_computeChildren
@@ -272,22 +372,26 @@
     }
     _childCount = childCount;
     
+    uint32_t generatedCount = 0;
+    
     if(childCount) {
         uint32_t *children = malloc(childCount * sizeof(uint32_t));
         uint32_t *child = children;
         
         if(self.computedBeforeStyle) {
-            *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode;
+            *(child++) = self.key | ++generatedCount;
+            ++generatedCount;
         }
         
         id<EucCSSDocumentTreeNode> documentChild = _documentTreeNode.firstChild;
         while(documentChild) {
-             *(child++) = documentChild.key << EUC_HTML_DOCUMENT_DB_KEY_SHIFT_FOR_FLAGS;
+             *(child++) = documentChild.key << EUC_CSS_DOCUMENT_TREE_NODE_TO_INTERMEDIATE_DOCUMENT_NODE_KEY_SHIFT_FOR_FLAGS;
             documentChild = documentChild.nextSibling;
         }
         
         if(self.computedAfterStyle) {
-            *(child++) = self.key | EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode;
+            *(child++) = self.key | ++generatedCount;
+            ++generatedCount;
         }
         
         _childKeys = children;
@@ -311,5 +415,52 @@
     return _childKeys;    
 }
 
+
+- (EucCSSIntermediateDocumentNode *)generatedChildNodeForKey:(uint32_t)childKey
+{
+    EucCSSIntermediateDocumentNode *generatedChild = nil;
+    
+    uint32_t generationKey = childKey & EUC_CSS_INTERMEDIATE_DOCUMENT_NODE_KEY_FLAG_MASK;
+    switch(generationKey) {
+        case 1:
+            generatedChild = [[EucCSSIntermediateDocumentGeneratedContainerNode alloc] initWithDocument:self.document
+                                                                                                    key:childKey
+                                                                                         isBeforeParent:self.computedBeforeStyle ? YES : NO];
+            break;
+        case 3:
+            generatedChild = [[EucCSSIntermediateDocumentGeneratedContainerNode alloc] initWithDocument:self.document
+                                                                                                    key:childKey
+                                                                                         isBeforeParent:NO]; 
+            break;
+        case 2:
+        case 4:
+            generatedChild = [[EucCSSIntermediateDocumentGeneratedTextNode alloc] initWithDocument:self.document key:childKey];
+            break;
+        default:
+            THWarn(@"Unexpected generated child key %ld", (long)generationKey);            
+    }
+    
+    return [generatedChild autorelease];
+}
+
+- (NSUInteger)rowSpan
+{
+    if([_documentTreeNode respondsToSelector:@selector(rowSpan)]) {
+        NSUInteger ret = [_documentTreeNode rowSpan];
+        return MAX(ret, 1);
+    } else {
+        return [super rowSpan];
+    }
+}
+
+- (NSUInteger)columnSpan
+{
+    if([_documentTreeNode respondsToSelector:@selector(columnSpan)]) {
+        NSUInteger ret = [_documentTreeNode columnSpan];
+        return MAX(ret, 1);
+    } else {
+        return [super columnSpan];
+    }
+}
 
 @end

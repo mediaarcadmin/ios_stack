@@ -15,13 +15,12 @@
 @synthesize idToNode = _idToNode;
 
 typedef struct EucCSSXMLTreeContext
-{
+{    
+    EucCSSXMLTree *self;
     Class xmlTreeNodeClass;
     NSMutableArray *nodes;
     NSMutableDictionary *idToNode;
     EucCSSXMLTreeNode *currentNode;
-    IMP idForNodeAttributeAndValue;
-    EucCSSXMLTree *self;
 } EucCSSXMLTreeContext;
 
 static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) 
@@ -42,14 +41,15 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
                 NSString *name = [NSString stringWithUTF8String:atts[i]];
                 NSString *value = [NSString stringWithUTF8String:atts[i+1]];
                 [attributes setObject:value forKey:name];
-                NSString *idForNode = context->idForNodeAttributeAndValue(context->self, @selector(idForNodeAttribute:value:), atts[i], atts[i+1]);
-                if(idForNode) {
-                    [context->idToNode setValue:newNode forKey:idForNode];
-                }
             }
         }
         newNode.attributes = attributes;
         [attributes release];
+        
+        NSString *idForNode = [newNode CSSID];
+        if(idForNode) {
+            [context->idToNode setValue:newNode forKey:idForNode];
+        }        
     }
     
     [nodes addObject:newNode];
@@ -58,15 +58,6 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
     context->currentNode = newNode;
          
     [newNode release];
-}
-
-- (NSString *)idForNodeAttribute:(const XML_Char *)name value:(const XML_Char *)value
-{
-    if(strcasecmp("id", name) == 0) {
-        return [NSString stringWithUTF8String:value];
-    } else {
-        return nil;
-    }
 }
 
 static void EucCSSXMLTreeEndElementHandler(void *ctx, const XML_Char *name) 
@@ -109,8 +100,7 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
         if(xmlLength) {
             NSMutableArray *buildNodes = [[NSMutableArray alloc] init];
             NSMutableDictionary *buildIdToNodes = [[NSMutableDictionary alloc] init];
-            IMP idForNodeAttributeAndValue = [self methodForSelector:@selector(idForNodeAttribute:value:)];
-            EucCSSXMLTreeContext context = { _xmlTreeNodeClass, buildNodes, buildIdToNodes, NULL, idForNodeAttributeAndValue, self };
+            EucCSSXMLTreeContext context = { self, _xmlTreeNodeClass, buildNodes, buildIdToNodes, NULL };
             
             XML_Parser parser = XML_ParserCreate("UTF-8");
             XML_SetUserData(parser, &context);    

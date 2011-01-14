@@ -16,7 +16,6 @@
 #import <libcss/libcss.h>
 
 @interface EucCSSLayoutPositionedBlock ()
-- (void)_collapseTopMarginUpwards;
 
 @property (nonatomic, assign) CGRect borderRect;
 @property (nonatomic, assign) CGRect paddingRect;
@@ -32,12 +31,6 @@
 @synthesize paddingRect = _paddingRect;
 @synthesize contentRect = _contentRect;
 
-@synthesize leftFloatChildren = _leftFloatChildren;
-@synthesize rightFloatChildren = _rightFloatChildren;
-
-@synthesize intrudingLeftFloats = _intrudingLeftFloats;
-@synthesize intrudingRightFloats = _intrudingRightFloats;
-
 - (id)init
 {
     [NSException raise:NSInternalInconsistencyException 
@@ -49,9 +42,6 @@
                scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {
-        NSMutableArray *forChildren = [[NSMutableArray alloc] init];
-        self.children = forChildren;
-        [forChildren release];
         _documentNode = [documentNode retain];
         _scaleFactor = scaleFactor;
     }
@@ -61,25 +51,8 @@
 - (void)dealloc
 {
     [_documentNode release];
-    if(_leftFloatChildren) {
-        [_leftFloatChildren release];
-    }
-    if(_rightFloatChildren) {
-        [_rightFloatChildren release];
-    }
-    if(_intrudingLeftFloats) {
-        [_intrudingLeftFloats release];
-    }
-    if(_intrudingRightFloats) {
-        [_intrudingRightFloats release];
-    }    
     
     [super dealloc];
-}
-
-- (css_computed_style *)computedStyle
-{
-    return _documentNode.computedStyle;
 }
 
 - (void)positionInFrame:(CGRect)frame
@@ -212,7 +185,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
                 _borderRect.origin.y += topMarginDifference;
                 if(oldTopMarginHeight == 0.0f) {
                     // Further collapse the margin upwards, if possible.
-                    [self _collapseTopMarginUpwards];
+                    [self collapseTopMarginUpwards];
                 }            
             }
             frame.size.height = CGRectGetMaxY(_contentRect);
@@ -225,17 +198,9 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
     }
 }
 
-- (void)addChild:(EucCSSLayoutPositionedContainer *)child
+- (void)closeBottomWithContentHeight:(CGFloat)height
 {
-    [self.children addObject:child];
-    child.parent = self;
-
-    if([child isKindOfClass:[EucCSSLayoutPositionedBlock class]]) {
-        EucCSSLayoutPositionedBlock *subBlock = (EucCSSLayoutPositionedBlock *)child;
-        if(css_computed_float(subBlock.documentNode.computedStyle) == CSS_FLOAT_NONE) {
-            [subBlock _collapseTopMarginUpwards];
-        }
-    }
+    [self closeBottomWithContentHeight:height atInternalPageBreak:NO];
 }
 
 - (id)_previousSibling
@@ -249,7 +214,7 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
     return ret;
 }
 
-- (void)_collapseTopMarginUpwards
+- (void)collapseTopMarginUpwards
 {
     //NSParameterAssert(self.children.count == 0);
     if(self.children.count != 0) {
@@ -383,193 +348,6 @@ static inline CGFloat collapse(CGFloat one, CGFloat two)
         frame.size.width -= difference;
         self.frame = frame;
     }    
-}
-
-- (CGRect)openRectFromYPoint:(CGFloat)yPoint ofMinimumWidth:(CGFloat)minWidth
-{   
-    return CGRectZero;
-}
-
-- (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height
-{
-    NSMutableArray *leftRet = nil;
-    if(_intrudingLeftFloats) {
-        if(!leftRet) {
-            leftRet = [[NSMutableArray alloc]  initWithCapacity:_intrudingLeftFloats.count];
-        }
-        for(EucCSSLayoutPositionedContainer *candidateFloat in _intrudingLeftFloats) {
-            CGRect floatFrame = [candidateFloat frameInRelationTo:self];
-            if(!(contentY + height < floatFrame.origin.y || 
-                 contentY > floatFrame.origin.y + floatFrame.size.height)) {
-                [leftRet addObject:candidateFloat];
-            }
-        }
-    }
-    if(_leftFloatChildren) {
-        if(!leftRet) {
-            leftRet = [[NSMutableArray alloc]  initWithCapacity:_leftFloatChildren.count];
-        }
-        for(EucCSSLayoutPositionedContainer *candidateFloat in _leftFloatChildren) {
-            CGRect floatFrame = candidateFloat.frame;
-            if(!(contentY + height < floatFrame.origin.y || 
-                 contentY > floatFrame.origin.y + floatFrame.size.height)) {
-                [leftRet addObject:candidateFloat];
-            }
-        }
-    }
-    if(leftRet && !leftRet.count) {
-        [leftRet release];
-        leftRet = nil;
-    }
-    
-    
-    NSMutableArray *rightRet = nil;
-    if(_intrudingRightFloats) {
-        if(!rightRet) {
-            rightRet = [[NSMutableArray alloc]  initWithCapacity:_intrudingRightFloats.count];
-        }
-        for(EucCSSLayoutPositionedContainer *candidateFloat in _intrudingRightFloats) {
-            CGRect floatFrame = [candidateFloat frameInRelationTo:self];
-            if(!(contentY + height < floatFrame.origin.y || 
-                 contentY > floatFrame.origin.y + floatFrame.size.height)) {
-                [rightRet addObject:candidateFloat];
-            }
-        }
-    }    
-    if(_rightFloatChildren) {
-        if(!rightRet) {
-            rightRet = [[NSMutableArray alloc]  initWithCapacity:_rightFloatChildren.count];
-        }
-        for(EucCSSLayoutPositionedContainer *candidateFloat in _rightFloatChildren) {
-            CGRect floatFrame = candidateFloat.frame;
-            if(!(contentY + height < floatFrame.origin.y || 
-                 contentY > floatFrame.origin.y + floatFrame.size.height)) {
-                [rightRet addObject:candidateFloat];
-            }
-        }
-    }
-    if(rightRet && !rightRet.count) {
-        [rightRet release];
-        rightRet = nil;
-    }
-    
-    
-    if(rightRet || leftRet) {
-        THPair *ret = [THPair pairWithFirst:leftRet second:rightRet];
-        [leftRet release];
-        [rightRet release];
-        return ret;
-    } else {
-        return nil;
-    }
-}
-
-- (void)addFloatChild:(EucCSSLayoutPositionedContainer *)child 
-           atContentY:(CGFloat)contentY
-               onLeft:(BOOL)onLeft
-{
-    BOOL placeFound = NO;
-    CGRect childFrame = child.frame;
-    CGFloat floatHeight = childFrame.size.height;
-    CGFloat floatWidth = childFrame.size.width;
-    CGFloat myContentWidth = self.contentRect.size.width;
-    
-    THPair *overlapping;
-    do {
-        overlapping = [self floatsOverlappingYPoint:contentY height:floatHeight];
-        if(!overlapping) {
-            placeFound = YES;
-        } else {
-            CGFloat leftUsedWidth = 0;
-            NSArray *leftOverlaps = overlapping.first;
-            if(leftOverlaps) {
-                for(EucCSSLayoutPositionedContainer *lefter in leftOverlaps) {
-                    CGFloat lefterMaxX = CGRectGetMaxX([lefter frameInRelationTo:self]);
-                    if(lefterMaxX > leftUsedWidth) {
-                        leftUsedWidth = lefterMaxX;
-                    }
-                }
-            }
-            
-            CGFloat rightmostX = myContentWidth;
-            NSArray *rightOverlaps = overlapping.second;
-            if(rightOverlaps) {
-                for(EucCSSLayoutPositionedContainer *righter in rightOverlaps) {
-                    CGFloat righterMinX = CGRectGetMinX([righter frameInRelationTo:self]);
-                    if(righterMinX < rightmostX) {
-                        rightmostX = righterMinX;
-                    }
-                }
-            }
-            
-            CGFloat remaining = rightmostX - leftUsedWidth;
-            if(remaining > floatWidth) {
-                placeFound = YES;
-            } else {
-                CGFloat smallestNextY = CGFLOAT_MAX;
-                if(leftOverlaps) {
-                    for(EucCSSLayoutPositionedContainer *lefter in leftOverlaps) {
-                        CGFloat bottom = CGRectGetMaxY([lefter frameInRelationTo:self]);
-                        if(bottom < smallestNextY) {
-                            smallestNextY = bottom;
-                        }
-                    }
-                }
-                if(rightOverlaps) {
-                    for(EucCSSLayoutPositionedContainer *righter in rightOverlaps) {
-                        CGFloat bottom = CGRectGetMaxY([righter frameInRelationTo:self]);
-                        if(bottom < smallestNextY) {
-                            smallestNextY = bottom;
-                        }
-                    }
-                }
-                contentY = smallestNextY + 1;
-            }
-        }
-    } while(!placeFound);
-
-    CGFloat contentX;
-    if(onLeft) {
-        contentX = 0;
-        NSArray *leftOverlaps = overlapping.first;
-        if(leftOverlaps) {
-            for(EucCSSLayoutPositionedContainer *lefter in leftOverlaps) {
-                CGFloat leftPoint = CGRectGetMaxX([lefter frameInRelationTo:self]);
-                if(leftPoint > contentX) {
-                    contentX = leftPoint;
-                }
-            }
-        }
-        
-        if(!_leftFloatChildren) {
-            _leftFloatChildren = [[NSMutableArray alloc] init];
-        }
-        [_leftFloatChildren addObject:child];
-    } else {
-        contentX = myContentWidth;
-        NSArray *rightOverlaps = overlapping.second;
-        if(rightOverlaps) {
-            for(EucCSSLayoutPositionedContainer *righter in rightOverlaps) {
-                CGFloat rightMinPoint = CGRectGetMinX([righter frameInRelationTo:self]);
-                if(rightMinPoint < contentX) {
-                    contentX = rightMinPoint;
-                }
-            }
-        } 
-        contentX -= floatWidth;
-        
-        if(!_rightFloatChildren) {
-            _rightFloatChildren = [[NSMutableArray alloc] init];
-        }        
-        [_rightFloatChildren addObject:child];
-    }
-    
-    childFrame.origin.x = contentX;
-    childFrame.origin.y = contentY;
-    
-    child.frame = childFrame;
-    
-    child.parent = self;
 }
 
 @end

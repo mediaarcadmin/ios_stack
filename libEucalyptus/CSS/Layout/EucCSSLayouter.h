@@ -17,9 +17,9 @@
 #import <vector>
 #endif
 
-#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutRun.h"
 
-@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutPositionedBlock;
+@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, EucCSSLayoutSizedContainer, EucCSSLayoutPositionedBlock;
 
 typedef struct EucCSSLayoutPoint
 {
@@ -30,26 +30,30 @@ typedef struct EucCSSLayoutPoint
 
 @interface EucCSSLayouter : NSObject {
     EucCSSIntermediateDocument *_document;
-    CGFloat _scaleFactor;
 }
 
 @property (nonatomic, retain) EucCSSIntermediateDocument *document;
-@property (nonatomic, assign) CGFloat scaleFactor;
 
-- (id)initWithDocument:(EucCSSIntermediateDocument *)document
-           scaleFactor:(CGFloat)scaleFactor;
+- (id)initWithDocument:(EucCSSIntermediateDocument *)document;
+
+- (EucCSSLayoutSizedContainer *)sizedContainerFromNodeWithKey:(uint32_t)startNodeKey
+                                        stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
+                                                  scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedBlock *)layoutFromPoint:(EucCSSLayoutPoint)point
                                          inFrame:(CGRect)frame
                               returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
-                              returningCompleted:(BOOL *)returningCompleted;
+                              returningCompleted:(BOOL *)returningCompleted
+                                     scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPositionedBlock *)_layoutFromPoint:(EucCSSLayoutPoint)point
                                           inFrame:(CGRect)frame
                                returningNextPoint:(EucCSSLayoutPoint *)returningNextPoint
                                returningCompleted:(BOOL *)returningCompleted
                                  lastBlockNodeKey:(uint32_t)lastBlockNodeKey
-                            constructingAncestors:(BOOL)constructingAncestors;
+                            stopBeforeNodeWithKey:(uint32_t)stopBeforeNodeKey
+                            constructingAncestors:(BOOL)constructingAncestors
+                                      scaleFactor:(CGFloat)scaleFactor;
 
 - (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;
 

@@ -25,6 +25,10 @@ struct css_computed_style;
     
     CGFloat _textPointSize;
     NSUInteger _lineHeightKind;
+    
+    uint32_t _topLevelTableParentKey;
+    
+    /*enum css_display_e*/ uint8_t _display;
 }
 
 // Concrete:
@@ -33,6 +37,8 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *blockLevelNode;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *blockLevelParent;
+
+@property (nonatomic, readonly) uint32_t topLevelTableParentKey;
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *previous;
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *next;
@@ -47,10 +53,10 @@ struct css_computed_style;
 
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 
-- (CGFloat)textPointSizeAtScaleFactor:(CGFloat)scaleFactor;
-- (CGFloat)textAscenderAtScaleFactor:(CGFloat)scaleFactor;
-- (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor;
-- (CGFloat)xHeightAtScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)textPointSizeWithScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)textAscenderWithScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)lineHeightWithScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)xHeightWithScaleFactor:(CGFloat)scaleFactor;
 
 // Overridable:
 @property (nonatomic, readonly) BOOL isTextNode;  // Default: NO
@@ -65,6 +71,11 @@ struct css_computed_style;
 @property (nonatomic, readonly) NSString *name; // Will just return the class name - can be overridden to return e.g. 
                                                 // XML name of the underlying document node.  Just used for debugging.
 
+@property (nonatomic, readonly) /*enum css_display_e*/ uint8_t display; // Returns the display from the computed style.
+
+@property (nonatomic, readonly) NSUInteger rowSpan;
+@property (nonatomic, readonly) NSUInteger columnSpan;
+
 // Abstract:
 
 @property (nonatomic, readonly) EucCSSIntermediateDocumentNode *parent;
@@ -72,5 +83,7 @@ struct css_computed_style;
 @property (nonatomic, readonly) uint32_t *childKeys;
 
 @property (nonatomic, readonly) struct css_computed_style *computedStyle;
+
+- (EucCSSIntermediateDocumentNode *)generatedChildNodeForKey:(uint32_t)childKey;
 
 @end

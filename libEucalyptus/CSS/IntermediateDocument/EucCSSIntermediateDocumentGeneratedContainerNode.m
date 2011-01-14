@@ -15,15 +15,15 @@
 @implementation EucCSSIntermediateDocumentGeneratedContainerNode
 
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document 
-             parentKey:(uint32_t)parentKey
+                   key:(uint32_t)key
         isBeforeParent:(BOOL)beforeParent;
 {
     if((self = [super init])) {
         self.document = document;
-        self.key = parentKey | (beforeParent ? EucCSSIntermediateDocumentNodeKeyFlagBeforeContainerNode : EucCSSIntermediateDocumentNodeKeyFlagAfterContainerNode);
-        _parentKey = parentKey;
+        self.key = key;
+        _parentKey = key & ~EUC_CSS_INTERMEDIATE_DOCUMENT_NODE_KEY_FLAG_MASK;
         _beforeParent = beforeParent;
-        _childKey = self.key | EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode;
+        _childKey = key + 1;
     }
     return self;
 }

@@ -15,10 +15,12 @@
 
 #import "EucCSSInternal.h"
 #import "EucCSSLayoutPositionedLine.h"
+#import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
 #import "EucCSSLayoutPositionedRun.h"
-#import "EucCSSLayoutDocumentRun.h"
-#import "EucCSSLayoutDocumentRun_Package.h"
+#import "EucCSSLayoutRun.h"
+#import "EucCSSLayoutRun_Package.h"
+#import "EucCSSLayoutSizedRun.h"
 #import "THLog.h"
 
 #import <libcss/libcss.h>
@@ -125,9 +127,13 @@ static BOOL _adjustLineBoxToContainLineBox(EucCSSLayoutPositionedLineLineBox *co
             break;*/
     }
     
-    containerLineBox->width += containedLineBox->width;
-    
     return changed;
+}
+
+static BOOL _adjustLineBoxToContainLineBoxIncludingWidth(EucCSSLayoutPositionedLineLineBox *containerLineBox, EucCSSLayoutPositionedLineLineBox *containedLineBox)
+{
+    containerLineBox->width += containedLineBox->width;
+    return _adjustLineBoxToContainLineBox(containerLineBox, containedLineBox);;
 }
 
 static inline void _placeRenderItemInRenderItem(EucCSSLayoutPositionedLineRenderItem *child, EucCSSLayoutPositionedLineRenderItem *parent)
@@ -162,173 +168,154 @@ static EucCSSLayoutPositionedLineLineBox lineBoxForDocumentNode(EucCSSIntermedia
         
     css_computed_style *style = node.computedStyle;
     if(style) {        
-        css_fixed verticalAlignSize = verticalAlignSize;
-        css_unit verticalAlignSizeUnit = verticalAlignSizeUnit;
+        css_fixed verticalAlignSize = 0;
+        css_unit verticalAlignSizeUnit = (css_unit)0;
         NSUInteger verticalAlign = css_computed_vertical_align(style, &verticalAlignSize, &verticalAlignSizeUnit);
         myLineBox.verticalAlign = verticalAlign;
         if(verticalAlign == CSS_VERTICAL_ALIGN_SUPER) {
-            myLineBox.verticalAlignSetOffset = -[node.parent xHeightAtScaleFactor:scaleFactor];
+            myLineBox.verticalAlignSetOffset = -[node.parent xHeightWithScaleFactor:scaleFactor];
         } else if(verticalAlign == CSS_VERTICAL_ALIGN_SUB) {
-            myLineBox.verticalAlignSetOffset = [node.parent xHeightAtScaleFactor:scaleFactor];
+            myLineBox.verticalAlignSetOffset = [node.parent xHeightWithScaleFactor:scaleFactor];
         } else if(verticalAlign == CSS_VERTICAL_ALIGN_SET) {
-            myLineBox.verticalAlignSetOffset = EucCSSLibCSSSizeToPixels(style, verticalAlignSize, verticalAlignSizeUnit, [node lineHeightAtScaleFactor:scaleFactor], scaleFactor);
+            myLineBox.verticalAlignSetOffset = EucCSSLibCSSSizeToPixels(style, verticalAlignSize, verticalAlignSizeUnit, [node lineHeightWithScaleFactor:scaleFactor], scaleFactor);
         }
     } else {
         myLineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
     }
-    
-    css_fixed verticalAlignSize = verticalAlignSize;
-    css_unit verticalAlignSizeUnit = verticalAlignSizeUnit;
-    
-    
-    CGFloat halfLeading = halfLeading;
-    halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([node lineHeightAtScaleFactor:scaleFactor], 
-                                                              [node textPointSizeAtScaleFactor:scaleFactor],
+        
+    CGFloat halfLeading;
+    halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([node lineHeightWithScaleFactor:scaleFactor], 
+                                                              [node textPointSizeWithScaleFactor:scaleFactor],
                                                               &halfLeading, &myLineBox.height);
-    myLineBox.baseline = [node textAscenderAtScaleFactor:scaleFactor] + halfLeading;
+    myLineBox.baseline = [node textAscenderWithScaleFactor:scaleFactor] + halfLeading;
         
     return myLineBox;
 }
 
-static EucCSSLayoutPositionedLineLineBox lineBoxForComponentInfo(EucCSSLayoutDocumentRunComponentInfo *componentInfo, CGFloat scaleFactor)
+static EucCSSLayoutPositionedLineLineBox lineBoxForComponentInfo(EucCSSLayoutRunComponentInfo *componentInfo, EucCSSLayoutSizedRunWidthInfo *widthInfo, CGFloat scaleFactor)
 {    
-    if(componentInfo->kind == EucCSSLayoutDocumentRunComponentKindImage) {
+    if(componentInfo->kind == EucCSSLayoutRunComponentKindImage) {
         EucCSSLayoutPositionedLineLineBox imageLineBox = {
-            componentInfo->contents.imageInfo.scaledSize.width,
-            componentInfo->contents.imageInfo.scaledSize.height,
-            componentInfo->contents.imageInfo.scaledSize.height,
-            CSS_VERTICAL_ALIGN_BASELINE
+            0,
+            widthInfo->size.height,
+            widthInfo->size.height,
+            CSS_VERTICAL_ALIGN_BASELINE,
+            0
         };
         return imageLineBox;
     } else {
-        EucCSSLayoutPositionedLineLineBox componentLineBox = lineBoxForDocumentNode(componentInfo->documentNode, scaleFactor);
-        componentLineBox.width = componentInfo->width;
-        return componentLineBox;
+        return lineBoxForDocumentNode(componentInfo->documentNode, scaleFactor);
     }
 }
 
-static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, EucCSSLayoutDocumentRunComponentInfo **componentInfo, uint32_t afterEndComponentOffset, CGFloat scaleFactor) 
+static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, EucCSSLayoutRunComponentInfo **pComponentInfo, EucCSSLayoutSizedRunWidthInfo **pWidthInfo, uint32_t afterEndComponentOffset, CGFloat scaleFactor) 
 {
     
     uint32_t i = *componentOffset;
-    EucCSSLayoutDocumentRunComponentInfo *info = *componentInfo;
+    EucCSSLayoutRunComponentInfo *componentInfo = *pComponentInfo;
+    EucCSSLayoutSizedRunWidthInfo *widthInfo = *pWidthInfo;
     
-    EucCSSLayoutPositionedLineLineBox myLineBox = lineBoxForComponentInfo(info, scaleFactor);
+    EucCSSLayoutPositionedLineLineBox myLineBox = lineBoxForComponentInfo(componentInfo, widthInfo, scaleFactor);
     ++i;
-    ++info;
+    ++componentInfo;
+    ++widthInfo;
     
-    while(info->kind != EucCSSLayoutDocumentRunComponentKindCloseNode && 
+    while(componentInfo->kind != EucCSSLayoutRunComponentKindCloseNode && 
           i < afterEndComponentOffset) {
-        if(info->kind == EucCSSLayoutDocumentRunComponentKindOpenNode) {
-            EucCSSLayoutPositionedLineLineBox subNodeBox = processNode(&i, &info, afterEndComponentOffset, scaleFactor);
-            NSCParameterAssert(i == afterEndComponentOffset || info->kind == EucCSSLayoutDocumentRunComponentKindCloseNode);
+        if(componentInfo->kind == EucCSSLayoutRunComponentKindOpenNode) {
+            EucCSSLayoutPositionedLineLineBox subNodeBox = processNode(&i, &componentInfo, &widthInfo, afterEndComponentOffset, scaleFactor);
+            NSCParameterAssert(i == afterEndComponentOffset || componentInfo->kind == EucCSSLayoutRunComponentKindCloseNode);
             _adjustLineBoxToContainLineBox(&myLineBox, &subNodeBox);
             if(i == afterEndComponentOffset) {
                 break;
             }
-        } else if(info->kind == EucCSSLayoutDocumentRunComponentKindImage) {
-            EucCSSLayoutPositionedLineLineBox imageLineBox = lineBoxForComponentInfo(info, scaleFactor);
+        } else if(componentInfo->kind == EucCSSLayoutRunComponentKindImage) {
+            EucCSSLayoutPositionedLineLineBox imageLineBox = lineBoxForComponentInfo(componentInfo, widthInfo, scaleFactor);
             _adjustLineBoxToContainLineBox(&myLineBox, &imageLineBox);
         } else {
-            if(info->kind != EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                myLineBox.width += info->width;
+            if(componentInfo->kind != EucCSSLayoutRunComponentKindHyphenationRule) {
             }
         }
-        ++i, ++info;
+        ++i, ++componentInfo, ++widthInfo;
     }
     
-    /// TODO:  Subtract the width vs hypenated width difference for first node if it's a hyphenation rule at the end.
-    
     *componentOffset = i;
-    *componentInfo = info;
+    *pComponentInfo = componentInfo;
+    *pWidthInfo = widthInfo;
     
     return myLineBox;
 }
 
+- (void)sizeToFitInWidth:(CGFloat)width parentFrame:(CGRect)parentFrame
+{
+    EucCSSLayoutSizedRun *sizedRun = ((EucCSSLayoutPositionedRun *)self.parent).sizedRun; 
+    EucCSSLayoutRun *run = sizedRun.run; 
+    CGFloat scaleFactor = sizedRun.scaleFactor;
+            
+    size_t componentsCount = run.componentsCount;
+    
+    uint32_t componentOffset = [run pointToComponentOffset:_startPoint];
+    uint32_t afterEndComponentOffset = [run pointToComponentOffset:_endPoint];
+    EucCSSLayoutRunComponentInfo *startComponentInfo = run.componentInfos + componentOffset;
+    EucCSSLayoutRunComponentInfo *componentInfo = startComponentInfo;
+    EucCSSLayoutSizedRunWidthInfo *widthInfo = [sizedRun componentWidthInfosForFrame:parentFrame] + componentOffset;
+                    
+    if(afterEndComponentOffset > componentsCount) {
+        afterEndComponentOffset = componentsCount;
+    }
+            
+    EucCSSLayoutPositionedLineLineBox lineBox = { 0 };
+    lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
+    
+    while(componentOffset < afterEndComponentOffset) {
+        while(componentOffset < afterEndComponentOffset && 
+              componentInfo->kind == EucCSSLayoutRunComponentKindFloat) {
+            ++componentOffset;
+            ++componentInfo;
+            ++widthInfo;
+        }
+        if(componentOffset >= afterEndComponentOffset) {
+            break;
+        }
+                    
+        EucCSSLayoutPositionedLineLineBox subnodeLineBox = processNode(&componentOffset, &componentInfo, &widthInfo, afterEndComponentOffset, scaleFactor);
+        NSCParameterAssert(componentOffset == afterEndComponentOffset || 
+                           componentInfo->kind == EucCSSLayoutRunComponentKindCloseNode);
+        
+        _adjustLineBoxToContainLineBox(&lineBox, &subnodeLineBox);
+        
+        if(componentOffset < afterEndComponentOffset) {
+            ++componentOffset;
+            ++componentInfo;
+            ++widthInfo;
+        }
+    }
+    
+    // Now take into account our parent nodes' affect on the line box.
+    componentInfo = startComponentInfo;
+    EucCSSIntermediateDocumentNode *node = componentInfo->documentNode.parent;
+    while(node.display != CSS_DISPLAY_BLOCK) {
+        if(node.computedStyle) {
+            EucCSSLayoutPositionedLineLineBox parentNodeBox = lineBoxForDocumentNode(node, scaleFactor);
+            _adjustLineBoxToContainLineBox(&parentNodeBox, &lineBox);
+            node = node.parent;
+            lineBox = parentNodeBox;
+        }
+    }
+
+    CGRect frame = self.frame;
+    frame.size = CGSizeMake(width, lineBox.height);
+    self.frame = frame;
+    
+    _parentFrame = parentFrame;
+}
+
+
 - (void)sizeToFitInWidth:(CGFloat)width
 {
-    if(!_componentWidth) {
-        EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun; 
-        CGFloat scaleFactor = documentRun.scaleFactor;
-                
-        size_t componentsCount = documentRun.componentsCount;
-        
-        uint32_t componentOffset = [documentRun pointToComponentOffset:_startPoint];
-        uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
-        EucCSSLayoutDocumentRunComponentInfo *startComponentInfo = &(documentRun.componentInfos[componentOffset]);
-        EucCSSLayoutDocumentRunComponentInfo *componentInfo = startComponentInfo;
-                        
-        if(afterEndComponentOffset > componentsCount) {
-            afterEndComponentOffset = componentsCount;
-        }
-                
-        EucCSSLayoutPositionedLineLineBox lineBox = { 0 };
-        
-        while(componentOffset < afterEndComponentOffset) {
-            // May not come in here if the line contains no components (e.g. 
-            // it contains some floats but is in an otherwise an empty block 
-            // node)
-            
-            while(componentOffset < afterEndComponentOffset && 
-                  componentInfo->kind == EucCSSLayoutDocumentRunComponentKindFloat) {
-                ++componentOffset;
-                ++componentInfo;
-            }
-            if(componentOffset >= afterEndComponentOffset) {
-                break;
-            }
-            
-            if(componentInfo->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                lineBox.width = componentInfo->contents.hyphenationInfo.widthAfterHyphen - componentInfo->width;
-            }            
-            
-            EucCSSLayoutPositionedLineLineBox subnodeLineBox = processNode(&componentOffset, &componentInfo, afterEndComponentOffset, scaleFactor);
-            NSCParameterAssert(componentOffset == afterEndComponentOffset || 
-                               componentInfo->kind == EucCSSLayoutDocumentRunComponentKindCloseNode);
-            
-            _adjustLineBoxToContainLineBox(&lineBox, &subnodeLineBox);
-            
-            if(componentOffset < afterEndComponentOffset) {
-                ++componentOffset;
-                ++componentInfo;
-            }
-        }
-
-        // Stopping 'just before' a hyphen component really means that we stop
-        // after the first part of the hyphenated word.
-        if(componentOffset < componentsCount) {
-            if(componentInfo->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
-                lineBox.width -= componentInfo->width;
-                lineBox.width += componentInfo->contents.hyphenationInfo.widthBeforeHyphen;
-            }
-        }
-        
-        // Now take into acunt our parent nodes' affect on the line box.
-        componentInfo = startComponentInfo;
-        EucCSSIntermediateDocumentNode *node = componentInfo->documentNode.parent;
-        css_computed_style *style;
-        while(style = node.computedStyle,
-              !style || css_computed_display(style, NO) != CSS_DISPLAY_BLOCK) {
-            if(style) {
-                EucCSSLayoutPositionedLineLineBox parentNodeBox = lineBoxForDocumentNode(node, scaleFactor);
-                _adjustLineBoxToContainLineBox(&lineBox, &parentNodeBox);
-                node = node.parent;
-            }
-        }
-              
-        _lineBox = lineBox;
-        
-        _componentWidth = lineBox.width;
-        _baseline = lineBox.baseline;
-        
-        CGRect frame = self.frame;
-        frame.size = CGSizeMake(width, lineBox.height);
-        self.frame = frame;
-    } else {
-        CGRect frame = self.frame;
-        frame.size.width = width;
-        self.frame = frame;
-    }
+    CGRect frame = self.frame;
+    frame.size.width = width;
+    self.frame = frame;
 }
 
 - (CGFloat)minimumWidth
@@ -363,7 +350,7 @@ static inline void _adjustParentsToContainRenderItem(EucCSSLayoutPositionedLineR
     NSUInteger parentIndex = renderItems[childIndex].parentIndex;
     if(parentIndex != NSUIntegerMax) {
         // Expand the size of the parent, if necessary.
-        BOOL sizeChanged = _adjustLineBoxToContainLineBox(&renderItems[parentIndex].lineBox, &renderItems[childIndex].lineBox);
+        BOOL sizeChanged = _adjustLineBoxToContainLineBoxIncludingWidth(&renderItems[parentIndex].lineBox, &renderItems[childIndex].lineBox);
         
         // If the size or baseline of the parent changed.
         if(sizeChanged) {
@@ -385,8 +372,7 @@ static inline void _adjustParentsToContainRenderItem(EucCSSLayoutPositionedLineR
 
 static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode *node, CGFloat scaleFactor, EucCSSLayoutPositionedLineRenderItem **currentRenderItem, size_t *renderItemCount, size_t *renderItemCapacity, EucCSSLayoutPositionedLineRenderItem **renderItems)
 {
-    css_computed_style *style = node.computedStyle;
-    BOOL doParent = css_computed_display(style, NO) != CSS_DISPLAY_BLOCK;
+    BOOL doParent = node.display != CSS_DISPLAY_BLOCK;
     if(doParent) {
         EucCSSIntermediateDocumentNode *parent = node.parent;
         if(!parent.computedStyle) {
@@ -411,12 +397,13 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems
 {
     if(!_renderItems) {
-        EucCSSLayoutDocumentRun *documentRun = ((EucCSSLayoutPositionedRun *)self.parent).documentRun;
-        CGFloat scaleFactor = documentRun.scaleFactor;
+        EucCSSLayoutSizedRun *sizedRun = ((EucCSSLayoutPositionedRun *)self.parent).sizedRun; 
+        EucCSSLayoutRun *run = sizedRun.run; 
+        CGFloat scaleFactor = sizedRun.scaleFactor;
         
-        size_t componentsCount = documentRun.componentsCount;
-        uint32_t startComponentOffset = [documentRun pointToComponentOffset:_startPoint];
-        uint32_t afterEndComponentOffset = [documentRun pointToComponentOffset:_endPoint];
+        size_t componentsCount = run.componentsCount;
+        uint32_t startComponentOffset = [run pointToComponentOffset:_startPoint];
+        uint32_t afterEndComponentOffset = [run pointToComponentOffset:_endPoint];
         
         _renderItems = calloc(sizeof(EucCSSLayoutPositionedLineRenderItem), componentsCount);
         size_t renderItemCapacity = componentsCount;
@@ -429,7 +416,8 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         CGFloat extraWidthNeeded = 0.0f;
         CGFloat spacesRemaining = 0.0f;
         
-        EucCSSLayoutDocumentRunComponentInfo *componentInfos = &(documentRun.componentInfos[startComponentOffset]);
+        EucCSSLayoutRunComponentInfo *componentInfos = run.componentInfos + startComponentOffset;
+        EucCSSLayoutSizedRunWidthInfo *widthInfos = [sizedRun componentWidthInfosForFrame:_parentFrame] + startComponentOffset;
         
         switch(_align) {
             case CSS_TEXT_ALIGN_CENTER:
@@ -441,12 +429,12 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
             case CSS_TEXT_ALIGN_JUSTIFY:
             {
                 uint32_t i;
-                EucCSSLayoutDocumentRunComponentInfo *info;
+                EucCSSLayoutRunComponentInfo *info;
                 for(i = startComponentOffset, info = componentInfos;
                     i < componentsCount && i < afterEndComponentOffset; 
                     ++i, ++info) {
-                    if(info->kind == EucCSSLayoutDocumentRunComponentKindSpace || 
-                       info->kind == EucCSSLayoutDocumentRunComponentKindNonbreakingSpace) {
+                    if(info->kind == EucCSSLayoutRunComponentKindSpace || 
+                       info->kind == EucCSSLayoutRunComponentKindNonbreakingSpace) {
                         spacesRemaining++;
                     }
                 }    
@@ -458,16 +446,15 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         }
 
         EucCSSIntermediateDocumentNode *parentNode;
-        if(componentInfos[0].kind == EucCSSLayoutDocumentRunComponentKindCloseNode) {
+        if(componentInfos[0].kind == EucCSSLayoutRunComponentKindCloseNode) {
             parentNode = componentInfos[0].documentNode;
         } else {
             parentNode = componentInfos[0].documentNode.parent;
         }
         _accumulateParentLineBoxesInto(parentNode, scaleFactor, &renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
         
-        CGFloat pointSize = [parentNode textPointSizeAtScaleFactor:scaleFactor];
-        CGFloat ascender = [parentNode textAscenderAtScaleFactor:scaleFactor];        
-        CGFloat xHeight = [parentNode xHeightAtScaleFactor:scaleFactor];        
+        CGFloat pointSize = [parentNode textPointSizeWithScaleFactor:scaleFactor];
+        CGFloat ascender = [parentNode textAscenderWithScaleFactor:scaleFactor];        
         
         NSUInteger parentIndex = _renderItemCount - 1;
         
@@ -475,13 +462,14 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         CGFloat thisNodeAbsoluteX = xPosition;
         
         uint32_t i;
-        EucCSSLayoutDocumentRunComponentInfo *info;
-        for(i = startComponentOffset, info = componentInfos;
+        EucCSSLayoutRunComponentInfo *info;
+        EucCSSLayoutSizedRunWidthInfo *widthInfo;
+        for(i = startComponentOffset, info = componentInfos, widthInfo = widthInfos;
             i < componentsCount && i < afterEndComponentOffset; 
-            ++i, ++info) {
+            ++i, ++info, ++widthInfo) {
             switch(info->kind) {
-                case EucCSSLayoutDocumentRunComponentKindSpace:
-                case EucCSSLayoutDocumentRunComponentKindNonbreakingSpace:
+                case EucCSSLayoutRunComponentKindSpace:
+                case EucCSSLayoutRunComponentKindNonbreakingSpace:
                 {
                     if(extraWidthNeeded != 0.0f) {
                         CGFloat extraSpace = extraWidthNeeded / spacesRemaining;
@@ -489,16 +477,16 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                         extraWidthNeeded -= extraSpace;
                         --spacesRemaining;
                     }
-                    xPosition += info->width;                  
+                    xPosition += widthInfo->width;                  
                     break;   
                 }
-                case EucCSSLayoutDocumentRunComponentKindWord:
+                case EucCSSLayoutRunComponentKindWord:
                 {
                     renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
                     renderItem->parentIndex = parentIndex;
                     renderItem->origin.x = xPosition - thisNodeAbsoluteX;
                     
-                    renderItem->lineBox.width = info->width;
+                    renderItem->lineBox.width = widthInfo->width;
                     renderItem->lineBox.height = pointSize;
                     renderItem->lineBox.baseline = ascender;
                     renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
@@ -510,17 +498,17 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     
                     _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     
-                    xPosition += info->width;
+                    xPosition += widthInfo->width;
                     break;
                 }
-                case EucCSSLayoutDocumentRunComponentKindHyphenationRule:
+                case EucCSSLayoutRunComponentKindHyphenationRule:
                 {
                     if(i == startComponentOffset) {
                         renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindString;
                         renderItem->parentIndex = parentIndex;
                         renderItem->origin.x = xPosition - thisNodeAbsoluteX;
 
-                        renderItem->lineBox.width = info->contents.hyphenationInfo.widthAfterHyphen;
+                        renderItem->lineBox.width = widthInfo->hyphenWidths.widthAfterHyphen;
                         renderItem->lineBox.height = pointSize;
                         renderItem->lineBox.baseline = ascender;
                         renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
@@ -532,23 +520,23 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                         
                         _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                         
-                        xPosition += info->contents.hyphenationInfo.widthAfterHyphen;
+                        xPosition += widthInfo->hyphenWidths.widthAfterHyphen;
                         break;                        
                     }
                     break;
                 }
-                case EucCSSLayoutDocumentRunComponentKindImage:
+                case EucCSSLayoutRunComponentKindImage:
                 {
                     renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindImage;
                     renderItem->parentIndex = parentIndex;
                     renderItem->origin.x = xPosition - thisNodeAbsoluteX;
                     
-                    renderItem->lineBox.width = info->contents.imageInfo.scaledSize.width;
-                    renderItem->lineBox.height = info->contents.imageInfo.scaledSize.height;
-                    renderItem->lineBox.baseline = info->contents.imageInfo.scaledSize.height;
+                    renderItem->lineBox.width = widthInfo->size.width;
+                    renderItem->lineBox.height = widthInfo->size.height;
+                    renderItem->lineBox.baseline = widthInfo->size.height;
                     renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
                     
-                    renderItem->item.imageItem.image = CGImageRetain(info->contents.imageInfo.image);
+                    renderItem->item.imageItem.image = CGImageRetain([info->documentNode.document imageForURL:info->contents.imageInfo.imageURL]);
                     renderItem->item.imageItem.layoutPoint = info->point;
 
                     renderItem->altText = [[info->documentNode altText] retain];
@@ -557,10 +545,10 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
 
                     _adjustParentsToContainRenderItem(_renderItems, _renderItemCount, _renderItemCount - 1);
 
-                    xPosition += info->width;                    
+                    xPosition += widthInfo->size.width;                    
                     break;
                 }
-                case EucCSSLayoutDocumentRunComponentKindOpenNode:
+                case EucCSSLayoutRunComponentKindOpenNode:
                 {
                     EucCSSIntermediateDocumentNode *node = info->documentNode;
 
@@ -579,21 +567,20 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     
                     _adjustParentsToContainRenderItem(_renderItems, _renderItemCount, _renderItemCount - 1);
                     
-                    pointSize = [node textPointSizeAtScaleFactor:scaleFactor];
-                    ascender = [node textAscenderAtScaleFactor:scaleFactor];
-                    xHeight = [node xHeightAtScaleFactor:scaleFactor];
+                    pointSize = [node textPointSizeWithScaleFactor:scaleFactor];
+                    ascender = [node textAscenderWithScaleFactor:scaleFactor];
                     
-                    xPosition += info->width;                    
+                    xPosition += widthInfo->width;                    
                     break;
                 }
-                case EucCSSLayoutDocumentRunComponentKindCloseNode:
+                case EucCSSLayoutRunComponentKindCloseNode:
                 {
                     EucCSSIntermediateDocumentNode *node = info->documentNode;
 
                     renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindCloseNode;
                     renderItem->origin.x = xPosition - thisNodeAbsoluteX;
                     renderItem->lineBox = _renderItems[parentIndex].lineBox;
-                    renderItem->lineBox.width = info->width;
+                    renderItem->lineBox.width = widthInfo->width;
                     
                     renderItem->parentIndex = parentIndex;
                     renderItem->item.closeNodeInfo.node = node;
@@ -603,16 +590,15 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     
                     thisNodeAbsoluteX -= _renderItems[parentIndex].origin.x;
-                    xPosition += info->width;                    
+                    xPosition += widthInfo->width;                    
                     parentIndex = _renderItems[parentIndex].parentIndex;
 
-                    pointSize = [node.parent textPointSizeAtScaleFactor:scaleFactor];
-                    ascender = [node.parent textAscenderAtScaleFactor:scaleFactor];     
-                    xHeight = [node.parent xHeightAtScaleFactor:scaleFactor];
+                    pointSize = [node.parent textPointSizeWithScaleFactor:scaleFactor];
+                    ascender = [node.parent textAscenderWithScaleFactor:scaleFactor];     
                     
                     break;
                 }
-                case EucCSSLayoutDocumentRunComponentKindFloat:
+                case EucCSSLayoutRunComponentKindFloat:
                 {
                     renderItem->kind = EucCSSLayoutPositionedLineRenderItemKindFloatPlaceholder;
                     renderItem->parentIndex = parentIndex;
@@ -629,13 +615,13 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         // Stopping 'just before' a hyphen component really means that we stop
         // after the first part of the hyphenated word.
         if(i < componentsCount) {
-            if(info->kind == EucCSSLayoutDocumentRunComponentKindHyphenationRule) {
+            if(info->kind == EucCSSLayoutRunComponentKindHyphenationRule) {
                 --renderItem;
                 
-                xPosition -= info->width;
-                xPosition += info->contents.hyphenationInfo.widthBeforeHyphen;
+                xPosition -= widthInfo->width;
+                xPosition += widthInfo->hyphenWidths.widthBeforeHyphen;
                                 
-                renderItem->lineBox.width = info->contents.hyphenationInfo.widthBeforeHyphen;
+                renderItem->lineBox.width = widthInfo->hyphenWidths.widthBeforeHyphen;
 
                 // Store the entire word in the alt text for accessibility.
                 renderItem->altText = renderItem->item.stringItem.string;                        

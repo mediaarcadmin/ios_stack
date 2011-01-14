@@ -15,13 +15,12 @@
 
 @implementation EucCSSIntermediateDocumentGeneratedTextNode
 
-- (id)initWithDocument:(EucCSSIntermediateDocument *)document 
-             parentKey:(uint32_t)parentKey
+- (id)initWithDocument:(EucCSSIntermediateDocument *)document key:(uint32_t)key
 {
     if((self = [super init])) {
         self.document = document;
-        self.key = parentKey | EucCSSIntermediateDocumentNodeKeyFlagGeneratedTextNode;
-        _parentKey = parentKey;
+        self.key = key;
+        _parentKey = key - 1;
     }
     return self;
 }

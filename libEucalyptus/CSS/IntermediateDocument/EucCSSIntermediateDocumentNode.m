@@ -14,6 +14,7 @@
 #import "THStringRenderer.h"
 #import "THPair.h"
 #import "THCache.h"
+#import "THLog.h"
 #import "LWCNSStringAdditions.h"
 #import <libcss/libcss.h>
 
@@ -142,8 +143,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
         }
         for(; i < childCount; ++i) {
             EucCSSIntermediateDocumentNode *prospectiveNextNode = [_document nodeForKey:childKeys[i]];
-            css_computed_style *style = [prospectiveNextNode computedStyle];
-            if(!style || css_computed_display(style, false) != CSS_DISPLAY_NONE) {
+            if(prospectiveNextNode.display != CSS_DISPLAY_NONE) {
                 return prospectiveNextNode;
             } 
         }
@@ -154,7 +154,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return [self.parent displayableNodeAfter:self under:under];
 }
 
-- (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under \
+- (EucCSSIntermediateDocumentNode *)nextDisplayableUnder:(EucCSSIntermediateDocumentNode *)under
 {
    /* EucCSSIntermediateDocumentNode *nextNode = nil;
     
@@ -298,7 +298,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return _stringRenderer;
 }
 
-- (CGFloat)textPointSizeAtScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)textPointSizeWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
@@ -306,31 +306,31 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return roundf(_textPointSize * scaleFactor);
 }
 
-- (CGFloat)textAscenderAtScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)textAscenderWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     } 
-    return [_stringRenderer ascenderForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
+    return [_stringRenderer ascenderForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
 }
 
-- (CGFloat)xHeightAtScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)xHeightWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     } 
-    return [_stringRenderer xHeightForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
+    return [_stringRenderer xHeightForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
 }
 
-- (CGFloat)lineHeightAtScaleFactor:(CGFloat)scaleFactor
+- (CGFloat)lineHeightWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {
         [self _setupTextIVars];
     }  
     
     css_computed_style *style = NULL;
-    css_fixed size = size; 
-    css_unit units = units; 
+    css_fixed size; 
+    css_unit units; 
 
     if(!_lineHeightKind) {
         style = self.computedStyle;
@@ -341,7 +341,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     }
     
     if(_lineHeightKind == CSS_LINE_HEIGHT_NORMAL) {
-        return [_stringRenderer lineSpacingForPointSize:[self textPointSizeAtScaleFactor:scaleFactor]];
+        return [_stringRenderer lineSpacingForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
     } else {
         if(!style) {
             style = self.computedStyle;
@@ -350,17 +350,15 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
             }
             css_computed_line_height(style, &size, &units);             
         }
-        return EucCSSLibCSSSizeToPixels(style, size, units, [self textPointSizeAtScaleFactor:scaleFactor], scaleFactor);
+        return EucCSSLibCSSSizeToPixels(style, size, units, [self textPointSizeWithScaleFactor:scaleFactor], scaleFactor);
     }
 }
 
 - (EucCSSIntermediateDocumentNode *)blockLevelNode
 {
     EucCSSIntermediateDocumentNode *prospectiveNode = self;
-    css_computed_style *currentNodeStyle = self.computedStyle;
-    while(prospectiveNode && (!currentNodeStyle || css_computed_display(currentNodeStyle, false) != CSS_DISPLAY_BLOCK)) {
+    while(prospectiveNode && prospectiveNode.display != CSS_DISPLAY_BLOCK) {
         prospectiveNode = prospectiveNode.parent;
-        currentNodeStyle = prospectiveNode.computedStyle;
     }  
     return prospectiveNode;    
 }
@@ -368,6 +366,25 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 - (EucCSSIntermediateDocumentNode *)blockLevelParent
 {
     return self.parent.blockLevelNode;
+}
+
+- (uint32_t)topLevelTableParentKey
+{
+    if(!_topLevelTableParentKey) {
+        EucCSSIntermediateDocumentNode* parent = self.parent;
+        if(parent) {
+            _topLevelTableParentKey = parent.topLevelTableParentKey;
+        } else {
+            _topLevelTableParentKey = UINT32_MAX;
+        }
+        if(_topLevelTableParentKey == UINT32_MAX) {
+            uint8_t display = self.display;
+            if(display >= CSS_DISPLAY_TABLE && display <= CSS_DISPLAY_TABLE_CAPTION) {
+                _topLevelTableParentKey = _key;
+            }
+        }
+    } 
+    return _topLevelTableParentKey;
 }
 
 - (BOOL)isTextNode
@@ -414,6 +431,34 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 - (NSString *)name
 {
     return NSStringFromClass(self.class);
+}
+
+- (/*enum css_display_e*/ uint8_t)display
+{
+    if(!_display) {
+        css_computed_style *style = self.computedStyle;
+        if(style) {
+            _display = css_computed_display(self.computedStyle, false);
+        } else {
+            _display = CSS_DISPLAY_INLINE;
+        }
+    }
+    return _display;
+}
+
+- (EucCSSIntermediateDocumentNode *)generatedChildNodeForKey:(uint32_t)childKey
+{
+    return nil;
+}
+
+- (NSUInteger)rowSpan
+{
+    return 1;
+}
+
+- (NSUInteger)columnSpan
+{
+    return 1;
 }
 
 @end

@@ -14,10 +14,19 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
+@class THPair;
+
 @interface EucCSSLayoutPositionedContainer : NSObject { 
     EucCSSLayoutPositionedContainer *_parent;
     CGRect _frame;
     NSMutableArray *_children;
+    
+    
+    NSMutableArray *_leftFloatChildren;
+    NSMutableArray *_rightFloatChildren;
+    
+    NSArray *_intrudingLeftFloats;
+    NSArray *_intrudingRightFloats;    
 }
 
 @property (nonatomic, assign) EucCSSLayoutPositionedContainer *parent;
@@ -26,9 +35,24 @@
 @property (nonatomic, assign, readonly) CGRect contentBounds;
 @property (nonatomic, retain) NSMutableArray *children;
 
+@property (nonatomic, retain, readonly) NSArray *leftFloatChildren;
+@property (nonatomic, retain, readonly) NSArray *rightFloatChildren;
+
+@property (nonatomic, retain) NSArray *intrudingLeftFloats;
+@property (nonatomic, retain) NSArray *intrudingRightFloats;
+
 - (CGRect)frameInRelationTo:(EucCSSLayoutPositionedContainer *)otherContainer;
 - (CGRect)convertRect:(CGRect)rect toContainer:(EucCSSLayoutPositionedContainer *)container;
 - (CGRect)absoluteFrame;
+
+- (void)addChild:(EucCSSLayoutPositionedContainer *)child;
+
+- (void)addFloatChild:(EucCSSLayoutPositionedContainer *)child 
+           atContentY:(CGFloat)contentY
+               onLeft:(BOOL)onLeft;
+- (THPair *)floatsOverlappingYPoint:(CGFloat)contentY height:(CGFloat)height;
+
+- (void)closeBottomWithContentHeight:(CGFloat)height;
 
 @property (nonatomic, assign, readonly) CGFloat minimumWidth; // Just returns the current width.
 - (void)sizeToFitInWidth:(CGFloat)width;                      // Default behaviour does nothing.
