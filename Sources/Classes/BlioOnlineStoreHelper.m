@@ -57,7 +57,14 @@
 		contentCafeDelegate = [[BlioOnlineStoreHelperContentCafeDelegate alloc] init];
 		contentCafeDelegate.delegate = self;
 		downloadNewBooks = YES;
+		
+#ifdef TEST_MODE
+		self.storeURL = @"https://bliodemo.crosscomm.net/";
+#else	
 		self.storeURL = @"https://Iphone.Bliodigitallocker.com/";
+#endif
+		NSLog(@"initializing BlioOnlineStoreHelper with URL: %@",self.storeURL);
+		
 	}
 	return self;
 }
@@ -232,7 +239,7 @@
 			}
 		}
 		// add new book entries to PersistentStore as appropriate
-		NSLog(@"ISBN count: %i",[_isbns count]);
+		NSLog(@"_BookOwnershipInfoArray count: %i",[_BookOwnershipInfoArray count]);
 		newISBNs = 0;
 		responseCount = 0;
 		successfulResponseCount = 0;
@@ -459,7 +466,7 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioStoreRetrieveBooksStarted object:self userInfo:userInfo];
 
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = YES;
+	vaultBinding.logXMLInOut = NO;
 //	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
 	BookVault_VaultContentsWithTokenEx* vaultContentsRequest = [[BookVault_VaultContentsWithTokenEx new] autorelease];
 	vaultContentsRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
@@ -468,10 +475,10 @@
 	[vaultBinding release];
 }
 -(NSURL*)URLForBookWithID:(NSString*)sourceSpecificID {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
 	BlioBook * book = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:sourceSpecificID];
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = YES;
+	vaultBinding.logXMLInOut = NO;
 //	BookVault_RequestDownloadWithToken* downloadRequest = [[BookVault_RequestDownloadWithToken new] autorelease];
 	BookVault_RequestDownloadWithTokenEx* downloadRequest = [[BookVault_RequestDownloadWithTokenEx new] autorelease];
 	downloadRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
@@ -551,8 +558,9 @@
 	return nil;
 }
 - (void)getContentMetaDataFromISBN:(NSString*)isbn {
+	NSLog(@"Getting Content MetaData for ISBN: %@",isbn);
 	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
-	cafeBinding.logXMLInOut = YES;
+	cafeBinding.logXMLInOut = NO;
 //	ContentCafe_Single* singleRequest = [[ContentCafe_Single new] autorelease];
 //	singleRequest.userID = @"KNFB98704"; 
 //	singleRequest.password = @"CC19811";

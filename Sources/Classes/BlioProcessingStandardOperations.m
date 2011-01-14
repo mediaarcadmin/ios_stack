@@ -397,7 +397,7 @@
 	
     if ([self isCancelled]) {
         [self willChangeValueForKey:@"isFinished"];
-		NSLog(@"Operation cancelled, will prematurely abort start");
+		NSLog(@"BlioProcessingDownloadOperation cancelled, will prematurely abort start");
         finished = YES;
         [self didChangeValueForKey:@"isFinished"];
         return;
@@ -716,7 +716,7 @@
 	}	
 	if ([self isCancelled]) {
         [self willChangeValueForKey:@"isFinished"];
-		NSLog(@"Operation cancelled, will prematurely abort start");
+		NSLog(@"BlioProcessingDownloadPaidBookOperation cancelled, will prematurely abort start");
         finished = YES;
         [self didChangeValueForKey:@"isFinished"];
         return;
@@ -1367,7 +1367,7 @@
 		}
 	}	
     if ([self isCancelled]) {
-		NSLog(@"Operation cancelled, will prematurely abort start");
+		NSLog(@"BlioProcessingGenerateCoverThumbsOperation cancelled, will prematurely abort start");
         [pool drain];
 		return;
     }

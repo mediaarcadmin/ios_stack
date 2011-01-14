@@ -54,7 +54,7 @@ static int mutationCount = 0;
 }
 
 - (void)reportBookReadingIfRequired {
-	NSLog(@"reportBookReadingIfRequired");
+//	NSLog(@"reportBookReadingIfRequired");
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     pthread_mutex_lock(&sBookMutationMutex);
     {

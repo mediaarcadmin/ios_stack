@@ -4983,7 +4983,9 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 	if(parameters != nil) [bodyElements setObject:parameters forKey:@"RequestDownloadWithTokenEx"];
 	
 	NSString *operationXMLString = [envelope serializedFormUsingHeaderElements:headerElements bodyElements:bodyElements];
-	
+	if (binding.logXMLInOut) {
+		NSLog(@"operationXMLString: %@",operationXMLString);
+	}
 	[binding sendHTTPCallUsingBody:operationXMLString soapAction:@"BlioBookVault/RequestDownloadWithTokenEx" forOperation:self];
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection

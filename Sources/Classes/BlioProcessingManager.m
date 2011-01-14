@@ -567,12 +567,12 @@
 				[self addCoverOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];
 			}
 			
-			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
-				alreadyCompletedOperations++;
-				url = nil;
-			} else {
+//			if ([[aBook manifestLocationForKey:BlioManifestTextFlowKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
+//				alreadyCompletedOperations++;
+//				url = nil;
+//			} else {
 				[self addTextFlowOpToBookOps:xpsOps forBook:aBook manifestLocation:nil withDependency:manifestOp];                  			
-			}
+//			}
 			
 			BlioProcessingPreAvailabilityCompleteOperation *preAvailabilityCompleteOp = [[BlioProcessingPreAvailabilityCompleteOperation alloc] init];
 			[preAvailabilityCompleteOp setQueuePriority:NSOperationQueuePriorityVeryHigh];

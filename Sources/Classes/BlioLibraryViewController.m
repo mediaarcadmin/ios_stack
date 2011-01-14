@@ -1897,7 +1897,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {
 	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && self.book && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
-		NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
+//		NSLog(@"BlioLibraryGridViewCell onProcessingFailedNotification entered");
 //		self.resumeButton.hidden = NO;
 //		self.stateLabel.hidden = NO;
 //		self.stateLabel.text = NSLocalizedString(@"Failed...","\"Failed...\" status indicator in BlioLibraryGridViewCell");
@@ -2280,7 +2280,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {
 	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
-		NSLog(@"BlioLibraryListViewCell onProcessingFailedNotification entered");
+//		NSLog(@"BlioLibraryListViewCell onProcessingFailedNotification entered");
 //		self.accessoryView = resumeButton;
 //		self.authorLabel.text = @"Failed...";
 //		self.progressView.hidden = YES;

@@ -1162,7 +1162,7 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 		}
 	}	
     if ([self isCancelled]) {
-		NSLog(@"Operation cancelled, will prematurely abort start");	
+		NSLog(@"BlioTextFlowPreParseOperation cancelled, will prematurely abort start");	
 		return;
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
