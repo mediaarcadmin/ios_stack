@@ -17,6 +17,7 @@
 #import "EucCSSLayouter.h"
 #import "EucCSSLayoutPositionedBlock.h"
 #import "EucCSSRenderer.h"
+#import "EucCSSLayoutSizedRun.h"
 #import "EucCSSLayoutPositionedRun.h"
 #import "EucCSSLayoutPositionedLine.h"
 
@@ -82,14 +83,14 @@
         layoutPoint.word = point.word;
         layoutPoint.element = point.element;
         
-        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] initWithDocument:document
-                                                                scaleFactor:_scaleFactor];
+        EucCSSLayouter *layouter = [[EucCSSLayouter alloc] initWithDocument:document];
         
         BOOL isComplete = NO;
         positionedBlock = [layouter layoutFromPoint:layoutPoint
                                             inFrame:[self bounds]
                                  returningNextPoint:&layoutPoint
-                                 returningCompleted:&isComplete];
+                                 returningCompleted:&isComplete
+                                        scaleFactor:_scaleFactor];
         
         if(isComplete) {
             ret = [[EucBookPageIndexPoint alloc] init];
@@ -149,8 +150,8 @@
 }
 
 static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayoutPositionedRun *rhs, void *context) {
-    uint32_t lhsId = lhs.documentRun.id;
-    uint32_t rhsId = rhs.documentRun.id;
+    uint32_t lhsId = lhs.sizedRun.run.id;
+    uint32_t rhsId = rhs.sizedRun.run.id;
     if(lhsId < rhsId) {
         return NSOrderedAscending;
     } else if (lhsId > rhsId) {
@@ -160,7 +161,7 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
     }
 }
 
-- (NSArray *)_runs
+- (NSArray *)_positionedRuns
 {
     if(!_runs) {
         _runs = [[NSMutableArray alloc] init];
@@ -172,14 +173,14 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
 
 - (NSArray *)blockIdentifiers
 {
-    return [[[self _runs] valueForKey:@"documentRun"] valueForKey:@"id"];
+    return [[[[self _positionedRuns] valueForKey:@"sizedRun"]  valueForKey:@"run"] valueForKey:@"id"];
 }
 
-- (EucCSSLayoutPositionedRun *)_runWithKey:(uint32_t)key
+- (EucCSSLayoutPositionedRun *)_positionedRunWithKey:(uint32_t)key
 {
-    for(EucCSSLayoutPositionedRun *run in [self _runs]) {
-        if(key == run.documentRun.id) {
-            return run;
+    for(EucCSSLayoutPositionedRun *positionedRun in [self _positionedRuns]) {
+        if(key == positionedRun.sizedRun.run.id) {
+            return positionedRun;
         }
     }
     return nil;
@@ -187,21 +188,21 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
 
 - (CGRect)frameOfBlockWithIdentifier:(id)blockId
 {
-    EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
-    if(run) {
-        return run.absoluteFrame;
+    EucCSSLayoutPositionedRun *positionedRun = [self _positionedRunWithKey:[(NSNumber *)blockId intValue]];
+    if(positionedRun) {
+        return positionedRun.absoluteFrame;
     }
     return CGRectZero; 
 }
 
 - (NSArray *)identifiersForElementsOfBlockWithIdentifier:(id)blockId
 {
-    EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
-    if(run) {
+    EucCSSLayoutPositionedRun *positionedRun = [self _positionedRunWithKey:[(NSNumber *)blockId intValue]];
+    if(positionedRun) {
         NSMutableArray *array = [NSMutableArray array];
         uint32_t lastWordId = UINT32_MAX;
 
-        for(EucCSSLayoutPositionedLine *line in run.children) {
+        for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
             EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
             size_t renderItemsCount = line.renderItemCount;
             
@@ -223,13 +224,13 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
 
 - (NSArray *)rectsForElementWithIdentifier:(id)elementId ofBlockWithIdentifier:(id)blockId
 {
-    EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
+    EucCSSLayoutPositionedRun *positionedRun = [self _positionedRunWithKey:[(NSNumber *)blockId intValue]];
     uint32_t wantedWordId = [(NSNumber *)elementId intValue];
     
-    CGPoint runOrigin = run.absoluteFrame.origin;
+    CGPoint runOrigin = positionedRun.absoluteFrame.origin;
     
     NSMutableArray *array = [NSMutableArray array];
-    for(EucCSSLayoutPositionedLine *line in run.children) {
+    for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
         EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
         size_t renderItemsCount = line.renderItemCount;
         
@@ -273,10 +274,10 @@ static NSComparisonResult runCompare(EucCSSLayoutPositionedRun *lhs, EucCSSLayou
 {
     NSString *word = nil; 
     
-    EucCSSLayoutPositionedRun *run = [self _runWithKey:[(NSNumber *)blockId intValue]];
+    EucCSSLayoutPositionedRun *positionedRun = [self _positionedRunWithKey:[(NSNumber *)blockId intValue]];
     uint32_t wantedWordId = [(NSNumber *)elementId intValue];
     
-    for(EucCSSLayoutPositionedLine *line in run.children) {
+    for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
         EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
         size_t renderItemsCount = line.renderItemCount;
         EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
@@ -329,9 +330,9 @@ found:
     if(!_hyperlinkRectAndURLPairs) {
         NSMutableArray *buildHyperlinkRectAndURLPairs = [[NSMutableArray alloc] init];
 
-        for(EucCSSLayoutPositionedRun *run in [self _runs]) {    
-            CGPoint runOrigin = run.absoluteFrame.origin;
-            for(EucCSSLayoutPositionedLine *line in run.children) {
+        for(EucCSSLayoutPositionedRun *positionedRun in [self _positionedRuns]) {    
+            CGPoint runOrigin = positionedRun.absoluteFrame.origin;
+            for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
                 EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
                 EucCSSLayoutPositionedLineRenderItem* renderItem = renderItems;
                 size_t renderItemsCount = line.renderItemCount;
@@ -483,9 +484,9 @@ found:
 {
     if(!_accessibilityElements) {
         CGRect myFrame = self.frame;
-        NSArray *runs = [self _runs];
+        NSArray *positionedRuns = [self _positionedRuns];
         
-        NSMutableArray *buildAccessibilityElements = [[NSMutableArray alloc] initWithCapacity:runs.count];
+        NSMutableArray *buildAccessibilityElements = [[NSMutableArray alloc] initWithCapacity:positionedRuns.count];
         
         CGRect buildElementFrame = CGRectZero;
         UIAccessibilityTraits buildElementTraits = UIAccessibilityTraitStaticText;
@@ -493,11 +494,11 @@ found:
         
         CGRect itemFrame = CGRectZero;
         
-        for(EucCSSLayoutPositionedRun *run in runs) {
-            CGPoint runOrigin = run.absoluteFrame.origin;
+        for(EucCSSLayoutPositionedRun *positionedRun in positionedRuns) {
+            CGPoint runOrigin = positionedRun.absoluteFrame.origin;
             runOrigin.x += myFrame.origin.x;
             runOrigin.y += myFrame.origin.y;
-            for(EucCSSLayoutPositionedLine *line in run.children) {
+            for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
                 CGPoint lineOffset = line.frame.origin;
                 lineOffset.x += runOrigin.x;
                 lineOffset.y += runOrigin.y;                
@@ -601,10 +602,10 @@ found:
 
 - (NSString *)pageText
 {
-    NSArray *runs = [self _runs];    
+    NSArray *positionedRuns = [self _positionedRuns];    
     NSMutableString *buildPageText = [NSMutableString string];
-    for(EucCSSLayoutPositionedRun *run in runs) {
-        for(EucCSSLayoutPositionedLine *line in run.children) {
+    for(EucCSSLayoutPositionedRun *positionedRun in positionedRuns) {
+        for(EucCSSLayoutPositionedLine *line in positionedRun.children) {
             EucCSSLayoutPositionedLineRenderItem* renderItems = line.renderItems;
             size_t renderItemsCount = line.renderItemCount;
             

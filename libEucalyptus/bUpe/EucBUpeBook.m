@@ -14,12 +14,12 @@
 #import "EucBookPageIndex.h"
 #import "EucFilteredBookPageIndex.h"
 #import "EucBookPageIndexPoint.h"
-#import "EucBookParagraph.h"
 #import "THPair.h"
 #import "THRegex.h"
 #import "THNSURLAdditions.h"
 
 #import "EucCSSXMLTree.h"
+#import "EucCSSXHTMLTreeNode.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSLayouter.h"
 
@@ -1003,7 +1003,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 {
     NSData *data = [self dataForURL:url];
     if(data) {
-        return [[[EucCSSXMLTree alloc] initWithData:data] autorelease];
+        return [[[EucCSSXMLTree alloc] initWithData:data xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]] autorelease];
     }
     return nil;
 }

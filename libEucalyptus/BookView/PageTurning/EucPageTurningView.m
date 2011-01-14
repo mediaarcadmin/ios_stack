@@ -1134,7 +1134,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             // We need to generate contiguous data to upload, and we need to be
             // able to access the context's backing data.
             
-            THLog(@"Inefficient bitmap handling - having to copy image in context returned by RGBABitmapContextForPageAtIndex in order to to upload")
+            THLog(@"Inefficient bitmap handling - having to copy image in context returned by RGBABitmapContextForPageAtIndex in order to to upload");
             
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
             textureData = malloc(bufferLength);
@@ -2593,6 +2593,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             [pageIndexes addObject:[NSNumber numberWithUnsignedInteger:_pageContentsInformation[3].pageIndex]];
         }
         description = [_bitmapDataSource pageTurningViewAccessibilityPageDescriptionForPagesAtIndexes:pageIndexes];
+        [pageIndexes release];
     } else {
         description = [_viewDataSource pageTurningViewAccessibilityPageDescriptionForView:_pageContentsInformation[3].view];
     }

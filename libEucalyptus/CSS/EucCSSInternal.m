@@ -36,8 +36,8 @@ CGFloat EucCSSLibCSSSizeToPixels(css_computed_style *computed_style,
             break;
         case CSS_UNIT_EM:
         {
-            css_fixed fontSize = fontSize;
-            css_unit fontUnit = fontUnit;
+            css_fixed fontSize = 0;
+            css_unit fontUnit = (css_unit)0;
             css_computed_font_size(computed_style, &fontSize, &fontUnit);
             NSCParameterAssert(fontUnit == CSS_UNIT_PX || fontUnit == CSS_UNIT_PT);
             ret = FIXTOFLT(FMUL(size, fontSize));

@@ -10,9 +10,18 @@
 #import <pthread.h>
 
 @interface THCacheBase : NSObject {
-    pthread_rwlock_t _cacheRWLock;
-    CFMutableSetRef _cacheSet;
+@private
+    CFMutableSetRef _currentCacheSet;
+    CFMutableSetRef _lastGenerationCacheSet;
+    
+    NSUInteger _generationLifetime;
+    NSUInteger _insertionsThisGeneration;
+
+@protected
+    pthread_mutex_t _cacheMutex;
 }
+
+@property (nonatomic, assign) NSUInteger generationLifetime;
 
 // To override:
 - (CFIndex)itemSize;
@@ -20,15 +29,19 @@
 - (void)releaseItemContents:(void *)item;
 - (Boolean)item:(const void *)item1 isEqualToItem:(const void *)item2;
 - (CFHashCode)hashItem:(const void *)item;
+- (NSString *)describeItem:(const void *)item;
 
 // To call:
-- (void)cacheItem:(void *)item;
-- (const void *)retrieveItem:(void *)probeItem;
+- (void)cacheItem:(const void *)item;
+- (const void *)retrieveItem:(const void *)probeItem;
 
 @end
 
 @protocol THCacheItemInUse
 
 - (BOOL)isItemInUse:(const void *)item;
+
+@optional
+@property (nonatomic, assign) BOOL conserveItemsInUse;  // Treated as YES if not implemented.
 
 @end

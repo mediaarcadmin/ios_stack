@@ -13,6 +13,8 @@
 
 @protocol EucCSSDocumentTreeNode <NSObject>
 
+@required
+
 - (uint32_t)key;
 - (EucCSSDocumentTreeNodeKind)kind;
 - (NSString *)name;
@@ -31,5 +33,13 @@
 
 - (BOOL)isHyperlinkNode;
 - (NSString *)hyperlinkURLString;
+
+- (NSString *)CSSID;
+
+
+@optional
+
+- (NSUInteger)columnSpan;
+- (NSUInteger)rowSpan;
 
 @end

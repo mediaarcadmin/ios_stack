@@ -5,6 +5,7 @@
 #import "EucCSSInternal.h"
 
 #import "EucCSSXMLTree.h"
+#import "EucCSSXHTMLTreeNode.h"
 
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
@@ -45,14 +46,15 @@ int main (int argc, const char * argv[]) {
         
     NSString *xmlPath = [NSString stringWithUTF8String:argv[3]];
     NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:xmlPath];
-    EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData];
+    EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]];
     [xmlData release];
     
     SimpleEucCSSIntermediateDocumentDataSource *dataSource = [[SimpleEucCSSIntermediateDocumentDataSource alloc] init];
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:xmlTree
                                                                                              forURL:[NSURL fileURLWithPath:xmlPath]
                                                                                          dataSource:dataSource
-                                                                                        baseCSSPath:[NSString stringWithUTF8String:argv[2]]
+                                                                                       baseCSSPaths:[NSArray arrayWithObject:[NSString stringWithUTF8String:argv[2]]]
+                                                                                       userCSSPaths:nil
                                                                                              isHTML:YES];
     
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
@@ -85,7 +87,8 @@ int main (int argc, const char * argv[]) {
         EucCSSLayoutPositionedBlock *positionedBlock = [layouter layoutFromPoint:layoutPoint
                                                                          inFrame:frame
                                                               returningNextPoint:&layoutPoint
-                                                              returningCompleted:&completed];
+                                                              returningCompleted:&completed
+                                                                     scaleFactor:1.0f];
         
         CGContextSaveGState(renderingContext);
         const CGFloat white[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };

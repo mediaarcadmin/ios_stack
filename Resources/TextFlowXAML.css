@@ -78,11 +78,9 @@ List[MarkerStyle="LowerLatin"] { list-style-type:lower-latin }
 List[MarkerStyle="UpperLatin"] { list-style-type:upper-latin }
 List[MarkerStyle="Decimal"] { list-style-type:decimal }
 
-/* 
-    Tidy things up a bit until we properly support tables.
-*/
-Table { display:block }
-Table.Columns { display:block }
-TableRowGroup { display:block }
-TableRow { display:block }
-TableCell { display:block }
+Table { display:table }
+Table\.Columns { display:table-column-group }
+TableColumn { display:table-column }
+TableRowGroup { display:table-row-group }
+TableRow { display:table-row }
+TableCell { display:table-cell }

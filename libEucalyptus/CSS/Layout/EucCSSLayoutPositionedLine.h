@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EucCSSLayoutDocumentRun.h"
+#import "EucCSSLayoutRun.h"
 #import "EucCSSLayoutPositionedContainer.h"
 
-@class EucCSSLayoutDocumentRun, EucCSSLayoutPositionedRun, THStringRenderer;
+@class EucCSSLayoutRun, EucCSSLayoutPositionedRun, THStringRenderer;
 
 typedef enum EucCSSLayoutPositionedLineRenderItemKind
 {
@@ -47,11 +47,11 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
         } closeNodeInfo;
         struct {
             NSString *string;
-            EucCSSLayoutDocumentRunPoint layoutPoint;
+            EucCSSLayoutRunPoint layoutPoint;
         } stringItem;
         struct {
             CGImageRef image;
-            EucCSSLayoutDocumentRunPoint layoutPoint;
+            EucCSSLayoutRunPoint layoutPoint;
         } imageItem;
         struct {
             uint32_t nodeKey;
@@ -60,20 +60,15 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
     NSString *altText;
 } EucCSSLayoutPositionedLineRenderItem;
 
-
-
 @interface EucCSSLayoutPositionedLine : EucCSSLayoutPositionedContainer {
     EucCSSLayoutPositionedRun *_positionedRun;
     
-    EucCSSLayoutDocumentRunPoint _startPoint;
-    EucCSSLayoutDocumentRunPoint _endPoint;
-    
+    EucCSSLayoutRunPoint _startPoint;
+    EucCSSLayoutRunPoint _endPoint;
     CGFloat _componentWidth;
 
-    EucCSSLayoutPositionedLineLineBox _lineBox;
-    CGFloat _baseline;
+    CGRect _parentFrame;
 
-    
     CGFloat _indent;
     uint8_t _align;
     
@@ -81,15 +76,16 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
     size_t _renderItemCount;
 }
 
-@property (nonatomic, assign) EucCSSLayoutDocumentRunPoint startPoint;
-@property (nonatomic, assign) EucCSSLayoutDocumentRunPoint endPoint;
+@property (nonatomic, assign) EucCSSLayoutRunPoint startPoint;
+@property (nonatomic, assign) EucCSSLayoutRunPoint endPoint;
+@property (nonatomic, assign) CGFloat componentWidth;
 
 @property (nonatomic, assign) CGFloat indent;
 @property (nonatomic, assign) CGFloat baseline;
 
 @property (nonatomic, assign) uint8_t align;
 
-@property (nonatomic, readonly) CGFloat componentWidth;
+- (void)sizeToFitInWidth:(CGFloat)width parentFrame:(CGRect)parentFrame;
 
 - (size_t)renderItemCount;
 - (EucCSSLayoutPositionedLineRenderItem *)renderItems;

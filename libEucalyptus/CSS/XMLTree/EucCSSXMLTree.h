@@ -25,6 +25,4 @@
 - (id)initWithData:(NSData *)xmlData;
 - (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass;
 
-- (NSString *)idForNodeAttribute:(const XML_Char *)name value:(const XML_Char *)value;
-
 @end

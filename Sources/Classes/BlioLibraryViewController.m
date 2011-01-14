@@ -820,7 +820,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //			[self.processingDelegate suspendProcessingForSourceID:BlioBookSourceOnlineStore];
 //		}
 		cell.statusBadge.hidden = YES;
-		cell.previewBadge.hidden = YES;
+		cell.previewBadge.alpha = 0;
 		selectedGridIndex = index;
 		[self bookSelected:cell.bookView];
 	}
@@ -1419,8 +1419,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:selectedGridIndex];
 	if (cell) {
 		cell.statusBadge.hidden = NO;
-		if ([[self.selectedLibraryBookView.book valueForKey:@"productType"] intValue] == BlioProductTypePreview) cell.previewBadge.hidden = NO;
-		else cell.previewBadge.hidden = YES;
+		if ([[self.selectedLibraryBookView.book valueForKey:@"productType"] intValue] == BlioProductTypePreview) {
+			cell.previewBadge.alpha = 1;
+		}
+		else cell.previewBadge.alpha = 0;
 	}
 }
 
@@ -1636,8 +1638,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		statusBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:statusBadge];		
 
-		previewBadge = [[UIImageView alloc] initWithFrame:CGRectMake(roundf(self.bookView.xInset) - 1, roundf(self.bookView.yInset) - 1, 48, 48)];
-		previewBadge.image = [UIImage imageNamed:@"badge-preview.png"];
+		previewBadge = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"badge-preview.png"]];
+						
+		previewBadge.frame = CGRectMake(roundf(self.bookView.xInset) - 1, roundf(self.bookView.yInset) - 1, 48, 48);
 		previewBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:previewBadge];		
 		
@@ -1657,6 +1660,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.bookView.alpha = 1;
 	self.statusBadge.image = nil;
 	previewBadge.hidden = YES;
+	previewBadge.alpha = 1;
 }
 -(void)onPauseButtonPressed:(id)sender {
 	[delegate pauseProcessingForBook:[self book]];

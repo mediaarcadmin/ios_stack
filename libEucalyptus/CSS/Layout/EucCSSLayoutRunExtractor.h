@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class EucCSSIntermediateDocument, EucCSSLayoutDocumentRun;
+@class EucCSSIntermediateDocument, EucCSSLayoutRun;
 
 @interface EucCSSLayoutRunExtractor : NSObject {
     EucCSSIntermediateDocument *_document;
@@ -17,8 +17,8 @@
 @property (nonatomic, retain) EucCSSIntermediateDocument *document;
 
 - (id)initWithDocument:(EucCSSIntermediateDocument *)document;
-- (EucCSSLayoutDocumentRun *)documentRunForNodeWithKey:(uint32_t)nextRunNodeKey;
-- (EucCSSLayoutDocumentRun *)nextDocumentRunForDocumentRun:(EucCSSLayoutDocumentRun *)run;
-- (EucCSSLayoutDocumentRun *)previousDocumentRunForDocumentRun:(EucCSSLayoutDocumentRun *)run;
+- (EucCSSLayoutRun *)runForNodeWithKey:(uint32_t)nextRunNodeKey;
+- (EucCSSLayoutRun *)nextRunForRun:(EucCSSLayoutRun *)run;
+- (EucCSSLayoutRun *)previousRunForRun:(EucCSSLayoutRun *)run;
 
 @end

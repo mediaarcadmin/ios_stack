@@ -698,9 +698,9 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 - (CGFloat)widthOfString:(NSString *)string pointSize:(CGFloat)pointSize
 {
     if(!_widthCache) {
-        _widthCache = [[THStringAndFloatToCGFloatCache alloc] init];
+        _widthCache = [[THStringAndCGFloatToCGFloatCache alloc] init];
     }
-    CGFloat ret = [_widthCache cgFloatForStringKey:string cgFloatKet:pointSize];
+    CGFloat ret = [_widthCache cgFloatForStringKey:string cgFloatKey:pointSize];
     if(!ret) {
         CGContextRef context = [self measuringContext];
         
@@ -764,7 +764,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
             
         ret = point.x;
         
-        [_widthCache cacheCGFloat:ret forStringKey:string cgFloatKet:pointSize];
+        [_widthCache cacheCGFloat:ret forStringKey:string cgFloatKey:pointSize];
     }
     return ret;
 }    
