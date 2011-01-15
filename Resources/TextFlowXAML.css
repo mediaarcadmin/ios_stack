@@ -6,7 +6,7 @@
 * { margin:0; padding:0; border:0; }
 Flow { text-align:justify; display:block }
 Section { display:block }
-Paragraph { display:block; margin-bottom:19px; margin-top:19px; border-style: solid; }
+Paragraph { display:block; border-style: solid; }
 
 LineBreak:before { content:"\A"; white-space:pre-line; }
 :link { color:blue }
