@@ -427,8 +427,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     
     [stringRenderer drawString:bulletString 
                      inContext:_cgContext
-                       atPoint:CGPointMake(baselinePoint.x - bulletWidth, 
-                                           baselinePoint.y - [stringRenderer ascenderForPointSize:pointSize])
+               atBaselinePoint:CGPointMake(baselinePoint.x - bulletWidth, 
+                                           baselinePoint.y)
                      pointSize:pointSize];
 }
 
@@ -509,11 +509,11 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
             case EucCSSLayoutPositionedLineRenderItemKindString: 
             {
                 CGPoint point = CGPointMake(currentAbsoluteOrigin.x + renderItem->origin.x,
-                                            currentAbsoluteOrigin.y + renderItem->origin.y);
+                                            currentAbsoluteOrigin.y + renderItem->origin.y + renderItem->lineBox.baseline);
                 [currentDocumentNode.stringRenderer drawString:renderItem->item.stringItem.string
                                                      inContext:_cgContext 
-                                                       atPoint:point
-                                                     pointSize:renderItem->lineBox.height];
+                                               atBaselinePoint:point
+                                                     pointSize:renderItem->item.stringItem.pointSize];
                 break;
             }
             case EucCSSLayoutPositionedLineRenderItemKindImage: 

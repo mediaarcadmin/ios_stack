@@ -621,16 +621,21 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     return [self sizeForString:string inContext:[self measuringContext] pointSize:pointSize maxWidth:maxWidth flags:flags];
 }
 
-
 - (CGPoint)drawString:(NSString *)string inContext:(CGContextRef)context atPoint:(CGPoint)originPoint pointSize:(CGFloat)pointSize
+{
+    CGFloat lineOffset = [self leadingForPointSize:pointSize] * 0.5f + [self ascenderForPointSize:pointSize];
+    CGPoint point = [self drawString:string inContext:context atBaselinePoint:CGPointMake(originPoint.x, originPoint.y + lineOffset) pointSize:pointSize];
+    point.y -= lineOffset;
+    return point;
+}
+
+- (CGPoint)drawString:(NSString *)string inContext:(CGContextRef)context atBaselinePoint:(CGPoint)originPoint pointSize:(CGFloat)pointSize
 {
     CGContextSaveGState(context);
     
     [self _setupFontForRenderingInContext:context pointSize:pointSize flags:0];
-    
-    CGFloat lineOffset = [self leadingForPointSize:pointSize] * 0.5f + [self ascenderForPointSize:pointSize];
-    
-    CGContextSetTextPosition(context, originPoint.x, originPoint.y + lineOffset);
+        
+    CGContextSetTextPosition(context, originPoint.x, originPoint.y);
     
     CFIndex length = CFStringGetLength((CFStringRef)string);
     
@@ -687,9 +692,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     }   
     
     CGPoint point = CGContextGetTextPosition(context);
-    
-    point.y -= lineOffset;
-    
+        
     CGContextRestoreGState(context);
     
     return point;
