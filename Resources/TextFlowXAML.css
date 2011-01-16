@@ -84,3 +84,5 @@ TableColumn { display:table-column }
 TableRowGroup { display:table-row-group }
 TableRow { display:table-row }
 TableCell { display:table-cell }
+
+Figure[Tag="KNFBDropCap"] > Paragraph { margin-top:-0.13em }
