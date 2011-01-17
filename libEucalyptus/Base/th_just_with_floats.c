@@ -49,20 +49,21 @@ static int extract_min(struct Estimates *estimates, int count, CGFloat *shortest
     CGFloat smallest_estimate_found;
     vDSP_Length smallest_index;
     
-    if(sizeof(CGFloat) == 4 
-       && &vDSP_minvi != NULL) { // Check for the function's existence - it's 4.0+ and we support 3.2
-        vDSP_minvi((float *)shortest_path_vector,
+#if !CGFLOAT_IS_DOUBLE
+    if(&vDSP_minvi != NULL) { // Check for the function's existence - it's 4.0+ and we support 3.2
+        vDSP_minvi(shortest_path_vector,
                    1,
-                   (float *)&smallest_estimate_found,
+                   &smallest_estimate_found,
                    &smallest_index,
-                   count);        
-    } else if(sizeof(CGFloat) == 8 
-              && &vDSP_minviD != NULL) { // Check for the function's existence - it's 4.0+ and we support 3.2
-        vDSP_minviD((double *)shortest_path_vector,
+                   count); 
+#else
+    if(&vDSP_minviD != NULL) { // Check for the function's existence - it's 4.0+ and we support 3.2
+        vDSP_minviD(shortest_path_vector,
                     1,
-                    (double *)&smallest_estimate_found,
+                    &smallest_estimate_found,
                     &smallest_index,
                     count);
+#endif
     } else {
         smallest_estimate_found = CGFLOAT_MAX;
         smallest_index = 0;
@@ -165,15 +166,12 @@ int th_just_with_floats(const THBreak *breaks, int break_count, CGFloat offset, 
     size_t shortest_path_vector_length = sizeof(CGFloat) * break_count;
     CGFloat *shortest_path_vector = malloc(shortest_path_vector_length);
     const CGFloat to_fill_with = CGFLOAT_MAX;
-    if(sizeof(CGFloat) == 4) {
-        memset_pattern4(shortest_path_vector, &to_fill_with, shortest_path_vector_length);
-    } else if(sizeof(CGFloat) == 8) {
-        memset_pattern8(shortest_path_vector, &to_fill_with, shortest_path_vector_length);
-    } else {
-        for(int i = 0; i < break_count; ++i) {
-            shortest_path_vector[i] = to_fill_with;
-        }
-    }        
+    
+#if !CGFLOAT_IS_DOUBLE
+    memset_pattern4(shortest_path_vector, &to_fill_with, shortest_path_vector_length);
+#else
+    memset_pattern8(shortest_path_vector, &to_fill_with, shortest_path_vector_length);
+#endif    
     
     // The meat of Dijkstra's algorithm:
     int examining_break = -1;

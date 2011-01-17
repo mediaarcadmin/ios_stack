@@ -194,7 +194,7 @@
 		7D3F4D2111EF38B80065A5F7 /* EucConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1311EF38B80065A5F7 /* EucConfiguration.m */; };
 		7D3F4D2211EF38B80065A5F7 /* EucSharedHyphenator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1411EF38B80065A5F7 /* EucSharedHyphenator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2311EF38B80065A5F7 /* EucSharedHyphenator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1511EF38B80065A5F7 /* EucSharedHyphenator.mm */; };
-		7D3F4D2411EF38B80065A5F7 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1611EF38B80065A5F7 /* th_just_with_floats.c */; settings = {COMPILER_FLAGS = "$(ARM_NOT_THUMB)"; }; };
+		7D3F4D2411EF38B80065A5F7 /* th_just_with_floats.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1611EF38B80065A5F7 /* th_just_with_floats.c */; settings = {COMPILER_FLAGS = "-O3 -ftree-vectorize"; }; };
 		7D3F4D2511EF38B80065A5F7 /* th_just_with_floats.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1711EF38B80065A5F7 /* th_just_with_floats.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2611EF38B80065A5F7 /* THCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D3F4D1811EF38B80065A5F7 /* THCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D3F4D2711EF38B80065A5F7 /* THCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3F4D1911EF38B80065A5F7 /* THCache.m */; };
@@ -402,8 +402,6 @@
 		7D5174041028BA14005F3C46 /* xmltok_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173B21028BA14005F3C46 /* xmltok_impl.h */; };
 		7D5174051028BA14005F3C46 /* xmltok_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D5173B31028BA14005F3C46 /* xmltok_ns.c */; };
 		7D51741D1028BA14005F3C46 /* expat_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5173DE1028BA14005F3C46 /* expat_config.h */; };
-		7D520A5D12BF8C1F0065C1F9 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
-		7D520A6112BF8C370065C1F9 /* pg103.epub in Resources */ = {isa = PBXBuildFile; fileRef = 7DCA5804114985C7007EDB15 /* pg103.epub */; };
 		7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9711499DC0004F64DC /* EucCSSXMLTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D53BD9811499DC0004F64DC /* EucCSSXMLTree.m */; };
 		7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D53BD9F11499DCE004F64DC /* EucCSSXMLTreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -420,6 +418,7 @@
 		7D653B8211AFD17000C47DC6 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */; };
 		7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D658C6D103DEAD900EB5003 /* THImageFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D658C6E103DEAD900EB5003 /* THImageFactory.m */; };
+		7D65AF2312E4B3E70087FEC3 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
 		7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAC841028DEAD006289E6 /* THScalableSlider.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAC851028DEAD006289E6 /* THScalableSlider.m */; };
 		7D6AAD621028E78E006289E6 /* EucBook.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD611028E78E006289E6 /* EucBook.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3519,8 +3518,7 @@
 				7D4A009D11DBA34E00DDA5B7 /* SelectionKnob.png in Resources */,
 				7D4A009E11DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */,
 				7D0D92851213185B00CD994D /* EPubOverrides.css in Resources */,
-				7D520A5D12BF8C1F0065C1F9 /* Down and out in the Magic Kingdom in Resources */,
-				7D520A6112BF8C370065C1F9 /* pg103.epub in Resources */,
+				7D65AF2312E4B3E70087FEC3 /* Pride and Prejudice in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
