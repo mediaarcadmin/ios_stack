@@ -1400,7 +1400,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                         wantPageIndex = NSUIntegerMax;
                     }
                 }
-                return;
             } else {
                 wantPageIndex = self.pageTurningView.rightPageIndex;
                 if(wantPageIndex != NSUIntegerMax) {
