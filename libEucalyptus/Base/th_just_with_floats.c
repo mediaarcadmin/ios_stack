@@ -69,8 +69,9 @@ static int extract_min(struct Estimates *estimates, int count, CGFloat *shortest
         smallest_index = 0;
         
         for(int i = 0; i < count; ++i) { 
-            if(shortest_path_vector[i] < smallest_estimate_found) {
-                smallest_estimate_found = estimates[i].shortest_path_estimate;
+            CGFloat estimate = shortest_path_vector[i];
+            if(estimate < smallest_estimate_found) {
+                smallest_estimate_found = estimate;
                 smallest_index = i;
             }      
         }
@@ -146,7 +147,6 @@ static void relax_reachable_from(int break_u, const THBreak *breaks, struct Esti
         if(!estimates[break_u + 1].examined) {
             shortest_path_vector[break_u + 1] = break_u_estimate;
         }
-        
     }
 }
 
