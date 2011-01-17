@@ -887,10 +887,6 @@
 		A3C7437E11CAC178005A2219 /* paper-neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */; };
 		A3C7437F11CAC178005A2219 /* paper-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436F11CAC178005A2219 /* paper-white@2x.png */; };
 		A3CA7B221275F92900775EF4 /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
-		A3CF837A12E4B19D0069FA16 /* Peter Rabbit.xps in Resources */ = {isa = PBXBuildFile; fileRef = A3CF837612E4B19D0069FA16 /* Peter Rabbit.xps */; };
-		A3CF837B12E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps in Resources */ = {isa = PBXBuildFile; fileRef = A3CF837712E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps */; };
-		A3CF837C12E4B19D0069FA16 /* Peter Rabbit.xps in Resources */ = {isa = PBXBuildFile; fileRef = A3CF837612E4B19D0069FA16 /* Peter Rabbit.xps */; };
-		A3CF837D12E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps in Resources */ = {isa = PBXBuildFile; fileRef = A3CF837712E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps */; };
 		A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
 		A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
 		A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
@@ -3870,8 +3866,6 @@
 				A393060D12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1B12DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1C12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
-				A3CF837A12E4B19D0069FA16 /* Peter Rabbit.xps in Resources */,
-				A3CF837B12E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps in Resources */,
 				A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4109,8 +4103,6 @@
 				A393060A12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1712DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1812DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
-				A3CF837C12E4B19D0069FA16 /* Peter Rabbit.xps in Resources */,
-				A3CF837D12E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps in Resources */,
 				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
