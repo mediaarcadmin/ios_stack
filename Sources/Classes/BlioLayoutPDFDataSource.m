@@ -513,14 +513,11 @@ static void
 parse_outline_items(int indent, CGPDFDocumentRef document,
 					CGPDFDictionaryRef outline, void* context, void* names)
 {
-    bool isOpen;
-
     CGPDFStringRef string;
 	CGPDFArrayRef destArray;
 	const char *destName;
 	NSString *destString = nil;
     CGPDFDictionaryRef first, action;
-    CGPDFInteger count;
     NSString *title = nil;
 	
 	NSInteger num = -1;
@@ -549,12 +546,6 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
 		} else if (CGPDFDictionaryGetArray(outline, "Dest", &destArray)) {
 			num = pageNumberFromDestArray(destArray);
 		}
-		
-		isOpen = true;
-		if (CGPDFDictionaryGetInteger(outline, "Count", &count)) {
-			isOpen = (count < 0) ? false : true;
-		}
-				
 		
 		if (title && (num > -1)) {
 			BlioTOCEntry *tocEntry = [[BlioTOCEntry alloc] init];
