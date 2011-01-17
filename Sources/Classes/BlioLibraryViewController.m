@@ -315,7 +315,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Peter Rabbit.xps"
+											  xpsPath:@"XPS-Starters/Peter Rabbit.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
@@ -328,50 +328,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/The Legend of Sleepy Hollow.xps"
+											  xpsPath:@"XPS-Starters/The Legend of Sleepy Hollow.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-	/*	
-        [self.processingDelegate enqueueBookWithTitle:@"New Italian Kitchen" 
-                                              authors:[NSArray arrayWithObjects:@"Stowell, Ethan", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/New Italian Kitchen.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"NewItalianKitchen" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"Frommer's Maui" 
-                                              authors:[NSArray arrayWithObjects:@"Irving, Washington", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Frommer's Maui.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"FrommersMaui" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-*/		
-        [self.processingDelegate enqueueBookWithTitle:@"Frommer's Cancun" 
-                                              authors:[NSArray arrayWithObjects:@"Baird, David", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Frommer's Cancun.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"FrommersCancun" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
@@ -382,37 +343,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Toy Story.xps"
+											  xpsPath:@"XPS-Demo/Toy Story.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Toy Story"
-									  placeholderOnly:NO
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
-                                              authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/OldLady.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
-									  placeholderOnly:NO
-		 ];
-		
-        [self.processingDelegate enqueueBookWithTitle:@"Cars" 
-                                              authors:[NSArray arrayWithObjects:@"Disney", nil]
-											coverPath:nil
-											 ePubPath:nil
-											  pdfPath:nil
-											  xpsPath:@"XPS/Cars.xps"
-										 textFlowPath:nil
-										audiobookPath:nil
-											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Cars" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
@@ -421,33 +356,44 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Three Little Pigs.xps"
+											  xpsPath:@"XPS-Demo/Three Little Pigs.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
 									 sourceSpecificID:@"Three Little Pigs" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-		
-		
-#endif // DEMO_MODE
-		
-#ifdef DEV_MODE
-    
-        [self.processingDelegate enqueueBookWithTitle:@"Virgin Islands" 
-                                              authors:[NSArray arrayWithObjects:@"Sullivan, Lynne M.", nil]
+			
+		 [self.processingDelegate enqueueBookWithTitle:@"Frommer's Cancun" 
+											authors:[NSArray arrayWithObjects:@"Baird, David", nil]
+											coverPath:nil
+											  ePubPath:nil
+											   pdfPath:nil
+											   xpsPath:@"XPS/Frommer's Cancun.xps"
+										  textFlowPath:nil
+										 audiobookPath:nil
+											  sourceID:BlioBookSourceLocalBundle
+									  sourceSpecificID:@"FrommersCancun" // this should normally be ISBN number when downloaded from the Book Store
+									   placeholderOnly:NO
+		 ];
+		 
+/*
+        [self.processingDelegate enqueueBookWithTitle:@"There Was An Old Lady Who Swallowed a Shell" 
+                                              authors:[NSArray arrayWithObjects:@"Colandro, Lucille", nil]
 											coverPath:nil
 											 ePubPath:nil
 											  pdfPath:nil
-											  xpsPath:@"XPS/Virgin Islands.xps"
+											  xpsPath:@"XPS-Demo/OldLady.xps"
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"VirginIslands" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
+*/		
 		
-#endif // DEV_MODE
+#endif // DEMO_MODE
+		
         
     }
 }
