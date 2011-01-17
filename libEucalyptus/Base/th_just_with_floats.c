@@ -44,7 +44,7 @@ struct Estimates {
     int examined;
 };
 
-static int extract_min(struct Estimates *estimates, int count, CGFloat *shortest_path_vector)
+static int extract_min(struct Estimates *estimates, vDSP_Length count, CGFloat *shortest_path_vector)
 {
     CGFloat smallest_estimate_found;
     vDSP_Length smallest_index;
@@ -65,16 +65,19 @@ static int extract_min(struct Estimates *estimates, int count, CGFloat *shortest
                     count);
 #endif
     } else {
-        smallest_estimate_found = CGFLOAT_MAX;
         smallest_index = 0;
         
-        for(int i = 0; i < count; ++i) { 
-            CGFloat estimate = shortest_path_vector[i];
-            if(estimate < smallest_estimate_found) {
-                smallest_estimate_found = estimate;
+        // Using indexes in here, as opposed to keeping a track of the current
+        // best shortest_path_vector[smallest_index] in a variable, provides
+        // a ~2% speedup, unintuitively.  Perhaps the compiler can optimize 
+        // more easily?
+        for(vDSP_Length i = 0; i < count; ++i) { 
+            if(shortest_path_vector[i] < shortest_path_vector[smallest_index]) {
                 smallest_index = i;
             }      
         }
+        
+        smallest_estimate_found = shortest_path_vector[smallest_index];
     }
     
     if(smallest_estimate_found != CGFLOAT_MAX) {
@@ -147,6 +150,7 @@ static void relax_reachable_from(int break_u, const THBreak *breaks, struct Esti
         if(!estimates[break_u + 1].examined) {
             shortest_path_vector[break_u + 1] = break_u_estimate;
         }
+        
     }
 }
 
