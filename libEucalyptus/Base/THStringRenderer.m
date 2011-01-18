@@ -57,6 +57,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         {
             if(!sFontNamesAndFlagsToMapsAndFonts) {
                 sFontNamesAndFlagsToMapsAndFonts = [[THCache alloc] init];
+                sFontNamesAndFlagsToMapsAndFonts.evictsOnMemoryWarnings = YES;
             }
             
             NSUInteger glyphMapLength = (UINT16_MAX + 1) * sizeof(uint16_t);
@@ -428,7 +429,9 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     }
     [_fontMap release];
     [_fontName release];
-    //[_widthCache release];
+    
+    _widthCache.evictsOnMemoryWarnings = NO;
+    [_widthCache release];
     [super dealloc];
 }
 
@@ -702,6 +705,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 {
     if(!_widthCache) {
         _widthCache = [[THStringAndCGFloatToCGFloatCache alloc] init];
+        _widthCache.evictsOnMemoryWarnings = YES;
     }
     CGFloat ret = [_widthCache cgFloatForStringKey:string cgFloatKey:pointSize];
     if(!ret) {

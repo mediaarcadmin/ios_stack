@@ -52,7 +52,6 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         THIntegerToObjectCache *perScaleFactorCacheCache = objc_getAssociatedObject(document, EucCSSSizedRunPerScaleFactorCacheCacheKey);
         if(!perScaleFactorCacheCache) {
             perScaleFactorCacheCache = [[THIntegerToObjectCache alloc] init];
-            perScaleFactorCacheCache.conserveItemsInUse = NO;
             objc_setAssociatedObject(document, EucCSSSizedRunPerScaleFactorCacheCacheKey, perScaleFactorCacheCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             [perScaleFactorCacheCache release];
         }
@@ -61,7 +60,6 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         if(!sizedRunsCache) {
             sizedRunsCache = [[THCache alloc] init];
             sizedRunsCache.generationLifetime = SIZED_RUN_CACHE_CAPACITY;
-            sizedRunsCache.conserveItemsInUse = NO;
             [perScaleFactorCacheCache cacheObject:sizedRunsCache forKey:intKey];
             [sizedRunsCache release];
         }

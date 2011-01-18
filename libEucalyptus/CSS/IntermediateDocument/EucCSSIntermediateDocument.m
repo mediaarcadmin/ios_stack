@@ -337,6 +337,7 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
             self = nil;
         } else {
             _keyToExtantNode = [[THIntegerToObjectCache alloc] init];
+            _keyToExtantNode.evictsOnMemoryWarnings = YES;
         }
     }
     return self;    
@@ -451,6 +452,7 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
 
 - (void)dealloc 
 {        
+    _keyToExtantNode.evictsOnMemoryWarnings = NO;
     [_keyToExtantNode release];
 
     [_documentTree release];    

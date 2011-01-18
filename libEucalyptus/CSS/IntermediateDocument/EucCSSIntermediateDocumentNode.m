@@ -39,6 +39,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 {
     if (self == [EucCSSIntermediateDocumentNode class]) {
         sStringRenderersCache = [[THStringAndIntegerToObjectCache alloc] init];
+        sStringRenderersCache.evictsOnMemoryWarnings = YES;
     }
 }
 
