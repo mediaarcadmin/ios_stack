@@ -297,13 +297,13 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     if(currentDocumentNode) {
         EucCSSIntermediateDocumentNode *stopBeforeNode;
         if(stopBeforeNodeKey) {
-            sizedRoot = [[EucCSSLayoutSizedTableCell alloc] initWithDocumentNode:nil scaleFactor:scaleFactor];
+            sizedRoot = [[[EucCSSLayoutSizedTableCell alloc] initWithDocumentNode:nil scaleFactor:scaleFactor] autorelease];
             stopBeforeNode = [self _layoutNodeForKey:stopBeforeNodeKey];
         } else {
             if(startNode.display == CSS_DISPLAY_TABLE_CELL) {
-                sizedRoot = [[EucCSSLayoutSizedTableCell alloc] initWithDocumentNode:currentDocumentNode scaleFactor:scaleFactor];
+                sizedRoot = [[[EucCSSLayoutSizedTableCell alloc] initWithDocumentNode:currentDocumentNode scaleFactor:scaleFactor] autorelease];
             } else {
-                sizedRoot = [[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:scaleFactor];
+                sizedRoot = [[[EucCSSLayoutSizedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:scaleFactor] autorelease];
             }
             stopBeforeNode = [startNode.parent displayableNodeAfter:startNode under:nil];
             currentDocumentNode = currentDocumentNode.nextDisplayable;
@@ -534,7 +534,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 EucCSSLayoutTableWrapper *tableWrapper = [[EucCSSLayoutTableWrapper alloc] initWithNode:topLevelTableParent layouter:self];
                 rowOffset = [tableWrapper rowForDocumentNode:currentDocumentNode];
                 currentDocumentNode = topLevelTableParent;
-                
+                [tableWrapper release];
             }
             
         	css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
@@ -567,8 +567,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 currentDocumentNode = currentDocumentNode.nextDisplayable;
             } 
         } else {
-            positionedRoot = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode
-                                                                           scaleFactor:scaleFactor];
+            positionedRoot = [[[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode
+                                                                            scaleFactor:scaleFactor] autorelease];
             [positionedRoot positionInFrame:frame afterInternalPageBreak:NO];
             currentPositionedBlock = positionedRoot;
             currentDocumentNode = currentDocumentNode.nextDisplayable;
