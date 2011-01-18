@@ -4143,13 +4143,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/ThirdParty/libparserutils/build/make-aliases.pl",
+				"${SRCROOT}/ThirdParty/libparserutils/src/charset/aliases.inc",
 			);
 			name = "Generate aliases.inc";
 			outputPaths = (
+				"${DERIVED_FILE_DIR}/aliases.inc",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ ! -e \"${DERIVED_FILES_DIR}/aliases.inc\" ]] ; then\n  if [[ ! -e \"${DERIVED_FILES_DIR}\" ]] ; then\n    mkdir -p \"${DERIVED_FILES_DIR}\"\n  fi\n  pushd \"${SRCROOT}/ThirdParty/libparserutils\"\n  perl build/make-aliases.pl\n  mv src/charset/aliases.inc \"${DERIVED_FILES_DIR}/aliases.inc\"\n  echo \"Created \\\"${DERIVED_FILES_DIR}/aliases.inc\\\"\"\n  popd\nfi";
+			shellScript = "if [[ ! -e \"${DERIVED_FILE_DIR}/aliases.inc\" ]] ; then\n  if [[ ! -e \"${DERIVED_FILE_DIR}\" ]] ; then\n    mkdir -p \"${DERIVED_FILE_DIR}\"\n  fi\n  pushd \"${SRCROOT}/ThirdParty/libparserutils\"\n  perl build/make-aliases.pl\n  mv src/charset/aliases.inc \"${DERIVED_FILE_DIR}/aliases.inc\"\n  echo \"Created \\\"${DERIVED_FILE_DIR}/aliases.inc\\\"\"\n  popd\nfi";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -4917,7 +4920,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libparserutils/include\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = parserutils;
-				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILES_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILE_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
 				USE_HEADERMAP = NO;
 			};
 			name = Debug;
@@ -4935,7 +4938,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libparserutils/include\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = parserutils;
-				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILES_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILE_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
 				USE_HEADERMAP = NO;
 				ZERO_LINK = NO;
 			};
@@ -4952,7 +4955,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libparserutils/include\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = parserutils;
-				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILES_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILE_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
 				USE_HEADERMAP = NO;
 			};
 			name = Beta;
@@ -4968,7 +4971,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libparserutils/include\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = parserutils;
-				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILES_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILE_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
 				USE_HEADERMAP = NO;
 			};
 			name = AppStore;
@@ -5767,7 +5770,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libparserutils/include\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = parserutils;
-				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILES_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(DERIVED_FILE_DIR)\" \"$(SRCROOT)/ThirdParty/libparserutils/src\"";
 				USE_HEADERMAP = NO;
 				ZERO_LINK = NO;
 			};
