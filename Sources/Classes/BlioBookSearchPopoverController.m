@@ -48,12 +48,13 @@
 }
 
 - (id)init {
-    BlioBookSearchResultsTableViewController *aResultsController = [[BlioBookSearchResultsTableViewController alloc] initWithStyle:UITableViewStylePlain];    
+    BlioBookSearchResultsTableViewController *aResultsController = [[BlioBookSearchResultsTableViewController alloc] initWithStyle:UITableViewStylePlain]; 
     UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:aResultsController];
     
     if ((self = [super initWithContentViewController:aNavigationController])) {
         self.resultsController = aResultsController;
         self.resultsController.resultsDelegate = self;
+		self.resultsController.resultsFormatter = self;
         self.navigationController = aNavigationController;
                 
         BlioBookSearchToolbar *aSearchBar = [[BlioBookSearchToolbar alloc] init];
