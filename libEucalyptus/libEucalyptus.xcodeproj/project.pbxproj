@@ -4153,6 +4153,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "pushd \"${SRCROOT}/ThirdParty/libparserutils\"\nperl build/make-aliases.pl\nmv src/charset/aliases.inc \"${DERIVED_FILE_DIR}/aliases.inc\"\necho \"Created \\\"${DERIVED_FILE_DIR}/aliases.inc\\\"\"\npopd\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
