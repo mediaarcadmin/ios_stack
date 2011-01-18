@@ -17,10 +17,12 @@ CGColorRef CGColorWithCSSColor(css_color color)
         space = CGColorSpaceCreateDeviceRGB();
     }
     
-    CGFloat components[] = { (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
-                             (CGFloat)(color & 0xFF0000) * (1.0f / (CGFloat)0xFF0000),
-                             (CGFloat)(color & 0xFF00) * (1.0f / (CGFloat)0xFF00),
-                             1.0f };
+    CGFloat components[] = {     
+        (CGFloat)(color & 0xFF0000) * (1.0f / (CGFloat)0xFF0000),
+        (CGFloat)(color & 0xFF00) * (1.0f / (CGFloat)0xFF00),
+        (CGFloat)(color & 0xFF) * (1.0f / (CGFloat)0xFF),
+        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
+    };
     CGColorRef ret = CGColorCreate(space, components);
     [(id)ret autorelease];
     return ret;    

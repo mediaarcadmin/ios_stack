@@ -20,14 +20,14 @@ static void *myrealloc(void *ptr, size_t len, void *pw)
 	return realloc(ptr, len);
 }
 
-static css_error resolve_url(void *pw, lwc_context *dict,
+static css_error resolve_url(void *pw,
 		const char *base, lwc_string *rel, lwc_string **abs)
 {
 	UNUSED(pw);
 	UNUSED(base);
 
 	/* About as useless as possible */
-	*abs = lwc_context_string_ref(dict, rel);
+	*abs = lwc_string_ref(rel);
 
 	return CSS_OK;
 }
@@ -40,31 +40,23 @@ int main(int argc, char **argv)
 #define CHUNK_SIZE (4096)
 	uint8_t buf[CHUNK_SIZE];
 	css_error error;
-        lwc_context *ctx;
 	int count;
 
-	if (argc != 3) {
-		printf("Usage: %s <aliases_file> <filename>\n", argv[0]);
+	if (argc != 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
 		return 1;
 	}
 
-	/* Initialise library */
-	assert(css_initialise(argv[1], myrealloc, NULL) == CSS_OK);
-        
-        assert(lwc_create_context(myrealloc, NULL, &ctx) == lwc_error_ok);
-        
-        lwc_context_ref(ctx); /* Transform weak ref to a strong ref */
-        
 	for (count = 0; count < ITERATIONS; count++) {
 
-		assert(css_stylesheet_create(CSS_LEVEL_21, "UTF-8", argv[2], 
-				NULL, CSS_ORIGIN_AUTHOR, CSS_MEDIA_ALL, false,
-				false, ctx, myrealloc, NULL, 
-				resolve_url, NULL, &sheet) == CSS_OK);
+		assert(css_stylesheet_create(CSS_LEVEL_21, "UTF-8", argv[1], 
+				NULL, false, false, myrealloc, NULL, 
+				resolve_url, NULL, NULL, NULL, 
+				&sheet) == CSS_OK);
 
-		fp = fopen(argv[2], "rb");
+		fp = fopen(argv[1], "rb");
 		if (fp == NULL) {
-			printf("Failed opening %s\n", argv[2]);
+			printf("Failed opening %s\n", argv[1]);
 			return 1;
 		}
 
@@ -115,16 +107,17 @@ int main(int argc, char **argv)
 				buf[lwc_string_length(url)] = '\0';
 
 				assert(css_stylesheet_create(CSS_LEVEL_21,
-					"UTF-8", buf, NULL, CSS_ORIGIN_AUTHOR,
-					media, false, false, ctx, myrealloc, 
-					NULL, resolve_url, NULL,
-					&import) == CSS_OK);
+					"UTF-8", buf, NULL, false, false, 
+					myrealloc, NULL, resolve_url, NULL,
+					NULL, NULL, &import) == CSS_OK);
 
 				assert(css_stylesheet_data_done(import) == 
 					CSS_OK);
 
 				assert(css_stylesheet_register_import(sheet,
 					import) == CSS_OK);
+
+				css_stylesheet_destroy(import);
 
 				error = CSS_IMPORTS_PENDING;
 			}
@@ -151,11 +144,7 @@ int main(int argc, char **argv)
 		css_stylesheet_destroy(sheet);
 	}
 
-	assert(css_finalise(myrealloc, NULL) == CSS_OK);
-
 	printf("PASS\n");
-        
-        lwc_context_unref(ctx);
         
 	return 0;
 }

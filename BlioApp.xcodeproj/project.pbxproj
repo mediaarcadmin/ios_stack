@@ -158,7 +158,6 @@
 		7D8A801F121A99FB00A54E16 /* BlioBeveledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */; };
 		7D8A8020121A99FB00A54E16 /* BlioBeveledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */; };
 		7D9147CA1151497900BCBB23 /* BlioFlowPaginateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */; };
-		7D9148D4115159E400BCBB23 /* Aliases in Resources */ = {isa = PBXBuildFile; fileRef = 7D9148D3115159E400BCBB23 /* Aliases */; };
 		7D94C63A117630050067B732 /* BlioTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */; };
 		7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
 		7D9A6885125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
@@ -278,7 +277,6 @@
 		A30E0F33123EA5B400D31157 /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
 		A30E0F34123EA5B400D31157 /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
 		A30E0F35123EA5B400D31157 /* icon-vault.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4611503CF6006534F4 /* icon-vault.png */; };
-		A30E0F36123EA5B400D31157 /* Aliases in Resources */ = {isa = PBXBuildFile; fileRef = 7D9148D3115159E400BCBB23 /* Aliases */; };
 		A30E0F37123EA5B400D31157 /* TextFlowFlow.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DF2A589115381EF00FC2045 /* TextFlowFlow.css */; };
 		A30E0F38123EA5B400D31157 /* TextFlowCover.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = 7D529C101158DC1100548C00 /* TextFlowCover.xhtml */; };
 		A30E0F39123EA5B400D31157 /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
@@ -593,7 +591,6 @@
 		A36D34FE120B136700E1A035 /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
 		A36D34FF120B136700E1A035 /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
 		A36D3500120B136700E1A035 /* icon-vault.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4611503CF6006534F4 /* icon-vault.png */; };
-		A36D3501120B136700E1A035 /* Aliases in Resources */ = {isa = PBXBuildFile; fileRef = 7D9148D3115159E400BCBB23 /* Aliases */; };
 		A36D3502120B136700E1A035 /* TextFlowFlow.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DF2A589115381EF00FC2045 /* TextFlowFlow.css */; };
 		A36D3503120B136700E1A035 /* TextFlowCover.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = 7D529C101158DC1100548C00 /* TextFlowCover.xhtml */; };
 		A36D3504120B136700E1A035 /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
@@ -1464,7 +1461,6 @@
 		7D905DA611590AAC0011272A /* PageIndexes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PageIndexes; sourceTree = "<group>"; };
 		7D9147C71151497900BCBB23 /* BlioFlowPaginateOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowPaginateOperation.h; sourceTree = "<group>"; };
 		7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioFlowPaginateOperation.m; sourceTree = "<group>"; };
-		7D9148D3115159E400BCBB23 /* Aliases */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Aliases; sourceTree = "<group>"; };
 		7D94C63311762C4F0067B732 /* BlioParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioParagraphSource.h; sourceTree = "<group>"; };
 		7D94C638117630050067B732 /* BlioTextFlowParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraphSource.h; sourceTree = "<group>"; };
 		7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraphSource.m; sourceTree = "<group>"; };
@@ -2454,7 +2450,6 @@
 			isa = PBXGroup;
 			children = (
 				7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */,
-				7D9148D3115159E400BCBB23 /* Aliases */,
 				7D381D0510D93039008D34E2 /* HyphenationPatterns */,
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
@@ -3453,7 +3448,6 @@
 				DCA65A3A11503A4D006534F4 /* SearchCellDivider.png in Resources */,
 				DCA65A4711503CF6006534F4 /* icon-categories.png in Resources */,
 				DCA65A4811503CF6006534F4 /* icon-vault.png in Resources */,
-				7D9148D4115159E400BCBB23 /* Aliases in Resources */,
 				7DF2A58B115381EF00FC2045 /* TextFlowFlow.css in Resources */,
 				7D529C111158DC1100548C00 /* TextFlowCover.xhtml in Resources */,
 				A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */,
@@ -3692,7 +3686,6 @@
 				A30E0F33123EA5B400D31157 /* SearchCellDivider.png in Resources */,
 				A30E0F34123EA5B400D31157 /* icon-categories.png in Resources */,
 				A30E0F35123EA5B400D31157 /* icon-vault.png in Resources */,
-				A30E0F36123EA5B400D31157 /* Aliases in Resources */,
 				A30E0F37123EA5B400D31157 /* TextFlowFlow.css in Resources */,
 				A30E0F38123EA5B400D31157 /* TextFlowCover.xhtml in Resources */,
 				A30E0F39123EA5B400D31157 /* icon-cart.png in Resources */,
@@ -3929,7 +3922,6 @@
 				A36D34FE120B136700E1A035 /* SearchCellDivider.png in Resources */,
 				A36D34FF120B136700E1A035 /* icon-categories.png in Resources */,
 				A36D3500120B136700E1A035 /* icon-vault.png in Resources */,
-				A36D3501120B136700E1A035 /* Aliases in Resources */,
 				A36D3502120B136700E1A035 /* TextFlowFlow.css in Resources */,
 				A36D3503120B136700E1A035 /* TextFlowCover.xhtml in Resources */,
 				A36D3504120B136700E1A035 /* icon-cart.png in Resources */,

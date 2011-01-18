@@ -31,7 +31,7 @@ main(int argc, char **argv)
         sr = srunner_create(suite_create("Test suite for libwapcaplet"));
         
         lwc_basic_suite(sr);
-        lwc_memory_suite(sr);
+//        lwc_memory_suite(sr);
         
         srunner_set_fork_status(sr, CK_FORK);
         srunner_run_all(sr, CK_ENV);

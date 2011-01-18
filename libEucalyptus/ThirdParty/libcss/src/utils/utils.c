@@ -11,6 +11,7 @@ css_fixed number_from_lwc_string(lwc_string *string,
 		bool int_only, size_t *consumed)
 {
 	size_t len;
+	const uint8_t *start_ptr;
 	const uint8_t *ptr;
 	int sign = 1;
 	int32_t intpart = 0;
@@ -22,7 +23,8 @@ css_fixed number_from_lwc_string(lwc_string *string,
 		return 0;
 
 	len = lwc_string_length(string);
-	ptr = (uint8_t *)lwc_string_data(string);
+	start_ptr = (uint8_t *)lwc_string_data(string);
+	ptr = start_ptr;
 
 	/* number = [+-]? ([0-9]+ | [0-9]* '.' [0-9]+) */
 
@@ -92,7 +94,7 @@ css_fixed number_from_lwc_string(lwc_string *string,
 		}
 	}
 
-	*consumed = (char *)ptr - lwc_string_data(string);
+	*consumed = (char *)ptr - (char *)start_ptr;
 
 	if (sign > 0) {
 		/* If the result is larger than we can represent,

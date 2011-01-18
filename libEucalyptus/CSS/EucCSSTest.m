@@ -33,17 +33,7 @@ int main (int argc, const char * argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
     THProcessLoggingDefaults();
-    
-    bool cssInitialised = false;
-
-    css_error cssErr = css_initialise(argv[1], EucRealloc, NULL);
-    if(cssErr != CSS_OK) {
-        THWarn(@"Error \"%s\" setting up libCSS", css_error_to_string(cssErr));
-        goto bail;
-    } else {
-       cssInitialised = YES;
-    }    
-        
+            
     NSString *xmlPath = [NSString stringWithUTF8String:argv[3]];
     NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:xmlPath];
     EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]];
@@ -119,11 +109,6 @@ int main (int argc, const char * argv[]) {
 
     [xmlTree release];
 
-bail:
-    if(cssInitialised) {
-        css_finalise(EucRealloc, NULL);
-    }
-    
     [pool drain];
     return 0;
 }

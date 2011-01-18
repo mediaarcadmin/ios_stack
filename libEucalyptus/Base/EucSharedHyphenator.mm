@@ -62,6 +62,7 @@ static EucSharedHyphenator *sSharedHyphenator;
         _hyphenator = SharedHyphenator::sharedHyphenator();
         _cache = [[THCache alloc] init];
         _cache.conserveItemsInUse = NO;
+        _cache.evictsOnMemoryWarnings = YES;
     }
     return self;
 }
@@ -112,7 +113,6 @@ static void EucSharedHyphenatorSetup()
             }
         }
         ret = [NSArray arrayWithObjects:items count:ruleCount];
-        
         [_cache cacheObject:ret forKey:word];
     }
     return ret;

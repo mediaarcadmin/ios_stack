@@ -27,14 +27,8 @@ int main(int argc, char **argv)
 	const uint8_t *in = inbuf;
 	uint8_t *out = outbuf;
 
-	if (argc != 2) {
-		printf("Usage: %s <filename>\n", argv[0]);
-		return 1;
-	}
-
-	/* Initialise library */
-	assert(parserutils_initialise(argv[1], myrealloc, NULL) == 
-			PARSERUTILS_OK);
+	UNUSED(argc);
+	UNUSED(argv);
 
 	/* Create input filter */
 	assert(parserutils_filter_create("UTF-8", myrealloc, NULL, &input) ==
@@ -348,8 +342,6 @@ int main(int argc, char **argv)
 
 	/* Clean up */
 	parserutils_filter_destroy(input);
-
-	assert(parserutils_finalise(myrealloc, NULL) == PARSERUTILS_OK);
 
 	printf("PASS\n");
 

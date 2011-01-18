@@ -1,3 +1,3 @@
-DIR_TEST_ITEMS := testrunner:testmain.c;basictests.c;memorytests.c
+DIR_TEST_ITEMS := testrunner:testmain.c;basictests.c
 
 include build/makefiles/Makefile.subdir

@@ -1,4 +1,4 @@
-/* libwapcaplet.h
+/* libwapcaplet.c
  *
  * String internment and management tools.
  *
@@ -6,6 +6,7 @@
  *		  Daniel Silverstone <dsilvers@netsurf-browser.org>
  */
 
+#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
@@ -15,7 +16,6 @@
 #define UNUSED(x) ((x) = (x))
 #endif
 
-typedef uint32_t lwc_hash;
 typedef uint32_t lwc_refcounter;
 
 static inline lwc_hash
@@ -45,101 +45,72 @@ struct lwc_string_s {
 #define STR_OF(str) ((char *)(str + 1))
 #define CSTR_OF(str) ((const char *)(str + 1))
 
-#define NR_BUCKETS	(4091)
+#define NR_BUCKETS_DEFAULT	(4091)
 
-struct lwc_context_s {
-        lwc_allocator_fn	alloc;
-        void *			alloc_pw;
-        lwc_string *		buckets[NR_BUCKETS];
-        lwc_refcounter		refcnt;
-        bool			refweak;
-        size_t			size;
-};
+typedef struct lwc_context_s {
+        lwc_string **		buckets;
+        lwc_hash		bucketcount;
+} lwc_context;
 
-lwc_error
-lwc_create_context(lwc_allocator_fn alloc, void *pw,
-                   lwc_context **ret)
-{
-        assert(alloc);
+static lwc_context *ctx = NULL;
 
-        *ret = alloc(NULL, sizeof(lwc_context), pw);
-        
-        if (*ret == NULL)
-                return lwc_error_oom;
-        
-        memset(*ret, 0, sizeof(lwc_context));
-        
-        (*ret)->alloc = alloc;
-        (*ret)->alloc_pw = pw;
-        (*ret)->refcnt = 1;
-        (*ret)->refweak = true;
-        (*ret)->size = sizeof(lwc_context);
-        
-        return lwc_error_ok;
-}
-
-lwc_context *
-lwc_context_ref(lwc_context *ctx)
-{
-        assert(ctx);
-        
-        if (ctx->refweak == true)
-                ctx->refweak = false;
-        else
-                ctx->refcnt++;
-        
-        return ctx;
-}
-
-#define LWC_ALLOC(s) ctx->alloc(NULL, s, ctx->alloc_pw)
-#define LWC_FREE(p) ctx->alloc(p, 0, ctx->alloc_pw)
-
-void
-lwc_context_unref(lwc_context *ctx)
-{
-        int bucket_nr;
-        lwc_string *s, *s_next;
-        
-        assert(ctx);
-        
-        if (--(ctx->refcnt))
-                return;
-        
-        for (bucket_nr = 0; bucket_nr < NR_BUCKETS; ++bucket_nr) {
-                s = ctx->buckets[bucket_nr];
-                while (s != NULL) {
-                        s_next = s->next;
-                        LWC_FREE(s);
-                        s = s_next;
-                }
-        }
-        
-        LWC_FREE(ctx);
-}
+#define LWC_ALLOC(s) malloc(s)
+#define LWC_FREE(p) free(p)
 
 typedef lwc_hash (*lwc_hasher)(const char *, size_t);
 typedef int (*lwc_strncmp)(const char *, const char *, size_t);
 typedef void (*lwc_memcpy)(char *, const char *, size_t);
 
 static lwc_error
-__lwc_context_intern(lwc_context *ctx,
-                     const char *s, size_t slen,
-                     lwc_string **ret,
-                     lwc_hasher hasher,
-                     lwc_strncmp compare,
-                     lwc_memcpy copy)
+_lwc_initialise(void)
+{
+        if (ctx != NULL)
+                return lwc_error_ok;
+        
+        ctx = LWC_ALLOC(sizeof(lwc_context));
+        
+        if (ctx == NULL)
+                return lwc_error_oom;
+        
+        memset(ctx, 0, sizeof(lwc_context));
+        
+        ctx->bucketcount = NR_BUCKETS_DEFAULT;
+        ctx->buckets = LWC_ALLOC(sizeof(lwc_string *) * ctx->bucketcount);
+        
+        if (ctx->buckets == NULL) {
+                LWC_FREE(ctx);
+		ctx = NULL;
+                return lwc_error_oom;
+        }
+        
+        memset(ctx->buckets, 0, sizeof(lwc_string *) * ctx->bucketcount);
+        
+        return lwc_error_ok;
+}
+
+static lwc_error
+__lwc_intern(const char *s, size_t slen,
+             lwc_string **ret,
+             lwc_hasher hasher,
+             lwc_strncmp compare,
+             lwc_memcpy copy)
 {
         lwc_hash h;
         lwc_hash bucket;
         lwc_string *str;
-        size_t required_size;
+        lwc_error eret;
         
-        assert(ctx);
         assert((s != NULL) || (slen == 0));
         assert(ret);
         
+        if (ctx == NULL) {
+                eret = _lwc_initialise();
+                if (eret != lwc_error_ok)
+                        return eret;
+        }
+        
         h = hasher(s, slen);
-        bucket = h % NR_BUCKETS;
+        bucket = h % ctx->bucketcount;
         str = ctx->buckets[bucket];
         
         while (str != NULL) {
@@ -154,9 +125,7 @@ __lwc_context_intern(lwc_context *ctx,
         }
         
         /* Add one for the additional NUL. */
-        required_size = sizeof(lwc_string) + slen + 1;
-
-        *ret = str = LWC_ALLOC(required_size);
+        *ret = str = LWC_ALLOC(sizeof(lwc_string) + slen + 1);
         
         if (str == NULL)
                 return lwc_error_oom;
@@ -167,9 +136,6 @@ __lwc_context_intern(lwc_context *ctx,
                 str->next->prevptr = &(str->next);
         ctx->buckets[bucket] = str;
 
-        /* Keep context size in sync */
-        ctx->size += required_size;
- 
         str->len = slen;
         str->hash = h;
         str->refcnt = 1;
@@ -184,22 +150,19 @@ __lwc_context_intern(lwc_context *ctx,
 }
 
 lwc_error
-lwc_context_intern(lwc_context *ctx,
-                   const char *s, size_t slen,
-                   lwc_string **ret)
+lwc_intern_string(const char *s, size_t slen,
+                  lwc_string **ret)
 {
-        return __lwc_context_intern(ctx, s, slen, ret,
-                                    lwc_calculate_hash,
-                                    strncmp, (lwc_memcpy)memcpy);
+        return __lwc_intern(s, slen, ret,
+                            lwc_calculate_hash,
+                            strncmp, (lwc_memcpy)memcpy);
 }
 
 lwc_error
-lwc_context_intern_substring(lwc_context *ctx,
-                             lwc_string *str,
-                             size_t ssoffset, size_t sslen,
-                             lwc_string **ret)
+lwc_intern_substring(lwc_string *str,
+                     size_t ssoffset, size_t sslen,
+                     lwc_string **ret)
 {
-        assert(ctx);
         assert(str);
         assert(ret);
         
@@ -208,15 +171,12 @@ lwc_context_intern_substring(lwc_context *ctx,
         if ((ssoffset + sslen) > str->len)
                 return lwc_error_range;
         
-        return lwc_context_intern(ctx, CSTR_OF(str) + ssoffset, sslen, ret);
+        return lwc_intern_string(CSTR_OF(str) + ssoffset, sslen, ret);
 }
 
 lwc_string *
-lwc_context_string_ref(lwc_context *ctx, lwc_string *str)
+lwc_string_ref(lwc_string *str)
 {
-	UNUSED(ctx);
-
-        assert(ctx);
         assert(str);
         
         str->refcnt++;
@@ -225,9 +185,8 @@ lwc_context_string_ref(lwc_context *ctx, lwc_string *str)
 }
 
 void
-lwc_context_string_unref(lwc_context *ctx, lwc_string *str)
+lwc_string_unref(lwc_string *str)
 {
-        assert(ctx);
         assert(str);
         
         if (--(str->refcnt) > 1)
@@ -242,11 +201,8 @@ lwc_context_string_unref(lwc_context *ctx, lwc_string *str)
                 str->next->prevptr = str->prevptr;
 
         if (str->insensitive != NULL && str->refcnt == 0)
-                lwc_context_string_unref(ctx, str->insensitive);
+                lwc_string_unref(str->insensitive);
 
-        /* Reduce context size by appropriate amount (+1 for trailing NUL) */
-        ctx->size -= sizeof(lwc_string) + str->len + 1;
-       
 #ifndef NDEBUG
         memset(str, 0xA5, sizeof(*str) + str->len);
 #endif
@@ -280,10 +236,11 @@ lwc_calculate_lcase_hash(const char *str, size_t len)
 }
 
 static int
-lwc_lcase_strcmp(const char *s1, const char *s2, size_t n)
+lwc_lcase_strncmp(const char *s1, const char *s2, size_t n)
 {
         while (n--) {
                 if (*s1++ != dolower(*s2++))
+                        /** @todo Test this somehow? */
                         return 1;
         }
         return 0;
@@ -298,39 +255,34 @@ lwc_lcase_memcpy(char *target, const char *source, size_t n)
 }
 
 static lwc_error
-lwc_context_intern_caseless(lwc_context *ctx,
-                            lwc_string *str)
+lwc_intern_caseless_string(lwc_string *str)
 {
-        assert(ctx);
         assert(str);
         assert(str->insensitive == NULL);
         
-        return __lwc_context_intern(ctx, CSTR_OF(str),
-                                    str->len, &(str->insensitive),
-                                    lwc_calculate_lcase_hash,
-                                    lwc_lcase_strcmp,
-                                    lwc_lcase_memcpy);
-        
+        return __lwc_intern(CSTR_OF(str),
+                            str->len, &(str->insensitive),
+                            lwc_calculate_lcase_hash,
+                            lwc_lcase_strncmp,
+                            lwc_lcase_memcpy);
 }
 
 lwc_error
-lwc_context_string_caseless_isequal(lwc_context *ctx,
-                                    lwc_string *str1,
-                                    lwc_string *str2,
-                                    bool *ret)
+lwc_string_caseless_isequal(lwc_string *str1,
+                            lwc_string *str2,
+                            bool *ret)
 {
         lwc_error err;
-        assert(ctx);
         assert(str1);
         assert(str2);
         
         if (str1->insensitive == NULL) {
-                err = lwc_context_intern_caseless(ctx, str1);
+                err = lwc_intern_caseless_string(str1);
                 if (err != lwc_error_ok)
                         return err;
         }
         if (str2->insensitive == NULL) {
-                err = lwc_context_intern_caseless(ctx, str2);
+                err = lwc_intern_caseless_string(str2);
                 if (err != lwc_error_ok)
                         return err;
         }
@@ -365,11 +317,19 @@ lwc_string_hash_value(lwc_string *str)
 	return str->hash;
 }
 
-size_t
-lwc_context_size(lwc_context *ctx)
+/**** Iteration ****/
+
+void
+lwc_iterate_strings(lwc_iteration_callback_fn cb, void *pw)
 {
-        assert(ctx);
-
-        return ctx->size;
+        lwc_hash n;
+        lwc_string *str;
+       
+	if (ctx == NULL)
+		return;
+ 
+        for (n = 0; n < ctx->bucketcount; ++n) {
+                for (str = ctx->buckets[n]; str != NULL; str = str->next)
+                        cb(str, pw);
+        }
 }
-

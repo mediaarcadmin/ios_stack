@@ -139,6 +139,8 @@ DISTCLEAN_ITEMS :=
 TEST_ITEMS :=
 # List of targets to run for testing
 TEST_TARGETS :=
+# List of targets which are prerequisites for running tests
+TEST_PREREQS :=
 
 # List of items to (un)install
 INSTALL_ITEMS :=
@@ -208,15 +210,15 @@ ifeq ($(COMPONENT_TYPE),lib-shared)
   POST_TARGETS := __postshared $(POST_TARGETS)
 
 __postshared:
-	$(Q)$(LN) $(LNFLAGS) -fs $(notdir $(OUTPUT)) $(BUILDDIR)/$(SONAME)
-	$(Q)$(LN) $(LNFLAGS) -fs $(notdir $(OUTPUT)) $(BUILDDIR)/$(SHAREDLIBNAME)
+	$(Q)$(LN) $(LNFLAGS) -f -s $(notdir $(OUTPUT)) $(BUILDDIR)/$(SONAME)
+	$(Q)$(LN) $(LNFLAGS) -f -s $(notdir $(OUTPUT)) $(BUILDDIR)/$(SHAREDLIBNAME)
 endif
 
 # Default target
 all: $(PRE_TARGETS) $(OUTPUT) $(POST_TARGETS)
 
 # Build and execute testsuite 
-test: all $(TEST_BINARIES) $(TEST_TARGETS)
+test: all $(TEST_PREREQS) $(TEST_BINARIES) $(TEST_TARGETS)
 	$(VQ)$(ECHO) $(ECHOFLAGS) "    TEST: Testing complete"
 
 # Compute coverage
@@ -266,8 +268,7 @@ distclean: clean
 __comma := ,
 __empty := 
 __space := $(empty) $(empty)
-__required = $(if $(REQUIRED_PKGS), \
-	Requires: $(subst $(__space),$(__comma) ,$(strip $(REQUIRED_PKGS))), )
+__required = $(if $(REQUIRED_PKGS),Requires: $(subst $(__space),$(__comma) ,$(strip $(REQUIRED_PKGS))),)
 
 # Install a pkg-config control file ($1) to the specified location ($2)
 define install_pkgconfig
@@ -287,8 +288,8 @@ endef
 # TODO: Is this scheme portable?
 define install_shared_lib
   $(INSTALL) $(INSTALLFLAGS) -m 755 $1 $2/$(notdir $1)
-  $(LN) $(LNFLAGS) -fs $(notdir $1) $2/$(SONAME)
-  $(LN) $(LNFLAGS) -fs $(notdir $1) $2/$(SHAREDLIBNAME)
+  $(LN) $(LNFLAGS) -f -s $(notdir $1) $2/$(SONAME)
+  $(LN) $(LNFLAGS) -f -s $(notdir $1) $2/$(SHAREDLIBNAME)
 endef
 
 # Install a file ($1) to the specified location ($2)
@@ -558,7 +559,7 @@ ifeq ($(WANT_TEST),yes)
     TESTLDFLAGS += -L$(BUILDDIR)/ -l$(COMPONENT)
   endif
 
-  TESTCFLAGS += $(CFLAGS)
+  TESTCFLAGS := $(CFLAGS) $(TESTCFLAGS)
   TESTCXXFLAGS += $(CXXFLAGS)
   TESTLDFLAGS += $(LDFLAGS)
 

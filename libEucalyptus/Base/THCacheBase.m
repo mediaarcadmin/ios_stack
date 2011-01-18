@@ -61,25 +61,54 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 {
     if((self = [super init])) {
         pthread_mutex_init(&_cacheMutex, NULL);
-#if TARGET_OS_IPHONE
-        [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                 selector:@selector(_didReceiveMemoryWarning)
-                                                     name:UIApplicationDidReceiveMemoryWarningNotification
-                                                   object:[UIApplication sharedApplication]];
-#endif        
         _currentCacheSet = CFSetCreateMutable(kCFAllocatorDefault, 0, &THCacheSetCallBacks);
     }
     return self;
 }
 
+- (void)_setEvictsOnMemoryWarningsWithNumber:(NSNumber *)number
+{
+    if(![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(_setEvictsOnMemoryWarningsWithNumber:) withObject:number waitUntilDone:YES];
+    } else {
+        BOOL evictsOnMemoryWarnings = [number boolValue];
+        if(evictsOnMemoryWarnings != _evictsOnMemoryWarnings) {
+#if TARGET_OS_IPHONE
+            if(evictsOnMemoryWarnings) {
+                [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                         selector:@selector(_didReceiveMemoryWarning)
+                                                             name:UIApplicationDidReceiveMemoryWarningNotification
+                                                           object:[UIApplication sharedApplication]];                
+            } else {
+                [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                                name:UIApplicationDidReceiveMemoryWarningNotification
+                                                              object:[UIApplication sharedApplication]];
+            }      
+#endif
+            _evictsOnMemoryWarnings = evictsOnMemoryWarnings;
+        }        
+    }
+}
+
+- (void)setEvictsOnMemoryWarnings:(BOOL)evictsOnMemoryWarnings
+{
+    [self _setEvictsOnMemoryWarningsWithNumber:[NSNumber numberWithBool:evictsOnMemoryWarnings]];
+}
+
+- (BOOL)evictsOnMemoryWarnings
+{
+    return _evictsOnMemoryWarnings;
+}
+
 - (void)dealloc
 {    
-#if TARGET_OS_IPHONE
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIApplicationDidReceiveMemoryWarningNotification
-                                                  object:[UIApplication sharedApplication]];
-#endif
-    
+    if(_evictsOnMemoryWarnings) {
+        if(![NSThread isMainThread]) {
+            [NSException raise:NSInternalInconsistencyException format:@"THCache released on non-main thread with evictsOnMemoryWarnings set."];
+        } else {
+            self.evictsOnMemoryWarnings = NO;
+        }
+    }
     if(_lastGenerationCacheSet) {
         CFRelease(_lastGenerationCacheSet);
     }
