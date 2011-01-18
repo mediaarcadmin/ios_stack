@@ -91,8 +91,7 @@
                     case CSS_DISPLAY_TABLE_CELL:
                     {
                         EucCSSLayoutTableRowGroup *rowGroup;
-                        // TODO: support header and footer groups in the rest
-                        // of the code before reinstating this.
+
                         if(currentNodeDisplay == CSS_DISPLAY_TABLE_HEADER_GROUP && !_headerGroup) {
                             // First header group wins - others treated like 
                             // regular row groups.
@@ -104,13 +103,17 @@
                             _footerGroup = [[EucCSSLayoutTableFooterGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
                             rowGroup = _footerGroup;
                         } else {
-                            rowGroup = [[EucCSSLayoutTableRowGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper];
+                            rowGroup = [[[EucCSSLayoutTableRowGroup alloc] initWithNode:currentDocumentNode wrapper:wrapper] autorelease];
+                        }    
+                        // TODO: support header and footer groups in the rest
+                        // of the code and stop adding them to the groups
+                        // array.
                             if(!_rowGroups) {
                                 _rowGroups = [[NSMutableArray alloc] init];
                             }
                             [_rowGroups addObject:rowGroup];
-                            [rowGroup release];
-                        }
+                        //   [rowGroup release];
+                        //}
                         currentDocumentNode = rowGroup.nextNodeInDocument;
                         break;
                     }

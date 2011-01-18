@@ -694,9 +694,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                                            usingLayouter:self
                                                                                            fromRowOffset:rowOffset];
                         
-                        if(rowOffset) {
-                            rowOffset = 0;
-                        } else {
+                        if(rowOffset != 0) {
                             if(hasPreviousSibling) {
                                 EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
                                 pageBreaks.push_back(make_pair(breakPoint, positionedTable));
@@ -705,13 +703,16 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         
                         //if(positionedTable.size.height > ) {
                         NSUInteger rowCount = positionedTable.rowCount;
-                        for(NSUInteger rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+                        for(NSUInteger rowIndex = rowOffset; rowIndex < rowCount; ++rowIndex) {
                             EucCSSLayoutPositionedTableCell *startCell = [positionedTable positionedCellForColumn:0 row:rowIndex];
                             EucCSSLayoutPoint breakPoint = { startCell.sizedTableCell.documentNode.key, 0, 0 };
                             pageBreaks.push_back(make_pair(breakPoint, startCell));
                         }
                         //}
                         
+                        if(rowOffset) {
+                            rowOffset = 0;
+                        }
                         
                         currentDocumentNode = tableWrapper.nextNodeInDocument;
                         nextRunNodeKey = currentDocumentNode.key;

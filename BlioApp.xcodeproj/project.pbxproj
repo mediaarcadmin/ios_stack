@@ -535,13 +535,9 @@
 		A30E103F123EA5B400D31157 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA1BD681222FD080022D410 /* StoreKit.framework */; };
 		A3169289111488C9005AAE5E /* BlioAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3169288111488C9005AAE5E /* BlioAudioManager.m */; };
 		A31E82EE120B3FD800CB6657 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
-		A31E832E120B40CD00CB6657 /* XPS in Resources */ = {isa = PBXBuildFile; fileRef = A31E8320120B40CD00CB6657 /* XPS */; };
-		A31E832F120B40CD00CB6657 /* XPS in Resources */ = {isa = PBXBuildFile; fileRef = A31E8320120B40CD00CB6657 /* XPS */; };
 		A31E837B120B522F00CB6657 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
 		A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
-		A3428F8D129454A700AA1DBF /* XPS in Resources */ = {isa = PBXBuildFile; fileRef = A31E8320120B40CD00CB6657 /* XPS */; };
-		A349F06B110E31CC009A8F89 /* AudioBooks in Resources */ = {isa = PBXBuildFile; fileRef = A349F067110E31CC009A8F89 /* AudioBooks */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A3689AF4116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3689AF3116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m */; };
 		A368C69E116A3A52008653CF /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */; };
@@ -891,6 +887,11 @@
 		A3C7437E11CAC178005A2219 /* paper-neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */; };
 		A3C7437F11CAC178005A2219 /* paper-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436F11CAC178005A2219 /* paper-white@2x.png */; };
 		A3CA7B221275F92900775EF4 /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
+		A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
+		A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
+		A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
+		A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */ = {isa = PBXBuildFile; fileRef = A3CF83A612E4B85E0069FA16 /* XPS-Demo */; };
+		A3CF83B012E4B96B0069FA16 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
 		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
 		A3E5AF1712B2FD2A008F48C6 /* back-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */; };
 		A3E5AF1812B2FD2A008F48C6 /* back-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */; };
@@ -1010,7 +1011,6 @@
 		C9E04BA51271946400A307C4 /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
 		C9E04BA61271946600A307C4 /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
 		C9E1FA25110EE4D500999587 /* BlioTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E1FA24110EE4D500999587 /* BlioTextFlow.m */; };
-		C9E1FAAA110F26DB00999587 /* TextFlows in Resources */ = {isa = PBXBuildFile; fileRef = C9E1FAA7110F26DB00999587 /* TextFlows */; };
 		C9E5DC12117C741600950BA0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
 		C9F47A0E1129BC7E00563348 /* downloadButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0A1129BC7E00563348 /* downloadButton.png */; };
 		C9F47A0F1129BC7E00563348 /* downloadButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */; };
@@ -1758,6 +1758,10 @@
 		A3C7436D11CAC178005A2219 /* paper-black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-black@2x.png"; sourceTree = "<group>"; };
 		A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-neutral@2x.png"; sourceTree = "<group>"; };
 		A3C7436F11CAC178005A2219 /* paper-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white@2x.png"; sourceTree = "<group>"; };
+		A3CF837612E4B19D0069FA16 /* Peter Rabbit.xps */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Peter Rabbit.xps"; sourceTree = "<group>"; };
+		A3CF837712E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps */ = {isa = PBXFileReference; lastKnownFileType = file; path = "The Legend of Sleepy Hollow.xps"; sourceTree = "<group>"; };
+		A3CF839712E4B7E00069FA16 /* XPS-Starters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "XPS-Starters"; sourceTree = "<group>"; };
+		A3CF83A612E4B85E0069FA16 /* XPS-Demo */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "XPS-Demo"; sourceTree = "<group>"; };
 		A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioBookManager.h; sourceTree = "<group>"; };
 		A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioBookManager.m; sourceTree = "<group>"; };
 		A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-black@2x.png"; sourceTree = "<group>"; };
@@ -2205,6 +2209,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				A3CF837512E4B19D0069FA16 /* XPS-Starters */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				C9B620BD1137BDB10012CE7E /* ThirdParty */,
 				A32D88DD11FE240300D2AE17 /* Entitlements.plist */,
@@ -2231,6 +2236,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3CF83A612E4B85E0069FA16 /* XPS-Demo */,
+				A3CF839712E4B7E00069FA16 /* XPS-Starters */,
 				A393060212BAC03400949150 /* gnulesser-license.html */,
 				A393060312BAC03400949150 /* mit-license.html */,
 				A393060412BAC03400949150 /* openfont-license.html */,
@@ -2806,6 +2813,16 @@
 			name = BookVault;
 			sourceTree = "<group>";
 		};
+		A3CF837512E4B19D0069FA16 /* XPS-Starters */ = {
+			isa = PBXGroup;
+			children = (
+				A3CF837612E4B19D0069FA16 /* Peter Rabbit.xps */,
+				A3CF837712E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps */,
+			);
+			name = "XPS-Starters";
+			path = "Resources/XPS-Starters";
+			sourceTree = "<group>";
+		};
 		A3D9F13911B064530011D544 /* DRM */ = {
 			isa = PBXGroup;
 			children = (
@@ -2928,10 +2945,10 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData.framework */,
+				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
+				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -3341,10 +3358,10 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData.framework */ = {
+		C986765B112411060070A03E /* GData */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = GData.framework;
+			path = GData;
 			remoteRef = C986765A112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3362,10 +3379,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataTouchUnitTests.octest;
+			path = GDataIPhoneUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3421,8 +3438,6 @@
 				7DB9FAB810F3C7EB0010DF0B /* scrubber-icon.png in Resources */,
 				7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */,
 				553E98FC1107B8E600FB309D /* speedread-thumb.png in Resources */,
-				A349F06B110E31CC009A8F89 /* AudioBooks in Resources */,
-				C9E1FAAA110F26DB00999587 /* TextFlows in Resources */,
 				5590D317111C8E7D00CE0C4F /* roundedcorners.png in Resources */,
 				C918B8B51122AEE1008B6ADC /* Feeds in Resources */,
 				C9867DE61127164F0070A03E /* BlioStoreBookView.xib in Resources */,
@@ -3549,7 +3564,6 @@
 				A3FE55B712074EFA0038DA0C /* credits.html in Resources */,
 				A3FE55B812074EFA0038DA0C /* eula.html in Resources */,
 				A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */,
-				A31E832E120B40CD00CB6657 /* XPS in Resources */,
 				C9CEBD761211959B0040CEFF /* booktexture-nocover.png in Resources */,
 				DC2ABE411213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */,
 				7D0D4BC41213F6E2000AAC82 /* EPubOverrides.css in Resources */,
@@ -3616,6 +3630,8 @@
 				A393060712BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1912DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1A12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
+				A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */,
+				A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3624,7 +3640,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */,
-				A3428F8D129454A700AA1DBF /* XPS in Resources */,
 				A30E0EFB123EA5B400D31157 /* credits.html in Resources */,
 				A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */,
@@ -3851,6 +3866,7 @@
 				A393060D12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1B12DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1C12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
+				A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3858,6 +3874,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3CF83B012E4B96B0069FA16 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */,
 				A31E82EE120B3FD800CB6657 /* credits.html in Resources */,
 				A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */,
@@ -4021,7 +4038,6 @@
 				A36D356D120B136700E1A035 /* library-progress-background@2x.png in Resources */,
 				A36D356F120B136700E1A035 /* eula.html in Resources */,
 				A36D3570120B136700E1A035 /* userdoc.html in Resources */,
-				A31E832F120B40CD00CB6657 /* XPS in Resources */,
 				C9CEBD781211959B0040CEFF /* booktexture-nocover.png in Resources */,
 				DC2ABE421213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */,
 				7D0D4BC51213F6E2000AAC82 /* EPubOverrides.css in Resources */,
@@ -4087,6 +4103,7 @@
 				A393060A12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1712DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1812DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
+				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4671,7 +4688,6 @@
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
-					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -4715,7 +4731,6 @@
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
-					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -4759,7 +4774,6 @@
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
-					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -4871,7 +4885,6 @@
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
-					"-DDEV_MODE",
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
@@ -4916,7 +4929,6 @@
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
-					"-DDEV_MODE",
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
@@ -4961,7 +4973,6 @@
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
-					"-DDEV_MODE",
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (

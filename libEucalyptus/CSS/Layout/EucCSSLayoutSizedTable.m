@@ -443,7 +443,7 @@
                                                             _columnCount,
                                                             &kCFTypeSetCallBacks);
     
-    CGRect cellFrame = frame;
+    CGRect cellFrame = positionedTable.contentRect;
 
     for(NSUInteger rowIndex = 0; rowIndex < _rowCount; ++rowIndex) {
         if(rowOffset == 0 || rowIndex >= rowOffset - 1) {

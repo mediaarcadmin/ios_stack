@@ -454,7 +454,15 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         _accumulateParentLineBoxesInto(parentNode, scaleFactor, &renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
         
         CGFloat pointSize = [parentNode textPointSizeWithScaleFactor:scaleFactor];
-        CGFloat ascender = [parentNode textAscenderWithScaleFactor:scaleFactor];        
+        CGFloat lineHeight;
+        CGFloat baseline;
+        {
+            CGFloat halfLeading;
+            halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([parentNode lineHeightWithScaleFactor:scaleFactor], 
+                                                                      pointSize,
+                                                                      &halfLeading, &lineHeight);
+            baseline = [parentNode textAscenderWithScaleFactor:scaleFactor] + halfLeading;
+        }
         
         NSUInteger parentIndex = _renderItemCount - 1;
         
@@ -487,11 +495,12 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     renderItem->origin.x = xPosition - thisNodeAbsoluteX;
                     
                     renderItem->lineBox.width = widthInfo->width;
-                    renderItem->lineBox.height = pointSize;
-                    renderItem->lineBox.baseline = ascender;
+                    renderItem->lineBox.height = lineHeight;
+                    renderItem->lineBox.baseline = baseline;
                     renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
                     
                     renderItem->item.stringItem.string = [info->contents.stringInfo.string retain];
+                    renderItem->item.stringItem.pointSize = pointSize;
                     renderItem->item.stringItem.layoutPoint = info->point;
 
                     _placeRenderItemInRenderItem(renderItem, _renderItems + parentIndex);
@@ -509,13 +518,14 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                         renderItem->origin.x = xPosition - thisNodeAbsoluteX;
 
                         renderItem->lineBox.width = widthInfo->hyphenWidths.widthAfterHyphen;
-                        renderItem->lineBox.height = pointSize;
-                        renderItem->lineBox.baseline = ascender;
+                        renderItem->lineBox.height = lineHeight;
+                        renderItem->lineBox.baseline = baseline;
                         renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
                         
                         renderItem->item.stringItem.string = [info->contents.hyphenationInfo.afterHyphen retain];
+                        renderItem->item.stringItem.pointSize = pointSize;
                         renderItem->item.stringItem.layoutPoint = info->point;
-                                                
+
                         _placeRenderItemInRenderItem(renderItem, _renderItems + parentIndex);
                         
                         _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
@@ -568,7 +578,11 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     _adjustParentsToContainRenderItem(_renderItems, _renderItemCount, _renderItemCount - 1);
                     
                     pointSize = [node textPointSizeWithScaleFactor:scaleFactor];
-                    ascender = [node textAscenderWithScaleFactor:scaleFactor];
+                    CGFloat halfLeading;
+                    halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([node lineHeightWithScaleFactor:scaleFactor], 
+                                                                              pointSize,
+                                                                              &halfLeading, &lineHeight);
+                    baseline = [node textAscenderWithScaleFactor:scaleFactor] + halfLeading;
                     
                     xPosition += widthInfo->width;                    
                     break;
@@ -593,8 +607,9 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     xPosition += widthInfo->width;                    
                     parentIndex = _renderItems[parentIndex].parentIndex;
 
-                    pointSize = [node.parent textPointSizeWithScaleFactor:scaleFactor];
-                    ascender = [node.parent textAscenderWithScaleFactor:scaleFactor];     
+                    pointSize = [_renderItems[parentIndex].item.openNodeInfo.node textPointSizeWithScaleFactor:scaleFactor];
+                    lineHeight = _renderItems[parentIndex].lineBox.height;
+                    baseline = _renderItems[parentIndex].lineBox.baseline;
                     
                     break;
                 }

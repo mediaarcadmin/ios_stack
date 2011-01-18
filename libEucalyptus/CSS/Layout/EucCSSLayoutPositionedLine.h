@@ -47,6 +47,7 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
         } closeNodeInfo;
         struct {
             NSString *string;
+            CGFloat pointSize;
             EucCSSLayoutRunPoint layoutPoint;
         } stringItem;
         struct {
