@@ -94,6 +94,12 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
                 // We must register the sheet even if it's empty.
                 css_stylesheet_data_done(import);
                 css_stylesheet_register_import(sheet, import); 
+                
+                if (err == CSS_OK) {
+                    ++_stylesheetsCount;
+                    _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
+                    _stylesheets[_stylesheetsCount-1] = import;
+                }                    
             } else {
                 THWarn(@"Error %ld creating stylesheet", (long)err);
             }
