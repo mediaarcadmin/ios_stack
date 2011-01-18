@@ -39,7 +39,7 @@ typedef struct EucCSSLayoutSizedRunBreakInfo {
 
 @synthesize run = _run;
 
-#define SIZED_RUN_CACHE_CAPACITY 12
+#define SIZED_RUN_CACHE_CAPACITY 64
 static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSizedRunPerScaleFactorCacheCacheKey";
 
 + (id)sizedRunWithRun:(EucCSSLayoutRun *)run
