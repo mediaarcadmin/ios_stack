@@ -24,7 +24,7 @@
 	if (self)
 	{
 		self.sourceID = bookSourceID;
-		self.title = NSLocalizedString(@"Sign In",@"\"Sign In\" view controller title");
+		self.title = NSLocalizedString(@"Log in",@"\"Log in\" view controller title");
 		
 		UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		aButton.showsTouchWhenHighlighted = NO;
@@ -86,7 +86,7 @@
 	self.tableView.autoresizesSubviews = YES;
 	
 //	self.navigationItem.titleView = [[[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)] autorelease];
-//	[(UILabel*)self.navigationItem.titleView setText:NSLocalizedString(@"Sign in to Blio",@"\"Sign in to Blio\" view controller header")];
+//	[(UILabel*)self.navigationItem.titleView setText:NSLocalizedString(@"Log in to Blio",@"\"Log in to Blio\" view controller header")];
 //	[(UILabel*)self.navigationItem.titleView setBackgroundColor:[UIColor clearColor]];
 //	[(UILabel*)self.navigationItem.titleView setTextColor:[UIColor whiteColor]];
 //	[(UILabel*)self.navigationItem.titleView setTextAlignment:UITextAlignmentCenter];
