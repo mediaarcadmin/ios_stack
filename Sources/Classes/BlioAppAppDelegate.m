@@ -105,7 +105,7 @@
 		else NSLog(@"Created TTS directory within Application Support...");
 	}    
     
-#ifdef DEMO_MODE
+#ifdef TEST_MODE
 	
     NSString *manualVoiceDestinationPath = [voicesPath stringByAppendingPathComponent:@"Acapela For iPhone LF USEnglish Heather"];
 	NSString *manualVoiceCopyPath = 

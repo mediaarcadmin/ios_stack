@@ -21,7 +21,7 @@
 #ifdef TEST_MODE
 NSString* testUrl = @"http://prl.kreader.net/PlayReady/service/LicenseAcquisition.asmx";
 #else
-NSString* productionUrl = @"http://prl.kreader.net/PlayReadyDomains/service/LicenseAcquisition.asmx";
+NSString* productionUrl = @"https://bookvault.blioreader.com/PlayReady/service/LicenseAcquisition.asmx";
 #endif
 
 @interface BlioDrmSessionManager()
