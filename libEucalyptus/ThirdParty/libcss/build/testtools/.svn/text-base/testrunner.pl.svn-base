@@ -75,7 +75,6 @@ while (my $line = <TINDEX>) {
 			$ddesc =~ s/^\s+|\s+$//g;
 
 			print LOG "Running $builddir/$test " .
-					"$directory/data/Aliases " .
 					"$directory/data/$data/$dtest\n";
 
 			# Make message fit on an 80 column terminal
@@ -85,14 +84,14 @@ while (my $line = <TINDEX>) {
 			print $msg;
 
 			# Run testcase
-			run_test("$builddir/$test", "$directory/data/Aliases", 
+			run_test("$builddir/$test", 
 					"$directory/data/$data/$dtest");
                 }
 
 		close(DINDEX);
 	} else {
 		# Testcase has no external data files
-		print LOG "Running $builddir/$test $directory/data/Aliases\n";
+		print LOG "Running $builddir/$test\n";
 
 		# Make message fit on an 80 column terminal
 		my $msg = "    ==> $test";
@@ -101,7 +100,7 @@ while (my $line = <TINDEX>) {
 		print $msg;
 
 		# Run testcase
-		run_test("$builddir/$test", "$directory/data/Aliases");
+		run_test("$builddir/$test");
 	}
 
 	print "\n";

@@ -39,10 +39,10 @@
 static void CGContextSetFillColorWithCSSColor(CGContextRef context, css_color color) 
 {
     CGFloat components[] = { 
-        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
         (CGFloat)(color & 0xFF0000) * (1.0f / (CGFloat)0xFF0000),
         (CGFloat)(color & 0xFF00) * (1.0f / (CGFloat)0xFF00),
-        1.0f
+        (CGFloat)(color & 0xFF) * (1.0f / (CGFloat)0xFF),
+        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
     };
     CGContextSetFillColor(context, components);
 }
@@ -50,10 +50,10 @@ static void CGContextSetFillColorWithCSSColor(CGContextRef context, css_color co
 static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color color) 
 {
     CGFloat components[] = { 
-        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
         (CGFloat)(color & 0xFF0000) * (1.0f / (CGFloat)0xFF0000),
         (CGFloat)(color & 0xFF00) * (1.0f / (CGFloat)0xFF00),
-        1.0f
+        (CGFloat)(color & 0xFF) * (1.0f / (CGFloat)0xFF),
+        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
     };
     CGContextSetStrokeColor(context, components);
 }
@@ -70,8 +70,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     CGContextSetStrokeColorSpace(_cgContext, colorSpace);
     CFRelease(colorSpace);                      
     
-    CGContextSetFillColorWithCSSColor(_cgContext, 0x000000FF);
-    CGContextSetStrokeColorWithCSSColor(_cgContext, 0x000000FF);
+    CGContextSetFillColorWithCSSColor(_cgContext, 0xFF000000);
+    CGContextSetStrokeColorWithCSSColor(_cgContext, 0xFF000000);
     
     CGContextTranslateCTM(_cgContext, point.x, point.y);
     
@@ -117,7 +117,6 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
         CGRect borderRect = block.borderRect;
         css_color color;
         if(css_computed_background_color(computedStyle, &color) != CSS_BACKGROUND_COLOR_TRANSPARENT) {
-            //color = 0xff000000;
             CGContextSaveGState(_cgContext);
             CGContextSetFillColorWithCSSColor(_cgContext, color);  
             CGContextFillRect(_cgContext, borderRect);

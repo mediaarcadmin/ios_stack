@@ -82,21 +82,15 @@ int main(int argc, char **argv)
 #define CHUNK_SIZE (4096)
 	uint8_t buf[CHUNK_SIZE];
 	css_error error;
-        lwc_context *ctx;
 	int i;
 
-	if (argc != 3) {
-		printf("Usage: %s <aliases_file> <filename>\n", argv[0]);
+	if (argc != 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
 		return 1;
 	}
 
-	/* Initialise library */
-	assert(css_initialise(argv[1], myrealloc, NULL) == CSS_OK);
-        assert(lwc_create_context(myrealloc, NULL, &ctx) == lwc_error_ok);
-        lwc_context_ref(ctx);
-
 	for (i = 0; i < ITERATIONS; i++) {
-		assert(css_parser_create("UTF-8", CSS_CHARSET_DICTATED, ctx,
+		assert(css_parser_create("UTF-8", CSS_CHARSET_DICTATED,
 				myrealloc, NULL, &parser) == CSS_OK);
 
 		params.event_handler.handler = event_handler;
@@ -104,9 +98,9 @@ int main(int argc, char **argv)
 		assert(css_parser_setopt(parser, CSS_PARSER_EVENT_HANDLER, 
 				&params) == CSS_OK);
 
-		fp = fopen(argv[2], "rb");
+		fp = fopen(argv[1], "rb");
 		if (fp == NULL) {
-			printf("Failed opening %s\n", argv[2]);
+			printf("Failed opening %s\n", argv[1]);
 			return 1;
 		}
 
@@ -142,11 +136,7 @@ int main(int argc, char **argv)
 
 	}
 
-	assert(css_finalise(myrealloc, NULL) == CSS_OK);
-
 	printf("PASS\n");
-        
-        lwc_context_unref(ctx);
         
 	return 0;
 }

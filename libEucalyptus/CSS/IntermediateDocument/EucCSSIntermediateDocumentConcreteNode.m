@@ -43,14 +43,8 @@
 { 
     free(_childKeys);
     
-    if(_computedStyle) {
-        css_computed_style_destroy(_computedStyle);
-    }
-    if(_computedBeforeStyle) {
-        css_computed_style_destroy(_computedBeforeStyle);
-    }
-    if(_computedAfterStyle) {
-        css_computed_style_destroy(_computedAfterStyle);
+    if(_selectResults) {
+        css_select_results_destroy(_selectResults);
     }
     
     [_text release];
@@ -123,58 +117,9 @@
     return nil;
 }
 
-
 - (NSString *)altText
 {
     return [_documentTreeNode attributeWithName:@"alt"];
-}
-
-- (css_computed_style *)_createComputedStyleForPseudoElement:(enum css_pseudo_element)pseudoElement
-                                            usingInlineStyle:(const css_stylesheet *)inlineStyle
-                                            usingParentStyle:(const css_computed_style *)parentStyle 
-{
-    css_error err;
-    css_computed_style *ret;
-    
-    css_computed_style_create(EucRealloc, NULL, &ret);
-    css_select_handler *selectHandler = &EucCSSDocumentTreeSelectHandler;
-    err = css_select_style(_document.selectContext, 
-                           (void *)(uintptr_t)_documentTreeNode.key,
-                           pseudoElement, 
-                           CSS_MEDIA_PRINT, 
-                           inlineStyle, 
-                           ret,
-                           selectHandler,
-                           _document.documentTree);
-        
-    if(err == CSS_OK) {
-        if(pseudoElement != CSS_PSEUDO_ELEMENT_NONE) {
-            const css_computed_content_item *content = NULL;
-            enum css_content_e contentValukeKind = css_computed_content(ret, &content);
-            if(contentValukeKind == CSS_CONTENT_NONE ||
-               contentValukeKind == CSS_CONTENT_NORMAL) {
-                css_computed_style_destroy(ret);
-                ret = NULL;
-            }
-        }
-        
-        if(ret) {
-            if(parentStyle) {
-                err = css_computed_style_compose(parentStyle, 
-                                                 ret,
-                                                 selectHandler->compute_font_size,
-                                                 NULL,
-                                                 ret);
-                if(err != CSS_OK) {
-                    THWarn(@"Error %ld composing style", (long)err);
-                }
-            }
-        }
-    } else {
-        THWarn(@"Error %ld selecting style", (long)err);
-    }    
-    
-    return ret;
 }
 
 - (void)_computeStyles
@@ -184,14 +129,14 @@
         css_error err;
         
         css_stylesheet *inlineStyle = NULL;
-        NSString *inlineStyleString = [_documentTreeNode attributeWithName:@"style"];
+        NSString *inlineStyleString = [_documentTreeNode inlineStyle];
         if(inlineStyleString) {
-            err = css_stylesheet_create(CSS_LEVEL_21, "UTF-8",
-                                        "", "", CSS_ORIGIN_AUTHOR, 
-                                        CSS_MEDIA_ALL, false,
-                                        true, _document.lwcContext,
+            err = css_stylesheet_create(CSS_LEVEL_3, 
+                                        "UTF-8", "", "", 
+                                        false, true,
                                         EucRealloc, NULL,
                                         EucResolveURL, NULL,
+                                        NULL, NULL,
                                         &inlineStyle);
             if(err != CSS_OK) {
                 THWarn(@"Error %ld creating inline style", (long)err);
@@ -208,19 +153,46 @@
                 }
             }
         }
-        
-        const css_computed_style *parentStyle = nil;
-        EucCSSIntermediateDocumentConcreteNode *parent = (EucCSSIntermediateDocumentConcreteNode *)self.parent;
-        if(parent) {
-            parentStyle = parent.computedStyle;
-        }
-        
-        _computedStyle = [self _createComputedStyleForPseudoElement:CSS_PSEUDO_ELEMENT_NONE usingInlineStyle:inlineStyle usingParentStyle:parentStyle];
-        if(_computedStyle) {
-            _computedBeforeStyle = [self _createComputedStyleForPseudoElement:CSS_PSEUDO_ELEMENT_BEFORE usingInlineStyle:NULL usingParentStyle:_computedStyle];
-            _computedAfterStyle = [self _createComputedStyleForPseudoElement:CSS_PSEUDO_ELEMENT_AFTER usingInlineStyle:NULL usingParentStyle:_computedStyle];
-        }
                 
+        err = css_select_style(_document.selectContext, 
+                               (void *)(uintptr_t)_documentTreeNode.key,
+                               CSS_MEDIA_PRINT, 
+                               inlineStyle, 
+                               &EucCSSDocumentTreeSelectHandler,
+                               _document.documentTree, 
+                               &_selectResults);
+        
+        if(_selectResults) {
+            if(_selectResults->styles[CSS_PSEUDO_ELEMENT_NONE]) {
+                EucCSSIntermediateDocumentNode *parent = self.parent;
+                if(parent) {
+                    css_computed_style_compose(parent.computedStyle, 
+                                               _selectResults->styles[CSS_PSEUDO_ELEMENT_NONE],
+                                               EucCSSDocumentTreeSelectHandler.compute_font_size,
+                                               NULL, 
+                                               _selectResults->styles[CSS_PSEUDO_ELEMENT_NONE]);
+                }
+            }
+            if(_selectResults->styles[CSS_PSEUDO_ELEMENT_BEFORE]) {
+                css_computed_style_compose(_selectResults->styles[CSS_PSEUDO_ELEMENT_NONE], 
+                                           _selectResults->styles[CSS_PSEUDO_ELEMENT_BEFORE], 
+                                           EucCSSDocumentTreeSelectHandler.compute_font_size,
+                                           NULL, 
+                                           _selectResults->styles[CSS_PSEUDO_ELEMENT_BEFORE]);
+            }
+            if(_selectResults->styles[CSS_PSEUDO_ELEMENT_AFTER]) {
+                css_computed_style_compose(_selectResults->styles[CSS_PSEUDO_ELEMENT_NONE], 
+                                           _selectResults->styles[CSS_PSEUDO_ELEMENT_AFTER], 
+                                           EucCSSDocumentTreeSelectHandler.compute_font_size,
+                                           NULL,    
+                                           _selectResults->styles[CSS_PSEUDO_ELEMENT_AFTER]);
+            }
+        }
+        
+        if(err != CSS_OK) {
+            THWarn(@"Error %ld selecting styles", (long)err);
+        }           
+        
         if(inlineStyle) {
             css_stylesheet_destroy(inlineStyle);
         }
@@ -233,7 +205,7 @@
     if(!_stylesComputed) {
         [self _computeStyles];
     }
-    return _computedStyle;
+    return _selectResults ? _selectResults->styles[CSS_PSEUDO_ELEMENT_NONE] : NULL;
 }
 
 - (css_computed_style *)computedBeforeStyle
@@ -241,7 +213,7 @@
     if(!_stylesComputed) {
         [self _computeStyles];
     }
-    return _computedBeforeStyle;
+    return _selectResults ? _selectResults->styles[CSS_PSEUDO_ELEMENT_BEFORE] : NULL;
 }
 
 - (css_computed_style *)computedAfterStyle
@@ -249,7 +221,7 @@
     if(!_stylesComputed) {
         [self _computeStyles];
     }
-    return _computedAfterStyle;
+    return _selectResults ? _selectResults->styles[CSS_PSEUDO_ELEMENT_AFTER] : NULL;
 }
 
 - (EucCSSIntermediateDocumentNode *)parent

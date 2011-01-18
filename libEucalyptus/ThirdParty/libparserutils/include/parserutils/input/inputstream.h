@@ -8,6 +8,11 @@
 #ifndef parserutils_input_inputstream_h_
 #define parserutils_input_inputstream_h_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #ifndef NDEBUG
 #include <stdio.h>
@@ -136,7 +141,7 @@ static inline parserutils_error parserutils_inputstream_peek(
 #undef IS_ASCII
 
 	if (off != utf8_len && error != PARSERUTILS_NEEDDATA)
- 	abort();
+		abort();
 
 	return parserutils_inputstream_peek_slow(stream, offset, ptr, length);
 }
@@ -174,6 +179,10 @@ const char *parserutils_inputstream_read_charset(
 parserutils_error parserutils_inputstream_change_charset(
 		parserutils_inputstream *stream, 
 		const char *enc, uint32_t source);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

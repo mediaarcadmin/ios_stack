@@ -15,17 +15,15 @@
 
 @interface EucCSSIntermediateDocument ()
 
-css_error EucResolveURL(void *pw, lwc_context *dict, const char *base, lwc_string *rel, lwc_string **abs);
+css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string **abs);
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
               baseCSSPaths:(NSArray *)baseCSSPaths
               userCSSPaths:(NSArray *)userCSSPaths
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
-                    isHTML:(BOOL)isHTML
-                lwcContext:(lwc_context *)lwcContext;
+                    isHTML:(BOOL)isHTML;
 
 @property (nonatomic, readonly) css_select_ctx *selectContext;
-@property (nonatomic, readonly) lwc_context *lwcContext;
 
 @end

@@ -9,10 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <libwapcaplet/libwapcaplet.h>
 
-@interface NSString (LWCAdditions) 
+static inline NSString *NSStringFromLWCString(lwc_string *lwcString)
+{
+    return (NSString *)lwcString;
+}
 
-+ (id)stringWithLWCString:(lwc_string *)lwcString;
-- (id)initWithLWCString:(lwc_string *)lwcString;
-- (lwc_string *)lwcStringInContext:(lwc_context *)context;
+lwc_string *lwc_intern_cf_string(CFStringRef str);
 
-@end
+static inline lwc_string *lwc_intern_ns_string(NSString *str)
+{
+    return lwc_intern_cf_string((CFStringRef)str);
+}

@@ -82,7 +82,6 @@ typedef struct EucCSSLayoutPositionedLineRenderItem
 @property (nonatomic, assign) CGFloat componentWidth;
 
 @property (nonatomic, assign) CGFloat indent;
-@property (nonatomic, assign) CGFloat baseline;
 
 @property (nonatomic, assign) uint8_t align;
 

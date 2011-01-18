@@ -60,8 +60,8 @@ static EucSharedHyphenator *sSharedHyphenator;
 {
     if((self = [super init])) {
         _hyphenator = SharedHyphenator::sharedHyphenator();
-        _cache = [[THCache alloc] init];
-        _cache.conserveItemsInUse = NO;
+        //_cache = [[THCache alloc] init];
+        //_cache.conserveItemsInUse = NO;
     }
     return self;
 }
@@ -79,8 +79,8 @@ static void EucSharedHyphenatorSetup()
 
 - (NSArray *)hyphenationsForWord:(NSString *)word
 {
-    NSArray *ret = [_cache objectForKey:word];
-    if(!ret) {
+    //NSArray *ret = [_cache objectForKey:word];
+    //if(!ret) {
         THPair *items[word.length];
         auto_ptr< vector< const HyphenationRule *> > hyphenationPoints = _hyphenator->applyHyphenationRules((CFStringRef)word);
         
@@ -111,11 +111,11 @@ static void EucSharedHyphenatorSetup()
                 [beforeBreak release];                
             }
         }
-        ret = [NSArray arrayWithObjects:items count:ruleCount];
+        return  [NSArray arrayWithObjects:items count:ruleCount];
         
-        [_cache cacheObject:ret forKey:word];
-    }
-    return ret;
+       // [_cache cacheObject:ret forKey:word];
+    //}
+    //return ret;
 }
 
 @end

@@ -41,30 +41,36 @@ static void *myrealloc(void *data, size_t len, void *pw)
 	return realloc(data, len);
 }
 
-static css_error resolve_url(void *pw, lwc_context *dict,
+static css_error resolve_url(void *pw,
 		const char *base, lwc_string *rel, lwc_string **abs)
 {
 	UNUSED(pw);
 	UNUSED(base);
 
 	/* About as useless as possible */
-	*abs = lwc_context_string_ref(dict, rel);
+	*abs = lwc_string_ref(rel);
 
 	return CSS_OK;
+}
+
+static void
+printing_lwc_iterator(lwc_string *str, void *pw)
+{
+	UNUSED(pw);
+	
+	printf(" DICT: %*s\n", (int)(lwc_string_length(str)), lwc_string_data(str));
 }
 
 int main(int argc, char **argv)
 {
 	line_ctx ctx;
-
-	if (argc != 3) {
-		printf("Usage: %s <aliases_file> <filename>\n", argv[0]);
+	
+	if (argc != 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
 		return 1;
 	}
 
-	assert(css_initialise(argv[1], myrealloc, NULL) == CSS_OK);
-
-	ctx.buflen = parse_filesize(argv[2]);
+	ctx.buflen = parse_filesize(argv[1]);
 	if (ctx.buflen == 0)
 		return 1;
 
@@ -84,7 +90,7 @@ int main(int argc, char **argv)
 	ctx.inerrors = false;
 	ctx.inexp = false;
 
-	assert(parse_testfile(argv[2], handle_line, &ctx) == true);
+	assert(parse_testfile(argv[1], handle_line, &ctx) == true);
 
 	/* and run final test */
 	if (ctx.bufused > 0)
@@ -92,7 +98,7 @@ int main(int argc, char **argv)
 
 	free(ctx.buf);
 
-	assert(css_finalise(myrealloc, NULL) == CSS_OK);
+	lwc_iterate_strings(printing_lwc_iterator, NULL);
 
 	printf("PASS\n");
 
@@ -176,20 +182,16 @@ void run_test(const uint8_t *data, size_t len, const char *exp, size_t explen)
 	char *buf;
 	size_t buflen;
 	static int testnum;
-        lwc_context *ctx;
 
 	buf = malloc(2 * explen);
 	if (buf == NULL) {
 		assert(0 && "No memory for result data");
 	}
 	buflen = 2 * explen;
-        
-        assert(lwc_create_context(myrealloc, NULL, &ctx) == lwc_error_ok);
-        lwc_context_ref(ctx);
-        
+	
 	assert(css_stylesheet_create(CSS_LEVEL_21, "UTF-8", "foo", NULL,
-			CSS_ORIGIN_AUTHOR, CSS_MEDIA_ALL, false, false, ctx,
-			myrealloc, NULL, resolve_url, NULL, &sheet) == CSS_OK);
+			false, false, myrealloc, NULL, resolve_url, NULL, 
+			NULL, NULL, &sheet) == CSS_OK);
 
 	error = css_stylesheet_append_data(sheet, data, len);
 	if (error != CSS_OK && error != CSS_NEEDDATA) {
@@ -212,7 +214,7 @@ void run_test(const uint8_t *data, size_t len, const char *exp, size_t explen)
 	}
 
 	css_stylesheet_destroy(sheet);
-        lwc_context_unref(ctx);
+
 	printf("Test %d: PASS\n", testnum);
 }
 

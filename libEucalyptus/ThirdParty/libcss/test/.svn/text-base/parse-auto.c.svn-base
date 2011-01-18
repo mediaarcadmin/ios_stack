@@ -64,34 +64,40 @@ static void dump_string(lwc_string *string, char **ptr);
 static void *myrealloc(void *data, size_t len, void *pw)
 {
 	UNUSED(pw);
-        
+	
 	return realloc(data, len);
 }
 
-static css_error resolve_url(void *pw, lwc_context *dict,
+static css_error resolve_url(void *pw,
 		const char *base, lwc_string *rel, lwc_string **abs)
 {
 	UNUSED(pw);
 	UNUSED(base);
 
 	/* About as useless as possible */
-	*abs = lwc_context_string_ref(dict, rel);
+	*abs = lwc_string_ref(rel);
 
 	return CSS_OK;
+}
+
+static void
+printing_lwc_iterator(lwc_string *str, void *pw)
+{
+	UNUSED(pw);
+	
+	printf(" DICT: %*s\n", (int)(lwc_string_length(str)), lwc_string_data(str));
 }
 
 int main(int argc, char **argv)
 {
 	line_ctx ctx;
 
-	if (argc != 3) {
-		printf("Usage: %s <aliases_file> <filename>\n", argv[0]);
+	if (argc != 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
 		return 1;
 	}
 
-	assert(css_initialise(argv[1], myrealloc, NULL) == CSS_OK);
-
-	ctx.buflen = parse_filesize(argv[2]);
+	ctx.buflen = parse_filesize(argv[1]);
 	if (ctx.buflen == 0)
 		return 1;
 
@@ -111,7 +117,7 @@ int main(int argc, char **argv)
 	ctx.inerrors = false;
 	ctx.inexp = false;
 
-	assert(parse_testfile(argv[2], handle_line, &ctx) == true);
+	assert(parse_testfile(argv[1], handle_line, &ctx) == true);
 
 	/* and run final test */
 	if (ctx.bufused > 0)
@@ -119,8 +125,8 @@ int main(int argc, char **argv)
 
 	free(ctx.buf);
 
-	assert(css_finalise(myrealloc, NULL) == CSS_OK);
-
+	lwc_iterate_strings(printing_lwc_iterator, NULL);
+	
 	printf("PASS\n");
 
 	return 0;
@@ -294,7 +300,7 @@ start_rule:
 				memcpy(rule->stringtab[rule->stused].string,
 						str, next - str - 1);
 				rule->stringtab[rule->stused].string[
-						next - str - 1]  = '\0';
+						next - str - 1]	 = '\0';
 
 				rule->bcused += sizeof(void *);
 				rule->stused++;
@@ -318,14 +324,10 @@ void run_test(const uint8_t *data, size_t len, exp_entry *exp, size_t explen)
 	css_error error;
 	size_t e;
 	static int testnum;
-        lwc_context *ctx;
-        
-        assert(lwc_create_context(myrealloc, NULL, &ctx) == lwc_error_ok);
-        lwc_context_ref(ctx);
-        
+	
 	assert(css_stylesheet_create(CSS_LEVEL_21, "UTF-8", "foo", NULL,
-			CSS_ORIGIN_AUTHOR, CSS_MEDIA_ALL, false, false, ctx,
-			myrealloc, NULL, resolve_url, NULL, &sheet) == CSS_OK);
+			false, false, myrealloc, NULL, resolve_url, NULL, 
+			NULL, NULL, &sheet) == CSS_OK);
 
 	error = css_stylesheet_append_data(sheet, data, len);
 	if (error != CSS_OK && error != CSS_NEEDDATA) {
@@ -353,14 +355,15 @@ void run_test(const uint8_t *data, size_t len, exp_entry *exp, size_t explen)
 			buf[lwc_string_length(url)] = '\0';
 
 			assert(css_stylesheet_create(CSS_LEVEL_21,
-				"UTF-8", buf, NULL, CSS_ORIGIN_AUTHOR,
-				media, false, false, ctx, myrealloc, NULL, 
-				resolve_url, NULL, &import) == CSS_OK);
+				"UTF-8", buf, NULL, false, false,
+				myrealloc, NULL, resolve_url, NULL, 
+				NULL, NULL, &import) == CSS_OK);
 
 			assert(css_stylesheet_register_import(sheet,
 				import) == CSS_OK);
 
 			error = CSS_IMPORTS_PENDING;
+			lwc_string_unref(url);
 		}
 	}
 
@@ -405,7 +408,6 @@ void run_test(const uint8_t *data, size_t len, exp_entry *exp, size_t explen)
 	css_stylesheet_destroy(sheet);
 
 	printf("Test %d: PASS\n", testnum);
-        lwc_context_unref(ctx);
 }
 
 void validate_rule_selector(css_rule_selector *s, exp_entry *e, int testnum)
@@ -510,14 +512,16 @@ void validate_rule_charset(css_rule_charset *s, exp_entry *e, int testnum)
 
 void validate_rule_import(css_rule_import *s, exp_entry *e, int testnum)
 {
-        if (strncmp(lwc_string_data(s->url), e->name,
-                    lwc_string_length(s->url)) != 0) {
+	if (strncmp(lwc_string_data(s->url), e->name,
+		    lwc_string_length(s->url)) != 0) {
 		printf("%d: Got URL '%.*s'. Expected '%s'\n",
 			testnum, (int) lwc_string_length(s->url), 
 			lwc_string_data(s->url),
 		e->name);
 		assert(0 && "Mismatched URLs");
 	}
+
+	css_stylesheet_destroy(s->sheet);
 }
 
 void dump_selector_list(css_selector *list, char **ptr)
@@ -570,7 +574,7 @@ void dump_selector_detail(css_selector_detail *detail, char **ptr)
 				detail->next == 0) {
 			dump_string(detail->name, ptr);
 		} else if (lwc_string_length(detail->name) != 1 ||
-                           lwc_string_data(detail->name)[0] != '*') {
+			   lwc_string_data(detail->name)[0] != '*') {
 			dump_string(detail->name, ptr);
 		}
 		break;

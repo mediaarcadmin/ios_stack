@@ -1,15 +1,15 @@
 10
 
 dir
-9709
+11345
 svn://svn.netsurf-browser.org/trunk/libwapcaplet/include/libwapcaplet
 svn://svn.netsurf-browser.org
 
 
 
-2009-07-28T00:21:12.630605Z
-8834
-jmb
+2010-12-04T15:47:32.841518Z
+10963
+dsilvers
 
 
 
@@ -32,11 +32,11 @@ file
 
 
 
-2009-11-30T15:06:59.000000Z
-2621b3af9926cc22aacfa30d2711fa76
-2009-07-28T00:21:12.630605Z
-8834
-jmb
+2011-01-17T08:29:14.000000Z
+219c7f01b9b40e30541a6ca332177237
+2010-12-04T15:47:32.841518Z
+10963
+dsilvers
 
 
 
@@ -58,5 +58,5 @@ jmb
 
 
 
-4137
+6121
 

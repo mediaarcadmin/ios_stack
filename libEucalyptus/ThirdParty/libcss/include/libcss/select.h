@@ -8,29 +8,54 @@
 #ifndef libcss_select_h_
 #define libcss_select_h_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <libwapcaplet/libwapcaplet.h>
 
 #include <libcss/errors.h>
 #include <libcss/functypes.h>
 #include <libcss/hint.h>
 #include <libcss/types.h>
+#include <libcss/computed.h>
 
-enum css_pseudo_element {
+typedef enum css_pseudo_element {
 	CSS_PSEUDO_ELEMENT_NONE         = 0,
 	CSS_PSEUDO_ELEMENT_FIRST_LINE   = 1,
 	CSS_PSEUDO_ELEMENT_FIRST_LETTER = 2,
 	CSS_PSEUDO_ELEMENT_BEFORE       = 3,
-	CSS_PSEUDO_ELEMENT_AFTER        = 4
-};
+	CSS_PSEUDO_ELEMENT_AFTER        = 4,
+
+	CSS_PSEUDO_ELEMENT_COUNT	= 5	/**< Number of pseudo elements */
+} css_pseudo_element;
+
+/**
+ * Style selection result set
+ */
+typedef struct css_select_results {
+	css_allocator_fn alloc;
+	void *pw;
+
+	/**
+	 * Array of pointers to computed styles, 
+	 * indexed by css_pseudo_element. If there
+	 * was no styling for a given pseudo element, 
+	 * then no computed style will be created and
+	 * the corresponding pointer will be set to NULL
+	 */
+	css_computed_style *styles[CSS_PSEUDO_ELEMENT_COUNT];
+} css_select_results;
 
 typedef struct css_select_handler {
 	css_error (*node_name)(void *pw, void *node,
-			lwc_context *dict, lwc_string **name);
+			lwc_string **name);
 	css_error (*node_classes)(void *pw, void *node,
-			lwc_context *dict, lwc_string ***classes,
+			lwc_string ***classes,
 			uint32_t *n_classes);
 	css_error (*node_id)(void *pw, void *node,
-			lwc_context *dict, lwc_string **id);
+			lwc_string **id);
 
 	css_error (*named_ancestor_node)(void *pw, void *node,
 			lwc_string *name, void **ancestor);
@@ -84,9 +109,11 @@ css_error css_select_ctx_create(css_allocator_fn alloc, void *pw,
 css_error css_select_ctx_destroy(css_select_ctx *ctx);
 
 css_error css_select_ctx_append_sheet(css_select_ctx *ctx, 
-		const css_stylesheet *sheet);
+		const css_stylesheet *sheet, 
+		css_origin origin, uint64_t media);
 css_error css_select_ctx_insert_sheet(css_select_ctx *ctx,
-		const css_stylesheet *sheet, uint32_t index);
+		const css_stylesheet *sheet, uint32_t index,
+		css_origin origin, uint64_t media);
 css_error css_select_ctx_remove_sheet(css_select_ctx *ctx,
 		const css_stylesheet *sheet);
 
@@ -95,9 +122,14 @@ css_error css_select_ctx_get_sheet(css_select_ctx *ctx, uint32_t index,
 		const css_stylesheet **sheet);
 
 css_error css_select_style(css_select_ctx *ctx, void *node,
-		uint32_t pseudo_element, uint64_t media, 
-		const css_stylesheet *inline_style,
-		css_computed_style *result,
-		css_select_handler *handler, void *pw);
+		uint64_t media, const css_stylesheet *inline_style,
+		css_select_handler *handler, void *pw,
+		css_select_results **result);
+
+css_error css_select_results_destroy(css_select_results *results);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

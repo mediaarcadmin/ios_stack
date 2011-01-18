@@ -36,7 +36,12 @@ endif
 # Host/target platform detection
 ###############################################################################
 
-HOST := $(shell uname -s)
+# Autodetect host if necessary
+ifeq ($(HOST),)
+  HOST := $(shell uname -s)
+endif
+
+# Simple host sanitisation
 ifeq ($(HOST),)
   # Don't ask
   HOST := riscos
@@ -50,6 +55,10 @@ else
   endif
   ifeq ($(HOST),Haiku)
     HOST := haiku
+  endif
+
+  ifeq ($(HOST),AmigaOS)
+    HOST := amiga
   endif
 endif
 
@@ -65,6 +74,11 @@ ifeq ($(TARGET),)
     TARGET := beos
   endif
 endif
+
+# Sanitise HOST and TARGET
+# TODO: Ideally, we want the equivalent of s/[^A-Za-z0-9]/_/g here
+HOST := $(subst .,_,$(subst -,_,$(subst /,_,$(HOST))))
+TARGET := $(subst .,_,$(subst -,_,$(subst /,_,$(TARGET))))
 
 # Now setup our tooling
 ifeq ($(TARGET),riscos)
@@ -86,8 +100,21 @@ ifeq ($(TARGET),riscos)
     CURDIR := <$(COMPONENT)$$Dir>
   else
     # Cross compiling for RISC OS
-    GCCSDK_INSTALL_ENV ?= /home/riscos/env
-    GCCSDK_INSTALL_CROSSBIN ?= /home/riscos/cross/bin
+    ifeq ($(origin GCCSDK_INSTALL_ENV),undefined)
+      ifneq ($(realpath /opt/netsurf/arm-unknown-riscos/env),)
+        GCCSDK_INSTALL_ENV := /opt/netsurf/arm-unknown-riscos/env
+      else
+        GCCSDK_INSTALL_ENV := /home/riscos/env
+      endif
+    endif
+
+    ifeq ($(origin GCCSDK_INSTALL_CROSSBIN),undefined)
+      ifneq ($(realpath /opt/netsurf/arm-unknown-riscos/cross/bin),)
+        GCCSDK_INSTALL_CROSSBIN := /opt/netsurf/arm-unknown-riscos/cross/bin
+      else
+        GCCSDK_INSTALL_CROSSBIN := /home/riscos/cross/bin
+      endif
+    endif
 
     AR__ := $(wildcard $(GCCSDK_INSTALL_CROSSBIN)/*ar)
     CC__ := $(wildcard $(GCCSDK_INSTALL_CROSSBIN)/*gcc)
@@ -116,6 +143,7 @@ ifeq ($(TARGET),riscos)
     endif
   endif
 
+  # TODO: this assumes GCC
   CFLAGS := $(CFLAGS) -mpoke-function-name -I$(GCCSDK_INSTALL_ENV)/include
   CXXFLAGS := $(CXXFLAGS) -mpoke-function-name -I$(GCCSDK_INSTALL_ENV)/include
   LDFLAGS := $(LDFLAGS) -L$(GCCSDK_INSTALL_ENV)/lib
@@ -136,17 +164,32 @@ ifeq ($(TARGET),beos)
     PKGCONFIG ?=
 
     # Default prefix
-    PREFIX ?= /boot/home/config
+    BEOS_INSTALL_ENV ?= /boot/home/config
   else
     ifeq ($(HOST),haiku)
       # Building on Haiku
 
       # Default prefix
-      PREFIX ?= /boot/common
+      BEOS_INSTALL_ENV ?= /boot/common
     else
-      $(error Cross-compiling for BeOS is not supported)
+      # TODO: more sensible default
+      BEOS_INSTALL_ENV ?= /home/jmb/haiku/env
+      BEOS_INSTALL_CROSSBIN ?= /home/jmb/haiku/haiku/generated/cross-tools/bin
+
+      CC__ := $(wildcard $(BEOS_INSTALL_CROSSBIN)/*gcc)
+      CXX__ := $(wildcard $(BEOS_INSTALL_CROSSBIN)/*g++)
+      AR__ := $(wildcard $(BEOS_INSTALL_CROSSBIN)/*ar)
+
+      PKGCONFIG := PKG_CONFIG_LIBDIR="$(BEOS_INSTALL_ENV)/lib/pkgconfig:$(BEOS_INSTALL_ENV)/share/pkgconfig" pkg-config
     endif
   endif
+
+  # TODO: this assumes GCC
+  CFLAGS := $(CFLAGS) -I$(BEOS_INSTALL_ENV)/include
+  CXXFLAGS := $(CXXFLAGS) -I$(BEOS_INSTALL_ENV)/include
+  LDFLAGS := $(LDFLAGS) -L$(BEOS_INSTALL_ENV)/lib
+
+  PREFIX ?= $(BEOS_INSTALL_ENV)
 endif
 
 # Windows
@@ -155,21 +198,48 @@ ifeq ($(TARGET),windows)
     $(error Compiling on Windows is not supported)
   else
     # Cross compiling for Windows -- assumes mingw toolchain
-    GCCSDK_INSTALL_ENV ?= /usr/local/mingw
+    MINGW_INSTALL_ENV ?= /usr/local/mingw
 
     CC__ := i586-mingw32msvc-gcc
     CXX__ := i586-mingw32msvc-g++
     AR__ := i586-mingw32msvc-ar
 
-    PKGCONFIG ?= $(GCCSDK_INSTALL_ENV)/bin/win-pkg-config
+    PKGCONFIG ?= PKG_CONFIG_LIBDIR="$(MINGW_INSTALL_ENV)/lib/pkgconfig" pkg-config
   endif
 
-  CFLAGS := $(CFLAGS) -U__STRICT_ANSI__ -I$(GCCSDK_INSTALL_ENV)/include
-  CXXFLAGS := $(CXXFLAGS) -U__STRICT_ANSI__ -I$(GCCSDK_INSTALL_ENV)/include
-  LDFLAGS := $(LDFLAGS) -L$(GCCSDK_INSTALL_ENV)/lib
+  # TODO: this assumes GCC
+  CFLAGS := $(CFLAGS) -U__STRICT_ANSI__ -I$(MINGW_INSTALL_ENV)/include
+  CXXFLAGS := $(CXXFLAGS) -U__STRICT_ANSI__ -I$(MINGW_INSTALL_ENV)/include
+  LDFLAGS := $(LDFLAGS) -L$(MINGW_INSTALL_ENV)/lib
 
   # Default prefix
-  PREFIX ?= $(GCCSDK_INSTALL_ENV)
+  PREFIX ?= $(MINGW_INSTALL_ENV)
+endif
+
+# AmigaOS (3/4; m68k/ppc: we can treat them identically)
+ifeq ($(TARGET),amiga)
+  ifeq ($(HOST),amiga)
+    # Building on AmigaOS
+    # Nothing to do, as we assume the default tooling works
+  else
+    # Cross compiling for AmigaOS
+
+    GCCSDK_INSTALL_ENV ?= /opt/netsurf/m68k-unknown-amigaos/env
+    GCCSDK_INSTALL_CROSSBIN ?= /opt/netsurf/m68k-unknown-amigaos/cross/bin
+
+    AR__ := $(wildcard $(GCCSDK_INSTALL_CROSSBIN)/*ar)
+    CC__ := $(wildcard $(GCCSDK_INSTALL_CROSSBIN)/*gcc)
+    CXX__ := $(wildcard $(GCCSDK_INSTALL_CROSSBIN)/*g++)
+
+    PKGCONFIG ?= PKG_CONFIG_LIBDIR="$(GCCSDK_INSTALL_ENV)/lib/pkgconfig" pkg-config
+
+    # TODO: this assumes GCC
+    CFLAGS := $(CFLAGS) -I$(GCCSDK_INSTALL_ENV)/include
+    CXXFLAGS := $(CXXFLAGS) -I$(GCCSDK_INSTALL_ENV)/include
+    LDFLAGS := $(LDFLAGS) -L$(GCCSDK_INSTALL_ENV)/lib
+
+    PREFIX ?= $(GCCSDK_INSTALL_ENV)
+  endif
 endif
 
 ###############################################################################
@@ -218,93 +288,6 @@ TOUCH ?= touch
 XSLTPROC ?= xsltproc
 
 ###############################################################################
-# Default assembler/compiler/linker/archiver flags
-###############################################################################
-
-ifeq ($(BUILD),release)
-  OPTCFLAGS ?= -DNDEBUG -O2
-  OPTCXXFLAGS ?= -DNDEBUG -O2
-else
-  OPTCFLAGS ?= -g -O0
-  OPTCXXFLAGS ?= -g -O0
-  OPTLDFLAGS ?= -g
-endif
-
-ifeq ($(origin ARFLAGS),default)
-  ARFLAGS := cru
-endif
-
-ASFLAGS ?= -xassembler-with-cpp
-
-CFLAGS := $(CFLAGS) $(OPTCFLAGS) 
-CXXFLAGS := $(CXXFLAGS) $(OPTCXXFLAGS)
-# Some attempt to sanitise TARGET and HOST when used as pre-defines
-CFLAGS := $(CFLAGS) -DBUILD_TARGET_$(subst .,_,$(subst -,_,$(TARGET)))
-CXXFLAGS := $(CXXFLAGS) -DBUILD_TARGET_$(subst .,_,$(subst -,_,$(TARGET)))
-CFLAGS := $(CFLAGS) -DBUILD_HOST_$(subst .,_,$(subst -,_,$(HOST)))
-CXXFLAGS := $(CXXFLAGS) -DBUILD_HOST_$(subst .,_,$(subst -,_,$(HOST)))
-
-ASFLAGS := $(ASFLAGS) $(CFLAGS)
-LDFLAGS := $(LDFLAGS) $(OPTLDFLAGS)
-
-# Extensions for coverage target
-ifeq ($(MAKECMDGOALS),coverage)
-  COVCFLAGS ?= -fprofile-arcs -ftest-coverage
-  COVCXXFLAGS ?= -fprofile-arcs -ftest-coverage
-  COVLDFLAGS ?= -lgcov
-
-  CFLAGS := $(CFLAGS) $(COVCFLAGS)
-  CXXFLAGS := $(CXXFLAGS) $(COVCXXFLAGS)
-  LDFLAGS := $(LDFLAGS) $(COVLDFLAGS)
-endif
-
-# Extensions for profile target
-ifeq ($(MAKECMDGOALS),profile)
-  PROFCFLAGS ?= -pg
-  PROFCXXFLAGS ?= -pg
-  PROFLDFLAGS ?= -pg
-
-  CFLAGS := $(CFLAGS) $(PROFCFLAGS)
-  CXXFLAGS := $(CXXFLAGS) $(PROFCXXFLAGS)
-  LDFLAGS := $(LDFLAGS) $(PROFLDFLAGS)
-endif
-
-###############################################################################
-# lib-shared defaults
-###############################################################################
-
-# Default library extension
-ifeq ($(COMPONENT_TYPE),lib-static)
-  LIBEXT ?= .a
-else
-  LIBEXT ?= .so
-endif
-
-# If we're building a shared library, modify the flags appropriately
-ifeq ($(COMPONENT_TYPE),lib-shared)
-  # Default CFLAGS/LDFLAGS for shared libraries
-  SHAREDCFLAGS ?= -fPIC -DPIC
-  SHAREDCXXFLAGS ?= -fPIC -DPIC
-  SHAREDLDFLAGS ?= -shared \
-	-Wl,-soname,$(SONAME)
-  SHAREDLDPATH ?= LD_LIBRARY_PATH="$(BUILDDIR):$(LD_LIBRARY_PATH)"
-endif
-
-###############################################################################
-# RISC OS module extensions
-###############################################################################
-
-ifeq ($(COMPONENT_TYPE),riscos-module)
-  ifneq ($(TARGET),riscos)
-    $(error Attempting to build a RISC OS module for a non-RISC OS target)
-  endif
-
-  CFLAGS := $(CFLAGS) -mmodule
-  CXXFLAGS := $(CXXFLAGS) -mmodule
-  LDFLAGS := $(LDFLAGS) -mmodule
-endif
-
-###############################################################################
 # Override defaulted tools
 ###############################################################################
 
@@ -344,42 +327,100 @@ ifeq ($(origin AR),default)
 endif
 
 ###############################################################################
-# Other settings
+# Auto-detect the toolchain
 ###############################################################################
 
-# Determine if the compiler is GCC and if it supports simultaneous build & dep.
-ccvsn := $(shell $(CC) --version)
-ifeq ($(ccvsn),)
-  # Version string is blank
-  ifeq ($(HOST),riscos)
-    # For some reason we never see the output of SCL apps, so assume Norcroft.
-    ccvsn := Norcroft
-  else
-    # Give up
-    $(error Failed to determine compiler and version)
-  endif
-endif
-
-# "<binary name> (GCC) x.y.z (foo bar baz)"
-ifeq ($(word 2,$(ccvsn)),(GCC))
-  # Looks like GCC, look for version
-  # If the major version (x, above) is not 2, then assume build & dep.
-  # This will break if using a version of GCC < 2, but that's unlikely.
-  GCCVER := $(word 1,$(subst ., ,$(word 3, $(ccvsn))))
-  ifneq ($(GCCVER),2)
-    CC_CAN_BUILD_AND_DEP ?= yes
-  endif
+# Check for GCC first, as that's most likely
+# TODO: Using shell redirection like this probably hurts portability
+ccspecs := $(shell $(CC) -dumpspecs 2>&1)
+ifeq ($(findstring libgcc,$(ccspecs)),libgcc)
+  # Looks like GCC
+  toolchain := gcc
 else
-  # Older versions of GCC just output the version number, so examine the 
-  # binary name in the hope of detecting more GCC.
-  ifeq ($(findstring gcc,$(CC)),gcc)
-    GCCVER := $(word 1,$(subst ., ,$(ccvsn)))
-    ifneq ($(GCCVER),2)
-      CC_CAN_BUILD_AND_DEP ?= yes
+  # Not GCC, so enquire further
+  ccvsn := $(shell $(CC) --version 2>&1)
+  ifeq ($(ccvsn),)
+    # Version string is blank
+    ifeq ($(HOST),riscos)
+      # For some reason we never see the output of SCL apps, so might be
+      # Norcroft.  However it might also be a GCC linked against a buggy
+      # UnixLib.
+      # TODO: Something more useful than blindly assuming GCC.
+      ccvsn := GCC
+      # ccvsn := Norcroft
     endif
-  else
-    # Not GCC -- assume inability to dep
-    CC_CANNOT_DEP ?= yes
+  endif
+
+  # "Norcroft ..."
+  ifeq ($(word 1,$(ccvsn)),Norcroft)
+    toolchain := norcroft
+  endif
+  # "GCC ..."
+  ifeq ($(word 1,$(ccvsn)),GCC)
+    toolchain := gcc
+  endif
+  # "clang ..."
+  ifeq ($(word 1,$(ccvsn)),clang)
+    toolchain := clang
   endif
 endif
 
+ifeq ($(toolchain),)
+  $(error Unable to detect toolchain)
+endif
+
+# TODO: It would be nice to avoid this hard-coded path
+include build/makefiles/Makefile.$(toolchain)
+
+###############################################################################
+# Default assembler/compiler/linker/archiver flags
+###############################################################################
+
+ifeq ($(BUILD),release)
+  OPTCFLAGS ?= $(CCDEF)NDEBUG $(CCOPT)
+  OPTCXXFLAGS ?= $(CXXDEF)NDEBUG $(CXXOPT)
+else
+  OPTCFLAGS ?= $(CCDBG) $(CCNOOPT) $(CCDEF)DEBUG
+  OPTCXXFLAGS ?= $(CXXDBG) $(CXXNOOPT) $(CXXDEF)DEBUG
+  OPTLDFLAGS ?= $(LDDBG)
+endif
+
+ifeq ($(origin ARFLAGS),default)
+  ARFLAGS := $(ARFLG)
+endif
+
+# TODO: This assumes that the C compiler can cope with assembler
+ASFLAGS ?= $(CCAS)
+
+CFLAGS := $(CFLAGS) $(OPTCFLAGS) $(CCDEF)BUILD_TARGET_$(TARGET) $(CCDEF)BUILD_HOST_$(HOST)
+CXXFLAGS := $(CXXFLAGS) $(OPTCXXFLAGS) \
+		$(CXXDEF)BUILD_TARGET_$(TARGET) $(CXXDEF)BUILD_HOST_$(HOST)
+
+ASFLAGS := $(ASFLAGS) $(CFLAGS)
+LDFLAGS := $(LDFLAGS) $(OPTLDFLAGS)
+
+###############################################################################
+# lib-shared defaults
+###############################################################################
+
+# Default library extension
+ifeq ($(COMPONENT_TYPE),lib-static)
+  LIBEXT ?= .a
+else
+  LIBEXT ?= .so
+endif
+
+# If we're building a shared library, modify the flags appropriately
+ifeq ($(COMPONENT_TYPE),lib-shared)
+  # Default CFLAGS/LDFLAGS for shared libraries
+  SHAREDCFLAGS ?= $(CCSHR) $(CCDEF)PIC
+  SHAREDCXXFLAGS ?= $(CXXSHR) $(CCDEF)PIC
+  SHAREDLDFLAGS ?= $(LDSHR)
+  SHAREDLDPATH ?= LD_LIBRARY_PATH="$(BUILDDIR):$(LD_LIBRARY_PATH)"
+endif
+
+################################################################################
+# Package config macros
+################################################################################
+
+include build/makefiles/Makefile.pkgconfig

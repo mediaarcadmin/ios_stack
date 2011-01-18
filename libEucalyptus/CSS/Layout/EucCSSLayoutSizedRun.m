@@ -301,6 +301,8 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         if(_potentialBreaks) {
             free(_potentialBreaks);
             _potentialBreaks = NULL;
+            free(_potentialBreakInfos);
+            _potentialBreakInfos = NULL;
         }
     }
     return _componentWidthInfos;
@@ -684,6 +686,8 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
             } 
             [newLine release];        
         }
+        
+        free(usedBreakIndexes);
     } while(widthChanged);
     
     if(lines.count) {

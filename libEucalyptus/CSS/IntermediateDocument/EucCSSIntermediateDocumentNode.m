@@ -248,7 +248,7 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
         
         if(names) {
             for(; *names && !_stringRenderer; ++names) {
-                NSString *fontName = [NSString stringWithLWCString:*names];
+                NSString *fontName = NSStringFromLWCString(*names);
                 
                 _stringRenderer = [self _cachedStringRendererWithFontName:fontName
                                                                styleFlags:styleFlags];
@@ -320,38 +320,6 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
         [self _setupTextIVars];
     } 
     return [_stringRenderer xHeightForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
-}
-
-- (CGFloat)lineHeightWithScaleFactor:(CGFloat)scaleFactor
-{
-    if(!_stringRenderer) {
-        [self _setupTextIVars];
-    }  
-    
-    css_computed_style *style = NULL;
-    css_fixed size; 
-    css_unit units; 
-
-    if(!_lineHeightKind) {
-        style = self.computedStyle;
-        if(!style) {
-            style = self.parent.computedStyle;
-        }
-        _lineHeightKind = css_computed_line_height(style, &size, &units); 
-    }
-    
-    if(_lineHeightKind == CSS_LINE_HEIGHT_NORMAL) {
-        return [_stringRenderer lineSpacingForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
-    } else {
-        if(!style) {
-            style = self.computedStyle;
-            if(!style) {
-                style = self.parent.computedStyle;
-            }
-            css_computed_line_height(style, &size, &units);             
-        }
-        return EucCSSLibCSSSizeToPixels(style, size, units, [self textPointSizeWithScaleFactor:scaleFactor], scaleFactor);
-    }
 }
 
 - (EucCSSIntermediateDocumentNode *)blockLevelNode
@@ -459,6 +427,43 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
 - (NSUInteger)columnSpan
 {
     return 1;
+}
+
+
+// Pragma to get rid of compiler warnings about unutialised "size" and "unit"
+// (the warnings are incorrect, the variables are always initialsed if 
+// 'style' it initialised.
+#pragma GCC diagnostic ignored "-Wuninitialized"
+- (CGFloat)lineHeightWithScaleFactor:(CGFloat)scaleFactor
+{
+    if(!_stringRenderer) {
+        [self _setupTextIVars];
+    }  
+    
+    css_computed_style *style = NULL;
+    css_fixed size; 
+    css_unit units; 
+    
+    if(!_lineHeightKind) {
+        style = self.computedStyle;
+        if(!style) {
+            style = self.parent.computedStyle;
+        }
+        _lineHeightKind = css_computed_line_height(style, &size, &units); 
+    }
+    
+    if(_lineHeightKind == CSS_LINE_HEIGHT_NORMAL) {
+        return [_stringRenderer lineSpacingForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
+    } else {
+        if(!style) {
+            style = self.computedStyle;
+            if(!style) {
+                style = self.parent.computedStyle;
+            }
+            css_computed_line_height(style, &size, &units);             
+        }
+        return EucCSSLibCSSSizeToPixels(style, size, units, [self textPointSizeWithScaleFactor:scaleFactor], scaleFactor);
+    }
 }
 
 @end

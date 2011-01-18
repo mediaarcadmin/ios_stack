@@ -6,7 +6,6 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "charset/charset.h"
 #include <parserutils/charset/codec.h>
 
 #include "utils/utils.h"
@@ -46,13 +45,10 @@ int main(int argc, char **argv)
 	parserutils_charset_codec *codec;
 	line_ctx ctx;
 
-	if (argc != 3) {
-		printf("Usage: %s <aliases_file> <filename>\n", argv[0]);
+	if (argc != 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
 		return 1;
 	}
-
-	assert(parserutils_charset_initialise(argv[1], myrealloc, NULL) == 
-			PARSERUTILS_OK);
 
 	assert(parserutils_charset_codec_create("NATS-SEFI-ADD",
 			myrealloc, NULL, &codec) == PARSERUTILS_BADENCODING);
@@ -60,7 +56,7 @@ int main(int argc, char **argv)
 	assert(parserutils_charset_codec_create("UTF-16", myrealloc, NULL,
 			&ctx.codec) == PARSERUTILS_OK);
 
-	ctx.buflen = parse_filesize(argv[2]);
+	ctx.buflen = parse_filesize(argv[1]);
 	if (ctx.buflen == 0)
 		return 1;
 
@@ -86,7 +82,7 @@ int main(int argc, char **argv)
 	ctx.inexp = false;
 	ctx.exp_ret = PARSERUTILS_OK;
 
-	assert(parse_testfile(argv[2], handle_line, &ctx) == true);
+	assert(parse_testfile(argv[1], handle_line, &ctx) == true);
 
 	/* and run final test */
 	if (ctx.bufused > 0 && ctx.buf[ctx.bufused - 1] == '\n')
@@ -100,9 +96,6 @@ int main(int argc, char **argv)
 	free(ctx.buf);
 
 	parserutils_charset_codec_destroy(ctx.codec);
-
-	assert(parserutils_charset_finalise(myrealloc, NULL) == 
-			PARSERUTILS_OK);
 
 	printf("PASS\n");
 

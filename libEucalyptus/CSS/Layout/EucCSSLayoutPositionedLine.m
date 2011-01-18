@@ -33,7 +33,6 @@
 @synthesize componentWidth = _componentWidth;
 
 @synthesize indent = _indent;
-@synthesize baseline = _baseline;
 
 @synthesize align = _align;
 
