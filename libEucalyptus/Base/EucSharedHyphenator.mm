@@ -79,8 +79,8 @@ static void EucSharedHyphenatorSetup()
 
 - (NSArray *)hyphenationsForWord:(NSString *)word
 {
-    //NSArray *ret = [_cache objectForKey:word];
-    //if(!ret) {
+    NSArray *ret = [_cache objectForKey:word];
+    if(!ret) {
         THPair *items[word.length];
         auto_ptr< vector< const HyphenationRule *> > hyphenationPoints = _hyphenator->applyHyphenationRules((CFStringRef)word);
         
@@ -111,11 +111,10 @@ static void EucSharedHyphenatorSetup()
                 [beforeBreak release];                
             }
         }
-        return  [NSArray arrayWithObjects:items count:ruleCount];
-        
-       // [_cache cacheObject:ret forKey:word];
-    //}
-    //return ret;
+        ret =  [NSArray arrayWithObjects:items count:ruleCount];
+        [_cache cacheObject:ret forKey:word];
+    }
+    return ret;
 }
 
 @end

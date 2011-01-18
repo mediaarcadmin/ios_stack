@@ -700,11 +700,11 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 
 - (CGFloat)widthOfString:(NSString *)string pointSize:(CGFloat)pointSize
 {
-    //if(!_widthCache) {
-    //    _widthCache = [[THStringAndCGFloatToCGFloatCache alloc] init];
-    //}
-    //CGFloat ret = [_widthCache cgFloatForStringKey:string cgFloatKey:pointSize];
-    // if(!ret) {
+    if(!_widthCache) {
+        _widthCache = [[THStringAndCGFloatToCGFloatCache alloc] init];
+    }
+    CGFloat ret = [_widthCache cgFloatForStringKey:string cgFloatKey:pointSize];
+    if(!ret) {
         CGContextRef context = [self measuringContext];
         
         CGContextSetFontSize(context, PointsToPixels(pointSize));
@@ -765,10 +765,10 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         
         CGPoint point = CGContextGetTextPosition(context);
             
-        CGFloat ret = point.x;
+        ret = point.x;
         
-    //    [_widthCache cacheCGFloat:ret forStringKey:string cgFloatKey:pointSize];
-    // }
+        [_widthCache cacheCGFloat:ret forStringKey:string cgFloatKey:pointSize];
+    }
     return ret;
 }    
 

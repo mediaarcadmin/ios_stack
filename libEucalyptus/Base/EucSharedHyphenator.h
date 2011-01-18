@@ -25,7 +25,7 @@ void initialise_shared_hyphenator();
 
 @interface EucSharedHyphenator : NSObject {
     SharedHyphenator *_hyphenator;
-    //THCache *_cache;
+    THCache *_cache;
 }
 
 + (EucSharedHyphenator *)sharedHyphenator;
