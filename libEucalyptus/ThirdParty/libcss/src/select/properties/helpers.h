@@ -48,7 +48,7 @@ css_error cascade_length(uint32_t opv, css_style *style,
 css_error cascade_number(uint32_t opv, css_style *style,
 		css_select_state *state,
 		css_error (*fun)(css_computed_style *, uint8_t, css_fixed));
-css_error cascade_page_break_after_before(uint32_t opv, css_style *style,
+css_error cascade_page_break_after_before_inside(uint32_t opv, css_style *style,
 		css_select_state *state,
 		css_error (*fun)(css_computed_style *, uint8_t));
 css_error cascade_counter_increment_reset(uint32_t opv, css_style *style,
