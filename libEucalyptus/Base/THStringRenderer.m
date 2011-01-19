@@ -433,7 +433,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 - (void)dealloc
 {
     [self _clearCachedArrays];
-    [_mapAndFont release]
+    [_mapAndFont release];
     if(_font) {
         CGFontRelease(_font);
     }
