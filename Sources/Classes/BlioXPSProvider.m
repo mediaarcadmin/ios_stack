@@ -932,9 +932,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 				return nil;
 		}
 		bytesDecompressed = BUFSIZE - strm.avail_out;
-		NSData* data = [[NSData alloc] initWithBytesNoCopy:outbuf length:bytesDecompressed freeWhenDone:NO];
-		[outData appendData:data];
-        [data release];
+		[outData appendBytes:outbuf length:bytesDecompressed];
 	}
 	while (strm.avail_out == 0);
 	XPS_inflateEnd(&strm);
