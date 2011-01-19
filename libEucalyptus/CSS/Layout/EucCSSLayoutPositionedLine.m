@@ -471,6 +471,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         uint32_t i;
         EucCSSLayoutRunComponentInfo *info;
         EucCSSLayoutSizedRunWidthInfo *widthInfo;
+        CGFloat lastWordWidth = 0.0f;
         for(i = startComponentOffset, info = componentInfos, widthInfo = widthInfos;
             i < componentsCount && i < afterEndComponentOffset; 
             ++i, ++info, ++widthInfo) {
@@ -506,6 +507,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     
                     _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     
+                    lastWordWidth = widthInfo->width;
                     xPosition += widthInfo->width;
                     break;
                 }
@@ -632,7 +634,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
             if(info->kind == EucCSSLayoutRunComponentKindHyphenationRule) {
                 --renderItem;
                 
-                xPosition -= widthInfo->width;
+                xPosition -= lastWordWidth;
                 xPosition += widthInfo->hyphenWidths.widthBeforeHyphen;
                                 
                 renderItem->lineBox.width = widthInfo->hyphenWidths.widthBeforeHyphen;
