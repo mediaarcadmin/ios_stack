@@ -116,7 +116,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     if(computedStyle) {
         CGRect borderRect = block.borderRect;
         css_color color;
-        if(css_computed_background_color(computedStyle, &color) != CSS_BACKGROUND_COLOR_TRANSPARENT) {
+        if(css_computed_background_color(computedStyle, &color) == CSS_BACKGROUND_COLOR_COLOR) {
             CGContextSaveGState(_cgContext);
             CGContextSetFillColorWithCSSColor(_cgContext, color);  
             CGContextFillRect(_cgContext, borderRect);
@@ -457,14 +457,25 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 
                 css_computed_style *style = currentDocumentNode.computedStyle;
                 if(style) {
-                    // Color.
+                    // Background
                     css_color color; 
+                    if(css_computed_background_color(style, &color) == CSS_BACKGROUND_COLOR_COLOR) {
+                        CGContextSaveGState(_cgContext);
+                        CGContextSetFillColorWithCSSColor(_cgContext, color);
+                        CGRect fillRect = CGRectIntegral(CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x, 
+                                                                    currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                                    renderItem->lineBox.width, renderItem->lineBox.height));
+                        CGContextFillRect(_cgContext, fillRect);
+                        CGContextRestoreGState(_cgContext);
+                    }                    
+                    
+                    // Color.
                     if(css_computed_color(style, &color) == CSS_COLOR_COLOR) {
                         CGContextSetFillColorWithCSSColor(_cgContext, color);
                         CGContextSetStrokeColorWithCSSColor(_cgContext, color);
                     }
-                    
-                    // List bullet
+                                        
+                    // List bullet.
                     if(!renderItem->item.openNodeInfo.implicit &&
                        currentDocumentNode.display == CSS_DISPLAY_LIST_ITEM) {
                         CGPoint baselinePoint = CGPointMake(currentAbsoluteOrigin.x + renderItem->origin.x - roundf(5.0f * _currentScaleFactor),
