@@ -374,14 +374,16 @@
         CGFloat capMin = self.sizedCaptionBlock.minWidth;
         CGFloat cellMin = self.cellsMinWidth;
         tableWidth = MAX(capMin, cellMin);
-        tableWidth = MAX(tableWidth, width);
+        //tableWidth = MAX(tableWidth, width);
+        tableWidth = MIN(tableWidth, width); // Not the suggested algorithm, but looks better - tables don't overflow the page.
     } else {
         // tableWidth currently holds the computed specified value.
         CGFloat capMin = self.sizedCaptionBlock.minWidth;
         CGFloat cellMin = self.cellsMinWidth;
-        tableWidth = MAX(tableWidth, width);
         tableWidth = MAX(tableWidth, capMin);
         tableWidth = MAX(tableWidth, cellMin);
+        //tableWidth = MAX(tableWidth, width);
+        tableWidth = MIN(tableWidth, width); // Not the suggested algorithm, but looks better - tables don't overflow the page.
     }
     
     return tableWidth;
