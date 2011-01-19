@@ -33,7 +33,7 @@
 #import <sys/stat.h>
 #import <sys/mman.h>
 
-#define kMaxCachedDocuments 3
+#define kMaxCachedDocuments 2
 
 @interface TocNcxParsingContextNavPointInfo : NSObject {
     NSString *_text;
