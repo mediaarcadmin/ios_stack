@@ -147,6 +147,11 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
     [_paginationStartedLock unlockWithCondition:1];
     unlocked = YES;
         
+    // Let the book generate and save any data.
+    THTimer *cacheableDataSaveTimer = [THTimer timerWithName:@"Saving cachable data"];
+    [_book persistCacheableData];
+    [cacheableDataSaveTimer report];            
+    
     // Create the text views we'll use for layout.
     i = 0;
     for(NSUInteger pointSize = 0; pointSize < _desiredFontSizesCount; ++pointSize) {
@@ -256,12 +261,7 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
                          
         [pool drain];
     }
-        
-    // Let the book save any data it's collected.
-    THTimer *cacheableDataSaveTimer = [THTimer timerWithName:@"Saving cachable data"];
-    [_book persistCacheableData];
-    [cacheableDataSaveTimer report];
-    
+            
     if(_continueParsing) {
         _percentagePaginated = 100.0f;
         [self performSelectorOnMainThread:@selector(_paginationThreadComplete) withObject:nil  waitUntilDone:NO];

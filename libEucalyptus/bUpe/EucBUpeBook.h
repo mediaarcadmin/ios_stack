@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "THCache.h"
 #import "EucBook.h"
 #import "EucBUpeLocalBookReference.h"
 #import "EucCSSIntermediateDocument.h"
@@ -33,7 +34,7 @@
     
     NSDictionary *_idToIndexPoint;
     
-    NSMutableArray *_documentCache;
+    THCache *_documentCache;
     
     BOOL _persistsPositionAutomatically;
     int _currentPageIndexPointFD;
@@ -41,9 +42,17 @@
     EucBookPageIndexPoint *_currentPageIndexPoint;
     
     float *_indexSourceScaleFactors;
+    
+    CGFloat _normalisingScaleFactor;
 }
 
 @property (nonatomic, retain) NSString *coverPath;
+
+// Some books have, for reasons known only to the publishers (and perhaps not 
+// even to them...) crazy default text sizes.  This scale factor will scale 
+// that text size to our default, and can be used to make the body text
+// a uniform size across all books.
+@property (nonatomic, assign, readonly) CGFloat normalisingScaleFactor;
 
 - (id)initWithPath:(NSString *)path;
 - (void)whitelistSectionsWithUuids:(NSSet *)uuids;

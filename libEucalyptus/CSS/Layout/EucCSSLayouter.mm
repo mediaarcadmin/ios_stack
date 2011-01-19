@@ -262,26 +262,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     return NO;
 }
  
-
-- (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node
-{
-    EucCSSLayoutPoint ret = {0};
-    
-    EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:node.document];
-    EucCSSLayoutRun *run = [extractor runForNodeWithKey:node.key];
-        
-    if(run) {
-        EucCSSLayoutRunPoint runPoint = [run pointForNode:node];
-        ret.nodeKey = run.id;
-        ret.word = runPoint.word;
-        ret.element = runPoint.element;
-    }   
-    
-    [extractor release];
-    
-    return ret;
-}
-
 - (EucCSSIntermediateDocumentNode *)_layoutNodeForKey:(uint32_t)nodeKey
 {
     if(nodeKey == 0) {
