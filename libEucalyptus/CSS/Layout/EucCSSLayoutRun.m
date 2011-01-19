@@ -86,7 +86,6 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         if(!cachedRuns) {
             cachedRuns = [[THIntegerToObjectCache alloc] init];
             cachedRuns.generationLifetime = RUN_CACHE_CAPACITY;
-            cachedRuns.conserveItemsInUse = YES;
             objc_setAssociatedObject(document, EucCSSRunCacheKey, cachedRuns, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             [cachedRuns release];
         }

@@ -8,13 +8,6 @@
 
 #include "testutils.h"
 
-static void *myrealloc(void *ptr, size_t len, void *pw)
-{
-	UNUSED(pw);
-
-	return realloc(ptr, len);
-}
-
 typedef struct line_ctx {
 	size_t buflen;
 	size_t bufused;
@@ -36,12 +29,12 @@ int main(int argc, char **argv)
 {
 	line_ctx ctx;
 
-	if (argc != 3) {
-		printf("Usage: %s <aliases_file> <filename>\n", argv[0]);
+	if (argc != 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
 		return 1;
 	}
 
-	ctx.buflen = parse_filesize(argv[2]);
+	ctx.buflen = parse_filesize(argv[1]);
 	if (ctx.buflen == 0)
 		return 1;
 
@@ -58,7 +51,7 @@ int main(int argc, char **argv)
 	ctx.indata = false;
 	ctx.inexp = false;
 
-	assert(parse_testfile(argv[2], handle_line, &ctx) == true);
+	assert(parse_testfile(argv[1], handle_line, &ctx) == true);
 
 	/* and run final test */
 	if (ctx.bufused > 0)
@@ -118,7 +111,6 @@ bool handle_line(const char *data, size_t datalen, void *pw)
 void run_test(const uint8_t *data, size_t len, const char *exp, size_t explen)
 {
         lwc_string *in;
-        lwc_context *ctx;
 	size_t consumed;
 	css_fixed result;
 	char buf[256];
@@ -126,9 +118,7 @@ void run_test(const uint8_t *data, size_t len, const char *exp, size_t explen)
 	UNUSED(exp);
 	UNUSED(explen);
         
-        assert(lwc_create_context(myrealloc, NULL, &ctx) == lwc_error_ok);
-        lwc_context_ref(ctx);
-        assert(lwc_context_intern(ctx, (const char *)data, len, &in) == lwc_error_ok);
+        assert(lwc_intern_string((const char *)data, len, &in) == lwc_error_ok);
         
 	result = number_from_lwc_string(in, false, &consumed);
 
@@ -137,7 +127,6 @@ void run_test(const uint8_t *data, size_t len, const char *exp, size_t explen)
 	printf("got: %s expected: %.*s\n", buf, (int) explen, exp);
 
 	assert(strncmp(buf, exp, explen) == 0);
-        lwc_context_unref(ctx);
 }
 
 void print_css_fixed(char *buf, size_t len, css_fixed f)

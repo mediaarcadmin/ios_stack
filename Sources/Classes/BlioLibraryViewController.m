@@ -369,7 +369,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 											coverPath:nil
 											  ePubPath:nil
 											   pdfPath:nil
-											   xpsPath:@"XPS/Frommer's Cancun.xps"
+											   xpsPath:@"XPS-Demo/Frommer's Cancun.xps"
 										  textFlowPath:nil
 										 audiobookPath:nil
 											  sourceID:BlioBookSourceLocalBundle

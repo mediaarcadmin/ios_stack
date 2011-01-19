@@ -1,7 +1,7 @@
 /*
  * This file is part of LibCSS.
  * Licensed under the MIT License,
- *                http://www.opensource.org/licenses/mit-license.php
+ *		  http://www.opensource.org/licenses/mit-license.php
  * Copyright 2008 John-Mark Bell <jmb@netsurf-browser.org>
  */
 
@@ -92,14 +92,14 @@ static css_error parseProperty(css_language *c,
 /**
  * Create a CSS language parser
  *
- * \param sheet     The stylesheet object to parse for
+ * \param sheet	    The stylesheet object to parse for
  * \param parser    The core parser object to use
- * \param alloc     Memory (de)allocation function
- * \param pw        Pointer to client-specific private data
+ * \param alloc	    Memory (de)allocation function
+ * \param pw	    Pointer to client-specific private data
  * \param language  Pointer to location to receive parser object
  * \return CSS_OK on success,
- *         CSS_BADPARM on bad parameters,
- *         CSS_NOMEM on memory exhaustion
+ *	   CSS_BADPARM on bad parameters,
+ *	   CSS_NOMEM on memory exhaustion
  */
 css_error css_language_create(css_stylesheet *sheet, css_parser *parser,
 		css_allocator_fn alloc, void *pw, void **language)
@@ -107,7 +107,7 @@ css_error css_language_create(css_stylesheet *sheet, css_parser *parser,
 	css_language *c;
 	css_parser_optparams params;
 	parserutils_error perror;
-        lwc_error lerror;
+	lwc_error lerror;
 	css_error error;
 	int i;
 
@@ -129,11 +129,10 @@ css_error css_language_create(css_stylesheet *sheet, css_parser *parser,
 
 	/* Intern all known strings */
 	for (i = 0; i < LAST_KNOWN; i++) {
-                lerror = lwc_context_intern(sheet->dictionary,
-                                            stringmap[i].data,
-                                            stringmap[i].len,
-                                            &(c->strings[i]));
-                if (lerror != lwc_error_ok) {
+		lerror = lwc_intern_string(stringmap[i].data,
+					    stringmap[i].len,
+					    &(c->strings[i]));
+		if (lerror != lwc_error_ok) {
 			parserutils_stack_destroy(c->context);
 			alloc(c, 0, pw);
 			return CSS_NOMEM;
@@ -167,18 +166,17 @@ css_error css_language_create(css_stylesheet *sheet, css_parser *parser,
  */
 css_error css_language_destroy(css_language *language)
 {
-        int i;
-        
+	int i;
+	
 	if (language == NULL)
 		return CSS_BADPARM;
 
 	parserutils_stack_destroy(language->context);
-        
-        for (i = 0; i < LAST_KNOWN; ++i) {
-                lwc_context_string_unref(language->sheet->dictionary,
-                                         language->strings[i]);
-        }
-        
+	
+	for (i = 0; i < LAST_KNOWN; ++i) {
+		lwc_string_unref(language->strings[i]);
+	}
+	
 	language->alloc(language, 0, language->pw);
 
 	return CSS_OK;
@@ -187,11 +185,11 @@ css_error css_language_destroy(css_language *language)
 /**
  * Handler for core parser events
  *
- * \param type    The event type
+ * \param type	  The event type
  * \param tokens  Vector of tokens read since last event, or NULL
- * \param pw      Pointer to handler context
+ * \param pw	  Pointer to handler context
  * \return CSS_OK on success, CSS_INVALID to indicate parse error, 
- *         appropriate error otherwise.
+ *	   appropriate error otherwise.
  */
 css_error language_handle_event(css_parser_event type, 
 		const parserutils_vector *tokens, void *pw)
@@ -225,7 +223,7 @@ css_error language_handle_event(css_parser_event type,
 }
 
 /******************************************************************************
- * Parser stages                                                              *
+ * Parser stages							      *
  ******************************************************************************/
 
 css_error handleStartStylesheet(css_language *c, 
@@ -364,8 +362,7 @@ css_error handleStartAtRule(css_language *c, const parserutils_vector *vector)
 	 * there is one */
 	assert(atkeyword != NULL && atkeyword->type == CSS_TOKEN_ATKEYWORD);
 
-	if (lwc_context_string_caseless_isequal(c->sheet->dictionary,
-			atkeyword->idata, c->strings[CHARSET], 
+	if (lwc_string_caseless_isequal(atkeyword->idata, c->strings[CHARSET], 
 			&match) == lwc_error_ok && match) {
 		if (c->state == BEFORE_CHARSET) {
 			const css_token *charset;
@@ -408,15 +405,15 @@ css_error handleStartAtRule(css_language *c, const parserutils_vector *vector)
 		} else {
 			return CSS_INVALID;
 		}
-	} else if (lwc_context_string_caseless_isequal(c->sheet->dictionary,
-			atkeyword->idata, c->strings[IMPORT], 
-			&match) == lwc_error_ok && match) {
+	} else if (lwc_string_caseless_isequal(atkeyword->idata, 
+			c->strings[LIBCSS_IMPORT], &match) == lwc_error_ok && 
+			match) {
 		if (c->state != HAD_RULE) {
 			lwc_string *url;
 			uint64_t media = 0;
 
 			/* any0 = (STRING | URI) ws 
-			 *        (IDENT ws (',' ws IDENT ws)* )? */
+			 *	  (IDENT ws (',' ws IDENT ws)* )? */
 			const css_token *uri = 
 				parserutils_vector_iterate(vector, &ctx);
 			if (uri == NULL || (uri->type != CSS_TOKEN_STRING && 
@@ -438,7 +435,7 @@ css_error handleStartAtRule(css_language *c, const parserutils_vector *vector)
 
 			/* Resolve import URI */
 			error = c->sheet->resolve(c->sheet->resolve_pw,
-					c->sheet->dictionary, c->sheet->url,
+					c->sheet->url,
 					uri->idata, &url);
 			if (error != CSS_OK) {
 				css_stylesheet_rule_destroy(c->sheet, rule);
@@ -449,14 +446,25 @@ css_error handleStartAtRule(css_language *c, const parserutils_vector *vector)
 			error = css_stylesheet_rule_set_nascent_import(c->sheet,
 					rule, url, media);
 			if (error != CSS_OK) {
-				lwc_context_string_unref(c->sheet->dictionary, 
-						url);
+				lwc_string_unref(url);
 				css_stylesheet_rule_destroy(c->sheet, rule);
 				return error;
 			}
 
+			/* Inform client of need for import */
+			if (c->sheet->import != NULL) {
+				error = c->sheet->import(c->sheet->import_pw,
+						c->sheet, url, media);
+				if (error != CSS_OK) {
+					lwc_string_unref(url);
+					css_stylesheet_rule_destroy(c->sheet, 
+							rule);
+					return error;
+				}
+			}
+
 			/* No longer care about url */
-			lwc_context_string_unref(c->sheet->dictionary, url);
+			lwc_string_unref(url);
 
 			/* Add rule to sheet */
 			error = css_stylesheet_add_rule(c->sheet, rule, NULL);
@@ -472,8 +480,7 @@ css_error handleStartAtRule(css_language *c, const parserutils_vector *vector)
 		} else {
 			return CSS_INVALID;
 		}
-	} else if (lwc_context_string_caseless_isequal(c->sheet->dictionary,
-			atkeyword->idata, c->strings[MEDIA], 
+	} else if (lwc_string_caseless_isequal(atkeyword->idata, c->strings[MEDIA], 
 			&match) == lwc_error_ok && match) {
 		uint64_t media = 0;
 
@@ -504,8 +511,7 @@ css_error handleStartAtRule(css_language *c, const parserutils_vector *vector)
 		 * so no need to destroy it */
 
 		c->state = HAD_RULE;
-	} else if (lwc_context_string_caseless_isequal(c->sheet->dictionary,
-			atkeyword->idata, c->strings[PAGE], 
+	} else if (lwc_string_caseless_isequal(atkeyword->idata, c->strings[PAGE], 
 			&match) == lwc_error_ok && match) {
 		const css_token *token;
 
@@ -714,7 +720,7 @@ css_error handleDeclaration(css_language *c, const parserutils_vector *vector)
 }
 
 /******************************************************************************
- * At-rule parsing functions                                                  *
+ * At-rule parsing functions						      *
  ******************************************************************************/
 css_error parseMediaList(css_language *c,
 		const parserutils_vector *vector, int *ctx,
@@ -730,57 +736,46 @@ css_error parseMediaList(css_language *c,
 		if (token->type != CSS_TOKEN_IDENT)
 			return CSS_INVALID;
 
-		if (lwc_context_string_caseless_isequal(c->sheet->dictionary,
-				token->idata, c->strings[AURAL], 
+		if (lwc_string_caseless_isequal(token->idata, c->strings[AURAL], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_AURAL;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[BRAILLE], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_BRAILLE;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[EMBOSSED], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_EMBOSSED;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[HANDHELD], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_HANDHELD;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[PRINT], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_PRINT;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[PROJECTION], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_PROJECTION;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[SCREEN], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_SCREEN;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[SPEECH], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_SPEECH;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[TTY], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_TTY;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[TV], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_TV;
-		} else if (lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+		} else if (lwc_string_caseless_isequal(
 				token->idata, c->strings[ALL], 
 				&match) == lwc_error_ok && match) {
 			ret |= CSS_MEDIA_ALL;
@@ -807,7 +802,7 @@ css_error parseMediaList(css_language *c,
 }
 
 /******************************************************************************
- * Selector list parsing functions                                            *
+ * Selector list parsing functions					      *
  ******************************************************************************/
 
 css_error parseClass(css_language *c, const parserutils_vector *vector, 
@@ -835,8 +830,8 @@ css_error parseAttrib(css_language *c, const parserutils_vector *vector,
 	css_selector_type type = CSS_SELECTOR_ATTRIBUTE;
 
 	/* attrib    -> '[' ws IDENT ws [
-	 *                     [ '=' | INCLUDES | DASHMATCH ] ws
-	 *                     [ IDENT | STRING ] ws ]? ']'
+	 *		       [ '=' | INCLUDES | DASHMATCH ] ws
+	 *		       [ IDENT | STRING ] ws ]? ']'
 	 */
 	token = parserutils_vector_iterate(vector, ctx);
 	if (token == NULL || tokenIsChar(token, '[') == false)
@@ -924,59 +919,47 @@ css_error parsePseudo(css_language *c, const parserutils_vector *vector,
 			return CSS_INVALID;
 	}
 
-	if ((lwc_context_string_caseless_isequal(c->sheet->dictionary,
-			name->idata, c->strings[FIRST_CHILD], 
-			&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+	if ((lwc_string_caseless_isequal(
+				name->idata, c->strings[FIRST_CHILD], 
+				&match) == lwc_error_ok && match) ||
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[LINK], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[VISITED], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[HOVER], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[ACTIVE], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[FOCUS], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[LANG], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[LEFT], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[RIGHT], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[FIRST], 
 				&match) == lwc_error_ok && match))
 		type = CSS_SELECTOR_PSEUDO_CLASS;
-	else if ((lwc_context_string_caseless_isequal(c->sheet->dictionary,
+	else if ((lwc_string_caseless_isequal(
 				name->idata, c->strings[FIRST_LINE], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[FIRST_LETTER], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[BEFORE], 
 				&match) == lwc_error_ok && match) ||
-			(lwc_context_string_caseless_isequal(
-				c->sheet->dictionary,
+			(lwc_string_caseless_isequal(
 				name->idata, c->strings[AFTER], 
 				&match) == lwc_error_ok && match))
 		type = CSS_SELECTOR_PSEUDO_ELEMENT;
@@ -1059,8 +1042,8 @@ css_error parseSimpleSelector(css_language *c,
 	css_selector *selector;
 
 	/* simple_selector -> element_name specifics
-	 *                 -> specific specifics
-	 * element_name    -> IDENT | '*'
+	 *		   -> specific specifics
+	 * element_name	   -> IDENT | '*'
 	 */
 
 	token = parserutils_vector_peek(vector, *ctx);
@@ -1107,7 +1090,7 @@ css_error parseCombinator(css_language *c, const parserutils_vector *vector,
 	const css_token *token;
 	css_combinator comb = CSS_COMBINATOR_NONE;
 
-	/* combinator      -> ws '+' ws | ws '>' ws | ws1 */
+	/* combinator	   -> ws '+' ws | ws '>' ws | ws1 */
 
 	UNUSED(c);
 
@@ -1190,8 +1173,10 @@ css_error parseSelector(css_language *c, const parserutils_vector *vector,
 
 		error = css_stylesheet_selector_combine(c->sheet,
 				comb, selector, other);
-		if (error != CSS_OK)
+		if (error != CSS_OK) {
+			css_stylesheet_selector_destroy(c->sheet, selector);
 			return error;
+		}
 
 		selector = other;
 	}
@@ -1259,7 +1244,7 @@ css_error parseSelectorList(css_language *c, const parserutils_vector *vector,
 }
 
 /******************************************************************************
- * Property parsing functions                                                 *
+ * Property parsing functions						      *
  ******************************************************************************/
 
 css_error parseProperty(css_language *c, const css_token *property, 
@@ -1277,8 +1262,7 @@ css_error parseProperty(css_language *c, const css_token *property,
 	for (i = FIRST_PROP; i <= LAST_PROP; i++) {
 		bool match = false;
 
-		if (lwc_context_string_caseless_isequal(c->sheet->dictionary,
-				property->idata, c->strings[i],
+		if (lwc_string_caseless_isequal(property->idata, c->strings[i],
 				&match) == lwc_error_ok && match)
 			break;
 	}
@@ -1299,7 +1283,7 @@ css_error parseProperty(css_language *c, const css_token *property,
 	/* Determine if this declaration is important or not */
 	error = parse_important(c, vector, ctx, &flags);
 	if (error != CSS_OK) {
-		css_stylesheet_style_destroy(c->sheet, style);
+	  css_stylesheet_style_destroy(c->sheet, style, false);
 		return error;
 	}
 
@@ -1308,7 +1292,7 @@ css_error parseProperty(css_language *c, const css_token *property,
 	token = parserutils_vector_iterate(vector, ctx);
 	if (token != NULL) {
 		/* Trailing junk, so discard declaration */
-		css_stylesheet_style_destroy(c->sheet, style);
+                css_stylesheet_style_destroy(c->sheet, style, false);
 		return CSS_INVALID;
 	}
 
@@ -1319,7 +1303,7 @@ css_error parseProperty(css_language *c, const css_token *property,
 	/* Append style to rule */
 	error = css_stylesheet_rule_append_style(c->sheet, rule, style);
 	if (error != CSS_OK) {
-		css_stylesheet_style_destroy(c->sheet, style);
+                css_stylesheet_style_destroy(c->sheet, style, false);
 		return error;
 	}
 

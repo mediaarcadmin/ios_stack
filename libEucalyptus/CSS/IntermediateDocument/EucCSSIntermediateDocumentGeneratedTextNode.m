@@ -51,7 +51,7 @@
     const css_computed_content_item *content;
     if(css_computed_content(self.parent.computedStyle, &content) == CSS_CONTENT_SET) {
         if(content->type == CSS_COMPUTED_CONTENT_STRING) {
-            ret = [NSString stringWithLWCString:content->data.string];
+            ret = NSStringFromLWCString(content->data.string);
         }
     }
     return ret;

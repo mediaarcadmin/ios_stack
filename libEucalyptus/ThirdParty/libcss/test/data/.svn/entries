@@ -1,15 +1,15 @@
 10
 
 dir
-9709
+11345
 svn://svn.netsurf-browser.org/trunk/libcss/test/data
 svn://svn.netsurf-browser.org
 
 
 
-2009-08-22T09:33:04.595277Z
-9387
-jmb
+2010-12-30T14:56:19.553615Z
+11173
+tlsa
 
 
 
@@ -28,40 +28,6 @@ d004b94f-0d10-0410-95b5-d60e4a4a7a9a
 
 select
 dir
-
-Aliases
-file
-
-
-
-
-2009-11-30T15:07:15.000000Z
-31eda8dc7c06096a3666d205ef83401d
-2008-05-01T16:36:27.527485Z
-4112
-jmb
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-12691
 
 css
 dir

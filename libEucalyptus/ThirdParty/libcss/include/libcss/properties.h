@@ -8,6 +8,11 @@
 #ifndef libcss_properties_h_
 #define libcss_properties_h_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 enum css_properties_e {
 	CSS_PROP_AZIMUTH			= 0x000,
 	CSS_PROP_BACKGROUND_ATTACHMENT		= 0x001, 
@@ -476,6 +481,30 @@ enum css_padding_e {
 	CSS_PADDING_INHERIT			= 0x0,
 	CSS_PADDING_SET				= 0x1
 };
+    
+enum css_page_break_after_e {
+	CSS_PAGE_BREAK_AFTER_INHERIT		= 0x0,
+	CSS_PAGE_BREAK_AFTER_AUTO		= 0x1,
+	CSS_PAGE_BREAK_AFTER_AVOID		= 0x2,
+	CSS_PAGE_BREAK_AFTER_ALWAYS		= 0x3,
+	CSS_PAGE_BREAK_AFTER_LEFT		= 0x4,
+	CSS_PAGE_BREAK_AFTER_RIGHT		= 0x5
+};	
+	
+enum css_page_break_before_e {
+	CSS_PAGE_BREAK_BEFORE_INHERIT		= CSS_PAGE_BREAK_AFTER_INHERIT,
+	CSS_PAGE_BREAK_BEFORE_AUTO		= CSS_PAGE_BREAK_AFTER_AUTO,
+	CSS_PAGE_BREAK_BEFORE_AVOID		= CSS_PAGE_BREAK_AFTER_AVOID,
+	CSS_PAGE_BREAK_BEFORE_ALWAYS		= CSS_PAGE_BREAK_AFTER_ALWAYS,
+	CSS_PAGE_BREAK_BEFORE_LEFT		= CSS_PAGE_BREAK_AFTER_LEFT,
+	CSS_PAGE_BREAK_BEFORE_RIGHT		= CSS_PAGE_BREAK_AFTER_RIGHT
+};
+
+enum css_page_break_inside_e {
+	CSS_PAGE_BREAK_INSIDE_INHERIT		= CSS_PAGE_BREAK_AFTER_INHERIT,
+	CSS_PAGE_BREAK_INSIDE_AUTO		= CSS_PAGE_BREAK_AFTER_AUTO,
+	CSS_PAGE_BREAK_INSIDE_AVOID		= CSS_PAGE_BREAK_AFTER_AVOID
+};
 
 enum css_position_e {
 	CSS_POSITION_INHERIT			= 0x0,
@@ -598,5 +627,9 @@ enum css_z_index_e {
 	CSS_Z_INDEX_SET				= 0x1,
 	CSS_Z_INDEX_AUTO			= 0x2
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

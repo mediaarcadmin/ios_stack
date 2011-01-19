@@ -13,7 +13,6 @@
 #import <ApplicationServices/ApplicationServices.h>
 #endif
 
-struct lwc_context_s;
 struct css_select_ctx;
 struct css_stylesheet;
 
@@ -24,8 +23,6 @@ struct css_stylesheet;
     id<EucCSSDocumentTree> _documentTree;
     NSURL *_url;
     id<EucCSSIntermediateDocumentDataSource> _dataSource;
-    
-    struct lwc_context_s *_lwcContext;
     
     struct css_select_ctx *_selectCtx;
     

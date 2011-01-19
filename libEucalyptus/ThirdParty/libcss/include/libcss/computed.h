@@ -8,6 +8,11 @@
 #ifndef libcss_computed_h_
 #define libcss_computed_h_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <libwapcaplet/libwapcaplet.h>
 
 #include <libcss/errors.h>
@@ -143,6 +148,15 @@ typedef struct css_computed_uncommon {
 	css_computed_content_item *content;
 } css_computed_uncommon;
 
+typedef struct css_computed_page {
+/*
+ * page_break_after		  3
+ * page_break_before		  3
+ * page_break_inside		  2
+ */
+    uint8_t bits[1];
+} css_computed_page;
+    
 struct css_computed_style {
 /*
  * background_attachment	  2
@@ -326,7 +340,7 @@ struct css_computed_style {
 
 	css_computed_uncommon *uncommon;/**< Uncommon properties */
 	void *aural;			/**< Aural properties */
-	void *page;			/**< Page properties */
+	css_computed_page *page;	/**< Page properties */
 
 	css_allocator_fn alloc;
 	void *pw;
@@ -2176,5 +2190,73 @@ static inline uint8_t css_computed_text_align(
 #undef CSS_TEXT_ALIGN_MASK
 #undef CSS_TEXT_ALIGN_SHIFT
 #undef CSS_TEXT_ALIGN_INDEX
+
+#define CSS_PAGE_BREAK_AFTER_INDEX 0
+#define CSS_PAGE_BREAK_AFTER_SHIFT 0
+#define CSS_PAGE_BREAK_AFTER_MASK 0x7
+static inline uint8_t css_computed_page_break_after(
+		const css_computed_style *style)
+{
+	if (style->page != NULL) {
+		uint8_t bits = style->page->bits[CSS_PAGE_BREAK_AFTER_INDEX];
+		bits &= CSS_PAGE_BREAK_AFTER_MASK;
+		bits >>= CSS_PAGE_BREAK_AFTER_SHIFT;
+	
+		/* 3bits: type */
+		return bits;
+	}
+    
+	return CSS_PAGE_BREAK_AFTER_AUTO;
+}
+#undef CSS_PAGE_BREAK_AFTER_MASK
+#undef CSS_PAGE_BREAK_AFTER_SHIFT
+#undef CSS_PAGE_BREAK_AFTER_INDEX
+ 
+#define CSS_PAGE_BREAK_BEFORE_INDEX 0
+#define CSS_PAGE_BREAK_BEFORE_SHIFT 3
+#define CSS_PAGE_BREAK_BEFORE_MASK 0x38
+static inline uint8_t css_computed_page_break_before(
+		const css_computed_style *style)
+{
+	if (style->page != NULL) {
+		uint8_t bits = style->page->bits[CSS_PAGE_BREAK_BEFORE_INDEX];
+		bits &= CSS_PAGE_BREAK_BEFORE_MASK;
+		bits >>= CSS_PAGE_BREAK_BEFORE_SHIFT;
+	
+		/* 3bits: type */
+		return bits;
+	}
+    
+	return CSS_PAGE_BREAK_BEFORE_AUTO;
+}
+#undef CSS_PAGE_BREAK_BEFORE_MASK
+#undef CSS_PAGE_BREAK_BEFORE_SHIFT
+#undef CSS_PAGE_BREAK_BEFORE_INDEX
+    
+#define CSS_PAGE_BREAK_INSIDE_INDEX 0
+#define CSS_PAGE_BREAK_INSIDE_SHIFT 6
+#define CSS_PAGE_BREAK_INSIDE_MASK 0xc0
+static inline uint8_t css_computed_page_break_inside(
+	    const css_computed_style *style)
+{
+	if (style->page != NULL) {
+		uint8_t bits = style->page->bits[CSS_PAGE_BREAK_INSIDE_INDEX];
+		bits &= CSS_PAGE_BREAK_INSIDE_MASK;
+		bits >>= CSS_PAGE_BREAK_INSIDE_SHIFT;
+	
+		/* 2bits: type */
+		return bits;
+	}
+    
+	return CSS_PAGE_BREAK_INSIDE_AUTO;
+}
+#undef CSS_PAGE_BREAK_INSIDE_MASK
+#undef CSS_PAGE_BREAK_INSIDE_SHIFT
+#undef CSS_PAGE_BREAK_INSIDE_INDEX
+    
+    
+#ifdef __cplusplus
+}
+#endif
 
 #endif

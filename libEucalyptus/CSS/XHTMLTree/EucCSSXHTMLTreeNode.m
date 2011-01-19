@@ -50,4 +50,9 @@
     return MAX(rowSpan, 1); 
 }
 
+- (NSString *)inlineStyle
+{
+    return [self attributeWithName:@"style"];
+}
+
 @end

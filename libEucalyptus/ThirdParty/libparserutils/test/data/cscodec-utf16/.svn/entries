@@ -1,7 +1,7 @@
 10
 
 dir
-9709
+11345
 svn://svn.netsurf-browser.org/trunk/libparserutils/test/data/cscodec-utf16
 svn://svn.netsurf-browser.org
 
@@ -32,7 +32,7 @@ file
 
 
 
-2009-11-30T15:06:31.000000Z
+2011-01-17T08:25:22.000000Z
 6a6f18e7267bec92157729f4d7718508
 2008-06-28T20:57:47.387989Z
 4472
@@ -66,7 +66,7 @@ file
 
 
 
-2009-11-30T15:06:31.000000Z
+2011-01-17T08:25:22.000000Z
 6858dcd33bbbcc2b3d77987581e22a45
 2008-06-28T20:57:47.387989Z
 4472

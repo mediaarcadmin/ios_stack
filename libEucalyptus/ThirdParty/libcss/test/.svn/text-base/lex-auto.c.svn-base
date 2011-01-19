@@ -53,14 +53,12 @@ int main(int argc, char **argv)
 {
 	line_ctx ctx;
 
-	if (argc != 3) {
-		printf("Usage: %s <aliases_file> <filename>\n", argv[0]);
+	if (argc != 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
 		return 1;
 	}
 
-	assert(css_initialise(argv[1], myrealloc, NULL) == CSS_OK);
-
-	ctx.buflen = parse_filesize(argv[2]);
+	ctx.buflen = parse_filesize(argv[1]);
 	if (ctx.buflen == 0)
 		return 1;
 
@@ -79,15 +77,13 @@ int main(int argc, char **argv)
 	ctx.indata = false;
 	ctx.inexp = false;
 
-	assert(parse_testfile(argv[2], handle_line, &ctx) == true);
+	assert(parse_testfile(argv[1], handle_line, &ctx) == true);
 
 	/* and run final test */
 	if (ctx.bufused > 0)
 		run_test(ctx.buf, ctx.bufused, ctx.exp, ctx.expused);
 
 	free(ctx.buf);
-
-	assert(css_finalise(myrealloc, NULL) == CSS_OK);
 
 	printf("PASS\n");
 

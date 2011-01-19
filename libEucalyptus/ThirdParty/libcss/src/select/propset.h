@@ -27,6 +27,20 @@
 	}								\
 } while(0)
 
+#define ENSURE_PAGE do {						\
+	if (style->page == NULL) {					\
+		style->page = style->alloc(NULL, 			\
+			sizeof(css_computed_page), style->pw);		\
+		if (style->page == NULL)				\
+			return CSS_NOMEM;				\
+									\
+		style->page->bits[0] = 0x49;				\
+	}								\
+} while(0)
+
+//		memset(style->page, 0, sizeof(css_computed_page));	
+
+
 #define LETTER_SPACING_INDEX 0
 #define LETTER_SPACING_SHIFT 2
 #define LETTER_SPACING_MASK  0xfc
@@ -174,21 +188,31 @@ static inline css_error set_counter_increment(
 		css_computed_counter *counters)
 {
 	uint8_t *bits;
+	css_computed_counter *oldcounters;
+	css_computed_counter *c;
 
 	ENSURE_UNCOMMON;
 
 	bits = &style->uncommon->bits[COUNTER_INCREMENT_INDEX];
+	oldcounters = style->uncommon->counter_increment;
 
 	/* 1bit: type */
 	*bits = (*bits & ~COUNTER_INCREMENT_MASK) |
 			((type & 0x1) << COUNTER_INCREMENT_SHIFT);
 
-	/* Free existing array */
-	if (style->uncommon->counter_increment != NULL &&
-			style->uncommon->counter_increment != counters)
-		style->alloc(style->uncommon->counter_increment, 0, style->pw);
+	for (c = counters; c != NULL && c->name != NULL; c++)
+		lwc_string_ref(c->name);
 
 	style->uncommon->counter_increment = counters;
+
+	/* Free existing array */
+	if (oldcounters != NULL) {
+		for (c = oldcounters; c->name != NULL; c++)
+			lwc_string_unref(c->name);
+
+		if (oldcounters != counters)
+			style->alloc(oldcounters, 0, style->pw);
+	}
 
 	return CSS_OK;
 }
@@ -204,21 +228,31 @@ static inline css_error set_counter_reset(
 		css_computed_counter *counters)
 {
 	uint8_t *bits;
+	css_computed_counter *oldcounters;
+	css_computed_counter *c;
 
 	ENSURE_UNCOMMON;
 
 	bits = &style->uncommon->bits[COUNTER_RESET_INDEX];
+	oldcounters = style->uncommon->counter_reset;
 
 	/* 1bit: type */
 	*bits = (*bits & ~COUNTER_RESET_MASK) |
 			((type & 0x1) << COUNTER_RESET_SHIFT);
 
-	/* Free existing array */
-	if (style->uncommon->counter_reset != NULL &&
-			style->uncommon->counter_reset != counters)
-		style->alloc(style->uncommon->counter_reset, 0, style->pw);
+	for (c = counters; c != NULL && c->name != NULL; c++)
+		lwc_string_ref(c->name);
 
 	style->uncommon->counter_reset = counters;
+
+	/* Free existing array */
+	if (oldcounters != NULL) {
+		for (c = oldcounters; c->name != NULL; c++)
+			lwc_string_unref(c->name);
+
+		if (oldcounters != counters)
+			style->alloc(oldcounters, 0, style->pw);
+	}
 
 	return CSS_OK;
 }
@@ -234,20 +268,31 @@ static inline css_error set_cursor(
 		lwc_string **urls)
 {
 	uint8_t *bits;
+	lwc_string **oldurls;
+	lwc_string **s;
 
 	ENSURE_UNCOMMON;
 
 	bits = &style->uncommon->bits[CURSOR_INDEX];
+	oldurls = style->uncommon->cursor;
 
 	/* 5bits: type */
 	*bits = (*bits & ~CURSOR_MASK) |
 			((type & 0x1f) << CURSOR_SHIFT);
 
-	/* Free existing array */
-	if (style->uncommon->cursor != NULL && style->uncommon->cursor != urls)
-		style->alloc(style->uncommon->cursor, 0, style->pw);
+	for (s = urls; s != NULL && *s != NULL; s++)
+		lwc_string_ref(*s);
 
 	style->uncommon->cursor = urls;
+
+	/* Free existing array */
+	if (oldurls != NULL) {
+		for (s = oldurls; *s != NULL; s++)
+			lwc_string_unref(*s);
+
+		if (oldurls != urls)
+			style->alloc(oldurls, 0, style->pw);
+	}
 
 	return CSS_OK;
 }
@@ -322,21 +367,73 @@ static inline css_error set_content(
 		css_computed_content_item *content)
 {
 	uint8_t *bits;
+	css_computed_content_item *oldcontent;
+	css_computed_content_item *c;
 
 	ENSURE_UNCOMMON;
 
 	/* 2bits: type */
 	bits = &style->uncommon->bits[CONTENT_INDEX];
+	oldcontent = style->uncommon->content;
 
 	*bits = (*bits & ~CONTENT_MASK) |
 			((type & 0x3) << CONTENT_SHIFT);
 
-	/* Free existing array */
-	if (style->uncommon->content != NULL && 
-			style->uncommon->content != content)
-		style->alloc(style->uncommon->content, 0, style->pw);
+	for (c = content; c != NULL && 
+			c->type != CSS_COMPUTED_CONTENT_NONE; c++) {
+		switch (c->type) {
+		case CSS_COMPUTED_CONTENT_STRING:
+			lwc_string_ref(c->data.string);
+			break;
+		case CSS_COMPUTED_CONTENT_URI:
+			lwc_string_ref(c->data.uri);
+			break;
+		case CSS_COMPUTED_CONTENT_ATTR:
+			lwc_string_ref(c->data.attr);
+			break;
+		case CSS_COMPUTED_CONTENT_COUNTER:
+			lwc_string_ref(c->data.counter.name);
+			break;
+		case CSS_COMPUTED_CONTENT_COUNTERS:
+			lwc_string_ref(c->data.counters.name);
+			lwc_string_ref(c->data.counters.sep);
+			break;
+		default:
+			break;
+		}
+	}
 
 	style->uncommon->content = content;
+
+	/* Free existing array */
+	if (oldcontent != NULL) {
+		for (c = oldcontent; 
+				c->type != CSS_COMPUTED_CONTENT_NONE; c++) {
+			switch (c->type) {
+			case CSS_COMPUTED_CONTENT_STRING:
+				lwc_string_unref(c->data.string);
+				break;
+			case CSS_COMPUTED_CONTENT_URI:
+				lwc_string_unref(c->data.uri);
+				break;
+			case CSS_COMPUTED_CONTENT_ATTR:
+				lwc_string_unref(c->data.attr);
+				break;
+			case CSS_COMPUTED_CONTENT_COUNTER:
+				lwc_string_unref(c->data.counter.name);
+				break;
+			case CSS_COMPUTED_CONTENT_COUNTERS:
+				lwc_string_unref(c->data.counters.name);
+				lwc_string_unref(c->data.counters.sep);
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (oldcontent != content)
+			style->alloc(oldcontent, 0, style->pw);
+	}
 
 	return CSS_OK;
 }
@@ -479,16 +576,20 @@ static inline css_error set_background_image(
 		lwc_string *url)
 {
 	uint8_t *bits = &style->bits[BACKGROUND_IMAGE_INDEX];
+	lwc_string *oldurl = style->background_image;
 
 	/* 1bit: type */
 	*bits = (*bits & ~BACKGROUND_IMAGE_MASK) |
 			((type & 0x1) << BACKGROUND_IMAGE_SHIFT);
 
 	if (url != NULL) {
-                style->background_image = url;
+                style->background_image = lwc_string_ref(url);
 	} else {
 		style->background_image = NULL;
 	}
+
+	if (oldurl != NULL)
+		lwc_string_unref(oldurl);
 
 	return CSS_OK;
 }
@@ -503,6 +604,7 @@ static inline css_error set_color(
 		css_computed_style *style, uint8_t type, 
 		css_color color)
 {
+
 	uint8_t *bits = &style->bits[COLOR_INDEX];
 
 	/* 1bit: type */
@@ -525,16 +627,20 @@ static inline css_error set_list_style_image(
 		lwc_string *url)
 {
 	uint8_t *bits = &style->bits[LIST_STYLE_IMAGE_INDEX];
+	lwc_string *oldurl = style->list_style_image;
 
 	/* 1bit: type */
 	*bits = (*bits & ~LIST_STYLE_IMAGE_MASK) |
 			((type & 0x1) << LIST_STYLE_IMAGE_SHIFT);
 
 	if (url != NULL) {
-		style->list_style_image = url;
+		style->list_style_image = lwc_string_ref(url);
 	} else {
 		style->list_style_image = NULL;
 	}
+
+	if (oldurl != NULL)
+		lwc_string_unref(oldurl);
 
 	return CSS_OK;
 }
@@ -550,16 +656,26 @@ static inline css_error set_quotes(
 		lwc_string **quotes)
 {
 	uint8_t *bits = &style->bits[QUOTES_INDEX];
+	lwc_string **oldquotes = style->quotes;
+	lwc_string **s;
 
 	/* 1bit: type */
 	*bits = (*bits & ~QUOTES_MASK) |
 			((type & 0x1) << QUOTES_SHIFT);
 
-	/* Free current quotes */
-	if (style->quotes != NULL && style->quotes != quotes)
-		style->alloc(style->quotes, 0, style->pw);
+	for (s = quotes; s != NULL && *s != NULL; s++)
+		lwc_string_ref(*s);
 
 	style->quotes = quotes;
+
+	/* Free current quotes */
+	if (oldquotes != NULL) {
+		for (s = oldquotes; *s != NULL; s++)
+			lwc_string_unref(*s);
+
+		if (oldquotes != quotes)
+			style->alloc(oldquotes, 0, style->pw);
+	}
 
 	return CSS_OK;
 }
@@ -1446,16 +1562,26 @@ static inline css_error set_font_family(
 		lwc_string **names)
 {
 	uint8_t *bits = &style->bits[FONT_FAMILY_INDEX];
+	lwc_string **oldnames = style->font_family;
+	lwc_string **s;
 
 	/* 3bits: type */
 	*bits = (*bits & ~FONT_FAMILY_MASK) |
 			((type & 0x7) << FONT_FAMILY_SHIFT);
 
-	/* Free existing families */
-	if (style->font_family != NULL && style->font_family != names)
-		style->alloc(style->font_family, 0, style->pw);
+	for (s = names; s != NULL && *s != NULL; s++)
+		lwc_string_ref(*s);
 
 	style->font_family = names;
+
+	/* Free existing families */
+	if (oldnames != NULL) {
+		for (s = oldnames; *s != NULL; s++)
+			lwc_string_unref(*s);
+
+		if (oldnames != names)
+			style->alloc(oldnames, 0, style->pw);
+	}
 
 	return CSS_OK;
 }
@@ -1679,4 +1805,65 @@ static inline uint8_t set_text_align(
 #undef TEXT_ALIGN_SHIFT
 #undef TEXT_ALIGN_INDEX
 
+#define PAGE_BREAK_AFTER_INDEX 0
+#define PAGE_BREAK_AFTER_SHIFT 0
+#define PAGE_BREAK_AFTER_MASK 0x7
+static inline css_error set_page_break_after(
+		css_computed_style *style, uint8_t type)
+{
+	ENSURE_PAGE;
+
+	uint8_t *bits = &style->page->bits[PAGE_BREAK_AFTER_INDEX];
+
+	/* 3bits: type */
+	*bits = (*bits & ~PAGE_BREAK_AFTER_MASK) |
+			((type & 0xf) << PAGE_BREAK_AFTER_SHIFT);
+
+	return CSS_OK;
+}
+#undef PAGE_BREAK_AFTER_INDEX
+#undef PAGE_BREAK_AFTER_SHIFT
+#undef PAGE_BREAK_AFTER_MASK
+
+#define PAGE_BREAK_BEFORE_INDEX 0
+#define PAGE_BREAK_BEFORE_SHIFT 3
+#define PAGE_BREAK_BEFORE_MASK 0x38
+static inline css_error set_page_break_before(
+		css_computed_style *style, uint8_t type)
+{
+	ENSURE_PAGE;
+	
+	uint8_t *bits = &style->page->bits[PAGE_BREAK_BEFORE_INDEX];
+
+	/* 3bits: type */
+	*bits = (*bits & ~PAGE_BREAK_BEFORE_MASK) |
+			((type & 0xf) << PAGE_BREAK_BEFORE_SHIFT);
+
+	return CSS_OK;
+}
+#undef PAGE_BREAK_BEFORE_INDEX 0
+#undef PAGE_BREAK_BEFORE_SHIFT 0
+#undef PAGE_BREAK_BEFORE_MASK 0x7
+
+#define PAGE_BREAK_INSIDE_INDEX 0
+#define PAGE_BREAK_INSIDE_SHIFT 6
+#define PAGE_BREAK_INSIDE_MASK 0xc0
+static inline css_error set_page_break_inside(
+		css_computed_style *style, uint8_t type)
+{
+	ENSURE_PAGE;
+
+	uint8_t *bits = &style->page->bits[PAGE_BREAK_INSIDE_INDEX];
+
+	/* 2bits: type */
+	*bits = (*bits & ~PAGE_BREAK_INSIDE_MASK) |
+			((type & 0xf) << PAGE_BREAK_INSIDE_SHIFT);
+
+	return CSS_OK;
+}
+#undef PAGE_BREAK_INSIDE_INDEX
+#undef PAGE_BREAK_INSIDE_SHIFT
+#undef PAGE_BREAK_INSIDE_MASK
+
+					     
 #endif

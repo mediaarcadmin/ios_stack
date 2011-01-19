@@ -97,4 +97,9 @@
     return nil;
 }
 
+- (NSString *)inlineStyle
+{
+    return nil;
+}
+
 @end

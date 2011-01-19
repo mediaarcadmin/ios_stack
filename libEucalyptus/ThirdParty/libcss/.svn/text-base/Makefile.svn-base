@@ -1,6 +1,6 @@
 # Component settings
 COMPONENT := css
-COMPONENT_VERSION := 0.0.1
+COMPONENT_VERSION := 0.0.2
 # Default to a static library
 COMPONENT_TYPE ?= lib-static
 
@@ -15,7 +15,7 @@ WARNFLAGS := -Wall -W -Wundef -Wpointer-arith -Wcast-align \
 	-Wmissing-declarations -Wnested-externs -pedantic
 # BeOS/Haiku/AmigaOS4 standard library headers create warnings
 ifneq ($(TARGET),beos)
-  ifneq ($(TARGET),AmigaOS)
+  ifneq ($(TARGET),amiga)
     WARNFLAGS := $(WARNFLAGS) -Werror
   endif
 endif

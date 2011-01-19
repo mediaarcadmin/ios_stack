@@ -29,10 +29,8 @@ int main(int argc, char **argv)
 	const uint8_t *c;
 	size_t clen;
 
-	if (argc != 2) {
-		printf("Usage: %s <aliases_file>\n", argv[0]);
-		return 1;
-	}
+	UNUSED(argc);
+	UNUSED(argv);
 
 	/* Populate the buffer with something sane */
 	memset(input_buffer, 'a', BUFFER_SIZE);
@@ -48,9 +46,6 @@ int main(int argc, char **argv)
 	input_buffer[BUFFER_SIZE - 6] = '3';
 	input_buffer[BUFFER_SIZE - 7] = '2';
 	input_buffer[BUFFER_SIZE - 8] = '1';
-
-	assert(parserutils_initialise(argv[1], myrealloc, NULL) == 
-			PARSERUTILS_OK);
 
 	assert(parserutils_inputstream_create("UTF-8", 0, 
 			NULL, myrealloc, NULL, &stream) == PARSERUTILS_OK);
@@ -83,8 +78,6 @@ int main(int argc, char **argv)
 */
 
 	parserutils_inputstream_destroy(stream);
-
-	assert(parserutils_finalise(myrealloc, NULL) == PARSERUTILS_OK);
 
 	printf("PASS\n");
 

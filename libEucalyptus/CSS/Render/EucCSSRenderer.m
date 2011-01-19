@@ -39,10 +39,10 @@
 static void CGContextSetFillColorWithCSSColor(CGContextRef context, css_color color) 
 {
     CGFloat components[] = { 
-        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
         (CGFloat)(color & 0xFF0000) * (1.0f / (CGFloat)0xFF0000),
         (CGFloat)(color & 0xFF00) * (1.0f / (CGFloat)0xFF00),
-        1.0f
+        (CGFloat)(color & 0xFF) * (1.0f / (CGFloat)0xFF),
+        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
     };
     CGContextSetFillColor(context, components);
 }
@@ -50,10 +50,10 @@ static void CGContextSetFillColorWithCSSColor(CGContextRef context, css_color co
 static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color color) 
 {
     CGFloat components[] = { 
-        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
         (CGFloat)(color & 0xFF0000) * (1.0f / (CGFloat)0xFF0000),
         (CGFloat)(color & 0xFF00) * (1.0f / (CGFloat)0xFF00),
-        1.0f
+        (CGFloat)(color & 0xFF) * (1.0f / (CGFloat)0xFF),
+        (CGFloat)(color & 0xFF000000) * (1.0f / (CGFloat)0xFF000000),
     };
     CGContextSetStrokeColor(context, components);
 }
@@ -70,8 +70,8 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     CGContextSetStrokeColorSpace(_cgContext, colorSpace);
     CFRelease(colorSpace);                      
     
-    CGContextSetFillColorWithCSSColor(_cgContext, 0x000000FF);
-    CGContextSetStrokeColorWithCSSColor(_cgContext, 0x000000FF);
+    CGContextSetFillColorWithCSSColor(_cgContext, 0xFF000000);
+    CGContextSetStrokeColorWithCSSColor(_cgContext, 0xFF000000);
     
     CGContextTranslateCTM(_cgContext, point.x, point.y);
     
@@ -116,8 +116,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     if(computedStyle) {
         CGRect borderRect = block.borderRect;
         css_color color;
-        if(css_computed_background_color(computedStyle, &color) != CSS_BACKGROUND_COLOR_TRANSPARENT) {
-            //color = 0xff000000;
+        if(css_computed_background_color(computedStyle, &color) == CSS_BACKGROUND_COLOR_COLOR) {
             CGContextSaveGState(_cgContext);
             CGContextSetFillColorWithCSSColor(_cgContext, color);  
             CGContextFillRect(_cgContext, borderRect);
@@ -458,14 +457,25 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 
                 css_computed_style *style = currentDocumentNode.computedStyle;
                 if(style) {
-                    // Color.
+                    // Background
                     css_color color; 
+                    if(css_computed_background_color(style, &color) == CSS_BACKGROUND_COLOR_COLOR) {
+                        CGContextSaveGState(_cgContext);
+                        CGContextSetFillColorWithCSSColor(_cgContext, color);
+                        CGRect fillRect = CGRectIntegral(CGRectMake(currentAbsoluteOrigin.x + renderItem->origin.x, 
+                                                                    currentAbsoluteOrigin.y + renderItem->origin.y, 
+                                                                    renderItem->lineBox.width, renderItem->lineBox.height));
+                        CGContextFillRect(_cgContext, fillRect);
+                        CGContextRestoreGState(_cgContext);
+                    }                    
+                    
+                    // Color.
                     if(css_computed_color(style, &color) == CSS_COLOR_COLOR) {
                         CGContextSetFillColorWithCSSColor(_cgContext, color);
                         CGContextSetStrokeColorWithCSSColor(_cgContext, color);
                     }
-                    
-                    // List bullet
+                                        
+                    // List bullet.
                     if(!renderItem->item.openNodeInfo.implicit &&
                        currentDocumentNode.display == CSS_DISPLAY_LIST_ITEM) {
                         CGPoint baselinePoint = CGPointMake(currentAbsoluteOrigin.x + renderItem->origin.x - roundf(5.0f * _currentScaleFactor),

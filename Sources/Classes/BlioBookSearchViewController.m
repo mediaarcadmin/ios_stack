@@ -77,6 +77,7 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
         
         BlioBookSearchResultsTableViewController *aResultsController = [[BlioBookSearchResultsTableViewController alloc] initWithStyle:UITableViewStylePlain];
         aResultsController.resultsDelegate = self;
+		aResultsController.resultsFormatter = self;
         self.resultsController = aResultsController;
         [aResultsController release];
         

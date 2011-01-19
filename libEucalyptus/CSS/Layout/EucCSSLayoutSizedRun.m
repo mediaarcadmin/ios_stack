@@ -39,7 +39,7 @@ typedef struct EucCSSLayoutSizedRunBreakInfo {
 
 @synthesize run = _run;
 
-#define SIZED_RUN_CACHE_CAPACITY 12
+#define SIZED_RUN_CACHE_CAPACITY 64
 static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSizedRunPerScaleFactorCacheCacheKey";
 
 + (id)sizedRunWithRun:(EucCSSLayoutRun *)run
@@ -52,7 +52,6 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         THIntegerToObjectCache *perScaleFactorCacheCache = objc_getAssociatedObject(document, EucCSSSizedRunPerScaleFactorCacheCacheKey);
         if(!perScaleFactorCacheCache) {
             perScaleFactorCacheCache = [[THIntegerToObjectCache alloc] init];
-            perScaleFactorCacheCache.conserveItemsInUse = NO;
             objc_setAssociatedObject(document, EucCSSSizedRunPerScaleFactorCacheCacheKey, perScaleFactorCacheCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             [perScaleFactorCacheCache release];
         }
@@ -61,7 +60,6 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         if(!sizedRunsCache) {
             sizedRunsCache = [[THCache alloc] init];
             sizedRunsCache.generationLifetime = SIZED_RUN_CACHE_CAPACITY;
-            sizedRunsCache.conserveItemsInUse = NO;
             [perScaleFactorCacheCache cacheObject:sizedRunsCache forKey:intKey];
             [sizedRunsCache release];
         }
@@ -301,6 +299,8 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         if(_potentialBreaks) {
             free(_potentialBreaks);
             _potentialBreaks = NULL;
+            free(_potentialBreakInfos);
+            _potentialBreakInfos = NULL;
         }
     }
     return _componentWidthInfos;
@@ -684,6 +684,8 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
             } 
             [newLine release];        
         }
+        
+        free(usedBreakIndexes);
     } while(widthChanged);
     
     if(lines.count) {

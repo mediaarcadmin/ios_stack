@@ -21,10 +21,8 @@
     uint32_t _childCount;
     uint32_t *_childKeys;
     
+    css_select_results *_selectResults;
     BOOL _stylesComputed;
-    css_computed_style *_computedStyle;
-    css_computed_style *_computedBeforeStyle;
-    css_computed_style *_computedAfterStyle;
     
     NSString *_text;
 }

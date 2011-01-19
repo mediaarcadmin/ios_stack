@@ -16,12 +16,18 @@
     
     NSUInteger _generationLifetime;
     NSUInteger _insertionsThisGeneration;
+    
+    BOOL _evictsOnMemoryWarnings;
 
 @protected
     pthread_mutex_t _cacheMutex;
 }
 
 @property (nonatomic, assign) NSUInteger generationLifetime;
+
+// This MUST be set to NO by the time dealloc is called if it's called on
+// a non-main thread,
+@property (nonatomic, assign) BOOL evictsOnMemoryWarnings;
 
 // To override:
 - (CFIndex)itemSize;

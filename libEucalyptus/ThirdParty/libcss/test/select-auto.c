@@ -16,7 +16,7 @@
 #include "testutils.h"
 
 typedef struct attribute {
-        lwc_string *name;
+	lwc_string *name;
 	lwc_string *value;
 } attribute;
 
@@ -33,6 +33,12 @@ typedef struct node {
 	struct node *last_child;
 } node;
 
+typedef struct sheet_ctx {
+	css_stylesheet *sheet;
+	css_origin origin;
+	uint64_t media;
+} sheet_ctx;
+
 typedef struct line_ctx {
 	size_t explen;
 	size_t expused;
@@ -48,15 +54,14 @@ typedef struct line_ctx {
 	uint32_t depth;
 
 	uint32_t n_sheets;
-	css_stylesheet **sheets;
+	sheet_ctx *sheets;
 
 	uint64_t media;
 	uint32_t pseudo_element;
 	node *target;
-        
-        lwc_context *dict;
-        lwc_string *attr_class;
-        lwc_string *attr_id;
+	
+	lwc_string *attr_class;
+	lwc_string *attr_id;
 } line_ctx;
 
 static bool handle_line(const char *data, size_t datalen, void *pw);
@@ -70,11 +75,11 @@ static void parse_expected(line_ctx *ctx, const char *data, size_t len);
 static void run_test(line_ctx *ctx, const char *exp, size_t explen);
 static void destroy_tree(node *root);
 
-static css_error node_name(void *pw, void *node, lwc_context *ctx, 
+static css_error node_name(void *pw, void *node,
 		lwc_string **name);
-static css_error node_classes(void *pw, void *node, lwc_context *ctx, 
+static css_error node_classes(void *pw, void *node,
 		lwc_string ***classes, uint32_t *n_classes);
-static css_error node_id(void *pw, void *node, lwc_context *ctx, 
+static css_error node_id(void *pw, void *node,
 		lwc_string **id);
 static css_error named_ancestor_node(void *pw, void *node,
 		lwc_string *name,
@@ -161,53 +166,58 @@ static void *myrealloc(void *data, size_t len, void *pw)
 	return realloc(data, len);
 }
 
-static css_error resolve_url(void *pw, lwc_context *dict,
+static css_error resolve_url(void *pw,
 		const char *base, lwc_string *rel, lwc_string **abs)
 {
 	UNUSED(pw);
 	UNUSED(base);
 
 	/* About as useless as possible */
-	*abs = lwc_context_string_ref(dict, rel);
+	*abs = lwc_string_ref(rel);
 
 	return CSS_OK;
+}
+
+static void
+printing_lwc_iterator(lwc_string *str, void *pw)
+{
+	UNUSED(pw);
+	
+	printf(" DICT: %*s\n", (int)(lwc_string_length(str)), lwc_string_data(str));
 }
 
 int main(int argc, char **argv)
 {
 	line_ctx ctx;
-
-	if (argc != 3) {
-		printf("Usage: %s <aliases_file> <filename>\n", argv[0]);
+	
+	if (argc != 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
 		return 1;
 	}
 
 	printf("css_hint: %u\n", (int) sizeof(css_hint));
 	printf("computed: %u\n", (int) sizeof(css_computed_style));
 
-	assert(css_initialise(argv[1], myrealloc, NULL) == CSS_OK);
-
 	memset(&ctx, 0, sizeof(ctx));
 
-        assert(lwc_create_context(myrealloc, NULL, &ctx.dict) == lwc_error_ok);
-        lwc_context_ref(ctx.dict);
 
-	lwc_context_intern(ctx.dict, "class", SLEN("class"), &ctx.attr_class);
-	lwc_context_intern(ctx.dict, "id", SLEN("id"), &ctx.attr_id);
-        
-	assert(parse_testfile(argv[2], handle_line, &ctx) == true);
-        
+	lwc_intern_string("class", SLEN("class"), &ctx.attr_class);
+	lwc_intern_string("id", SLEN("id"), &ctx.attr_id);
+	
+	assert(parse_testfile(argv[1], handle_line, &ctx) == true);
+	
 	/* and run final test */
 	if (ctx.tree != NULL)
 		run_test(&ctx, ctx.exp, ctx.expused);
 
 	free(ctx.exp);
-
-	assert(css_finalise(myrealloc, NULL) == CSS_OK);
-
-        lwc_context_unref(ctx.dict);
 	
-        printf("PASS\n");
+	lwc_string_unref(ctx.attr_class);
+	lwc_string_unref(ctx.attr_id);
+	
+	lwc_iterate_strings(printing_lwc_iterator, NULL);
+	
+	printf("PASS\n");
 	return 0;
 }
 
@@ -235,8 +245,8 @@ bool handle_line(const char *data, size_t datalen, void *pw)
 		} else if (ctx->insheet) {
 			if (strncasecmp(data+1, "errors", 6) == 0) {
 				assert(css_stylesheet_data_done(
-						ctx->sheets[ctx->n_sheets - 1]) 
-						== CSS_OK);
+					ctx->sheets[ctx->n_sheets - 1].sheet) 
+					== CSS_OK);
 
 				ctx->intree = false;
 				ctx->insheet = false;
@@ -246,15 +256,15 @@ bool handle_line(const char *data, size_t datalen, void *pw)
 					strncasecmp(data+1, "user", 4) == 0 ||
 					strncasecmp(data+1, "author", 6) == 0) {
 				assert(css_stylesheet_data_done(
-						ctx->sheets[ctx->n_sheets - 1])
-						== CSS_OK);
+					ctx->sheets[ctx->n_sheets - 1].sheet)
+					== CSS_OK);
 
 				parse_sheet(ctx, data + 1, datalen - 1);
 			} else {
 				error = css_stylesheet_append_data(
-						ctx->sheets[ctx->n_sheets - 1], 
-						(const uint8_t *) data, 
-						datalen);
+					ctx->sheets[ctx->n_sheets - 1].sheet, 
+					(const uint8_t *) data, 
+					datalen);
 				assert(error == CSS_OK || 
 						error == CSS_NEEDDATA);
 			}
@@ -290,7 +300,7 @@ bool handle_line(const char *data, size_t datalen, void *pw)
 			parse_tree_data(ctx, data + 1, datalen - 1);
 		} else if (ctx->insheet) {
 			error = css_stylesheet_append_data(
-					ctx->sheets[ctx->n_sheets - 1], 
+					ctx->sheets[ctx->n_sheets - 1].sheet, 
 					(const uint8_t *) data, datalen);
 			assert(error == CSS_OK || error == CSS_NEEDDATA);
 		} else if (ctx->inexp) {
@@ -386,8 +396,8 @@ void parse_tree_data(line_ctx *ctx, const char *data, size_t len)
 		assert(n != NULL);
 
 		memset(n, 0, sizeof(node));
-                
-                lwc_context_intern(ctx->dict, name, namelen, &n->name);
+		
+		lwc_intern_string(name, namelen, &n->name);
 
 		/* Insert it into tree */
 		if (ctx->tree == NULL) {
@@ -432,9 +442,9 @@ void parse_tree_data(line_ctx *ctx, const char *data, size_t len)
 		ctx->current->attrs = temp;
 
 		attr = &ctx->current->attrs[ctx->current->n_attrs];
-                
-                lwc_context_intern(ctx->dict, name, namelen, &attr->name);
-                lwc_context_intern(ctx->dict, value, valuelen, &attr->value);
+		
+		lwc_intern_string(name, namelen, &attr->name);
+		lwc_intern_string(value, valuelen, &attr->value);
 
 		ctx->current->n_attrs++;
 	}
@@ -447,7 +457,7 @@ void parse_sheet(line_ctx *ctx, const char *data, size_t len)
 	css_origin origin = CSS_ORIGIN_AUTHOR;
 	uint64_t media = CSS_MEDIA_ALL;
 	css_stylesheet *sheet;
-	css_stylesheet **temp;
+	sheet_ctx *temp;
 
 	/* <origin> <media_list>? */
 
@@ -478,17 +488,19 @@ void parse_sheet(line_ctx *ctx, const char *data, size_t len)
 
 	/** \todo How are we going to handle @import? */
 	assert(css_stylesheet_create(CSS_LEVEL_21, "UTF-8", "foo", "foo", 
-			origin, media, false, false, ctx->dict, 
-			myrealloc, NULL, resolve_url, NULL, &sheet) == CSS_OK);
+			false, false, myrealloc, NULL, 
+			resolve_url, NULL, NULL, NULL, &sheet) == CSS_OK);
 
 	/* Extend array of sheets and append new sheet to it */
 	temp = realloc(ctx->sheets, 
-			(ctx->n_sheets + 1) * sizeof(css_stylesheet *));
+			(ctx->n_sheets + 1) * sizeof(sheet_ctx));
 	assert(temp != NULL);
 
 	ctx->sheets = temp;
 
-	ctx->sheets[ctx->n_sheets] = sheet;
+	ctx->sheets[ctx->n_sheets].sheet = sheet;
+	ctx->sheets[ctx->n_sheets].origin = origin;
+	ctx->sheets[ctx->n_sheets].media = media;
 
 	ctx->n_sheets++;
 }
@@ -639,7 +651,7 @@ void parse_expected(line_ctx *ctx, const char *data, size_t len)
 void run_test(line_ctx *ctx, const char *exp, size_t explen)
 {
 	css_select_ctx *select;
-	css_computed_style *computed;
+	css_select_results *results;
 	uint32_t i;
 	char *buf;
 	size_t buflen;
@@ -656,19 +668,19 @@ void run_test(line_ctx *ctx, const char *exp, size_t explen)
 	assert(css_select_ctx_create(myrealloc, NULL, &select) == CSS_OK);
 
 	for (i = 0; i < ctx->n_sheets; i++) {
-		assert(css_select_ctx_append_sheet(select, ctx->sheets[i]) == 
-				CSS_OK);
+		assert(css_select_ctx_append_sheet(select, 
+				ctx->sheets[i].sheet, ctx->sheets[i].origin,
+				ctx->sheets[i].media) == CSS_OK);
 	}
-
-	assert(css_computed_style_create(myrealloc, NULL, &computed) == CSS_OK);
 
 	testnum++;
 
-	assert(css_select_style(select, ctx->target, ctx->pseudo_element,
-			ctx->media, NULL, computed, &select_handler, ctx) == 
-			CSS_OK);
+	assert(css_select_style(select, ctx->target, ctx->media, NULL, 
+			&select_handler, ctx, &results) == CSS_OK);
 
-	dump_computed_style(computed, buf, &buflen);
+	assert(results->styles[ctx->pseudo_element] != NULL);
+
+	dump_computed_style(results->styles[ctx->pseudo_element], buf, &buflen);
 
 	if (8192 - buflen != explen || memcmp(buf, exp, explen) != 0) {
 		printf("Expected (%u):\n%.*s\n", 
@@ -679,13 +691,13 @@ void run_test(line_ctx *ctx, const char *exp, size_t explen)
 	}
 
 	/* Clean up */
-	css_computed_style_destroy(computed);
+	css_select_results_destroy(results);
 	css_select_ctx_destroy(select);
 
 	destroy_tree(ctx->tree);
 
 	for (i = 0; i < ctx->n_sheets; i++) {
-		css_stylesheet_destroy(ctx->sheets[i]);
+		css_stylesheet_destroy(ctx->sheets[i].sheet);
 	}
 
 	ctx->tree = NULL;
@@ -704,42 +716,50 @@ void run_test(line_ctx *ctx, const char *exp, size_t explen)
 void destroy_tree(node *root)
 {
 	node *n, *p;
+	uint32_t i;
 
 	for (n = root->children; n != NULL; n = p) {
 		p = n->next;
 
 		destroy_tree(n);
 	}
-
+	
+	for (i = 0; i < root->n_attrs; ++i) {
+		lwc_string_unref(root->attrs[i].name);
+		lwc_string_unref(root->attrs[i].value);
+	}
+	
 	free(root->attrs);
+	
+	lwc_string_unref(root->name);
 	free(root);
 }
 
 
-css_error node_name(void *pw, void *n, lwc_context *ctx, lwc_string **name)
+css_error node_name(void *pw, void *n, lwc_string **name)
 {
 	node *node = n;
 
 	UNUSED(pw);
-        
-        *name = lwc_context_string_ref(ctx, node->name);
-        
+	
+	*name = lwc_string_ref(node->name);
+	
 	return CSS_OK;
 }
 
-css_error node_classes(void *pw, void *n, lwc_context *ctx, 
+css_error node_classes(void *pw, void *n,
 		lwc_string ***classes, uint32_t *n_classes)
 {
 	node *node = n;
 	uint32_t i;
-        line_ctx *lc = pw;
+	line_ctx *lc = pw;
 
 	for (i = 0; i < node->n_attrs; i++) {
-                bool amatch;
-		assert(lwc_context_string_caseless_isequal(ctx, 
+		bool amatch;
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, lc->attr_class, &amatch) ==
 				lwc_error_ok);
-                if (amatch == true)
+		if (amatch == true)
 			break;
 	}
 
@@ -749,7 +769,7 @@ css_error node_classes(void *pw, void *n, lwc_context *ctx,
 			return CSS_NOMEM;
 
 		*(classes[0]) = 
-			lwc_context_string_ref(ctx, node->attrs[i].value);
+			lwc_string_ref(node->attrs[i].value);
 		*n_classes = 1;
 	} else {
 		*classes = NULL;
@@ -760,24 +780,24 @@ css_error node_classes(void *pw, void *n, lwc_context *ctx,
 
 }
 
-css_error node_id(void *pw, void *n, lwc_context *ctx, 
+css_error node_id(void *pw, void *n,
 		lwc_string **id)
 {
 	node *node = n;
 	uint32_t i;
-        line_ctx *lc = pw;
+	line_ctx *lc = pw;
 
 	for (i = 0; i < node->n_attrs; i++) {
-                bool amatch;
-		assert(lwc_context_string_caseless_isequal(ctx, 
+		bool amatch;
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, lc->attr_id, &amatch) == 
 				lwc_error_ok);
-                if (amatch == true)
+		if (amatch == true)
 			break;
 	}
 
 	if (i != node->n_attrs)
-		*id = lwc_context_string_ref(ctx, node->attrs[i].value);
+		*id = lwc_string_ref(node->attrs[i].value);
 	else
 		*id = NULL;
 
@@ -789,13 +809,13 @@ css_error named_ancestor_node(void *pw, void *n,
 		void **ancestor)
 {
 	node *node = n;
-        line_ctx *ctx = pw;
+	UNUSED(pw);
 
 	for (node = node->parent; node != NULL; node = node->parent) {
-                bool match;
-		assert(lwc_context_string_caseless_isequal(ctx->dict,
+		bool match;
+		assert(lwc_string_caseless_isequal(
 				name, node->name, &match) == lwc_error_ok);
-                if (match == true)
+		if (match == true)
 			break;
 	}
 
@@ -809,17 +829,17 @@ css_error named_parent_node(void *pw, void *n,
 		void **parent)
 {
 	node *node = n;
-        line_ctx *ctx = pw;
+	UNUSED(pw);
 
-        *parent = NULL;
+	*parent = NULL;
 	if (node->parent != NULL) {
-                bool match;
-                assert(lwc_context_string_caseless_isequal(ctx->dict,
+		bool match;
+		assert(lwc_string_caseless_isequal(
 				name, node->parent->name, &match) == 
 				lwc_error_ok);
-                if (match == true)
-                        *parent = (void *) node->parent;
-        }
+		if (match == true)
+			*parent = (void *) node->parent;
+	}
 
 	return CSS_OK;
 }
@@ -829,17 +849,17 @@ css_error named_sibling_node(void *pw, void *n,
 		void **sibling)
 {
 	node *node = n;
-        line_ctx *ctx = pw;
+	UNUSED(pw);
 
-        *sibling = NULL;
+	*sibling = NULL;
 	if (node->prev != NULL) {
-                bool match;
-                assert(lwc_context_string_caseless_isequal(ctx->dict,
+		bool match;
+		assert(lwc_string_caseless_isequal(
 				name, node->prev->name, &match) == 
 				lwc_error_ok);
-                if (match == true)
-                        *sibling = (void *) node->prev;
-        }
+		if (match == true)
+			*sibling = (void *) node->prev;
+	}
 
 	return CSS_OK;
 }
@@ -871,9 +891,9 @@ css_error node_has_name(void *pw, void *n,
 		bool *match)
 {
 	node *node = n;
-	line_ctx *ctx = pw;
+	UNUSED(pw);
 
-	assert(lwc_context_string_caseless_isequal(ctx->dict, node->name, 
+	assert(lwc_string_caseless_isequal(node->name, 
 			name, match) == lwc_error_ok);
 
 	return CSS_OK;
@@ -885,14 +905,14 @@ css_error node_has_class(void *pw, void *n,
 {
 	node *node = n;
 	uint32_t i;
-        line_ctx *ctx = pw;
+	line_ctx *ctx = pw;
 
 	for (i = 0; i < node->n_attrs; i++) {
-                bool amatch;
-                assert(lwc_context_string_caseless_isequal(ctx->dict, 
+		bool amatch;
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, ctx->attr_class, 
 				&amatch) == lwc_error_ok);
-                if (amatch == true)
+		if (amatch == true)
 			break;
 	}
 
@@ -911,14 +931,14 @@ css_error node_has_id(void *pw, void *n,
 {
 	node *node = n;
 	uint32_t i;
-        line_ctx *ctx = pw;
+	line_ctx *ctx = pw;
 
 	for (i = 0; i < node->n_attrs; i++) {
-                bool amatch;
-		assert(lwc_context_string_caseless_isequal(ctx->dict, 
+		bool amatch;
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, ctx->attr_id, &amatch) == 
 				lwc_error_ok);
-                if (amatch == true)
+		if (amatch == true)
 			break;
 	}
 
@@ -937,15 +957,15 @@ css_error node_has_attribute(void *pw, void *n,
 {
 	node *node = n;
 	uint32_t i;
-        line_ctx *ctx = pw;
-        
-        *match = false;
+	UNUSED(pw);
+	
+	*match = false;
 	for (i = 0; i < node->n_attrs; i++) {
-                assert(lwc_context_string_caseless_isequal(ctx->dict, 
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, name, match) == 
 				lwc_error_ok);
-                if (*match == true)
-                        break;
+		if (*match == true)
+			break;
 	}
 
 	return CSS_OK;
@@ -958,24 +978,24 @@ css_error node_has_attribute_equal(void *pw, void *n,
 {
 	node *node = n;
 	uint32_t i;
-        line_ctx *ctx = pw;
+	UNUSED(pw);
 
-        *match = false;
-        
+	*match = false;
+	
 	for (i = 0; i < node->n_attrs; i++) {
-                assert(lwc_context_string_caseless_isequal(ctx->dict, 
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, name, match) == 
 				lwc_error_ok);
-                if (*match == true)
-                        break;
+		if (*match == true)
+			break;
 	}
-        
-        if (*match == true) {
-                assert(lwc_context_string_caseless_isequal(ctx->dict, 
+	
+	if (*match == true) {
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, value, match) == 
 				lwc_error_ok);
-        }
-        
+	}
+	
 	return CSS_OK;
 }
 
@@ -986,17 +1006,17 @@ css_error node_has_attribute_includes(void *pw, void *n,
 {
 	node *node = n;
 	uint32_t i;
-        line_ctx *ctx = pw;
-        size_t vlen = lwc_string_length(value);
+	size_t vlen = lwc_string_length(value);
+	UNUSED(pw);
 
-        *match = false;
-        
+	*match = false;
+	
 	for (i = 0; i < node->n_attrs; i++) {
-                assert(lwc_context_string_caseless_isequal(ctx->dict, 
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, name, match) == 
 				lwc_error_ok);
-                if (*match == true)
-                        break;
+		if (*match == true)
+			break;
 	}
 
 	if (*match == true) {
@@ -1004,9 +1024,9 @@ css_error node_has_attribute_includes(void *pw, void *n,
 		const char *start = lwc_string_data(node->attrs[i].value);
 		const char *end = start + 
 				lwc_string_length(node->attrs[i].value);
-                
-                *match = false;
-                
+		
+		*match = false;
+		
 		for (p = start; p < end; p++) {
 			if (*p == ' ') {
 				if ((size_t) (p - start) == vlen && 
@@ -1032,17 +1052,17 @@ css_error node_has_attribute_dashmatch(void *pw, void *n,
 {
 	node *node = n;
 	uint32_t i;
-        line_ctx *ctx = pw;
-        size_t vlen = lwc_string_length(value);
+	size_t vlen = lwc_string_length(value);
+	UNUSED(pw);
 
-        *match = false;
-        
+	*match = false;
+	
 	for (i = 0; i < node->n_attrs; i++) {
-                assert(lwc_context_string_caseless_isequal(ctx->dict, 
+		assert(lwc_string_caseless_isequal(
 				node->attrs[i].name, name, match) == 
 				lwc_error_ok);
-                if (*match == true)
-                        break;
+		if (*match == true)
+			break;
 	}
 
 	if (*match == true) {
@@ -1050,9 +1070,9 @@ css_error node_has_attribute_dashmatch(void *pw, void *n,
 		const char *start = lwc_string_data(node->attrs[i].value);
 		const char *end = start + 
 				lwc_string_length(node->attrs[i].value);
-                
-                *match = false;
-                
+		
+		*match = false;
+		
 		for (p = start; p < end; p++) {
 			if (*p == '-') {
 				if ((size_t) (p - start) == vlen && 
@@ -1173,7 +1193,7 @@ css_error ua_default_for_property(void *pw, uint32_t property, css_hint *hint)
 	UNUSED(pw);
 
 	if (property == CSS_PROP_COLOR) {
-		hint->data.color = 0x00000000;
+		hint->data.color = 0xff000000;
 		hint->status = CSS_COLOR_COLOR;
 	} else if (property == CSS_PROP_FONT_FAMILY) {
 		hint->data.strings = NULL;
