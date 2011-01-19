@@ -34,9 +34,11 @@
 		if (style->page == NULL)				\
 			return CSS_NOMEM;				\
 									\
-		memset(style->page, 0, sizeof(css_computed_page));	\
+		style->page->bits[0] = 0x49;				\
 	}								\
 } while(0)
+
+//		memset(style->page, 0, sizeof(css_computed_page));	
 
 
 #define LETTER_SPACING_INDEX 0

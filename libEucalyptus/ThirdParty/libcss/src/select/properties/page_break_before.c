@@ -28,7 +28,7 @@ css_error set_page_break_before_from_hint(const css_hint *hint,
 
 css_error initial_page_break_before(css_select_state *state)
 {
-	return set_page_break_before(state->computed, CSS_PAGE_BREAK_AFTER_AUTO);
+	return set_page_break_before(state->computed, CSS_PAGE_BREAK_BEFORE_AUTO);
 }
 
 css_error compose_page_break_before(const css_computed_style *parent,
@@ -37,7 +37,7 @@ css_error compose_page_break_before(const css_computed_style *parent,
 {
 	uint8_t type = get_page_break_before(child);
     
-	if (type == CSS_PAGE_BREAK_AFTER_INHERIT) {
+	if (type == CSS_PAGE_BREAK_BEFORE_INHERIT) {
 		type = get_page_break_before(parent);
 	}
     

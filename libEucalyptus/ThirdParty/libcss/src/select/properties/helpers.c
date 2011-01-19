@@ -392,7 +392,7 @@ css_error cascade_page_break_after_before_inside(uint32_t opv, css_style *style,
 		css_select_state *state,
 		css_error (*fun)(css_computed_style *, uint8_t))
 {
-	uint8_t value = CSS_PAGE_BREAK_AFTER_INHERIT;
+	uint16_t value = CSS_PAGE_BREAK_AFTER_INHERIT;
 
 	UNUSED(style);
 
