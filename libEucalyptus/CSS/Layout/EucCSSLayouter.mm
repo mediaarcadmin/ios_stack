@@ -255,9 +255,9 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 block = blockParent;
                 blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
             }
+            *returningNextPoint = point;
+            return YES;
         }
-        *returningNextPoint = point;
-        return YES;
     }
     return NO;
 }
@@ -639,6 +639,8 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                        currentNodeDisplay != CSS_DISPLAY_INLINE && 
                        !stopBeforeNode // stopBeforeNode being set implies we're not doing page-based layout.
                        ) {
+                        EucCSSLayoutPoint breakPoint = { nextRunNodeKey, 0, 0 };
+                        pageBreaks.push_back(make_pair(breakPoint, (EucCSSLayoutPositionedContainer *)nil));
                         pageBreakForced = YES;
                         break;
                     }                        
