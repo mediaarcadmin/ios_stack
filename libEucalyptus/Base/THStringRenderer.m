@@ -340,6 +340,13 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
     }
 }
 
+- (CGFloat)emHeightForPointSize:(CGFloat)pointSize
+{
+    return [self ascenderForPointSize:pointSize] 
+            - [self descenderForPointSize:pointSize];
+}
+
+
 - (CGFloat)lineSpacingForPointSize:(CGFloat)pointSize
 {
     return [self ascenderForPointSize:pointSize] 

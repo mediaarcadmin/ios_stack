@@ -72,6 +72,7 @@ typedef enum THStringRendererFontStyleFlags {
 
 
 - (CGFloat)lineSpacingForPointSize:(CGFloat)pointSize;
+- (CGFloat)emHeightForPointSize:(CGFloat)pointSize;
 - (CGFloat)ascenderForPointSize:(CGFloat)pointSize;
 - (CGFloat)descenderForPointSize:(CGFloat)pointSize;
 - (CGFloat)xHeightForPointSize:(CGFloat)pointSize;

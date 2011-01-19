@@ -1754,8 +1754,6 @@
 		A3C7436D11CAC178005A2219 /* paper-black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-black@2x.png"; sourceTree = "<group>"; };
 		A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-neutral@2x.png"; sourceTree = "<group>"; };
 		A3C7436F11CAC178005A2219 /* paper-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white@2x.png"; sourceTree = "<group>"; };
-		A3CF837612E4B19D0069FA16 /* Peter Rabbit.xps */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Peter Rabbit.xps"; sourceTree = "<group>"; };
-		A3CF837712E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps */ = {isa = PBXFileReference; lastKnownFileType = file; path = "The Legend of Sleepy Hollow.xps"; sourceTree = "<group>"; };
 		A3CF839712E4B7E00069FA16 /* XPS-Starters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "XPS-Starters"; sourceTree = "<group>"; };
 		A3CF83A612E4B85E0069FA16 /* XPS-Demo */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "XPS-Demo"; sourceTree = "<group>"; };
 		A3DDFDFD110FD1AA00EF1D44 /* BlioAudioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioBookManager.h; sourceTree = "<group>"; };
@@ -2205,7 +2203,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				A3CF837512E4B19D0069FA16 /* XPS-Starters */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				C9B620BD1137BDB10012CE7E /* ThirdParty */,
 				A32D88DD11FE240300D2AE17 /* Entitlements.plist */,
@@ -2808,16 +2805,6 @@
 			name = BookVault;
 			sourceTree = "<group>";
 		};
-		A3CF837512E4B19D0069FA16 /* XPS-Starters */ = {
-			isa = PBXGroup;
-			children = (
-				A3CF837612E4B19D0069FA16 /* Peter Rabbit.xps */,
-				A3CF837712E4B19D0069FA16 /* The Legend of Sleepy Hollow.xps */,
-			);
-			name = "XPS-Starters";
-			path = "Resources/XPS-Starters";
-			sourceTree = "<group>";
-		};
 		A3D9F13911B064530011D544 /* DRM */ = {
 			isa = PBXGroup;
 			children = (
@@ -2940,7 +2927,7 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData */,
+				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
 				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
@@ -3353,10 +3340,10 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData */ = {
+		C986765B112411060070A03E /* GData.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = GData;
+			path = GData.framework;
 			remoteRef = C986765A112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
