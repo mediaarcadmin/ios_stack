@@ -198,7 +198,6 @@
 		[self setBookManifestValue:manifestEntry forKey:BlioManifestDrmHeaderKey];
 	}
 	
-	
 	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore) {
 		NSLog(@"ERROR: Title (%@) is not an online store title!",[self getBookValueForKey:@"title"]);
 		NSLog(@"xpsFilename: %@", [self getBookManifestPathForKey:BlioManifestXPSKey]);
@@ -220,7 +219,8 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingLicenseAcquisitionTokenRequiredNotification object:self userInfo:userInfo];
 		[self cancel];
 	}
-	if ([[self getBookValueForKey:@"userNum"] intValue] != [[BlioStoreManager sharedInstance] currentUserNum]) {
+
+	if ([[self getBookValueForKey:@"userNum"] intValue] != [[BlioStoreManager sharedInstance] currentUserNum]) {  
 		NSLog(@"Book userNum and currentUserNum do not match! Cancelling BlioProcessingLicenseAcquisitionOperation...");
 		NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
 		[userInfo setObject:self.bookID forKey:@"bookID"];
@@ -240,27 +240,6 @@
 	}
 #endif
 	
-/* 
-	@synchronized ([BlioDrmManager getDrmManager]) {
-		
-		NSInteger cooldownTime = [[BlioDrmManager getDrmManager] licenseCooldownTime];
-		if (cooldownTime > 0) {
-			NSLog(@"BlioDrmManager still cooling down (%i seconds to go), cancelling BlioProcessingLicenseAcquisitionOperation in the meantime...",cooldownTime);
-			[self cancel];		
-			return;
-		}
-		
-		while (attemptsMade < attemptsMaximum && self.operationSuccess == NO) {
-			NSLog(@"Attempt #%u to acquire license for book title: %@",(attemptsMade+1),[self getBookValueForKey:@"title"]);
-            self.operationSuccess = [[BlioDrmManager getDrmManager] getLicenseForBookWithID:self.bookID sessionToken:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]];
-			attemptsMade++;
-		}
-
-		if (!self.operationSuccess) {
-			[[BlioDrmManager getDrmManager] resetLicenseCooldownTimer];
-		}
-	}
-*/
 	NSLog(@"sourceSpecificID: %@ licenseOp: %@ getting DRMSessionManager",self.sourceSpecificID,self);
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:self.bookID]; 
 	//NSInteger cooldownTime = [drmSessionManager licenseCooldownTime];
@@ -777,7 +756,7 @@
 #pragma mark -
 @implementation BlioProcessingXPSManifestOperation
 
-@synthesize audiobookReferencesParser, rightsParser, metadataParser, featureCompatibilityDictionary, audioFiles, timingFiles;
+@synthesize audiobookReferencesParser, rightsParser, textflowParser, metadataParser, featureCompatibilityDictionary, audioFiles, timingFiles;
 
 - (id)init {
     if ((self = [super init])) {
@@ -790,6 +769,7 @@
 	self.audiobookReferencesParser = nil;
 	self.rightsParser = nil;
 	self.metadataParser = nil;
+	self.textflowParser = nil;
 	self.audioFiles = nil;
 	self.timingFiles = nil;
 	self.featureCompatibilityDictionary = nil;
@@ -817,6 +797,13 @@
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
 		[manifestEntry setValue:BlioXPSTextFlowSectionsFile forKey:BlioManifestEntryPathKey];
 		[self setBookManifestValue:manifestEntry forKey:BlioManifestTextFlowKey];
+		NSLog(@"Textflow sections file is present. parsing XML...");
+		NSData * data = [self getBookManifestDataForKey:BlioManifestTextFlowKey];
+		if (data) {
+			self.textflowParser = [[[NSXMLParser alloc] initWithData:data] autorelease];
+			[textflowParser setDelegate:self];
+			[textflowParser parse];
+		}
 	}
 	
 	BOOL hasCoverData = [self bookManifestPath:BlioXPSCoverImage existsForLocation:BlioManifestEntryLocationXPS];
@@ -913,9 +900,9 @@
 		NSData * data = [self getBookManifestDataForKey:BlioManifestKNFBMetadataKey];
 		if (data) {
 			// test to see if valid XML found
-//			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//			NSLog(@"stringData: %@",stringData);
-//			[stringData release];
+			//			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+			//			NSLog(@"stringData: %@",stringData);
+			//			[stringData release];
 			self.metadataParser = [[[NSXMLParser alloc] initWithData:data] autorelease];
 			[metadataParser setDelegate:self];
 			[metadataParser parse];
@@ -964,6 +951,17 @@
 			}
 		}
 	}	
+	else if (parser == self.textflowParser) {
+		if ( [elementName isEqualToString:@"BookContents"] ) {
+			NSString * attributeStringValue = [attributeDict objectForKey:@"NoTextFlowView"];
+			if (attributeStringValue && [attributeStringValue isEqualToString:@"True"]) {
+				hasReflowRightOverride = YES;
+			}
+			else {
+				hasReflowRightOverride = NO; 
+			}
+		}
+	}	
 	else if (parser == self.rightsParser) {
 		if ( [elementName isEqualToString:@"Audio"] ) {
 			NSString * attributeStringValue = [attributeDict objectForKey:@"TTSRead"];
@@ -975,12 +973,23 @@
 			}
 		}
 		else if ( [elementName isEqualToString:@"Reflow"] ) {
-			NSString * attributeStringValue = [attributeDict objectForKey:@"Enabled"];
-			if (attributeStringValue && [attributeStringValue isEqualToString:@"True"]) {
-				[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"]; 
+			NSString * attributeEnabledStringValue = [attributeDict objectForKey:@"Enabled"];
+			[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"reflowRight"]; 
+			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+				NSString * attributeSmallScreenStringValue = [attributeDict objectForKey:@"SmallScreen"];
+				if (attributeSmallScreenStringValue) {
+					if ([attributeSmallScreenStringValue isEqualToString:@"True"]) 
+						[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"];
+				}
+				else if (attributeEnabledStringValue 
+						 && [attributeEnabledStringValue isEqualToString:@"True"]
+						 && !hasReflowRightOverride)
+					[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"]; 
 			}
-			else {
-				[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"reflowRight"]; 
+			else if (attributeEnabledStringValue 
+					&& [attributeEnabledStringValue isEqualToString:@"True"]
+					&& !hasReflowRightOverride)  {
+					[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"reflowRight"]; 
 			}
 		}
 	}
