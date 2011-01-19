@@ -60,6 +60,8 @@ typedef enum THStringRendererFontStyleFlags {
     CGAffineTransform _textTransform;
     
     THStringAndCGFloatToCGFloatCache *_widthCache;
+    
+    THPair _mapAndFont;
 }
 
 @property (nonatomic, assign) CGFloat fauxBoldStrokeWidth; // Default if 0.5f.
