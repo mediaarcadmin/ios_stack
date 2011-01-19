@@ -617,7 +617,6 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         close(_currentPageIndexPointFD);
     }
     
-    _documentCache.evictsOnMemoryWarnings = NO;
     [_documentCache release];
     
     [_root release];
@@ -1063,7 +1062,6 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     if(!_documentCache) {
         _documentCache = [[THCache alloc] init];
         _documentCache.generationLifetime = kMaxCachedDocuments;
-        _documentCache.evictsOnMemoryWarnings = YES;
     }
     EucCSSIntermediateDocument *document = [_documentCache objectForKey:url];
     if(!document) {
