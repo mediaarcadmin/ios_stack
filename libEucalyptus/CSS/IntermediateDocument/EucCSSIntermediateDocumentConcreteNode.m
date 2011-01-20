@@ -70,11 +70,12 @@
         const char *contents;
         size_t length = 0;
         if([_documentTreeNode getCharacterContents:&contents length:&length]) {
-            _text = (NSString *)CFStringCreateWithBytes(kCFAllocatorDefault,
-                                                        (const UInt8 *)contents, 
-                                                        length, 
-                                                        kCFStringEncodingUTF8, 
-                                                        false);
+            _text = (NSString *)CFStringCreateWithBytesNoCopy(kCFAllocatorDefault,
+                                                              (const UInt8 *)contents, 
+                                                              length, 
+                                                              kCFStringEncodingUTF8,
+                                                              false,
+                                                              kCFAllocatorNull);
         }
     }
     return _text;
@@ -83,7 +84,7 @@
 - (NSArray *)preprocessedWords
 {
     if([_documentTreeNode respondsToSelector:@selector(preprocessedWordStrings)]) {
-        return [_documentTreeNode performSelector:@selector(preprocessedWordStrings)];
+        return [_documentTreeNode preprocessedWordStrings];
     } else {
         return nil;
     }

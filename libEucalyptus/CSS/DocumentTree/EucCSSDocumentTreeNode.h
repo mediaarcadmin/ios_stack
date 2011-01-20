@@ -26,6 +26,9 @@
 - (id<EucCSSDocumentTreeNode>)parent;
 
 - (NSString *)attributeWithName:(NSString *)attributeName;
+
+// Bytes returned by this accessor /must/ live for at least as long as the
+// node object.
 - (BOOL)getCharacterContents:(const char **)contents length:(size_t *)length;
 
 - (BOOL)isImageNode;
@@ -42,5 +45,6 @@
 
 - (NSUInteger)columnSpan;
 - (NSUInteger)rowSpan;
+- (NSArray *)preprocessedWordStrings;
 
 @end
