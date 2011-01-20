@@ -17,9 +17,10 @@
 
 struct css_computed_style;
 
-@class EucCSSIntermediateDocumentNode, THPair;
+@class EucCSSIntermediateDocument, EucCSSIntermediateDocumentNode, THPair;
 
 @interface EucCSSLayoutPositionedBlock : EucCSSLayoutPositionedContainer {
+    EucCSSIntermediateDocument *_document;
     EucCSSIntermediateDocumentNode *_documentNode;
     
     CGFloat _scaleFactor;

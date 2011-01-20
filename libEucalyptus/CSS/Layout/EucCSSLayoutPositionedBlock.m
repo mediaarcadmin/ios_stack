@@ -42,6 +42,13 @@
                scaleFactor:(CGFloat)scaleFactor
 {
     if((self = [super init])) {
+        // Runs, positioned runs etc. don't retain their documents, because they
+        // can be retained by their caches, which are attached to the document,
+        // and this would create a cycle.  
+        // We therefore retain the document here
+        // so that the positioned block stays usable after other referenecs
+        // to its containing document have been released elsewhere.
+        _document = [[documentNode document] retain];
         _documentNode = [documentNode retain];
         _scaleFactor = scaleFactor;
     }
@@ -51,6 +58,7 @@
 - (void)dealloc
 {
     [_documentNode release];
+    [_document release];
     
     [super dealloc];
 }

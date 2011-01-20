@@ -95,7 +95,7 @@ struct EucCSSLayoutRunBreakInfo;
 }
 
 @property (nonatomic, assign, readonly) uint32_t id;
-@property (nonatomic, retain, readonly) EucCSSIntermediateDocument *document;
+@property (nonatomic, assign, readonly) EucCSSIntermediateDocument *document;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *startNode;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *underNode;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *nextNodeUnderLimitNode;
