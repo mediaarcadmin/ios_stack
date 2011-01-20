@@ -510,7 +510,8 @@
 			else {
 				NSLog(@"DownloadRequest error: %@",[bodyPart RequestDownloadWithTokenResult].Message);
 				if ([[bodyPart RequestDownloadWithTokenResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
-					[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
+					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
+														  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
 												 message:[bodyPart RequestDownloadWithTokenResult].Message
 												delegate:nil 
 									   cancelButtonTitle:nil
@@ -537,7 +538,8 @@
 			else {
 				NSLog(@"DownloadRequest error: %@",[bodyPart RequestDownloadWithTokenExResult].Message);
 				if ([[bodyPart RequestDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
-					[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
+					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
+					title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
 												 message:[bodyPart RequestDownloadWithTokenExResult].Message
 												delegate:nil 
 									   cancelButtonTitle:nil
