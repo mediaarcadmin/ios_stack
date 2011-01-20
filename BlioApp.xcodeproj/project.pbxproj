@@ -2930,7 +2930,7 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData */,
+				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
 				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
@@ -3345,10 +3345,10 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData */ = {
+		C986765B112411060070A03E /* GData.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = GData;
+			path = GData.framework;
 			remoteRef = C986765A112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -4562,8 +4562,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -4595,8 +4593,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AFFF4B58-21B8-49DA-9802-AEC36E10B593";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "AFFF4B58-21B8-49DA-9802-AEC36E10B593";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -4606,8 +4602,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
@@ -4637,8 +4631,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AFFF4B58-21B8-49DA-9802-AEC36E10B593";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "AFFF4B58-21B8-49DA-9802-AEC36E10B593";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -4648,8 +4640,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4680,8 +4670,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4693,8 +4681,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4723,8 +4709,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4736,8 +4720,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4766,8 +4748,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4779,7 +4759,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: CrossComm, Inc.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
@@ -4803,8 +4783,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
@@ -4834,8 +4812,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AFFF4B58-21B8-49DA-9802-AEC36E10B593";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "AFFF4B58-21B8-49DA-9802-AEC36E10B593";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Distribution;
@@ -4845,8 +4821,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4878,8 +4852,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4891,8 +4863,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4922,8 +4892,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4935,8 +4903,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos4.0]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4966,8 +4932,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos4.0]" = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
