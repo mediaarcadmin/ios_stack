@@ -308,6 +308,8 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         
         _textTransform = CGAffineTransformMakeRotation(M_PI); // 8
         _textTransform = CGAffineTransformScale(_textTransform, -1, 1);
+        
+        _mapAndFont = [mapAndFont retain];
     }
     
     return self;
@@ -339,6 +341,13 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
         return roundf(leading);
     }
 }
+
+- (CGFloat)emHeightForPointSize:(CGFloat)pointSize
+{
+    return [self ascenderForPointSize:pointSize] 
+            - [self descenderForPointSize:pointSize];
+}
+
 
 - (CGFloat)lineSpacingForPointSize:(CGFloat)pointSize
 {
@@ -424,6 +433,7 @@ static void _NSDataReleaseCallback(void *info, const void *data, size_t size)
 - (void)dealloc
 {
     [self _clearCachedArrays];
+    [_mapAndFont release];
     if(_font) {
         CGFontRelease(_font);
     }

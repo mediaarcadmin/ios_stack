@@ -562,15 +562,16 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
         NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
         return nil;
     } else {
-        NSData *packageData = [NSMutableData dataWithBytes:packageInfo.pComponentData length:packageInfo.length];
+        NSData *packageData = [[NSData alloc] initWithBytesNoCopy:packageInfo.pComponentData length:packageInfo.length freeWhenDone:NO];
         //NSLog(@"Raw data length %d (%d) with compression %d", [rawData length], packageInfo.length, packageInfo.compression_type);
         if (packageInfo.compression_type == 8) {
             rawData = [self decompressWithRawDeflate:packageData];
+            [packageData release];
             if ([rawData length] == 0) {
                 NSLog(@"Error decompressing component at path %@ for book with ID %@", path, self.bookID);
             }
         } else {
-            rawData = packageData;
+            rawData = [packageData autorelease];
         }
     }
     
@@ -983,9 +984,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 				return nil;
 		}
 		bytesDecompressed = BUFSIZE - strm.avail_out;
-		NSData* data = [[NSData alloc] initWithBytesNoCopy:outbuf length:bytesDecompressed freeWhenDone:NO];
-		[outData appendData:data];
-        [data release];
+		[outData appendBytes:outbuf length:bytesDecompressed];
 	}
 	while (strm.avail_out == 0);
 	XPS_inflateEnd(&strm);

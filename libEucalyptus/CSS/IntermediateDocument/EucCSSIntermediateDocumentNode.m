@@ -307,6 +307,14 @@ static THStringAndIntegerToObjectCache *sStringRenderersCache = nil;
     return roundf(_textPointSize * scaleFactor);
 }
 
+- (CGFloat)emHeightWithScaleFactor:(CGFloat)scaleFactor
+{
+    if(!_stringRenderer) {
+        [self _setupTextIVars];
+    }     
+    return [_stringRenderer emHeightForPointSize:[self textPointSizeWithScaleFactor:scaleFactor]];
+}
+
 - (CGFloat)textAscenderWithScaleFactor:(CGFloat)scaleFactor
 {
     if(!_stringRenderer) {

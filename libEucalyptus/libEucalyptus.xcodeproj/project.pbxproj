@@ -1373,13 +1373,13 @@
 		7DE9CBFA12E43F430031C729 /* Representation */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Representation; sourceTree = "<group>"; };
 		7DE9CBFB12E43F430031C729 /* Tokens */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Tokens; sourceTree = "<group>"; };
 		7DE9CBFD12E43F430031C729 /* example1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = example1.c; sourceTree = "<group>"; };
-		7DE9CC0012E43F430031C729 /* computed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = computed.h; sourceTree = "<group>"; };
+		7DE9CC0012E43F430031C729 /* computed.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = computed.h; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		7DE9CC0112E43F430031C729 /* errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = errors.h; sourceTree = "<group>"; };
 		7DE9CC0212E43F430031C729 /* fpmath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fpmath.h; sourceTree = "<group>"; };
 		7DE9CC0312E43F430031C729 /* functypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = functypes.h; sourceTree = "<group>"; };
 		7DE9CC0412E43F430031C729 /* hint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hint.h; sourceTree = "<group>"; };
 		7DE9CC0512E43F430031C729 /* libcss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libcss.h; sourceTree = "<group>"; };
-		7DE9CC0612E43F430031C729 /* properties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = properties.h; sourceTree = "<group>"; };
+		7DE9CC0612E43F430031C729 /* properties.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 8; lastKnownFileType = sourcecode.c.h; path = properties.h; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		7DE9CC0712E43F430031C729 /* select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = select.h; sourceTree = "<group>"; };
 		7DE9CC0812E43F430031C729 /* stylesheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stylesheet.h; sourceTree = "<group>"; };
 		7DE9CC0912E43F430031C729 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -1633,7 +1633,7 @@
 		7DE9CE2A12E43F8E0031C729 /* font_variant.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = font_variant.c; sourceTree = "<group>"; };
 		7DE9CE2B12E43F8E0031C729 /* font_weight.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = font_weight.c; sourceTree = "<group>"; };
 		7DE9CE2C12E43F8E0031C729 /* height.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = height.c; sourceTree = "<group>"; };
-		7DE9CE2D12E43F8E0031C729 /* helpers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = helpers.c; sourceTree = "<group>"; };
+		7DE9CE2D12E43F8E0031C729 /* helpers.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 8; lastKnownFileType = sourcecode.c.c; path = helpers.c; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		7DE9CE2E12E43F8E0031C729 /* helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = helpers.h; sourceTree = "<group>"; };
 		7DE9CE2F12E43F8E0031C729 /* left.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = left.c; sourceTree = "<group>"; };
 		7DE9CE3012E43F8E0031C729 /* letter_spacing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = letter_spacing.c; sourceTree = "<group>"; };
@@ -1660,7 +1660,7 @@
 		7DE9CE4512E43F8E0031C729 /* padding_right.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = padding_right.c; sourceTree = "<group>"; };
 		7DE9CE4612E43F8E0031C729 /* padding_top.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = padding_top.c; sourceTree = "<group>"; };
 		7DE9CE4712E43F8E0031C729 /* page_break_after.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = page_break_after.c; sourceTree = "<group>"; };
-		7DE9CE4812E43F8E0031C729 /* page_break_before.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = page_break_before.c; sourceTree = "<group>"; };
+		7DE9CE4812E43F8E0031C729 /* page_break_before.c */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 8; lastKnownFileType = sourcecode.c.c; path = page_break_before.c; sourceTree = "<group>"; tabWidth = 8; };
 		7DE9CE4912E43F8E0031C729 /* page_break_inside.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = page_break_inside.c; sourceTree = "<group>"; };
 		7DE9CE4A12E43F8E0031C729 /* pause_after.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pause_after.c; sourceTree = "<group>"; };
 		7DE9CE4B12E43F8E0031C729 /* pause_before.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pause_before.c; sourceTree = "<group>"; };
@@ -1695,7 +1695,7 @@
 		7DE9CE6812E43F8E0031C729 /* word_spacing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = word_spacing.c; sourceTree = "<group>"; };
 		7DE9CE6912E43F8E0031C729 /* z_index.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = z_index.c; sourceTree = "<group>"; };
 		7DE9CE6A12E43F8E0031C729 /* propget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = propget.h; sourceTree = "<group>"; };
-		7DE9CE6B12E43F8E0031C729 /* propset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = propset.h; sourceTree = "<group>"; };
+		7DE9CE6B12E43F8E0031C729 /* propset.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 8; lastKnownFileType = sourcecode.c.h; path = propset.h; sourceTree = "<group>"; tabWidth = 8; usesTabs = 1; };
 		7DE9CE6C12E43F8E0031C729 /* select.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = select.c; sourceTree = "<group>"; };
 		7DE9CE6D12E43F8E0031C729 /* select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = select.h; sourceTree = "<group>"; };
 		7DE9CE6E12E43F8E0031C729 /* stylesheet.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stylesheet.c; sourceTree = "<group>"; };
@@ -4143,16 +4143,16 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/ThirdParty/libparserutils/build/make-aliases.pl",
-				"${SRCROOT}/ThirdParty/libparserutils/src/charset/aliases.inc",
+				"$(SRCROOT)/ThirdParty/libparserutils/build/Aliases",
+				"$(SRCROOT)/ThirdParty/libparserutils/build/make-aliases.pl",
 			);
 			name = "Generate aliases.inc";
 			outputPaths = (
-				"${DERIVED_FILE_DIR}/aliases.inc",
+				"$(DERIVED_FILE_DIR)/aliases.inc",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ ! -e \"${DERIVED_FILE_DIR}/aliases.inc\" ]] ; then\n  if [[ ! -e \"${DERIVED_FILE_DIR}\" ]] ; then\n    mkdir -p \"${DERIVED_FILE_DIR}\"\n  fi\n  pushd \"${SRCROOT}/ThirdParty/libparserutils\"\n  perl build/make-aliases.pl\n  mv src/charset/aliases.inc \"${DERIVED_FILE_DIR}/aliases.inc\"\n  echo \"Created \\\"${DERIVED_FILE_DIR}/aliases.inc\\\"\"\n  popd\nfi";
+			shellScript = "pushd \"${SRCROOT}/ThirdParty/libparserutils\"\nperl build/make-aliases.pl\nmv src/charset/aliases.inc \"${DERIVED_FILE_DIR}/aliases.inc\"\necho \"Created \\\"${DERIVED_FILE_DIR}/aliases.inc\\\"\"\npopd\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

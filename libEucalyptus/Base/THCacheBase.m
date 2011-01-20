@@ -68,26 +68,29 @@ static const CFSetCallBacks THCacheSetCallBacks = {
 
 - (void)_setEvictsOnMemoryWarningsWithNumber:(NSNumber *)number
 {
-    if(![NSThread isMainThread]) {
-        [self performSelectorOnMainThread:@selector(_setEvictsOnMemoryWarningsWithNumber:) withObject:number waitUntilDone:YES];
-    } else {
-        BOOL evictsOnMemoryWarnings = [number boolValue];
-        if(evictsOnMemoryWarnings != _evictsOnMemoryWarnings) {
+    BOOL evictsOnMemoryWarnings = [number boolValue];
+    if(evictsOnMemoryWarnings != _evictsOnMemoryWarnings) {
 #if TARGET_OS_IPHONE
-            if(evictsOnMemoryWarnings) {
-                [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                         selector:@selector(_didReceiveMemoryWarning)
-                                                             name:UIApplicationDidReceiveMemoryWarningNotification
-                                                           object:[UIApplication sharedApplication]];                
-            } else {
-                [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                                name:UIApplicationDidReceiveMemoryWarningNotification
-                                                              object:[UIApplication sharedApplication]];
-            }      
+        if(evictsOnMemoryWarnings) {
+            [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                     selector:@selector(_didReceiveMemoryWarning)
+                                                         name:UIApplicationDidReceiveMemoryWarningNotification
+                                                       object:[UIApplication sharedApplication]];                
+        } else {
+            // To avoid a race in -dealloc.
+            // Might this deadlock if someone is doing something that locks
+            // access to a cache externally on the main thread?
+            if(![NSThread isMainThread]) {
+                [self performSelectorOnMainThread:@selector(_setEvictsOnMemoryWarningsWithNumber:) withObject:number waitUntilDone:YES];
+                return;
+            }
+            [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                            name:UIApplicationDidReceiveMemoryWarningNotification
+                                                          object:[UIApplication sharedApplication]];
+        }      
 #endif
-            _evictsOnMemoryWarnings = evictsOnMemoryWarnings;
-        }        
-    }
+        _evictsOnMemoryWarnings = evictsOnMemoryWarnings;
+    }        
 }
 
 - (void)setEvictsOnMemoryWarnings:(BOOL)evictsOnMemoryWarnings
@@ -190,6 +193,9 @@ static const CFSetCallBacks THCacheSetCallBacks = {
             if(![(id<THCacheItemInUse>)self isItemInUse:items[i]]) {
                 CFSetRemoveValue(_currentCacheSet, items[i]);
             }
+            /*else {
+                NSLog(@"%@", [self describeItem:items[i]]);
+            }*/
         }
         free(items);
     } else {

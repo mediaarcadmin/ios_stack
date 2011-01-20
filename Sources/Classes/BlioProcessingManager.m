@@ -543,6 +543,29 @@
 			
 			NSMutableArray * xpsOps = [NSMutableArray array];
 			
+			BlioProcessingOperation * licenseOp = nil;
+
+			if (![aBook hasManifestValueForKey:BlioManifestLicenseAcquisitionCompleteKey]) {
+				
+				licenseOp = [self operationByClass:[BlioProcessingLicenseAcquisitionOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+				if (!licenseOp || licenseOp.isCancelled) {
+					
+					
+					licenseOp = [[[BlioProcessingLicenseAcquisitionOperation alloc] init] autorelease];
+					licenseOp.bookID = bookID;
+					licenseOp.sourceID = sourceID;
+					licenseOp.sourceSpecificID = sourceSpecificID;
+					licenseOp.cacheDirectory = cacheDir;
+					licenseOp.tempDirectory = tempDir;
+					if (xpsOp) [licenseOp addDependency:xpsOp];
+					[self.preAvailabilityQueue addOperation:licenseOp];
+				} else {
+					if (xpsOp && ![[licenseOp dependencies] containsObject:xpsOp]) [licenseOp addDependency:xpsOp];
+					
+				}
+				[xpsOps addObject:licenseOp];
+			}			
+			
 			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
 			if (!manifestOp || manifestOp.isCancelled) {
 				manifestOp = [[[BlioProcessingXPSManifestOperation alloc] init] autorelease];
@@ -552,12 +575,13 @@
 				manifestOp.cacheDirectory = cacheDir;
 				manifestOp.tempDirectory = tempDir;
 				if (xpsOp) [manifestOp addDependency:xpsOp];
+				if (licenseOp) [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
 				if (xpsOp && ![[manifestOp dependencies] containsObject:xpsOp]) [manifestOp addDependency:xpsOp];
-            }
+				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
+			}
 			[xpsOps addObject:manifestOp];
-			[bookOps addObject:manifestOp];
 			
 			
 			if ([[aBook manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
@@ -585,6 +609,7 @@
 			
 			for (BlioProcessingOperation * op in xpsOps) {
 				[preAvailabilityCompleteOp addDependency:op];
+				[bookOps addObject:op];
 			}
 			[bookOps addObject:preAvailabilityCompleteOp];
 			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];
@@ -662,7 +687,6 @@
 					
 				}
 				[xpsOps addObject:licenseOp];
-				[bookOps addObject:licenseOp];				
 			}
 			
 			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
@@ -676,10 +700,10 @@
 				if (licenseOp) [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
+				if (paidBookOp && ![[manifestOp dependencies] containsObject:paidBookOp]) [manifestOp addDependency:paidBookOp];
 				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
             }
 			[xpsOps addObject:manifestOp];
-			[bookOps addObject:manifestOp];
 
 			
 			if ([[aBook manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
@@ -1257,6 +1281,9 @@
 				[aBook setManifestValue:nil forKey:BlioManifestPDFKey];
 				[aBook setManifestValue:nil forKey:BlioManifestTextFlowKey];
 				[aBook setManifestValue:nil forKey:BlioManifestXPSKey];
+				[aBook setManifestValue:nil forKey:BlioManifestLicenseAcquisitionCompleteKey];
+				
+				NSLog(@"manifest for deleted book: %@", [aBook valueForKey:@"manifest"]);
 				[aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
 			}
 			else {

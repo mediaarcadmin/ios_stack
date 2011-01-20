@@ -27,6 +27,20 @@
 	}								\
 } while(0)
 
+#define ENSURE_PAGE do {						\
+	if (style->page == NULL) {					\
+		style->page = style->alloc(NULL, 			\
+			sizeof(css_computed_page), style->pw);		\
+		if (style->page == NULL)				\
+			return CSS_NOMEM;				\
+									\
+		style->page->bits[0] = 0x49;				\
+	}								\
+} while(0)
+
+//		memset(style->page, 0, sizeof(css_computed_page));	
+
+
 #define LETTER_SPACING_INDEX 0
 #define LETTER_SPACING_SHIFT 2
 #define LETTER_SPACING_MASK  0xfc
@@ -1791,4 +1805,65 @@ static inline uint8_t set_text_align(
 #undef TEXT_ALIGN_SHIFT
 #undef TEXT_ALIGN_INDEX
 
+#define PAGE_BREAK_AFTER_INDEX 0
+#define PAGE_BREAK_AFTER_SHIFT 0
+#define PAGE_BREAK_AFTER_MASK 0x7
+static inline css_error set_page_break_after(
+		css_computed_style *style, uint8_t type)
+{
+	ENSURE_PAGE;
+
+	uint8_t *bits = &style->page->bits[PAGE_BREAK_AFTER_INDEX];
+
+	/* 3bits: type */
+	*bits = (*bits & ~PAGE_BREAK_AFTER_MASK) |
+			((type & 0xf) << PAGE_BREAK_AFTER_SHIFT);
+
+	return CSS_OK;
+}
+#undef PAGE_BREAK_AFTER_INDEX
+#undef PAGE_BREAK_AFTER_SHIFT
+#undef PAGE_BREAK_AFTER_MASK
+
+#define PAGE_BREAK_BEFORE_INDEX 0
+#define PAGE_BREAK_BEFORE_SHIFT 3
+#define PAGE_BREAK_BEFORE_MASK 0x38
+static inline css_error set_page_break_before(
+		css_computed_style *style, uint8_t type)
+{
+	ENSURE_PAGE;
+	
+	uint8_t *bits = &style->page->bits[PAGE_BREAK_BEFORE_INDEX];
+
+	/* 3bits: type */
+	*bits = (*bits & ~PAGE_BREAK_BEFORE_MASK) |
+			((type & 0xf) << PAGE_BREAK_BEFORE_SHIFT);
+
+	return CSS_OK;
+}
+#undef PAGE_BREAK_BEFORE_INDEX 0
+#undef PAGE_BREAK_BEFORE_SHIFT 0
+#undef PAGE_BREAK_BEFORE_MASK 0x7
+
+#define PAGE_BREAK_INSIDE_INDEX 0
+#define PAGE_BREAK_INSIDE_SHIFT 6
+#define PAGE_BREAK_INSIDE_MASK 0xc0
+static inline css_error set_page_break_inside(
+		css_computed_style *style, uint8_t type)
+{
+	ENSURE_PAGE;
+
+	uint8_t *bits = &style->page->bits[PAGE_BREAK_INSIDE_INDEX];
+
+	/* 2bits: type */
+	*bits = (*bits & ~PAGE_BREAK_INSIDE_MASK) |
+			((type & 0xf) << PAGE_BREAK_INSIDE_SHIFT);
+
+	return CSS_OK;
+}
+#undef PAGE_BREAK_INSIDE_INDEX
+#undef PAGE_BREAK_INSIDE_SHIFT
+#undef PAGE_BREAK_INSIDE_MASK
+
+					     
 #endif

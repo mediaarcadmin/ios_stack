@@ -97,13 +97,16 @@
 	NSXMLParser * audiobookReferencesParser;	
 	NSXMLParser * rightsParser;	
 	NSXMLParser * metadataParser;	
+	NSXMLParser * textflowParser;		
 	NSMutableArray * audioFiles;
 	NSMutableArray * timingFiles;
 	NSDictionary * featureCompatibilityDictionary;
 	BOOL hasAudiobook;
+	BOOL hasReflowRightOverride;
 }
 @property (nonatomic, retain) NSXMLParser * audiobookReferencesParser;
 @property (nonatomic, retain) NSXMLParser * rightsParser;
+@property (nonatomic, retain) NSXMLParser * textflowParser;
 @property (nonatomic, retain) NSXMLParser * metadataParser;
 @property (nonatomic, retain) NSMutableArray * audioFiles;
 @property (nonatomic, retain) NSMutableArray * timingFiles;

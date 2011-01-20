@@ -17,53 +17,31 @@
 css_error cascade_page_break_inside(uint32_t opv, css_style *style, 
 		css_select_state *state)
 {
-	uint16_t value = 0;
-
-	UNUSED(style);
-
-	if (isInherit(opv) == false) {
-		switch (getValue(opv)) {
-		case PAGE_BREAK_INSIDE_AUTO:
-		case PAGE_BREAK_INSIDE_AVOID:
-			/** \todo convert to public values */
-			value = 0;
-			break;
-		}
-	}
-
-	if (outranks_existing(getOpcode(opv), isImportant(opv), state,
-			isInherit(opv))) {
-		/** \todo page-break-inside */
-	}
-
-	return CSS_OK;
+	return cascade_page_break_after_before_inside(opv, style, state, set_page_break_inside);
 }
 
 css_error set_page_break_inside_from_hint(const css_hint *hint,
 		css_computed_style *style)
 {
-	UNUSED(hint);
-	UNUSED(style);
-
-	return CSS_OK;
+	return set_page_break_inside(style, hint->status);
 }
 
 css_error initial_page_break_inside(css_select_state *state)
 {
-	UNUSED(state);
-
-	return CSS_OK;
+	return set_page_break_inside(state->computed, CSS_PAGE_BREAK_INSIDE_AUTO);
 }
 
 css_error compose_page_break_inside(const css_computed_style *parent,
 		const css_computed_style *child,
 		css_computed_style *result)
 {
-	UNUSED(parent);
-	UNUSED(child);
-	UNUSED(result);
-
-	return CSS_OK;
+	uint8_t type = get_page_break_inside(child);
+    
+	if (type == CSS_PAGE_BREAK_INSIDE_INHERIT) {
+		type = get_page_break_inside(parent);
+	}
+    
+	return set_page_break_inside(result, type);
 }
 
 uint32_t destroy_page_break_inside(void *bytecode)

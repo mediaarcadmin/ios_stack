@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EucCSSLayouter.h"
 
 @class EucCSSIntermediateDocument, EucCSSLayoutRun;
 
@@ -20,5 +21,6 @@
 - (EucCSSLayoutRun *)runForNodeWithKey:(uint32_t)nextRunNodeKey;
 - (EucCSSLayoutRun *)nextRunForRun:(EucCSSLayoutRun *)run;
 - (EucCSSLayoutRun *)previousRunForRun:(EucCSSLayoutRun *)run;
+- (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;
 
 @end

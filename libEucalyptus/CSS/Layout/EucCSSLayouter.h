@@ -55,6 +55,4 @@ typedef struct EucCSSLayoutPoint
                             constructingAncestors:(BOOL)constructingAncestors
                                       scaleFactor:(CGFloat)scaleFactor;
 
-- (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node;
-
 @end

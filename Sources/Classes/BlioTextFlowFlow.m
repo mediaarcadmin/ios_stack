@@ -91,6 +91,11 @@
     return nil;
 }
 
+- (NSString *)CSSClasses
+{
+    return nil;
+}
+
 - (NSString *)inlineStyle
 {
     return nil;

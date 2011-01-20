@@ -7,46 +7,62 @@
  */
 
 #import <CoreFoundation/CoreFoundation.h>
-#import <Foundation/Foundation.h>
 
 #define lwc_string_s __CFString const
 
 #import "libwapcaplet/libwapcaplet.h"
 #import <pthread.h>
 
-static pthread_key_t sContextKey;
-static pthread_once_t sContextKeyOnceControl = PTHREAD_ONCE_INIT;
+static CFMutableBagRef sContext;
+static pthread_once_t sContextOnceControl = PTHREAD_ONCE_INIT;
+static pthread_mutex_t sContextMutex = PTHREAD_MUTEX_INITIALIZER;
 
-static void ReleaseContext(CFMutableBagRef context)
+static void CreateContext()
 {
-    CFIndex count = CFBagGetCount(context);
-    if(count != 0) {
-        fprintf(stderr, "WARNING: libwapcaplet context not empty (contains %ld items) on thread ternimation", (long)count);
-    }
-    CFRelease(context);
+    sContext = CFBagCreateMutable(kCFAllocatorDefault, 0, &kCFTypeBagCallBacks);
 }
 
-static void CreateContextKey()
+static inline CFMutableBagRef checkOutContext()
 {
-    pthread_key_create(&sContextKey, (void (*)(void *))ReleaseContext);
+    pthread_once(&sContextOnceControl, CreateContext);
+    pthread_mutex_lock(&sContextMutex);
+    return sContext;
 }
 
-static CFMutableBagRef threadContext()
+static inline void checkInContext()
 {
-    pthread_once(&sContextKeyOnceControl, CreateContextKey);
-    CFMutableBagRef context = (CFMutableBagRef)pthread_getspecific(sContextKey);
-    if(!context) {
-        context = CFBagCreateMutable(kCFAllocatorDefault, 0, &kCFTypeBagCallBacks);
-        pthread_setspecific(sContextKey, context);
-    }
-    return context;
+    pthread_mutex_unlock(&sContextMutex);
 }
+
+static CFMutableDictionaryRef sUTF8Map;
+static pthread_once_t sUTF8MapOnceControl = PTHREAD_ONCE_INIT;
+static pthread_mutex_t sUTF8MapMutex = PTHREAD_MUTEX_INITIALIZER;
+
+static void CreateUTF8Map()
+{
+    sUTF8Map = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+}
+
+static inline CFMutableDictionaryRef checkOutUTF8Map()
+{
+    pthread_once(&sUTF8MapOnceControl, CreateUTF8Map);
+    pthread_mutex_lock(&sUTF8MapMutex);
+    return sUTF8Map;
+}
+
+static inline void checkInUTF8Map()
+{
+    pthread_mutex_unlock(&sUTF8MapMutex);
+}
+
 
 lwc_string * lwc_intern_cf_string(CFStringRef str)
 {
-    CFMutableBagRef context = threadContext();
+    CFMutableBagRef context = checkOutContext();
     CFBagAddValue(context, str);
-    return CFBagGetValue(context, str);
+    CFStringRef ret = CFBagGetValue(context, str);
+    checkInContext();
+    return ret;
 }
 
 lwc_error lwc_intern_string(const char *s, size_t slen, lwc_string **ret)
@@ -67,16 +83,23 @@ lwc_error lwc_intern_substring(lwc_string *str, size_t ssoffset, size_t sslen, l
 
 lwc_string *lwc_string_ref(lwc_string *str)
 {
-    CFMutableBagRef context = threadContext();
+    CFMutableBagRef context = checkOutContext();
     CFBagAddValue(context, str);
     //NSCParameterAssert(str == CFBagGetValue(context, str));
+    checkInContext();
     return str;
 }
 
 void lwc_string_unref(lwc_string *str)
 {
-    CFMutableBagRef context = threadContext();
+    CFMutableBagRef context = checkOutContext();
+    if(CFBagGetCountOfValue(context, str) == 1) {
+        CFMutableDictionaryRef UTF8Map = checkOutUTF8Map();
+        CFDictionaryRemoveValue(UTF8Map, str);
+        checkInUTF8Map();
+    }
     CFBagRemoveValue(context, str);
+    checkInContext();
 }
 
 lwc_error lwc_string_caseless_isequal(lwc_string *str1, lwc_string *str2, bool *ret)
@@ -85,20 +108,32 @@ lwc_error lwc_string_caseless_isequal(lwc_string *str1, lwc_string *str2, bool *
     return lwc_error_ok;
 }
 
+static CFDataRef _lwc_str_UTF8Data(lwc_string *str)
+{
+    CFMutableDictionaryRef UTF8Map = checkOutUTF8Map();
+    CFDataRef UTF8Data = CFDictionaryGetValue(UTF8Map, str);
+    if(!UTF8Data) {
+        CFIndex length = CFStringGetLength(str);
+        CFIndex bufferSize = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8);
+        UInt8 *buffer = CFAllocatorAllocate(kCFAllocatorDefault, bufferSize + 1, 0);
+        CFStringGetBytes(str, CFRangeMake(0, length), kCFStringEncodingUTF8, '_', false, buffer, bufferSize, &length);
+        buffer[length] = '\0';
+        UTF8Data = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, buffer, length + 1, kCFAllocatorDefault);
+        CFDictionarySetValue(UTF8Map, str, UTF8Data);
+        CFRelease(UTF8Data);
+    }
+    checkInUTF8Map();
+    return UTF8Data;
+}
+
 const char *lwc_string_data(lwc_string *str)
 {       
-    const char * o1 = CFStringGetCStringPtr(str, kCFStringEncodingUTF8);
-    if(o1) {
-        return o1;
-    } else {
-        return [(NSString *)str UTF8String];
-    }
+    return (const char *)CFDataGetBytePtr(_lwc_str_UTF8Data(str));
 }
 
 size_t lwc_string_length(lwc_string *str)
 {       
-    size_t ret = strlen(lwc_string_data(str));
-    return ret;
+    return CFDataGetLength(_lwc_str_UTF8Data(str)) - 1;
 }
 
 uint32_t lwc_string_hash_value(lwc_string *str)
@@ -108,6 +143,7 @@ uint32_t lwc_string_hash_value(lwc_string *str)
 
 void lwc_iterate_strings(lwc_iteration_callback_fn cb, void *pw)
 {
-    CFMutableBagRef context = threadContext();
+    CFMutableBagRef context = checkOutContext();
     CFBagApplyFunction(context, (CFBagApplierFunction)cb, pw);
+    checkInContext();
 }

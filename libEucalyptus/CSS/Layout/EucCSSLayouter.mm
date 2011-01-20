@@ -147,6 +147,9 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
     THLogVerbose(@"Choosing:");
     while(pageBreakReverseIterator != pageBreakReverseIteratorEnd) {
         element = pageBreakReverseIterator->second;
+        if(!element) {
+            break;
+        }
         elementAbsoluteFrame = element.absoluteFrame;        
         
         if(THWillLogVerbose()) {
@@ -168,114 +171,97 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         EucCSSLayoutPoint point = pageBreakReverseIterator->first;
         EucCSSLayoutPositionedContainer *element = pageBreakReverseIterator->second;
         
-        EucCSSLayoutPositionedBlock *block;
-        
-        BOOL flattenBottomMargin = NO;
-        if([element isKindOfClass:[EucCSSLayoutPositionedLine class]]) {
-            EucCSSLayoutPositionedLine *line = (EucCSSLayoutPositionedLine *)element;
-            EucCSSLayoutPositionedRun *run = (EucCSSLayoutPositionedRun *)line.parent;
+        if(element) {
+            // If there's a 'next element' (there may not be if this is a forced
+            // break), remove it an all that follows it.
+            EucCSSLayoutPositionedBlock *block;
             
-            block = (EucCSSLayoutPositionedBlock *)run.parent;
+            BOOL flattenBottomMargin = NO;
+            if([element isKindOfClass:[EucCSSLayoutPositionedLine class]]) {
+                EucCSSLayoutPositionedLine *line = (EucCSSLayoutPositionedLine *)element;
+                EucCSSLayoutPositionedRun *run = (EucCSSLayoutPositionedRun *)line.parent;
+                
+                block = (EucCSSLayoutPositionedBlock *)run.parent;
 
-            // Remove all the lines from this one on from this run.
-            NSMutableArray *lines = run.children;
-            NSUInteger lineIndex = [lines indexOfObject:line];
-            [lines removeObjectsInRange:NSMakeRange(lineIndex, lines.count - lineIndex)];
-            
-            CGRect runFrame = run.frame;
-            runFrame.size.height = CGRectGetMaxY([lines.lastObject frame]) - runFrame.origin.y;
-            run.frame = runFrame;
-            
-            // Remove all the runs after this one from the block.
-            NSMutableArray *children = block.children;
-            NSUInteger runIndex = [children indexOfObject:run];
-            NSUInteger childrenCount = children.count;
-            if(runIndex < childrenCount) {
-                NSRange rangeToRemove;
-                rangeToRemove.location = runIndex + 1;
-                rangeToRemove.length = childrenCount - rangeToRemove.location;       
-                [children removeObjectsInRange:rangeToRemove];
+                // Remove all the lines from this one on from this run.
+                NSMutableArray *lines = run.children;
+                NSUInteger lineIndex = [lines indexOfObject:line];
+                [lines removeObjectsInRange:NSMakeRange(lineIndex, lines.count - lineIndex)];
+                
+                CGRect runFrame = run.frame;
+                runFrame.size.height = CGRectGetMaxY([lines.lastObject frame]) - runFrame.origin.y;
+                run.frame = runFrame;
+                
+                // Remove all the runs after this one from the block.
+                NSMutableArray *children = block.children;
+                NSUInteger runIndex = [children indexOfObject:run];
+                NSUInteger childrenCount = children.count;
+                if(runIndex < childrenCount) {
+                    NSRange rangeToRemove;
+                    rangeToRemove.location = runIndex + 1;
+                    rangeToRemove.length = childrenCount - rangeToRemove.location;       
+                    [children removeObjectsInRange:rangeToRemove];
+                }
+            } else if([element isKindOfClass:[EucCSSLayoutPositionedTableCell class]]) {
+                EucCSSLayoutPositionedTableCell *cell = (EucCSSLayoutPositionedTableCell *)element;
+                EucCSSLayoutPositionedTable *table;
+                
+                EucCSSLayoutPositionedContainer *potentialTable = (EucCSSLayoutPositionedBlock *)element;
+                do {
+                    potentialTable = potentialTable.parent;
+                } while(![potentialTable isKindOfClass:[EucCSSLayoutPositionedTable class]]);
+                table = (EucCSSLayoutPositionedTable *)potentialTable;
+                
+                [table truncateFromRowContainingPositionedCell:cell];
+                
+                block = (EucCSSLayoutPositionedBlock *)table.parent;
+            } else {
+                // Remove all the blocks from this one on from its parent.
+                block = (EucCSSLayoutPositionedBlock *)element;
+
+                EucCSSLayoutPositionedBlock *blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
+                NSMutableArray *blockParentChildren = blockParent.children;
+                NSUInteger blockIndex = [blockParentChildren indexOfObject:block];
+                [blockParentChildren removeObjectsInRange:NSMakeRange(blockIndex, blockParentChildren.count - blockIndex)];
+                            
+                block = blockParent;
             }
-        } else if([element isKindOfClass:[EucCSSLayoutPositionedTableCell class]]) {
-            EucCSSLayoutPositionedTableCell *cell = (EucCSSLayoutPositionedTableCell *)element;
-            EucCSSLayoutPositionedTable *table;
             
-            EucCSSLayoutPositionedContainer *potentialTable = (EucCSSLayoutPositionedBlock *)element;
-            do {
-                potentialTable = potentialTable.parent;
-            } while(![potentialTable isKindOfClass:[EucCSSLayoutPositionedTable class]]);
-            table = (EucCSSLayoutPositionedTable *)potentialTable;
+            // Resize and close the 'last' block (the parent of the element we just
+            // removed).
+            CGFloat pageBottom = CGRectGetMaxY(frame);
+            CGFloat contentHeightToCloseAt = pageBottom - [block convertRect:block.contentBounds 
+                                                                 toContainer:nil].origin.y;
+            [block closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:flattenBottomMargin];
             
-            [table truncateFromRowContainingPositionedCell:cell];
-            
-            block = (EucCSSLayoutPositionedBlock *)table.parent;
-        } else {
-            // Remove all the blocks from this one on from its parent.
-            block = (EucCSSLayoutPositionedBlock *)element;
-
+            // Remove all the blocks after this one, and re-close all the parents
+            // on the way up, stretching them down to the bottom of the page.
             EucCSSLayoutPositionedBlock *blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
-            NSMutableArray *blockParentChildren = blockParent.children;
-            NSUInteger blockIndex = [blockParentChildren indexOfObject:block];
-            [blockParentChildren removeObjectsInRange:NSMakeRange(blockIndex, blockParentChildren.count - blockIndex)];
-                        
-            block = blockParent;
-        }
-        
-        // Resize and close the 'last' block (the parent of the element we just
-        // removed).
-        CGFloat pageBottom = CGRectGetMaxY(frame);
-        CGFloat contentHeightToCloseAt = pageBottom - [block convertRect:block.contentBounds 
-                                                             toContainer:nil].origin.y;
-        [block closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:flattenBottomMargin];
-        
-        // Remove all the blocks after this one, and re-close all the parents
-        // on the way up, stretching them down to the bottom of the page.
-        EucCSSLayoutPositionedBlock *blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
-        while(blockParent) {
-            NSMutableArray *blockParentChildren = blockParent.children;
-            NSUInteger blockIndex = [blockParentChildren indexOfObject:block];
-            NSUInteger blockParentChildrenCount = blockParentChildren.count;
-            if(blockIndex < blockParentChildrenCount) {
-                NSRange rangeToRemove;
-                rangeToRemove.location = blockIndex + 1;
-                rangeToRemove.length = blockParentChildrenCount - rangeToRemove.location;       
-                [blockParentChildren removeObjectsInRange:rangeToRemove];
+            while(blockParent) {
+                NSMutableArray *blockParentChildren = blockParent.children;
+                NSUInteger blockIndex = [blockParentChildren indexOfObject:block];
+                NSUInteger blockParentChildrenCount = blockParentChildren.count;
+                if(blockIndex < blockParentChildrenCount) {
+                    NSRange rangeToRemove;
+                    rangeToRemove.location = blockIndex + 1;
+                    rangeToRemove.length = blockParentChildrenCount - rangeToRemove.location;       
+                    [blockParentChildren removeObjectsInRange:rangeToRemove];
+                }
+                
+                CGFloat contentHeightToCloseAt = pageBottom - [blockParent convertRect:blockParent.contentBounds 
+                                                                                toContainer:nil].origin.y;
+                [blockParent closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:YES];
+                
+                block = blockParent;
+                blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
             }
-            
-            CGFloat contentHeightToCloseAt = pageBottom - [blockParent convertRect:blockParent.contentBounds 
-                                                                            toContainer:nil].origin.y;
-            [blockParent closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:YES];
-            
-            block = blockParent;
-            blockParent = (EucCSSLayoutPositionedBlock *)block.parent;
+            *returningNextPoint = point;
+            return YES;
         }
-        
-        *returningNextPoint = point;
-        return YES;
     }
     return NO;
 }
  
-
-- (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node
-{
-    EucCSSLayoutPoint ret = {0};
-    
-    EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:node.document];
-    EucCSSLayoutRun *run = [extractor runForNodeWithKey:node.key];
-        
-    if(run) {
-        EucCSSLayoutRunPoint runPoint = [run pointForNode:node];
-        ret.nodeKey = run.id;
-        ret.word = runPoint.word;
-        ret.element = runPoint.element;
-    }   
-    
-    [extractor release];
-    
-    return ret;
-}
-
 - (EucCSSIntermediateDocumentNode *)_layoutNodeForKey:(uint32_t)nodeKey
 {
     if(nodeKey == 0) {
@@ -601,6 +587,12 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 [currentPositionedBlock closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:NO];
                 nextAbsoluteY = CGRectGetMaxY(currentPositionedBlock.absoluteFrame);
                 
+                if(css_computed_page_break_after(currentPositionedBlock.documentNode.computedStyle) >= CSS_PAGE_BREAK_AFTER_ALWAYS) {
+                    EucCSSLayoutPoint breakPoint = { nextRunNodeKey, 0, 0 };
+                    pageBreaks.push_back(make_pair(breakPoint, (EucCSSLayoutPositionedContainer *)nil));
+                    pageBreakForced = YES;
+                }
+                
                 currentPositionedBlock = (EucCSSLayoutPositionedBlock *)currentPositionedBlock.parent;
                 if(currentPositionedBlockNode == lastBlockNode) {
                     closedLastNode = YES;
@@ -608,7 +600,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 }
             }
 
-            if(!closedLastNode) {
+            if(!pageBreakForced && !closedLastNode) {
                 CGRect potentialFrame = currentPositionedBlock.contentBounds;
                 NSParameterAssert(potentialFrame.size.height == CGFLOAT_MAX);
 
@@ -617,9 +609,21 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
 
                 enum css_display_e currentNodeDisplay = (enum css_display_e)currentDocumentNode.display;
                 css_computed_style *currentNodeStyle = currentDocumentNode.computedStyle;
-                if(currentNodeStyle && css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE) {
-                    // Floats should be processed by the inline processing code.
-                    currentNodeDisplay = CSS_DISPLAY_INLINE;
+                if(currentNodeStyle) {
+                    if(css_computed_float(currentNodeStyle) != CSS_FLOAT_NONE) {
+                        // Floats should be processed by the inline processing code.
+                        currentNodeDisplay = CSS_DISPLAY_INLINE;
+                    }
+                    if(css_computed_page_break_before(currentDocumentNode.computedStyle) >= CSS_PAGE_BREAK_BEFORE_ALWAYS &&
+                       !pageBreaks.empty() && 
+                       currentNodeDisplay != CSS_DISPLAY_INLINE && 
+                       !stopBeforeNode // stopBeforeNode being set implies we're not doing page-based layout.
+                       ) {
+                        EucCSSLayoutPoint breakPoint = { nextRunNodeKey, 0, 0 };
+                        pageBreaks.push_back(make_pair(breakPoint, (EucCSSLayoutPositionedContainer *)nil));
+                        pageBreakForced = YES;
+                        break;
+                    }                        
                 }
                 
                 switch(currentNodeDisplay) {

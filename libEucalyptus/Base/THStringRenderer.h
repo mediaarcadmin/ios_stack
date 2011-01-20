@@ -14,7 +14,7 @@
 #endif
 
 struct THBreak;
-@class THStringAndCGFloatToCGFloatCache;
+@class THPair, THStringAndCGFloatToCGFloatCache;
 
 typedef enum THStringRendererFlags {
     THStringRendererFlagFairlySpaceLastLine    = 0x01,
@@ -60,6 +60,8 @@ typedef enum THStringRendererFontStyleFlags {
     CGAffineTransform _textTransform;
     
     THStringAndCGFloatToCGFloatCache *_widthCache;
+    
+    THPair *_mapAndFont;
 }
 
 @property (nonatomic, assign) CGFloat fauxBoldStrokeWidth; // Default if 0.5f.
@@ -72,6 +74,7 @@ typedef enum THStringRendererFontStyleFlags {
 
 
 - (CGFloat)lineSpacingForPointSize:(CGFloat)pointSize;
+- (CGFloat)emHeightForPointSize:(CGFloat)pointSize;
 - (CGFloat)ascenderForPointSize:(CGFloat)pointSize;
 - (CGFloat)descenderForPointSize:(CGFloat)pointSize;
 - (CGFloat)xHeightForPointSize:(CGFloat)pointSize;

@@ -184,7 +184,7 @@ static EucCSSLayoutPositionedLineLineBox lineBoxForDocumentNode(EucCSSIntermedia
         
     CGFloat halfLeading;
     halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([node lineHeightWithScaleFactor:scaleFactor], 
-                                                              [node textPointSizeWithScaleFactor:scaleFactor],
+                                                              [node emHeightWithScaleFactor:scaleFactor],
                                                               &halfLeading, &myLineBox.height);
     myLineBox.baseline = [node textAscenderWithScaleFactor:scaleFactor] + halfLeading;
         
@@ -458,7 +458,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         {
             CGFloat halfLeading;
             halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([parentNode lineHeightWithScaleFactor:scaleFactor], 
-                                                                      pointSize,
+                                                                      [parentNode emHeightWithScaleFactor:scaleFactor],
                                                                       &halfLeading, &lineHeight);
             baseline = [parentNode textAscenderWithScaleFactor:scaleFactor] + halfLeading;
         }
@@ -471,6 +471,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
         uint32_t i;
         EucCSSLayoutRunComponentInfo *info;
         EucCSSLayoutSizedRunWidthInfo *widthInfo;
+        CGFloat lastWordWidth = 0.0f;
         for(i = startComponentOffset, info = componentInfos, widthInfo = widthInfos;
             i < componentsCount && i < afterEndComponentOffset; 
             ++i, ++info, ++widthInfo) {
@@ -506,6 +507,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     
                     _incrementRenderitemsCount(&renderItem, &_renderItemCount, &renderItemCapacity, &_renderItems);
                     
+                    lastWordWidth = widthInfo->width;
                     xPosition += widthInfo->width;
                     break;
                 }
@@ -579,7 +581,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     pointSize = [node textPointSizeWithScaleFactor:scaleFactor];
                     CGFloat halfLeading;
                     halfLeadingAndCorrectedLineHeightForLineHeightAndEmHeight([node lineHeightWithScaleFactor:scaleFactor], 
-                                                                              pointSize,
+                                                                              [node emHeightWithScaleFactor:scaleFactor],
                                                                               &halfLeading, &lineHeight);
                     baseline = [node textAscenderWithScaleFactor:scaleFactor] + halfLeading;
                     
@@ -632,7 +634,7 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
             if(info->kind == EucCSSLayoutRunComponentKindHyphenationRule) {
                 --renderItem;
                 
-                xPosition -= widthInfo->width;
+                xPosition -= lastWordWidth;
                 xPosition += widthInfo->hyphenWidths.widthBeforeHyphen;
                                 
                 renderItem->lineBox.width = widthInfo->hyphenWidths.widthBeforeHyphen;

@@ -32,10 +32,8 @@ LineBreak:before { content:"\A"; white-space:pre-line; }
 *[FontStyle="Italic"] { font-style:italic }
 *[FontStyle="Oblique"] { font-style:oblique }
 
-/* Not yet handled by libCSS.
 *[BreakPageBefore="True"] { page-break-before:always }
 *[BreakColumnBefore="True"] { page-break-before:always }
-*/
 
 *[TextAlignment="Justify"] { text-align:justify }
 *[TextAlignment="Center"] { text-align:center }
