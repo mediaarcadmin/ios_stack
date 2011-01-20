@@ -602,6 +602,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 	
 	for (BlioBook* aBook in results) {
+		[self.managedObjectContext refreshObject:aBook mergeChanges:YES];
 		if ([aBook.libraryPosition intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"libraryPosition"];
         else {
 			NSInteger newPosition = [aBook.libraryPosition intValue];
@@ -1090,7 +1091,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			break;
 			
 		case NSFetchedResultsChangeUpdate:
-			if (!_didEdit) {
+//			if (!_didEdit) {
 				switch (self.libraryLayout) {
 					case kBlioLibraryLayoutGrid:
 						[self configureGridCell:(BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:indexPath.row]
@@ -1109,7 +1110,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
                         break;
 				}
 				
-			}
+//			}
 			break;
 	}
 }
