@@ -121,10 +121,11 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
         
         // Retain this, because we're retaining nodes, but nodes don't retain
         // their documents.
+        _document = [_startNode.document retain];  
+        
         // No need to do this - noone should be using the run after the 
         // document's gone.
-        //_document = [_startNode.document retain];        
-        _document = _startNode.document;        
+        //_document = _startNode.document;        
         
         css_computed_style *inlineNodeStyle = inlineNode.computedStyle;
                 
@@ -268,7 +269,7 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
     [_floatComponentIndexes release];
     
     // See comments in init.
-    //[_document release];
+    [_document release];
     
     [_sharedHyphenator release];
     
