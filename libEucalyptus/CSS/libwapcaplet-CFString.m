@@ -7,7 +7,6 @@
  */
 
 #import <CoreFoundation/CoreFoundation.h>
-#import <Foundation/Foundation.h>
 
 #define lwc_string_s __CFString const
 
@@ -34,6 +33,28 @@ static inline void checkInContext()
 {
     pthread_mutex_unlock(&sContextMutex);
 }
+
+static CFMutableDictionaryRef sUTF8Map;
+static pthread_once_t sUTF8MapOnceControl = PTHREAD_ONCE_INIT;
+static pthread_mutex_t sUTF8MapMutex = PTHREAD_MUTEX_INITIALIZER;
+
+static void CreateUTF8Map()
+{
+    sUTF8Map = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+}
+
+static inline CFMutableDictionaryRef checkOutUTF8Map()
+{
+    pthread_once(&sUTF8MapOnceControl, CreateUTF8Map);
+    pthread_mutex_lock(&sUTF8MapMutex);
+    return sUTF8Map;
+}
+
+static inline void checkInUTF8Map()
+{
+    pthread_mutex_unlock(&sUTF8MapMutex);
+}
+
 
 lwc_string * lwc_intern_cf_string(CFStringRef str)
 {
@@ -72,6 +93,11 @@ lwc_string *lwc_string_ref(lwc_string *str)
 void lwc_string_unref(lwc_string *str)
 {
     CFMutableBagRef context = checkOutContext();
+    if(CFBagGetCountOfValue(context, str) == 1) {
+        CFMutableDictionaryRef UTF8Map = checkOutUTF8Map();
+        CFDictionaryRemoveValue(UTF8Map, str);
+        checkInUTF8Map();
+    }
     CFBagRemoveValue(context, str);
     checkInContext();
 }
@@ -82,20 +108,33 @@ lwc_error lwc_string_caseless_isequal(lwc_string *str1, lwc_string *str2, bool *
     return lwc_error_ok;
 }
 
+static CFDataRef _lwc_str_UTF8Data(lwc_string *str)
+{
+    CFMutableDictionaryRef UTF8Map = checkOutUTF8Map();
+    CFDataRef UTF8Data = CFDictionaryGetValue(UTF8Map, str);
+    if(!UTF8Data) {
+        CFIndex length = CFStringGetLength(str);
+        UInt8 *buffer = CFAllocatorAllocate(kCFAllocatorDefault, 
+                                            CFStringGetMaximumSizeForEncoding(CFStringGetLength(str), kCFStringEncodingUTF8) + 1,
+                                            0);
+        CFStringGetBytes(str, CFRangeMake(0, length), kCFStringEncodingUTF8, '_', false, buffer, length, &length);
+        buffer[length] = '\0';
+        UTF8Data = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, buffer, length + 1, kCFAllocatorDefault);
+        CFDictionarySetValue(UTF8Map, str, UTF8Data);
+        CFRelease(UTF8Data);
+    }
+    checkInUTF8Map();
+    return UTF8Data;
+}
+
 const char *lwc_string_data(lwc_string *str)
 {       
-    const char * o1 = CFStringGetCStringPtr(str, kCFStringEncodingUTF8);
-    if(o1) {
-        return o1;
-    } else {
-        return [(NSString *)str UTF8String];
-    }
+    return (const char *)CFDataGetBytePtr(_lwc_str_UTF8Data(str));
 }
 
 size_t lwc_string_length(lwc_string *str)
 {       
-    size_t ret = strlen(lwc_string_data(str));
-    return ret;
+    return CFDataGetLength(_lwc_str_UTF8Data(str)) - 1;
 }
 
 uint32_t lwc_string_hash_value(lwc_string *str)
