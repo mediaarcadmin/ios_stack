@@ -8,6 +8,9 @@
 
 #import "EucCSSXMLTreeNode.h"
 
+#import <libwapcaplet/libwapcaplet.h>
+#import "LWCNSStringAdditions.h"
+
 @interface EucCSSXMLTreeNode ()
 
 @property (nonatomic, assign) EucCSSXMLTreeNode *parent;
@@ -24,7 +27,6 @@
 @synthesize key = _key;
 @synthesize kind = _kind;
 @synthesize name = _name;
-@synthesize attributes = _attributes;
 @synthesize characters = _characters;
 @synthesize parent = _parent;
 @synthesize previousSibling = _previousSibling;
@@ -39,10 +41,23 @@
     return self;
 }
 
+- (void)setName:(NSString *)name
+{
+    _name = (NSString *)lwc_intern_ns_string(name);
+}
+
 - (void)dealloc
 {
-    [_attributes release];
-    [_name release];
+    if(_attributesCountX2) {
+        for(NSUInteger i = 0; i < _attributesCountX2; ++i) {
+            lwc_string_unref(_attributes[i]);
+        }
+        free(_attributes);
+    }
+    if(_name) {
+        lwc_string_unref((lwc_string *)_name);
+    }
+    
     [_characters release];
     [_children release];
     [super dealloc];
@@ -73,8 +88,36 @@
 
 -(NSString *)attributeWithName:(NSString *)attributeName
 {
-    return [_attributes objectForKey:attributeName];
+    NSString *ret = nil;
+    if(_attributesCountX2) {
+        lwc_string *lwcName = lwc_intern_ns_string(attributeName);
+
+        for(NSUInteger i = 0; i < _attributesCountX2; i += 2) {
+            if(lwcName == _attributes[i]) {
+                ret = NSStringFromLWCString(_attributes[i+1]);
+                break;
+            }
+        }
+               
+        lwc_string_unref(lwcName);
+    }
+    return ret;
 }   
+
+- (void)addAttributeValue:(NSString *)value forName:(NSString *)name;
+{
+    if(_attributesCountX2 == _attributesCapacity) {
+        _attributesCapacity += 8;
+        _attributes = realloc(_attributes, _attributesCapacity * sizeof(lwc_string *));
+    }
+    _attributes[_attributesCountX2++] = lwc_intern_ns_string(name);
+    _attributes[_attributesCountX2++] = lwc_intern_ns_string(value);
+}
+
+- (BOOL)hasAttributes
+{
+    return _attributesCountX2 != 0;
+}
 
 - (BOOL)getCharacterContents:(const char **)contents length:(size_t *)length
 {
