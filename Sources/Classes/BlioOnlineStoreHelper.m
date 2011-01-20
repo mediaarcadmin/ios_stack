@@ -59,7 +59,7 @@
 		downloadNewBooks = YES;
 		
 #ifdef TEST_MODE
-		self.storeURL = @"https://bliodemo.crosscomm.net/";
+		self.storeURL = @"http://bliodemo.crosscomm.net/";
 #else	
 		self.storeURL = @"https://Iphone.Bliodigitallocker.com/";
 #endif
