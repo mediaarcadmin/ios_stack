@@ -564,7 +564,6 @@
 					
 				}
 				[xpsOps addObject:licenseOp];
-				[bookOps addObject:licenseOp];				
 			}			
 			
 			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
@@ -583,7 +582,6 @@
 				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
 			}
 			[xpsOps addObject:manifestOp];
-			[bookOps addObject:manifestOp];
 			
 			
 			if ([[aBook manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
@@ -611,6 +609,7 @@
 			
 			for (BlioProcessingOperation * op in xpsOps) {
 				[preAvailabilityCompleteOp addDependency:op];
+				[bookOps addObject:op];
 			}
 			[bookOps addObject:preAvailabilityCompleteOp];
 			[self.preAvailabilityQueue addOperation:preAvailabilityCompleteOp];
@@ -688,7 +687,6 @@
 					
 				}
 				[xpsOps addObject:licenseOp];
-				[bookOps addObject:licenseOp];				
 			}
 			
 			BlioProcessingOperation * manifestOp = [self operationByClass:[BlioProcessingXPSManifestOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
@@ -702,10 +700,10 @@
 				if (licenseOp) [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
+				if (paidBookOp && ![[manifestOp dependencies] containsObject:paidBookOp]) [manifestOp addDependency:paidBookOp];
 				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
             }
 			[xpsOps addObject:manifestOp];
-			[bookOps addObject:manifestOp];
 
 			
 			if ([[aBook manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationXPS] || placeholderOnly) {
@@ -1283,6 +1281,9 @@
 				[aBook setManifestValue:nil forKey:BlioManifestPDFKey];
 				[aBook setManifestValue:nil forKey:BlioManifestTextFlowKey];
 				[aBook setManifestValue:nil forKey:BlioManifestXPSKey];
+				[aBook setManifestValue:nil forKey:BlioManifestLicenseAcquisitionCompleteKey];
+				
+				NSLog(@"manifest for deleted book: %@", [aBook valueForKey:@"manifest"]);
 				[aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
 			}
 			else {
