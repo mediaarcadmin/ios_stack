@@ -32,14 +32,18 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
     EucCSSXMLTreeNode *newNode = [[context->xmlTreeNodeClass alloc] initWithKey:nodes.count + 1
                                                                    kind:EucCSSDocumentTreeNodeKindElement];
     
-    newNode.name = [NSString stringWithUTF8String:name];
+    CFStringRef nameString = CFStringCreateWithCString(kCFAllocatorDefault, (const char *)name, kCFStringEncodingUTF8);
+    newNode.name = (NSString *)nameString;
+    CFRelease(nameString);
         
     if(*atts) {
         for(int i = 0; atts[i]; i+=2) {
             if(atts[i+1]) {
-                NSString *name = [NSString stringWithUTF8String:atts[i]];
-                NSString *value = [NSString stringWithUTF8String:atts[i+1]];
-                [newNode addAttributeValue:value forName:name];
+                CFStringRef attributeName = CFStringCreateWithCString(kCFAllocatorDefault, (const char *)atts[i], kCFStringEncodingUTF8);
+                CFStringRef attributeValue = CFStringCreateWithCString(kCFAllocatorDefault, (const char *)atts[i+1], kCFStringEncodingUTF8);
+                [newNode addAttributeValue:(NSString *)attributeValue forName:(NSString *)attributeName];
+                CFRelease(attributeName);
+                CFRelease(attributeValue);
             }
         }
         
@@ -75,9 +79,9 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
     EucCSSXMLTreeNode *currentNode = context->currentNode;
     EucCSSXMLTreeNode *newNode = [[context->xmlTreeNodeClass alloc] initWithKey:nodes.count + 1
                                                                    kind:EucCSSDocumentTreeNodeKindText];
-    NSData *characterData = [[NSData alloc] initWithBytes:chars length:len];
-    newNode.characters = characterData;
-    [characterData release];
+    CFDataRef characterData = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)chars, len);
+    newNode.characters = (NSData *)characterData;
+    CFRelease(characterData);
     
     [nodes addObject:newNode];
     [currentNode addChild:newNode];
