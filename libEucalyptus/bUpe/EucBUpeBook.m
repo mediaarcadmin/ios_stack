@@ -880,13 +880,22 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
         // we have the documents open anyway, and we can persist it alongside
         // the _idToIndexPoint map in -persistCachableData.
         EucCSSIntermediateDocumentNode *node = document.rootNode;
+        NSAutoreleasePool *innerInnerPool = [[NSAutoreleasePool alloc] init]; 
+        NSUInteger count = 0;
         while((node = node.nextDisplayable)) {
             if(node.isTextNode) {
                 off_t pointSize = roundf([node textPointSizeWithScaleFactor:1.0f]);
                 ++fontSizes[MIN(pointSize, 29)];
             }
+            if(++count % 256) {
+                [node retain];
+                [innerInnerPool drain];
+                innerInnerPool = [[NSAutoreleasePool alloc] init];
+                [node autorelease];
+            }
         }
-                
+        [innerInnerPool drain];
+   
         sourceIndexPoint.source = ++source;
         
         [innerPool drain];

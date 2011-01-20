@@ -90,74 +90,81 @@ static NSString *xamlColorToCSSColor(NSString *color)
     // with CSS, so we convert them to an inline style here.
     // Other attributes are styled by the TextFlowXAML.css resource
     // file.
-    if(!_inlineStyleConstructed) {
-        NSDictionary *myAttributes = self.attributes;
-        if(myAttributes.count) {
-            NSMutableString *constructionString = [[NSMutableString alloc] init];
-            for(NSString *key in [myAttributes keyEnumerator]) {
-                if([key isEqualToString:@"Margin"]) {
-                    // The margin attributes are in order left, top, right, bottom.
-                    // CSS margins are in order top, right, bottom, left...
-                    NSArray *elements = [[myAttributes objectForKey:key] componentsSeparatedByString:@","];
-                    NSUInteger elementCount = [elements count];
-                    if(elementCount == 1) {
-                        [constructionString appendFormat:@"margin:%@px;", [elements objectAtIndex:0]];
-                    } else if(elementCount == 2) {
-                        [constructionString appendFormat:@"margin:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
-                    } else if(elementCount == 4) {
-                        [constructionString appendFormat:@"margin:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
-                    }                    
-                } else if([key isEqualToString:@"Padding"]) {
-                    // The padding attributes are in order left, top, right, bottom.
-                    // CSS padding are in order top, right, bottom, left...
-                    NSArray *elements = [[myAttributes objectForKey:key] componentsSeparatedByString:@","];
-                    NSUInteger elementCount = [elements count];
-                    if(elementCount == 1) {
-                        [constructionString appendFormat:@"padding:%@px;", [elements objectAtIndex:0]];
-                    } else if(elementCount == 2) {
-                        [constructionString appendFormat:@"padding:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
-                    } else if(elementCount == 4) {
-                        [constructionString appendFormat:@"padding:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
-                    }                    
-                } else if([key isEqualToString:@"BorderThickness"]) {
-                    // The border attributes are in order left, top, right, bottom.
-                    // CSS border are in order top, right, bottom, left...
-                    NSArray *elements = [[myAttributes objectForKey:key] componentsSeparatedByString:@","];
-                    NSUInteger elementCount = [elements count];
-                    if(elementCount == 1) {
-                        [constructionString appendFormat:@"border-width:%@px;", [elements objectAtIndex:0]];
-                    } else if(elementCount == 2) {
-                        [constructionString appendFormat:@"border-width:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
-                    } else if(elementCount == 4) {
-                        [constructionString appendFormat:@"border-width:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
-                    }                    
-                } else if([key isEqualToString:@"BorderBrush"]) {
-                    [constructionString appendFormat:@"border-color:%@;", xamlColorToCSSColor([myAttributes objectForKey:key])];
-                } else if([key isEqualToString:@"FontSize"]) {
-                    [constructionString appendFormat:@"font-size:%@px;", [myAttributes objectForKey:key]];
-                } else if([key isEqualToString:@"LineHeight"]) {
-                    [constructionString appendFormat:@"line-height:%@px;", [myAttributes objectForKey:key]];
-                } else if([key isEqualToString:@"TextIndent"]) {
-                    [constructionString appendFormat:@"text-indent:%@px;", [myAttributes objectForKey:key]];
-                } else if([key isEqualToString:@"Width"]) {
-                    [constructionString appendFormat:@"width:%@px;", [myAttributes objectForKey:key]];
-                } else if([key isEqualToString:@"Height"]) {
-                    [constructionString appendFormat:@"height:%@px;", [myAttributes objectForKey:key]];
-                } else if([key isEqualToString:@"Foreground"]) {
-                    [constructionString appendFormat:@"color:%@;", xamlColorToCSSColor([myAttributes objectForKey:key])];
-                } else if([key isEqualToString:@"Background"]) {
-                    [constructionString appendFormat:@"background-color:%@;", xamlColorToCSSColor([myAttributes objectForKey:key])];
-                }                     
-            }
-            if(constructionString.length) {
-                _constructedInlineStyle = constructionString;
-            } else {
-                [constructionString release];
-            }
+    if(self.hasAttributes) {
+        NSMutableString *constructionString = [[NSMutableString alloc] init];
+        NSString *value;
+        if((value = [self attributeWithName:@"Margin"])) {
+            // The margin attributes are in order left, top, right, bottom.
+            // CSS margins are in order top, right, bottom, left...
+            NSArray *elements = [value componentsSeparatedByString:@","];
+            NSUInteger elementCount = [elements count];
+            if(elementCount == 1) {
+                [constructionString appendFormat:@"margin:%@px;", [elements objectAtIndex:0]];
+            } else if(elementCount == 2) {
+                [constructionString appendFormat:@"margin:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
+            } else if(elementCount == 4) {
+                [constructionString appendFormat:@"margin:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
+            }                    
+        } 
+        if((value = [self attributeWithName:@"Padding"])) {
+            // The padding attributes are in order left, top, right, bottom.
+            // CSS padding are in order top, right, bottom, left...
+            NSArray *elements = [value componentsSeparatedByString:@","];
+            NSUInteger elementCount = [elements count];
+            if(elementCount == 1) {
+                [constructionString appendFormat:@"padding:%@px;", [elements objectAtIndex:0]];
+            } else if(elementCount == 2) {
+                [constructionString appendFormat:@"padding:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
+            } else if(elementCount == 4) {
+                [constructionString appendFormat:@"padding:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
+            }                    
+        } 
+        if((value = [self attributeWithName:@"BorderThickness"])) {
+            // The border attributes are in order left, top, right, bottom.
+            // CSS border are in order top, right, bottom, left...
+            NSArray *elements = [value componentsSeparatedByString:@","];
+            NSUInteger elementCount = [elements count];
+            if(elementCount == 1) {
+                [constructionString appendFormat:@"border-width:%@px;", [elements objectAtIndex:0]];
+            } else if(elementCount == 2) {
+                [constructionString appendFormat:@"border-width:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
+            } else if(elementCount == 4) {
+                [constructionString appendFormat:@"border-width:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
+            }                    
+        } 
+        if((value = [self attributeWithName:@"BorderBrush"])) {
+            [constructionString appendFormat:@"border-color:%@;", xamlColorToCSSColor(value)];
+        } 
+        if((value = [self attributeWithName:@"FontSize"])) {
+            [constructionString appendFormat:@"font-size:%@px;", value];
+        } 
+        if((value = [self attributeWithName:@"LineHeight"])) {
+            [constructionString appendFormat:@"line-height:%@px;", value];
+        } 
+        if((value = [self attributeWithName:@"TextIndent"])) {
+            [constructionString appendFormat:@"text-indent:%@px;", value];
+        } 
+        if((value = [self attributeWithName:@"Width"])) {
+            [constructionString appendFormat:@"width:%@px;", value];
+        } 
+        if((value = [self attributeWithName:@"Height"])) {
+            [constructionString appendFormat:@"height:%@px;", value];
+        } 
+        if((value = [self attributeWithName:@"Foreground"])) {
+            [constructionString appendFormat:@"color:%@;", xamlColorToCSSColor(value)];
+        } 
+        if((value = [self attributeWithName:@"Background"])) {
+            [constructionString appendFormat:@"background-color:%@;", xamlColorToCSSColor(value)];
+        }                     
+        if(constructionString.length) {
+            [constructionString autorelease];
+        } else {
+            [constructionString release];
+            constructionString = nil;
         }
-        _inlineStyleConstructed = YES;
+        return constructionString;
     }
-    return _constructedInlineStyle;
+    return nil;
 }
 
 - (BOOL)isImageNode

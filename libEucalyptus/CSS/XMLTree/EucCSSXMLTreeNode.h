@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "EucCSSDocumentTreeNode.h"
 
+struct lwc_string_s;
+
 @interface EucCSSXMLTreeNode : NSObject <EucCSSDocumentTreeNode> {
     uint32_t _key;
     EucCSSDocumentTreeNodeKind _kind;
@@ -20,17 +22,21 @@
     EucCSSXMLTreeNode *_previousSibling;
     EucCSSXMLTreeNode *_nextSibling;
     
-    NSDictionary *_attributes;
     NSData *_characters;
+    
+    NSUInteger _attributesCountX2;
+    NSUInteger _attributesCapacity;
+    struct lwc_string_s **_attributes;
 }
 
 @property (nonatomic, retain) NSString *name;
 
-@property (nonatomic, retain) NSDictionary *attributes;
 @property (nonatomic, retain) NSData *characters;
 
 - (id)initWithKey:(uint32_t)key kind:(EucCSSDocumentTreeNodeKind)kind;
 
 - (void)addChild:(EucCSSXMLTreeNode *)child;
+- (void)addAttributeValue:(NSString *)value forName:(NSString *)name;
+@property (nonatomic, assign, readonly) BOOL hasAttributes;
 
 @end
