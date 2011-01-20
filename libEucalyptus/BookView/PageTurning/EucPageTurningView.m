@@ -2185,7 +2185,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
     UITouch *touch = [touches anyObject];
     // If we're not currently tracking a touch
-    if(!_touch && touches.count == 1) {
+    if(!_pinchTouches[0] && !_touch && touches.count == 1) {
         // Store touch
         _touch = touch;
         _touchBeganTime = [touch timestamp];

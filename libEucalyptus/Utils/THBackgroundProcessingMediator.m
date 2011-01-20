@@ -11,7 +11,7 @@
 #import <pthread.h>
 
 static pthread_rwlock_t rw_lock = PTHREAD_RWLOCK_INITIALIZER;
-
+static NSInteger sCurtailationCount = 0;
 
 @implementation THBackgroundProcessingMediator
 
@@ -27,12 +27,21 @@ static pthread_rwlock_t rw_lock = PTHREAD_RWLOCK_INITIALIZER;
 
 + (void)curtailBackgroundProcessing
 {
-    pthread_rwlock_rdlock(&rw_lock);
+    if(sCurtailationCount == 0) {
+        pthread_rwlock_rdlock(&rw_lock);
+    } 
+    ++sCurtailationCount;
 }
 
 + (void)allowBackgroundProcessing
 {
-    pthread_rwlock_unlock(&rw_lock);
+    if(sCurtailationCount == 1) {
+        pthread_rwlock_unlock(&rw_lock);
+    }
+    --sCurtailationCount;
+    if(sCurtailationCount < 1) {
+        THWarn(@"Background processing allowed more than curtailed!");
+    }
 }
 
 @end
