@@ -15,6 +15,7 @@
 #import "zlib.h"
 #import <objc/runtime.h>
 #import <libEucalyptus/THPair.h>
+#import "BlioZipArchive.h"
 
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
 void BlioXPSProviderDRMRewind(URI_HANDLE h);
@@ -22,6 +23,8 @@ size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb);
 size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb);
 size_t BlioXPSProviderDRMSize(URI_HANDLE h);
 void BlioXPSProviderDRMClose(URI_HANDLE h);
+
+NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 
 @interface BlioXPSBitmapReleaseCallback : NSObject {
     void *data;
@@ -47,6 +50,8 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
 - (NSData *)decompressWithGZipCompression:(NSData *)data;
 - (NSArray *)extractHyperlinks:(NSData *)data;
+- (NSData *)dataFromComponentPartsInArray:(NSArray *)partsArray;
+- (NSArray *)contentsOfXPS;
 
 @end
 
@@ -578,6 +583,15 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     return rawData;
 }
 
+- (NSArray *)contentsOfXPS {
+	void *directoryPtr;
+	[contentsLock lock];
+	NSUInteger entries = XPS_GetPackageDir(xpsHandle, &directoryPtr);
+    [contentsLock unlock];
+	
+	return [BlioZipArchive contentsOfCentralDirectory:directoryPtr numberOfEntries:entries];
+}
+
 - (BOOL)componentExistsAtPath:(NSString *)path {
     XPS_FILE_PACKAGE_INFO packageInfo;
     [contentsLock lock];
@@ -611,6 +625,10 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 			break;
 		}
 		[inputString release];
+	}
+	
+	if (docRefString && ![[docRefString substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"/"]) {
+		docRefString = [NSString stringWithFormat:@"/%@", docRefString];
 	}
 	
 	return docRefString;
@@ -649,20 +667,54 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	return fixedPagesString;
 }
 
+- (NSArray *)stringsInArray:(NSArray *)stringArray matchingRegularExpression:(NSString *)expression {
+	NSMutableArray *matches = [NSMutableArray array];
+	
+	for (NSString *string in stringArray) {
+		if ([string rangeOfString:expression options:(NSRegularExpressionSearch | NSCaseInsensitiveSearch)].location != NSNotFound) {
+			[matches addObject:string];
+		}
+	}
+	
+	return matches;
+}
+
+NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
+    return [string1 compare:string2 options:(NSCaseInsensitiveSearch | NSNumericSearch)];
+}
+
+- (NSData *)dataFromComponentPartsInArray:(NSArray *)partsArray {
+	// Reorder parts
+	NSArray *sortedParts = [partsArray sortedArrayUsingFunction:numericCaseInsensitiveSort context:NULL];
+	
+	NSMutableData *partsData = [NSMutableData data];
+		
+	for (NSString *part in sortedParts) {
+		[partsData appendData:[self dataForComponentAtPath:part]];
+	}
+	
+	return partsData;
+}
+
+
 - (NSString *)xpsPagesDirectory {
 	if (!xpsPagesDirectory) {
-		NSData *sequenceData = [self dataForComponentAtPath:BlioXPSSequenceFile];
+				
+		NSArray *contents = [self contentsOfXPS];
+		
+		NSArray *fixedDocumentSequenceParts = [self stringsInArray:contents matchingRegularExpression:[NSString stringWithFormat:@"^/[^/]*\\.%@.*", BlioXPSFixedDocumentSequenceExtension]];
+		NSData *sequenceData = [self dataFromComponentPartsInArray:fixedDocumentSequenceParts];
+		
 		NSString *fixedDocumentPath = [self extractFixedDocumentPath:sequenceData];
 		
 		if (fixedDocumentPath) {
-			NSData *fixedDocumentData = [self dataForComponentAtPath:fixedDocumentPath];
+			NSArray *fixedDocumentParts = [self stringsInArray:contents matchingRegularExpression:[NSString stringWithFormat:@"^%@.*", fixedDocumentPath]];
+			NSData *fixedDocumentData = [self dataFromComponentPartsInArray:fixedDocumentParts];
+
 			NSString *pagesPath = [self extractFixedPagesPath:fixedDocumentData];
 			if ([[pagesPath substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"/"]) {
 				xpsPagesDirectory = pagesPath;
 			} else {
-				if (![[fixedDocumentPath substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"/"]) {
-					fixedDocumentPath = [NSString stringWithFormat:@"/%@", fixedDocumentPath];
-				}
 				xpsPagesDirectory = [[fixedDocumentPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:pagesPath];
 			}
 			[xpsPagesDirectory retain];
