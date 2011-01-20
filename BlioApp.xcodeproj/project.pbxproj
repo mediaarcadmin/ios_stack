@@ -32,6 +32,9 @@
 		55822F2310F2891B008614FD /* icon-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1D10F2891B008614FD /* icon-plus.png */; };
 		55822F2410F2891B008614FD /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1E10F2891B008614FD /* icon-search.png */; };
 		5590D317111C8E7D00CE0C4F /* roundedcorners.png in Resources */ = {isa = PBXBuildFile; fileRef = 5590D316111C8E7D00CE0C4F /* roundedcorners.png */; };
+		7D05F86C12E8A123007150FF /* BlioZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05F86B12E8A123007150FF /* BlioZipArchive.m */; };
+		7D05F86D12E8A123007150FF /* BlioZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05F86B12E8A123007150FF /* BlioZipArchive.m */; };
+		7D05F86E12E8A123007150FF /* BlioZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05F86B12E8A123007150FF /* BlioZipArchive.m */; };
 		7D0D4BC41213F6E2000AAC82 /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */; };
 		7D0D4BC51213F6E2000AAC82 /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */; };
 		7D131D231295628300BCA583 /* icon-title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D191295628300BCA583 /* icon-title@2x.png */; };
@@ -1370,6 +1373,8 @@
 		55822F1E10F2891B008614FD /* icon-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-search.png"; sourceTree = "<group>"; };
 		5590D316111C8E7D00CE0C4F /* roundedcorners.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = roundedcorners.png; sourceTree = "<group>"; };
 		7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libEucalyptus.xcodeproj; path = libEucalyptus/libEucalyptus.xcodeproj; sourceTree = "<group>"; };
+		7D05F86A12E8A123007150FF /* BlioZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioZipArchive.h; sourceTree = "<group>"; };
+		7D05F86B12E8A123007150FF /* BlioZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioZipArchive.m; sourceTree = "<group>"; };
 		7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubOverrides.css; sourceTree = "<group>"; };
 		7D131D191295628300BCA583 /* icon-title@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-title@2x.png"; sourceTree = "<group>"; };
 		7D131D1A1295628300BCA583 /* icon-title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-title.png"; sourceTree = "<group>"; };
@@ -2928,7 +2933,7 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData */,
+				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
 				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
@@ -2947,6 +2952,8 @@
 				C98CCAAB119D8352002E9A8E /* XpsSdk.h */,
 				C9DA72B711E60C9400F584A1 /* BlioXPSProvider.h */,
 				C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */,
+				7D05F86A12E8A123007150FF /* BlioZipArchive.h */,
+				7D05F86B12E8A123007150FF /* BlioZipArchive.m */,
 			);
 			name = XPS;
 			sourceTree = "<group>";
@@ -3341,7 +3348,7 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData */ = {
+		C986765B112411060070A03E /* GData.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = GData.framework;
@@ -4227,6 +4234,7 @@
 				7DB349A912B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 				DCC761D412BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
 				DCC762B712BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
+				7D05F86D12E8A123007150FF /* BlioZipArchive.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4365,6 +4373,7 @@
 				7DB349AA12B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 				DCC761D512BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
 				DCC762B812BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
+				7D05F86E12E8A123007150FF /* BlioZipArchive.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4503,6 +4512,7 @@
 				7DB349A812B1955C00BCE8DF /* THNSDataAdditions.m in Sources */,
 				DCC761D312BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
 				DCC762B612BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
+				7D05F86C12E8A123007150FF /* BlioZipArchive.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
