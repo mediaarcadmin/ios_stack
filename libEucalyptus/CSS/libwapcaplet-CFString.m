@@ -114,10 +114,9 @@ static CFDataRef _lwc_str_UTF8Data(lwc_string *str)
     CFDataRef UTF8Data = CFDictionaryGetValue(UTF8Map, str);
     if(!UTF8Data) {
         CFIndex length = CFStringGetLength(str);
-        UInt8 *buffer = CFAllocatorAllocate(kCFAllocatorDefault, 
-                                            CFStringGetMaximumSizeForEncoding(CFStringGetLength(str), kCFStringEncodingUTF8) + 1,
-                                            0);
-        CFStringGetBytes(str, CFRangeMake(0, length), kCFStringEncodingUTF8, '_', false, buffer, length, &length);
+        CFIndex bufferSize = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8);
+        UInt8 *buffer = CFAllocatorAllocate(kCFAllocatorDefault, bufferSize + 1, 0);
+        CFStringGetBytes(str, CFRangeMake(0, length), kCFStringEncodingUTF8, '_', false, buffer, bufferSize, &length);
         buffer[length] = '\0';
         UTF8Data = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, buffer, length + 1, kCFAllocatorDefault);
         CFDictionarySetValue(UTF8Map, str, UTF8Data);

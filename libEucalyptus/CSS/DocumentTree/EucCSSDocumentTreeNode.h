@@ -39,6 +39,8 @@
 
 - (NSString *)CSSID;
 
+- (NSString *)CSSClasses;
+
 - (NSString *)inlineStyle;
 
 @optional

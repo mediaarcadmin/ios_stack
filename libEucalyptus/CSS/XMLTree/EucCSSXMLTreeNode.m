@@ -160,4 +160,9 @@
     return nil;
 }
 
+- (NSString *)CSSClasses
+{
+    return nil;
+}
+
 @end
