@@ -23,15 +23,15 @@ extern "C" {
 
 // These routines will break a paragraph up with line breaks giving a pleasingly
 // spaced paragraph rather than just naively breaking each line when it gets too
-// long (so, e.g., it might place a short word on the next line, even if it
+// long.  For example, it might place a short word on the next line, even if it
 // would fit on the current line, if doing so would make the paragraph spacing
 // more even.    
     
-// The interface is inspired (but not identical to) LibHnj's justification 
+// The interface is inspired by (but is not identical to) LibHnj's justification 
 // interface.
     
-// The algorithm is similar to the ne used in TeX (see source file for further
-// details.
+// The algorithm is similar to the one used in TeX (see source file for further
+// details).
 
     
 // These are here mostly for informational purposes.  At the moment, the
@@ -73,7 +73,7 @@ typedef struct THBreak {
     
 // Takes an array of potential break points (see above for definition of a 
 // point), and calculates which points to use to make lines up to ideal_width
-// in length.  The indexes of the breaks used are placed into the use-supplied
+// in length.  The indexes of the breaks used are placed into the user-supplied
 // result array.  The return value is number of used breaks.
 // Note that the last break must have the flag TH_JUST_WITH_FLOATS_FLAG_ISHARDBREAK set,
 // otherwise it will be used in the justification calculations (i.e. the 
