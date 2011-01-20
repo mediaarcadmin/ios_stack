@@ -120,4 +120,20 @@
     return nil;
 }
 
+- (EucCSSLayoutPoint)layoutPointForNode:(EucCSSIntermediateDocumentNode *)node
+{
+    EucCSSLayoutPoint ret = {0};
+    
+    EucCSSLayoutRun *run = [self runForNodeWithKey:node.key];
+        if(run) {
+        EucCSSLayoutRunPoint runPoint = [run pointForNode:node];
+        ret.nodeKey = run.id;
+        ret.word = runPoint.word;
+        ret.element = runPoint.element;
+    }
+        
+    return ret;
+}
+
+
 @end

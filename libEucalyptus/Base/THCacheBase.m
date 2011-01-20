@@ -193,6 +193,9 @@ static const CFSetCallBacks THCacheSetCallBacks = {
             if(![(id<THCacheItemInUse>)self isItemInUse:items[i]]) {
                 CFSetRemoveValue(_currentCacheSet, items[i]);
             }
+            /*else {
+                NSLog(@"%@", [self describeItem:items[i]]);
+            }*/
         }
         free(items);
     } else {

@@ -54,6 +54,7 @@ struct css_computed_style;
 @property (nonatomic, readonly) THStringRenderer *stringRenderer;
 
 - (CGFloat)textPointSizeWithScaleFactor:(CGFloat)scaleFactor;
+- (CGFloat)emHeightWithScaleFactor:(CGFloat)scaleFactor;
 - (CGFloat)textAscenderWithScaleFactor:(CGFloat)scaleFactor;
 - (CGFloat)lineHeightWithScaleFactor:(CGFloat)scaleFactor;
 - (CGFloat)xHeightWithScaleFactor:(CGFloat)scaleFactor;

@@ -35,16 +35,13 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
     newNode.name = [NSString stringWithUTF8String:name];
         
     if(*atts) {
-        NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
         for(int i = 0; atts[i]; i+=2) {
             if(atts[i+1]) {
                 NSString *name = [NSString stringWithUTF8String:atts[i]];
                 NSString *value = [NSString stringWithUTF8String:atts[i+1]];
-                [attributes setObject:value forKey:name];
+                [newNode addAttributeValue:value forName:name];
             }
         }
-        newNode.attributes = attributes;
-        [attributes release];
         
         NSString *idForNode = [newNode CSSID];
         if(idForNode) {

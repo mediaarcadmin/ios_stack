@@ -90,7 +90,7 @@
                                             inFrame:[self bounds]
                                  returningNextPoint:&layoutPoint
                                  returningCompleted:&isComplete
-                                        scaleFactor:_scaleFactor];
+                                        scaleFactor:_scaleFactor * book.normalisingScaleFactor];
         
         if(isComplete) {
             ret = [[EucBookPageIndexPoint alloc] init];

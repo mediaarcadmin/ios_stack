@@ -38,6 +38,11 @@
     return [self attributeWithName:@"id"];
 }
 
+- (NSString *)CSSClasses
+{
+    return [self attributeWithName:@"class"];
+}
+
 - (NSUInteger)columnSpan
 {
     NSUInteger colSpan = [[self attributeWithName:@"colspan"] integerValue];

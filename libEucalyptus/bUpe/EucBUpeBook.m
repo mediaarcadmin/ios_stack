@@ -4,7 +4,8 @@
 //
 //  Created by James Montgomerie on 12/03/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
-//
+//#import "EucCSSLayouter.h"
+
 
 
 #import "THLog.h"
@@ -18,10 +19,12 @@
 #import "THRegex.h"
 #import "THNSURLAdditions.h"
 
+#import "EucConfiguration.h"
+#import "EucCSSLayoutRunExtractor.h"
 #import "EucCSSXMLTree.h"
 #import "EucCSSXHTMLTreeNode.h"
 #import "EucCSSIntermediateDocument.h"
-#import "EucCSSLayouter.h"
+#import "EucCSSIntermediateDocumentNode.h"
 
 #import "expat.h"
 
@@ -30,7 +33,7 @@
 #import <sys/stat.h>
 #import <sys/mman.h>
 
-#define kMaxCachedDocuments 3
+#define kMaxCachedDocuments 2
 
 @interface TocNcxParsingContextNavPointInfo : NSObject {
     NSString *_text;
@@ -822,32 +825,34 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (NSDictionary *)buildIdToIndexPoint
 {
-    EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] init];
     EucBookPageIndexPoint *sourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
-    int source = 0;
-    EucCSSIntermediateDocument *document = [self intermediateDocumentForIndexPoint:sourceIndexPoint];
+    uint32_t source = 0;
     
-    for(; 
-        document != nil;
-        sourceIndexPoint.source = ++source, document = [self intermediateDocumentForIndexPoint:sourceIndexPoint]) {
+    NSUInteger fontSizes[30] = {0};
+    
+    for(;;) {
         NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+        EucCSSIntermediateDocument *document = [self intermediateDocumentForIndexPoint:sourceIndexPoint];
+        if(!document) {
+            [innerPool drain];
+            break;
+        }
         
         NSURL *documentUrl = document.url;
         EucBookPageIndexPoint *thisIndexPoint = [sourceIndexPoint copy];
         [buildIdToIndexPoint setObject:thisIndexPoint forKey:[documentUrl absoluteString]];
         [thisIndexPoint release];
-        
-        layouter.document = document;
-        
+                
         NSDictionary *localIdsToNodes = document.idToNodeKey;
         if(localIdsToNodes) {
+            EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];            
             NSString *documentUrlString = [documentUrl absoluteString];
             for(NSString *localId in [localIdsToNodes keyEnumerator]) {
-                NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init]; 
+                NSAutoreleasePool *innerInnerPool = [[NSAutoreleasePool alloc] init]; 
                 
                 EucCSSIntermediateDocumentNode *node = [document nodeForKey:[document nodeKeyForId:localId]];
-                EucCSSLayoutPoint layoutPoint = [layouter layoutPointForNode:node];                   
+                EucCSSLayoutPoint layoutPoint = [extractor layoutPointForNode:node];                   
                 EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
                 indexPoint.source = source;
                 indexPoint.block = layoutPoint.nodeKey;
@@ -863,17 +868,51 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 
                 [indexPoint release];
                 
-                [innerPool drain];
+                [innerInnerPool drain];
             }
+            [extractor release];
         }
         
-        layouter.document = nil;
+        // Bit messy to do this here.  Basically, we're trying to find the 
+        // median text size, so that we can scale it to Eucalyptus' default
+        // text size for books that the publisher has crazily chosen a tiny
+        // or huge text size by default.  It's efficient to do it here when 
+        // we have the documents open anyway, and we can persist it alongside
+        // the _idToIndexPoint map in -persistCachableData.
+        EucCSSIntermediateDocumentNode *node = document.rootNode;
+        NSAutoreleasePool *innerInnerPool = [[NSAutoreleasePool alloc] init]; 
+        NSUInteger count = 0;
+        while((node = node.nextDisplayable)) {
+            if(node.isTextNode) {
+                off_t pointSize = roundf([node textPointSizeWithScaleFactor:1.0f]);
+                ++fontSizes[MIN(pointSize, 29)];
+            }
+            if(++count % 256) {
+                [node retain];
+                [innerInnerPool drain];
+                innerInnerPool = [[NSAutoreleasePool alloc] init];
+                [node autorelease];
+            }
+        }
+        [innerInnerPool drain];
+   
+        sourceIndexPoint.source = ++source;
         
         [innerPool drain];
     }
         
     [sourceIndexPoint release];
-    [layouter release];    
+    
+    NSUInteger bestTotalNodeCount = 0;
+    NSUInteger bestTotalNodeIndex = NSUIntegerMax;
+    for(NSUInteger i = 0; i < 30; ++i) {
+        if(fontSizes[i] > bestTotalNodeCount) {
+            bestTotalNodeCount = fontSizes[i];
+            bestTotalNodeIndex = i;
+        }
+    }
+    
+    _normalisingScaleFactor = [[EucConfiguration objectForKey:EucConfigurationDefaultFontSizeKey] floatValue] / (CGFloat)bestTotalNodeIndex;
     
     return [buildIdToIndexPoint autorelease];
 }
@@ -889,6 +928,12 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 - (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier
 {
     return [self.idToIndexPoint objectForKey:identifier];
+}
+
+- (CGFloat)normalisingScaleFactor
+{
+    [self idToIndexPoint]; // Ensure calculated
+    return _normalisingScaleFactor != 0.0f ? _normalisingScaleFactor : 1.0f;
 }
 
 - (float *)indexSourceScaleFactors
@@ -1024,27 +1069,11 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 - (EucCSSIntermediateDocument *)_intermediateDocumentForURL:(NSURL *)url
 {
     if(!_documentCache) {
-        _documentCache = [[NSMutableArray alloc] init];
+        _documentCache = [[THCache alloc] init];
+        _documentCache.generationLifetime = kMaxCachedDocuments;
     }
-    
-    EucCSSIntermediateDocument *document = nil;
-    NSUInteger cacheIndex = 0;
-    for(THPair *urlAndDocument in _documentCache) {
-        if([url isEqual:urlAndDocument.first]) {
-            document = urlAndDocument.second;
-            break;
-        }
-        ++cacheIndex;
-    }
-    
-    if(document) {
-        [document retain];
-        [_documentCache removeObjectAtIndex:cacheIndex];
-    } else {
-        if(_documentCache.count > kMaxCachedDocuments) {
-            // Remove the least recently used document.
-            [_documentCache removeObjectAtIndex:0];
-        }
+    EucCSSIntermediateDocument *document = [_documentCache objectForKey:url];
+    if(!document) {
         id<EucCSSDocumentTree> documentTree = [self documentTreeForURL:url];
         if(documentTree) {
             document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:documentTree
@@ -1054,11 +1083,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                                                                    userCSSPaths:[self userCSSPathsForDocumentTree:documentTree]
                                                                          isHTML:[self documentTreeIsHTML:documentTree]];
         }
-    }
-    
-    if(document) {
-        [_documentCache addPairWithFirst:url second:document];
-        [document release];
+        [_documentCache cacheObject:document forKey:url];
+        [document autorelease];
     }
     
     return document;
@@ -1113,6 +1139,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                               forKey:key];
             }
         }
+        [toArchive setObject:[NSNumber numberWithFloat:_normalisingScaleFactor] forKey:@"___normalisingScaleFactor"];
         [NSKeyedArchiver archiveRootObject:toArchive 
                                     toFile:[self _persistedDataPath]];
         [toArchive release];
@@ -1125,14 +1152,18 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     if(fromArchive.count) {
         NSMutableDictionary *idToIndexPoint = [[NSMutableDictionary alloc] initWithCapacity:fromArchive.count];
         for(NSString *key in [fromArchive keyEnumerator]) {
-            NSURL *fullKeyURL = [[NSURL alloc] initWithString:key relativeToURL:_root];
-            if(fullKeyURL) {
-                [idToIndexPoint setObject:[fromArchive objectForKey:key]
-                                   forKey:[fullKeyURL absoluteString]];
-                [fullKeyURL release];
+            if([key isEqualToString:@"___normalisingScaleFactor"]) {
+                _normalisingScaleFactor = [[fromArchive objectForKey:key] floatValue];
             } else {
-                [idToIndexPoint setObject:[fromArchive objectForKey:key]
-                                   forKey:key];
+                NSURL *fullKeyURL = [[NSURL alloc] initWithString:key relativeToURL:_root];
+                if(fullKeyURL) {
+                    [idToIndexPoint setObject:[fromArchive objectForKey:key]
+                                       forKey:[fullKeyURL absoluteString]];
+                    [fullKeyURL release];
+                } else {
+                    [idToIndexPoint setObject:[fromArchive objectForKey:key]
+                                       forKey:key];
+                }
             }
         }
 		if (_idToIndexPoint) [_idToIndexPoint release];
