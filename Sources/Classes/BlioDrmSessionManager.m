@@ -567,6 +567,7 @@ ErrorExit:
 	[self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #else
 	rgchURL[cchUrl] = '\0';
+	NSLog(@"DRM connecting to license server URL retrieved from book header: %@",[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding]);
 	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #endif
 	//NSLog(@"DRM license response: %@",[[[NSString alloc] initWithBytes:pbResponse length:cbResponse encoding:NSASCIIStringEncoding] autorelease]);
