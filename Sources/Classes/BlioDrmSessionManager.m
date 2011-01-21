@@ -477,9 +477,10 @@ ErrorExit:
 #ifdef TEST_MODE
 	[self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcknowledgeLicense];
 #else
-	DRM_CHAR rgchURL[MAX_URL_SIZE];
-    rgchURL[0] = '\0';
-	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcknowledgeLicense];
+	//DRM_CHAR rgchURL[MAX_URL_SIZE];
+    //rgchURL[0] = '\0';
+	//[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcknowledgeLicense];
+	[self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcknowledgeLicense];
 #endif
 	//NSLog(@"DRM license acknowledgment response: %s",(unsigned char*)pbResponse);
 	@synchronized (self) {
@@ -566,9 +567,10 @@ ErrorExit:
 #ifdef TEST_MODE
 	[self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #else
-	rgchURL[cchUrl] = '\0';
-	NSLog(@"DRM connecting to license server URL retrieved from book header: %@",[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding]);
-	[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
+	//rgchURL[cchUrl] = '\0';
+	//NSLog(@"DRM connecting to license server URL retrieved from book header: %@",[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding]);
+	//[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
+	[self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #endif
 	//NSLog(@"DRM license response: %@",[[[NSString alloc] initWithBytes:pbResponse length:cbResponse encoding:NSASCIIStringEncoding] autorelease]);
 	@synchronized (self) {
