@@ -2249,11 +2249,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [audioMgr setStartedPlaying:YES];
         [audioMgr setTextToSpeakChanged:YES];
     } else {
-        self.audioPlaying = NO;
-        [_audioParagraphSource release];
-        _audioParagraphSource = nil;
-        [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];            
-        [self updatePauseButton];        
+        // For audiobooks, we'll stop when the audio stops (there may be play-out music etc.)
+        // For TTS, stop now.
+        if(_acapelaAudioManager) {
+            self.audioPlaying = NO;
+            [_audioParagraphSource release];
+            _audioParagraphSource = nil;
+            [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];            
+            [self updatePauseButton];  
+        }
     }
 }
 
