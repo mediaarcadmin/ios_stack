@@ -1555,8 +1555,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     
     if(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
         if(!_dragUnderway) {
-            _touchVelocity.x /= 1.5f;
-            _touchVelocity.y /= 1.5f;
+            _touchVelocity.x *= 0.875f;
+            _touchVelocity.y *= 0.857f;
             if(fabsf(_touchVelocity.x * _viewportToBoundsPointsTransform.a) < 0.1f &&
                fabsf(_touchVelocity.y * _viewportToBoundsPointsTransform.d) < 0.1f) {
                 postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
