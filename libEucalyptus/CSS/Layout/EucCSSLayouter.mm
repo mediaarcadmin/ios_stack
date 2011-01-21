@@ -176,7 +176,6 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             // break), remove it an all that follows it.
             EucCSSLayoutPositionedBlock *block;
             
-            BOOL flattenBottomMargin = NO;
             if([element isKindOfClass:[EucCSSLayoutPositionedLine class]]) {
                 EucCSSLayoutPositionedLine *line = (EucCSSLayoutPositionedLine *)element;
                 EucCSSLayoutPositionedRun *run = (EucCSSLayoutPositionedRun *)line.parent;
@@ -232,7 +231,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             CGFloat pageBottom = CGRectGetMaxY(frame);
             CGFloat contentHeightToCloseAt = pageBottom - [block convertRect:block.contentBounds 
                                                                  toContainer:nil].origin.y;
-            [block closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:flattenBottomMargin];
+            [block closeBottomWithContentHeight:contentHeightToCloseAt atInternalPageBreak:YES];
             
             // Remove all the blocks after this one, and re-close all the parents
             // on the way up, stretching them down to the bottom of the page.

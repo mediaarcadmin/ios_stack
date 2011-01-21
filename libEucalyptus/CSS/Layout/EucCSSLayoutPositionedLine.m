@@ -219,8 +219,8 @@ static EucCSSLayoutPositionedLineLineBox processNode(uint32_t *componentOffset, 
     ++componentInfo;
     ++widthInfo;
     
-    while(componentInfo->kind != EucCSSLayoutRunComponentKindCloseNode && 
-          i < afterEndComponentOffset) {
+    while(i < afterEndComponentOffset &&
+          componentInfo->kind != EucCSSLayoutRunComponentKindCloseNode) {
         if(componentInfo->kind == EucCSSLayoutRunComponentKindOpenNode) {
             EucCSSLayoutPositionedLineLineBox subNodeBox = processNode(&i, &componentInfo, &widthInfo, afterEndComponentOffset, scaleFactor);
             NSCParameterAssert(i == afterEndComponentOffset || componentInfo->kind == EucCSSLayoutRunComponentKindCloseNode);
