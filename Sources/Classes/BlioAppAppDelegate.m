@@ -350,6 +350,7 @@ static void *background_init_thread(void * arg) {
                                     [openBookIDs objectAtIndex:1]]];
         NSError *errorExecute = nil; 
 		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+		[fetchRequest release];
         if(!errorExecute && results.count == 1) {
             [libraryController openBook:[results objectAtIndex:0]];
             openedBook = YES;

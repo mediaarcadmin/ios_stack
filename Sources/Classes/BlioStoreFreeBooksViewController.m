@@ -97,8 +97,9 @@
 	topTableBackgroundRidge.backgroundColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.5f];
 	topTableBackgroundRidge.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	[self.searchBar addSubview:topTableBackground];
+	[topTableBackground release];
 	[self.searchBar addSubview:topTableBackgroundRidge];
-	
+	[topTableBackgroundRidge release];
 	self.aSearchDisplayController = [[[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self] autorelease];
 	aSearchDisplayController.delegate = self;
 	aSearchDisplayController.searchResultsDataSource = self.storeSearchTableViewDataSource;

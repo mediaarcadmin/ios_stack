@@ -81,6 +81,9 @@
 	}
 	return NO;
 }
+#pragma mark -
+#pragma mark SKProductsRequestDelegate methods
+
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
 	NSLog(@"received %i products from apple product request",[response.products count]);
@@ -95,7 +98,11 @@
 	NSLog(@"response.invalidProductIdentifiers: %@",response.invalidProductIdentifiers);
 	// broadcast notification
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioInAppPurchaseProductsUpdated object:self];
+	[request release];
 }	
+#pragma mark -
+#pragma mark SKRequestDelegate methods
+
 - (void)requestDidFinish:(SKRequest *)request {
 	isFetchingProducts = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioInAppPurchaseProductsFetchFinished object:self];
@@ -111,6 +118,9 @@
 	isFetchingProducts = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioInAppPurchaseProductsFetchFailed object:self];
 }
+#pragma mark -
+#pragma mark CCInAppPurchaseConnectionDelegate methods
+
 - (void)connectionDidFinishLoading:(CCInAppPurchaseConnection *)aConnection {
 	if ([aConnection.inAppPurchaseResponse isKindOfClass:[CCInAppPurchaseFetchProductsResponse class]]) {
 		CCInAppPurchaseFetchProductsResponse * fetchProductsResponse = (CCInAppPurchaseFetchProductsResponse*)aConnection.inAppPurchaseResponse;
@@ -131,6 +141,7 @@
 	else if ([aConnection.inAppPurchaseResponse isKindOfClass:[CCInAppPurchasePurchaseProductResponse class]]) {
 		
 	}
+	[aConnection release];
 }
 - (void)connection:(CCInAppPurchaseConnection *)aConnection didFailWithError:(NSError *)error {
 	if ([aConnection.request isKindOfClass:[CCInAppPurchaseFetchProductsRequest class]]) {
@@ -139,6 +150,7 @@
 	else if ([aConnection.request isKindOfClass:[CCInAppPurchaseFetchProductsRequest class]]) {
 		
 	}
+	[aConnection release];
 }
 #pragma mark -
 #pragma mark SKPaymentTransactionObserver

@@ -401,7 +401,7 @@
 		}
 		else {
 			stringURL = [aBook manifestPathForKey:BlioManifestPDFKey];
-			BOOL usedPreExistingOperation = NO;
+//			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadPdfOperation * pdfOp = nil;
 			
 			if (stringURL != nil) {
@@ -431,7 +431,7 @@
 					[self.preAvailabilityQueue addOperation:pdfOp];
 				}
 				else {
-					usedPreExistingOperation = YES; // in case we have dependent operations in the future
+//					usedPreExistingOperation = YES; // in case we have dependent operations in the future
 				}
 				[bookOps addObject:pdfOp];
 			}
@@ -458,7 +458,7 @@
 		}
 		else {
 			stringURL = [aBook manifestPathForKey:BlioManifestAudiobookKey];
-			BOOL usedPreExistingOperation = NO;
+//			BOOL usedPreExistingOperation = NO;
 			BlioProcessingDownloadAudiobookOperation * audiobookOp = nil;
 			
 			if (stringURL != nil) {
@@ -487,7 +487,7 @@
 				}
 				else {
 					// we reuse existing one
-					usedPreExistingOperation = YES;
+//					usedPreExistingOperation = YES;
 				}
 				[bookOps addObject:audiobookOp];
 			}
@@ -504,7 +504,7 @@
 		}
 		else {
 			stringURL = [aBook manifestPathForKey:BlioManifestXPSKey];
-			BOOL usedPreExistingOperation = NO;
+//			BOOL usedPreExistingOperation = NO;
 			
 			if (stringURL != nil) {
 				// we still need to finish downloading this file
@@ -533,7 +533,7 @@
 				}
 				else {
 					// we reuse existing one
-					usedPreExistingOperation = YES;
+//					usedPreExistingOperation = YES;
 				}
 				[bookOps addObject:xpsOp];
 			}
@@ -625,7 +625,7 @@
 	// paid books only.
     else if (sourceID == BlioBookSourceOnlineStore) { 
 		
-		BOOL usedPreExistingOperation = NO;
+//		BOOL usedPreExistingOperation = NO;
 		BlioProcessingDownloadPaidBookOperation * paidBookOp = nil;
 
 		if ((manifestLocation && [manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem]) || placeholderOnly) {
@@ -657,7 +657,7 @@
 				}
 				else {
 					// we reuse existing one
-					usedPreExistingOperation = YES;
+//					usedPreExistingOperation = YES;
 				}
 				[bookOps addObject:paidBookOp];
 //			}
@@ -815,7 +815,7 @@
 }
 
 - (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {    
-    BOOL usedPreExistingOperation = NO;
+//    BOOL usedPreExistingOperation = NO;
     BlioProcessingDownloadTextFlowOperation * textFlowOp = nil;
     NSURL *url = nil;
     NSManagedObjectID *bookID = [aBook objectID];
@@ -848,7 +848,7 @@
             }
             else {
                 // we reuse existing one
-                usedPreExistingOperation = YES;
+//                usedPreExistingOperation = YES;
             }
             [bookOps addObject:textFlowOp];
         }
