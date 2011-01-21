@@ -602,7 +602,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 	
 	for (BlioBook* aBook in results) {
-		[self.managedObjectContext refreshObject:aBook mergeChanges:YES];
+		if (savePreference) [self.managedObjectContext refreshObject:aBook mergeChanges:YES];
 		if ([aBook.libraryPosition intValue] == fromPosition) [aBook setValue:[NSNumber numberWithInt:toPosition] forKey:@"libraryPosition"];
         else {
 			NSInteger newPosition = [aBook.libraryPosition intValue];
