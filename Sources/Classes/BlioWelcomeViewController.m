@@ -59,9 +59,26 @@
         self.backgroundColor = [UIColor whiteColor];
 		
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-			logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Icon.png"]];
-			[self addSubview:logoView];
-			[logoView release];
+            UIGraphicsBeginImageContext(CGSizeMake(100, 100));
+            CGContextRef context = UIGraphicsGetCurrentContext();
+            UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
+			
+            // Mask off the outside of the icon like the device does.
+            CGContextMoveToPoint(context, 0, 0);
+            CGContextAddArcToPoint(context, 0, 0, 50, 0, 15);
+            CGContextAddArcToPoint(context, 100, 0, 100, 50, 15);
+            CGContextAddArcToPoint(context, 100, 100, 50, 100, 15);
+            CGContextAddArcToPoint(context, 0, 100, 0, 50, 15);
+            CGContextClosePath(context);
+            CGContextClip(context);
+            [logoImage drawInRect:CGRectMake(-7, -7, 114, 114)];
+			
+            logoView = [[UIImageView alloc] initWithImage:UIGraphicsGetImageFromCurrentImageContext()];
+			
+            UIGraphicsEndImageContext();
+			
+            [self addSubview:logoView];
+            [logoView release];
 			
 			welcomeTitleView = [[BlioWelcomeTitleView alloc] initWithFrame:CGRectZero];
 			[self addSubview:welcomeTitleView];
