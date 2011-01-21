@@ -139,16 +139,18 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
             upperPageIndexBound = self.textFlow.lastPageIndex;
         }
         
-        NSArray *pageBlocks = [textFlow blocksForPageAtIndex:bookmarkPageIndex includingFolioBlocks:YES];
+        NSArray *bookmarkPageBlocks = [textFlow blocksForPageAtIndex:bookmarkPageIndex includingFolioBlocks:YES];
         NSArray *words;
-        if(pageBlocks.count > bookmarkPoint.blockOffset) {
-            words = ((BlioTextFlowBlock *)[pageBlocks objectAtIndex:bookmarkPoint.blockOffset]).wordStrings;
+        if(bookmarkPageBlocks.count > bookmarkPoint.blockOffset) {
+            words = ((BlioTextFlowBlock *)[bookmarkPageBlocks objectAtIndex:bookmarkPoint.blockOffset]).wordStrings;
         } else {
             words = [NSArray array];
         }
         NSInteger middleWordOffset = bookmarkPoint.wordOffset;
         
         {
+            NSArray *pageBlocks = bookmarkPageBlocks;
+            
             NSInteger tryPageOffset = bookmarkPageIndex;
             NSInteger tryBlockOffset = bookmarkPoint.blockOffset;
                 
@@ -178,6 +180,8 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         }
         
         {
+            NSArray *pageBlocks = bookmarkPageBlocks;
+
             NSInteger tryPageOffset = bookmarkPageIndex;
             NSInteger tryBlockOffset = bookmarkPoint.blockOffset;
             
