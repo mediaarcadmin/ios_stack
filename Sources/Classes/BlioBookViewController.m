@@ -2192,18 +2192,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void) getNextBlockForAudioManager:(BlioAudioManager*)audioMgr {
-    id newBlock  = [_audioParagraphSource nextParagraphIdForParagraphWithID:audioMgr.currentBlock];
-
-    if(newBlock) {
-        audioMgr.currentBlock = newBlock;
-        audioMgr.currentWordOffset = 0;
-        audioMgr.blockWords = [_audioParagraphSource wordsForParagraphWithID:audioMgr.currentBlock];
-    } else {        
-        // end of the book
-        audioMgr.currentBlock = nil;
-        audioMgr.currentWordOffset = 0;
-        audioMgr.blockWords = nil;
-    }
+    id block = audioMgr.currentBlock;
+    NSArray *words = nil;
+    do {
+        block = [_audioParagraphSource nextParagraphIdForParagraphWithID:block];
+        words = [_audioParagraphSource wordsForParagraphWithID:block];
+    } while(block && words.count == 0); // Loop in case it's a wordless paragraph.
+    
+    // If we're at the end of the book, 'block' and 'words' will both be nil at this point.
+    audioMgr.currentBlock = block;
+    audioMgr.currentWordOffset = 0;
+    audioMgr.blockWords = words;
 }
 
 - (void) prepareTextToSpeakWithAudioManager:(BlioAudioManager*)audioMgr fromBookmarkPoint:(BlioBookmarkPoint *)point {
@@ -2249,6 +2248,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if(audioMgr.currentBlock) {
         [audioMgr setStartedPlaying:YES];
         [audioMgr setTextToSpeakChanged:YES];
+    } else {
+        self.audioPlaying = NO;
+        [_audioParagraphSource release];
+        _audioParagraphSource = nil;
+        [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.book.objectID];            
+        [self updatePauseButton];        
     }
 }
 
