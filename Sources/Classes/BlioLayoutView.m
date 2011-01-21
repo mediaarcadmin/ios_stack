@@ -603,7 +603,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
 	BOOL isOnRight = YES;
 	if (self.pageTurningView.isTwoUp) {
-		BOOL rightIsEven = (self.pageTurningView.rightPageIndex % 2 == 0);
+		BOOL rightIsEven = !self.pageTurningView.oddPagesOnRight;
 		BOOL indexIsEven = (pageIndex % 2 == 0);
 		if (rightIsEven != indexIsEven) {
 			isOnRight = NO;
