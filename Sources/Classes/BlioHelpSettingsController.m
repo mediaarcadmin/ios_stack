@@ -20,7 +20,13 @@
 	if (self)
 	{
 		self.title = NSLocalizedString(@"Help",@"\"Help\" view controller title.");
-		NSString* helpText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/userdoc.html"] encoding:NSUTF8StringEncoding error:NULL];
+		NSString* helpFilepath;
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) 
+			helpFilepath = @"/userdoc-ipad.html";
+		else
+			helpFilepath = @"/userdoc.html";
+
+		NSString* helpText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:helpFilepath] encoding:NSUTF8StringEncoding error:NULL];
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
 		[textView loadHTMLString:helpText baseURL:nil];
 		[textView setScalesPageToFit:YES];

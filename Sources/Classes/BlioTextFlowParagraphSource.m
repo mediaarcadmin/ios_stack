@@ -139,16 +139,18 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
             upperPageIndexBound = self.textFlow.lastPageIndex;
         }
         
-        NSArray *pageBlocks = [textFlow blocksForPageAtIndex:bookmarkPageIndex includingFolioBlocks:YES];
+        NSArray *bookmarkPageBlocks = [textFlow blocksForPageAtIndex:bookmarkPageIndex includingFolioBlocks:YES];
         NSArray *words;
-        if(pageBlocks.count > bookmarkPoint.blockOffset) {
-            words = ((BlioTextFlowBlock *)[pageBlocks objectAtIndex:bookmarkPoint.blockOffset]).wordStrings;
+        if(bookmarkPageBlocks.count > bookmarkPoint.blockOffset) {
+            words = ((BlioTextFlowBlock *)[bookmarkPageBlocks objectAtIndex:bookmarkPoint.blockOffset]).wordStrings;
         } else {
             words = [NSArray array];
         }
         NSInteger middleWordOffset = bookmarkPoint.wordOffset;
         
         {
+            NSArray *pageBlocks = bookmarkPageBlocks;
+            
             NSInteger tryPageOffset = bookmarkPageIndex;
             NSInteger tryBlockOffset = bookmarkPoint.blockOffset;
                 
@@ -178,6 +180,8 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         }
         
         {
+            NSArray *pageBlocks = bookmarkPageBlocks;
+
             NSInteger tryPageOffset = bookmarkPageIndex;
             NSInteger tryBlockOffset = bookmarkPoint.blockOffset;
             
@@ -715,24 +719,26 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
 - (NSArray *)wordsForParagraphWithID:(id)paragraphID
 {
     NSArray *ret = nil;
-    if(self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
-        EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
-        eucIndexPoint.source = [paragraphID indexAtPosition:0];
-        EucCSSIntermediateDocument *document = [self.xamlEucBook intermediateDocumentForIndexPoint:eucIndexPoint];
-        [eucIndexPoint release];
-        
-        EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
-        
-        uint32_t xamlFlowTreeKey = [paragraphID indexAtPosition:1];
-        uint32_t documentKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:xamlFlowTreeKey];
-        EucCSSLayoutRun *wordsContainingRun = [runExtractor runForNodeWithKey:documentKey];
-        
-        ret = [wordsContainingRun words];
-        
-        [runExtractor release];
-    } else {        
-        BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
-        ret =  paragraph.paragraphWords.wordStrings;
+    if(paragraphID) {
+        if(self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindXaml) {
+            EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
+            eucIndexPoint.source = [paragraphID indexAtPosition:0];
+            EucCSSIntermediateDocument *document = [self.xamlEucBook intermediateDocumentForIndexPoint:eucIndexPoint];
+            [eucIndexPoint release];
+            
+            EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:document];
+            
+            uint32_t xamlFlowTreeKey = [paragraphID indexAtPosition:1];
+            uint32_t documentKey = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:xamlFlowTreeKey];
+            EucCSSLayoutRun *wordsContainingRun = [runExtractor runForNodeWithKey:documentKey];
+            
+            ret = [wordsContainingRun words];
+            
+            [runExtractor release];
+        } else {        
+            BlioTextFlowParagraph *paragraph = [self paragraphWithID:(NSIndexPath *)paragraphID];
+            ret =  paragraph.paragraphWords.wordStrings;
+        }
     }
     return ret;
 }

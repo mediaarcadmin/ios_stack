@@ -39,7 +39,8 @@ static NSInteger sCurtailationCount = 0;
         pthread_rwlock_unlock(&rw_lock);
     }
     --sCurtailationCount;
-    if(sCurtailationCount < 1) {
+    if(sCurtailationCount < 0) {
+        sCurtailationCount = 0;
         THWarn(@"Background processing allowed more than curtailed!");
     }
 }

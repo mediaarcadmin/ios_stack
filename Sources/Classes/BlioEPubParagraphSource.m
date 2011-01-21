@@ -101,7 +101,7 @@
 
 - (NSArray *)wordsForParagraphWithID:(id)paragraphID
 {
-    return [(EucCSSLayoutRun *)((THPair *)paragraphID).first words];
+    return paragraphID ? [(EucCSSLayoutRun *)((THPair *)paragraphID).first words] : nil;
 }
 
 - (id)nextParagraphIdForParagraphWithID:(id)paragraphID

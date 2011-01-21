@@ -305,7 +305,35 @@ abandon:
     
     if(inBackground) {
         _paginationStartedLock = [[NSConditionLock alloc] initWithCondition:0];
-        pthread_create(&_paginationThread, NULL, PaginationThread, (void *)self);
+        
+        
+        // Even though we want the pagination to go as fast as possible, we 
+        // give it a low thread proirity so that user actions, rendering etc.
+        // can run preferentially.
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        
+        struct sched_param param = {0};
+        int ret = pthread_attr_getschedparam(&attr, &param);
+        if(ret != 0) {
+            NSLog(@"pthread_attr_getschedparam returned %ld", (long)ret);
+        }
+        param.sched_priority = sched_get_priority_min(SCHED_RR);
+        ret = pthread_attr_setschedparam(&attr, &param);
+        if(ret != 0) {
+            NSLog(@"pthread_attr_setschedparam returned %ld", (long)ret);
+        }
+        
+        pthread_create(&_paginationThread, &attr, PaginationThread, (void *)self);
+        if(ret != 0) {
+            NSLog(@"pthread_create returned %ld", (long)ret);
+        }
+        
+        ret = pthread_attr_destroy(&attr);
+        if(ret != 0) {
+            NSLog(@"pthread_attr_destroy returned %ld", (long)ret);
+        }    
+        
         _monitoringTimer = [[NSTimer scheduledTimerWithTimeInterval:kThreadedProgressPollingDelay
                                                              target:self 
                                                            selector:@selector(_sendPeriodicPaginationUpdate:) 
