@@ -378,13 +378,13 @@
 	
 	if ([importableBook.fileName.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 		NSLog(@"unzipping epub...");
-		BOOL unzipSuccess = NO;
+//		BOOL unzipSuccess = NO;
 		ZipArchive* aZipArchive = [[ZipArchive alloc] init];
 		if([aZipArchive UnzipOpenFile:importableBook.filePath] ) {
 			if (![aZipArchive UnzipFileTo:cachePath overWrite:YES]) {
 				NSLog(@"Failed to unzip file from %@ to %@", importableBook.filePath, cachePath);
 			} else {
-				unzipSuccess = YES;
+//				unzipSuccess = YES;
 			}			
 			[aZipArchive UnzipCloseFile];
 		} else {
@@ -451,13 +451,13 @@
 	else if ([importableBook.fileName.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 		NSLog(@"checking for XPS DRM: %@",[cachePath stringByAppendingPathComponent:BlioXPSKNFBDRMHeaderFile]);
 		NSLog(@"unzipping xps...");						
-		BOOL unzipSuccess = NO;
+//		BOOL unzipSuccess = NO;
 		ZipArchive* aZipArchive = [[ZipArchive alloc] init];
 		if([aZipArchive UnzipOpenFile:importableBook.filePath] ) {
 			if (![aZipArchive UnzipFileTo:cachePath overWrite:YES]) {
 				NSLog(@"Failed to unzip file from %@ to %@", importableBook.filePath, cachePath);
 			} else {
-				unzipSuccess = YES;
+//				unzipSuccess = YES;
 			}			
 			[aZipArchive UnzipCloseFile];
 		} else {

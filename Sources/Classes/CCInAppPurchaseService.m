@@ -234,8 +234,10 @@
 	self.inAppPurchaseResponse = [_request responseFromData:self.responseData];
 //	else NSLog(@"ERROR: CCInAppPurchaseRequest object does not know the class of its response!");
 	[self.delegate connectionDidFinishLoading:self];
+	[aConnection release];
 }
 - (void)connection:(NSURLConnection *)aConnection didFailWithError:(NSError *)error {
 	[self.delegate connection:self didFailWithError:error];
+	[aConnection release];
 }
 @end
