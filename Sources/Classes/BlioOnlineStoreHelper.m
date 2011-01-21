@@ -105,11 +105,13 @@
 	else [self retrieveTokenWithUsername:user password:password];
 }
 -(NSString*)loginHostname {
+	NSURL * loginURL = nil; 
 #ifdef TEST_MODE
-	return DigitalLockerGatewayURLTest;
+	loginURL = [NSURL URLWithString:DigitalLockerGatewayURLTest];
 #else	
-	return DigitalLockerGatewayURLProduction;
+	loginURL = [NSURL URLWithString:DigitalLockerGatewayURLProduction];
 #endif
+	return [loginURL host];
 }
 -(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password {
 //	NSLog(@"%@", NSStringFromSelector(_cmd));
