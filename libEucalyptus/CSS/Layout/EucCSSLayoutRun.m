@@ -543,9 +543,10 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                 ++cursor;
             }
             if(!_previousInlineCharacterWasSpace) {
+                CFIndex wordLength = cursor - wordStart;
                 CFStringRef string = CFStringCreateWithCharacters(kCFAllocatorDefault,
                                                                   wordStart, 
-                                                                  cursor - wordStart);
+                                                                  wordLength);
                 if(string) {
                     if(wordNeedsSmartQuotes) {
                         NSString *smartQuoted = [(NSString *)string stringWithSmartQuotesWithPreviousCharacter:_characterBeforeWord];
@@ -557,6 +558,24 @@ static NSString * const EucCSSRunCacheKey = @"EucCSSRunCacheKey";
                     info.kind = EucCSSLayoutRunComponentKindWord;
                     info.contents.stringInfo.string = (NSString *)string;
                     [self _addComponent:&info];
+                    
+                    if(shouldHyphenate && wordLength > 4) {
+                        NSArray *hyphenations = [_sharedHyphenator hyphenationsForWord:(NSString *)string];
+                        
+                        EucCSSLayoutRunComponentInfo hyphenInfo = info;
+                        hyphenInfo.kind = EucCSSLayoutRunComponentKindHyphenationRule;
+                        
+                        for(THPair *hyphenatedPair in hyphenations) {
+                            NSString *beforeBreak = hyphenatedPair.first;
+                            hyphenInfo.contents.hyphenationInfo.beforeHyphen = beforeBreak;
+                            
+                            NSString *afterBreak = hyphenatedPair.second;
+                            hyphenInfo.contents.hyphenationInfo.afterHyphen = afterBreak;
+                            
+                            [self _addComponent:&hyphenInfo];
+                        }
+                    }                    
+                    
                     CFRelease(string);
                 }
             } 
