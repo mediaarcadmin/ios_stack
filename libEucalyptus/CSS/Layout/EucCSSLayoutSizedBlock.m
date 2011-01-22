@@ -79,7 +79,8 @@
             }            
         }
     }
-    return ret + _widthAddition;
+    ret += _widthAddition;
+    return ret;
 }
 
 - (CGFloat)maxWidth
@@ -98,8 +99,8 @@
             }
         }
     }
-
-    return ret + _widthAddition;
+    ret += _widthAddition;
+    return ret;
 }
 
 - (EucCSSLayoutPositionedBlock *)positionBlockForFrame:(CGRect)frame

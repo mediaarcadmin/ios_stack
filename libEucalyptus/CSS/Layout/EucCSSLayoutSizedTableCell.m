@@ -77,7 +77,8 @@
         }
     }
     
-    return ret + _widthAddition;
+    ret += _widthAddition;
+    return ret;
 }
 
 - (CGFloat)maxWidth
