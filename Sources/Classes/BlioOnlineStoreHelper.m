@@ -61,7 +61,7 @@
 #ifdef TEST_MODE
 		self.storeURL = @"http://bliodemo.crosscomm.net/";
 #else	
-		self.storeURL = @"https://Iphone.Bliodigitallocker.com/";
+		self.storeURL = @"https://mobile.blioreader.com/";
 #endif
 		NSLog(@"initializing BlioOnlineStoreHelper with URL: %@",self.storeURL);
 		
