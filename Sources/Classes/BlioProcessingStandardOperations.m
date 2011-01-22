@@ -1010,7 +1010,7 @@
 
 						BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
 						[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Advanced Book Features",@"\"Advanced Book Features\" Alert message title")
-													 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INCOMPATIBLE_FEATURE",nil,[NSBundle mainBundle],@"The book \"%@\" has features that require the latest version of Blio. Please check the App Store for a Blio update.",@"Alert message informing the end-user that an incompatible feature was found during the processing of a book, and prompting the end-user to visit the iTunes App Store."),book.title]
+													 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"INCOMPATIBLE_FEATURE",nil,[NSBundle mainBundle],@"The book \"%@\" cannot be read in this version of Blio. Please check the App Store for a Blio update.",@"Alert message informing the end-user that an incompatible feature was found during the processing of a book, and prompting the end-user to visit the iTunes App Store."),book.title]
 													delegate:nil
 										   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 										   otherButtonTitles:nil];
