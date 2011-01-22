@@ -12,5 +12,6 @@
 
 + (NSString *)uniqueStringWithBaseString:(NSString *)baseString;
 - (NSString *)md5Hash;
-
+-(NSString*)sansInitialArticle;
+- (NSComparisonResult)titleSansArticleCompare:(NSString *)aString;
 @end

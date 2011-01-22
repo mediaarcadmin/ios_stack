@@ -47,4 +47,19 @@
 	[resultString release];
 	return [finalResult autorelease];
 }
+-(NSString*)sansInitialArticle {
+	NSArray * components = [self componentsSeparatedByString:@" "];
+	if ([components count] < 2) return self;
+	NSString * firstWord = [((NSString*)[components objectAtIndex:0]) lowercaseString];
+	NSArray * articles = [NSArray arrayWithObjects:@"The",@"A",@"An",nil];
+	for (NSString * article in articles) {
+		if ([firstWord isEqualToString:[article lowercaseString]]) {
+			return [self substringFromIndex:[article length] + 1];
+		}
+	}
+	return self;
+}
+- (NSComparisonResult)titleSansArticleCompare:(NSString *)aString {
+	return [[self sansInitialArticle] caseInsensitiveCompare:[aString sansInitialArticle]];
+}
 @end

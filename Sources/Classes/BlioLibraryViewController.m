@@ -632,7 +632,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	else {
 		switch (librarySortType) {
 			case kBlioLibrarySortTypeTitle:
-				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES] autorelease];
+				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"titleSortable" ascending:YES] autorelease];
 				break;
 			case kBlioLibrarySortTypeAuthor:
 				sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"author" ascending:YES] autorelease];

@@ -15,6 +15,7 @@
 #import "NSString+BlioAdditions.h"
 #import "BlioImportManager.h"
 #import "BlioDrmSessionManager.h"
+#import "NSString+BlioAdditions.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -125,6 +126,7 @@
 		}
 		
         [aBook setValue:title forKey:@"title"];
+        [aBook setValue:[title sansInitialArticle] forKey:@"titleSortable"];
         [aBook setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
         [aBook setValue:sourceSpecificID forKey:@"sourceSpecificID"];
         [aBook setValue:[NSNumber numberWithInt:aProductType] forKey:@"productType"];
