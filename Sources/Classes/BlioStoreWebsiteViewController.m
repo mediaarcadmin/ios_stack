@@ -107,7 +107,7 @@
 		headerLabel.font = [UIFont boldSystemFontOfSize:24.0f];
 //		headerLabel.font = [UIFont boldSystemFontOfSize:18.0f];
 		headerLabel.backgroundColor = [UIColor clearColor];
-		headerLabel.text = NSLocalizedString(@"BlioDigitalLocker.com",@"Buy Books View Header");
+		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
 		headerLabel.numberOfLines = 1;
 		headerLabel.adjustsFontSizeToFitWidth = YES;
 		[self.phoneContentView addSubview:headerLabel];
@@ -186,7 +186,7 @@
 		[contentView addSubview:headerLabel];
 		headerLabel.font = [UIFont boldSystemFontOfSize:45.0f];
 		headerLabel.backgroundColor = [UIColor clearColor];
-		headerLabel.text = NSLocalizedString(@"BlioDigitalLocker.com",@"Buy Books View Header");
+		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
 		// sub-header
 		UILabel * subHeaderLabel = [[[UILabel alloc] initWithFrame:CGRectMake(125,60,480,40)] autorelease];
 		[contentView addSubview:subHeaderLabel];
@@ -235,13 +235,13 @@
 -(void)updateLogin {	
 	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
-		[launchButton setTitle:NSLocalizedString(@"Open BlioDigitalLocker.com in Safari",@"Button label for opening BlioDigitalLocker.com in Mobile Safari.") forState:UIControlStateNormal];
+		[launchButton setTitle:NSLocalizedString(@"Open BlioReader.com in Safari",@"Button label for opening BlioReader.com in Mobile Safari.") forState:UIControlStateNormal];
 		createAccountButton.hidden = YES;
 	}
 	else {
 		[launchButton addTarget:self action:@selector(confirmLaunch:) forControlEvents:UIControlEventTouchUpInside];
 //		[launchButton setTitle:NSLocalizedString(@"Login",@"Button label for opening login window.") forState:UIControlStateNormal];
-		[launchButton setTitle:NSLocalizedString(@"Open BlioDigitalLocker.com in Safari",@"Button label for opening BlioDigitalLocker.com in Mobile Safari.") forState:UIControlStateNormal];
+		[launchButton setTitle:NSLocalizedString(@"Open BlioReader.com in Safari",@"Button label for opening BlioReader.com in Mobile Safari.") forState:UIControlStateNormal];
 		createAccountButton.hidden = NO;
 	}
 }
