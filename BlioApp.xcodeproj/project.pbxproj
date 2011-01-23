@@ -78,7 +78,6 @@
 		7D381B9B10D92F2C008D34E2 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */; };
 		7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
 		7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
-		7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		7D4A012811DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */; };
 		7D4A012911DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */; };
@@ -220,6 +219,9 @@
 		7DE310431281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
+		7DED87DD12EC829F00D162E0 /* xhtml-entities.ent in Resources */ = {isa = PBXBuildFile; fileRef = 7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */; };
+		7DED87DE12EC829F00D162E0 /* xhtml-entities.ent in Resources */ = {isa = PBXBuildFile; fileRef = 7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */; };
+		7DED87DF12EC829F00D162E0 /* xhtml-entities.ent in Resources */ = {isa = PBXBuildFile; fileRef = 7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */; };
 		7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
 		7DF2A3011152ABA600FC2045 /* BlioTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A2FF1152ABA600FC2045 /* BlioTextFlowParagraphWords.m */; };
 		7DF2A38C1152C5F100FC2045 /* BlioTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */; };
@@ -232,7 +234,6 @@
 		A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A30E0EFF123EA5B400D31157 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
 		A30E0F00123EA5B400D31157 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
-		A30E0F02123EA5B400D31157 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		A30E0F03123EA5B400D31157 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		A30E0F05123EA5B400D31157 /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
 		A30E0F06123EA5B400D31157 /* row-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649910E0E413005E0E2B /* row-dark.png */; };
@@ -545,7 +546,6 @@
 		A36D34C4120B136700E1A035 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A36D34C6120B136700E1A035 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
 		A36D34C7120B136700E1A035 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
-		A36D34C9120B136700E1A035 /* XHTMLEntityMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */; };
 		A36D34CA120B136700E1A035 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		A36D34CE120B136700E1A035 /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
 		A36D34CF120B136700E1A035 /* row-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649910E0E413005E0E2B /* row-dark.png */; };
@@ -1392,7 +1392,6 @@
 		7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "usr/lib/libstdc++.6.dylib"; sourceTree = SDKROOT; };
 		7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
 		7D381CDF10D93023008D34E2 /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
-		7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = XHTMLEntityMap.plist; sourceTree = "<group>"; };
 		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderBlueLeftCap.png; sourceTree = "<group>"; };
 		7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderBlueLeftCap@2x.png"; sourceTree = "<group>"; };
@@ -1515,6 +1514,7 @@
 		7DE7B5E21104B4FD0021F382 /* Lighting.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Lighting.xib; sourceTree = "<group>"; };
 		7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLightSettingsViewController.h; sourceTree = "<group>"; };
 		7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLightSettingsViewController.m; sourceTree = "<group>"; };
+		7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "xhtml-entities.ent"; sourceTree = "<group>"; };
 		7DF2A2FE1152ABA600FC2045 /* BlioTextFlowParagraphWords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraphWords.h; sourceTree = "<group>"; };
 		7DF2A2FF1152ABA600FC2045 /* BlioTextFlowParagraphWords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraphWords.m; sourceTree = "<group>"; };
 		7DF2A3891152C5F100FC2045 /* BlioTextFlowFlowTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowFlowTree.h; sourceTree = "<group>"; };
@@ -2459,11 +2459,11 @@
 				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
 				7D381CDF10D93023008D34E2 /* EPubDefault.css */,
 				7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */,
-				7D381CE910D93023008D34E2 /* XHTMLEntityMap.plist */,
 				7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */,
 				7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */,
 				7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */,
 				7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */,
+				7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */,
 			);
 			name = "libEucalyptus Resources";
 			path = libEucalyptus/Resources;
@@ -3396,7 +3396,6 @@
 				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
 				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
 				7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */,
-				7D381D0410D93023008D34E2 /* XHTMLEntityMap.plist in Resources */,
 				7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */,
 				C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */,
 				C977649B10E0E413005E0E2B /* row-dark.png in Resources */,
@@ -3622,6 +3621,7 @@
 				A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */,
 				A3951A2812E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
+				7DED87DE12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3635,7 +3635,6 @@
 				A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */,
 				A30E0EFF123EA5B400D31157 /* BookEdge.pvrtc in Resources */,
 				A30E0F00123EA5B400D31157 /* EPubDefault.css in Resources */,
-				A30E0F02123EA5B400D31157 /* XHTMLEntityMap.plist in Resources */,
 				A30E0F03123EA5B400D31157 /* HyphenationPatterns in Resources */,
 				A30E0F05123EA5B400D31157 /* booktextureandshadow.png in Resources */,
 				A30E0F06123EA5B400D31157 /* row-dark.png in Resources */,
@@ -3858,6 +3857,7 @@
 				DC63DB1C12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
 				A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3951A2912E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
+				7DED87DF12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3872,7 +3872,6 @@
 				A36D34C4120B136700E1A035 /* RootViewController.xib in Resources */,
 				A36D34C6120B136700E1A035 /* BookEdge.pvrtc in Resources */,
 				A36D34C7120B136700E1A035 /* EPubDefault.css in Resources */,
-				A36D34C9120B136700E1A035 /* XHTMLEntityMap.plist in Resources */,
 				A36D34CA120B136700E1A035 /* HyphenationPatterns in Resources */,
 				A36D34CE120B136700E1A035 /* booktextureandshadow.png in Resources */,
 				A36D34CF120B136700E1A035 /* row-dark.png in Resources */,
@@ -4094,6 +4093,7 @@
 				DC63DB1812DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
 				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3951A2A12E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
+				7DED87DD12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
