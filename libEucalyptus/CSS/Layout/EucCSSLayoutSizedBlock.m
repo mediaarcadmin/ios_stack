@@ -109,7 +109,7 @@
 {
     EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:self.documentNode
                                                                                           scaleFactor:self.scaleFactor];
-    [newBlock positionInFrame:frame afterInternalPageBreak:NO];
+    [newBlock positionInFrame:frame withTopMargin:YES withTopBorderAndPadding:YES];
     
     [container addChild:newBlock];
     
