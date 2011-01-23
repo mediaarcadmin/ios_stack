@@ -661,7 +661,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         
                         nextAbsoluteY = [newBlock convertRect:newBlock.contentBounds toContainer:nil].origin.y;
                         
-                        if(hasPreviousSibling) {
+                        if(hasPreviousSibling && nextAbsoluteY != frame.origin.y) {
                             EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
                             pageBreaks.push_back(make_pair(breakPoint, newBlock));
                         }                
