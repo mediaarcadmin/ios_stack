@@ -64,7 +64,8 @@
 }
 
 - (void)positionInFrame:(CGRect)frame
- afterInternalPageBreak:(BOOL)afterInternalPageBreak
+          withTopMargin:(BOOL)withTopMargin
+withTopBorderAndPadding:(BOOL)withTopBorderAndPadding
 {
     self.frame = frame;
     CGRect bounds = frame;
@@ -75,7 +76,7 @@
     css_unit unit = 0;
     
     CGRect borderRect;
-    if(afterInternalPageBreak) {
+    if(!withTopMargin) {
         borderRect.origin.y = 0;
     } else {
         css_computed_margin_top(computedStyle, &fixed, &unit);
@@ -89,7 +90,7 @@
     _borderRect = borderRect;
     
     CGRect paddingRect;
-    if(afterInternalPageBreak) {
+    if(!withTopBorderAndPadding) {
         paddingRect.origin.y = borderRect.origin.y;
     } else {
         css_computed_border_top_width(computedStyle, &fixed, &unit);
@@ -103,7 +104,7 @@
     _paddingRect = paddingRect;
     
     CGRect contentRect;
-    if(afterInternalPageBreak) {
+    if(!withTopBorderAndPadding) {
         contentRect.origin.y = paddingRect.origin.y;
     } else {
         css_computed_padding_top(computedStyle, &fixed, &unit);

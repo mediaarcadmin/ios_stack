@@ -27,13 +27,6 @@
 @synthesize intrudingLeftFloats = _intrudingLeftFloats;
 @synthesize intrudingRightFloats = _intrudingRightFloats;
 
-- (CGRect)contentRect
-{
-    CGRect ret = self.frame;
-    ret.origin = CGPointZero;
-    return ret;
-}
-
 - (void)dealloc
 {
     [_children release];
@@ -94,6 +87,13 @@
     } else {
         return [myParent convertRect:selfFrame toContainer:nil];
     }    
+}
+
+- (CGRect)contentRect
+{
+    CGRect ret = self.frame;
+    ret.origin = CGPointZero;
+    return ret;
 }
 
 - (CGRect)contentBounds

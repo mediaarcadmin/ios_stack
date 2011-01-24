@@ -28,13 +28,10 @@
     NSUInteger _columnCount;
     NSUInteger _rowCount;
     
+    CGFloat *_nonAbsoluteColumnMinWidths;
     CGFloat *_columnMinWidths;
     CGFloat *_columnMaxWidths;
-    //EucCSSLayoutSizedContainer ***_cellContainers;
 }
-
-@property (nonatomic, assign, readonly) CGFloat cellsMinWidth;
-@property (nonatomic, assign, readonly) CGFloat cellsMaxWidth;
 
 @property (nonatomic, retain, readonly) EucCSSLayoutSizedBlock *sizedCaptionBlock;
 

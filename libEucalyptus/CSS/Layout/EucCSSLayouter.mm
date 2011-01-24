@@ -78,7 +78,8 @@ Block completion status.
 - (EucCSSLayoutPositionedBlock *)_constructBlockAndAncestorsForNode:(EucCSSIntermediateDocumentNode *)node
                                                  returningInnermost:(EucCSSLayoutPositionedBlock **)innermost
                                                             inFrame:(CGRect)frame
-                                             afterInternalPageBreak:(BOOL)afterInternalPageBreak
+                                                      withTopMargin:(BOOL)withTopMargin
+                                            withTopBorderAndPadding:(BOOL)withTopBorderAndPadding
                                                         scaleFactor:(CGFloat)scaleFactor
 {
     EucCSSLayoutPositionedBlock *newContainer;
@@ -90,20 +91,25 @@ Block completion status.
         outermost = [self _constructBlockAndAncestorsForNode:blockLevelParent
                                           returningInnermost:&parentContainer
                                                      inFrame:frame
-                                      afterInternalPageBreak:YES
+                                               withTopMargin:NO
+                                     withTopBorderAndPadding:NO
                                                  scaleFactor:scaleFactor];
         
         newContainer = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:scaleFactor];
         newContainer.documentNode = node;
         CGRect potentialFrame = parentContainer.contentBounds;
-        [newContainer positionInFrame:potentialFrame afterInternalPageBreak:afterInternalPageBreak];
+        [newContainer positionInFrame:potentialFrame
+                        withTopMargin:withTopMargin 
+              withTopBorderAndPadding:withTopBorderAndPadding];
         
         [parentContainer addChild:newContainer];
         [newContainer release];
     } else {
         newContainer = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:node scaleFactor:scaleFactor];
         newContainer.documentNode = node;
-        [newContainer positionInFrame:frame afterInternalPageBreak:afterInternalPageBreak];
+        [newContainer positionInFrame:frame 
+                        withTopMargin:withTopMargin
+              withTopBorderAndPadding:withTopBorderAndPadding];
         
         outermost = [newContainer autorelease];
     }
@@ -533,10 +539,11 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 positionedRoot = [self _constructBlockAndAncestorsForNode:blockLevelParent
                                                        returningInnermost:&currentPositionedBlock
                                                                   inFrame:bottomlessFrame
-                                                   afterInternalPageBreak:YES
+                                                            withTopMargin:NO
+                                                  withTopBorderAndPadding:NO
                                                               scaleFactor:scaleFactor];               
             } else {
-                // We set afterInternalPageBreak to YES on anything but the root 
+                // We set withTopMargin to NO on anything but the root 
                 // node in order to remove its top margin.  The CSS spec says:
                 
                 // 5.4. Allowed page breaks
@@ -547,14 +554,15 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                 positionedRoot = [self _constructBlockAndAncestorsForNode:currentDocumentNode
                                                        returningInnermost:&currentPositionedBlock
                                                                   inFrame:bottomlessFrame
-                                                   afterInternalPageBreak:startNodeKey != document.rootNode.key
+                                                            withTopMargin:startNodeKey == document.rootNode.key
+                                                  withTopBorderAndPadding:wordOffset == 0 && elementOffset == 0
                                                               scaleFactor:scaleFactor];
                 currentDocumentNode = currentDocumentNode.nextDisplayable;
             } 
         } else {
             positionedRoot = [[[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode
                                                                             scaleFactor:scaleFactor] autorelease];
-            [positionedRoot positionInFrame:frame afterInternalPageBreak:NO];
+            [positionedRoot positionInFrame:frame withTopMargin:YES withTopBorderAndPadding:YES];
             currentPositionedBlock = positionedRoot;
             currentDocumentNode = currentDocumentNode.nextDisplayable;
         }
@@ -652,7 +660,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                             THLog(@"Image: %@", [currentDocumentNode.imageSource absoluteString]);
                         }
                         EucCSSLayoutPositionedBlock *newBlock = [[EucCSSLayoutPositionedBlock alloc] initWithDocumentNode:currentDocumentNode scaleFactor:scaleFactor];
-                        [newBlock positionInFrame:potentialFrame afterInternalPageBreak:NO];
+                        [newBlock positionInFrame:potentialFrame withTopMargin:YES withTopBorderAndPadding:YES];
                         [currentPositionedBlock addChild:newBlock];
                         if(activeFloats) {
                             newBlock.intrudingLeftFloats = activeFloats.first;
@@ -661,7 +669,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                         
                         nextAbsoluteY = [newBlock convertRect:newBlock.contentBounds toContainer:nil].origin.y;
                         
-                        if(hasPreviousSibling) {
+                        if(hasPreviousSibling && nextAbsoluteY != frame.origin.y) {
                             EucCSSLayoutPoint breakPoint = { currentDocumentNode.key, 0, 0 };
                             pageBreaks.push_back(make_pair(breakPoint, newBlock));
                         }                

@@ -54,7 +54,7 @@
 
 - (void)positionChildrenInContainer:(EucCSSLayoutPositionedContainer *)positionedContainer usingLayouter:(EucCSSLayouter *)layouter
 {
-    CGRect contentRect = positionedContainer.contentRect;
+    CGRect contentBounds = positionedContainer.contentBounds;
     
     for(EucCSSLayoutSizedEntity *child in self.children) {
         // TODO: refactor the child classes here so that we can just call
@@ -62,26 +62,26 @@
         EucCSSLayoutPositionedContainer *positionedChild = nil;
         if([child isKindOfClass:[EucCSSLayoutSizedTable class]]){
             EucCSSLayoutSizedTable *table = (EucCSSLayoutSizedTable *)child;
-            positionedChild = [table positionTableForFrame:contentRect
+            positionedChild = [table positionTableForFrame:contentBounds
                                                inContainer:positionedContainer
                                              usingLayouter:layouter];
         } else if([child isKindOfClass:[EucCSSLayoutSizedBlock class]]) {
             EucCSSLayoutSizedBlock *block = (EucCSSLayoutSizedBlock *)child;
-            positionedChild = [block positionBlockForFrame:contentRect
+            positionedChild = [block positionBlockForFrame:contentBounds
                                                inContainer:positionedContainer
                                              usingLayouter:layouter];
         } else if([child isKindOfClass:[EucCSSLayoutSizedRun class]]) {
             EucCSSLayoutSizedRun *run = (EucCSSLayoutSizedRun *)child;
-            positionedChild = [run positionRunForFrame:contentRect
+            positionedChild = [run positionRunForFrame:contentBounds
                                            inContainer:positionedContainer 
                                   startingAtWordOffset:0
                                          elementOffset:0
                                 usingLayouterForFloats:layouter];
         }
-        contentRect.origin.y += positionedChild.frame.size.height;
+        contentBounds.origin.y += positionedChild.frame.size.height;
     }
     
-    [positionedContainer closeBottomWithContentHeight:contentRect.origin.y];
+    [positionedContainer closeBottomWithContentHeight:contentBounds.origin.y];
 }
 
 @end

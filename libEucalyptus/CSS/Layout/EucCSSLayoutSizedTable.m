@@ -31,6 +31,15 @@
 
 #import <libcss/libcss.h>
 
+@interface EucCSSLayoutSizedTable ()
+
+@property (nonatomic, assign, readonly) CGFloat nonAbsoluteCellsMinWidth;
+@property (nonatomic, assign, readonly) CGFloat cellsMinWidth;
+@property (nonatomic, assign, readonly) CGFloat cellsMaxWidth;
+
+@end
+
+
 @implementation EucCSSLayoutSizedTable
 
 
@@ -151,6 +160,7 @@
          This gives a maximum and minimum width for each column.
         */
 
+        _nonAbsoluteColumnMinWidths = calloc(columnCount, sizeof(CGFloat));
         _columnMinWidths = calloc(columnCount, sizeof(CGFloat));
         _columnMaxWidths = calloc(columnCount, sizeof(CGFloat));
 
@@ -182,6 +192,9 @@
                     if(columnSpan == 1) {
                         EucCSSLayoutSizedEntity *sizedCellContents = (EucCSSLayoutSizedEntity *)CFDictionaryGetValue(_sizedCells, cell);
                         CGFloat minWidth = sizedCellContents.minWidth;
+                        if(minWidth > _nonAbsoluteColumnMinWidths[columnIndex]) {
+                            _nonAbsoluteColumnMinWidths[columnIndex] = minWidth;
+                        } 
                         if(minWidth > _columnMinWidths[columnIndex]) {
                             _columnMinWidths[columnIndex] = minWidth;
                         } else {
@@ -215,8 +228,9 @@
                 if(cell) {
                     columnSpan = cell.columnSpan;
                     if(columnSpan > 1) {
-                        CGFloat spannedMin = 0, spannedMax = 0;
+                        CGFloat spannedMin = 0, spannedMax = 0, nonAbsoluteSpannedMin = 0;
                         for(NSUInteger i = 0; i < columnSpan; ++i) {
+                            nonAbsoluteSpannedMin += _nonAbsoluteColumnMinWidths[columnIndex + i];
                             spannedMin += _columnMinWidths[columnIndex + i];
                             spannedMax += _columnMaxWidths[columnIndex + i];
                         }
@@ -230,6 +244,18 @@
                                     CGFloat addition = roundf(remainingMinSpannedWidth / remainingColumnsToSpan);
                                     _columnMinWidths[columnIndex + i] += addition;
                                     remainingMinSpannedWidth -= addition;
+                                    --remainingColumnsToSpan;
+                                }                        
+                            }
+                        }
+                        {
+                            CGFloat remainingNonAbsoluteMinSpannedWidth = minWidth - nonAbsoluteSpannedMin;
+                            if(remainingNonAbsoluteMinSpannedWidth > 0) {
+                                NSUInteger remainingColumnsToSpan = columnSpan;
+                                for(NSUInteger i = 0; i < columnSpan; ++i) {
+                                    CGFloat addition = roundf(remainingNonAbsoluteMinSpannedWidth / remainingColumnsToSpan);
+                                    _nonAbsoluteColumnMinWidths[columnIndex + i] += addition;
+                                    remainingNonAbsoluteMinSpannedWidth -= addition;
                                     --remainingColumnsToSpan;
                                 }                        
                             }
@@ -295,6 +321,16 @@
     }    
     return ret;
 }
+
+- (CGFloat)nonAbsoluteCellsMinWidth
+{
+    CGFloat ret = 0.0f;
+    for(NSUInteger i = 0; i < _columnCount; ++i) {
+        ret += _nonAbsoluteColumnMinWidths[i];
+    }    
+    return ret;
+}
+
 
 - (CGFloat)minWidth
 {
@@ -415,10 +451,15 @@
     
     CGFloat *columnWidths = calloc(_columnCount, sizeof(CGFloat));
     CGFloat cellsMinWidth = self.cellsMinWidth;
+    CGFloat *columnMinWidths = _columnMinWidths;
+    if(width < cellsMinWidth) {
+        cellsMinWidth = self.nonAbsoluteCellsMinWidth;
+        columnMinWidths = _nonAbsoluteColumnMinWidths;
+    }    
     
     CGFloat accumulatedColumnWidth = 0;
     for(NSUInteger i = 0; i < _columnCount; ++i) {
-        CGFloat colWidth = (_columnMinWidths[i] / cellsMinWidth) * width;
+        CGFloat colWidth = (columnMinWidths[i] / cellsMinWidth) * width;
         colWidth = MIN(colWidth, _columnMaxWidths[i]);
         colWidth = floorf(colWidth);
         columnWidths[i] = colWidth;
@@ -550,6 +591,7 @@
     if(_sizedCells) {
         CFRelease(_sizedCells);
     }
+    free(_nonAbsoluteColumnMinWidths);
     free(_columnMinWidths);
     free(_columnMaxWidths);
     

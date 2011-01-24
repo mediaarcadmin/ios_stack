@@ -9,6 +9,8 @@
 #import "EucCSSXMLTree.h"
 #import "EucCSSXMLTreeNode.h"
 
+#import "THLog.h"
+
 @implementation EucCSSXMLTree
 
 @synthesize nodes = _nodes;
@@ -21,11 +23,41 @@ typedef struct EucCSSXMLTreeContext
     NSMutableArray *nodes;
     NSMutableDictionary *idToNode;
     EucCSSXMLTreeNode *currentNode;
+    
+    CFMutableDataRef characterAccumulator;
+    
+    NSDictionary *dtdMap;
+    NSString *defaultDTDID;
 } EucCSSXMLTreeContext;
+
+static void EucCSSXMLTreeProcessAccumulatedCharacters(EucCSSXMLTreeContext *context)
+{
+    if(context->characterAccumulator) {
+        if(context->currentNode) {
+            // Throw away characters before the root node.
+            NSMutableArray *nodes = context->nodes;
+            EucCSSXMLTreeNode *currentNode = context->currentNode;
+            EucCSSXMLTreeNode *newNode = [[context->xmlTreeNodeClass alloc] initWithKey:nodes.count + 1
+                                                                                   kind:EucCSSDocumentTreeNodeKindText];
+
+            newNode.characters = (NSData *)context->characterAccumulator;
+
+            [nodes addObject:newNode];
+            [currentNode addChild:newNode];
+            
+            [newNode release];
+        }
+        CFRelease(context->characterAccumulator);
+        context->characterAccumulator = NULL;
+    }
+}
 
 static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts) 
 {
     EucCSSXMLTreeContext *context = (EucCSSXMLTreeContext *)ctx;
+    
+    EucCSSXMLTreeProcessAccumulatedCharacters(context);
+    
     NSMutableArray *nodes = context->nodes;
     EucCSSXMLTreeNode *currentNode = context->currentNode;
     
@@ -64,6 +96,9 @@ static void EucCSSXMLTreeStartElementHandler(void *ctx, const XML_Char *name, co
 static void EucCSSXMLTreeEndElementHandler(void *ctx, const XML_Char *name) 
 {
     EucCSSXMLTreeContext *context = (EucCSSXMLTreeContext *)ctx;
+    
+    EucCSSXMLTreeProcessAccumulatedCharacters(context);
+    
     EucCSSXMLTreeNode *currentNode = context->currentNode;
     
     EucCSSXMLTreeNode *parent = currentNode.parent;
@@ -75,17 +110,51 @@ static void EucCSSXMLTreeEndElementHandler(void *ctx, const XML_Char *name)
 static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int len) 
 {
     EucCSSXMLTreeContext *context = (EucCSSXMLTreeContext *)ctx;
-    NSMutableArray *nodes = context->nodes;
-    EucCSSXMLTreeNode *currentNode = context->currentNode;
-    EucCSSXMLTreeNode *newNode = [[context->xmlTreeNodeClass alloc] initWithKey:nodes.count + 1
-                                                                   kind:EucCSSDocumentTreeNodeKindText];
-    CFDataRef characterData = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)chars, len);
-    newNode.characters = (NSData *)characterData;
-    CFRelease(characterData);
+    if(!context->characterAccumulator) {
+        CFMutableDataRef characterData = CFDataCreateMutable(kCFAllocatorDefault, 0);
+        CFDataAppendBytes(characterData, (const UInt8 *)chars, len);
+        context->characterAccumulator = characterData;
+    } else {
+        CFDataAppendBytes(context->characterAccumulator, (const UInt8 *)chars, len);
+    }
+}
+
+int EucCSSXMLTreeExternalEntityRefHandler(XML_Parser parser,
+                                          const XML_Char *parserContext,
+                                          const XML_Char *base,
+                                          const XML_Char *systemID,
+                                          const XML_Char *publicID) 
+{
+    EucCSSXMLTreeContext *context = (EucCSSXMLTreeContext *)XML_GetUserData(parser);
     
-    [nodes addObject:newNode];
-    [currentNode addChild:newNode];
-    [newNode release];
+    NSString *DTDPath = nil;
+    
+    NSString *publicIDString = nil;
+    if(publicID) {
+        publicIDString = [NSString stringWithUTF8String:publicID];
+        DTDPath = [context->dtdMap objectForKey:publicIDString];
+        if(!DTDPath) {
+            THWarn(@"No local path specified for DTD for public ID \"%s\", system ID \"%s\"", publicID, systemID);
+        }
+    } 
+    if(!DTDPath) {
+        THLog(@"Using default DTD %@", context->defaultDTDID);
+        DTDPath = [context->dtdMap objectForKey:context->defaultDTDID];
+    }
+    
+    if(!DTDPath) {
+        THWarn(@"Could not find local DTD for public ID \"%s\", system ID \"%s\"", publicID, systemID);
+    } else {
+        NSData *DTDData = [[NSData alloc] initWithContentsOfMappedFile:DTDPath];
+        XML_Parser externalEntityParser = XML_ExternalEntityParserCreate(parser, parserContext, NULL);
+        
+        XML_Parse(externalEntityParser, [DTDData bytes], [DTDData length], XML_TRUE);
+        
+        XML_ParserFree(externalEntityParser);
+        [DTDData release];
+    }
+    
+    return XML_STATUS_OK;
 }
 
 - (id)initWithData:(NSData *)xmlData
@@ -94,6 +163,7 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
 }
 
 - (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass
+DTDPublicIDToLocalPathMap:(NSDictionary *)dtdMap defaultDTDPublicID:(NSString *)defaultDTDID
 {
     if((self = [super init])) {
         _xmlTreeNodeClass = xmlTreeNodeClass;
@@ -101,23 +171,29 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
         if(xmlLength) {
             NSMutableArray *buildNodes = [[NSMutableArray alloc] init];
             NSMutableDictionary *buildIdToNodes = [[NSMutableDictionary alloc] init];
-            EucCSSXMLTreeContext context = { self, _xmlTreeNodeClass, buildNodes, buildIdToNodes, NULL };
+            EucCSSXMLTreeContext context = { self, _xmlTreeNodeClass, buildNodes, buildIdToNodes, NULL, NULL, dtdMap, defaultDTDID };
             
             XML_Parser parser = XML_ParserCreate("UTF-8");
             XML_SetUserData(parser, &context);    
-            XML_UseForeignDTD(parser, XML_TRUE);
             
-           /* XML_SetDoctypeDeclHander(parser, XML_StartDoctypeDeclHandler start, XML_EndDoctypeDeclHandler end);        
-            XML_SetCommentHandler(parser, XML_CommentHandler handler)
-           */ XML_SetElementHandler(parser, EucCSSXMLTreeStartElementHandler, EucCSSXMLTreeEndElementHandler);
+            XML_UseForeignDTD(parser, defaultDTDID != nil);
+            XML_SetParamEntityParsing(parser, XML_PARAM_ENTITY_PARSING_ALWAYS);
+            XML_SetExternalEntityRefHandler(parser, EucCSSXMLTreeExternalEntityRefHandler);
+            
+            XML_SetElementHandler(parser, EucCSSXMLTreeStartElementHandler, EucCSSXMLTreeEndElementHandler);
             XML_SetCharacterDataHandler(parser, EucCSSXMLTreeCharactersHandler);
-           // XML_SetSkippedEntityHandler(parser, paragraphBuildingSkippedEntityHandler);
             
-            XML_Parse(parser, [xmlData bytes], xmlLength, XML_FALSE);
+            XML_Parse(parser, [xmlData bytes], xmlLength, XML_TRUE);
             
             XML_ParserFree(parser);
+
+            if(context.characterAccumulator) {
+                CFRelease(context.characterAccumulator);
+            }
             
-            if(buildNodes.count) {
+            NSUInteger nodesCount = buildNodes.count;
+            if(nodesCount) {
+                _nodesCount = nodesCount;
                 _nodes = buildNodes;
                 _idToNode = buildIdToNodes;
             } else {
@@ -127,6 +203,11 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
         }
     }
     return self;
+}
+
+- (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass
+{
+    return [self initWithData:xmlData xmlTreeNodeClass:xmlTreeNodeClass DTDPublicIDToLocalPathMap:nil defaultDTDPublicID:nil];
 }
 
 - (void)dealloc
@@ -143,7 +224,7 @@ static void EucCSSXMLTreeCharactersHandler(void *ctx, const XML_Char *chars, int
 
 - (EucCSSXMLTreeNode *)nodeForKey:(uint32_t)key
 {
-    if(key > 0) { 
+    if(key > 0 && key <= _nodesCount) { 
         return [_nodes objectAtIndex:key-1];
     } else {
         return nil;

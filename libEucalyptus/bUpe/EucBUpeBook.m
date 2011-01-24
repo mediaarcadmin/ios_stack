@@ -1048,7 +1048,13 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 {
     NSData *data = [self dataForURL:url];
     if(data) {
-        return [[[EucCSSXMLTree alloc] initWithData:data xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]] autorelease];
+        NSString *dtdPublicID = @"-//W3C//DTD XHTML 1.1//EN";
+        NSString *dtdPath = [[NSBundle mainBundle] pathForResource:@"xhtml-entities" ofType:@"ent"];
+        NSDictionary *dtdMap = [NSDictionary dictionaryWithObject:dtdPath forKey:dtdPublicID];
+        return [[[EucCSSXMLTree alloc] initWithData:data 
+                                   xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]
+                          DTDPublicIDToLocalPathMap:dtdMap
+                                 defaultDTDPublicID:dtdPublicID] autorelease];
     }
     return nil;
 }

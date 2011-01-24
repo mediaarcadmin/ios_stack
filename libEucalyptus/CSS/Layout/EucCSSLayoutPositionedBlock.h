@@ -41,7 +41,8 @@ struct css_computed_style;
                scaleFactor:(CGFloat)scaleFactor;
 
 - (void)positionInFrame:(CGRect)frame
- afterInternalPageBreak:(BOOL)afterInternalPageBreak;
+          withTopMargin:(BOOL)withTopMargin
+withTopBorderAndPadding:(BOOL)withTopBorderAndPadding;
 
 - (void)closeBottomWithContentHeight:(CGFloat)height atInternalPageBreak:(BOOL)atInternalPageBreak;
 
