@@ -1954,10 +1954,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     if(_viewsNeedRecache) {
         [self _recachePages];
         [self _setNeedsAccessibilityElementsRebuild];
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
         if(!(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
             _focusedPageIndex = _pageContentsInformation[2] ? _pageContentsInformation[2].pageIndex : _pageContentsInformation[3].pageIndex;
         }
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     }
     
     if(_animationFlags != postDrawAnimationFlags) {
@@ -2488,68 +2488,48 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
         NSMutableArray *accessibilityElements = [[NSMutableArray alloc] initWithCapacity:pageViewAccessibilityElements.count + 1];
         
-        CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageContentsInformation[3].view];
-        {
-            CGFloat topMargin = [self _topMarginForView:_pageContentsInformation[3].view];
-            CGRect frame = self.bounds;
-            frame.origin.y = 0;
-            frame.size.height = topMargin;
-            frame.size.width -= 2 * tapZoneWidth;
-            frame.origin.x += tapZoneWidth;
-            frame = [self convertRect:frame toView:nil];
+        if(&UIAccessibilityPageScrolledNotification == NULL) {
+            // i.e. if we can't do finger-swipes to scroll.
+            CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageContentsInformation[3].view];            
+            {
+                THAccessibilityElement *nextPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+                nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
+                if(!_pageContentsInformation[4] && !_pageContentsInformation[5])  {
+                    nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+                }            
+                CGRect frame = self.bounds;
+                frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
+                frame.size.width = tapZoneWidth;
+                frame = [self convertRect:frame toView:nil];
+                
+                nextPageTapZone.accessibilityFrame = frame;
+                nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
+                nextPageTapZone.delegate = self;
+                
+                [accessibilityElements addObject:nextPageTapZone];
+                _nextPageTapZone = [nextPageTapZone retain];
+                
+                [nextPageTapZone release];
+            }      
             
-            THAccessibilityElement *toolbarTapButton = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            toolbarTapButton.accessibilityFrame = frame;
-            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book page", @"Accessibility title for previous page tap zone");
-            if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] >= NSOrderedSame) {
-                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls, three finger swipe down to read this page, three finger swipe sideways to turn the page, .", @"Accessibility title for previous page tap zone on devices with three-finger swipe support");
-            } else {
-                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone on devices without three-finger swipe support");
-            }
-            toolbarTapButton.delegate = self;
-            
-            [accessibilityElements addObject:toolbarTapButton];
-            [toolbarTapButton release];
-        }        
-        
-        {
-            THAccessibilityElement *nextPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if(!_pageContentsInformation[4] && !_pageContentsInformation[5])  {
-                nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-            }            
-            CGRect frame = self.bounds;
-            frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
-            frame.size.width = tapZoneWidth;
-            frame = [self convertRect:frame toView:nil];
-            
-            nextPageTapZone.accessibilityFrame = frame;
-            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
-            nextPageTapZone.delegate = self;
-            
-            [accessibilityElements addObject:nextPageTapZone];
-            _nextPageTapZone = [nextPageTapZone retain];
-            
-            [nextPageTapZone release];
-        }      
-        
-        {
-            THAccessibilityElement *previousPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if(!_pageContentsInformation[0] && !_pageContentsInformation[1])  {
-                previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-            }
-            CGRect frame = self.bounds;
-            frame.size.width = tapZoneWidth;
-            frame = [self convertRect:frame toView:nil];
+            {
+                THAccessibilityElement *previousPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+                previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
+                if(!_pageContentsInformation[0] && !_pageContentsInformation[1])  {
+                    previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+                }
+                CGRect frame = self.bounds;
+                frame.size.width = tapZoneWidth;
+                frame = [self convertRect:frame toView:nil];
 
-            previousPageTapZone.accessibilityFrame = frame;
-            previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
-            previousPageTapZone.delegate = self;
-            
-            [accessibilityElements addObject:previousPageTapZone];
-            [previousPageTapZone release];
-        }     
+                previousPageTapZone.accessibilityFrame = frame;
+                previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+                previousPageTapZone.delegate = self;
+                
+                [accessibilityElements addObject:previousPageTapZone];
+                [previousPageTapZone release];
+            }     
+        }
         
         for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
             element.accessibilityContainer = self;
@@ -2612,28 +2592,20 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction 
 {       
     if(!_accessibilityScrollUnderway) {
-        if(direction == UIAccessibilityScrollDirectionUp) {
-            if(&UIAccessibilityAnnouncementNotification != NULL) {
-                NSString *description = [self _currentAccessibilityDescription];
-                UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, description);
-            }
-            return NO;
-        } else {
-            BOOL scroll = NO;
-            BOOL forwards = NO;
-            if(direction == UIAccessibilityScrollDirectionLeft) {
-                forwards = YES;
-                scroll = YES;
-            } else if (direction == UIAccessibilityScrollDirectionRight) {
-                forwards = NO;
-                scroll = YES;
-            }
+        BOOL scroll = NO;
+        BOOL forwards = NO;
+        if(direction == UIAccessibilityScrollDirectionLeft) {
+            forwards = YES;
+            scroll = YES;
+        } else if (direction == UIAccessibilityScrollDirectionRight) {
+            forwards = NO;
+            scroll = YES;
+        }
 
-            if(scroll) {
-                _accessibilityScrollUnderway = [self stepPageForwards:forwards];
-                if(!_accessibilityScrollUnderway) {
-                    [self _announceAccessibilityTurnOver];
-                }
+        if(scroll) {
+            _accessibilityScrollUnderway = [self stepPageForwards:forwards];
+            if(!_accessibilityScrollUnderway) {
+                [self _announceAccessibilityTurnOver];
             }
         }
     }
