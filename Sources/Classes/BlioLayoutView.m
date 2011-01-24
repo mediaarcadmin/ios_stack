@@ -1616,30 +1616,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
     if(!accessibilityElements) {
         accessibilityElements = [[NSMutableArray alloc] init];
+		
+		if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] < NSOrderedSame) {
         
         CGFloat tapZoneWidth = 0.25f * self.pageTurningView.bounds.size.width;      
-        
-        {
-            CGFloat topMargin = 0.1f * self.pageTurningView.bounds.size.height;
-            CGRect frame = self.bounds;
-            frame.origin.y = 0;
-            frame.size.height = topMargin;
-            frame.size.width -= 2 * tapZoneWidth;
-            frame.origin.x += tapZoneWidth;
-            frame = [self convertRect:frame toView:self.window];
-            
-            UIAccessibilityElement *toolbarTapButton = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            toolbarTapButton.accessibilityFrame = frame;
-            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book page", @"Accessibility title for previous page tap zone");
-            if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] >= NSOrderedSame) {
-                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls, three finger swipe down to read this page, three finger swipe sideways to turn the page, .", @"Accessibility title for previous page tap zone on devices with three-finger swipe support");
-            } else {
-                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone on devices without three-finger swipe support");
-            }
-            
-            [accessibilityElements addObject:toolbarTapButton];
-            [toolbarTapButton release];
-        }        
         
         {
             UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
@@ -1684,7 +1664,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             
             [accessibilityElements addObject:previousPageTapZone];
             [previousPageTapZone release];
-        }     
+        }
+			
+		}
         
         for(UIAccessibilityElement *element in [self textBlockAccessibilityElements]) {
             [accessibilityElements addObject:element];
