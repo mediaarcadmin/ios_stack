@@ -2524,13 +2524,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }     
         }
         
-        for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
-            element.accessibilityContainer = self;
-            element.accessibilityFrame = [self convertRect:element.accessibilityFrame toView:nil];
-            [accessibilityElements addObject:element];
-        }       
-        
-        if(pageViewAccessibilityElements.count == 0) {            
+        if(accessibilityElements.count == 0) {            
             THAccessibilityElement *bookPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
             CGRect frame = self.bounds;
@@ -2542,6 +2536,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             
             [accessibilityElements addObject:bookPageTapZone];
             [bookPageTapZone release];
+        } else {
+            for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
+                element.accessibilityContainer = self;
+                element.accessibilityFrame = [self convertRect:element.accessibilityFrame toView:nil];
+                [accessibilityElements addObject:element];
+            }       
         }
         
         THAccessibilityElement *firstElement = [accessibilityElements objectAtIndex:0];

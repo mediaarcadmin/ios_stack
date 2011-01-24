@@ -1681,11 +1681,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			
 		}
         
-        for(UIAccessibilityElement *element in [self textBlockAccessibilityElements]) {
-            [accessibilityElements addObject:element];
-        }           
         
-        if(accessibilityElements.count == 0) {
+        NSArray *pageAccessibilityElements = [self textBlockAccessibilityElements];
+        if(pageAccessibilityElements.count == 0) {
             THAccessibilityElement *bookPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
             CGRect frame = self.bounds;
@@ -1694,11 +1692,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             
             bookPageTapZone.accessibilityFrame = frame;
             bookPageTapZone.accessibilityLabel = NSLocalizedString(@"No text on this page", @"Accessibility description for otherwise empty page");
+            
             bookPageTapZone.delegate = self;
+            
             [accessibilityElements addObject:bookPageTapZone];
             [bookPageTapZone release];
+        } else {            
+            for(UIAccessibilityElement *element in pageAccessibilityElements) {
+                [accessibilityElements addObject:element];
+            }           
         }
-        
     }        
 	
     if (self.pageTurningView.zoomFactor > 1.0f) {
