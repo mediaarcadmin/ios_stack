@@ -9,6 +9,7 @@
 #import "BlioBook.h"
 #import "BlioBookManager.h"
 #import "BlioXPSProvider.h"
+#import "BlioParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/THStringRenderer.h>
 #import <pthread.h>
@@ -831,6 +832,44 @@ static void sortedHighlightRangePredicateInit() {
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range {
     if (nil != self.textFlow) {
         return [self.textFlow wordStringsForBookmarkRange:range];
+    } else {
+        id<BlioParagraphSource> paragraphSource = [[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.objectID];
+    
+        id startParagraphID;
+        uint32_t startWordOffset;
+        [paragraphSource bookmarkPoint:range.startPoint
+                         toParagraphID:&startParagraphID
+                            wordOffset:&startWordOffset];
+        
+        id endParagraphID;
+        uint32_t endWordOffset;
+        [paragraphSource bookmarkPoint:range.endPoint
+                         toParagraphID:&endParagraphID
+                            wordOffset:&endWordOffset];        
+        
+        NSMutableArray *buildWords = [[NSMutableArray alloc] init];
+        id paragraphID = startParagraphID;
+        for(;;) {
+            NSArray *words = [paragraphSource wordsForParagraphWithID:paragraphID];
+            if([paragraphID isEqual:startParagraphID] && [paragraphID isEqual:endParagraphID]) {
+                words = [words subarrayWithRange:NSMakeRange(startWordOffset, endWordOffset - startWordOffset + 1)];
+            } else if([paragraphID isEqual:startParagraphID]) {
+                words = [words subarrayWithRange:NSMakeRange(startWordOffset, words.count - startWordOffset)];
+            } else if([paragraphID isEqual:endParagraphID]) {
+                words = [words subarrayWithRange:NSMakeRange(0, endWordOffset + 1)];
+            }
+            [buildWords addObjectsFromArray:words];
+            
+            if([paragraphID isEqual:endParagraphID]) {
+                break;
+            } else {
+                paragraphID = [paragraphSource nextParagraphIdForParagraphWithID:paragraphID];
+            }
+        }
+        
+        [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:self.objectID];
+        
+        return [buildWords autorelease];
     }
     return nil;
 }

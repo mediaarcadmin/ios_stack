@@ -85,11 +85,13 @@
     EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:intermediateDocument];
     
     EucCSSLayoutRun *newRun = [runExtractor runForNodeWithKey:indexPoint.block];
-    
-    [runExtractor release];
+   
+    *wordOffsetOut = indexPoint.word - 1;
+    indexPoint.word = 0;
     
     *paragraphIDOut = [THPair pairWithFirst:newRun second:indexPoint];
-    *wordOffsetOut = indexPoint.word - 1;
+
+    [runExtractor release];    
 }
 
 - (BlioBookmarkPoint *)bookmarkPointFromParagraphID:(id)paragraphID wordOffset:(uint32_t)wordOffset
