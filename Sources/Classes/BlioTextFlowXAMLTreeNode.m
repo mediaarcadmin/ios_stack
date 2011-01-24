@@ -157,6 +157,7 @@ static NSString *xamlColorToCSSColor(NSString *color)
             [constructionString appendFormat:@"background-color:%@;", xamlColorToCSSColor(value)];
         }                     
         if(constructionString.length) {
+            //NSLog(@"<%@ style=\"%@\">", self.name, constructionString);
             [constructionString autorelease];
         } else {
             [constructionString release];
