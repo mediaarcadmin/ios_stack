@@ -342,9 +342,10 @@
 
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
 {
+	[_delegate cancelPendingToolbarShow];
+	
     if(UIAccessibilityIsVoiceOverRunning == nil ||
        !UIAccessibilityIsVoiceOverRunning()) {
-        [_delegate cancelPendingToolbarShow];
         [_delegate hideToolbars];
     }
 
