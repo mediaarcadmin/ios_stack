@@ -437,7 +437,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [self.eaglContext thPop];
     
     [_accessibilityElements release];
-    [_nextPageTapZone release];
     
     [super dealloc];
 }
@@ -2488,9 +2487,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
         NSMutableArray *accessibilityElements = [[NSMutableArray alloc] initWithCapacity:pageViewAccessibilityElements.count + 1];
         
+        CGFloat tapZoneWidth = 0.0f;      
         if(&UIAccessibilityPageScrolledNotification == NULL) {
             // i.e. if we can't do finger-swipes to scroll.
-            CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageContentsInformation[3].view];            
+            tapZoneWidth = [self _tapTurnMarginForView:_pageContentsInformation[3].view];            
             {
                 THAccessibilityElement *nextPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
                 nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
@@ -2506,9 +2506,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
                 nextPageTapZone.delegate = self;
                 
-                [accessibilityElements addObject:nextPageTapZone];
-                _nextPageTapZone = [nextPageTapZone retain];
-                
+                [accessibilityElements addObject:nextPageTapZone];                
                 [nextPageTapZone release];
             }      
             
@@ -2535,7 +2533,21 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             element.accessibilityContainer = self;
             element.accessibilityFrame = [self convertRect:element.accessibilityFrame toView:nil];
             [accessibilityElements addObject:element];
-        }        
+        }       
+        
+        if(pageViewAccessibilityElements.count == 0) {
+            THAccessibilityElement *bookPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
+            CGRect frame = self.bounds;
+            frame.origin.x += tapZoneWidth;
+            frame.size.width -= tapZoneWidth * 2.0f;
+
+            bookPageTapZone.accessibilityFrame = frame;
+            bookPageTapZone.accessibilityLabel = NSLocalizedString(@"No text on this page", @"Accessibility description for otherwise empty page");
+            
+            [accessibilityElements addObject:bookPageTapZone];
+            [bookPageTapZone release];
+        }
                 
         _accessibilityElements = accessibilityElements;
     }
@@ -3035,8 +3047,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
     [_accessibilityElements release];
     _accessibilityElements = nil;
-    [_nextPageTapZone release];
-    _nextPageTapZone = nil;
 }
 
 - (void)setDimQuotient:(CGFloat)dimQuotient

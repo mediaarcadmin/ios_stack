@@ -625,7 +625,7 @@ found:
                 }
             }
         }
-        [buildPageText appendString:@"\n\n"];
+        [buildPageText appendString:@"\n"];
     }
     return buildPageText ?: nil;
 }

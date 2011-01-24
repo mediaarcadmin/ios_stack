@@ -385,7 +385,7 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
         NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:[pageIndex unsignedIntegerValue] includingFolioBlocks:NO];
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
             [description appendString:[block string]];
-            [description appendString:@"\n\n"];
+            [description appendString:@"\n"];
         }
     }
     
@@ -1617,60 +1617,76 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if(!accessibilityElements) {
         accessibilityElements = [[NSMutableArray alloc] init];
 		
-		if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] < NSOrderedSame) {
-        
-        CGFloat tapZoneWidth = 0.25f * self.pageTurningView.bounds.size.width;      
-        
-        {
-            UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-            if (self.pageTurningView.rightPageIndex >= (self.pageCount - 1))  {
-                nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-            }            
-            CGRect frame = self.bounds;
-            frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
-            frame.size.width = tapZoneWidth;
-            frame = [self convertRect:frame toView:self.window];
+        CGFloat tapZoneWidth = 0.0f;      
 
-            nextPageTapZone.accessibilityFrame = frame;
-            nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
+        if(&UIAccessibilityPageScrolledNotification == NULL) {
+            tapZoneWidth = 0.25f * self.pageTurningView.bounds.size.width;      
 
-            self.nextZone = nextPageTapZone;
-            
-            [accessibilityElements addObject:nextPageTapZone];            
-            [nextPageTapZone release];
-        }      
-        
-        {
-            UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
-			if (self.pageTurningView.isTwoUp) {
-				if (self.pageTurningView.leftPageIndex <= 0)  {
-					previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-				}
-			} else {
-				if (self.pageTurningView.rightPageIndex <= 0)  {
-					previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-				}
-			}
-            CGRect frame = self.bounds;
-            frame.size.width = tapZoneWidth;
-            frame = [self convertRect:frame toView:self.window];
+            {
+                UIAccessibilityElement *nextPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+                nextPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
+                if (self.pageTurningView.rightPageIndex >= (self.pageCount - 1))  {
+                    nextPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+                }            
+                CGRect frame = self.bounds;
+                frame.origin.x = frame.size.width + frame.origin.x - tapZoneWidth;
+                frame.size.width = tapZoneWidth;
+                frame = [self convertRect:frame toView:self.window];
 
-            previousPageTapZone.accessibilityFrame = frame;
-            previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+                nextPageTapZone.accessibilityFrame = frame;
+                nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
+
+                self.nextZone = nextPageTapZone;
+                
+                [accessibilityElements addObject:nextPageTapZone];            
+                [nextPageTapZone release];
+            }      
             
-            self.prevZone = previousPageTapZone;
-            
-            [accessibilityElements addObject:previousPageTapZone];
-            [previousPageTapZone release];
-        }
+            {
+                UIAccessibilityElement *previousPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+                previousPageTapZone.accessibilityTraits = UIAccessibilityTraitButton;
+                if (self.pageTurningView.isTwoUp) {
+                    if (self.pageTurningView.leftPageIndex <= 0)  {
+                        previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+                    }
+                } else {
+                    if (self.pageTurningView.rightPageIndex <= 0)  {
+                        previousPageTapZone.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+                    }
+                }
+                CGRect frame = self.bounds;
+                frame.size.width = tapZoneWidth;
+                frame = [self convertRect:frame toView:self.window];
+
+                previousPageTapZone.accessibilityFrame = frame;
+                previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+                
+                self.prevZone = previousPageTapZone;
+                
+                [accessibilityElements addObject:previousPageTapZone];
+                [previousPageTapZone release];
+            }
 			
 		}
         
         for(UIAccessibilityElement *element in [self textBlockAccessibilityElements]) {
             [accessibilityElements addObject:element];
-        }                
+        }           
+        
+        if(accessibilityElements.count == 0) {
+            THAccessibilityElement *bookPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
+            CGRect frame = self.bounds;
+            frame.origin.x += tapZoneWidth;
+            frame.size.width -= tapZoneWidth * 2.0f;
+            
+            bookPageTapZone.accessibilityFrame = frame;
+            bookPageTapZone.accessibilityLabel = NSLocalizedString(@"No text on this page", @"Accessibility description for otherwise empty page");
+            
+            [accessibilityElements addObject:bookPageTapZone];
+            [bookPageTapZone release];
+        }
+        
     }        
 	
     if (self.pageTurningView.zoomFactor > 1.0f) {
