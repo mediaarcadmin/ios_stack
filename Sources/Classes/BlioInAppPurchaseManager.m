@@ -98,7 +98,6 @@
 	NSLog(@"response.invalidProductIdentifiers: %@",response.invalidProductIdentifiers);
 	// broadcast notification
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioInAppPurchaseProductsUpdated object:self];
-	[request release];
 }	
 #pragma mark -
 #pragma mark SKRequestDelegate methods
