@@ -2524,7 +2524,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }     
         }
         
-        if(accessibilityElements.count == 0) {            
+        if(pageViewAccessibilityElements.count == 0) {            
             THAccessibilityElement *bookPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
             CGRect frame = self.bounds;
