@@ -2587,7 +2587,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         NSMutableArray *pageIndexes = [[NSMutableArray alloc] initWithCapacity:2];
         if(_pageContentsInformation[2] && _pageContentsInformation[2].pageIndex != NSUIntegerMax) {
             [pageIndexes addObject:[NSNumber numberWithUnsignedInteger:_pageContentsInformation[2].pageIndex]];
-        } else if(_pageContentsInformation[3] && _pageContentsInformation[3].pageIndex != NSUIntegerMax) {
+        } 
+        if(_pageContentsInformation[3] && _pageContentsInformation[3].pageIndex != NSUIntegerMax) {
             [pageIndexes addObject:[NSNumber numberWithUnsignedInteger:_pageContentsInformation[3].pageIndex]];
         }
         description = [_bitmapDataSource pageTurningViewAccessibilityPageDescriptionForPagesAtIndexes:pageIndexes];
