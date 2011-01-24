@@ -2489,28 +2489,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         NSMutableArray *accessibilityElements = [[NSMutableArray alloc] initWithCapacity:pageViewAccessibilityElements.count + 1];
         
         CGFloat tapZoneWidth = [self _tapTurnMarginForView:_pageContentsInformation[3].view];
-        {
-            CGFloat topMargin = [self _topMarginForView:_pageContentsInformation[3].view];
-            CGRect frame = self.bounds;
-            frame.origin.y = 0;
-            frame.size.height = topMargin;
-            frame.size.width -= 2 * tapZoneWidth;
-            frame.origin.x += tapZoneWidth;
-            frame = [self convertRect:frame toView:nil];
-            
-            THAccessibilityElement *toolbarTapButton = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
-            toolbarTapButton.accessibilityFrame = frame;
-            toolbarTapButton.accessibilityLabel = NSLocalizedString(@"Book page", @"Accessibility title for previous page tap zone");
-            if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] >= NSOrderedSame) {
-                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls, three finger swipe down to read this page, three finger swipe sideways to turn the page, .", @"Accessibility title for previous page tap zone on devices with three-finger swipe support");
-            } else {
-                toolbarTapButton.accessibilityHint = NSLocalizedString(@"Double tap to return to controls.", @"Accessibility title for previous page tap zone on devices without three-finger swipe support");
-            }
-            toolbarTapButton.delegate = self;
-            
-            [accessibilityElements addObject:toolbarTapButton];
-            [toolbarTapButton release];
-        }        
+		
+		if([[UIDevice currentDevice] compareSystemVersion:@"4.2"] < NSOrderedSame) {
         
         {
             THAccessibilityElement *nextPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
@@ -2549,7 +2529,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             
             [accessibilityElements addObject:previousPageTapZone];
             [previousPageTapZone release];
-        }     
+        }
+			
+		}
         
         for(UIAccessibilityElement *element in pageViewAccessibilityElements) {
             element.accessibilityContainer = self;
