@@ -77,8 +77,6 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 
 - (void)_refreshHighlightsForPageContentsIndex:(NSUInteger)index;
 
-- (void)_announceAccessibilityTurnOver;
-
 @end
 
 @implementation EucPageTurningView
@@ -1963,9 +1961,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-            if(_accessibilityScrollUnderway) {
-                [self _announceAccessibilityTurnOver];
-            }
         }
         if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)){
@@ -2535,7 +2530,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             [accessibilityElements addObject:element];
         }       
         
-        if(pageViewAccessibilityElements.count == 0) {
+        if(pageViewAccessibilityElements.count == 0) {            
             THAccessibilityElement *bookPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
             CGRect frame = self.bounds;
@@ -2548,10 +2543,21 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             [accessibilityElements addObject:bookPageTapZone];
             [bookPageTapZone release];
         }
+        
+        THAccessibilityElement *firstElement = [accessibilityElements objectAtIndex:0];
+        NSParameterAssert([firstElement isKindOfClass:[THAccessibilityElement class]]);
+        firstElement.delegate = self;
                 
         _accessibilityElements = accessibilityElements;
     }
     return _accessibilityElements;
+}
+
+- (void)thAccessibilityElementDidBecomeFocused:(THAccessibilityElement *)element
+{
+    if([self indexOfAccessibilityElement:element] == 0) {
+        [self accessibilityAnnouncePageSummaryIfAfterTurn];
+    }
 }
 
 - (BOOL)isAccessibilityElement
@@ -2592,11 +2598,18 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return description;
 }
 
-- (void)_announceAccessibilityTurnOver
+- (void)_accessibilityAnnouncePageSummary
 {
     if(&UIAccessibilityPageScrolledNotification != NULL) {
         NSString *description = [self _currentAccessibilityDescription];
         UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, description);
+    }        
+}
+
+- (void)accessibilityAnnouncePageSummaryIfAfterTurn
+{
+    if(_accessibilityScrollUnderway) {
+        [self _accessibilityAnnouncePageSummary];
     }
     _accessibilityScrollUnderway = NO;
 }
@@ -2617,7 +2630,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(scroll) {
             _accessibilityScrollUnderway = [self stepPageForwards:forwards];
             if(!_accessibilityScrollUnderway) {
-                [self _announceAccessibilityTurnOver];
+                [self _accessibilityAnnouncePageSummary];
             }
         }
     }

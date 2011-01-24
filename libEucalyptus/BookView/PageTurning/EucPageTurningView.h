@@ -252,6 +252,8 @@ typedef enum EucPageTurningViewAnimationFlags {
 
 - (void)waitForAllPageImagesToBeAvailable;
 
+- (void)accessibilityAnnouncePageSummaryIfAfterTurn;
+
 #pragma mark Light-related properties.
 
 @property (nonatomic, copy) UIColor *specularColor;

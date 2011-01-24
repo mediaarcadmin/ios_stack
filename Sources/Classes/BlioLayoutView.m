@@ -646,8 +646,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [self.selector removeTemporaryHighlight];
     
     if(!self.performingAccessibilityZoom) {
-        [self.delegate cancelPendingToolbarShow];
-        [self.delegate hideToolbars];
+        if(UIAccessibilityIsVoiceOverRunning == nil ||
+           !UIAccessibilityIsVoiceOverRunning()) {
+            [self.delegate cancelPendingToolbarShow];
+            [self.delegate hideToolbars];
+        }
     }
 	pageViewIsTurning = YES;
 }
@@ -1574,6 +1577,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Accessibility
 
+- (void)thAccessibilityElementDidBecomeFocused:(THAccessibilityElement *)element
+{
+    if([self indexOfAccessibilityElement:element] == 0) {
+        [self.pageTurningView accessibilityAnnouncePageSummaryIfAfterTurn];
+    }
+}
+
 - (NSArray *)textBlockAccessibilityElements {
     NSMutableArray *elements = [NSMutableArray array];
 	
@@ -1583,11 +1593,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            THAccessibilityElement *element = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
             blockRect = [self.window.layer convertRect:blockRect fromLayer:self.pageTurningView.layer];
             [element setAccessibilityFrame:blockRect];
             [element setAccessibilityLabel:[block string]];
+            element.delegate = self;
             [elements addObject:element];
             [element release];
         }
@@ -1599,11 +1610,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
         
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            THAccessibilityElement *element = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
             blockRect = [self.window.layer convertRect:blockRect fromLayer:self.pageTurningView.layer];
             [element setAccessibilityFrame:blockRect];
             [element setAccessibilityLabel:[block string]];
+            element.delegate = self;
             [elements addObject:element];
             [element release];
         }
