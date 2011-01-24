@@ -1686,7 +1686,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         }           
         
         if(accessibilityElements.count == 0) {
-            THAccessibilityElement *bookPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            THAccessibilityElement *bookPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
             bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
             CGRect frame = self.bounds;
             frame.origin.x += tapZoneWidth;
@@ -1694,7 +1694,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             
             bookPageTapZone.accessibilityFrame = frame;
             bookPageTapZone.accessibilityLabel = NSLocalizedString(@"No text on this page", @"Accessibility description for otherwise empty page");
-            
+            bookPageTapZone.delegate = self;
             [accessibilityElements addObject:bookPageTapZone];
             [bookPageTapZone release];
         }
