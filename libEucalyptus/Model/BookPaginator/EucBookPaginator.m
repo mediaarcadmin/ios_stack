@@ -165,7 +165,7 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
             ++i;
         }
     }    
-    
+        
     long pageCount = 0;
     EucBookPageIndexPoint *nextPoint = nil;
     while(_continueParsing) {
@@ -196,6 +196,7 @@ static const NSUInteger sDesiredPageSizesCount = (sizeof(sDesiredPageSizes) / si
 //         usleep(100000);
 #endif            
         
+        [pageViews[currentPointIndex] setFullBleed:[_book fullBleedPageForIndexPoint:currentPoints[currentPointIndex]]];
         nextPoint = [pageViews[currentPointIndex].pageTextView layoutPageFromPoint:currentPoints[currentPointIndex] 
                                                                             inBook:_book];
         
