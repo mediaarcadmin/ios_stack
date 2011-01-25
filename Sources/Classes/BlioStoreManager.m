@@ -18,7 +18,7 @@
 
 @implementation BlioStoreManager
 
-@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews,currentStoreHelper,initialLoginCheckFinished;
+@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews,currentStoreHelper,initialLoginCheckFinished,didOpenWebStore;
 @synthesize processingDelegate = _processingDelegate;
 
 +(BlioStoreManager*)sharedInstance
@@ -37,6 +37,7 @@
 		self.deviceRegistrationPromptAlertViews = [NSMutableDictionary dictionaryWithCapacity:1];
 		[self addStoreHelper:[[[BlioOnlineStoreHelper alloc] init] autorelease]];
 		initialLoginCheckFinished = NO;
+		didOpenWebStore = NO;
 	}
 	return self;
 }
@@ -56,6 +57,11 @@
 }
 -(NSString*)currentStoreURL {
 	return self.currentStoreHelper.storeURL;
+}
+-(void)openCurrentWebStore {
+	self.didOpenWebStore = YES;
+	NSURL* url = [NSURL URLWithString:[self currentStoreURL]];
+	[[UIApplication sharedApplication] openURL:url];			  
 }
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
 	[self.currentStoreHelper buyBookWithSourceSpecificID:sourceSpecificID];
@@ -172,22 +178,43 @@
 		NSError * error = nil;
 		[SFHFKeychainUtils deleteItemForUsername:oldUsername andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
 		if (error) {
-			NSLog(@"error deleting login credentials and password for old username %@: %@",[error localizedDescription]);
+			NSLog(@"ERROR: deleting login credentials and password for old username %@: %@",[error localizedDescription]);
 		}
 	}
 	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-	if (username) [loginCredentials setObject:[NSString stringWithString:username] forKey:@"username"];
-	if (username && password) {
-		//[loginCredentials setObject:[NSString stringWithString:password] forKey:@"password"];
-		NSError * error = nil;
-		[SFHFKeychainUtils storeUsername:username andPassword:password forServiceName:kBlioUserLoginCredentialsDefaultsKey updateExisting:YES error:&error];
-		if (error) {
-			NSLog(@"error saving login credentials: %@",[error localizedDescription]);
+	if (username) {
+		[loginCredentials setObject:[NSString stringWithString:username] forKey:@"username"];
+		if (password) {
+			//[loginCredentials setObject:[NSString stringWithString:password] forKey:@"password"];
+			NSError * error = nil;
+			[SFHFKeychainUtils storeUsername:username andPassword:password forServiceName:kBlioUserLoginCredentialsDefaultsKey updateExisting:YES error:&error];
+			if (error) {
+				NSLog(@"ERROR: could not store login credentials: %@",[error localizedDescription]);
+			}
+		}
+		else {
+			NSError * error = nil;
+			[SFHFKeychainUtils deleteItemForUsername:username andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
+			if (error) {
+				NSLog(@"WARNING: error deleting password for username %@: %@",username,[error localizedDescription]);
+			}
 		}
 	}
+
 	[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
+-(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID {
+	NSString * currentUsername = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey] objectForKey:@"username"];
+	if (currentUsername) {
+		NSError * error = nil;
+		[SFHFKeychainUtils deleteItemForUsername:currentUsername andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
+		if (error) {
+			NSLog(@"WARNING: error deleting password for username %@: %@",currentUsername,[error localizedDescription]);
+		}
+	}
+}
+
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID {
 	NSLog(@"saveRegistrationAccountID: %@, serviceID: %@",accountID,serviceID);
 	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
@@ -229,6 +256,9 @@
 -(void)storeHelper:(BlioStoreHelper*)storeHelper receivedLoginResult:(NSInteger)loginResult {
 	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
 	initialLoginCheckFinished = YES;
+	if (loginResult == BlioLoginResultInvalidPassword) {
+		[[BlioStoreManager sharedInstance] clearPasswordForSourceID:storeHelper.sourceID];
+	}	
 	if (loginResult == BlioLoginResultInvalidPassword && isShowingLoginView == NO) {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
 	}
