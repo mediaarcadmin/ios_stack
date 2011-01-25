@@ -324,6 +324,9 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 
 - (void)displayFullScreen:(BOOL)animated becomeActive:(BOOL)becomeActive {
     
+	// Refresh tableView to update page numbers if necessary
+	[self.resultsController.tableView reloadData];
+	
     [self displayStatusBarWithStyle:UIStatusBarStyleDefault animated:animated];
     
     CGRect fullScreen = [self fullScreenRect];
