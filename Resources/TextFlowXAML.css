@@ -29,7 +29,7 @@ LineBreak:before { content:"\A"; white-space:pre-line; }
 *[FontWeight="UltraLight"] { font-weight:200 }
 
 *[FontStyle="Normal"] { font-style:normal }
-*[FontStyle="Italic"] { font-style:italic }
+*[FontStyle="Italic"] { font-style:italic; }
 *[FontStyle="Oblique"] { font-style:oblique }
 
 *[BreakPageBefore="True"] { page-break-before:always }
@@ -39,6 +39,11 @@ LineBreak:before { content:"\A"; white-space:pre-line; }
 *[TextAlignment="Center"] { text-align:center }
 *[TextAlignment="Left"] { text-align:left }
 *[TextAlignment="Right"] { text-align:right }
+
+*[TextDecorations="Baseline"] { text-decoration:underline }
+*[TextDecorations="Overline"] { text-decoration:overline }
+*[TextDecorations="Strikethrough"] { text-decoration:line-through }
+*[TextDecorations="Underline"] { text-decoration:underline }
 
 *[BaselineAlignment="Top"] { vertical-align:top }
 *[BaselineAlignment="Center"] { vertical-align:middle }
