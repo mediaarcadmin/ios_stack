@@ -168,7 +168,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
             return CGSizeZero;
         }
         
-        if(specifiedWidth == CGFLOAT_MAX || specifiedHeight == CGFLOAT_MAX) {
+        if(specifiedWidth == CGFLOAT_MAX && specifiedHeight == CGFLOAT_MAX) {
             CGFloat scaleFactor = self.scaleFactor;
             specifiedWidth = CGImageGetWidth(image) * scaleFactor;
             specifiedHeight = CGImageGetHeight(image) * scaleFactor;

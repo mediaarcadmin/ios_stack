@@ -747,7 +747,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                                    scaleFactor:scaleFactor];
                         
                         CGRect frameWithMaxHeight = potentialFrame;
-                        if(potentialFrame.size.height != CGFLOAT_MAX) {
+                        if(maxAbsoluteY != CGFLOAT_MAX) {
                             frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
                             if(!pageBreaks.empty()) {
                                 frameWithMaxHeight.size.height += CGRectGetMinY([pageBreaks.back().second absoluteFrame]) - frame.origin.y;
