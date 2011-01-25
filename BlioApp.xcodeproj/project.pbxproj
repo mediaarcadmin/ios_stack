@@ -1169,6 +1169,9 @@
 		DCF6420212B60B60003E762C /* button-background-graygradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */; };
 		DCF6420312B60B60003E762C /* button-background-graygradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FD12B60B60003E762C /* button-background-graygradient.png */; };
 		DCF6420412B60B60003E762C /* button-background-graygradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */; };
+		DCF6C56112EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6C56012EE23D00022E2E5 /* SFHFKeychainUtils.m */; };
+		DCF6C56212EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6C56012EE23D00022E2E5 /* SFHFKeychainUtils.m */; };
+		DCF6C56312EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6C56012EE23D00022E2E5 /* SFHFKeychainUtils.m */; };
 		DCF6E1FB125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
 		DCF6E1FC125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
 		DCF6E1FD125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
@@ -2027,6 +2030,8 @@
 		DCF63D1512B59CA7003E762C /* webstore-screenshot-phone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webstore-screenshot-phone@2x.png"; sourceTree = "<group>"; };
 		DCF641FD12B60B60003E762C /* button-background-graygradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-background-graygradient.png"; sourceTree = "<group>"; };
 		DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-background-graygradient@2x.png"; sourceTree = "<group>"; };
+		DCF6C55F12EE23D00022E2E5 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
+		DCF6C56012EE23D00022E2E5 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
 		DCF6E1F9125E6F8C00CAC22B /* BlioGetBooksImportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioGetBooksImportViewController.h; sourceTree = "<group>"; };
 		DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioGetBooksImportViewController.m; sourceTree = "<group>"; };
 		DCFAC96912AD738D0049341B /* webstore-screenshot-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "webstore-screenshot-ipad.png"; sourceTree = "<group>"; };
@@ -2937,7 +2942,7 @@
 				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -2978,6 +2983,8 @@
 		C9B620BD1137BDB10012CE7E /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				DCF6C55F12EE23D00022E2E5 /* SFHFKeychainUtils.h */,
+				DCF6C56012EE23D00022E2E5 /* SFHFKeychainUtils.m */,
 				DC50779F116A3F2800CD40B3 /* Reachability.h */,
 				DC5077A0116A3F2800CD40B3 /* Reachability.m */,
 				DC8BB5501278E4340044580E /* MRGridView */,
@@ -3371,10 +3378,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -4237,6 +4244,7 @@
 				DCC761D412BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
 				DCC762B712BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 				7D05F86D12E8A123007150FF /* BlioZipArchive.m in Sources */,
+				DCF6C56212EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4376,6 +4384,7 @@
 				DCC761D512BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
 				DCC762B812BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 				7D05F86E12E8A123007150FF /* BlioZipArchive.m in Sources */,
+				DCF6C56312EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4515,6 +4524,7 @@
 				DCC761D312BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */,
 				DCC762B612BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 				7D05F86C12E8A123007150FF /* BlioZipArchive.m in Sources */,
+				DCF6C56112EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

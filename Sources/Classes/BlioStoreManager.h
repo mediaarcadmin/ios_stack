@@ -134,7 +134,8 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 -(NSInteger)currentSiteNum;
 -(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID;
 -(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID;
--(NSDictionary*)savedLoginCredentials;
+-(NSString*)savedLoginUsername;
+-(BOOL)hasLoginCredentials;
 -(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Synchronously retrieves the URL for a book identified by a source-specific ID from the appropriate store helper.

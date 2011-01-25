@@ -328,8 +328,7 @@ static void *background_init_thread(void * arg) {
 
 	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			NSDictionary * loginCredentials = [[BlioStoreManager sharedInstance] savedLoginCredentials];
-			if (loginCredentials && [loginCredentials objectForKey:@"username"] && [loginCredentials objectForKey:@"password"]) {
+			if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 			}
 			else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;

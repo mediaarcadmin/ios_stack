@@ -196,9 +196,9 @@
 	emailField.placeholder = NSLocalizedString(@"E-mail Address",@"\"E-mail Address\" placeholder");
 	emailField.delegate = self;
 	
-	NSDictionary * loginCredentials = [[BlioStoreManager sharedInstance] savedLoginCredentials];
-	if (loginCredentials && [loginCredentials objectForKey:@"username"]) {
-		emailField.text = [loginCredentials objectForKey:@"username"];
+	NSString * loginUsername = [[BlioStoreManager sharedInstance] savedLoginUsername];
+	if (loginUsername) {
+		emailField.text = loginUsername;
 	}
 	
 	//temporarily populate to save time

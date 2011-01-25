@@ -14,6 +14,7 @@
 #import "BlioAppSettingsConstants.h"
 #import "BlioCreateAccountViewController.h"
 #import "BlioWelcomeViewController.h"
+#import "SFHFKeychainUtils.h"
 
 @implementation BlioStoreManager
 
@@ -62,9 +63,17 @@
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID {
 	// first check to see if login info is in NSUserDefaults
 	
-	NSDictionary * loginCredentials = [self savedLoginCredentials];
-	if (loginCredentials && [loginCredentials objectForKey:@"username"] && [loginCredentials objectForKey:@"password"]) {
-		[[BlioStoreManager sharedInstance] loginWithUsername:[loginCredentials objectForKey:@"username"] password:[loginCredentials objectForKey:@"password"] sourceID:sourceID];
+	NSDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
+	if ([loginCredentials objectForKey:@"username"]) {
+		NSError * error = nil;
+		NSString * password = [SFHFKeychainUtils getPasswordForUsername:[loginCredentials objectForKey:@"username"] andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
+		if (!error && password) {
+			[[BlioStoreManager sharedInstance] loginWithUsername:[loginCredentials objectForKey:@"username"] password:password sourceID:sourceID];
+		}
+		else {
+			if (error) NSLog(@"ERROR: obtaining password from SFHFKeychainUtils with username %@: %@",[loginCredentials objectForKey:@"username"],[error localizedDescription]);
+			[[BlioStoreManager sharedInstance] showLoginViewForSourceID:sourceID];
+		}
 	}
 	else {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:sourceID];
@@ -157,11 +166,26 @@
 
 }
 -(void)saveUsername:(NSString*)username password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
+	
+	NSString * oldUsername = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey] objectForKey:@"username"];
+	if (oldUsername && ![oldUsername isEqualToString:username]) {
+		NSError * error = nil;
+		[SFHFKeychainUtils deleteItemForUsername:oldUsername andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
+		if (error) {
+			NSLog(@"error deleting login credentials and password for old username %@: %@",[error localizedDescription]);
+		}
+	}
 	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
 	if (username) [loginCredentials setObject:[NSString stringWithString:username] forKey:@"username"];
-	if (password) [loginCredentials setObject:[NSString stringWithString:password] forKey:@"password"];
-	 
-	 [[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
+	if (username && password) {
+		//[loginCredentials setObject:[NSString stringWithString:password] forKey:@"password"];
+		NSError * error = nil;
+		[SFHFKeychainUtils storeUsername:username andPassword:password forServiceName:kBlioUserLoginCredentialsDefaultsKey updateExisting:YES error:&error];
+		if (error) {
+			NSLog(@"error saving login credentials: %@",[error localizedDescription]);
+		}
+	}
+	[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID {
@@ -293,8 +317,25 @@
 - (void)logoutForSourceID:(BlioBookSourceID)sourceID {
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] logout];
 }
--(NSDictionary*)savedLoginCredentials {
-	return [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
+-(NSString*)savedLoginUsername {
+	NSDictionary * credentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
+	if (credentials) {
+		return [credentials objectForKey:@"username"];
+	}
+	return nil;
+}
+-(BOOL)hasLoginCredentials {
+	NSDictionary * credentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
+	if (credentials && [credentials objectForKey:@"username"]) {
+		NSError * error = nil;
+		NSString * password = [SFHFKeychainUtils getPasswordForUsername:[credentials objectForKey:@"username"] andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
+		if (error) {
+			NSLog(@"ERROR: tried to obtain password in hasLoginCredentials: %@",[error localizedDescription]);
+			return NO;
+		}
+		else if (password) return YES;
+	}
+	return NO;
 }
 -(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] URLForBookWithID:sourceSpecificID];
