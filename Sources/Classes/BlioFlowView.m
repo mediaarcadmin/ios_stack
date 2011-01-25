@@ -275,6 +275,7 @@
 	if (bookmarkPoint) {
 		[_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
 	} else {
+		[_eucBookView highlightWordAtIndexPoint:nil animated:YES];
 		_suppressHistory = NO;
 	}
 }
@@ -306,6 +307,7 @@
 		[_eucBookView highlightWordsInHighlightRange:eucRange animated:animated];
 		[eucRange release];
 	} else {
+		[_eucBookView highlightWordAtIndexPoint:nil animated:YES];
 		_suppressHistory = NO;
 	}
 }
@@ -548,6 +550,7 @@
 
 - (void)setFontPointSize:(CGFloat)fontPointSize
 {
+	[_eucBookView highlightWordAtIndexPoint:nil animated:YES];
     _eucBookView.fontPointSize = fontPointSize;
 }
 
