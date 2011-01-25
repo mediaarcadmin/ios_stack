@@ -163,14 +163,26 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         maxWidth = minWidth;
     }
     
-    if(specifiedWidth == CGFLOAT_MAX && specifiedHeight == CGFLOAT_MAX) {
-        CGFloat scaleFactor = self.scaleFactor;
-        specifiedWidth = CGImageGetWidth(image) * scaleFactor;
-        specifiedHeight = CGImageGetHeight(image) * scaleFactor;
-    } else if(specifiedWidth == CGFLOAT_MAX) {
-        specifiedWidth = (CGFloat)CGImageGetWidth(image) / (CGFloat)CGImageGetHeight(image) * specifiedHeight;
-    } else if(specifiedHeight == CGFLOAT_MAX) {
-        specifiedHeight = (CGFloat)CGImageGetHeight(image) / (CGFloat)CGImageGetWidth(image) * specifiedWidth;
+    if(specifiedWidth == CGFLOAT_MAX || specifiedHeight == CGFLOAT_MAX) {
+        if(!image) {
+            return CGSizeZero;
+        }
+        
+        if(specifiedWidth == CGFLOAT_MAX || specifiedHeight == CGFLOAT_MAX) {
+            CGFloat scaleFactor = self.scaleFactor;
+            specifiedWidth = CGImageGetWidth(image) * scaleFactor;
+            specifiedHeight = CGImageGetHeight(image) * scaleFactor;
+        } else if(specifiedWidth == CGFLOAT_MAX) {
+            specifiedWidth = (CGFloat)CGImageGetWidth(image) / (CGFloat)CGImageGetHeight(image) * specifiedHeight;
+        } else if(specifiedHeight == CGFLOAT_MAX) {
+            specifiedHeight = (CGFloat)CGImageGetHeight(image) / (CGFloat)CGImageGetWidth(image) * specifiedWidth;
+        }
+        
+        if(specifiedWidth == 0 || specifiedHeight == 0 || 
+           isnan(specifiedWidth) || isnan(specifiedHeight)) {
+            // Can happen if there's a dimension of 0 on the image itsself.
+            return CGSizeZero;
+        }        
     }
     
     // Work out the size.

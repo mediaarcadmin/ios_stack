@@ -747,9 +747,11 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
                                                                                    scaleFactor:scaleFactor];
                         
                         CGRect frameWithMaxHeight = potentialFrame;
-                        frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
-                        if(!pageBreaks.empty()) {
-                            frameWithMaxHeight.size.height += CGRectGetMinY([pageBreaks.back().second absoluteFrame]) - frame.origin.y;
+                        if(potentialFrame.size.height != CGFLOAT_MAX) {
+                            frameWithMaxHeight.size.height = maxAbsoluteY - nextAbsoluteY;
+                            if(!pageBreaks.empty()) {
+                                frameWithMaxHeight.size.height += CGRectGetMinY([pageBreaks.back().second absoluteFrame]) - frame.origin.y;
+                            }
                         }
                         // Position it.
                         EucCSSLayoutPositionedRun *positionedRun = [sizedRun positionRunForFrame:frameWithMaxHeight
