@@ -76,7 +76,7 @@
 	[super dealloc];
 }
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
-	
+	NSLog(@"buyBookWithSourceSpecificID: %@",sourceSpecificID);
 	NSString * modifiedID = sourceSpecificID;
 	if ([sourceSpecificID length] > 2 && [[[sourceSpecificID substringToIndex:2] lowercaseString] isEqualToString:@"bk"]) {
 		modifiedID = [sourceSpecificID substringFromIndex:2];
