@@ -35,6 +35,9 @@
 		7D05F86C12E8A123007150FF /* BlioZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05F86B12E8A123007150FF /* BlioZipArchive.m */; };
 		7D05F86D12E8A123007150FF /* BlioZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05F86B12E8A123007150FF /* BlioZipArchive.m */; };
 		7D05F86E12E8A123007150FF /* BlioZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D05F86B12E8A123007150FF /* BlioZipArchive.m */; };
+		7D07620212EEC96A008EF96D /* sfhf-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7D07620112EEC96A008EF96D /* sfhf-license.html */; };
+		7D07620312EEC96A008EF96D /* sfhf-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7D07620112EEC96A008EF96D /* sfhf-license.html */; };
+		7D07620412EEC96A008EF96D /* sfhf-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7D07620112EEC96A008EF96D /* sfhf-license.html */; };
 		7D0D4BC41213F6E2000AAC82 /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */; };
 		7D0D4BC51213F6E2000AAC82 /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */; };
 		7D131D231295628300BCA583 /* icon-title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D191295628300BCA583 /* icon-title@2x.png */; };
@@ -1378,6 +1381,7 @@
 		7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libEucalyptus.xcodeproj; path = libEucalyptus/libEucalyptus.xcodeproj; sourceTree = "<group>"; };
 		7D05F86A12E8A123007150FF /* BlioZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioZipArchive.h; sourceTree = "<group>"; };
 		7D05F86B12E8A123007150FF /* BlioZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioZipArchive.m; sourceTree = "<group>"; };
+		7D07620112EEC96A008EF96D /* sfhf-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "sfhf-license.html"; sourceTree = "<group>"; };
 		7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubOverrides.css; sourceTree = "<group>"; };
 		7D131D191295628300BCA583 /* icon-title@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-title@2x.png"; sourceTree = "<group>"; };
 		7D131D1A1295628300BCA583 /* icon-title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-title.png"; sourceTree = "<group>"; };
@@ -2245,6 +2249,7 @@
 				A3CF839712E4B7E00069FA16 /* XPS-Starters */,
 				A393060212BAC03400949150 /* gnulesser-license.html */,
 				A393060312BAC03400949150 /* mit-license.html */,
+				7D07620112EEC96A008EF96D /* sfhf-license.html */,
 				A393060412BAC03400949150 /* openfont-license.html */,
 				A39305FE12BAC01A00949150 /* apache2-license.html */,
 				A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */,
@@ -2942,7 +2947,7 @@
 				C986765B112411060070A03E /* GData.framework */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
+				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -3378,10 +3383,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataTouchUnitTests.octest;
+			path = GDataIPhoneUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3629,6 +3634,7 @@
 				A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */,
 				A3951A2812E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7DED87DE12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
+				7D07620312EEC96A008EF96D /* sfhf-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3865,6 +3871,7 @@
 				A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3951A2912E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7DED87DF12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
+				7D07620412EEC96A008EF96D /* sfhf-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4101,6 +4108,7 @@
 				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3951A2A12E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7DED87DD12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
+				7D07620212EEC96A008EF96D /* sfhf-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

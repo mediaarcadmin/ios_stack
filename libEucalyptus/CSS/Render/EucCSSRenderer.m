@@ -498,13 +498,32 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                     // Underline.
                     enum css_text_decoration_e textDecoration = css_computed_text_decoration(style);
                     if(textDecoration & CSS_TEXT_DECORATION_UNDERLINE) {
-                        CGPoint underlinePoints[2];
-                        underlinePoints[0].x = floorf(currentAbsoluteOrigin.x);
-                        underlinePoints[0].y = roundf(parentItem->lineBox.baseline + 1.0f) + 0.5f;
-                        underlinePoints[1].x = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
-                        underlinePoints[1].y = roundf(renderItem->lineBox.baseline + 1.0f) + 0.5f;
-                        CGContextStrokeLineSegments(_cgContext, underlinePoints, 2);
+                        CGPoint linePoints[2];
+                        linePoints[0].x = floorf(currentAbsoluteOrigin.x);
+                        linePoints[0].y = roundf(parentItem->lineBox.baseline + 1.0f) + 0.5f;
+                        linePoints[1].x = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
+                        linePoints[1].y = roundf(renderItem->lineBox.baseline + 1.0f) + 0.5f;
+                        CGContextStrokeLineSegments(_cgContext, linePoints, 2);
                     }
+                    if(textDecoration & CSS_TEXT_DECORATION_LINE_THROUGH) {
+                        CGFloat ascender = [currentDocumentNode textAscenderWithScaleFactor:_currentScaleFactor];
+                        CGPoint linePoints[2];
+                        linePoints[0].x = floorf(currentAbsoluteOrigin.x);
+                        linePoints[0].y = ceilf(parentItem->lineBox.baseline - (ascender * 0.5f) + 1.0f) + 0.5f;
+                        linePoints[1].x = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
+                        linePoints[1].y = ceilf(renderItem->lineBox.baseline - (ascender * 0.5f) + 1.0f) + 0.5f;
+                        CGContextStrokeLineSegments(_cgContext, linePoints, 2);
+                    }
+                    if(textDecoration & CSS_TEXT_DECORATION_OVERLINE) {
+                        CGFloat ascender = [currentDocumentNode textAscenderWithScaleFactor:_currentScaleFactor];
+                        CGPoint linePoints[2];
+                        linePoints[0].x = floorf(currentAbsoluteOrigin.x);
+                        linePoints[0].y = floorf(parentItem->lineBox.baseline - ascender) + 0.5;
+                        linePoints[1].x = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
+                        linePoints[1].y = floorf(renderItem->lineBox.baseline - ascender) + 0.5;
+                        CGContextStrokeLineSegments(_cgContext, linePoints, 2);
+                    }
+                    
                 }                    
                 
                 currentAbsoluteOrigin.x -= parentItem->origin.x;
