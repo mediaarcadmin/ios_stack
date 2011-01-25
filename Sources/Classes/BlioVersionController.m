@@ -34,7 +34,7 @@
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
 		[textView loadHTMLString:[versionText stringByAppendingString:creditsText] baseURL:[NSURL URLWithString:
 																							[NSString stringWithFormat:@"file:/%@//", resourcePath]]];
-		[textView setScalesPageToFit:YES];
+		[textView setScalesPageToFit:NO];
 		self.view = textView;
 		//textView.delegate = self;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
