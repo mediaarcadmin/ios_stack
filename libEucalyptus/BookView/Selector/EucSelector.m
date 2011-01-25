@@ -1145,19 +1145,22 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
                 
                 id elementId;
                 if(isFirstBlock) {
-                    while([[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
+                    while(elementIdIndex < elementIdCount &&
+                          [[elementIds objectAtIndex:elementIdIndex] compare:startElementId] == NSOrderedAscending) {
                         ++elementIdIndex;
                     }
                     isFirstBlock = NO;
                 }
                 
-                do {
-                    elementId = [elementIds objectAtIndex:elementIdIndex];
-                    [nonCoalescedRects addObjectsFromArray:[self _rectsForElementWithIdentifier:elementId
-                                                                          ofBlockWithIdentifier:blockId]];
-                    ++elementIdIndex;
-                } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
-                         elementIdIndex < elementIdCount);
+                if(elementIdIndex < elementIdCount) {
+                    do {
+                        elementId = [elementIds objectAtIndex:elementIdIndex];
+                        [nonCoalescedRects addObjectsFromArray:[self _rectsForElementWithIdentifier:elementId
+                                                                              ofBlockWithIdentifier:blockId]];
+                        ++elementIdIndex;
+                    } while ((isLastBlock ? ([elementId compare:endElementId] < NSOrderedSame) : YES) &&
+                             elementIdIndex < elementIdCount);
+                }
             } else {
                 isFirstBlock = NO;
             }
