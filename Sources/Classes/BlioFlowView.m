@@ -550,6 +550,7 @@
 
 - (void)setFontPointSize:(CGFloat)fontPointSize
 {
+	[_eucBookView highlightWordAtIndexPoint:nil animated:YES];
     _eucBookView.fontPointSize = fontPointSize;
 }
 
