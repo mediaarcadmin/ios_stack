@@ -883,7 +883,7 @@ size_t BlioXPSProviderDRMSkip(URI_HANDLE h, size_t cb) {
     
     [xpsDataDict setValue:[NSNumber numberWithInt:byteOffset+bytesToSkip] forKey:@"xpsByteOffset"];
     
-    return 0;
+    return bytesToSkip;
 }
 
 size_t BlioXPSProviderDRMRead(URI_HANDLE h, unsigned char * pb, size_t cb) {

@@ -24,6 +24,7 @@
 #import "THPair.h"
 #import "THLog.h"
 #import "THGeometryUtils.h"
+#import "THAccessibilityElement.h"
 
 @interface EucBUpePageTextView ()
     
@@ -469,7 +470,7 @@ found:
                               rect:(CGRect)rect
                             traits:(UIAccessibilityTraits)traits
 {
-    UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+    THAccessibilityElement *element = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
     element.accessibilityFrame = rect;
     NSString *labelString = [string copy];
     element.accessibilityLabel = labelString;
@@ -625,7 +626,7 @@ found:
                 }
             }
         }
-        [buildPageText appendString:@"\n\n"];
+        [buildPageText appendString:@"\n"];
     }
     return buildPageText ?: nil;
 }
