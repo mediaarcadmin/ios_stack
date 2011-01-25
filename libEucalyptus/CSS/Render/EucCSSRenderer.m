@@ -565,23 +565,21 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 }
                 
                 CGContextSaveGState(_cgContext);
-                CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
-                CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
-                CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
                 if(renderItem->item.imageItem.image) {
+                    CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
+                    CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
+                    CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);                    
                     CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), renderItem->item.imageItem.image);
                 } else {
-                    rect.size.width = 20; rect.size.height = 20;
                     CGFloat radius = MIN(rect.size.width * 0.5f, rect.size.height * 0.5f);
                     radius = MIN(5.0f, radius);
-                    THAddRoundedRectToPath(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), radius, radius);
+                    THAddRoundedRectToPath(_cgContext, rect, radius, radius);
                     
                     CGContextSetStrokeColorWithColor(_cgContext, [UIColor grayColor].CGColor);
                     CGContextSetFillColorWithColor(_cgContext, [UIColor whiteColor].CGColor);
-                    CGContextSetLineWidth(_cgContext, 3);
+                    CGContextSetLineWidth(_cgContext, 2);
                     
-                    CGContextFillPath(_cgContext);
-                    CGContextStrokePath(_cgContext);
+                    CGContextDrawPath(_cgContext, kCGPathFillStroke);
                 }
                 CGContextRestoreGState(_cgContext);
                 break;
