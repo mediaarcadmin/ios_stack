@@ -14,6 +14,7 @@
 
 @synthesize delegate = _delegate;
 @synthesize texturePool = _texturePool;
+@synthesize generationLock = _generationLock;
 @synthesize generationInvocation = _generationInvocation;
 
 @synthesize pageIndex = _pageIndex;
@@ -26,6 +27,7 @@
 {
     [_generationInvocation release]; 
     [_texturePool release];
+    [_generationLock release];
     
     [super dealloc];
 }
@@ -41,7 +43,7 @@
 
 - (void)main
 {
-    [self.delegate willBeginTextureGeneration:self];
+    [_generationLock lock];
     
     NSInvocation *generationInvocation = self.generationInvocation;
     [generationInvocation invoke];
@@ -80,7 +82,7 @@
     }
     self.generationInvocation = nil;
     
-    [self.delegate didEndTextureGeneration:self];
+    [_generationLock unlock];
 }
 
 
