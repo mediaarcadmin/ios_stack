@@ -372,14 +372,16 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     UIApplication *application = [UIApplication sharedApplication];
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter addObserver:self 
-                           selector:@selector(_applicationDidEnterBackground:)
-                               name:UIApplicationDidEnterBackgroundNotification 
-                             object:application];
-    [notificationCenter addObserver:self 
-                           selector:@selector(_applicationWillEnterForeground:)
-                               name:UIApplicationWillEnterForegroundNotification 
-                             object:application];
+    if(&UIApplicationDidEnterBackgroundNotification != NULL) {
+        [notificationCenter addObserver:self 
+                               selector:@selector(_applicationDidEnterBackground:)
+                                   name:UIApplicationDidEnterBackgroundNotification 
+                                 object:application];
+        [notificationCenter addObserver:self 
+                               selector:@selector(_applicationWillEnterForeground:)
+                                   name:UIApplicationWillEnterForegroundNotification 
+                                 object:application];
+    }
     
     pthread_mutex_init(&_textureGenerationApplicationInBackgroundMutex, NULL);
 }
@@ -401,16 +403,19 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 }
 
 - (void)dealloc
-{    
-    UIApplication *application = [UIApplication sharedApplication];
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self
-                                  name:UIApplicationDidEnterBackgroundNotification 
-                                object:application];
-    [notificationCenter removeObserver:self
-                                  name:UIApplicationWillEnterForegroundNotification 
-                                object:application];
-    
+{            
+    if(&UIApplicationDidEnterBackgroundNotification != NULL) {
+        UIApplication *application = [UIApplication sharedApplication];
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter removeObserver:self
+                                      name:UIApplicationDidEnterBackgroundNotification 
+                                    object:application];
+        [notificationCenter removeObserver:self
+                                      name:UIApplicationWillEnterForegroundNotification 
+                                    object:application];
+    }
+
+
     [_textureGenerationOperationQueue cancelAllOperations];
     [_textureGenerationOperationQueue waitUntilAllOperationsAreFinished];
     [_textureGenerationOperationQueue release];
