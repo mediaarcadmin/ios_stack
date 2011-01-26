@@ -245,6 +245,12 @@
 		newISBNs = 0;
 		responseCount = 0;
 		successfulResponseCount = 0;
+
+//		NSLog(@"DEBUGGING LOOP:");
+//		for (BookVault_BookOwnershipInfo * bookOwnershipInfo in _BookOwnershipInfoArray) {
+//			NSLog(@"book in question ISBN: %@",bookOwnershipInfo.ISBN);
+//			NSLog(@"bookOwnershipInfo productType: %i",[bookOwnershipInfo.ProductTypeId intValue]);
+//		}
 		
 		for (BookVault_BookOwnershipInfo * bookOwnershipInfo in _BookOwnershipInfoArray) {
 			
@@ -254,7 +260,8 @@
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
 			}
-			else if ([[preExistingBook valueForKey:@"productType"] intValue] != [bookOwnershipInfo.ProductTypeId intValue]) {
+			else if ([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull) {
+
 				[[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
