@@ -179,7 +179,7 @@
 		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a server error. Please try again later.",@"Alert message when the login web service has failed.");
 	}
 	else if ( loginResult == BlioLoginResultConnectionError ) {
-		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_CONNECTION_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to an network connection error. Please check the availability of your Internet connection and try again later.",@"Alert message when the login web service has failed.");
+		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_CONNECTION_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a network connection error. Please check the availability of your Internet connection and try again later.",@"Alert message when the login web service has failed.");
 	}
 	if (loginErrorText != nil) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
