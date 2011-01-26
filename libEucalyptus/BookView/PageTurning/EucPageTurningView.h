@@ -187,7 +187,7 @@ typedef enum EucPageTurningViewAnimationFlags {
     THAccessibilityElement *_nextPageTapZone;
     
     NSOperationQueue *_textureGenerationOperationQueue;
-    pthread_mutex_t _textureGenerationApplicationInBackgroundMutex;
+    NSLock *_textureGenerationApplicationInBackgroundLock;
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;

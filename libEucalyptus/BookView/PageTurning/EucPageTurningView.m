@@ -381,9 +381,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                selector:@selector(_applicationWillEnterForeground:)
                                    name:UIApplicationWillEnterForegroundNotification 
                                  object:application];
+        
+        _textureGenerationApplicationInBackgroundLock = [[NSLock alloc] init];
     }
     
-    pthread_mutex_init(&_textureGenerationApplicationInBackgroundMutex, NULL);
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -420,7 +421,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [_textureGenerationOperationQueue waitUntilAllOperationsAreFinished];
     [_textureGenerationOperationQueue release];
     
-    pthread_mutex_destroy(&_textureGenerationApplicationInBackgroundMutex);
+    [_textureGenerationApplicationInBackgroundLock release];
     
     [_bitmapDataSourceLock release];
     
@@ -472,22 +473,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 - (void)_applicationDidEnterBackground:(NSNotification *)notification
 {
     [self abortAllAnimation];
-    pthread_mutex_lock(&_textureGenerationApplicationInBackgroundMutex);
+    [_textureGenerationApplicationInBackgroundLock lock];
 }
 
 - (void)_applicationWillEnterForeground:(NSNotification *)notification
 {
-    pthread_mutex_unlock(&_textureGenerationApplicationInBackgroundMutex);
-}
-
-- (void)willBeginTextureGeneration:(EucPageTurningTextureGenerationOperation *)operation
-{
-    pthread_mutex_lock(&_textureGenerationApplicationInBackgroundMutex);
-}
-
-- (void)didEndTextureGeneration:(EucPageTurningTextureGenerationOperation *)operation
-{
-    pthread_mutex_unlock(&_textureGenerationApplicationInBackgroundMutex);
+    [_textureGenerationApplicationInBackgroundLock unlock];
 }
 
 - (void)_layoutPages
@@ -1253,6 +1244,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         EucPageTurningTextureGenerationOperation *textureGenerationOperation = [[EucPageTurningTextureGenerationOperation alloc] init];
         textureGenerationOperation.delegate = self;
         textureGenerationOperation.texturePool = _texturePool;
+        textureGenerationOperation.generationLock = _textureGenerationApplicationInBackgroundLock;
         textureGenerationOperation.pageIndex = newPageIndex;
         textureGenerationOperation.textureRect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
         textureGenerationOperation.isZoomed = NO;
@@ -3450,6 +3442,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     EucPageTurningTextureGenerationOperation *textureGenerationOperation = [[EucPageTurningTextureGenerationOperation alloc] init];
                     textureGenerationOperation.delegate = self;
                     textureGenerationOperation.texturePool = _texturePool;
+                    textureGenerationOperation.generationLock = _textureGenerationApplicationInBackgroundLock;
                     textureGenerationOperation.pageIndex = pageIndex;
                     textureGenerationOperation.textureRect = scaledIntersection;
                     textureGenerationOperation.isZoomed = YES;
