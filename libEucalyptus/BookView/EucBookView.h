@@ -128,7 +128,7 @@ typedef struct EucRange {
 
 - (void)refreshHighlights;
 
-- (void)stopAnimation;
+- (void)abortAllAnimation;
 
 @end
 

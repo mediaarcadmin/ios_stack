@@ -369,6 +369,19 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     self.userInteractionEnabled = YES;
     
     [eaglContext thPop];
+    
+    UIApplication *application = [UIApplication sharedApplication];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self 
+                           selector:@selector(_applicationDidEnterBackground:)
+                               name:UIApplicationDidEnterBackgroundNotification 
+                             object:application];
+    [notificationCenter addObserver:self 
+                           selector:@selector(_applicationWillEnterForeground:)
+                               name:UIApplicationWillEnterForegroundNotification 
+                             object:application];
+    
+    pthread_mutex_init(&_textureGenerationApplicationInBackgroundMutex, NULL);
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -389,9 +402,20 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)dealloc
 {    
+    UIApplication *application = [UIApplication sharedApplication];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self
+                                  name:UIApplicationDidEnterBackgroundNotification 
+                                object:application];
+    [notificationCenter removeObserver:self
+                                  name:UIApplicationWillEnterForegroundNotification 
+                                object:application];
+    
     [_textureGenerationOperationQueue cancelAllOperations];
     [_textureGenerationOperationQueue waitUntilAllOperationsAreFinished];
     [_textureGenerationOperationQueue release];
+    
+    pthread_mutex_destroy(&_textureGenerationApplicationInBackgroundMutex);
     
     [_bitmapDataSourceLock release];
     
@@ -438,6 +462,27 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [_accessibilityElements release];
     
     [super dealloc];
+}
+
+- (void)_applicationDidEnterBackground:(NSNotification *)notification
+{
+    [self abortAllAnimation];
+    pthread_mutex_lock(&_textureGenerationApplicationInBackgroundMutex);
+}
+
+- (void)_applicationWillEnterForeground:(NSNotification *)notification
+{
+    pthread_mutex_unlock(&_textureGenerationApplicationInBackgroundMutex);
+}
+
+- (void)willBeginTextureGeneration:(EucPageTurningTextureGenerationOperation *)operation
+{
+    pthread_mutex_lock(&_textureGenerationApplicationInBackgroundMutex);
+}
+
+- (void)didEndTextureGeneration:(EucPageTurningTextureGenerationOperation *)operation
+{
+    pthread_mutex_unlock(&_textureGenerationApplicationInBackgroundMutex);
 }
 
 - (void)_layoutPages
@@ -1969,6 +2014,22 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
             self.animating = NO;
         }
+    }
+}
+
+- (void)abortAllAnimation
+{
+    if(self.animating) {
+        memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+        memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+        _rightFlatPageContentsIndex = 3;
+        _touchVelocity = CGPointZero;
+        if(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        }    
+        _animationFlags = EucPageTurningViewAnimationFlagsNone;
+        self.animating = NO;
+        [self drawView];
     }
 }
 

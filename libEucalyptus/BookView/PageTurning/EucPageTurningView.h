@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <pthread.h>
+
 #import "THOpenGLUtils.h"
 #import "THBaseEAGLView.h"
 #import "THAccessibilityElement.h"
@@ -169,9 +171,7 @@ typedef enum EucPageTurningViewAnimationFlags {
     NSInteger _reverseAnimatedTurnFrameCount;
     
     CGFloat _automaticTurnPercentage;
-    
-    //FILE *tempFile;
-    
+        
     GLfloat _specularColor[4];
     GLfloat _shininess;
     
@@ -187,6 +187,7 @@ typedef enum EucPageTurningViewAnimationFlags {
     THAccessibilityElement *_nextPageTapZone;
     
     NSOperationQueue *_textureGenerationOperationQueue;
+    pthread_mutex_t _textureGenerationApplicationInBackgroundMutex;
 }
 
 @property (nonatomic, assign) id<EucPageTurningViewDelegate> delegate;
@@ -225,9 +226,9 @@ typedef enum EucPageTurningViewAnimationFlags {
 @property (nonatomic, assign, readonly) CGPoint animatedTranslation;
 - (void)setTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor animated:(BOOL)animated;
 
-
 @property (nonatomic, assign) NSUInteger zoomedTextureWidth; // default = 1024
 
+- (void)abortAllAnimation;
 
 #pragma mark View based page contents
 
