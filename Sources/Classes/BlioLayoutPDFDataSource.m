@@ -63,7 +63,7 @@
 }
 
 - (void)openDocumentWithoutLock {
-    if (self.data) {
+    if (self.data && !pdf) {
         CGDataProviderRef pdfProvider = CGDataProviderCreateWithCFData((CFDataRef)self.data);
         pdf = CGPDFDocumentCreateWithProvider(pdfProvider);
         CGDataProviderRelease(pdfProvider);
