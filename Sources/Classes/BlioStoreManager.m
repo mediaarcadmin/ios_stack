@@ -187,7 +187,7 @@
 		NSError * error = nil;
 		[SFHFKeychainUtils deleteItemForUsername:oldUsername andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
 		if (error) {
-			NSLog(@"ERROR: deleting login credentials and password for old username %@: %@",[error localizedDescription]);
+			NSLog(@"ERROR: deleting login credentials and password for old username %@: %@",username,[error localizedDescription]);
 		}
 	}
 	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -204,7 +204,7 @@
 			NSError * error = nil;
 			[SFHFKeychainUtils storeUsername:username andPassword:password forServiceName:kBlioUserLoginCredentialsDefaultsKey updateExisting:YES error:&error];
 			if (error) {
-				NSLog(@"ERROR: could not store login credentials: %@",[error localizedDescription]);
+				NSLog(@"ERROR: could not store login credentials for username %@: %@",username,[error localizedDescription]);
 			}
 		}
 		else {
