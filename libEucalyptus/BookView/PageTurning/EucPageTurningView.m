@@ -61,6 +61,7 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 //- (void)_accumulateForces;  // Not used - see comments around implementation.
 - (void)_verlet;
 - (BOOL)_satisfyConstraints;
+- (BOOL)_satisfyScrollingConstraints;
 - (BOOL)_satisfyPositioningConstraints;
 - (void)_setupConstraints;
 - (void)_recachePages;
@@ -368,6 +369,19 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     self.userInteractionEnabled = YES;
     
     [eaglContext thPop];
+    
+    UIApplication *application = [UIApplication sharedApplication];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self 
+                           selector:@selector(_applicationDidEnterBackground:)
+                               name:UIApplicationDidEnterBackgroundNotification 
+                             object:application];
+    [notificationCenter addObserver:self 
+                           selector:@selector(_applicationWillEnterForeground:)
+                               name:UIApplicationWillEnterForegroundNotification 
+                             object:application];
+    
+    pthread_mutex_init(&_textureGenerationApplicationInBackgroundMutex, NULL);
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -388,9 +402,20 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)dealloc
 {    
+    UIApplication *application = [UIApplication sharedApplication];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self
+                                  name:UIApplicationDidEnterBackgroundNotification 
+                                object:application];
+    [notificationCenter removeObserver:self
+                                  name:UIApplicationWillEnterForegroundNotification 
+                                object:application];
+    
     [_textureGenerationOperationQueue cancelAllOperations];
     [_textureGenerationOperationQueue waitUntilAllOperationsAreFinished];
     [_textureGenerationOperationQueue release];
+    
+    pthread_mutex_destroy(&_textureGenerationApplicationInBackgroundMutex);
     
     [_bitmapDataSourceLock release];
     
@@ -437,6 +462,27 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [_accessibilityElements release];
     
     [super dealloc];
+}
+
+- (void)_applicationDidEnterBackground:(NSNotification *)notification
+{
+    [self abortAllAnimation];
+    pthread_mutex_lock(&_textureGenerationApplicationInBackgroundMutex);
+}
+
+- (void)_applicationWillEnterForeground:(NSNotification *)notification
+{
+    pthread_mutex_unlock(&_textureGenerationApplicationInBackgroundMutex);
+}
+
+- (void)willBeginTextureGeneration:(EucPageTurningTextureGenerationOperation *)operation
+{
+    pthread_mutex_lock(&_textureGenerationApplicationInBackgroundMutex);
+}
+
+- (void)didEndTextureGeneration:(EucPageTurningTextureGenerationOperation *)operation
+{
+    pthread_mutex_unlock(&_textureGenerationApplicationInBackgroundMutex);
 }
 
 - (void)_layoutPages
@@ -1523,10 +1569,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 	        
     BOOL animating = self.isAnimating;
 
-    if(animating) {
-        NSParameterAssert(_animationFlags != EucPageTurningViewAnimationFlagsNone);
-    } else {
-        NSParameterAssert(_animationFlags == EucPageTurningViewAnimationFlagsNone);
+    if(THWillLog()) {
+        if(animating) {
+            NSParameterAssert(_animationFlags != EucPageTurningViewAnimationFlagsNone);
+        } else {
+            NSParameterAssert(_animationFlags == EucPageTurningViewAnimationFlagsNone);
+        }
     }
     
     EucPageTurningViewAnimationFlags postDrawAnimationFlags = _animationFlags;
@@ -1551,19 +1599,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     
     if(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
-        if(!_dragUnderway) {
-            _touchVelocity.x *= 0.875f;
-            _touchVelocity.y *= 0.857f;
-            if(fabsf(_touchVelocity.x * _viewportToBoundsPointsTransform.a) < 0.1f &&
-               fabsf(_touchVelocity.y * _viewportToBoundsPointsTransform.d) < 0.1f) {
-                postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
-                _touchVelocity = CGPointZero;
-            } else {
-                CGPoint newTranslation = _scrollTranslation;
-                newTranslation.x += _touchVelocity.x * _zoomFactor;
-                newTranslation.y += _touchVelocity.y * _zoomFactor;
-                [self _setZoomMatrixFromTranslation:newTranslation zoomFactor:_zoomFactor];
-            }
+        BOOL shouldStopAnimating = [self _satisfyScrollingConstraints];
+        if(shouldStopAnimating) {
+            postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
         }
     }    
     	    
@@ -1963,15 +2001,35 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }
         if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
-           !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)){
+           !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)) {
             // May as well kick this off now to avoid the 0.2s delay.
             [self _retextureForPanAndZoom];
+        }
+        if((_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) &&
+           !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsDragScroll)){
+            _touchVelocity = CGPointZero;
         }
         
         _animationFlags = postDrawAnimationFlags;
         if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
             self.animating = NO;
         }
+    }
+}
+
+- (void)abortAllAnimation
+{
+    if(self.animating) {
+        memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+        memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
+        _rightFlatPageContentsIndex = 3;
+        _touchVelocity = CGPointZero;
+        if(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        }    
+        _animationFlags = EucPageTurningViewAnimationFlagsNone;
+        self.animating = NO;
+        [self drawView];
     }
 }
 
@@ -2735,16 +2793,35 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
 }
 
-#define NUM_ITERATIONS 40
+- (BOOL)_satisfyScrollingConstraints
+{
+    BOOL shouldStopAnimating = NO;
+
+    if(!_dragUnderway) {
+        _touchVelocity.x *= 0.875f;
+        _touchVelocity.y *= 0.857f;
+        if(fabsf(_touchVelocity.x * _viewportToBoundsPointsTransform.a) < 0.1f &&
+           fabsf(_touchVelocity.y * _viewportToBoundsPointsTransform.d) < 0.1f) {
+            _touchVelocity = CGPointZero;
+            shouldStopAnimating = YES;
+        } else {
+            CGPoint newTranslation = _scrollTranslation;
+            newTranslation.x += _touchVelocity.x * _zoomFactor;
+            newTranslation.y += _touchVelocity.y * _zoomFactor;
+            [self _setZoomMatrixFromTranslation:newTranslation zoomFactor:_zoomFactor];
+        }
+    }   
+    
+    return shouldStopAnimating;
+}
 
 - (BOOL)_satisfyPositioningConstraints
 {
-    BOOL shouldStopAnimating = YES;
+    BOOL shouldStopAnimating = NO;
 	
 	if (_animationIndex >= 0) {
 		[self _setTranslation:CGPointMake(_presentationTranslationX[_animationIndex], _presentationTranslationY[_animationIndex]) zoomFactor:_presentationZoomFactor[_animationIndex]];
 		_animationIndex++;
-		shouldStopAnimating = NO;
 	}
 	
 	if (_animationIndex >= POSITIONING_ANIMATION_ITERATIONS) {
@@ -2754,6 +2831,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 	
 	return shouldStopAnimating;	
 }
+
+#define NUM_ITERATIONS 40
 
 - (BOOL)_satisfyConstraints
 {
@@ -3066,7 +3145,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (void)setDimQuotient:(CGFloat)dimQuotient
 {
     _dimQuotient = dimQuotient;
-    [self setNeedsLayout];
+    [self drawView];
 }
 
 - (CGFloat)dimQuotient

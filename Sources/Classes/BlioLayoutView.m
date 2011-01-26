@@ -328,9 +328,11 @@
 - (UIImage *)dimPageImage
 {
     UIImage *ret = nil;
-    self.pageTurningView.dimQuotient = 1.0f;
-    ret = self.pageTurningView.screenshot;
-    self.pageTurningView.dimQuotient = 0.0f;
+    EucPageTurningView *myPageTurningView = self.pageTurningView;
+    [myPageTurningView abortAllAnimation];
+    myPageTurningView.dimQuotient = 1.0f;
+    ret = myPageTurningView.screenshot;
+    myPageTurningView.dimQuotient = 0.0f;
     return ret;
 }
 

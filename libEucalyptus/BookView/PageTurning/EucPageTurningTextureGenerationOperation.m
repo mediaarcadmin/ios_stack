@@ -41,6 +41,8 @@
 
 - (void)main
 {
+    [self.delegate willBeginTextureGeneration:self];
+    
     NSInvocation *generationInvocation = self.generationInvocation;
     [generationInvocation invoke];
     THPair *generatedRGBAContentsAndSize = nil;
@@ -77,6 +79,8 @@
                              waitUntilDone:NO];
     }
     self.generationInvocation = nil;
+    
+    [self.delegate didEndTextureGeneration:self];
 }
 
 

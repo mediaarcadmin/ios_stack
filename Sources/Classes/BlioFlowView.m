@@ -315,6 +315,7 @@
 - (UIImage *)dimPageImage
 {
     UIImage *ret = nil;
+    [_eucBookView abortAllAnimation];
     _eucBookView.dimQuotient = 1.0f;
     ret = _eucBookView.currentPageImage;
     _eucBookView.dimQuotient = 0.0f;

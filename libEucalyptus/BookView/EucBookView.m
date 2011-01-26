@@ -253,9 +253,9 @@
     }
 }
 
-- (void)stopAnimation
+- (void)abortAllAnimation
 {
-    _pageTurningView.animating = NO;
+    [_pageTurningView abortAllAnimation];
 }
 
 #pragma mark -

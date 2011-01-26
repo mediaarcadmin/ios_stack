@@ -43,4 +43,12 @@
 // Called on the main thread.
 - (void)textureGenerationOperationGeneratedTexture:(EucPageTurningTextureGenerationOperation *)operation;
 
+// Called on backgroud thread.
+// In the implementation of these, if the application is in the background,
+// willBeginTextureGeneration should stall until it's in the foreground again.
+// (e.g. take a lock in willBeginTextureGeneration, release it in didEndTextureGeneration, 
+// and also take the same lock on the main thread while the app is in the background).
+- (void)willBeginTextureGeneration:(EucPageTurningTextureGenerationOperation *)operation;
+- (void)didEndTextureGeneration:(EucPageTurningTextureGenerationOperation *)operation;
+
 @end

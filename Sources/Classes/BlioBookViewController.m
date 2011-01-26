@@ -3336,9 +3336,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    touchInProgress = YES;
-	[self.bookViewController.thumbPreview showThumb:YES];
-    return [super beginTrackingWithTouch:touch withEvent:event];
+	touchInProgress = YES;
+
+	BOOL shouldBeginTracking = [super beginTrackingWithTouch:touch withEvent:event];
+
+	if (shouldBeginTracking) {
+		[self.bookViewController.thumbPreview showThumb:YES];
+	} else {
+		touchInProgress = NO;
+	}
+    return shouldBeginTracking;
 }
 
 - (void)cancelTrackingWithEvent:(UIEvent *)event {

@@ -19,6 +19,7 @@
 #import "EucCSSLayoutPositionedTable.h"
 #import "EucCSSLayoutPositionedTableCell.h"
 #import "EucCSSRenderer.h"
+#import "THRoundRects.h"
 #import "THNSStringAdditions.h"
 #import "THStringRenderer.h"
 #import "THLog.h"
@@ -564,10 +565,22 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 }
                 
                 CGContextSaveGState(_cgContext);
-                CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
-                CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
-                CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);
-                CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), renderItem->item.imageItem.image);
+                if(renderItem->item.imageItem.image) {
+                    CGContextScaleCTM(_cgContext, 1.0f, -1.0f);
+                    CGContextTranslateCTM(_cgContext, rect.origin.x, -(rect.origin.y+rect.size.height));
+                    CGContextSetInterpolationQuality(_cgContext, kCGInterpolationHigh);                    
+                    CGContextDrawImage(_cgContext, CGRectMake(0, 0, rect.size.width, rect.size.height), renderItem->item.imageItem.image);
+                } else {
+                    CGFloat radius = MIN(rect.size.width * 0.5f, rect.size.height * 0.5f);
+                    radius = MIN(5.0f, radius);
+                    THAddRoundedRectToPath(_cgContext, rect, radius, radius);
+                    
+                    CGContextSetStrokeColorWithColor(_cgContext, [UIColor grayColor].CGColor);
+                    CGContextSetFillColorWithColor(_cgContext, [UIColor whiteColor].CGColor);
+                    CGContextSetLineWidth(_cgContext, 2);
+                    
+                    CGContextDrawPath(_cgContext, kCGPathFillStroke);
+                }
                 CGContextRestoreGState(_cgContext);
                 break;
             }
