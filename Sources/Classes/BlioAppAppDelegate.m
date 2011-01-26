@@ -325,26 +325,7 @@ static void *background_init_thread(void * arg) {
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	
 	[self checkDevice];
-	
-	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
-		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
-				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-			}
-			else {
-				if ([BlioStoreManager sharedInstance].didOpenWebStore) {
-					[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-				}				
-				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-			}
-		}
-		else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-	}
-	else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-	[BlioStoreManager sharedInstance].didOpenWebStore = NO;
-
-	[self.processingManager resumeProcessing];
-    
+	    
     BOOL openedBook = NO;
     
     NSArray *openBookIDs = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioOpenBookKey];
@@ -377,6 +358,27 @@ static void *background_init_thread(void * arg) {
         [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
     }
     
+	// this login block must happen after the views are attached to the window
+	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
+		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+			if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
+				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+			}
+			else {
+				if ([BlioStoreManager sharedInstance].didOpenWebStore) {
+					[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+				}				
+				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+			}
+		}
+		else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+	}
+	else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+	[BlioStoreManager sharedInstance].didOpenWebStore = NO;
+	
+	[self.processingManager resumeProcessing];
+	
+	
     self.delayedDidFinishLaunchingLaunchComplete = YES;
     
     for(NSURL *url in self.delayedURLOpens) {
@@ -396,6 +398,7 @@ static void *background_init_thread(void * arg) {
     NSError *error;
     if (![[self managedObjectContext] save:&error])
         NSLog(@"[BlioAppAppDelegate applicationWillTerminate] Save failed with error: %@, %@", error, [error userInfo]);
+	[[NSUserDefaults standardUserDefaults] synchronize];
     [self saveBookSnapshotIfAppropriate];
 }
 
