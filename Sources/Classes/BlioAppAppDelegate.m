@@ -429,6 +429,10 @@ static void *background_init_thread(void * arg) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && ![[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
+		else if ([BlioStoreManager sharedInstance].didOpenWebStore) {
+			[BlioStoreManager sharedInstance].didOpenWebStore = NO;
+			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+		}
 	}		
 }
 - (void)applicationWillResignActive:(UIApplication *)application {

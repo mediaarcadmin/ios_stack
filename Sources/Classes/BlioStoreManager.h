@@ -45,6 +45,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
     id<BlioProcessingDelegate> _processingDelegate;
 	BlioStoreHelper * currentStoreHelper;
 	BOOL initialLoginCheckFinished;
+	BOOL didOpenWebStore;
 }
 
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;
@@ -55,6 +56,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) BlioStoreHelper * currentStoreHelper;
 @property (nonatomic, assign) BOOL initialLoginCheckFinished;
+@property (nonatomic, assign) BOOL didOpenWebStore;
 
 /**
 	Returns the shared BlioStoreManager instance.
@@ -62,9 +64,11 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
  */
 +(BlioStoreManager*)sharedInstance;
 -(void)saveUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
+-(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID;
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID;
 -(NSDictionary*)registrationRecords;
 -(NSString*)currentStoreURL;
+-(void)openCurrentWebStore;
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID;
 /**
  Passes the request to login with the included credentials to the appropriate store helper.

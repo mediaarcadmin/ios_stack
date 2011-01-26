@@ -547,7 +547,10 @@ static inline void _accumulateParentLineBoxesInto(EucCSSIntermediateDocumentNode
                     renderItem->lineBox.baseline = widthInfo->size.height;
                     renderItem->lineBox.verticalAlign = CSS_VERTICAL_ALIGN_BASELINE;
                     
-                    renderItem->item.imageItem.image = CGImageRetain([info->documentNode.document imageForURL:info->contents.imageInfo.imageURL]);
+                    CGImageRef image = [info->documentNode.document imageForURL:info->contents.imageInfo.imageURL];
+                    if(image) {
+                        renderItem->item.imageItem.image = CGImageRetain(image);
+                    }
                     renderItem->item.imageItem.layoutPoint = info->point;
 
                     renderItem->altText = [[info->documentNode altText] retain];

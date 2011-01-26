@@ -268,37 +268,20 @@
 	}
 }
 - (void)confirmLaunch:(id)sender {	
-	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-		[self launchWebsite:sender];
-	}
-	else {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention...\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"LOGIN_BEFORE_BROWSING_WEBSTORE",nil,[NSBundle mainBundle],@"If you log in now, Blio will be able to automatically download your bookstore purchases when you return. Would you like to log in?  You'll be able to create an account if you don't yet have one.",@"Alert Text encouraging the end-user to log in before leaving for the webstore.")
-									delegate:self 
-						   cancelButtonTitle:nil
-						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button title"),NSLocalizedString(@"Log in",@"\"Log in\" button title"),nil];	
-	}
+	[self launchWebsite:sender];
+//	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+//		[self launchWebsite:sender];
+//	}
+//	else {
+//		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention...\" alert message title") 
+//									 message:NSLocalizedStringWithDefaultValue(@"LOGIN_BEFORE_BROWSING_WEBSTORE",nil,[NSBundle mainBundle],@"If you log in now, Blio will be able to automatically download your bookstore purchases when you return. Would you like to log in?  You'll be able to create an account if you don't yet have one.",@"Alert Text encouraging the end-user to log in before leaving for the webstore.")
+//									delegate:self 
+//						   cancelButtonTitle:nil
+//						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button title"),NSLocalizedString(@"Log in",@"\"Log in\" button title"),nil];	
+//	}
 }
 - (void)launchWebsite:(id)sender {	
-	// Open question whether we will go to a single top-level URL here for both iphone and ipad.
-//	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-//		UIButton* ctl = (UIButton*)sender;
-//		if ( ctl == launchButton ) {
-//			NSURL* url = [[NSURL alloc] initWithString:@"https://hp.theretailerplace.net"];
-//			NSURL* url = [[NSURL alloc] initWithString:@"http://bliodemo.crosscomm.net"];
-			NSURL* url = [[[NSURL alloc] initWithString:[[BlioStoreManager sharedInstance] currentStoreURL]] autorelease];
-			
-			[[UIApplication sharedApplication] openURL:url];			  
-//		}
-//	}
-	// TODO: take out this beta alert below!
-//	else {
-//		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
-//								 message:NSLocalizedStringWithDefaultValue(@"BETA_MOBILE_STORE_NOT_AVAILABLE",nil,[NSBundle mainBundle],@"The Blio Book Store cannot be accessed through this link during the beta testing period.",@"Alert Text informing the end-user that the Blio Book Store is not available for this beta release.")
-//								delegate:nil 
-//					   cancelButtonTitle:@"OK"
-//					   otherButtonTitles:nil];
-//	}
+	[[BlioStoreManager sharedInstance] openCurrentWebStore];		
 }
 - (void)openModalLogin:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
