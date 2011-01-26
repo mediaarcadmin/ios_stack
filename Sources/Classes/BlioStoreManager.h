@@ -45,7 +45,6 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
     id<BlioProcessingDelegate> _processingDelegate;
 	BlioStoreHelper * currentStoreHelper;
 	BOOL initialLoginCheckFinished;
-	BOOL didOpenWebStore;
 }
 
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;

@@ -18,7 +18,7 @@
 
 @implementation BlioStoreManager
 
-@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews,currentStoreHelper,initialLoginCheckFinished,didOpenWebStore;
+@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews,currentStoreHelper,initialLoginCheckFinished;
 @synthesize processingDelegate = _processingDelegate;
 
 +(BlioStoreManager*)sharedInstance
@@ -37,7 +37,6 @@
 		self.deviceRegistrationPromptAlertViews = [NSMutableDictionary dictionaryWithCapacity:1];
 		[self addStoreHelper:[[[BlioOnlineStoreHelper alloc] init] autorelease]];
 		initialLoginCheckFinished = NO;
-		didOpenWebStore = NO;
 	}
 	return self;
 }
@@ -54,6 +53,13 @@
 	helper.delegate = self;
 	[storeHelpers setObject:helper forKey:[NSNumber numberWithInt:helper.sourceID]];
 	if (!currentStoreHelper) self.currentStoreHelper = helper;
+}
+-(BOOL)didOpenWebStore {
+	return [[NSUserDefaults standardUserDefaults] boolForKey:kBlioDidOpenWebStoreDefaultsKey];
+}
+-(void)setDidOpenWebStore:(BOOL)boolValue {
+	[[NSUserDefaults standardUserDefaults] setBool:boolValue forKey:kBlioDidOpenWebStoreDefaultsKey];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 -(NSString*)currentStoreURL {
 	return self.currentStoreHelper.storeURL;
