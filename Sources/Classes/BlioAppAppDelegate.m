@@ -325,17 +325,24 @@ static void *background_init_thread(void * arg) {
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	
 	[self checkDevice];
-
+	
 	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 			}
-			else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+			else {
+				if ([BlioStoreManager sharedInstance].didOpenWebStore) {
+					[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+				}				
+				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+			}
 		}
 		else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
 	}
 	else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+	[BlioStoreManager sharedInstance].didOpenWebStore = NO;
+
 	[self.processingManager resumeProcessing];
     
     BOOL openedBook = NO;
@@ -425,6 +432,7 @@ static void *background_init_thread(void * arg) {
 }
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 //	NSLog(@"%@", NSStringFromSelector(_cmd));
+	// this logic happens to only execute for subsequent applicationDidBecomeActive invocations beyond the first time (effectively never for iOS 3.2)
 	if (self.networkStatus != NotReachable) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && ![[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];

@@ -25,6 +25,7 @@
 	NSString* siteKey;
 	NSInteger userNum;
 	NSString* storeURL;
+	BOOL forceLoginDisplayUponFailure;
 }
 @property (nonatomic, retain) NSDate* timeout;
 @property (nonatomic, readonly) NSString *username;
@@ -38,6 +39,7 @@
 @property (nonatomic, retain) NSString *siteKey;
 @property (nonatomic, assign) NSInteger userNum;
 @property (nonatomic, retain) NSString *storeURL;
+@property (nonatomic, assign) BOOL forceLoginDisplayUponFailure;
 
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID;
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password;
