@@ -73,6 +73,9 @@
 	[self.currentStoreHelper buyBookWithSourceSpecificID:sourceSpecificID];
 }
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID {
+	[self requestLoginForSourceID:sourceID forceLoginDisplayUponFailure:NO];
+}
+-(void)requestLoginForSourceID:(BlioBookSourceID)sourceID forceLoginDisplayUponFailure:(BOOL)forceLoginDisplay {
 	// first check to see if login info is in NSUserDefaults
 	
 	NSDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
@@ -80,6 +83,7 @@
 		NSError * error = nil;
 		NSString * password = [SFHFKeychainUtils getPasswordForUsername:[loginCredentials objectForKey:@"username"] andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
 		if (!error && password) {
+			[[BlioStoreManager sharedInstance] storeHelperForSourceID:sourceID].forceLoginDisplayUponFailure = forceLoginDisplay;
 			[[BlioStoreManager sharedInstance] loginWithUsername:[loginCredentials objectForKey:@"username"] password:password sourceID:sourceID];
 		}
 		else {
@@ -177,8 +181,7 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioLoginFinished object:self userInfo:userInfo];
 
 }
--(void)saveUsername:(NSString*)username password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
-	
+-(void)saveUsername:(NSString*)username {
 	NSString * oldUsername = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey] objectForKey:@"username"];
 	if (oldUsername && ![oldUsername isEqualToString:username]) {
 		NSError * error = nil;
@@ -190,8 +193,14 @@
 	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
 	if (username) {
 		[loginCredentials setObject:[NSString stringWithString:username] forKey:@"username"];
+	}		
+	[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+}
+-(void)saveUsername:(NSString*)username password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
+	[self saveUsername:username];
+	if (username) {
 		if (password) {
-			//[loginCredentials setObject:[NSString stringWithString:password] forKey:@"password"];
 			NSError * error = nil;
 			[SFHFKeychainUtils storeUsername:username andPassword:password forServiceName:kBlioUserLoginCredentialsDefaultsKey updateExisting:YES error:&error];
 			if (error) {
@@ -206,9 +215,6 @@
 			}
 		}
 	}
-
-	[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
-	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 -(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID {
 	NSString * currentUsername = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey] objectForKey:@"username"];
@@ -253,7 +259,8 @@
 	}
 	return nil;
 }
--(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {	
+-(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
+	[self saveUsername:user];
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginWithUsername:user password:password];
 }
 -(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID {
@@ -269,14 +276,24 @@
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
 	}
 	else if (loginResult == BlioLoginResultError && isShowingLoginView == NO) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Server Error",@"\"Server Error\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"BACKGROUND_LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"You cannot log in at the current time. Please try again later by going to your Archive or account settings.",@"Alert message when the login web service has failed.")
-									delegate:nil 
-						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-						   otherButtonTitles:nil];		
+		if (storeHelper.forceLoginDisplayUponFailure) {
+			[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
+		}	
+		else {
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Server Error",@"\"Server Error\" alert message title") 
+										 message:NSLocalizedStringWithDefaultValue(@"BACKGROUND_LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"You cannot log in at the current time. Please try again later by going to your Archive or account settings.",@"Alert message when the login web service has failed.")
+										delegate:nil 
+							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+							   otherButtonTitles:nil];		
+		}			
 	}
 	else if (loginResult == BlioLoginResultConnectionError && isShowingLoginView == NO) {
-		
+		if (storeHelper.forceLoginDisplayUponFailure) {
+			[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
+		}	
+		else {
+			// silent logins currently do not show failure messages due to connection error
+		}			
 	}
 	else if (isShowingLoginView == YES) {
 		[loginViewController receivedLoginResult:loginResult];		

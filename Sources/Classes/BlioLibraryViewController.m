@@ -1748,7 +1748,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 				progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
 			}
 			else {
-				// NSLog(@"WARNING: could not find completeOp for obtaining processing progress for book: %@",[newBook title]);
+				NSLog(@"WARNING: could not find completeOp for obtaining processing progress for book: %@",[newBook title]);
 				progressView.progress = 0;
 			}
 			self.pauseButton.hidden = NO;
@@ -1834,12 +1834,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
 	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		//	NSLog(@"BlioLibraryGridViewCell onProcessingCompleteNotification entered");
+/*
 		progressBackgroundView.hidden = YES;
 		pauseButton.hidden = YES;	
 		resumeButton.hidden = YES;	
 		progressView.hidden = YES;
 		bookView.alpha = 1;
 		self.stateLabel.hidden = YES;
+ */
 	}
 }
 - (void)onProcessingFailedNotification:(NSNotification*)note {

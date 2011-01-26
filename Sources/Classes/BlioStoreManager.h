@@ -62,6 +62,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
  @returns The shared BlioStoreManager instance.
  */
 +(BlioStoreManager*)sharedInstance;
+-(void)saveUsername:(NSString*)username;
 -(void)saveUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
 -(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID;
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID;
@@ -87,6 +88,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 	@param sourceID The BlioBookSourceID for the login request.
  */
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID;
+-(void)requestLoginForSourceID:(BlioBookSourceID)sourceID forceLoginDisplayUponFailure:(BOOL)forceLoginDisplay;
 -(void)showWelcomeViewForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Shows login view modally; input from the login view fields are then used to login for the given sourceID.

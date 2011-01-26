@@ -57,6 +57,7 @@
 		contentCafeDelegate = [[BlioOnlineStoreHelperContentCafeDelegate alloc] init];
 		contentCafeDelegate.delegate = self;
 		downloadNewBooks = YES;
+		forceLoginDisplayUponFailure = NO;
 		
 #ifdef TEST_MODE
 		self.storeURL = @"http://bliodemo.crosscomm.net/";
@@ -156,6 +157,7 @@
 //					}
 //					[drmSessionManager release];
 //				}
+				[[BlioStoreManager sharedInstance] saveUsername:currentUsername password:currentPassword sourceID:self.sourceID];	
 				[delegate storeHelper:self receivedLoginResult:BlioLoginResultSuccess];
 				return;
 			}
