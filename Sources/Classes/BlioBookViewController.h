@@ -175,7 +175,6 @@ typedef enum {
 
 @property (nonatomic, assign) BOOL motionControlsEnabled;
 
-@property (nonatomic, retain) UIView *pageJumpView;
 @property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;

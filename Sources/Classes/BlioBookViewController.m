@@ -130,7 +130,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @synthesize book = _book;
 @synthesize bookView = _bookView;
-@synthesize pageJumpView = _pageJumpView;
 @synthesize pieButton = _pieButton;
 @synthesize pauseButton = _pauseButton;
 
@@ -296,16 +295,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     } else {
         self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];
     }
-    
-    _pageJumpView = nil;
-	
+    	
 	thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:self.rootView.bounds];
 	thumbPreview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	thumbPreview.userInteractionEnabled = NO;
 	thumbPreview.alpha = 0.01f;
 	thumbPreview.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7f];
 	[self.rootView addSubview:thumbPreview];
-	
 }
 
 - (void)initialiseBookView {
@@ -1293,6 +1289,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     self.bookView = nil;
     self.rootView = nil;
+    
+    [_pageJumpSlider release];
+    _pageJumpSlider = nil;
+    [_pageJumpLabel release];
+    _pageJumpLabel = nil;
+    [_pageJumpView release];
+    _pageJumpView = nil;
 }
 
 - (void)didReceiveMemoryWarning 
@@ -1331,12 +1334,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
     self.searchViewController = nil;
     
+    [_pageJumpSlider release];
+    [_pageJumpLabel release];
+    [_pageJumpView release];
+    
     self.bookView = nil;
+    self.rootView = nil;
     
     [self.book flushCaches];
     self.book = nil;    
     
-    self.pageJumpView = nil;
     self.pieButton = nil;
     self.pauseButton = nil;
     self.managedObjectContext = nil;
@@ -1489,7 +1496,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 self.searchViewController.toolbar.alpha = 1;
             }
             
-            self.pageJumpView.alpha = 1;
+            _pageJumpView.alpha = 1;
             self.navigationController.navigationBar.alpha = 1;
             break;
         default:
@@ -1499,7 +1506,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 self.searchViewController.toolbar.alpha = 0;
             }
             
-            self.pageJumpView.alpha = 0;
+            _pageJumpView.alpha = 0;
             self.navigationController.navigationBar.alpha = 0;
             break;
     }
@@ -1699,8 +1706,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) togglePageJumpPanel { 
     
     if(!_pageJumpView) {
-        self.pageJumpView = [[BlioBeveledView alloc] init];
-        [self.pageJumpView release];
+        _pageJumpView = [[BlioBeveledView alloc] init];
         
         _pageJumpView.hidden = YES;
         [self layoutPageJumpView];
