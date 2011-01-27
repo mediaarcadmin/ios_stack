@@ -284,7 +284,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			// This is not an "else" because the above initialization could have discovered
 			// a corrupt audiobook, in which case hasAudiobook would now be false.
 			if ( ![self.book hasAudiobook] ) {			
-                _acapelaAudioManager = [BlioAcapelaAudioManager sharedAcapelaAudioManager];
+                _acapelaAudioManager = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] retain];
                 if ( _acapelaAudioManager != nil )  {
                     [_acapelaAudioManager setPageChanged:YES];
                     [_acapelaAudioManager setDelegate:self];
@@ -1359,7 +1359,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.searchButton = nil;
 	self.backButton = nil;
     self.historyStack = nil;
-	if (_audioBookManager) [_audioBookManager release];
+    
+	[_audioBookManager release];
+	[_acapelaAudioManager release];
+    
 	[super dealloc];
 }
 
@@ -2372,6 +2375,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		return;
 	}
 	[_audioBookManager.speakingTimer invalidate];
+    _audioBookManager.speakingTimer = nil;
 	NSInteger layoutPage = [self.bookView.currentBookmarkPoint layoutPage];
 	NSLog(@"audioPlayerDidFinishPlaying layoutPage: %d", layoutPage);
 
@@ -2516,20 +2520,30 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)stopAudio {		
-	if ([self.book hasAudiobook]) 
-        [_audioBookManager stopAudio];	
-    else if ([self.book hasTTSRights]) 
+	if ([self.book hasAudiobook]) {
+        [_audioBookManager stopAudio];
+        [_audioBookManager.speakingTimer invalidate];
+        _audioBookManager.speakingTimer = nil; 
+    }
+    else if ([self.book hasTTSRights]) {
         [_acapelaAudioManager stopSpeaking];
+        [_acapelaAudioManager.speakingTimer invalidate];
+        _acapelaAudioManager.speakingTimer = nil; 
+    }
 }
 
 - (void)pauseAudio {		
 	if ([self.book hasAudiobook]) {
 		[_audioBookManager pauseAudio];
 		[_audioBookManager setPageChanged:NO];
+        [_audioBookManager.speakingTimer invalidate];
+        _audioBookManager.speakingTimer = nil; 
 	}	
 	else if ([self.book hasTTSRights]) {
 		[_acapelaAudioManager pauseSpeaking];
 		[_acapelaAudioManager setPageChanged:NO]; // In case speaking continued through a page turn.
+        [_acapelaAudioManager.speakingTimer invalidate];
+        _acapelaAudioManager.speakingTimer = nil; 
 	}
 }
 
@@ -3084,7 +3098,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     NSURL *url = [NSURL URLWithString:queryString];
     if (nil != url) {
         BlioWebToolsViewController *aWebToolController = [[BlioWebToolsViewController alloc] initWithURL:url];
-        aWebToolController.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleDone target:self action:@selector(dismissWebTool:)];                                                 
+        UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleDone target:self action:@selector(dismissWebTool:)];
+        aWebToolController.topViewController.navigationItem.rightBarButtonItem = rightItem; 
+        [rightItem release];
         aWebToolController.topViewController.navigationItem.title = titleString;
 		
 		//NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", nil]; // until there's icons...
