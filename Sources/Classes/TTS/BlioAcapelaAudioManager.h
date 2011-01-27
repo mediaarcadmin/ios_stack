@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import "TTSManager.h"
-#import "setupTTS.h"
 #import "BlioAudioManager.h"
 #import "BlioProcessingStandardOperations.h"
 #import "AcapelaSpeech.h"
@@ -17,8 +16,6 @@
 extern NSString * const BlioVoiceListRefreshedNotification;
 
 @interface BlioAcapelaAudioManager : BlioAudioManager<TTSManager> {
-	setupTTS* setupData;
-	AcapelaSpeech* engine;
 	AcapelaLicense* ttsLicense;
     NSOperationQueue *downloadQueue;
 	NSDictionary * voiceData;
@@ -26,7 +23,6 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 	AVAudioPlayer * sampleAudioPlayer;
 }
 
-@property (nonatomic, retain) setupTTS* setupData;
 @property (nonatomic, retain) AcapelaSpeech* engine;
 @property (nonatomic, retain) AcapelaLicense* ttsLicense;
 @property (nonatomic, retain) NSOperationQueue *downloadQueue;
@@ -44,8 +40,8 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 - (id)delegate;
 - (void)setDelegate:(id)delegate;
 
-- (BOOL)voiceHasChanged ;
-- (void)setEngineWithPreferences:(BOOL)voiceChanged;
+- (void)setEngineWithPreferences;
+
 - (BOOL)queueSpeakingString:(NSString *)string;
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError;
 +(NSString*)voiceNameForVoice:(NSString*)voice;

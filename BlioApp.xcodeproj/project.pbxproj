@@ -413,8 +413,6 @@
 		A30E0FBD123EA5B400D31157 /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		A30E0FBE123EA5B400D31157 /* BlioBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioBook.m */; };
 		A30E0FBF123EA5B400D31157 /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
-		A30E0FC0123EA5B400D31157 /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
-		A30E0FC1123EA5B400D31157 /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
 		A30E0FC2123EA5B400D31157 /* BlioNotesView.m in Sources */ = {isa = PBXBuildFile; fileRef = C932B03A10ECBC6000B8286A /* BlioNotesView.m */; };
 		A30E0FC3123EA5B400D31157 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		A30E0FC4123EA5B400D31157 /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
@@ -709,8 +707,6 @@
 		A36D3575120B136700E1A035 /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		A36D3576120B136700E1A035 /* BlioBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioBook.m */; };
 		A36D3577120B136700E1A035 /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
-		A36D3578120B136700E1A035 /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
-		A36D3579120B136700E1A035 /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
 		A36D357B120B136700E1A035 /* BlioNotesView.m in Sources */ = {isa = PBXBuildFile; fileRef = C932B03A10ECBC6000B8286A /* BlioNotesView.m */; };
 		A36D357C120B136700E1A035 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		A36D357D120B136700E1A035 /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
@@ -834,8 +830,6 @@
 		A37A584B113C36EF0003CCFF /* back-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A584A113C36EF0003CCFF /* back-black.png */; };
 		A37A586D113C45640003CCFF /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
 		A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
-		A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33810EA787D00F3DC5A /* force_cpp.cpp */; };
-		A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33B10EA787D00F3DC5A /* setupTTS.m */; };
 		A38161601164FB3E003A9709 /* BlioBookVault.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161551164FB3E003A9709 /* BlioBookVault.m */; };
 		A38161611164FB3E003A9709 /* NSDate+ISO8601Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161571164FB3E003A9709 /* NSDate+ISO8601Parsing.m */; };
 		A38161621164FB3E003A9709 /* NSDate+ISO8601Unparsing.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161591164FB3E003A9709 /* NSDate+ISO8601Unparsing.m */; };
@@ -1698,10 +1692,6 @@
 		A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioAcapelaAudioManager.m; path = TTS/BlioAcapelaAudioManager.m; sourceTree = "<group>"; };
 		A37FC33510EA785F00F3DC5A /* TTSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTSManager.h; path = TTS/TTSManager.h; sourceTree = "<group>"; };
 		A37FC33710EA787D00F3DC5A /* AcapelaSpeech.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AcapelaSpeech.h; path = TTS/Acapela/AcapelaSpeech.h; sourceTree = "<group>"; };
-		A37FC33810EA787D00F3DC5A /* force_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = force_cpp.cpp; path = TTS/Acapela/force_cpp.cpp; sourceTree = "<group>"; };
-		A37FC33910EA787D00F3DC5A /* force_cpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = force_cpp.h; path = TTS/Acapela/force_cpp.h; sourceTree = "<group>"; };
-		A37FC33A10EA787D00F3DC5A /* setupTTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setupTTS.h; path = TTS/Acapela/setupTTS.h; sourceTree = "<group>"; };
-		A37FC33B10EA787D00F3DC5A /* setupTTS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = setupTTS.m; path = TTS/Acapela/setupTTS.m; sourceTree = "<group>"; };
 		A38161541164FB3E003A9709 /* BlioBookVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookVault.h; sourceTree = "<group>"; };
 		A38161551164FB3E003A9709 /* BlioBookVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookVault.m; sourceTree = "<group>"; };
 		A38161561164FB3E003A9709 /* NSDate+ISO8601Parsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+ISO8601Parsing.h"; sourceTree = "<group>"; };
@@ -2789,13 +2779,9 @@
 			isa = PBXGroup;
 			children = (
 				A37FC33710EA787D00F3DC5A /* AcapelaSpeech.h */,
-				A37FC33810EA787D00F3DC5A /* force_cpp.cpp */,
-				A37FC33910EA787D00F3DC5A /* force_cpp.h */,
-				A37FC33A10EA787D00F3DC5A /* setupTTS.h */,
-				A37FC33B10EA787D00F3DC5A /* setupTTS.m */,
+				A37FC33510EA785F00F3DC5A /* TTSManager.h */,
 				A37FC33310EA785F00F3DC5A /* BlioAcapelaAudioManager.h */,
 				A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */,
-				A37FC33510EA785F00F3DC5A /* TTSManager.h */,
 			);
 			name = TTS;
 			sourceTree = "<group>";
@@ -4133,8 +4119,6 @@
 				A3B6F8A1120CB45300D48E04 /* BlioViewSettingsSheet.m in Sources */,
 				C9775AF610DFD728005E0E2B /* BlioBook.m in Sources */,
 				A37FC33610EA785F00F3DC5A /* BlioAcapelaAudioManager.m in Sources */,
-				A37FC33C10EA787D00F3DC5A /* force_cpp.cpp in Sources */,
-				A37FC33D10EA787D00F3DC5A /* setupTTS.m in Sources */,
 				C932B03B10ECBC6000B8286A /* BlioNotesView.m in Sources */,
 				7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */,
 				7D79183610F2257C00C4D839 /* BlioFlowView.m in Sources */,
@@ -4273,8 +4257,6 @@
 				A30E0FBD123EA5B400D31157 /* BlioLayoutView.m in Sources */,
 				A30E0FBE123EA5B400D31157 /* BlioBook.m in Sources */,
 				A30E0FBF123EA5B400D31157 /* BlioAcapelaAudioManager.m in Sources */,
-				A30E0FC0123EA5B400D31157 /* force_cpp.cpp in Sources */,
-				A30E0FC1123EA5B400D31157 /* setupTTS.m in Sources */,
 				A30E0FC2123EA5B400D31157 /* BlioNotesView.m in Sources */,
 				A30E0FC3123EA5B400D31157 /* BlioBookViewController.m in Sources */,
 				A30E0FC4123EA5B400D31157 /* BlioFlowView.m in Sources */,
@@ -4406,8 +4388,6 @@
 				A36D3575120B136700E1A035 /* BlioLayoutView.m in Sources */,
 				A36D3576120B136700E1A035 /* BlioBook.m in Sources */,
 				A36D3577120B136700E1A035 /* BlioAcapelaAudioManager.m in Sources */,
-				A36D3578120B136700E1A035 /* force_cpp.cpp in Sources */,
-				A36D3579120B136700E1A035 /* setupTTS.m in Sources */,
 				A36D357B120B136700E1A035 /* BlioNotesView.m in Sources */,
 				A36D357C120B136700E1A035 /* BlioBookViewController.m in Sources */,
 				A36D357D120B136700E1A035 /* BlioFlowView.m in Sources */,

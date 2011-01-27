@@ -312,7 +312,7 @@
 	tts.currentWordOffset = 0;
 	UIButton* ctl = (UIButton*)sender;
 	if ( ctl == playButton ) {
-		[tts setEngineWithPreferences:[tts voiceHasChanged]];
+		[tts setEngineWithPreferences];
 		NSString *samplePhrase = NSLocalizedStringWithDefaultValue(@"TTS_SAMPLE_PHRASE",nil,[NSBundle mainBundle],@"It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness.",@"Sample phrase spoken by TTS engine.");
 
 		[tts startSpeaking:samplePhrase]; 
@@ -396,7 +396,6 @@
 		if (tts != nil && [tts isSpeaking] )
 			[tts stopSpeaking];
 		[[NSUserDefaults standardUserDefaults] setObject:[self.availableVoices objectAtIndex:indexPath.row] forKey:kBlioLastVoiceDefaultsKey];
-		[[tts setupData] setCurrentVoice:[self.availableVoices objectAtIndex:indexPath.row]];
 		[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
 	}
 }

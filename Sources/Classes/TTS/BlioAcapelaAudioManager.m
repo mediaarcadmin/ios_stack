@@ -23,7 +23,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 @implementation BlioAcapelaAudioManager
 
-@synthesize setupData, downloadQueue,voiceData,sampleAudioPlayer;
+@synthesize downloadQueue,voiceData,sampleAudioPlayer;
 @synthesize engine, ttsLicense;
 
 +(BlioAcapelaAudioManager*)sharedAcapelaAudioManager
@@ -41,18 +41,18 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		NSString* licenseStr = [[NSString alloc] initWithCString:babLicense encoding:NSASCIIStringEncoding];
 		[self setTtsLicense:[[[AcapelaLicense alloc] initLicense:licenseStr user:uid.userId passwd:uid.passwd] autorelease]];
 		[licenseStr release];
+        
 		if (![[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastVoiceDefaultsKey] && [[AcapelaSpeech availableVoices] count] > 0) {
 			NSLog(@"No voice default set; however, a voice has been found, so the default will be set to that voice...");
 			[[NSUserDefaults standardUserDefaults] setObject:[[AcapelaSpeech availableVoices] objectAtIndex:0] forKey:kBlioLastVoiceDefaultsKey];
 		}
 		
-		[self setEngine:[[[AcapelaSpeech alloc] init]autorelease]];
-		[self setSetupData:[[[setupTTS alloc] init] autorelease]];
 		[self setCurrentPage:-1];
 		[self setBlockWords:nil];
 		[self setTextToSpeakChanged:NO];
 		[self setStartedPlaying:NO];
 		[self setPageChanged:YES];
+        
 		self.downloadQueue = [[[NSOperationQueue alloc] init] autorelease];
 		[self.downloadQueue setMaxConcurrentOperationCount:3];
 		self.voiceData = [NSDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"BlioVoiceData.plist"]];
@@ -68,12 +68,13 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
         CFRelease(currentStringWithWordOffsets);
     }
 	if (self.downloadQueue) [self.downloadQueue cancelAllOperations];
+    
 	self.downloadQueue = nil;
 	self.voiceData = nil;
 	self.sampleAudioPlayer = nil;
+    
     [engine release];
     [ttsLicense release];
-    [setupData release];
     
     [super dealloc];
 }
@@ -102,7 +103,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 -(NSArray*)availableVoicesForUse {
 	return [AcapelaSpeech availableVoices];
 }
-	-(NSArray*)availableVoiceNamesForUse {
+-(NSArray*)availableVoiceNamesForUse {
 	NSArray * availableVoices = [AcapelaSpeech availableVoices];
 	NSMutableArray * availableVoiceNames = [NSMutableArray arrayWithCapacity:[availableVoices count]];
 	for (NSString * voice in availableVoices) {
@@ -120,17 +121,13 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 	return nil;
 }
 - (BOOL)voiceHasChanged {
-	return [self.setupData.currentVoice isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:kBlioLastVoiceDefaultsKey]];
-//	return ((([[self.setupData CurrentVoiceName] compare:@"Laura"]==NSOrderedSame) && 
-//			 [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]!=(NSInteger)kAcapelaVoiceUSEnglishLaura) ||
-//			(([[self.setupData CurrentVoiceName] compare:@"Ryan"]==NSOrderedSame) && 
-//			 [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastVoiceDefaultsKey]!=(NSInteger)kAcapelaVoiceUSEnglishRyan));
+	return !self.engine || ![self.engine.voice isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:kBlioLastVoiceDefaultsKey]];
 }
 
-- (void)setEngineWithPreferences:(BOOL)voiceChanged {
-	if (voiceChanged) {  
-		[self.setupData init];
-		[self.engine initWithVoice:setupData.currentVoice license:ttsLicense];
+- (void)setEngineWithPreferences {
+	if ([self voiceHasChanged]) {  
+        self.engine = nil; // Nil it out before re-setting just to save some RAM.
+		self.engine = [[[AcapelaSpeech alloc] initWithVoice:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastVoiceDefaultsKey] license:ttsLicense] autorelease];
 	}
 	if ( [[NSUserDefaults standardUserDefaults] floatForKey:kBlioLastSpeedDefaultsKey] == 0 )
 		// Preference has not been set.  Set to default.
@@ -212,12 +209,10 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 - (BOOL)isSpeaking {
 	return [engine isSpeaking];
-	return NO;
 }
 
 - (float)rate {
 	return [engine rate];
-	return 0;
 }
 
 - (void)setRate:(float)rate; {
@@ -226,7 +221,6 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 - (float)volume {
 	return [engine volume];
-	return 0;
 }
 
 - (void)setVolume:(float)volume {
@@ -235,7 +229,6 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 - (id)delegate {
 	return [engine delegate];
-	return nil;
 }
 
 - (void)setDelegate:(id)delegate {
@@ -244,12 +237,10 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 - (BOOL)queueSpeakingString:(NSString *)string {
 	return [engine queueSpeakingString:string];
-	return NO;
 }
 
 - (id)objectForProperty:(NSString *)property error:(NSError **)outError {
 	return [engine objectForProperty:property error:outError];
-	return nil;
 }
 -(void)playSampleForVoice:(NSString *)aVoice {
 	if (self.sampleAudioPlayer && self.sampleAudioPlayer.playing == YES) [self.sampleAudioPlayer stop];
@@ -321,7 +312,6 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		[AcapelaSpeech refreshVoiceList];
 		if ([[AcapelaSpeech availableVoices] count] == 1) {
 			[[NSUserDefaults standardUserDefaults] setObject:[[AcapelaSpeech availableVoices] objectAtIndex:0] forKey:kBlioLastVoiceDefaultsKey];
-			[self.setupData setCurrentVoice:[[AcapelaSpeech availableVoices] objectAtIndex:0]];
 		}
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioVoiceListRefreshedNotification object:self];
 	}

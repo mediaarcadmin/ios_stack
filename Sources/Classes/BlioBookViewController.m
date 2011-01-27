@@ -2528,7 +2528,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)prepareTTSEngine {
-	[_acapelaAudioManager setEngineWithPreferences:YES];  
+    [_acapelaAudioManager setEngineWithPreferences];
 	[_acapelaAudioManager setDelegate:self];
 }
 
