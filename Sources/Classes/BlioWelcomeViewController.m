@@ -320,7 +320,9 @@
 }
 
 - (void) dismissSelf: (id) sender {
-	[self dismissModalViewControllerAnimated:YES];
+	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
+//	[self dismissModalViewControllerAnimated:YES];
+	[[BlioStoreManager sharedInstance] dismissLoginView];
 }
 -(void)firstTimeUserButtonPressed:(id)sender {
 	BlioCreateAccountViewController * createAccountViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
