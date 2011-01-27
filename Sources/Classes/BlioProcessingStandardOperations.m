@@ -1212,16 +1212,16 @@
 		[aZipArchive UnzipCloseFile];
 	} else {
         NSLog(@"Failed to open zipfile at path: %@", temporaryPath);
-		if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) {
-			NSLog(@"File does exist, moving to Documents directory for debugging...");
-			NSError * moveError;
-			NSString *debugPath = [[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
-			NSLog(@"debugPath: %@",debugPath);
-			if (![[NSFileManager defaultManager] copyItemAtPath:temporaryPath toPath:debugPath error:&moveError]) {
-				NSLog(@"ERROR: could not move unzippable downloaded voice to Documents directory for debugging! %@,%@",[moveError localizedDescription],[moveError userInfo]);
-			}
-		}
-		else NSLog(@"because file does not exist!");
+//		if ([[NSFileManager defaultManager] fileExistsAtPath:temporaryPath]) {
+//			NSLog(@"File does exist, moving to Documents directory for debugging...");
+//			NSError * moveError;
+//			NSString *debugPath = [[[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
+//			NSLog(@"debugPath: %@",debugPath);
+//			if (![[NSFileManager defaultManager] copyItemAtPath:temporaryPath toPath:debugPath error:&moveError]) {
+//				NSLog(@"ERROR: could not move unzippable downloaded voice to Documents directory for debugging! %@,%@",[moveError localizedDescription],[moveError userInfo]);
+//			}
+//		}
+//		else NSLog(@"because file does not exist!");
 		if (expectedContentLength != NSURLResponseUnknownLength) NSLog(@"expectedContentLength: %lld",expectedContentLength);
 
     }
