@@ -155,6 +155,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize thumbPreview;
 @synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, addButton, viewSettingsButton, searchButton, backButton;
 
++ (void)initialize {
+	NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:kBlioPageLayoutPageLayout]
+															forKey:kBlioLastLayoutDefaultsKey];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];	
+} 	
+
 - (BOOL)toolbarsVisibleAfterAppearance 
 {
     return !self.hidesBottomBarWhenPushed;

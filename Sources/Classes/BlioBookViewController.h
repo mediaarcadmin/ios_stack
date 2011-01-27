@@ -192,5 +192,6 @@ typedef enum {
 - (void)toggleAudio:(id)sender;
 - (void)incrementPage;
 - (void)decrementPage;
++ (void)initialize;
 
 @end
