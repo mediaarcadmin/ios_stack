@@ -82,12 +82,6 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingScanUpdate:) name:BlioFileSharingScanUpdate object:[BlioImportManager sharedImportManager]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBlioFileSharingImportAborted:) name:BlioFileSharingImportAborted object:nil];
 
-	if (![BlioImportManager sharedImportManager].isScanningFileSharingDirectory) {
-		[[BlioImportManager sharedImportManager] scanFileSharingDirectory];
-	}
-	else {
-		[self.activityIndicatorView startAnimating];
-	}	
 }
 
 /*
@@ -98,12 +92,21 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+	self.activityIndicatorView.hidden = NO;
+	if (![BlioImportManager sharedImportManager].isScanningFileSharingDirectory) {
+		[[BlioImportManager sharedImportManager] scanFileSharingDirectory];
+	}
+	else {
+		[self.activityIndicatorView startAnimating];
+	}	
+	
 }
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+	self.activityIndicatorView.hidden = YES;
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -366,7 +369,7 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioFileSharingScanFinished object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioFileSharingScanUpdate object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioFileSharingImportAborted object:nil];
-
+	if (self.activityIndicatorView) [self.activityIndicatorView removeFromSuperview];
 	self.activityIndicatorView = nil;
 }
 
