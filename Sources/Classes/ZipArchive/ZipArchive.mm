@@ -181,6 +181,8 @@
 	}
 	
 	do{
+        NSAutoreleasePool *internalPool = [[NSAutoreleasePool alloc] init];
+        
 		if( [_password length]==0 )
 			ret = unzOpenCurrentFile( _unzFile );
 		else
@@ -207,7 +209,7 @@
 		filename[fileInfo.size_filename] = '\0';
 		
 		// check if it contains directory
-		NSString * strPath = [NSString  stringWithCString:filename];
+		NSString * strPath = [NSString  stringWithUTF8String:filename];
 		BOOL isDirectory = NO;
 		if( filename[fileInfo.size_filename-1]=='/' || filename[fileInfo.size_filename-1]=='\\')
 			isDirectory = YES;
@@ -289,6 +291,8 @@
 		}
 		unzCloseCurrentFile( _unzFile );
 		ret = unzGoToNextFile( _unzFile );
+        
+        [internalPool drain];
 	}while( ret==UNZ_OK && UNZ_OK!=UNZ_END_OF_LIST_OF_FILE );
 	return success;
 }
