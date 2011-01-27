@@ -16,6 +16,7 @@
 extern NSString * const BlioVoiceListRefreshedNotification;
 
 @interface BlioAcapelaAudioManager : BlioAudioManager<TTSManager> {
+    AcapelaSpeech* engine;
 	AcapelaLicense* ttsLicense;
     NSOperationQueue *downloadQueue;
 	NSDictionary * voiceData;
