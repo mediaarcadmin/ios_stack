@@ -137,7 +137,7 @@
 - (void)viewDidAppear:(BOOL)animated {
 	NSLog(@"viewDidAppear");
     [super viewDidAppear:animated];
-	
+	self.activityIndicatorView.hidden = NO;
 	if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
 		[self.activityIndicatorView startAnimating];
 	}		
@@ -177,7 +177,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	[self.activityIndicatorView stopAnimating];
+//	[self.activityIndicatorView stopAnimating];
+	self.activityIndicatorView.hidden = YES;
 }
 
 /*

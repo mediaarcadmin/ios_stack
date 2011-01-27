@@ -390,6 +390,8 @@ static void *background_init_thread(void * arg) {
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"];
 		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
 	}	
+	
+	[BlioBookViewController initialize];
 }
 
 
