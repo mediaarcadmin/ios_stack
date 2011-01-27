@@ -73,7 +73,7 @@ static NSString *xamlColorToCSSColor(NSString *color)
             NSMutableArray *mutableComponents = [components mutableCopy];
             [mutableComponents addObject:[components objectAtIndex:0]];
             [mutableComponents removeObjectAtIndex:0];
-            components = mutableComponents;
+            components = [mutableComponents autorelease];
             //return [NSString stringWithFormat:@"rgba(%@)", [components componentsJoinedByString:@","]];
         } 
         //else if(components.count == 3) 
