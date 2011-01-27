@@ -55,6 +55,8 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingTokenRequiredNotification:) name:BlioProcessingDownloadPaidBookTokenRequiredNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingNonMatchingUserNotification:) name:BlioProcessingLicenseAcquisitionNonMatchingUserNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingNonMatchingUserNotification:) name:BlioProcessingDownloadPaidBookNonMatchingUserNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+
     }
     return self;
 }
@@ -1007,17 +1009,16 @@
 - (void)loginDismissed:(NSNotification*)note {
 //	NSLog(@"BlioProcessingManager loginDismissed entered");
 	BlioBookSourceID sourceID = [[[note userInfo] valueForKey:@"sourceID"] intValue];
-	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:sourceID]) {
+	if (sourceID == BlioBookSourceOnlineStore && [[BlioStoreManager sharedInstance] isLoggedInForSourceID:sourceID]) {
 		[self resumeProcessingForSourceID:sourceID];
 	}
 	else {
-		// ALERT user that we needed a token from login.
-		// TODO: test this logic after the download operation for paid books is complete.
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Not Logged In",@"\"Not Logged In\" Alert message title")
-									 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_PAID_BOOKS_PROCESSING",nil,[NSBundle mainBundle],@"%@ books could not continue processing because you need to log in first.",@"Alert message informing the end-user that paid book processing cannot continue because the user needs to login."),@"Paid"]
-									delegate:self
-						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-						   otherButtonTitles:nil];
+//		ALERT user that we needed a token from login.
+//		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Not Logged In",@"\"Not Logged In\" Alert message title")
+//									 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"LOGIN_REQUIRED_FOR_PAID_BOOKS_PROCESSING",nil,[NSBundle mainBundle],@"%@ books could not continue processing because you need to log in first.",@"Alert message informing the end-user that paid book processing cannot continue because the user needs to login."),@"Paid"]
+//									delegate:self
+//						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+//						   otherButtonTitles:nil];
 	}
 
 }

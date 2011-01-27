@@ -319,9 +319,7 @@ static void *background_init_thread(void * arg) {
     libraryController.processingDelegate = self.processingManager;
     
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
-	   
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-
+	
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	
 	[self checkDevice];
@@ -362,10 +360,12 @@ static void *background_init_thread(void * arg) {
 	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 			}
 			else {
 				if ([BlioStoreManager sharedInstance].didOpenWebStore) {
+					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 					[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 				}				
 				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
@@ -388,6 +388,7 @@ static void *background_init_thread(void * arg) {
 	
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) {
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
 	}	
 }
@@ -404,9 +405,10 @@ static void *background_init_thread(void * arg) {
 
 -(void)loginDismissed:(NSNotification*)note {
 //	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
+//			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
 		else {

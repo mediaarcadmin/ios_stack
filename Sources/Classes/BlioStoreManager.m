@@ -328,7 +328,6 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-	NSLog(@"buttonIndex: %i",buttonIndex);
 
 	NSArray * keys = [self.deviceRegistrationPromptAlertViews allKeysForObject:alertView];
 	if (keys && [keys count] > 0) {
