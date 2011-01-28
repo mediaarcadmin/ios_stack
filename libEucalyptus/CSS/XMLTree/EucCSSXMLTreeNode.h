@@ -24,6 +24,11 @@ struct lwc_string_s;
     
     NSData *_characters;
     
+    // Storing the attributes in an array of [[name, value][name, value]]
+    // uses less memory than a dictionary, and performance testing 
+    // shows that it's actually faster for real documents (I guess
+    // there are few enough attributes that a linear search can be 
+    // faster than a dictionary lookup).
     NSUInteger _attributesCountX2;
     NSUInteger _attributesCapacity;
     struct lwc_string_s **_attributes;
