@@ -481,11 +481,13 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
     do {
         widthChanged = NO;
         
+        // Logically, startBreakOffset is the offset to the first break
+        // /after/ the line start.
         NSUInteger startBreakOffset = 0;
         for(;;) {
             EucCSSLayoutRunPoint point = _potentialBreakInfos[startBreakOffset].point;
             if(startBreakOffset < _potentialBreaksCount && 
-               (point.word < wordOffset || (point.word == wordOffset && point.element < elementOffset))) {
+               (point.word < wordOffset || (point.word == wordOffset && point.element <= elementOffset))) {
                 ++startBreakOffset;
             } else {
                 break;
@@ -494,13 +496,13 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         if(startBreakOffset >= _potentialBreaksCount) {
             break;
         }
-        int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
         
-        // Work out an offset to compensate the pre-calculated 
+        // Work out an width offset to compensate the pre-calculated 
         // line lengths in the breaks array.
         CGFloat alreadyUsedComponentWidth;
         uint32_t lineStartComponent;
         if(startBreakOffset) {
+            // -1 to get the offset of the break /before/ this line started.
             alreadyUsedComponentWidth = potentialBreaks[startBreakOffset - 1].x1;
             
             EucCSSLayoutRunPoint point = { wordOffset, elementOffset };
@@ -510,6 +512,7 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
             lineStartComponent = 0;
         }
         
+        int maxBreaksCount = _potentialBreaksCount - startBreakOffset;
         int *usedBreakIndexes = (int *)malloc(maxBreaksCount * sizeof(int));
         int usedBreakCount = th_just_with_floats(potentialBreaks + startBreakOffset, maxBreaksCount, textIndent - alreadyUsedComponentWidth, thisLineWidth, 0, usedBreakIndexes);
         
