@@ -331,7 +331,11 @@ static NSString * const EucCSSSizedRunPerScaleFactorCacheCacheKey = @"EucCSSSize
         int breaksCount = 0;
         
         EucCSSIntermediateDocumentNode *currentInlineNodeWithStyle = _run.startNode;
-        if(currentInlineNodeWithStyle.isTextNode) {
+        css_computed_style *inlineNodeStyle;
+        if(currentInlineNodeWithStyle.isTextNode || 
+           currentInlineNodeWithStyle.isImageNode || 
+           ((inlineNodeStyle = currentInlineNodeWithStyle.computedStyle) && 
+            css_computed_float(inlineNodeStyle) != CSS_FLOAT_NONE)) {
             currentInlineNodeWithStyle = currentInlineNodeWithStyle.parent;
         }
         
