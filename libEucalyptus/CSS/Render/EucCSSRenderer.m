@@ -448,11 +448,15 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
     
     EucCSSIntermediateDocumentNode *currentDocumentNode = nil;
     
+    NSUInteger imageXPointCount = 0;
+    CGFloat *imageXPoints = 0;
+    
     for(size_t i = 0; i < renderItemsCount; ++i, ++renderItem) {
         switch(renderItem->kind) {
             case EucCSSLayoutPositionedLineRenderItemKindOpenNode: 
             {
-                CGContextSaveGState(_cgContext);
+                CGContextSaveGState(_cgContext); 
+                // Will be restored in EucCSSLayoutPositionedLineRenderItemKindCloseNode case.
 
                 currentDocumentNode = renderItem->item.openNodeInfo.node;  
                 
@@ -496,35 +500,80 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 
                 css_computed_style *style = currentDocumentNode.computedStyle;
                 if(style) {
-                    // Underline.
+                    CGFloat startX = floorf(currentAbsoluteOrigin.x);
+                    CGFloat endX = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
+                    
+                    if(imageXPointCount) {
+                        // Mask out the areas with images in them
+                        // TODO: also mask out inline tables and blocks (not yet supported).
+
+                        CGFloat ascender = [currentDocumentNode textAscenderWithScaleFactor:_currentScaleFactor];
+                        CGFloat topYBound = (floorf(parentItem->lineBox.baseline - ascender) + 0.5) - 1.0f;
+                        CGFloat bottomYBound = (roundf(renderItem->lineBox.baseline + 1.0f) + 0.5f) + 1.0f;
+                        
+                        CGContextSaveGState(_cgContext);
+                        
+                        CGContextBeginPath(_cgContext);
+
+                        CGRect clipRect;
+                        clipRect.origin.y = topYBound;
+                        clipRect.size.height = bottomYBound - topYBound;
+                        
+                        // First, a rect around each image's potential decoration area.
+                        NSUInteger i = 0;
+                        do {
+                            clipRect.origin.x = imageXPoints[i++];
+                            clipRect.size.width = imageXPoints[i++] - clipRect.origin.x;
+                            CGContextAddRect(_cgContext, clipRect);
+                        } while(i < imageXPointCount);
+                        
+                        // Now, put a rect around the area potentially 
+                        // containing the /whole/ and we'll even-odd intersect 
+                        // it so that the clip is to areas in the line area, but
+                        // /not/ in the rects above.
+                        clipRect.origin.x = startX;
+                        clipRect.size.width = endX;
+                        
+                        CGContextAddRect(_cgContext, clipRect);
+                        CGContextClosePath(_cgContext);
+
+                        CGContextEOClip(_cgContext);                            
+                    }
+                                        
                     enum css_text_decoration_e textDecoration = css_computed_text_decoration(style);
                     if(textDecoration & CSS_TEXT_DECORATION_UNDERLINE) {
                         CGPoint linePoints[2];
-                        linePoints[0].x = floorf(currentAbsoluteOrigin.x);
+                        linePoints[0].x = startX;
                         linePoints[0].y = roundf(parentItem->lineBox.baseline + 1.0f) + 0.5f;
-                        linePoints[1].x = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
+                        linePoints[1].x = endX;
                         linePoints[1].y = roundf(renderItem->lineBox.baseline + 1.0f) + 0.5f;
                         CGContextStrokeLineSegments(_cgContext, linePoints, 2);
                     }
                     if(textDecoration & CSS_TEXT_DECORATION_LINE_THROUGH) {
                         CGFloat ascender = [currentDocumentNode textAscenderWithScaleFactor:_currentScaleFactor];
                         CGPoint linePoints[2];
-                        linePoints[0].x = floorf(currentAbsoluteOrigin.x);
+                        linePoints[0].x = startX;
                         linePoints[0].y = ceilf(parentItem->lineBox.baseline - (ascender * 0.5f) + 1.0f) + 0.5f;
-                        linePoints[1].x = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
+                        linePoints[1].x = endX;
                         linePoints[1].y = ceilf(renderItem->lineBox.baseline - (ascender * 0.5f) + 1.0f) + 0.5f;
                         CGContextStrokeLineSegments(_cgContext, linePoints, 2);
                     }
                     if(textDecoration & CSS_TEXT_DECORATION_OVERLINE) {
                         CGFloat ascender = [currentDocumentNode textAscenderWithScaleFactor:_currentScaleFactor];
                         CGPoint linePoints[2];
-                        linePoints[0].x = floorf(currentAbsoluteOrigin.x);
+                        linePoints[0].x = startX;
                         linePoints[0].y = floorf(parentItem->lineBox.baseline - ascender) + 0.5;
-                        linePoints[1].x = ceilf(currentAbsoluteOrigin.x + renderItem->origin.x);
+                        linePoints[1].x = endX;
                         linePoints[1].y = floorf(renderItem->lineBox.baseline - ascender) + 0.5;
                         CGContextStrokeLineSegments(_cgContext, linePoints, 2);
                     }
                     
+                    if(imageXPointCount) {
+                        imageXPointCount = 0;
+                        free(imageXPoints);
+                        imageXPoints = NULL;
+                        CGContextRestoreGState(_cgContext);
+                    }                                        
                 }                    
                 
                 currentAbsoluteOrigin.x -= parentItem->origin.x;
@@ -533,6 +582,7 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                     currentDocumentNode = renderItems[parentItem->parentIndex].item.openNodeInfo.node;
                 }
                 
+                // Restore state saved in EucCSSLayoutPositionedLineRenderItemKindCloseNode case.
                 CGContextRestoreGState(_cgContext);
                 break;    
             }
@@ -582,6 +632,14 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                     CGContextDrawPath(_cgContext, kCGPathFillStroke);
                 }
                 CGContextRestoreGState(_cgContext);
+                
+                // We store where all the images we encounter are so that we
+                // can mask them out of any text-decoration when we come to
+                // draw it.
+                imageXPoints = realloc(imageXPoints, (imageXPointCount + 2 * sizeof(CGFloat)));
+                imageXPoints[imageXPointCount++] = rect.origin.x;
+                imageXPoints[imageXPointCount++] = rect.origin.x + rect.size.width;
+                
                 break;
             }
             case EucCSSLayoutPositionedLineRenderItemKindFloatPlaceholder:
@@ -589,6 +647,10 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                 break;
             }
         }
+    }
+    
+    if(imageXPoints) {
+        free(imageXPoints);
     }
 
     CGContextRestoreGState(_cgContext);
