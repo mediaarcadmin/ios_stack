@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rights>
+  <Copy Days="365" Percentage="5" Watermark="True" Copyright="True" Notice="Copyright held by Publisher.  All rights Reserved." />
+  <Print Days="30" Percentage="0" Watermark="True" Copyright="True" Notice="" />
+  <Audio TTSRead="True" />
+  <Reflow Enabled="True" />
+  <Devices Count="5" />
+  <Statistics WordCount="0" />
+</Rights>

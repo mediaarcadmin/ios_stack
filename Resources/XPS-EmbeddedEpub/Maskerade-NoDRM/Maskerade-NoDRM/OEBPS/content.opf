@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="ISBN" version="2.0">
+     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" 
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:opf="http://www.idpf.org/2007/opf">
+      <dc:title>Maskerade</dc:title>
+      <dc:language>en-US</dc:language>
+<dc:identifier id="ISBN" opf:scheme="9780061809293">9780061809293</dc:identifier>
+      <dc:creator>Terry Pratchett</dc:creator>
+      <dc:publisher>HarperCollins</dc:publisher>
+      <dc:rights>HarperCollins</dc:rights>
+  </metadata>
+  <manifest>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="style" href="pdlmsr.css" media-type="text/css" />
+    <item id="f1" href="logo.jpg" media-type="image/jpeg" />
+    <item id="f2" href="16b.jpg" media-type="image/jpeg" />
+    <item id="f3" href="MSRThumb.jpg" media-type="image/jpeg" />
+    <item id="cover-image" href="MSRCover.png" media-type="image/png" />
+    <item id="coverpage" href="cover.xhtml" media-type="application/xhtml+xml" />
+    <item id="titlepage" href="title.xhtml" media-type="application/xhtml+xml" />
+    <item id="ded" href="ded.xhtml" media-type="application/xhtml+xml" />
+    <item id="contents" href="contents.xhtml" media-type="application/xhtml+xml" />
+    <item id="begin" href="begin.xhtml" media-type="application/xhtml+xml" />
+    <item id="begin1" href="begin1.xhtml" media-type="application/xhtml+xml" />
+    <item id="begin2" href="begin2.xhtml" media-type="application/xhtml+xml" />
+    <item id="ata" href="ata.xhtml" media-type="application/xhtml+xml" />
+    <item id="praise" href="praise.xhtml" media-type="application/xhtml+xml" />
+    <item id="other" href="other.xhtml" media-type="application/xhtml+xml" />
+    <item id="copy" href="copy.xhtml" media-type="application/xhtml+xml" />
+    <item id="atp" href="atp.xhtml" media-type="application/xhtml+xml" />
+    <item id="footnote" href="footnote.xhtml" media-type="application/xhtml+xml" />
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="coverpage" />
+    <itemref idref="titlepage" />
+    <itemref idref="ded" />
+    <itemref idref="contents" />
+    <itemref idref="begin" />
+    <itemref idref="begin1" />
+    <itemref idref="begin2" />
+    <itemref idref="ata" />
+    <itemref idref="praise" />
+    <itemref idref="other" />
+    <itemref idref="copy" />
+    <itemref idref="atp" />
+    <itemref idref="footnote" />
+  </spine>
+</package>
