@@ -7,6 +7,7 @@
  *
  */
 
+#import <TargetConditionals.h>
 #if TARGET_OS_IPHONE
 #import <CoreGraphics/CoreGraphics.h>
 #else
