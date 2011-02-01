@@ -34,6 +34,16 @@
     return ret;
 }
 
++ (NSString *)uniquePathWithBasePath:(NSString *)basePath
+{
+    NSString *extension = [basePath pathExtension];
+    NSString *uniquePath = [NSString uniqueStringWithBaseString:[basePath stringByDeletingPathExtension]];
+    if(extension.length) {
+        uniquePath = [uniquePath stringByAppendingPathExtension:extension];
+    }
+    return uniquePath;
+}
+
 - (NSString *)md5Hash {
 	const char *cString = [self UTF8String];
 	unsigned char result[CC_MD5_DIGEST_LENGTH];

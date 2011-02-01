@@ -6,6 +6,7 @@
 //  Copyright 2010 BitWink. All rights reserved.
 //
 
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "BlioProcessingStandardOperations.h"
 #import "ZipArchive.h"
 #import "BlioDrmSessionManager.h"
@@ -289,7 +290,7 @@
 
 @implementation BlioProcessingDownloadOperation
 
-@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength,requestHTTPBody;
+@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength,requestHTTPBody,serverMimetype,serverFilename;
 
 - (void) dealloc {
 //	NSLog(@"BlioProcessingDownloadOperation %@ dealloc entered.",self);
@@ -507,6 +508,32 @@
 		[hConnection release];
 	}	
 }
+- (NSString *)filenameFromContentDisposition:(NSString *)dispositionString {
+    // Not exactly a great parser, but it doesn't really matter if
+    // we get this wrong sometimes - the user never sees the filenames.
+    NSString *filename = nil;
+    NSRange filenameStart = [dispositionString rangeOfString:@"filename=" options:NSCaseInsensitiveSearch];
+    if(filenameStart.location != NSNotFound) {
+        filename = [dispositionString substringFromIndex:filenameStart.location + filenameStart.length];
+        if(filename.length) {
+            if([filename characterAtIndex:0] == '"') {
+                filename = [filename substringFromIndex:1];
+            }
+            if(filename.length) {
+                NSRange endQuote = [filename rangeOfString:@"\""];
+                if(endQuote.location != NSNotFound) {
+                    filename = [filename substringToIndex:endQuote.location];
+                } else {
+                    NSRange endSpace = [filename rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    if(endSpace.location != NSNotFound) {
+                        filename = [filename substringToIndex:endSpace.location];
+                    }
+                }
+            }
+        }
+    }
+    return filename.length ? filename : nil;
+}
 - (void)connection:(NSURLConnection *)theConnection didReceiveResponse:(NSURLResponse *)response {
 //	NSLog(@"connection didReceiveResponse: %@",[[response URL] absoluteString]);
 	self.expectedContentLength = [response expectedContentLength];
@@ -528,7 +555,7 @@
 			for (id key in httpResponse.allHeaderFields)
 			{
 				NSString * keyString = (NSString*)key;
-//				NSLog(@"keyString: %@",keyString);
+				//NSLog(@"keyString: \"%@\" = \"%@\"",keyString,[httpResponse.allHeaderFields objectForKey:keyString]);
 				if ([[keyString lowercaseString] isEqualToString:[@"Accept-Ranges" lowercaseString]]) {
 					acceptRanges = [httpResponse.allHeaderFields objectForKey:keyString];
 					break;
@@ -572,11 +599,21 @@
 			}
 			else {
 //				NSLog(@"inspecting header fields for download connection...");
-//				for (id key in httpResponse.allHeaderFields)
-//				{
-//					NSString * keyString = (NSString*)key;
-//					NSLog(@"keyString: %@ value: %@",keyString, [httpResponse.allHeaderFields valueForKey:key]);
-//				}							
+				for (id key in httpResponse.allHeaderFields)
+				{
+                    NSString * keyString = (NSString*)key;
+                    if ([[keyString lowercaseString] isEqualToString:[@"Content-Disposition" lowercaseString]]) {
+                        NSString *filename = [self filenameFromContentDisposition:[httpResponse.allHeaderFields objectForKey:keyString]];
+                        if(filename) {
+                            self.serverFilename = filename;
+                        }
+                    }             
+                    if ([[keyString lowercaseString] isEqualToString:[@"Content-Type" lowercaseString]]) {
+                        self.serverMimetype = [httpResponse.allHeaderFields objectForKey:keyString];
+                    }
+					//NSString * keyString = (NSString*)key;
+					//NSLog(@"keyString: %@ value: %@",keyString, [httpResponse.allHeaderFields valueForKey:key]);
+				}							
 			}
 		}		
 	}
@@ -642,9 +679,36 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];		
 	}
 	else {
-		// generate new filename
-		NSString *uniqueString = [NSString uniqueStringWithBaseString:[self getBookValueForKey:@"title"]];
-		NSString *temporaryPath = [self temporaryPath];
+		// Generate new filename, based on the server's filename if possible.
+		NSString *uniqueString = nil;
+        NSString *originalFilename = [self serverFilename];
+        if(!originalFilename) {
+            NSString *urlPath = [self.url path];
+            if(urlPath) {
+                originalFilename = [urlPath lastPathComponent];
+            }
+        }
+        if(originalFilename.length) {
+            uniqueString = [NSString uniquePathWithBasePath:originalFilename];
+        }
+        if(!uniqueString) {
+            uniqueString = [NSString uniqueStringWithBaseString:[self getBookValueForKey:@"title"]];
+        }
+        
+        if(self.serverMimetype) {
+            // Put the right file extension on the file, if we can.
+            CFStringRef uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)self.serverMimetype, NULL);
+            if(uti) {
+                CFStringRef extension = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassFilenameExtension);
+                if(extension) {
+                    uniqueString = [[uniqueString stringByDeletingPathExtension] stringByAppendingPathExtension:(NSString *)extension];
+                    CFRelease(extension);
+                }
+                CFRelease(uti);
+            }
+        }        
+        
+        NSString *temporaryPath = [self temporaryPath];
 		NSString *cachedPath = [self.cacheDirectory stringByAppendingPathComponent:uniqueString];
 		// copy file to final location (cachedPath)
 		NSError * error;
@@ -1083,9 +1147,30 @@
         return;
     }
 
-	// Generate a random filename
-	NSString *unzippedFilename = [NSString uniqueStringWithBaseString:[self getBookValueForKey:@"title"]];
+    // Generate new filename, based on the server's filename if possible.
+    NSString *uniqueString = nil;
+    NSString *originalFilename = [self serverFilename];
+    if(!originalFilename.length) {
+        NSString *urlPath = [self.url path];
+        if(urlPath) {
+            originalFilename = [urlPath lastPathComponent];
+        }
+    }
+    if(originalFilename.length) {
+        uniqueString = [NSString uniquePathWithBasePath:originalFilename];
+        NSString *pathExtension = [uniqueString pathExtension];
+        if(pathExtension && [pathExtension caseInsensitiveCompare:@"zip"] == NSOrderedSame) {
+            uniqueString = [uniqueString stringByDeletingPathExtension];
+        } else {
+            uniqueString = [uniqueString stringByAppendingPathExtension:@"unzipped"];
+        }
+    }
+    if(!uniqueString) {
+        uniqueString = [NSString uniqueStringWithBaseString:[self getBookValueForKey:@"title"]];
+    }
     
+    NSString *unzippedFilename = uniqueString;
+
     NSString *temporaryPath = [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
     NSString *temporaryPath2 = [[self.tempDirectory stringByAppendingPathComponent:unzippedFilename] stringByStandardizingPath];
 
