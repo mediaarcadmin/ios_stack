@@ -7,6 +7,10 @@
  *
  */
 
-#include <CoreGraphics/CoreGraphics.h>
+#if TARGET_OS_IPHONE
+#import <CoreGraphics/CoreGraphics.h>
+#else
+#import <ApplicationServices/ApplicationServices.h>
+#endif
 
 void THAddRoundedRectToPath(CGContextRef context, CGRect rect, CGFloat ovalWidth, CGFloat ovalHeight);

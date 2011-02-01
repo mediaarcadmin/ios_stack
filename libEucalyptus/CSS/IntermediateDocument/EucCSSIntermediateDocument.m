@@ -316,10 +316,10 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
 }
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
-              baseCSSPaths:(NSArray *)baseCSSPaths
-              userCSSPaths:(NSArray *)userCSSPaths
                     forURL:(NSURL *)url
                 dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
+              baseCSSPaths:(NSArray *)baseCSSPaths
+              userCSSPaths:(NSArray *)userCSSPaths
                     isHTML:(BOOL)isHTML
 {
     if((self = [super init])) {
@@ -341,16 +341,6 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
         }
     }
     return self;    
-}
-
-- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
-                    forURL:(NSURL *)url
-                dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
-              baseCSSPaths:(NSArray *)baseCSSPaths
-              userCSSPaths:(NSArray *)userCSSPaths
-                    isHTML:(BOOL)isHTML
-{
-    return [self initWithDocumentTree:documentTree baseCSSPaths:baseCSSPaths userCSSPaths:userCSSPaths forURL:url dataSource:dataSource isHTML:isHTML];
 }
 
 - (EucCSSIntermediateDocumentNode *)rootNode
