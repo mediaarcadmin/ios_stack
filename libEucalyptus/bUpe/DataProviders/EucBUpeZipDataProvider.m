@@ -14,7 +14,7 @@
 - (id)initWithZipFileAtPath:(NSString *)path
 {
     if((self = [super init])) {
-        _unzfile = unzOpen([path UTF8String]);
+        _unzfile = unzOpen([path fileSystemRepresentation]);
         if(!_unzfile) {
             [self release];
             self = nil;
