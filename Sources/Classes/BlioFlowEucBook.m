@@ -17,6 +17,7 @@
 
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucBookNavPoint.h>
+#import <libEucalyptus/EucCSSXHTMLTree.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THRegex.h>
 
@@ -162,8 +163,9 @@
         NSUInteger section = [indexString integerValue];
         if(self.fakeCover) {
             if(section == 0) {
-                NSURL *coverHTMLFile = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"]];
-                tree = [super documentTreeForURL:coverHTMLFile];
+                NSData *coverHTMLData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"]];
+                tree = [[[EucCSSXHTMLTree alloc] initWithData:coverHTMLData] autorelease];
+                [coverHTMLData release];
             } else {
                 --section;
             }

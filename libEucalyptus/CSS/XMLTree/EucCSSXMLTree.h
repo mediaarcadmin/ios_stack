@@ -14,7 +14,6 @@
 @class EucCSSXMLTreeNode;
 
 @interface EucCSSXMLTree : NSObject <EucCSSDocumentTree> { 
-    Class _xmlTreeNodeClass;
     NSUInteger _nodesCount;
     NSArray *_nodes;
     NSDictionary *_idToNode;
@@ -23,14 +22,12 @@
 @property (nonatomic, retain, readonly) NSArray *nodes;
 @property (nonatomic, retain, readonly) NSDictionary *idToNode;
 
+// Can be overridden in subclasses.
+@property (nonatomic, retain, readonly) Class xmlTreeNodeClass; // Default is EucCSSXMLTreeNode.          
+                                                                // Must be EucCSSXMLTreeNode subclass.
+@property (nonatomic, retain, readonly) NSString *defaultDTDPublicID; // Default is nil.
+@property (nonatomic, retain, readonly) NSDictionary *DTDPublicIDToLocalPath; // Default is nil.
+
 - (id)initWithData:(NSData *)xmlData;
-
-- (id)initWithData:(NSData *)xmlData
-  xmlTreeNodeClass:(Class)xmlTreeNodeClass;
-
-- (id)initWithData:(NSData *)xmlData
-  xmlTreeNodeClass:(Class)xmlTreeNodeClas 
-DTDPublicIDToLocalPathMap:(NSDictionary *)dtdMap 
-defaultDTDPublicID:(NSString *)defaultDTDID;
 
 @end

@@ -11,9 +11,9 @@
 
 @implementation BlioTextFlowXAMLTree
 
-- (id)initWithData:(NSData *)data
+- (Class)xmlTreeNodeClass
 {
-    return [super initWithData:data xmlTreeNodeClass:[BlioTextFlowXAMLTreeNode class]];
+    return [BlioTextFlowXAMLTreeNode class];
 }
 
 @end
