@@ -44,8 +44,7 @@ int main (int argc, const char * argv[]) {
                                                                                              forURL:[NSURL fileURLWithPath:xmlPath]
                                                                                          dataSource:dataSource
                                                                                        baseCSSPaths:[NSArray arrayWithObject:[NSString stringWithUTF8String:argv[2]]]
-                                                                                       userCSSPaths:nil
-                                                                                             isHTML:YES];
+                                                                                       userCSSPaths:nil];
     
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
     layouter.document = document;

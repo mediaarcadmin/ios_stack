@@ -27,4 +27,15 @@
     return [NSDictionary dictionaryWithObject:dtdPath forKey:self.defaultDTDPublicID];
 }
 
+- (NSArray *)nodesWithLinkedOrEmbeddedCSSInSubnodes
+{
+    for(EucCSSXHTMLTreeNode *node in self.nodes) {
+        NSString *name = node.name;
+        if(name && [@"head" caseInsensitiveCompare:name]) {
+            return [NSArray arrayWithObject:node];
+        }
+    }
+    return nil;
+}
+
 @end

@@ -94,16 +94,6 @@
     return navPoints;
 }
 
-- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree
-{
-    if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]] ||
-       [documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
-        return NO;
-    } else {
-        return [super documentTreeIsHTML:documentTree];
-    }
-}
-
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {

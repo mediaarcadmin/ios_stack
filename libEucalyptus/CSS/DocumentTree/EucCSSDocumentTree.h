@@ -18,5 +18,6 @@
 
 @optional
 - (NSDictionary *)idToNode;
+- (NSArray *)nodesWithLinkedOrEmbeddedCSSInSubnodes;
 
 @end

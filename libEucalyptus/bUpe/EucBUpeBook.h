@@ -79,9 +79,6 @@
 
 - (NSDictionary *)buildIdToIndexPoint;
 
-// Default is YES.  Controls whether to look for a HEAD element in the supplied
-// document trees to parse for CSS etc.
-- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree;
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
 - (NSArray *)userCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree;
 

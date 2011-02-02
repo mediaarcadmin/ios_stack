@@ -636,11 +636,6 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [super dealloc];
 }
 
-- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree
-{
-    return YES;
-}
-
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];
@@ -999,8 +994,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                                                                          forURL:url
                                                                      dataSource:self
                                                                    baseCSSPaths:[self baseCSSPathsForDocumentTree:documentTree]
-                                                                   userCSSPaths:[self userCSSPathsForDocumentTree:documentTree]
-                                                                         isHTML:[self documentTreeIsHTML:documentTree]];
+                                                                   userCSSPaths:[self userCSSPathsForDocumentTree:documentTree]];
         }
         [_documentCache cacheObject:document forKey:url];
         [document autorelease];
