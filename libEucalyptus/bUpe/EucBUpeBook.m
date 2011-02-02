@@ -10,6 +10,7 @@
 
 #import "THLog.h"
 #import "EucBUpeBook.h"
+#import "EucBUpeDataProvider.h"
 #import "EucBookNavPoint.h"
 #import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
@@ -79,6 +80,7 @@
 
 @implementation EucBUpeBook
 
+@synthesize cacheDirectoryPath = _cacheDirectoryPath;
 @synthesize navPoints = _navPoints;
 @synthesize manifestOverrides = _manifestOverrides;
 @synthesize persistsPositionAutomatically = _persistsPositionAutomatically;
@@ -573,17 +575,20 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 #pragma mark -
 
-- (id)initWithPath:(NSString *)path
+- (id)initWithDataProvider:(id<EucBUpeDataProvider>)dataProvider cacheDirectoryPath:(NSString *)cacheDirectoryPath
 {
     if((self = [super init])) {
-        self.path = path;
-        _root = [[NSURL fileURLWithPath:path isDirectory:YES] retain];
+        _dataProvider = [dataProvider retain];
+        _cacheDirectoryPath = [cacheDirectoryPath copy];
+        
+        NSString *rootURLString = [NSString stringWithFormat:@"%@://", NSStringFromClass([_dataProvider class])];
+        _root = [[NSURL alloc] initWithString:rootURLString];
                 
-        NSURL *contentUrl = [self _rootfileFromContainerXml:[NSURL URLWithString:@"META-INF/container.xml" relativeToURL:_root]];
+        NSURL *contentUrl = [self _rootfileFromContainerXml:[NSURL URLWithString:@"/META-INF/container.xml" relativeToURL:_root]];
                 
         if(contentUrl && [self _parseContentOpf:contentUrl]) {
             if(!_etextNumber.length|| !_spine.count || !_manifest.count) {
-                THWarn(@"Malformed ePub (no ID, no spine, or no manifest) at %@", path);
+                THWarn(@"Malformed ePub (no ID, no spine, or no manifest) - data provider %@", _dataProvider);
                 [self release];
                 return nil;
             } 
@@ -600,9 +605,11 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
             if(manifestKey) {
                 NSString *key = [NSString stringWithFormat:@"gs.ingsmadeoutofotherthin.th.Euclayptus.bUpe.%@.manifestOverrides", self.etextNumber];
                 self.manifestOverrides = [[NSUserDefaults standardUserDefaults] objectForKey:key];
-            }            
+            } 
+            
+            [self _restorePersistedCachableDataIfPossible];
         } else {
-            THWarn(@"Couldn't find content for ePub at %@", path);
+            THWarn(@"Couldn't find content for ePub with data provider %@", dataProvider);
             [self release];
             return nil;            
         }
@@ -635,6 +642,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 	[_idToIndexPoint release];
 
     free(_indexSourceScaleFactors);
+    
+    [_dataProvider release];
     
     [super dealloc];
 }
@@ -1032,16 +1041,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (NSData *)dataForURL:(NSURL *)url
 {
-    NSData *ret = nil;
-    url = [url absoluteURL];
-    NSURL *overridden = [_manifestUrlsToOverriddenUrls objectForKey:url];
-    if(overridden) {
-        ret = [[NSData alloc] initWithContentsOfMappedFile:[overridden path]];
-    }
-    if(!ret) {
-        ret = [[NSData alloc] initWithContentsOfMappedFile:[url path]];
-    }
-    return [ret autorelease];
+    return [_dataProvider dataForComponentAtPath:[url pathRelativeTo:_root]];
 }
 
 - (id<EucCSSDocumentTree>)documentTreeForURL:(NSURL *)url
@@ -1113,8 +1113,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (void)setCacheDirectoryPath:(NSString *)path
 {
-    if(path != super.cacheDirectoryPath) {
-        super.cacheDirectoryPath = path;
+    if(![_cacheDirectoryPath isEqualToString:path]) {
+        [_cacheDirectoryPath release];
+        _cacheDirectoryPath = [path copy];
         [self _restorePersistedCachableDataIfPossible];
     }
 }

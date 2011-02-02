@@ -13,9 +13,11 @@
 #import "EucCSSIntermediateDocument.h"
 
 @class EucBookPageIndexPoint, EucCSSIntermediateDocument;
-@protocol EucCSSDocumentTree;
+@protocol EucCSSDocumentTree, EucBUpeDataProvider;
 
-@interface EucBUpeBook : EucBUpeLocalBookReference <EucBook, EucCSSIntermediateDocumentDataSource> {
+@interface EucBUpeBook : EucBUpeLocalBookReference <EucBook, EucCSSIntermediateDocumentDataProvider> {
+    id<EucBUpeDataProvider> _dataProvider;
+    
     NSURL *_root;            // Root of the bundle.
     NSString *_tocNcxId;
         
@@ -36,6 +38,7 @@
     
     THCache *_documentCache;
     
+    NSString *_cacheDirectoryPath;
     BOOL _persistsPositionAutomatically;
     int _currentPageIndexPointFD;
  
@@ -46,7 +49,8 @@
     CGFloat _normalisingScaleFactor;
 }
 
-@property (nonatomic, retain) NSString *coverPath;
+@property (nonatomic, copy) NSString *coverPath;
+@property (nonatomic, copy) NSString *cacheDirectoryPath;
 
 // Some books have, for reasons known only to the publishers (and perhaps not 
 // even to them...) crazy default text sizes.  This scale factor will scale 
@@ -54,7 +58,9 @@
 // a uniform size across all books.
 @property (nonatomic, assign, readonly) CGFloat normalisingScaleFactor;
 
-- (id)initWithPath:(NSString *)path;
+- (id)initWithDataProvider:(id<EucBUpeDataProvider>)dataProvider 
+        cacheDirectoryPath:(NSString *)cacheDirectoryPath;
+
 - (void)whitelistSectionsWithUuids:(NSSet *)uuids;
 
 - (NSData *)dataForURL:(NSURL *)url;

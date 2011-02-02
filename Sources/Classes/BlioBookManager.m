@@ -219,7 +219,6 @@ static pthread_key_t sManagedObjectContextKey;
                 eucBook = [[BlioFlowEucBook alloc] initWithBookID:aBookID];
             }
             if(eucBook) {
-                eucBook.cacheDirectoryPath = [book.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
                 //NSLog(@"Creating and caching EucBook for book with ID %@", aBookID);
                 NSCountedSet *myCachedEucBookCheckoutCounts = self.cachedEucBookCheckoutCounts;
                 if(!myCachedEucBookCheckoutCounts) {

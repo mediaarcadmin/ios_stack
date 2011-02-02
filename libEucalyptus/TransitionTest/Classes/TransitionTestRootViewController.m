@@ -129,7 +129,9 @@
             }        
         }
         if(bookPath) {
-            EucBUpeBook *book = [[EucBUpeBook alloc] initWithPath:bookPath];
+            EucBUpeFilesystemDataProvider *dataProvider = [[EucBUpeFilesystemDataProvider alloc] initWithBasePath:bookPath];
+            EucBUpeBook *book = [[EucBUpeBook alloc] initWithDataProvider:dataProvider cacheDirectoryPath:bookPath];
+            [dataProvider release];
             EucBookViewController *bookViewController = [[EucBookViewController alloc] initWithBook:book];
             [book release];
             

@@ -18,8 +18,12 @@
             baseString = [baseUrl absoluteString];
         } else {
             NSURL *baseWithoutFile = (NSURL *)CFURLCreateCopyDeletingLastPathComponent(kCFAllocatorDefault, (CFURLRef)baseUrl);
-            baseString = [baseWithoutFile absoluteString];
-            [baseWithoutFile release];
+            if(baseWithoutFile) {
+                baseString = [baseWithoutFile absoluteString];
+                [baseWithoutFile release];
+            } else {
+                baseString = [baseUrl absoluteString];
+            }
         }
     }
     

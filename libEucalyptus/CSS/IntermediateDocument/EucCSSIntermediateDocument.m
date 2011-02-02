@@ -317,7 +317,7 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
                     forURL:(NSURL *)url
-                dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
+                dataSource:(id<EucCSSIntermediateDocumentDataProvider>)dataSource
               baseCSSPaths:(NSArray *)baseCSSPaths
               userCSSPaths:(NSArray *)userCSSPaths
                     isHTML:(BOOL)isHTML

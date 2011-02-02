@@ -48,6 +48,8 @@
         self.title = blioBook.title;
         self.author = blioBook.author;
         self.etextNumber = nil;
+        
+        self.cacheDirectoryPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
     }
     
     return self;
