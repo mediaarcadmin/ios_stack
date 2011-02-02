@@ -14,6 +14,8 @@
 #import <libEucalyptus/EucBUpeFilesystemDataProvider.h>
 #import <libEucalyptus/EucBUpeZipDataProvider.h>
 
+#import "BlioEPubXPSDataProvider.h"
+
 @implementation BlioEPubBook
 
 @synthesize blioBookID;
@@ -23,16 +25,22 @@
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
     id<EucBUpeDataProvider> dataProvider = nil;
     if([book hasEPub]) {
-        NSString *ePubPath = book.ePubPath;
-        BOOL directory = YES;
-        if([[NSFileManager defaultManager] fileExistsAtPath:ePubPath isDirectory:&directory]) {
-            if(directory) {
-                // This is an ePub imported by v2.1, which unzipped the package
-                // into the filesystem after download.
-                dataProvider = [[EucBUpeFilesystemDataProvider alloc] initWithBasePath:ePubPath];
-            } else {
-                dataProvider = [[EucBUpeZipDataProvider alloc] initWithZipFileAtPath:ePubPath];
-            }
+        if([[book manifestLocationForKey:BlioManifestEPubKey] isEqual:BlioManifestEntryLocationXPS]) {
+            dataProvider = [[BlioEPubXPSDataProvider alloc] initWithWithBookID:aBookID];
+        } else {
+            NSString *ePubPath = book.ePubPath;
+            if(ePubPath) {
+                BOOL directory = YES;
+                if([[NSFileManager defaultManager] fileExistsAtPath:ePubPath isDirectory:&directory]) {
+                    if(directory) {
+                        // This is an ePub imported by v2.1, which unzipped the package
+                        // into the filesystem after download.
+                        dataProvider = [[EucBUpeFilesystemDataProvider alloc] initWithBasePath:ePubPath];
+                    } else {
+                        dataProvider = [[EucBUpeZipDataProvider alloc] initWithZipFileAtPath:ePubPath];
+                    }
+                }
+            } 
         }
     }
     if(dataProvider) {

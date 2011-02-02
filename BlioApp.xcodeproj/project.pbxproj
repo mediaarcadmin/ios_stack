@@ -73,6 +73,9 @@
 		7D229EAC12F98E250037D93D /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E8512F98D0D0037D93D /* libminiunzip.a */; };
 		7D229EAD12F98E290037D93D /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E8512F98D0D0037D93D /* libminiunzip.a */; };
 		7D229EAE12F98E2C0037D93D /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E8512F98D0D0037D93D /* libminiunzip.a */; };
+		7D229FB212F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D229FB112F9AA430037D93D /* BlioEPubXPSDataProvider.m */; };
+		7D229FB312F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D229FB112F9AA430037D93D /* BlioEPubXPSDataProvider.m */; };
+		7D229FB412F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D229FB112F9AA430037D93D /* BlioEPubXPSDataProvider.m */; };
 		7D2711AE124931D40087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7D2711AF124931DA0087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7D2711B0124931E40087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -1388,6 +1391,8 @@
 		7D131D201295628300BCA583 /* icon-author.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-author.png"; sourceTree = "<group>"; };
 		7D131D211295628300BCA583 /* icon-arbitrary@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-arbitrary@2x.png"; sourceTree = "<group>"; };
 		7D131D221295628300BCA583 /* icon-arbitrary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-arbitrary.png"; sourceTree = "<group>"; };
+		7D229FB012F9AA430037D93D /* BlioEPubXPSDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEPubXPSDataProvider.h; sourceTree = "<group>"; };
+		7D229FB112F9AA430037D93D /* BlioEPubXPSDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioEPubXPSDataProvider.m; sourceTree = "<group>"; };
 		7D2711AD124931D40087C4E3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		7D381B9410D92F14008D34E2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		7D381B9610D92F14008D34E2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -2533,6 +2538,8 @@
 		7D9147C31151494A00BCBB23 /* FlowView */ = {
 			isa = PBXGroup;
 			children = (
+				7D229FB012F9AA430037D93D /* BlioEPubXPSDataProvider.h */,
+				7D229FB112F9AA430037D93D /* BlioEPubXPSDataProvider.m */,
 				7D79183410F2257C00C4D839 /* BlioFlowView.h */,
 				7D79183510F2257C00C4D839 /* BlioFlowView.m */,
 				7D9147C71151497900BCBB23 /* BlioFlowPaginateOperation.h */,
@@ -4224,6 +4231,7 @@
 				DCC762B712BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 				7D05F86D12E8A123007150FF /* BlioZipArchive.m in Sources */,
 				DCF6C56212EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
+				7D229FB312F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4358,6 +4366,7 @@
 				DCC762B812BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 				7D05F86E12E8A123007150FF /* BlioZipArchive.m in Sources */,
 				DCF6C56312EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
+				7D229FB412F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4492,6 +4501,7 @@
 				DCC762B612BA6D6500B6EFAF /* UIButton+BlioAdditions.m in Sources */,
 				7D05F86C12E8A123007150FF /* BlioZipArchive.m in Sources */,
 				DCF6C56112EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
+				7D229FB212F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

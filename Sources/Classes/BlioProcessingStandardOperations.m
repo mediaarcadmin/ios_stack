@@ -855,7 +855,8 @@
 	
 	NSDictionary *manifestEntry = nil;
 	
-	BOOL hasEmbeddedEPub = [self bookManifestPath:BlioXPSEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS];
+	BOOL hasEmbeddedEPub = [self bookManifestPath:BlioXPSEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS] ||
+                           [self bookManifestPath:BlioXPSDRMEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasEmbeddedEPub) {
 		manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
