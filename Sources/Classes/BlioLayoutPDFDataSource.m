@@ -777,6 +777,10 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
     return hyperlinks;
 }
 
+- (NSArray *)enhancedContentForPage:(NSInteger)page {
+	return nil;
+}
+
 #pragma mark -
 #pragma mark EucBookContentsTableViewControllerDataSource
 
