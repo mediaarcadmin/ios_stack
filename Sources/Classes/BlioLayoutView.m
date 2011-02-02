@@ -28,6 +28,8 @@
 
 @interface BlioLayoutView()
 
+@property (nonatomic, retain) UIView *overlay;
+
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
@@ -81,12 +83,17 @@
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
 
+- (NSArray *)enhancedContentForPage:(NSInteger)page;
+- (void)updateOverlayForPageAtIndex:(NSUInteger)pageIndex;
+- (void)hideOverlay;
+- (void)showOverlay;
+
 @end
 
 @implementation BlioLayoutView
 
 @synthesize bookID, textFlow, pageNumber, pageCount, selector, pageSize;
-@synthesize pageCropsCache, viewTransformsCache, hyperlinksCache;
+@synthesize pageCropsCache, viewTransformsCache, hyperlinksCache, enhancedContentCache;
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
 @synthesize lastBlock;
@@ -95,8 +102,10 @@
 @synthesize temporaryHighlightRange;
 @synthesize wasSelectionAtTouchStart;
 @synthesize performingAccessibilityZoom;
+@synthesize overlay;
 
 - (void)dealloc {
+	
     [self.delayedTouchesBeganTimer invalidate];
     self.delayedTouchesBeganTimer = nil;
 	
@@ -105,10 +114,12 @@
     
     self.pageCropsCache = nil;
     self.hyperlinksCache = nil;
+	self.enhancedContentCache = nil;
     self.viewTransformsCache = nil;
     self.lastBlock = nil;
 	self.temporaryHighlightRange = nil;
     
+	[overlay release], overlay = nil;
     self.pageTurningView = nil;
     self.pageTexture = nil;
         
@@ -133,6 +144,7 @@
     self.bookID = nil;
     [layoutCacheLock release];
     [hyperlinksCacheLock release];
+	[enhancedContentCacheLock release];
 	
 	self.accessibilityElements = nil;
 	self.prevZone = nil;
@@ -167,6 +179,7 @@
         
         layoutCacheLock = [[NSLock alloc] init];
         hyperlinksCacheLock = [[NSLock alloc] init];
+		enhancedContentCacheLock = [[NSLock alloc] init];
         
         // Prefer the checkout over calling [aBook textFlow] because we wat to retain the result
         textFlow = [[[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:self.bookID] retain];
@@ -409,6 +422,8 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 	pageNumber = newPageNumber;
 	self.selector.selectedRange = nil;
 	self.accessibilityElements = nil;
+	
+	[self updateOverlayForPageAtIndex:pageNumber - 1];
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
@@ -646,6 +661,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
     self.selector.selectionDisabled = YES;
     [self.selector removeTemporaryHighlight];
+	
+	[self hideOverlay];
     
     if(!self.performingAccessibilityZoom) {
         if(UIAccessibilityIsVoiceOverRunning == nil ||
@@ -670,6 +687,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
 	suppressHistoryAfterTurn = NO;
+	
+	[self showOverlay];
 	
     if(self.temporaryHighlightRange) {
 		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
@@ -1012,6 +1031,59 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [endPoint release];
     
     return [range autorelease];
+}
+
+#pragma mark -
+#pragma mark EnhancedContent
+
+- (NSArray *)enhancedContentForPage:(NSInteger)page {
+    
+    [enhancedContentCacheLock lock];
+    
+    NSArray *enhancedContentArray = [self.enhancedContentCache objectForKey:[NSNumber numberWithInt:page]];
+    
+    if (nil == enhancedContentArray) {
+        if (nil == self.enhancedContentCache) {
+            self.enhancedContentCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
+        }
+        
+        NSArray *enhancedContent = [self.dataSource enhancedContentForPage:page];
+        if (enhancedContent != nil) {
+            [self.enhancedContentCache setObject:enhancedContent forKey:[NSNumber numberWithInt:page]];
+        }
+        enhancedContentArray = [self.enhancedContentCache objectForKey:[NSNumber numberWithInt:page]];
+    }
+    
+    [enhancedContentCacheLock unlock];
+    
+    return enhancedContentArray;
+}
+
+- (void)hideOverlay 
+{
+	[overlay setHidden:YES];
+}
+
+- (void)showOverlay
+{
+	[overlay setHidden:NO];
+}
+
+- (void)updateOverlayForPageAtIndex:(NSUInteger)pageIndex 
+{
+	
+	if (self.pageTurningView) {
+		if (!overlay) {
+			overlay = [[UIView alloc] initWithFrame:self.pageTurningView.bounds];
+			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+			overlay.alpha = 0.3f;
+			[self.pageTurningView addSubview:overlay];
+		}
+		
+		NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
+		NSLog(@"Content %@", content);
+		[overlay setBackgroundColor:[UIColor colorWithRed:arc4random()%1000/1000.0f green:arc4random()%1000/1000.0f blue:arc4random()%1000/1000.0f alpha:1]];
+	}
 }
 
 #pragma mark -

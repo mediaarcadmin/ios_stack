@@ -40,6 +40,8 @@
     
     NSLock *layoutCacheLock;
     NSLock *hyperlinksCacheLock;
+	NSLock *enhancedContentCacheLock;
+	
     CGPoint startTouchPoint;
     BOOL wasSelectionAtTouchStart;
     NSTimer *delayedTouchesBeganTimer;
@@ -69,5 +71,6 @@
 @property (nonatomic, retain) NSMutableDictionary *pageCropsCache;
 @property (nonatomic, retain) NSMutableDictionary *viewTransformsCache;
 @property (nonatomic, retain) NSMutableDictionary *hyperlinksCache;
+@property (nonatomic, retain) NSMutableDictionary *enhancedContentCache;
 
 @end
