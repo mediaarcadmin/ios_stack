@@ -854,7 +854,15 @@
 	}
 	
 	NSDictionary *manifestEntry = nil;
-		
+	
+	BOOL hasEmbeddedEPub = [self bookManifestPath:BlioXPSEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS];
+	if (hasEmbeddedEPub) {
+		manifestEntry = [NSMutableDictionary dictionary];
+		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
+		[manifestEntry setValue:@"" forKey:BlioManifestEntryPathKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestEPubKey];
+	}
+	
 	BOOL hasTextflowData = [self bookManifestPath:BlioXPSTextFlowSectionsFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasTextflowData) {
 		manifestEntry = [NSMutableDictionary dictionary];
