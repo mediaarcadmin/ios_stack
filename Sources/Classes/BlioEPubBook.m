@@ -10,7 +10,9 @@
 #import "BlioEPubBook.h"
 #import "BlioBookManager.h"
 
+#import <libEucalyptus/EucBUpeDataProvider.h>
 #import <libEucalyptus/EucBUpeFilesystemDataProvider.h>
+#import <libEucalyptus/EucBUpeZipDataProvider.h>
 
 @implementation BlioEPubBook
 
@@ -19,9 +21,21 @@
 - (id)initWithBookID:(NSManagedObjectID *)aBookID
 {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
+    id<EucBUpeDataProvider> dataProvider = nil;
     if([book hasEPub]) {
         NSString *ePubPath = book.ePubPath;
-        EucBUpeFilesystemDataProvider *dataProvider = [[EucBUpeFilesystemDataProvider alloc] initWithBasePath:ePubPath];
+        BOOL directory = YES;
+        if([[NSFileManager defaultManager] fileExistsAtPath:ePubPath isDirectory:&directory]) {
+            if(directory) {
+                // This is an ePub imported by v2.1, which unzipped the package
+                // into the filesystem after download.
+                dataProvider = [[EucBUpeFilesystemDataProvider alloc] initWithBasePath:ePubPath];
+            } else {
+                dataProvider = [[EucBUpeZipDataProvider alloc] initWithZipFileAtPath:ePubPath];
+            }
+        }
+    }
+    if(dataProvider) {
         if ((self = [super initWithDataProvider:dataProvider cacheDirectoryPath:[book.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir]])) {
             self.blioBookID = aBookID;
             self.persistsPositionAutomatically = NO;

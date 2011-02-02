@@ -16,6 +16,7 @@
 @synthesize title = _title;
 @synthesize author = _author;
 @synthesize etextNumber = _etextNumber;
+@synthesize cacheDirectoryPath = _cacheDirectoryPath;
 
 - (id)initWithTitle:(NSString *)title author:(NSString *)author etextNumber:(NSString *)etextNumber path:(NSString *)path
 {
@@ -29,7 +30,7 @@
 
 - (BOOL)paginationIsComplete
 {
-    return YES;
+    return [EucBookIndex indexesAreConstructedForBookBundle:self.cacheDirectoryPath];
 }
 
 - (CGFloat)percentThroughBook
@@ -51,6 +52,7 @@
     [_title release];
     [_author release];
     [_etextNumber release];
+    [_cacheDirectoryPath release];
     
     [super dealloc];
 }

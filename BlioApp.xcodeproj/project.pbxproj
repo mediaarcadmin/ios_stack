@@ -70,6 +70,9 @@
 		7D131D3E1295628300BCA583 /* icon-author.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D201295628300BCA583 /* icon-author.png */; };
 		7D131D3F1295628300BCA583 /* icon-arbitrary@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D211295628300BCA583 /* icon-arbitrary@2x.png */; };
 		7D131D401295628300BCA583 /* icon-arbitrary.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D221295628300BCA583 /* icon-arbitrary.png */; };
+		7D229EAC12F98E250037D93D /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E8512F98D0D0037D93D /* libminiunzip.a */; };
+		7D229EAD12F98E290037D93D /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E8512F98D0D0037D93D /* libminiunzip.a */; };
+		7D229EAE12F98E2C0037D93D /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E8512F98D0D0037D93D /* libminiunzip.a */; };
 		7D2711AE124931D40087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7D2711AF124931DA0087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7D2711B0124931E40087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -447,10 +450,6 @@
 		A30E0FDE123EA5B400D31157 /* BlioProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F936EF113530260047B985 /* BlioProcessingManager.m */; };
 		A30E0FDF123EA5B400D31157 /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
 		A30E0FE0123EA5B400D31157 /* BlioProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC61136BAA80012CE7E /* BlioProcessing.m */; };
-		A30E0FE1123EA5B400D31157 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C21137BE170012CE7E /* ioapi.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		A30E0FE2123EA5B400D31157 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C41137BE170012CE7E /* mztools.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		A30E0FE3123EA5B400D31157 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C61137BE170012CE7E /* unzip.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		A30E0FE4123EA5B400D31157 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C81137BE170012CE7E /* zip.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		A30E0FE5123EA5B400D31157 /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9B620CB1137BE170012CE7E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
 		A30E0FE6123EA5B400D31157 /* BlioWebToolSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */; };
 		A30E0FE9123EA5B400D31157 /* UIDevice+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */; };
@@ -740,10 +739,6 @@
 		A36D3596120B136700E1A035 /* BlioProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F936EF113530260047B985 /* BlioProcessingManager.m */; };
 		A36D3597120B136700E1A035 /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
 		A36D3598120B136700E1A035 /* BlioProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC61136BAA80012CE7E /* BlioProcessing.m */; };
-		A36D3599120B136700E1A035 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C21137BE170012CE7E /* ioapi.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		A36D359A120B136700E1A035 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C41137BE170012CE7E /* mztools.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		A36D359B120B136700E1A035 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C61137BE170012CE7E /* unzip.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		A36D359C120B136700E1A035 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C81137BE170012CE7E /* zip.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		A36D359D120B136700E1A035 /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9B620CB1137BE170012CE7E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
 		A36D359E120B136700E1A035 /* BlioWebToolSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */; };
 		A36D35A1120B136700E1A035 /* UIDevice+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */; };
@@ -992,10 +987,6 @@
 		C9B61CC21136BA620012CE7E /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
 		C9B61CC71136BAA80012CE7E /* BlioProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC61136BAA80012CE7E /* BlioProcessing.m */; };
 		C9B61FF51137AF840012CE7E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B61FF41137AF840012CE7E /* libz.dylib */; };
-		C9B620CC1137BE170012CE7E /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C21137BE170012CE7E /* ioapi.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		C9B620CD1137BE170012CE7E /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C41137BE170012CE7E /* mztools.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		C9B620CE1137BE170012CE7E /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C61137BE170012CE7E /* unzip.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		C9B620CF1137BE170012CE7E /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = C9B620C81137BE170012CE7E /* zip.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		C9B620D01137BE170012CE7E /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9B620CB1137BE170012CE7E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
 		C9C37B9C122D278800DD350F /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
 		C9C37C2E122D3F5900DD350F /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
@@ -1188,6 +1179,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		7D229E8412F98D0D0037D93D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D229E1412F98AAF0037D93D /* libminiunzip.a */;
+			remoteInfo = libminiunzip;
+		};
 		7D381B4A10D92E81008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
@@ -1886,15 +1884,6 @@
 		C9B61CC51136BAA80012CE7E /* BlioProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioProcessing.h; sourceTree = "<group>"; };
 		C9B61CC61136BAA80012CE7E /* BlioProcessing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioProcessing.m; sourceTree = "<group>"; };
 		C9B61FF41137AF840012CE7E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		C9B620C11137BE170012CE7E /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
-		C9B620C21137BE170012CE7E /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
-		C9B620C31137BE170012CE7E /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
-		C9B620C41137BE170012CE7E /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
-		C9B620C51137BE170012CE7E /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
-		C9B620C61137BE170012CE7E /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
-		C9B620C71137BE170012CE7E /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
-		C9B620C81137BE170012CE7E /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
-		C9B620C91137BE170012CE7E /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		C9B620CA1137BE170012CE7E /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		C9B620CB1137BE170012CE7E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
 		C9C37B9A122D278800DD350F /* BlioViewSettingsContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsContentsView.h; sourceTree = "<group>"; };
@@ -2054,6 +2043,7 @@
 				7DAA2FF211512A8D006634CC /* libwapcaplet.a in Frameworks */,
 				7DAA2FF311512A8D006634CC /* libparserutils.a in Frameworks */,
 				7DAA2FF411512A8D006634CC /* libcss.a in Frameworks */,
+				7D229EAE12F98E2C0037D93D /* libminiunzip.a in Frameworks */,
 				C98678DD112424F90070A03E /* libGDataTouchStaticLib.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -2093,6 +2083,7 @@
 				A30E102A123EA5B400D31157 /* libwapcaplet.a in Frameworks */,
 				A30E102B123EA5B400D31157 /* libparserutils.a in Frameworks */,
 				A30E102C123EA5B400D31157 /* libcss.a in Frameworks */,
+				7D229EAC12F98E250037D93D /* libminiunzip.a in Frameworks */,
 				A30E102D123EA5B400D31157 /* libGDataTouchStaticLib.a in Frameworks */,
 				A30E102E123EA5B400D31157 /* Foundation.framework in Frameworks */,
 				A30E102F123EA5B400D31157 /* UIKit.framework in Frameworks */,
@@ -2131,6 +2122,7 @@
 				A36D35DF120B136700E1A035 /* libwapcaplet.a in Frameworks */,
 				A36D35E0120B136700E1A035 /* libparserutils.a in Frameworks */,
 				A36D35E1120B136700E1A035 /* libcss.a in Frameworks */,
+				7D229EAD12F98E290037D93D /* libminiunzip.a in Frameworks */,
 				A36D35E2120B136700E1A035 /* libGDataTouchStaticLib.a in Frameworks */,
 				A36D35E3120B136700E1A035 /* Foundation.framework in Frameworks */,
 				A36D35E4120B136700E1A035 /* UIKit.framework in Frameworks */,
@@ -2452,6 +2444,7 @@
 				7D68AF4C1150F39A00430710 /* libwapcaplet.a */,
 				7D68AF4E1150F39A00430710 /* libparserutils.a */,
 				7D68AF501150F39A00430710 /* libcss.a */,
+				7D229E8512F98D0D0037D93D /* libminiunzip.a */,
 				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
 				7D381B5710D92E81008D34E2 /* Paginate.app */,
 			);
@@ -2998,27 +2991,10 @@
 		C9B620BF1137BE170012CE7E /* ZipArchive */ = {
 			isa = PBXGroup;
 			children = (
-				C9B620C01137BE170012CE7E /* minizip */,
 				C9B620CA1137BE170012CE7E /* ZipArchive.h */,
 				C9B620CB1137BE170012CE7E /* ZipArchive.mm */,
 			);
 			path = ZipArchive;
-			sourceTree = "<group>";
-		};
-		C9B620C01137BE170012CE7E /* minizip */ = {
-			isa = PBXGroup;
-			children = (
-				C9B620C11137BE170012CE7E /* crypt.h */,
-				C9B620C21137BE170012CE7E /* ioapi.c */,
-				C9B620C31137BE170012CE7E /* ioapi.h */,
-				C9B620C41137BE170012CE7E /* mztools.c */,
-				C9B620C51137BE170012CE7E /* mztools.h */,
-				C9B620C61137BE170012CE7E /* unzip.c */,
-				C9B620C71137BE170012CE7E /* unzip.h */,
-				C9B620C81137BE170012CE7E /* zip.c */,
-				C9B620C91137BE170012CE7E /* zip.h */,
-			);
-			path = minizip;
 			sourceTree = "<group>";
 		};
 		C9F936EB113530020047B985 /* Processing */ = {
@@ -3279,6 +3255,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		7D229E8512F98D0D0037D93D /* libminiunzip.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libminiunzip.a;
+			remoteRef = 7D229E8412F98D0D0037D93D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		7D381B4B10D92E81008D34E2 /* libEucalyptus.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -4157,10 +4140,6 @@
 				C9F936F0113530260047B985 /* BlioProcessingManager.m in Sources */,
 				C9B61CC21136BA620012CE7E /* BlioProcessingStandardOperations.m in Sources */,
 				C9B61CC71136BAA80012CE7E /* BlioProcessing.m in Sources */,
-				C9B620CC1137BE170012CE7E /* ioapi.c in Sources */,
-				C9B620CD1137BE170012CE7E /* mztools.c in Sources */,
-				C9B620CE1137BE170012CE7E /* unzip.c in Sources */,
-				C9B620CF1137BE170012CE7E /* zip.c in Sources */,
 				C9B620D01137BE170012CE7E /* ZipArchive.mm in Sources */,
 				A371FDCE113AF77200E1A51C /* BlioWebToolSettingsController.m in Sources */,
 				C9AF20E8114A67C3007D7AFC /* UIDevice+BlioAdditions.m in Sources */,
@@ -4296,10 +4275,6 @@
 				A30E0FDE123EA5B400D31157 /* BlioProcessingManager.m in Sources */,
 				A30E0FDF123EA5B400D31157 /* BlioProcessingStandardOperations.m in Sources */,
 				A30E0FE0123EA5B400D31157 /* BlioProcessing.m in Sources */,
-				A30E0FE1123EA5B400D31157 /* ioapi.c in Sources */,
-				A30E0FE2123EA5B400D31157 /* mztools.c in Sources */,
-				A30E0FE3123EA5B400D31157 /* unzip.c in Sources */,
-				A30E0FE4123EA5B400D31157 /* zip.c in Sources */,
 				A30E0FE5123EA5B400D31157 /* ZipArchive.mm in Sources */,
 				A30E0FE6123EA5B400D31157 /* BlioWebToolSettingsController.m in Sources */,
 				A30E0FE9123EA5B400D31157 /* UIDevice+BlioAdditions.m in Sources */,
@@ -4427,10 +4402,6 @@
 				A36D3596120B136700E1A035 /* BlioProcessingManager.m in Sources */,
 				A36D3597120B136700E1A035 /* BlioProcessingStandardOperations.m in Sources */,
 				A36D3598120B136700E1A035 /* BlioProcessing.m in Sources */,
-				A36D3599120B136700E1A035 /* ioapi.c in Sources */,
-				A36D359A120B136700E1A035 /* mztools.c in Sources */,
-				A36D359B120B136700E1A035 /* unzip.c in Sources */,
-				A36D359C120B136700E1A035 /* zip.c in Sources */,
 				A36D359D120B136700E1A035 /* ZipArchive.mm in Sources */,
 				A36D359E120B136700E1A035 /* BlioWebToolSettingsController.m in Sources */,
 				A36D35A1120B136700E1A035 /* UIDevice+BlioAdditions.m in Sources */,

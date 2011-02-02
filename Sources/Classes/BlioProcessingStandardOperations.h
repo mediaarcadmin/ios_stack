@@ -124,7 +124,7 @@
 @interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation
 @end
 
-@interface BlioProcessingDownloadEPubOperation : BlioProcessingDownloadAndUnzipOperation
+@interface BlioProcessingDownloadEPubOperation : BlioProcessingDownloadOperation
 @end
 
 @interface BlioProcessingDownloadPdfOperation : BlioProcessingDownloadOperation

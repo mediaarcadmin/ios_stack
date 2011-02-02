@@ -27,8 +27,6 @@
     NSString *_coverPath;
         
     NSURL *_guideCoverItemURL;
-    NSDictionary *_manifestOverrides; // id -> file, path relative to root.
-    NSDictionary *_manifestUrlsToOverriddenUrls; // Full URL from manifest -> full URL in overrides.
     
     // From the TOC.
     // Pairs of name, path relative to _root, including URL fragment.
@@ -38,7 +36,6 @@
     
     THCache *_documentCache;
     
-    NSString *_cacheDirectoryPath;
     BOOL _persistsPositionAutomatically;
     int _currentPageIndexPointFD;
  
@@ -49,14 +46,12 @@
     CGFloat _normalisingScaleFactor;
 }
 
-@property (nonatomic, copy) NSString *coverPath;
-@property (nonatomic, copy) NSString *cacheDirectoryPath;
-
 // Some books have, for reasons known only to the publishers (and perhaps not 
 // even to them...) crazy default text sizes.  This scale factor will scale 
 // that text size to our default, and can be used to make the body text
 // a uniform size across all books.
 @property (nonatomic, assign, readonly) CGFloat normalisingScaleFactor;
+@property (nonatomic, retain, readonly) NSURL *coverURL;
 
 - (id)initWithDataProvider:(id<EucBUpeDataProvider>)dataProvider 
         cacheDirectoryPath:(NSString *)cacheDirectoryPath;

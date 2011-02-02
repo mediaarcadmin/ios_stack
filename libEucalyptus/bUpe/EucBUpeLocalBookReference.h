@@ -15,10 +15,12 @@
     NSString *_title;
     NSString *_author;
     NSString *_etextNumber;
+    NSString *_cacheDirectoryPath;
 }
 
 @property (nonatomic, copy) NSString *author;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *etextNumber;
+@property (nonatomic, copy) NSString *cacheDirectoryPath;
 
 @end
