@@ -1073,8 +1073,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
 	
 	if (self.pageTurningView) {
-		if (!overlay) {
-			overlay = [[UIView alloc] initWithFrame:self.pageTurningView.bounds];
+		/*if (!overlay) {
+            CGRect frame = self.pageTurningView.bounds;
+            frame.origin.x += frame.size.width / 4.0f;
+            frame.size.width /= 2.0f;
+            frame.origin.y += frame.size.height / 4.0f;
+            frame.size.height /= 2.0f;
+            overlay = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+			overlay.frame = frame;
 			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 			overlay.alpha = 0.3f;
 			[self.pageTurningView addSubview:overlay];
@@ -1083,7 +1089,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
 		NSLog(@"Content %@", content);
 		[overlay setBackgroundColor:[UIColor colorWithRed:arc4random()%1000/1000.0f green:arc4random()%1000/1000.0f blue:arc4random()%1000/1000.0f alpha:1]];
-	}
+	*/
+    }
 }
 
 #pragma mark -
@@ -1280,7 +1287,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Touch Handling
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    if ([self pointInside:point withEvent:event]) {
+    if(overlay && [overlay pointInside:[self convertPoint:point toView:overlay] withEvent:event]) {
+        return overlay;
+    } else if ([self pointInside:point withEvent:event]) {
         return self;
     } else {
         return nil;
@@ -2566,3 +2575,4 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 @end
 
+ 

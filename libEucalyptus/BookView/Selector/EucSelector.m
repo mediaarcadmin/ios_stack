@@ -1735,6 +1735,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
             if(currentStage == EucSelectorTrackingStageNone || 
                currentStage == EucSelectorTrackingStageSelectedAndWaiting) {
                 self.trackingStage = EucSelectorTrackingStageDelay;
+                _previousTrackingStage = currentStage;
             }
         }
     }
@@ -1747,7 +1748,7 @@ static const CGFloat sLoupePopDownDuration = 0.1f;
         EucSelectorTrackingStage currentStage = self.trackingStage;
         if(currentStage == EucSelectorTrackingStageDelay) {
             self.trackingTouch = nil;
-            self.trackingStage = EucSelectorTrackingStageNone;
+            self.trackingStage = _previousTrackingStage;
         } else {
             self.trackingTouchHasMoved = YES;
             [self _trackTouch:trackingTouch];

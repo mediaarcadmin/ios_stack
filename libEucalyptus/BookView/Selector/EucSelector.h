@@ -40,6 +40,7 @@ typedef enum EucSelectorTrackingStage {
     BOOL _trackingTouchHasMoved;
     BOOL _tracking;
     EucSelectorTrackingStage _trackingStage;
+    EucSelectorTrackingStage _previousTrackingStage;
     
     EucSelectorRange *_selectedRange;
     EucSelectorRange *_selectedRangeOriginalHighlightRange;
