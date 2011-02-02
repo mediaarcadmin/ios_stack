@@ -27,6 +27,9 @@
 		7D0D8FDC121238FD00CD994D /* THNSStringSmartQuotes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D0D925512130F7F00CD994D /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D925412130F7F00CD994D /* EPubOverrides.css */; };
 		7D0D92851213185B00CD994D /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D925412130F7F00CD994D /* EPubOverrides.css */; };
+		7D11953112F96E5C0091EBBC /* EucBUpeDataProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D11952312F96D740091EBBC /* EucBUpeDataProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D11953212F96E630091EBBC /* EucBUpeFilesystemDataProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D11952712F96DB20091EBBC /* EucBUpeFilesystemDataProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D11953312F96E630091EBBC /* EucBUpeFilesystemDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D11952812F96DB20091EBBC /* EucBUpeFilesystemDataProvider.m */; };
 		7D14D1BD119C695800F4B5D3 /* EucHighlightRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */; };
 		7D14D1BE119C695D00F4B5D3 /* EucHighlightRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D1900B61149498500375803 /* libwapcaplet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1900A91149498500375803 /* libwapcaplet.h */; };
@@ -65,6 +68,12 @@
 		7D19018811494A5900375803 /* stack.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D19011C11494A5800375803 /* stack.c */; };
 		7D19018911494A5900375803 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D19011D11494A5800375803 /* utils.h */; };
 		7D19018A11494A5900375803 /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D19011E11494A5800375803 /* vector.c */; };
+		7D229E2D12F98AF10037D93D /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D229E1C12F98AF10037D93D /* ioapi.c */; };
+		7D229E2E12F98AF10037D93D /* ioapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D229E1D12F98AF10037D93D /* ioapi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D229E3612F98AF10037D93D /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D229E2812F98AF10037D93D /* unzip.c */; };
+		7D229E3712F98AF10037D93D /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D229E2912F98AF10037D93D /* unzip.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D229EDA12F992A80037D93D /* EucBUpeZipDataProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D229EB912F98F1C0037D93D /* EucBUpeZipDataProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7D229EDB12F992A80037D93D /* EucBUpeZipDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D229EBA12F98F1C0037D93D /* EucBUpeZipDataProvider.m */; };
 		7D26D41010DBD0E5002D83C2 /* THEventCapturingWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D26D41210DBD0EB002D83C2 /* THEventCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */; };
 		7D27117B124928110087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D27117A124928110087C4E3 /* Accelerate.framework */; };
@@ -289,7 +298,6 @@
 		7D516FF610287905005F3C46 /* THRoundRectView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516FF210287905005F3C46 /* THRoundRectView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516FF710287905005F3C46 /* THRoundRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FF310287905005F3C46 /* THRoundRectView.m */; };
 		7D516FF810287905005F3C46 /* THRoundRects.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516FF410287905005F3C46 /* THRoundRects.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D516FF910287905005F3C46 /* THRoundRects.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FF510287905005F3C46 /* THRoundRects.c */; };
 		7D516FFE10287922005F3C46 /* THCopyWithCoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D516FFC10287922005F3C46 /* THCopyWithCoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D516FFF10287922005F3C46 /* THCopyWithCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FFD10287922005F3C46 /* THCopyWithCoder.m */; };
 		7D51700A1028796E005F3C46 /* EucChapterNameFormatting.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5170081028796E005F3C46 /* EucChapterNameFormatting.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -434,6 +442,7 @@
 		7DC0FD2A12311FB600FBE9B3 /* EucSelectorKnob.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D05483D122EF101002B72C9 /* EucSelectorKnob.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DC0FE381234E85A00FBE9B3 /* EucSelectorAccessibilityMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */; };
 		7DC0FE391234E85F00FBE9B3 /* EucSelectorAccessibilityMask.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DC0FDBA1234059600FBE9B3 /* EucSelectorAccessibilityMask.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DCA228912F892C50016C0B9 /* THRoundRects.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D516FF510287905005F3C46 /* THRoundRects.c */; };
 		7DCA57B2114981FC007EDB15 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA57B1114981FC007EDB15 /* libiconv.dylib */; };
 		7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
@@ -746,8 +755,6 @@
 		7DF1AD7511D90F6E00506BD5 /* BookButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DF1AD7111D90F6E00506BD5 /* BookButton@2x.png */; };
 		7DF1AF9B11D9168F00506BD5 /* THUIDeviceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF1AF9A11D9168F00506BD5 /* THUIDeviceAdditions.m */; };
 		7DF1AF9D11D9169700506BD5 /* THUIDeviceAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF1AF9C11D9169700506BD5 /* THUIDeviceAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7DF4A38611F057BE00F6A4DD /* EucLibCSSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF4A34A11EF839C00F6A4DD /* EucLibCSSUtils.m */; };
-		7DF4A38711F057C300F6A4DD /* EucLibCSSUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF4A34911EF839C00F6A4DD /* EucLibCSSUtils.h */; };
 		7DF58B5F10DA9005004E3DBB /* EucBookView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF58B5D10DA9005004E3DBB /* EucBookView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DF58B6010DA9005004E3DBB /* EucBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF58B5E10DA9005004E3DBB /* EucBookView.m */; };
 		7DF823F51291E3FC0072C02B /* EucBookNavPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DF823F31291E3FC0072C02B /* EucBookNavPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -783,6 +790,13 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		7D229E4A12F98C710037D93D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7D229E0912F98AAF0037D93D /* libminiunzip */;
+			remoteInfo = libminiunzip;
+		};
 		7D3F4C2F11EF29940065A5F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -913,6 +927,9 @@
 		7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSStringSmartQuotes.h; sourceTree = "<group>"; };
 		7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSStringSmartQuotes.m; sourceTree = "<group>"; };
 		7D0D925412130F7F00CD994D /* EPubOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubOverrides.css; sourceTree = "<group>"; };
+		7D11952312F96D740091EBBC /* EucBUpeDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpeDataProvider.h; sourceTree = "<group>"; };
+		7D11952712F96DB20091EBBC /* EucBUpeFilesystemDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpeFilesystemDataProvider.h; sourceTree = "<group>"; };
+		7D11952812F96DB20091EBBC /* EucBUpeFilesystemDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBUpeFilesystemDataProvider.m; sourceTree = "<group>"; };
 		7D14D1B3119C657800F4B5D3 /* EucHighlightRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucHighlightRange.h; sourceTree = "<group>"; };
 		7D14D1B4119C657900F4B5D3 /* EucHighlightRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucHighlightRange.m; sourceTree = "<group>"; };
 		7D1900981149490E00375803 /* libwapcaplet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwapcaplet.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1029,6 +1046,26 @@
 		7D19015C11494A5800375803 /* stream-nomem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "stream-nomem.c"; sourceTree = "<group>"; };
 		7D19015D11494A5800375803 /* testutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testutils.h; sourceTree = "<group>"; };
 		7D19025211494BE800375803 /* libcss.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcss.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D229E1412F98AAF0037D93D /* libminiunzip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libminiunzip.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D229E1B12F98AF10037D93D /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		7D229E1C12F98AF10037D93D /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		7D229E1D12F98AF10037D93D /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		7D229E1E12F98AF10037D93D /* iowin32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iowin32.c; sourceTree = "<group>"; };
+		7D229E1F12F98AF10037D93D /* iowin32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iowin32.h; sourceTree = "<group>"; };
+		7D229E2012F98AF10037D93D /* make_vms.com */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = make_vms.com; sourceTree = "<group>"; };
+		7D229E2112F98AF10037D93D /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		7D229E2212F98AF10037D93D /* miniunz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = miniunz.c; sourceTree = "<group>"; };
+		7D229E2312F98AF10037D93D /* minizip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = minizip.c; sourceTree = "<group>"; };
+		7D229E2412F98AF10037D93D /* MiniZip64_Changes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MiniZip64_Changes.txt; sourceTree = "<group>"; };
+		7D229E2512F98AF10037D93D /* MiniZip64_info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MiniZip64_info.txt; sourceTree = "<group>"; };
+		7D229E2612F98AF10037D93D /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
+		7D229E2712F98AF10037D93D /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
+		7D229E2812F98AF10037D93D /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		7D229E2912F98AF10037D93D /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		7D229E2A12F98AF10037D93D /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		7D229E2B12F98AF10037D93D /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
+		7D229EB912F98F1C0037D93D /* EucBUpeZipDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpeZipDataProvider.h; sourceTree = "<group>"; };
+		7D229EBA12F98F1C0037D93D /* EucBUpeZipDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBUpeZipDataProvider.m; sourceTree = "<group>"; };
 		7D2341411149602300C318E7 /* EucCSSDocumentTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTree.h; sourceTree = "<group>"; };
 		7D2341421149602300C318E7 /* EucCSSDocumentTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSDocumentTree.m; sourceTree = "<group>"; };
 		7D2341431149602300C318E7 /* EucCSSDocumentTree_Package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSDocumentTree_Package.h; sourceTree = "<group>"; };
@@ -1179,7 +1216,7 @@
 		7D516E7E1028750A005F3C46 /* EucBookTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookTitleView.m; sourceTree = "<group>"; };
 		7D516FF210287905005F3C46 /* THRoundRectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THRoundRectView.h; sourceTree = "<group>"; };
 		7D516FF310287905005F3C46 /* THRoundRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THRoundRectView.m; sourceTree = "<group>"; };
-		7D516FF410287905005F3C46 /* THRoundRects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THRoundRects.h; sourceTree = "<group>"; };
+		7D516FF410287905005F3C46 /* THRoundRects.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = THRoundRects.h; sourceTree = "<group>"; };
 		7D516FF510287905005F3C46 /* THRoundRects.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = THRoundRects.c; sourceTree = "<group>"; };
 		7D516FFC10287922005F3C46 /* THCopyWithCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THCopyWithCoder.h; sourceTree = "<group>"; };
 		7D516FFD10287922005F3C46 /* THCopyWithCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCopyWithCoder.m; sourceTree = "<group>"; };
@@ -1734,8 +1771,6 @@
 		7DF1AD7111D90F6E00506BD5 /* BookButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BookButton@2x.png"; sourceTree = "<group>"; };
 		7DF1AF9A11D9168F00506BD5 /* THUIDeviceAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THUIDeviceAdditions.m; sourceTree = "<group>"; };
 		7DF1AF9C11D9169700506BD5 /* THUIDeviceAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THUIDeviceAdditions.h; sourceTree = "<group>"; };
-		7DF4A34911EF839C00F6A4DD /* EucLibCSSUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucLibCSSUtils.h; sourceTree = "<group>"; };
-		7DF4A34A11EF839C00F6A4DD /* EucLibCSSUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucLibCSSUtils.m; sourceTree = "<group>"; };
 		7DF58B5D10DA9005004E3DBB /* EucBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookView.h; sourceTree = "<group>"; };
 		7DF58B5E10DA9005004E3DBB /* EucBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBookView.m; sourceTree = "<group>"; };
 		7DF823F31291E3FC0072C02B /* EucBookNavPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBookNavPoint.h; sourceTree = "<group>"; };
@@ -1842,6 +1877,7 @@
 				7D034F8910C2CCBE0085778B /* TransitionTest.app */,
 				7D9A96D210D7E41100C2E00A /* Paginate.app */,
 				7D3F4C2E11EF29600065A5F7 /* libEucalyptusBase.a */,
+				7D229E1412F98AAF0037D93D /* libminiunzip.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1854,6 +1890,7 @@
 				7D9AA999114A8EB60055C381 /* bUpe */,
 				7D2340F51149602200C318E7 /* CSS */,
 				7D516E221028734C005F3C46 /* Utils */,
+				7D3F4D1111EF38B80065A5F7 /* Base */,
 				7D516E1710287300005F3C46 /* ThirdParty */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				7D53F30910C2CBD70042215C /* TransitionTest */,
@@ -1957,6 +1994,18 @@
 				7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */,
 			);
 			path = Selector;
+			sourceTree = "<group>";
+		};
+		7D11951612F96D3A0091EBBC /* DataProviders */ = {
+			isa = PBXGroup;
+			children = (
+				7D11952312F96D740091EBBC /* EucBUpeDataProvider.h */,
+				7D11952712F96DB20091EBBC /* EucBUpeFilesystemDataProvider.h */,
+				7D11952812F96DB20091EBBC /* EucBUpeFilesystemDataProvider.m */,
+				7D229EB912F98F1C0037D93D /* EucBUpeZipDataProvider.h */,
+				7D229EBA12F98F1C0037D93D /* EucBUpeZipDataProvider.m */,
+			);
+			path = DataProviders;
 			sourceTree = "<group>";
 		};
 		7D1900A01149498500375803 /* libwapcaplet */ = {
@@ -2351,6 +2400,30 @@
 			path = libcss;
 			sourceTree = "<group>";
 		};
+		7D229E1A12F98AF10037D93D /* minizip */ = {
+			isa = PBXGroup;
+			children = (
+				7D229E1B12F98AF10037D93D /* crypt.h */,
+				7D229E1C12F98AF10037D93D /* ioapi.c */,
+				7D229E1D12F98AF10037D93D /* ioapi.h */,
+				7D229E1E12F98AF10037D93D /* iowin32.c */,
+				7D229E1F12F98AF10037D93D /* iowin32.h */,
+				7D229E2012F98AF10037D93D /* make_vms.com */,
+				7D229E2112F98AF10037D93D /* Makefile */,
+				7D229E2212F98AF10037D93D /* miniunz.c */,
+				7D229E2312F98AF10037D93D /* minizip.c */,
+				7D229E2412F98AF10037D93D /* MiniZip64_Changes.txt */,
+				7D229E2512F98AF10037D93D /* MiniZip64_info.txt */,
+				7D229E2612F98AF10037D93D /* mztools.c */,
+				7D229E2712F98AF10037D93D /* mztools.h */,
+				7D229E2812F98AF10037D93D /* unzip.c */,
+				7D229E2912F98AF10037D93D /* unzip.h */,
+				7D229E2A12F98AF10037D93D /* zip.c */,
+				7D229E2B12F98AF10037D93D /* zip.h */,
+			);
+			path = minizip;
+			sourceTree = "<group>";
+		};
 		7D2340F51149602200C318E7 /* CSS */ = {
 			isa = PBXGroup;
 			children = (
@@ -2358,8 +2431,6 @@
 				7D2341461149602300C318E7 /* EucCSSInternal.m */,
 				7D23416A1149602300C318E7 /* LWCNSStringAdditions.h */,
 				7D23416B1149602300C318E7 /* LWCNSStringAdditions.m */,
-				7DF4A34911EF839C00F6A4DD /* EucLibCSSUtils.h */,
-				7DF4A34A11EF839C00F6A4DD /* EucLibCSSUtils.m */,
 				7D2341401149602300C318E7 /* DocumentTree */,
 				7D53BD8D11499D68004F64DC /* XMLTree */,
 				7D03760212D4A1EB00B341BE /* XHTMLTree */,
@@ -2476,19 +2547,20 @@
 				7D3F4D1911EF38B80065A5F7 /* THCache.m */,
 				7D3F4D2E11EF39160065A5F7 /* THCacheBase.h */,
 				7D3F4D2F11EF39160065A5F7 /* THCacheBase.m */,
+				7D516FF410287905005F3C46 /* THRoundRects.h */,
+				7D516FF510287905005F3C46 /* THRoundRects.c */,
 				7D3F4D3211EF395B0065A5F7 /* THStringRenderer.h */,
 				7D3F4D3311EF395B0065A5F7 /* THStringRenderer.m */,
+				7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */,
+				7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */,
 				7D3F4D1711EF38B80065A5F7 /* th_just_with_floats.h */,
 				7D3F4D1611EF38B80065A5F7 /* th_just_with_floats.c */,
 				7D3F4D1211EF38B80065A5F7 /* EucConfiguration.h */,
 				7D3F4D1311EF38B80065A5F7 /* EucConfiguration.m */,
 				7D3F4D1411EF38B80065A5F7 /* EucSharedHyphenator.h */,
 				7D3F4D1511EF38B80065A5F7 /* EucSharedHyphenator.mm */,
-				7D0D8FD8121238DA00CD994D /* THNSStringSmartQuotes.h */,
-				7D0D8FD9121238DA00CD994D /* THNSStringSmartQuotes.m */,
 			);
-			name = Base;
-			path = ../Base;
+			path = Base;
 			sourceTree = "<group>";
 		};
 		7D516DFF102872A5005F3C46 /* BookView */ = {
@@ -2528,6 +2600,7 @@
 				7D1900A01149498500375803 /* libwapcaplet */,
 				7D1900D711494A5800375803 /* libparserutils */,
 				7D19038711494CE900375803 /* libcss */,
+				7D229E1A12F98AF10037D93D /* minizip */,
 			);
 			path = ThirdParty;
 			sourceTree = "<group>";
@@ -2554,7 +2627,6 @@
 				7DF1AF9A11D9168F00506BD5 /* THUIDeviceAdditions.m */,
 				7D0217A712402B17008CE201 /* THEmbeddedResourceManager.h */,
 				7D0217A812402B17008CE201 /* THEmbeddedResourceManager.m */,
-				7D3F4D1111EF38B80065A5F7 /* Base */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2588,8 +2660,6 @@
 				7D516E3B102873BE005F3C46 /* THUIViewThreadSafeDrawing.m */,
 				7D516FF210287905005F3C46 /* THRoundRectView.h */,
 				7D516FF310287905005F3C46 /* THRoundRectView.m */,
-				7D516FF410287905005F3C46 /* THRoundRects.h */,
-				7D516FF510287905005F3C46 /* THRoundRects.c */,
 				7D517019102879C7005F3C46 /* THGeometryUtils.h */,
 				7D51701A102879C7005F3C46 /* THGeometryUtils.c */,
 				7DF012AD103EDD5600DAA9DA /* THTextFittingLabel.h */,
@@ -2798,6 +2868,7 @@
 		7D9AA999114A8EB60055C381 /* bUpe */ = {
 			isa = PBXGroup;
 			children = (
+				7D11951612F96D3A0091EBBC /* DataProviders */,
 				7D9AA9E4114A90620055C381 /* EucBUpeBook.h */,
 				7D9AA9E5114A90620055C381 /* EucBUpeBook.m */,
 				7D4E9CB7114D8CCE0044C513 /* EucBUpeLocalBookReference.h */,
@@ -3549,6 +3620,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D229E0A12F98AAF0037D93D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D229E2E12F98AF10037D93D /* ioapi.h in Headers */,
+				7D229E3712F98AF10037D93D /* unzip.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7D2341941149614F00C318E7 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -3574,7 +3654,6 @@
 				7D53BD9911499DC0004F64DC /* EucCSSXMLTree.h in Headers */,
 				7D53BDA111499DCF004F64DC /* EucCSSXMLTreeNode.h in Headers */,
 				7D79D072117F75C90081F554 /* EucCSSLayoutRunExtractor.h in Headers */,
-				7DF4A38711F057C300F6A4DD /* EucLibCSSUtils.h in Headers */,
 				7DF1616012C0C4710045904F /* EucCSSLayoutTableWrapper.h in Headers */,
 				7DF1616612C0C47E0045904F /* EucCSSLayoutTableCaption.h in Headers */,
 				7DF1616E12C0C48B0045904F /* EucCSSLayoutTableTable.h in Headers */,
@@ -3656,6 +3735,9 @@
 				7D4E999D114AC4350044C513 /* EucBUpePageTextView.h in Headers */,
 				7D4E9BB5114D71D90044C513 /* EucBUpePageLayoutController.h in Headers */,
 				7D4E9CB9114D8CCE0044C513 /* EucBUpeLocalBookReference.h in Headers */,
+				7D11953112F96E5C0091EBBC /* EucBUpeDataProvider.h in Headers */,
+				7D11953212F96E630091EBBC /* EucBUpeFilesystemDataProvider.h in Headers */,
+				7D229EDA12F992A80037D93D /* EucBUpeZipDataProvider.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3795,6 +3877,22 @@
 			productReference = 7D19025211494BE800375803 /* libcss.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		7D229E0912F98AAF0037D93D /* libminiunzip */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D229E0E12F98AAF0037D93D /* Build configuration list for PBXNativeTarget "libminiunzip" */;
+			buildPhases = (
+				7D229E0A12F98AAF0037D93D /* Headers */,
+				7D229E0C12F98AAF0037D93D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libminiunzip;
+			productName = libwapcaplet;
+			productReference = 7D229E1412F98AAF0037D93D /* libminiunzip.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		7D2341971149614F00C318E7 /* libEucalyptusCSS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7D23419D1149617900C318E7 /* Build configuration list for PBXNativeTarget "libEucalyptusCSS" */;
@@ -3910,6 +4008,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				7D229E4B12F98C710037D93D /* PBXTargetDependency */,
 				7D9AA9D7114A8F980055C381 /* PBXTargetDependency */,
 			);
 			name = libEucalyptusBUpe;
@@ -3968,6 +4067,7 @@
 				7D1900971149490E00375803 /* libwapcaplet */,
 				7D1900CC11494A0C00375803 /* libparserutils */,
 				7D19025111494BE800375803 /* libcss */,
+				7D229E0912F98AAF0037D93D /* libminiunzip */,
 				7D034F8810C2CCBE0085778B /* TransitionTest */,
 				7D9A96D110D7E41100C2E00A /* Paginate */,
 				7D412B09114965C700C003BB /* CSSTest */,
@@ -4433,6 +4533,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D229E0C12F98AAF0037D93D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D229E2D12F98AF10037D93D /* ioapi.c in Sources */,
+				7D229E3612F98AF10037D93D /* unzip.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7D2341951149614F00C318E7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4454,7 +4563,6 @@
 				7D53BD9A11499DC0004F64DC /* EucCSSXMLTree.m in Sources */,
 				7D53BDA211499DCF004F64DC /* EucCSSXMLTreeNode.m in Sources */,
 				7D79D073117F75C90081F554 /* EucCSSLayoutRunExtractor.m in Sources */,
-				7DF4A38611F057BE00F6A4DD /* EucLibCSSUtils.m in Sources */,
 				7DF1616112C0C4710045904F /* EucCSSLayoutTableWrapper.m in Sources */,
 				7DF1616712C0C47E0045904F /* EucCSSLayoutTableCaption.m in Sources */,
 				7DF1616F12C0C48B0045904F /* EucCSSLayoutTableTable.m in Sources */,
@@ -4493,6 +4601,7 @@
 				7D3F4D2111EF38B80065A5F7 /* EucConfiguration.m in Sources */,
 				7D3F4D2311EF38B80065A5F7 /* EucSharedHyphenator.mm in Sources */,
 				7D0D8FDB121238F400CD994D /* THNSStringSmartQuotes.m in Sources */,
+				7DCA228912F892C50016C0B9 /* THRoundRects.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4545,6 +4654,8 @@
 				7D4E999E114AC4350044C513 /* EucBUpePageTextView.m in Sources */,
 				7D4E9C1C114D88850044C513 /* EucBUpePageLayoutController.m in Sources */,
 				7D4E9CBA114D8CCE0044C513 /* EucBUpeLocalBookReference.m in Sources */,
+				7D11953312F96E630091EBBC /* EucBUpeFilesystemDataProvider.m in Sources */,
+				7D229EDB12F992A80037D93D /* EucBUpeZipDataProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4563,7 +4674,6 @@
 				7D516E74102874E4005F3C46 /* THAlertViewWithUserInfo.m in Sources */,
 				7D516E801028750A005F3C46 /* EucBookTitleView.m in Sources */,
 				7D516FF710287905005F3C46 /* THRoundRectView.m in Sources */,
-				7D516FF910287905005F3C46 /* THRoundRects.c in Sources */,
 				7D516FFF10287922005F3C46 /* THCopyWithCoder.m in Sources */,
 				7D51700B1028796E005F3C46 /* EucChapterNameFormatting.m in Sources */,
 				7D51701410287987005F3C46 /* VCTitleCase.m in Sources */,
@@ -4614,6 +4724,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		7D229E4B12F98C710037D93D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7D229E0912F98AAF0037D93D /* libminiunzip */;
+			targetProxy = 7D229E4A12F98C710037D93D /* PBXContainerItemProxy */;
+		};
 		7D3F4C3011EF29940065A5F7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7D5170771028AD1B005F3C46 /* libhyphenate */;
@@ -5046,6 +5161,115 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = css;
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/libcss/src\"";
+				USE_HEADERMAP = NO;
+			};
+			name = AppStore;
+		};
+		7D229E0F12F98AAF0037D93D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NOCRYPT=1",
+					"NOUNCRYPT=1",
+					"fseeko64=fseek",
+					"ftello64=ftell",
+					"fopen64=fopen",
+				);
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = include/minizip;
+				PRODUCT_NAME = miniunzip;
+				PUBLIC_HEADERS_FOLDER_PATH = include/minizip;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/minizip\"";
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+		7D229E1012F98AAF0037D93D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NOCRYPT=1",
+					"NOUNCRYPT=1",
+					"fseeko64=fseek",
+					"ftello64=ftell",
+					"fopen64=fopen",
+				);
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = include/minizip;
+				PRODUCT_NAME = miniunzip;
+				PUBLIC_HEADERS_FOLDER_PATH = include/minizip;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/minizip\"";
+				USE_HEADERMAP = NO;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		7D229E1112F98AAF0037D93D /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NOCRYPT=1",
+					"NOUNCRYPT=1",
+					"fseeko64=fseek",
+					"ftello64=ftell",
+					"fopen64=fopen",
+				);
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = include/minizip;
+				PRODUCT_NAME = miniunzip;
+				PUBLIC_HEADERS_FOLDER_PATH = include/minizip;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/minizip\"";
+				USE_HEADERMAP = NO;
+				ZERO_LINK = NO;
+			};
+			name = Distribution;
+		};
+		7D229E1212F98AAF0037D93D /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NOCRYPT=1",
+					"NOUNCRYPT=1",
+					"fseeko64=fseek",
+					"ftello64=ftell",
+					"fopen64=fopen",
+				);
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = include/minizip;
+				PRODUCT_NAME = miniunzip;
+				PUBLIC_HEADERS_FOLDER_PATH = include/minizip;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/minizip\"";
+				USE_HEADERMAP = NO;
+			};
+			name = Beta;
+		};
+		7D229E1312F98AAF0037D93D /* AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NOCRYPT=1",
+					"NOUNCRYPT=1",
+					"fseeko64=fseek",
+					"ftello64=ftell",
+					"fopen64=fopen",
+				);
+				PREBINDING = NO;
+				PRIVATE_HEADERS_FOLDER_PATH = include/minizip;
+				PRODUCT_NAME = miniunzip;
+				PUBLIC_HEADERS_FOLDER_PATH = include/minizip;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/ThirdParty/minizip\"";
 				USE_HEADERMAP = NO;
 			};
 			name = AppStore;
@@ -5938,6 +6162,18 @@
 				A381375F11FF2E4A0041F02A /* Distribution */,
 				7D19025511494BE900375803 /* Beta */,
 				7D19025611494BE900375803 /* AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D229E0E12F98AAF0037D93D /* Build configuration list for PBXNativeTarget "libminiunzip" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D229E0F12F98AAF0037D93D /* Debug */,
+				7D229E1012F98AAF0037D93D /* Release */,
+				7D229E1112F98AAF0037D93D /* Distribution */,
+				7D229E1212F98AAF0037D93D /* Beta */,
+				7D229E1312F98AAF0037D93D /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

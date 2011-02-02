@@ -11,6 +11,7 @@
 @interface NSString (BlioAdditions)
 
 + (NSString *)uniqueStringWithBaseString:(NSString *)baseString;
++ (NSString *)uniquePathWithBasePath:(NSString *)basePath;
 - (NSString *)md5Hash;
 -(NSString*)sansInitialArticle;
 - (NSComparisonResult)titleSansArticleCompare:(NSString *)aString;

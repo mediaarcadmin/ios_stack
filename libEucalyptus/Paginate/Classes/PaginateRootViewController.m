@@ -154,7 +154,9 @@
         // Remove old indexes.
         [self removeFilesMatchingPattern:@"*v*Index*" fromPath:path];
         
-        EucBUpeBook *testBook = [[EucBUpeBook alloc] initWithPath:moveTo];    
+        EucBUpeFilesystemDataProvider *dataProvider = [[EucBUpeFilesystemDataProvider alloc] initWithBasePath:moveTo];
+        EucBUpeBook *testBook = [[EucBUpeBook alloc] initWithDataProvider:dataProvider cacheDirectoryPath:moveTo];
+        [dataProvider release];
         [paginator paginateBookInBackground:testBook saveImagesTo:saveImages ? images : nil];
         [testBook release];
         return YES;

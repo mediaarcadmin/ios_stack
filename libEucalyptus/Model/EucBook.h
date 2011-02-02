@@ -16,11 +16,11 @@
 
 @property (nonatomic, copy) EucBookPageIndexPoint *currentPageIndexPoint;
 
+- (NSString *)cacheDirectoryPath;
+
 - (NSString *)etextNumber;
 - (NSString *)title;
 - (NSString *)author;
-- (NSString *)path;
-- (NSString *)cacheDirectoryPath;
 
 - (Class)pageLayoutControllerClass;
 - (EucBookIndex *)bookIndex;

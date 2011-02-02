@@ -34,6 +34,9 @@
     NSString *localFilename;
     NSString *tempFilename;
     
+    NSString *serverFilename;
+    NSString *serverMimetype;
+    
     NSURLConnection *connection;
     NSURLConnection *headConnection;
     NSFileHandle *downloadFile;
@@ -56,6 +59,10 @@
 @property (nonatomic, assign) long long expectedContentLength;
 @property (nonatomic, assign) BOOL resume;
 @property (nonatomic, retain) NSData * requestHTTPBody;
+
+@property (nonatomic, copy) NSString *serverFilename;
+@property (nonatomic, copy) NSString *serverMimetype;
+
 
 - (id)initWithUrl:(NSURL *)aURL;
 - (void)downloadDidFinishSuccessfully:(BOOL)success;
@@ -117,7 +124,7 @@
 @interface BlioProcessingDownloadCoverOperation : BlioProcessingDownloadOperation
 @end
 
-@interface BlioProcessingDownloadEPubOperation : BlioProcessingDownloadAndUnzipOperation
+@interface BlioProcessingDownloadEPubOperation : BlioProcessingDownloadOperation
 @end
 
 @interface BlioProcessingDownloadPdfOperation : BlioProcessingDownloadOperation

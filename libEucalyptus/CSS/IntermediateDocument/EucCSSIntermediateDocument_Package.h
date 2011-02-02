@@ -17,13 +17,6 @@
 
 css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string **abs);
 
-- (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
-              baseCSSPaths:(NSArray *)baseCSSPaths
-              userCSSPaths:(NSArray *)userCSSPaths
-                    forURL:(NSURL *)url
-                dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
-                    isHTML:(BOOL)isHTML;
-
 @property (nonatomic, readonly) css_select_ctx *selectContext;
 
 @end

@@ -25,6 +25,7 @@
 @implementation ZipArchive
 @synthesize delegate = _delegate;
 
+/*
 -(id) init
 {
 	if( self=[super init] )
@@ -39,7 +40,8 @@
 	[self CloseZipFile2];
 	[super dealloc];
 }
-
+*/
+/*
 -(BOOL) CreateZipFile2:(NSString*) zipFile
 {
 	_zipFile = zipOpen( (const char*)[zipFile UTF8String], 0 );
@@ -148,7 +150,7 @@
 	_zipFile = NULL;
 	return ret;
 }
-
+*/
 -(BOOL) UnzipOpenFile:(NSString*) zipFile
 {
 	_unzFile = unzOpen( (const char*)[zipFile UTF8String] );

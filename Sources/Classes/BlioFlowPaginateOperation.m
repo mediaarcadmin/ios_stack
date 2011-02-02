@@ -137,21 +137,25 @@
         eucBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID] retain];
         if(eucBook) {
             [self setBookCheckedOut:YES];
-			if (![self hasBookManifestValueForKey:BlioManifestCoverKey] && eucBook.coverPath) {
-				NSLog(@"eucBook.coverPath: %@",eucBook.coverPath);
-				NSError * copyCoverError;
-				if (![[NSFileManager defaultManager] copyItemAtPath:eucBook.coverPath toPath:[self.cacheDirectory stringByAppendingPathComponent:BlioManifestCoverKey] error:&copyCoverError]) {
-					NSLog(@"ERROR: %@, %@", copyCoverError, [copyCoverError description]);
-				}
-				else {
-					NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-					[manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
-					[manifestEntry setValue:BlioManifestCoverKey forKey:BlioManifestEntryPathKey];
-					[self setBookManifestValue:manifestEntry forKey:BlioManifestCoverKey];
-					NSMutableDictionary * noteInfo = [NSMutableDictionary dictionaryWithCapacity:1];
-					[noteInfo setObject:self.bookID forKey:@"bookID"];
-					[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingReprocessCoverThumbnailNotification object:self userInfo:noteInfo];
-				}
+			if (![self hasBookManifestValueForKey:BlioManifestCoverKey]) {
+                NSURL *coverURL = eucBook.coverURL;
+                if(coverURL) {
+                    NSLog(@"eucBook.coverURL: %@",coverURL);
+                    NSData *coverData = [eucBook dataForURL:coverURL];
+                    if(coverData) {
+                        [coverData writeToFile:[self.cacheDirectory stringByAppendingPathComponent:BlioManifestCoverKey] atomically:NO];
+                    
+                        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+                        [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+                        [manifestEntry setValue:BlioManifestCoverKey forKey:BlioManifestEntryPathKey];
+                        [self setBookManifestValue:manifestEntry forKey:BlioManifestCoverKey];
+                        NSMutableDictionary * noteInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+                        [noteInfo setObject:self.bookID forKey:@"bookID"];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingReprocessCoverThumbnailNotification object:self userInfo:noteInfo];
+                    } else {
+                        NSLog(@"Couldn't get data for cover in book.");
+                    }
+                }
 			}
 		}
         

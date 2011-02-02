@@ -15,16 +15,12 @@
     NSString *_title;
     NSString *_author;
     NSString *_etextNumber;
-    NSString *_path;
     NSString *_cacheDirectoryPath;
 }
 
-@property (nonatomic, copy) NSString *path;
-@property (nonatomic, copy) NSString *cacheDirectoryPath; // Returns path if none defined.
 @property (nonatomic, copy) NSString *author;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *etextNumber;
-
-- (id)initWithTitle:(NSString *)title author:(NSString *)author etextNumber:(NSString *)etextNumber path:(NSString *)path;
+@property (nonatomic, copy) NSString *cacheDirectoryPath;
 
 @end

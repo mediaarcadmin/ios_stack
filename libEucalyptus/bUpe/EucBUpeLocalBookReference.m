@@ -15,14 +15,8 @@
 
 @synthesize title = _title;
 @synthesize author = _author;
-@synthesize path = _path;
 @synthesize etextNumber = _etextNumber;
 @synthesize cacheDirectoryPath = _cacheDirectoryPath;
-
-- (NSString *)cacheDirectoryPath
-{
-    return _cacheDirectoryPath ?: self.path;
-}
 
 - (id)initWithTitle:(NSString *)title author:(NSString *)author etextNumber:(NSString *)etextNumber path:(NSString *)path
 {
@@ -30,7 +24,6 @@
         if([title length]) _title = [title copy]; else _title = @"";
         if([author length]) _author = [author copy]; else _author = @"";
         if([etextNumber length]) _etextNumber = [etextNumber copy]; else _author = @"";
-        _path = [path copy];
     }
     return self;
 }
@@ -59,7 +52,6 @@
     [_title release];
     [_author release];
     [_etextNumber release];
-    [_path release];
     [_cacheDirectoryPath release];
     
     [super dealloc];

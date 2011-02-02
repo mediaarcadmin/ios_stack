@@ -10,6 +10,7 @@
 
 #import "THLog.h"
 #import "EucBUpeBook.h"
+#import "EucBUpeDataProvider.h"
 #import "EucBookNavPoint.h"
 #import "EucBookIndex.h"
 #import "EucBookPageIndex.h"
@@ -70,7 +71,6 @@
 @end
 
 @interface EucBUpeBook ()
-@property (nonatomic, retain) NSDictionary *manifestOverrides;
 
 - (EucCSSIntermediateDocument *)_intermediateDocumentForURL:(NSURL *)url;
 - (void)_restorePersistedCachableDataIfPossible;
@@ -80,7 +80,6 @@
 @implementation EucBUpeBook
 
 @synthesize navPoints = _navPoints;
-@synthesize manifestOverrides = _manifestOverrides;
 @synthesize persistsPositionAutomatically = _persistsPositionAutomatically;
 @synthesize idToIndexPoint = _idToIndexPoint;
 
@@ -573,17 +572,19 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 #pragma mark -
 
-- (id)initWithPath:(NSString *)path
+- (id)initWithDataProvider:(id<EucBUpeDataProvider>)dataProvider cacheDirectoryPath:(NSString *)cacheDirectoryPath
 {
     if((self = [super init])) {
-        self.path = path;
-        _root = [[NSURL fileURLWithPath:path isDirectory:YES] retain];
+        _dataProvider = [dataProvider retain];
+        
+        NSString *rootURLString = [NSString stringWithFormat:@"%@://", NSStringFromClass([_dataProvider class])];
+        _root = [[NSURL alloc] initWithString:rootURLString];
                 
-        NSURL *contentUrl = [self _rootfileFromContainerXml:[NSURL URLWithString:@"META-INF/container.xml" relativeToURL:_root]];
+        NSURL *contentUrl = [self _rootfileFromContainerXml:[NSURL URLWithString:@"/META-INF/container.xml" relativeToURL:_root]];
                 
         if(contentUrl && [self _parseContentOpf:contentUrl]) {
             if(!_etextNumber.length|| !_spine.count || !_manifest.count) {
-                THWarn(@"Malformed ePub (no ID, no spine, or no manifest) at %@", path);
+                THWarn(@"Malformed ePub (no ID, no spine, or no manifest) - data provider %@", _dataProvider);
                 [self release];
                 return nil;
             } 
@@ -595,14 +596,10 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                 tocUrl = [NSURL URLWithString:tocPath relativeToURL:_root];
             }
             [self _parseTocNcx:tocUrl];
-            
-            NSString *manifestKey = [_meta objectForKey:@"cover"];
-            if(manifestKey) {
-                NSString *key = [NSString stringWithFormat:@"gs.ingsmadeoutofotherthin.th.Euclayptus.bUpe.%@.manifestOverrides", self.etextNumber];
-                self.manifestOverrides = [[NSUserDefaults standardUserDefaults] objectForKey:key];
-            }            
+                        
+            self.cacheDirectoryPath = cacheDirectoryPath;;
         } else {
-            THWarn(@"Couldn't find content for ePub at %@", path);
+            THWarn(@"Couldn't find content for ePub with data provider %@", dataProvider);
             [self release];
             return nil;            
         }
@@ -629,12 +626,12 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     
     [_guideCoverItemURL release];
     [_manifest release];
-    [_manifestOverrides release];
-    [_manifestUrlsToOverriddenUrls release];
     [_coverPath release];
 	[_idToIndexPoint release];
 
     free(_indexSourceScaleFactors);
+    
+    [_dataProvider release];
     
     [super dealloc];
 }
@@ -654,59 +651,22 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"EPubOverrides" ofType:@"css"]];
 }
 
-- (NSString *)coverPath
+- (NSURL *)coverURL
 {
-    NSString *ret = nil;
+    NSURL *ret = nil;
     
     NSString *manifestKey = [_meta objectForKey:@"cover"];
     if(!manifestKey) {
         manifestKey = @"cover-image"; // Should be specified, but sometimes it's not in real life...
     }
     if(manifestKey) {
-        NSString *documentsRelativeCover = [_manifestOverrides objectForKey:manifestKey];
-        if(documentsRelativeCover) {
-            NSString *documentsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByStandardizingPath];
-            ret = [documentsPath stringByAppendingPathComponent:documentsRelativeCover];
-        } else {
-            NSString *relativePath = [_manifest objectForKey:manifestKey];
-            if(relativePath) {
-                ret = [[NSURL URLWithString:relativePath relativeToURL:_root] path];
-            }
+        NSString *relativePath = [_manifest objectForKey:manifestKey];
+        if(relativePath) {
+            ret = [NSURL URLWithString:relativePath relativeToURL:_root];
         }
     } 
-    if(!ret) {
-        ret = _coverPath;
-    }
     
     return ret;
-}
-
-- (void)setCoverPath:(NSString *)coverPath
-{
-    NSString *manifestKey = [_meta objectForKey:@"cover"];
-    if(manifestKey) {
-        NSDictionary *manifestOverrides = nil;
-        if(coverPath) {
-            NSString *documentsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByStandardizingPath];
-            coverPath = [coverPath stringByStandardizingPath];
-            NSString *documentsRelativeCoverPath = [coverPath stringByReplacingOccurrencesOfString:documentsPath withString:@""];
-            
-            manifestOverrides = [NSDictionary dictionaryWithObject:documentsRelativeCoverPath forKey:manifestKey];
-        }
-        
-        NSString *key = [NSString stringWithFormat:@"gs.ingsmadeoutofotherthin.th.Euclayptus.ePub.%@.manifestOverrides", self.etextNumber];
-        if(manifestOverrides.count) {
-            [[NSUserDefaults standardUserDefaults] setObject:manifestOverrides forKey:key];  
-            self.manifestOverrides = manifestOverrides;
-        } else {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];  
-            self.manifestOverrides = nil;
-        }
-    } 
-    if(_coverPath != coverPath) {
-        [_coverPath release];
-        _coverPath = [coverPath retain];
-    }
 }
 
 - (void)whitelistSectionsWithUuids:(NSSet *)uuids
@@ -998,50 +958,9 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     return ret;
 }
 
-- (void)setManifestOverrides:(NSDictionary *)manifestOverrides 
-{
-    if(_manifestOverrides != manifestOverrides) {
-        [_manifestOverrides release];
-        [_manifestUrlsToOverriddenUrls release];
-        
-        if(manifestOverrides.count) {
-            _manifestOverrides = [manifestOverrides retain];
-            NSString *documentsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByStandardizingPath];
-            NSURL *documentsURL = [NSURL fileURLWithPath:documentsPath isDirectory:YES];
-            
-            NSMutableDictionary *manifestUrlsToOverriddenUrls = [NSMutableDictionary dictionary];
-            for(NSString *key in [manifestOverrides keyEnumerator]) {
-                NSString *manifestPath = [_manifest objectForKey:key];
-                NSString *overriddenPath = [manifestOverrides objectForKey:key];
-                if(manifestPath && overriddenPath) {
-                    NSURL *manifestUrl = [[NSURL URLWithString:manifestPath relativeToURL:_root] absoluteURL];
-                    NSURL *overriddenUrl = [[NSURL URLWithString:overriddenPath relativeToURL:documentsURL] absoluteURL];
-                    if(manifestUrl && overriddenUrl) {
-                        [manifestUrlsToOverriddenUrls setObject:overriddenUrl forKey:manifestUrl];
-                    }
-                }
-            }
-            _manifestUrlsToOverriddenUrls = [manifestUrlsToOverriddenUrls retain];
-        } else {
-            _manifestOverrides = nil;
-            _manifestUrlsToOverriddenUrls = nil;
-        }
-    }
-}
-
-
 - (NSData *)dataForURL:(NSURL *)url
 {
-    NSData *ret = nil;
-    url = [url absoluteURL];
-    NSURL *overridden = [_manifestUrlsToOverriddenUrls objectForKey:url];
-    if(overridden) {
-        ret = [[NSData alloc] initWithContentsOfMappedFile:[overridden path]];
-    }
-    if(!ret) {
-        ret = [[NSData alloc] initWithContentsOfMappedFile:[url path]];
-    }
-    return [ret autorelease];
+    return [_dataProvider dataForComponentAtPath:[url pathRelativeTo:_root]];
 }
 
 - (id<EucCSSDocumentTree>)documentTreeForURL:(NSURL *)url
@@ -1113,8 +1032,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (void)setCacheDirectoryPath:(NSString *)path
 {
-    if(path != super.cacheDirectoryPath) {
-        super.cacheDirectoryPath = path;
+    if(![super.cacheDirectoryPath isEqualToString:path]) {
+        super.cacheDirectoryPath = [path copy];
         [self _restorePersistedCachableDataIfPossible];
     }
 }

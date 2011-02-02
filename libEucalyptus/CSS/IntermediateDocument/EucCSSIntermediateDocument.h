@@ -17,12 +17,12 @@ struct css_select_ctx;
 struct css_stylesheet;
 
 @class EucCSSIntermediateDocumentNode, EucCSSIntermediateDocumentConcreteNode, THIntegerToObjectCache;
-@protocol EucCSSDocumentTree, EucCSSIntermediateDocumentDataSource;
+@protocol EucCSSDocumentTree, EucCSSIntermediateDocumentDataProvider;
 
 @interface EucCSSIntermediateDocument : NSObject {
     id<EucCSSDocumentTree> _documentTree;
     NSURL *_url;
-    id<EucCSSIntermediateDocumentDataSource> _dataSource;
+    id<EucCSSIntermediateDocumentDataProvider> _dataSource;
     
     struct css_select_ctx *_selectCtx;
     
@@ -35,7 +35,7 @@ struct css_stylesheet;
 
 - (id)initWithDocumentTree:(id<EucCSSDocumentTree>)documentTree
                     forURL:(NSURL *)url
-                dataSource:(id<EucCSSIntermediateDocumentDataSource>)dataSource
+                dataSource:(id<EucCSSIntermediateDocumentDataProvider>)dataSource
               baseCSSPaths:(NSArray *)baseCSSPaths
               userCSSPaths:(NSArray *)userCSSPaths
                     isHTML:(BOOL)isHTML;
@@ -53,12 +53,12 @@ struct css_stylesheet;
 @property (nonatomic, retain, readonly) id<EucCSSDocumentTree> documentTree;
 @property (nonatomic, retain, readonly) EucCSSIntermediateDocumentNode *rootNode;
 @property (nonatomic, retain, readonly) NSURL *url;
-@property (nonatomic, assign, readonly) id<EucCSSIntermediateDocumentDataSource> dataSource;
+@property (nonatomic, assign, readonly) id<EucCSSIntermediateDocumentDataProvider> dataSource;
 @property (nonatomic, retain, readonly) NSDictionary *idToNodeKey;
 
 @end
 
-@protocol EucCSSIntermediateDocumentDataSource
+@protocol EucCSSIntermediateDocumentDataProvider
 
 - (NSData *)dataForURL:(NSURL *)url;
 

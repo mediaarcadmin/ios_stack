@@ -625,8 +625,10 @@ static void CGContextSetStrokeColorWithCSSColor(CGContextRef context, css_color 
                     radius = MIN(5.0f, radius);
                     THAddRoundedRectToPath(_cgContext, rect, radius, radius);
                     
-                    CGContextSetStrokeColorWithColor(_cgContext, [UIColor grayColor].CGColor);
-                    CGContextSetFillColorWithColor(_cgContext, [UIColor whiteColor].CGColor);
+                    static const CGFloat grayComponents[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+                    CGContextSetStrokeColor(_cgContext, grayComponents);
+                    static const CGFloat whiteComponents[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+                    CGContextSetFillColor(_cgContext, whiteComponents);
                     CGContextSetLineWidth(_cgContext, 2);
                     
                     CGContextDrawPath(_cgContext, kCGPathFillStroke);

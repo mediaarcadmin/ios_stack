@@ -14,7 +14,7 @@
 #import "BlioBookManager.h"
 #import "BlioProcessingStandardOperations.h"
 
-#import "unzip.h"
+#import <minizip/unzip.h>
 
 @interface BlioXPSKNFBMetadataParserDelegate : NSObject<NSXMLParserDelegate> {
 	NSString * title;

@@ -13,9 +13,11 @@
 #import "EucCSSIntermediateDocument.h"
 
 @class EucBookPageIndexPoint, EucCSSIntermediateDocument;
-@protocol EucCSSDocumentTree;
+@protocol EucCSSDocumentTree, EucBUpeDataProvider;
 
-@interface EucBUpeBook : EucBUpeLocalBookReference <EucBook, EucCSSIntermediateDocumentDataSource> {
+@interface EucBUpeBook : EucBUpeLocalBookReference <EucBook, EucCSSIntermediateDocumentDataProvider> {
+    id<EucBUpeDataProvider> _dataProvider;
+    
     NSURL *_root;            // Root of the bundle.
     NSString *_tocNcxId;
         
@@ -25,8 +27,6 @@
     NSString *_coverPath;
         
     NSURL *_guideCoverItemURL;
-    NSDictionary *_manifestOverrides; // id -> file, path relative to root.
-    NSDictionary *_manifestUrlsToOverriddenUrls; // Full URL from manifest -> full URL in overrides.
     
     // From the TOC.
     // Pairs of name, path relative to _root, including URL fragment.
@@ -46,15 +46,16 @@
     CGFloat _normalisingScaleFactor;
 }
 
-@property (nonatomic, retain) NSString *coverPath;
-
 // Some books have, for reasons known only to the publishers (and perhaps not 
 // even to them...) crazy default text sizes.  This scale factor will scale 
 // that text size to our default, and can be used to make the body text
 // a uniform size across all books.
 @property (nonatomic, assign, readonly) CGFloat normalisingScaleFactor;
+@property (nonatomic, retain, readonly) NSURL *coverURL;
 
-- (id)initWithPath:(NSString *)path;
+- (id)initWithDataProvider:(id<EucBUpeDataProvider>)dataProvider 
+        cacheDirectoryPath:(NSString *)cacheDirectoryPath;
+
 - (void)whitelistSectionsWithUuids:(NSSet *)uuids;
 
 - (NSData *)dataForURL:(NSURL *)url;

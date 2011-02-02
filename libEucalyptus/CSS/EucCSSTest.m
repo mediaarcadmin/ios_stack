@@ -17,10 +17,10 @@
 #import "THLog.h"
 #import "THTimer.h"
 
-@interface SimpleEucCSSIntermediateDocumentDataSource : NSObject <EucCSSIntermediateDocumentDataSource> {}
+@interface SimpleEucCSSIntermediateDocumentDataProvider : NSObject <EucCSSIntermediateDocumentDataProvider> {}
 @end
 
-@implementation SimpleEucCSSIntermediateDocumentDataSource
+@implementation SimpleEucCSSIntermediateDocumentDataProvider
 
 - (NSData *)dataForURL:(NSURL *)url
 {
@@ -39,7 +39,7 @@ int main (int argc, const char * argv[]) {
     EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]];
     [xmlData release];
     
-    SimpleEucCSSIntermediateDocumentDataSource *dataSource = [[SimpleEucCSSIntermediateDocumentDataSource alloc] init];
+    SimpleEucCSSIntermediateDocumentDataProvider *dataSource = [[SimpleEucCSSIntermediateDocumentDataProvider alloc] init];
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:xmlTree
                                                                                              forURL:[NSURL fileURLWithPath:xmlPath]
                                                                                          dataSource:dataSource
