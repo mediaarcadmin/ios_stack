@@ -36,7 +36,7 @@
 																							[NSString stringWithFormat:@"file:/%@//", resourcePath]]];
 		[textView setScalesPageToFit:YES];
 		self.view = textView;
-		//textView.delegate = self;
+		textView.delegate = self;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 500);
 		}				
@@ -50,6 +50,18 @@
     else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
 	return YES;
 }
+
+#pragma mark -
+#pragma mark UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+	if (![request.URL isFileURL] && navigationType == UIWebViewNavigationTypeLinkClicked) {
+		[[UIApplication sharedApplication] openURL:request.URL];
+		return NO;
+	}
+	return YES;
+}
+
 
 #pragma mark -
 #pragma mark Memory management
