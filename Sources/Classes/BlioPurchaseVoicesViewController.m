@@ -50,6 +50,7 @@
 	CGFloat activityIndicatorDiameter = 50.0f;
 	CGRect targetFrame = [[UIScreen mainScreen] bounds];
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((targetFrame.size.width-activityIndicatorDiameter)/2, (targetFrame.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
+		
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchStarted:) name:BlioInAppPurchaseProductsFetchStarted object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFailed:) name:BlioInAppPurchaseProductsFetchFailed object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
@@ -102,14 +103,24 @@
 
  - (void)viewWillAppear:(BOOL)animated {
 	 [super viewWillAppear:animated];
- 	 self.activityIndicatorView.hidden = NO;
+	 self.activityIndicatorView.hidden = NO;
+	 
+	 if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+		 CGRect localRect = CGRectMake(self.view.frame.size.width/2 - self.activityIndicatorView.frame.size.width/2, self.view.frame.size.height/2 - self.activityIndicatorView.frame.size.height/2, self.activityIndicatorView.frame.size.width, self.activityIndicatorView.frame.size.height);
+		 [self.activityIndicatorView removeFromSuperview];
+		 [self.view addSubview:self.activityIndicatorView];
+		 self.activityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+		 //		 self.activityIndicatorView.frame = [self.view.window.layer convertRect:localRect fromLayer:self.view.layer];
+		 self.activityIndicatorView.frame = localRect;
+	 }	 
 }
  
-/*
+
  - (void)viewDidAppear:(BOOL)animated {
- [super viewDidAppear:animated];
+	 [super viewDidAppear:animated];
+	 
  }
- */
+ 
 /*
  - (void)viewWillDisappear:(BOOL)animated {
  [super viewWillDisappear:animated];
