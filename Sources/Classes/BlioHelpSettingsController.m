@@ -31,7 +31,7 @@
 		[textView loadHTMLString:helpText baseURL:nil];
 		[textView setScalesPageToFit:YES];
 		self.view = textView;
-		textView.delegate = self;
+//		textView.delegate = self;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 400);
 		}		
