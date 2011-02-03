@@ -2665,6 +2665,10 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
     return nil;
 }
 
+- (NSArray *)enhancedContentForPage:(NSInteger)page {
+	return nil;
+}
+
 - (void)closeDocument {
     [pdfLock lock];
     if (pdf) CGPDFDocumentRelease(pdf);

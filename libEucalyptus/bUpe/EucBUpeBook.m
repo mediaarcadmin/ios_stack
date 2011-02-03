@@ -22,7 +22,7 @@
 
 #import "EucConfiguration.h"
 #import "EucCSSLayoutRunExtractor.h"
-#import "EucCSSXMLTree.h"
+#import "EucCSSXHTMLTree.h"
 #import "EucCSSXHTMLTreeNode.h"
 #import "EucCSSIntermediateDocument.h"
 #import "EucCSSIntermediateDocumentNode.h"
@@ -636,11 +636,6 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     [super dealloc];
 }
 
-- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree
-{
-    return YES;
-}
-
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"EPubDefault" ofType:@"css"]];
@@ -967,13 +962,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 {
     NSData *data = [self dataForURL:url];
     if(data) {
-        NSString *dtdPublicID = @"-//W3C//DTD XHTML 1.1//EN";
-        NSString *dtdPath = [[NSBundle mainBundle] pathForResource:@"xhtml-entities" ofType:@"ent"];
-        NSDictionary *dtdMap = [NSDictionary dictionaryWithObject:dtdPath forKey:dtdPublicID];
-        return [[[EucCSSXMLTree alloc] initWithData:data 
-                                   xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]
-                          DTDPublicIDToLocalPathMap:dtdMap
-                                 defaultDTDPublicID:dtdPublicID] autorelease];
+        return [[[EucCSSXHTMLTree alloc] initWithData:data] autorelease];
     }
     return nil;
 }
@@ -1005,8 +994,7 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
                                                                          forURL:url
                                                                      dataSource:self
                                                                    baseCSSPaths:[self baseCSSPathsForDocumentTree:documentTree]
-                                                                   userCSSPaths:[self userCSSPathsForDocumentTree:documentTree]
-                                                                         isHTML:[self documentTreeIsHTML:documentTree]];
+                                                                   userCSSPaths:[self userCSSPathsForDocumentTree:documentTree]];
         }
         [_documentCache cacheObject:document forKey:url];
         [document autorelease];

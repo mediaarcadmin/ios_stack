@@ -404,6 +404,145 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     return hyperlinks;
 }
 
+#pragma mark -
+#pragma mark EnhancedCpntent Parsing
+
+static void overlayContentXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
+
+	NSMutableSet *items = (NSMutableSet *)ctx;
+	
+    if (strcmp("EnhancedOverlayinfo", name) == 0) {
+		
+		NSInteger pageNumber = -1;
+		NSString *navigateUri = nil;
+		NSString *controlType = nil;
+		NSString *visualState = nil;
+		CGRect displayRegion = CGRectZero;
+		CGAffineTransform contentOffset = CGAffineTransformIdentity;
+		NSInteger enhancedOverlayinfoID = -1;
+		
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("PageNo", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    pageNumber = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("DisplayRegionLeft", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    displayRegion.origin.x = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("DisplayRegionTop", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    displayRegion.origin.y = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("DisplayRegionWidth", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    displayRegion.size.width = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("DisplayRegionHeight", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    displayRegion.size.height = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("ContentScaleX", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    contentOffset.a = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("ContentScaleY", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    contentOffset.d = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("ContentOffsetX", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    contentOffset.tx = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("ContentOffsetY", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    contentOffset.ty = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("NavigateUri", atts[i]) == 0) {
+                navigateUri = [[NSString alloc] initWithUTF8String:atts[i+1]];
+			} else if (strcmp("ControlType", atts[i]) == 0) {
+                controlType = [[NSString alloc] initWithUTF8String:atts[i+1]];
+			} else if (strcmp("EnhancedOverlayinfoID", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    enhancedOverlayinfoID = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("VisualState", atts[i]) == 0) {
+				visualState = [[NSString alloc] initWithUTF8String:atts[i+1]];
+			}
+        }
+		NSDictionary *overlayInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:pageNumber], @"pageNumber", 
+									 navigateUri, @"navigateUri",
+									 controlType, @"controlType",
+									 visualState, @"visualState",
+									 [NSValue valueWithCGRect:displayRegion], @"displayRegion",
+									 [NSValue valueWithCGAffineTransform:contentOffset], @"contentOffset",
+									 [NSNumber numberWithInt:enhancedOverlayinfoID], @"enhancedOverlayinfoID",
+									 nil];
+		
+		[navigateUri release];
+		[controlType release];
+		[visualState release];
+		
+		[items addObject:overlayInfo];				 
+    }
+}
+
+
+- (NSSet *)extractOverlayContent:(NSData *)data
+{
+	NSMutableSet *items = [NSMutableSet set];
+	
+	if(data) {
+        XML_Parser overlayParser = XML_ParserCreate(NULL);
+        XML_SetStartElementHandler(overlayParser, overlayContentXMLParsingStartElementHandler);
+        XML_SetUserData(overlayParser, items);    
+		
+        if (!XML_Parse(overlayParser, [data bytes], [data length], XML_TRUE)) {
+            char *anError = (char *)XML_ErrorString(XML_GetErrorCode(overlayParser));
+            NSLog(@"ExtractOverlayContent parsing error: '%s'", anError);
+        }
+        XML_ParserFree(overlayParser);
+    }
+	
+	return items;
+			  
+}
+
+- (NSArray *)enhancedContentForPage:(NSInteger)page {
+	NSData *overlayContentData = [self dataForComponentAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"OverlayContent.xml"]];
+	NSSet *overlayContentItems = [self extractOverlayContent:overlayContentData];
+	
+	NSMutableArray *array = [NSMutableArray array];
+	
+	for (NSDictionary *item in overlayContentItems) {
+		if ([[item valueForKey:@"pageNumber"] intValue] == page - 1) {
+			[array addObject:item];
+		}
+	}
+	
+	return array;
+}
+
 // Not required as XPS document stays open during rendering
 - (void)openDocumentIfRequired {}
 

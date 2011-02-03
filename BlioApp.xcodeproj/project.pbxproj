@@ -1186,7 +1186,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 7D229E1412F98AAF0037D93D /* libminiunzip.a */;
+			remoteGlobalIDString = 7D229E1412F98AAF0037D93D;
 			remoteInfo = libminiunzip;
 		};
 		7D381B4A10D92E81008D34E2 /* PBXContainerItemProxy */ = {

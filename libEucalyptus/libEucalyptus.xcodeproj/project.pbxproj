@@ -19,7 +19,7 @@
 		7D03736912D3772100B341BE /* EucCSSLayoutSizedTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D03736712D3772100B341BE /* EucCSSLayoutSizedTable.m */; };
 		7D0373A012D378F200B341BE /* EucCSSLayoutPositionedTable.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D03739E12D378F200B341BE /* EucCSSLayoutPositionedTable.h */; };
 		7D0373A112D378F200B341BE /* EucCSSLayoutPositionedTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D03739F12D378F200B341BE /* EucCSSLayoutPositionedTable.m */; };
-		7D03760712D4A20300B341BE /* EucCSSXHTMLTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D03760512D4A20300B341BE /* EucCSSXHTMLTreeNode.h */; };
+		7D03760712D4A20300B341BE /* EucCSSXHTMLTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D03760512D4A20300B341BE /* EucCSSXHTMLTreeNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D03760812D4A20300B341BE /* EucCSSXHTMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D03760612D4A20300B341BE /* EucCSSXHTMLTreeNode.m */; };
 		7D0D81AD1107873900C672AC /* EucSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0D818311075E2A00C672AC /* EucSelector.m */; };
 		7D0D81AE1107874000C672AC /* EucSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0D818211075E2A00C672AC /* EucSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -447,6 +447,8 @@
 		7DCA57D811498311007EDB15 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DCA57D91149831C007EDB15 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		7DCA57DC11498328007EDB15 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2F1149667300C003BB /* Cocoa.framework */; };
+		7DCAC3C012F9CD0C00FBA7F9 /* EucCSSXHTMLTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DCAC3BE12F9CD0C00FBA7F9 /* EucCSSXHTMLTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DCAC3C112F9CD0C00FBA7F9 /* EucCSSXHTMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCAC3BF12F9CD0C00FBA7F9 /* EucCSSXHTMLTree.m */; };
 		7DD48E5110C2E41C0001203D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5010C2E41C0001203D /* UIKit.framework */; };
 		7DD48E5910C2E44F0001203D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5810C2E44F0001203D /* OpenGLES.framework */; };
 		7DD48E5D10C2E45A0001203D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5C10C2E45A0001203D /* CoreGraphics.framework */; };
@@ -794,7 +796,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7D229E0912F98AAF0037D93D /* libminiunzip */;
+			remoteGlobalIDString = 7D229E0912F98AAF0037D93D;
 			remoteInfo = libminiunzip;
 		};
 		7D3F4C2F11EF29940065A5F7 /* PBXContainerItemProxy */ = {
@@ -1361,6 +1363,8 @@
 		7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorAccessibilityMask.m; sourceTree = "<group>"; };
 		7DCA57B1114981FC007EDB15 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		7DCA5804114985C7007EDB15 /* pg103.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pg103.epub; sourceTree = "<group>"; };
+		7DCAC3BE12F9CD0C00FBA7F9 /* EucCSSXHTMLTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSXHTMLTree.h; sourceTree = "<group>"; };
+		7DCAC3BF12F9CD0C00FBA7F9 /* EucCSSXHTMLTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSXHTMLTree.m; sourceTree = "<group>"; };
 		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7DD48E5410C2E42C0001203D /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin9/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7DD48E5810C2E44F0001203D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1969,6 +1973,8 @@
 		7D03760212D4A1EB00B341BE /* XHTMLTree */ = {
 			isa = PBXGroup;
 			children = (
+				7DCAC3BE12F9CD0C00FBA7F9 /* EucCSSXHTMLTree.h */,
+				7DCAC3BF12F9CD0C00FBA7F9 /* EucCSSXHTMLTree.m */,
 				7D03760512D4A20300B341BE /* EucCSSXHTMLTreeNode.h */,
 				7D03760612D4A20300B341BE /* EucCSSXHTMLTreeNode.m */,
 			);
@@ -3675,6 +3681,7 @@
 				7D82E4F912DCB663004BCCD1 /* EucCSSLayoutSizedTableCell.h in Headers */,
 				7D82E67712DCCE24004BCCD1 /* EucCSSLayoutPositionedTableCell.h in Headers */,
 				7D37F36312DDFF3F008B242A /* EucCSSLayoutPositionedContainer.h in Headers */,
+				7DCAC3C012F9CD0C00FBA7F9 /* EucCSSXHTMLTree.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4584,6 +4591,7 @@
 				7D82E4FA12DCB663004BCCD1 /* EucCSSLayoutSizedTableCell.m in Sources */,
 				7D82E67812DCCE24004BCCD1 /* EucCSSLayoutPositionedTableCell.m in Sources */,
 				7D37F36212DDFF3A008B242A /* EucCSSLayoutPositionedContainer.m in Sources */,
+				7DCAC3C112F9CD0C00FBA7F9 /* EucCSSXHTMLTree.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -41,6 +41,7 @@ static NSString * const BlioXPSEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMa
 static NSString * const BlioXPSEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages";
 static NSString * const BlioXPSEncryptedImagesDir = @"/Resources";
 static NSString * const BlioXPSEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/Flow";
+static NSString * const BlioXPSEnhancedContentDir = @"/Documents/1/Other/KNFB/EnhancedContent";
 static NSString * const BlioXPSEPubMetaInfContainerFile = @"/META-INF/container.xml";
 static NSString * const BlioXPSDRMEPubMetaInfContainerFile = @"/META-INF/container.xml.bin";
 static NSString * const BlioXPSMetaDataDir = @"/Documents/1/Metadata";

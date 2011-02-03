@@ -112,7 +112,6 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
 
 - (void)_setupStylesheetWithUserAgentCSSPaths:(NSArray *)basePaths
                                  userCSSPaths:(NSArray *)userPaths
-                                    parseHead:(BOOL)parseHead
 {
     css_stylesheet *stylesheet;
     
@@ -170,29 +169,17 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
         }
     }    
     
-    if(parseHead) {
-        // Find the <head> node.
-        id<EucCSSDocumentTreeNode> examiningNode = _documentTree.root;
-        while(examiningNode && [@"head" caseInsensitiveCompare:examiningNode.name] != NSOrderedSame) {
-            id<EucCSSDocumentTreeNode> oldExaminingNode = examiningNode;
-
-            examiningNode = oldExaminingNode.firstChild;
-            if(!examiningNode) {
-                examiningNode = oldExaminingNode.nextSibling;
-            }
-            if(!examiningNode) {
-                examiningNode = oldExaminingNode.parent.nextSibling;
-            }
-        }
-
-        if(examiningNode) {
-            const char* myUrl = [[_url absoluteString] UTF8String];
+    
+    if([_documentTree respondsToSelector:@selector(nodesWithLinkedOrEmbeddedCSSInSubnodes)]) {
+        const char* myUrl = [[_url absoluteString] UTF8String];
+        NSArray *nodesWithLinkedOrEmbeddedCSSInSubnodes = [_documentTree nodesWithLinkedOrEmbeddedCSSInSubnodes];
+        for(id<EucCSSDocumentTreeNode> nodeWithLinkedOrEmbeddedCSSInSubnodes in nodesWithLinkedOrEmbeddedCSSInSubnodes) {
+            id<EucCSSDocumentTreeNode> examiningNode = nodeWithLinkedOrEmbeddedCSSInSubnodes;
             uint32_t headNodeKey = examiningNode.key;
-
-            // Look through under the head node to find <style> nodes.
+            
             do {
                 id<EucCSSDocumentTreeNode> oldExaminingNode = examiningNode;
-
+                
                 examiningNode = oldExaminingNode.firstChild;
                 if(!examiningNode) {
                     examiningNode = oldExaminingNode.nextSibling;
@@ -206,43 +193,87 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
                     }
                 }
                 
-                if(examiningNode) {
-                    if([@"style" caseInsensitiveCompare:examiningNode.name] == NSOrderedSame) {
-                        id<EucCSSDocumentTreeNode> styleContents = examiningNode.firstChild;
-                        if(styleContents && styleContents.kind == EucCSSDocumentTreeNodeKindText) {
+                if([examiningNode hasEmbeddedCSSString]) {
+                    id<EucCSSDocumentTreeNode> styleContents = examiningNode.firstChild;
+                    if(styleContents && styleContents.kind == EucCSSDocumentTreeNodeKindText) {
+                        css_error err = css_stylesheet_create(CSS_LEVEL_3,
+                                                              "UTF-8", myUrl, NULL,
+                                                              false, false,
+                                                              EucRealloc, NULL,
+                                                              EucResolveURL, NULL,
+                                                              NULL, NULL,
+                                                              &stylesheet);
+                        if(err == CSS_OK) {
+                            do {
+                                const char *styleChars;
+                                size_t styleLength;
+                                if([styleContents getCharacterContents:&styleChars length:&styleLength]) {
+                                    err = css_stylesheet_append_data(stylesheet, (uint8_t *)styleChars, styleLength);
+                                    styleContents = styleContents.nextSibling;
+                                } else {
+                                    THWarn(@"Error getting text contents for stylesheet");
+                                    err = CSS_INVALID;
+                                }
+                            } while(err == CSS_NEEDDATA &&
+                                    styleContents && 
+                                    styleContents.kind == EucCSSDocumentTreeNodeKindText);
+                            
+                            if(err != CSS_NEEDDATA) {
+                                THWarn(@"Unexpected error %ld parsing inline stylesheet", err);
+                            }
+                            
+                            err = css_stylesheet_data_done(stylesheet);
+                            if(err == CSS_IMPORTS_PENDING) {
+                                err = [self _resolvePendingImportsForStylesheet:stylesheet
+                                                                          atUrl:_url];
+                            } 
+                            
+                            if(err == CSS_OK) {
+                                ++_stylesheetsCount;
+                                _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
+                                _stylesheets[_stylesheetsCount-1] = stylesheet;
+                                
+                                css_select_ctx_append_sheet(_selectCtx, stylesheet, CSS_ORIGIN_AUTHOR, CSS_MEDIA_ALL);
+                            } else {
+                                css_stylesheet_destroy(stylesheet);
+                                THWarn(@"Error %ld parsing stylesheet", (long)err);
+                            }
+                        } else {
+                            THWarn(@"Error %ld creating stylesheet", (long)err);
+                        }
+                    }                
+                }
+                
+                NSString* href = [examiningNode linkedCSSRelativeURLString];
+                if(href) {
+                    NSURL *stylesheetUrl = [NSURL URLWithString:href relativeToURL:_url];
+                    if(stylesheetUrl) {
+                        NSData *stylesheetData = [_dataSource dataForURL:stylesheetUrl];
+                        if(stylesheetData) {
+                            NSString *title = [examiningNode attributeWithName:@"title"];
                             css_error err = css_stylesheet_create(CSS_LEVEL_3,
-                                                                  "UTF-8", myUrl, NULL,
+                                                                  NULL, [[stylesheetUrl absoluteString] UTF8String], [title UTF8String],
                                                                   false, false,
                                                                   EucRealloc, NULL,
                                                                   EucResolveURL, NULL,
                                                                   NULL, NULL,
                                                                   &stylesheet);
                             if(err == CSS_OK) {
-                                do {
-                                    const char *styleChars;
-                                    size_t styleLength;
-                                    if([styleContents getCharacterContents:&styleChars length:&styleLength]) {
-                                        err = css_stylesheet_append_data(stylesheet, (uint8_t *)styleChars, styleLength);
-                                        styleContents = styleContents.nextSibling;
-                                    } else {
-                                        THWarn(@"Error getting text contents for stylesheet");
-                                        err = CSS_INVALID;
-                                    }
-                                } while(err == CSS_NEEDDATA &&
-                                        styleContents && 
-                                        styleContents.kind == EucCSSDocumentTreeNodeKindText);
-                            
+                                css_error err = css_stylesheet_append_data(stylesheet, 
+                                                                           [stylesheetData bytes],
+                                                                           [stylesheetData length]);
+                                
                                 if(err != CSS_NEEDDATA) {
-                                    THWarn(@"Unexpected error %ld parsing inline stylesheet", err);
+                                    THWarn(@"Unexpected error %ld parsing stylesheet at URL %@", err, [stylesheetUrl absoluteString]);
                                 }
-                                    
+                                
                                 err = css_stylesheet_data_done(stylesheet);
                                 if(err == CSS_IMPORTS_PENDING) {
                                     err = [self _resolvePendingImportsForStylesheet:stylesheet
                                                                               atUrl:_url];
                                 } 
                                 
-                                if(err == CSS_OK) {
+                                if (err == CSS_OK) {
                                     ++_stylesheetsCount;
                                     _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
                                     _stylesheets[_stylesheetsCount-1] = stylesheet;
@@ -254,58 +285,6 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
                                 }
                             } else {
                                 THWarn(@"Error %ld creating stylesheet", (long)err);
-                            }
-                        }                
-                    } else if([@"link" caseInsensitiveCompare:examiningNode.name] == NSOrderedSame) {
-                        NSString *rel = [examiningNode attributeWithName:@"rel"];
-                        if(rel && [rel caseInsensitiveCompare:@"stylesheet"] == NSOrderedSame) {
-                            NSString *type = [examiningNode attributeWithName:@"type"];
-                            if(type && [type caseInsensitiveCompare:@"text/css"] == NSOrderedSame) {
-                                NSString *href = [examiningNode attributeWithName:@"href"];
-                                if(href) {
-                                    NSURL *stylesheetUrl = [NSURL URLWithString:href relativeToURL:_url];
-                                    if(stylesheetUrl) {
-                                        NSData *stylesheetData = [_dataSource dataForURL:stylesheetUrl];
-                                        if(stylesheetData) {
-                                            NSString *title = [examiningNode attributeWithName:@"title"];
-                                            css_error err = css_stylesheet_create(CSS_LEVEL_3,
-                                                                                  NULL, [[stylesheetUrl absoluteString] UTF8String], [title UTF8String],
-                                                                                  false, false,
-                                                                                  EucRealloc, NULL,
-                                                                                  EucResolveURL, NULL,
-                                                                                  NULL, NULL,
-                                                                                  &stylesheet);
-                                            if(err == CSS_OK) {
-                                                css_error err = css_stylesheet_append_data(stylesheet, 
-                                                                                           [stylesheetData bytes],
-                                                                                           [stylesheetData length]);
-                                                
-                                                if(err != CSS_NEEDDATA) {
-                                                    THWarn(@"Unexpected error %ld parsing stylesheet at URL %@", err, [stylesheetUrl absoluteString]);
-                                                }
-                                                
-                                                err = css_stylesheet_data_done(stylesheet);
-                                                if(err == CSS_IMPORTS_PENDING) {
-                                                    err = [self _resolvePendingImportsForStylesheet:stylesheet
-                                                                                              atUrl:_url];
-                                                } 
-                                                
-                                                if (err == CSS_OK) {
-                                                    ++_stylesheetsCount;
-                                                    _stylesheets = realloc(_stylesheets, sizeof(css_stylesheet *) * _stylesheetsCount);
-                                                    _stylesheets[_stylesheetsCount-1] = stylesheet;
-                                                    
-                                                    css_select_ctx_append_sheet(_selectCtx, stylesheet, CSS_ORIGIN_AUTHOR, CSS_MEDIA_ALL);
-                                                } else {
-                                                    css_stylesheet_destroy(stylesheet);
-                                                    THWarn(@"Error %ld parsing stylesheet", (long)err);
-                                                }
-                                            } else {
-                                                THWarn(@"Error %ld creating stylesheet", (long)err);
-                                            }
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
@@ -320,7 +299,6 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
                 dataSource:(id<EucCSSIntermediateDocumentDataProvider>)dataSource
               baseCSSPaths:(NSArray *)baseCSSPaths
               userCSSPaths:(NSArray *)userCSSPaths
-                    isHTML:(BOOL)isHTML
 {
     if((self = [super init])) {
         BOOL success = NO;
@@ -328,7 +306,7 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
         _url = [url retain];
         _dataSource = dataSource;
         if(css_select_ctx_create(EucRealloc, NULL, &_selectCtx) == CSS_OK) {
-            [self _setupStylesheetWithUserAgentCSSPaths:baseCSSPaths userCSSPaths:userCSSPaths parseHead:isHTML];
+            [self _setupStylesheetWithUserAgentCSSPaths:baseCSSPaths userCSSPaths:userCSSPaths];
             success = YES;
         }
         

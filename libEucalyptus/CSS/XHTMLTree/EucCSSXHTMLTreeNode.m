@@ -60,4 +60,28 @@
     return [self attributeWithName:@"style"];
 }
 
+- (BOOL)hasEmbeddedCSSString
+{
+    NSString *name = self.name;
+    return (name && [@"style" caseInsensitiveCompare:name] == NSOrderedSame);
+}
+
+- (NSString *)linkedCSSRelativeURLString
+{
+    NSString *name = self.name;
+    if(name && [@"link" caseInsensitiveCompare:name] == NSOrderedSame) {
+        NSString *rel = [self attributeWithName:@"rel"];
+        if(rel && [rel caseInsensitiveCompare:@"stylesheet"] == NSOrderedSame) {
+            NSString *type = [self attributeWithName:@"type"];
+            if(type && [type caseInsensitiveCompare:@"text/css"] == NSOrderedSame) {
+                NSString *href = [self attributeWithName:@"href"];
+                if(href) {
+                    return href;
+                }
+            }
+        }
+    }
+    return nil;
+}
+
 @end

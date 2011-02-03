@@ -24,6 +24,7 @@
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect;
 - (UIImage *)thumbnailForPage:(NSInteger)page;
 - (NSArray *)hyperlinksForPage:(NSInteger)page;
+- (NSArray *)enhancedContentForPage:(NSInteger)page;
 
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect

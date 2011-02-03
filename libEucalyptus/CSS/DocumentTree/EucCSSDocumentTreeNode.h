@@ -49,4 +49,7 @@
 - (NSUInteger)rowSpan;
 - (NSArray *)preprocessedWordStrings;
 
+- (BOOL)hasEmbeddedCSSString;
+- (NSString *)linkedCSSRelativeURLString;
+
 @end

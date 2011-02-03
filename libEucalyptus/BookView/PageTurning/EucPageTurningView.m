@@ -3280,9 +3280,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         zoomMatrix.m41 = wholePixelTranslation.x;
         zoomMatrix.m42 = wholePixelTranslation.y;
-        
-        //self.layer.sublayerTransform = zoomMatrix;
-        
+                
         CGRect rightPageFrame = _rightPageRect;
         rightPageFrame.origin.x -= _viewportLogicalSize.width * 0.5f;
         rightPageFrame.origin.y -= _viewportLogicalSize.height * 0.5f;
@@ -3396,6 +3394,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             [self _scheduleRetextureForPanAndZoom];
         }
         [self setNeedsDraw];
+
+        self.layer.sublayerTransform = zoomMatrix;
 
         return remainingTranslation;
     }

@@ -9,7 +9,4 @@
 #import <libEucalyptus/EucCSSXMLTree.h>
 
 @interface BlioTextFlowXAMLTree : EucCSSXMLTree {}
-
-- (id)initWithData:(NSData *)data;
-
 @end

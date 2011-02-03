@@ -159,24 +159,28 @@ int EucCSSXMLTreeExternalEntityRefHandler(XML_Parser parser,
 
 - (id)initWithData:(NSData *)xmlData
 {
-    return [self initWithData:xmlData xmlTreeNodeClass:[EucCSSXMLTreeNode class]];
-}
-
-- (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass
-DTDPublicIDToLocalPathMap:(NSDictionary *)dtdMap defaultDTDPublicID:(NSString *)defaultDTDID
-{
     if((self = [super init])) {
-        _xmlTreeNodeClass = xmlTreeNodeClass;
         NSUInteger xmlLength = xmlData.length;
         if(xmlLength) {
             NSMutableArray *buildNodes = [[NSMutableArray alloc] init];
             NSMutableDictionary *buildIdToNodes = [[NSMutableDictionary alloc] init];
-            EucCSSXMLTreeContext context = { self, _xmlTreeNodeClass, buildNodes, buildIdToNodes, NULL, NULL, dtdMap, defaultDTDID };
+            
+            NSString *defaultDTDPublicID = self.defaultDTDPublicID;
+            
+            EucCSSXMLTreeContext context = { self, 
+                                             self.xmlTreeNodeClass, 
+                                             buildNodes, 
+                                             buildIdToNodes, 
+                                             NULL, 
+                                             NULL, 
+                                             self.DTDPublicIDToLocalPath, 
+                                             defaultDTDPublicID 
+                                           };
             
             XML_Parser parser = XML_ParserCreate("UTF-8");
             XML_SetUserData(parser, &context);    
             
-            XML_UseForeignDTD(parser, defaultDTDID != nil);
+            XML_UseForeignDTD(parser, defaultDTDPublicID != nil);
             XML_SetParamEntityParsing(parser, XML_PARAM_ENTITY_PARSING_ALWAYS);
             XML_SetExternalEntityRefHandler(parser, EucCSSXMLTreeExternalEntityRefHandler);
             
@@ -205,11 +209,6 @@ DTDPublicIDToLocalPathMap:(NSDictionary *)dtdMap defaultDTDPublicID:(NSString *)
     return self;
 }
 
-- (id)initWithData:(NSData *)xmlData xmlTreeNodeClass:(Class)xmlTreeNodeClass
-{
-    return [self initWithData:xmlData xmlTreeNodeClass:xmlTreeNodeClass DTDPublicIDToLocalPathMap:nil defaultDTDPublicID:nil];
-}
-
 - (void)dealloc
 {
     [_idToNode release];
@@ -235,5 +234,21 @@ DTDPublicIDToLocalPathMap:(NSDictionary *)dtdMap defaultDTDPublicID:(NSString *)
 {
     return _nodes.count;
 }
+
+- (Class)xmlTreeNodeClass
+{
+    return [EucCSSXMLTreeNode class];
+}
+
+- (NSString *)defaultDTDPublicID
+{
+    return nil;
+}
+
+- (NSDictionary *)DTDPublicIDToLocalPath
+{ 
+    return nil;
+}
+
 
 @end

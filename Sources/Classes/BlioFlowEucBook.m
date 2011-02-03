@@ -17,6 +17,7 @@
 
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucBookNavPoint.h>
+#import <libEucalyptus/EucCSSXHTMLTree.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THRegex.h>
 
@@ -93,16 +94,6 @@
     return navPoints;
 }
 
-- (BOOL)documentTreeIsHTML:(id<EucCSSDocumentTree>)documentTree
-{
-    if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]] ||
-       [documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
-        return NO;
-    } else {
-        return [super documentTreeIsHTML:documentTree];
-    }
-}
-
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
     if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
@@ -162,8 +153,9 @@
         NSUInteger section = [indexString integerValue];
         if(self.fakeCover) {
             if(section == 0) {
-                NSURL *coverHTMLFile = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"]];
-                tree = [super documentTreeForURL:coverHTMLFile];
+                NSData *coverHTMLData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"]];
+                tree = [[[EucCSSXHTMLTree alloc] initWithData:coverHTMLData] autorelease];
+                [coverHTMLData release];
             } else {
                 --section;
             }
