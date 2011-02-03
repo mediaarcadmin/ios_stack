@@ -414,8 +414,8 @@
         if(!ePubUnzipHandle) {
             NSLog(@"ERROR: Could not open ePub file, %@; cannot import!",importableBook.fileName);
         } else {
-            if(unzLocateFile(ePubUnzipHandle, "rights.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
-                NSLog(@"Rights file exists for ePub file, %@; cannot import!", importableBook.fileName);
+            if(unzLocateFile(ePubUnzipHandle, "META-INF/rights.xml", 1) != UNZ_END_OF_LIST_OF_FILE || unzLocateFile(ePubUnzipHandle, "META-INF/encryption.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
+                NSLog(@"Rights/encryption file exists for ePub file, %@; cannot import!", importableBook.fileName);
                 importableBook.isDRM = YES;
                 toReturn = importableBook;
             } else {
