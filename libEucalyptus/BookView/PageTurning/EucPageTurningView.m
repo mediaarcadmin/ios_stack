@@ -3392,10 +3392,19 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(_zoomFactor != previousZoomFactor || 
            !CGPointEqualToPoint(_scrollTranslation, previousTranslation)) {
             [self _scheduleRetextureForPanAndZoom];
+            
+            
+            // Set the transform used by CA to position sublayers - allows
+            // users of the class to place UIViews etc. 'on' the page.
+            CATransform3D sublayerTransform = zoomMatrix;
+            // Make sure the sublayer transform translation is in the UIView
+            // points.
+            sublayerTransform.m41 *= _viewportToBoundsPointsTransform.a;
+            sublayerTransform.m42 *= _viewportToBoundsPointsTransform.d;
+            self.layer.sublayerTransform = sublayerTransform;
         }
         [self setNeedsDraw];
 
-        self.layer.sublayerTransform = zoomMatrix;
 
         return remainingTranslation;
     }
