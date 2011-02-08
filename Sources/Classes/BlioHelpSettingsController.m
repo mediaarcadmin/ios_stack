@@ -49,11 +49,19 @@
 #pragma mark -
 #pragma mark UIWebViewDelegate
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-	NSString *output = [webView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight;"];
-	NSInteger webviewHeight = [output intValue]+10;
-	if (webviewHeight > 600) webviewHeight = 600;
-	self.contentSizeForViewInPopover = CGSizeMake(320, webviewHeight);
+//- (void)webViewDidFinishLoad:(UIWebView *)webView {
+//	NSString *output = [webView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight;"];
+//	NSInteger webviewHeight = [output intValue]+10;
+//	if (webviewHeight > 600) webviewHeight = 600;
+//	self.contentSizeForViewInPopover = CGSizeMake(320, webviewHeight);
+//}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+	if (![request.URL isFileURL] && navigationType == UIWebViewNavigationTypeLinkClicked) {
+		[[UIApplication sharedApplication] openURL:request.URL];
+		return NO;
+	}
+	return YES;
 }
 
 #pragma mark -

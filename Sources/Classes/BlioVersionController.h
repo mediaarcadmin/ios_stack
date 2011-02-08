@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface BlioVersionController : UITableViewController {
+@interface BlioVersionController : UITableViewController<UIWebViewDelegate> {
 	UIWebView *textView;
 }
 
