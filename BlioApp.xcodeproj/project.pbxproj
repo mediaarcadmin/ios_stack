@@ -198,6 +198,9 @@
 		7DB349A812B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
 		7DB349A912B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
 		7DB349AA12B1955C00BCE8DF /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
+		7DB56E8513097EB900814B75 /* minizip-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7DB56E8413097EB900814B75 /* minizip-license.html */; };
+		7DB56E8613097EB900814B75 /* minizip-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7DB56E8413097EB900814B75 /* minizip-license.html */; };
+		7DB56E8713097EB900814B75 /* minizip-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7DB56E8413097EB900814B75 /* minizip-license.html */; };
 		7DB5F71111EC65BF00D33185 /* logo-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */; };
 		7DB6493C12B12AC100F42F87 /* DRM-iPad in Resources */ = {isa = PBXBuildFile; fileRef = 7DB6493812B12AC100F42F87 /* DRM-iPad */; };
 		7DB6493D12B12AC100F42F87 /* DRM-iPad in Resources */ = {isa = PBXBuildFile; fileRef = 7DB6493812B12AC100F42F87 /* DRM-iPad */; };
@@ -1495,6 +1498,7 @@
 		7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDefaultViewController.m; sourceTree = "<group>"; };
 		7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THNSDataAdditions.m; sourceTree = "<group>"; };
 		7DB349AB12B1956200BCE8DF /* THNSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSDataAdditions.h; sourceTree = "<group>"; };
+		7DB56E8413097EB900814B75 /* minizip-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "minizip-license.html"; sourceTree = "<group>"; };
 		7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white@2x.png"; sourceTree = "<group>"; };
 		7DB6493812B12AC100F42F87 /* DRM-iPad */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "DRM-iPad"; sourceTree = "<group>"; };
 		7DB7029D1248D38E00BC3272 /* NSArray+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+BlioAdditions.h"; sourceTree = "<group>"; };
@@ -2246,6 +2250,7 @@
 				7D07620112EEC96A008EF96D /* sfhf-license.html */,
 				A393060412BAC03400949150 /* openfont-license.html */,
 				A39305FE12BAC01A00949150 /* apache2-license.html */,
+				7DB56E8413097EB900814B75 /* minizip-license.html */,
 				A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */,
 				A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */,
 				DCD4A4E4126F7F8E00A131B7 /* icon-add@2x.png */,
@@ -3619,6 +3624,7 @@
 				A3951A2812E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7DED87DE12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 				7D07620312EEC96A008EF96D /* sfhf-license.html in Resources */,
+				7DB56E8713097EB900814B75 /* minizip-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3856,6 +3862,7 @@
 				A3951A2912E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7DED87DF12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 				7D07620412EEC96A008EF96D /* sfhf-license.html in Resources */,
+				7DB56E8613097EB900814B75 /* minizip-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4093,6 +4100,7 @@
 				A3951A2A12E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7DED87DD12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 				7D07620212EEC96A008EF96D /* sfhf-license.html in Resources */,
+				7DB56E8513097EB900814B75 /* minizip-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
