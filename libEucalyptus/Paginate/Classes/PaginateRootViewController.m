@@ -8,6 +8,7 @@
 
 #import "PaginateRootViewController.h"
 #import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucBUpeFilesystemDataProvider.h>
 #import <libEucalyptus/EucBookPageIndex.h>
 #import <libEucalyptus/EucBookPaginator.h>
 #import <unistd.h>

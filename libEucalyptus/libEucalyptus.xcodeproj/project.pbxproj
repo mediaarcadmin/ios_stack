@@ -430,6 +430,9 @@
 		7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */; };
 		7DB0901E1110C76B00CC5694 /* EucSelectorRange.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB35E3F120764DE0050BD91 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F4C2E11EF29600065A5F7 /* libEucalyptusBase.a */; };
+		7DB56EA9130987DE00814B75 /* Down and out in the Magic Kingdom in Resources */ = {isa = PBXBuildFile; fileRef = 7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */; };
+		7DB56EAA130987E400814B75 /* book in Resources */ = {isa = PBXBuildFile; fileRef = 7D9A979210D7E48E00C2E00A /* book */; };
+		7DB56EAB130987EA00814B75 /* pg103.epub in Resources */ = {isa = PBXBuildFile; fileRef = 7DCA5804114985C7007EDB15 /* pg103.epub */; };
 		7DB9F85510F38ABD0010DF0B /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85110F38ABD0010DF0B /* LinuxLibertine-Bold.otf */; };
 		7DB9F85610F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */; };
 		7DB9F85710F38ABD0010DF0B /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */; };
@@ -464,6 +467,8 @@
 		7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */; };
 		7DD48EFD10C2E69E0001203D /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DD48EFE10C2E6A50001203D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		7DDB062C13098A45000EDA56 /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E1412F98AAF0037D93D /* libminiunzip.a */; };
+		7DDB063013098A5D000EDA56 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDB062F13098A5D000EDA56 /* libz.dylib */; };
 		7DE9CD5F12E43F610031C729 /* computed.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE9CC0012E43F430031C729 /* computed.h */; };
 		7DE9CD6012E43F610031C729 /* errors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE9CC0112E43F430031C729 /* errors.h */; };
 		7DE9CD6112E43F610031C729 /* fpmath.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE9CC0212E43F430031C729 /* fpmath.h */; };
@@ -1379,6 +1384,7 @@
 		7DD48EC910C2E61E0001203D /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
 		7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemFastForward.png; sourceTree = "<group>"; };
 		7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
+		7DDB062F13098A5D000EDA56 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		7DE9CB7B12E436B30031C729 /* Makefile.clang */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.clang; sourceTree = "<group>"; };
 		7DE9CB7C12E436B30031C729 /* Makefile.gcc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.gcc; sourceTree = "<group>"; };
 		7DE9CB7D12E436B30031C729 /* Makefile.norcroft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.norcroft; sourceTree = "<group>"; };
@@ -1861,6 +1867,8 @@
 				7D2CC98F114D9322007FDEAF /* libcss.a in Frameworks */,
 				7D2CC9B4114D93E9007FDEAF /* libiconv.dylib in Frameworks */,
 				7D27117C1249281D0087C4E3 /* Accelerate.framework in Frameworks */,
+				7DDB062C13098A45000EDA56 /* libminiunzip.a in Frameworks */,
+				7DDB063013098A5D000EDA56 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1910,6 +1918,8 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D412B2F1149667300C003BB /* Cocoa.framework */,
+				7D412B2D1149666C00C003BB /* ApplicationServices.framework */,
 				7D27117A124928110087C4E3 /* Accelerate.framework */,
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 				7DD48E5010C2E41C0001203D /* UIKit.framework */,
@@ -1918,9 +1928,8 @@
 				7DD48E6010C2E46C0001203D /* QuartzCore.framework */,
 				7DD48E7B10C2E5780001203D /* AudioToolbox.framework */,
 				7DCA57B1114981FC007EDB15 /* libiconv.dylib */,
+				7DDB062F13098A5D000EDA56 /* libz.dylib */,
 				7DD48E5410C2E42C0001203D /* libstdc++.dylib */,
-				7D412B2D1149666C00C003BB /* ApplicationServices.framework */,
-				7D412B2F1149667300C003BB /* Cocoa.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -4238,6 +4247,9 @@
 				7D0D92851213185B00CD994D /* EPubOverrides.css in Resources */,
 				7D65AF2312E4B3E70087FEC3 /* Pride and Prejudice in Resources */,
 				7DED87C412EC812400D162E0 /* xhtml-entities.ent in Resources */,
+				7DB56EA9130987DE00814B75 /* Down and out in the Magic Kingdom in Resources */,
+				7DB56EAA130987E400814B75 /* book in Resources */,
+				7DB56EAB130987EA00814B75 /* pg103.epub in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

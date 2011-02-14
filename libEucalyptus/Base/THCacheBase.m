@@ -158,7 +158,7 @@ static const CFSetCallBacks THCacheSetCallBacks = {
         free(items);
         
         if(reused) {
-            THWarn(@"Cache has items in use in previous generation (%ld).  Generation lifetime (%ld)", (long)reused, (long)_generationLifetime);
+            THLog(@"Cache has items in use in previous generation (%ld).  Generation lifetime (%ld)", (long)reused, (long)_generationLifetime);
             /*CFStringRef description = CFCopyDescription(_lastGenerationCacheSet);
              NSLog(@"%@", (NSString *)description);
              CFRelease(description);*/
