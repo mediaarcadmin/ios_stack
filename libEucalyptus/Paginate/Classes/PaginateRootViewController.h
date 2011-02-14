@@ -19,6 +19,7 @@
     BOOL saveImages;
     
     CFAbsoluteTime time;
+    CFAbsoluteTime thisBookTime;
 }
 
 @property (nonatomic, assign) BOOL paginationUnderway;
