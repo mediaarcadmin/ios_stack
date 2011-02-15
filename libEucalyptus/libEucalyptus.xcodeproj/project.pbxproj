@@ -780,9 +780,9 @@
 			fileType = pattern.proxy;
 			isEditable = 1;
 			outputFiles = (
-				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_NAME).m",
+				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_NAME).c",
 			);
-			script = "pushd \"${INPUT_FILE_DIR}\"\nxxd -i \"${INPUT_FILE_NAME}\" - | sed 's/unsigned/const unsigned/' | sed 's/ =/ __attribute__((used)) =/' > \"${DERIVED_FILES_DIR}/${INPUT_FILE_NAME}.m\"\npopd";
+			script = "pushd \"${INPUT_FILE_DIR}\"\nxxd -i \"${INPUT_FILE_NAME}\" - | sed 's/unsigned/const unsigned/' | sed 's/ =/ __attribute__((used)) =/' > \"${DERIVED_FILES_DIR}/${INPUT_FILE_NAME}.c\"\npopd";
 		};
 		7D021790124029C7008CE201 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -791,9 +791,20 @@
 			fileType = pattern.proxy;
 			isEditable = 1;
 			outputFiles = (
-				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_NAME).thresource",
+				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_NAME).ethresource",
 			);
-			script = "dd if=\"${INPUT_FILE_PATH}\" of=\"${DERIVED_FILES_DIR}/${INPUT_FILE_NAME}.thresource\" conv=ibm";
+			script = "cp \"${INPUT_FILE_PATH}\" \"${DERIVED_FILES_DIR}/${INPUT_FILE_NAME}.ethresource\"";
+		};
+		7DE15B1E130AE3FF00632ABE /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.ethresource";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).e.thresource",
+			);
+			script = "dd if=\"${INPUT_FILE_PATH}\" of=\"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.e.thresource\" conv=ibm\n";
 		};
 /* End PBXBuildRule section */
 
@@ -4042,6 +4053,7 @@
 			);
 			buildRules = (
 				7D021790124029C7008CE201 /* PBXBuildRule */,
+				7DE15B1E130AE3FF00632ABE /* PBXBuildRule */,
 				7D02176B1240264C008CE201 /* PBXBuildRule */,
 			);
 			dependencies = (

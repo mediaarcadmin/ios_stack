@@ -45,16 +45,33 @@ static void e_to_a (unsigned char *bufferTo, const unsigned char *bufferFrom, NS
 {
     NSData *ret = nil;
     
-    NSString *fullName = [[name stringByReplacingOccurrencesOfString:@"." withString:@"_"] stringByAppendingString:@"_thresource"];
+    // Convert to symbol name.
+    name = [name stringByReplacingOccurrencesOfString:@"." withString:@"_"];
     
+    // Try the obfuscated version first.
+    NSString *fullName = [name stringByAppendingString:@"_e_thresource"];
     void *dataPointer = (void *)dlsym(RTLD_SELF, [fullName UTF8String]);
-    unsigned int *lengthPointer = (unsigned int *)dlsym(RTLD_SELF, [[fullName stringByAppendingString:@"_len"] UTF8String]);
+    if(dataPointer) {
+        unsigned int *lengthPointer = (unsigned int *)dlsym(RTLD_SELF, [[fullName stringByAppendingString:@"_len"] UTF8String]);
+        if(lengthPointer) {
+            NSUInteger length = *lengthPointer;
+            unsigned char *bufferTo = malloc(length);
+            e_to_a(bufferTo, (unsigned char *)dataPointer, length);
+            ret = [NSData dataWithBytesNoCopy:bufferTo length:length freeWhenDone:YES];
+        } 
+    } 
     
-    if(dataPointer && lengthPointer) {
-        NSUInteger length = *lengthPointer;
-        unsigned char *bufferTo = malloc(length);
-        e_to_a(bufferTo, (unsigned char *)dataPointer, length);
-        ret = [NSData dataWithBytesNoCopy:bufferTo length:length freeWhenDone:YES];
+    if(!ret) {
+        // Try the 'plain' version.
+        fullName = [name stringByAppendingString:@"_thresource"];
+        
+        void *dataPointer = (void *)dlsym(RTLD_SELF, [fullName UTF8String]);
+        if(dataPointer) {
+            unsigned int *lengthPointer = (unsigned int *)dlsym(RTLD_SELF, [[fullName stringByAppendingString:@"_len"] UTF8String]);
+            if(lengthPointer) {
+                ret = [NSData dataWithBytesNoCopy:dataPointer length:*lengthPointer freeWhenDone:NO];
+            } 
+        }         
     }
         
     return ret;
