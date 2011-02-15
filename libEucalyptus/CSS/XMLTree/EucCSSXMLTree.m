@@ -9,6 +9,8 @@
 #import "EucCSSXMLTree.h"
 #import "EucCSSXMLTreeNode.h"
 
+#import <expat/expat.h>
+
 #import "THLog.h"
 
 @implementation EucCSSXMLTree

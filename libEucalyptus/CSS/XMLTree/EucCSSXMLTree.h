@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <expat/expat.h>
 
 #import "EucCSSDocumentTree.h"
 
