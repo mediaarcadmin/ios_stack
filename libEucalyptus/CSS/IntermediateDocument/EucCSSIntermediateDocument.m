@@ -250,7 +250,12 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
                     if(stylesheetUrl) {
                         NSData *stylesheetData = [_dataSource dataForURL:stylesheetUrl];
                         if(stylesheetData) {
-                            NSString *title = [examiningNode attributeWithName:@"title"];
+                            NSString *title;
+                            if([examiningNode respondsToSelector:@selector(title)]) {
+                                title = examiningNode.title;
+                            } else {
+                                title = nil;
+                            }
                             css_error err = css_stylesheet_create(CSS_LEVEL_3,
                                                                   NULL, [[stylesheetUrl absoluteString] UTF8String], [title UTF8String],
                                                                   false, false,

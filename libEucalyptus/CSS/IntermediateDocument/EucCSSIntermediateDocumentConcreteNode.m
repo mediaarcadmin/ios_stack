@@ -120,7 +120,11 @@
 
 - (NSString *)altText
 {
-    return [_documentTreeNode attributeWithName:@"alt"];
+    if([_documentTreeNode respondsToSelector:@selector(altText)]) {
+        return _documentTreeNode.altText;
+    } else {
+        return nil;
+    }
 }
 
 - (void)_computeStyles

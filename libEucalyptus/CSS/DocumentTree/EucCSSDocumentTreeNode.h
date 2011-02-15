@@ -52,4 +52,7 @@
 - (BOOL)hasEmbeddedCSSString;
 - (NSString *)linkedCSSRelativeURLString;
 
+- (NSString *)title;
+- (NSString *)altText;
+
 @end
