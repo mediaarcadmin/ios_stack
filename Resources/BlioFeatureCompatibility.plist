@@ -4,5 +4,7 @@
 <dict>
 	<key>DRMP</key>
 	<real>1.1</real>
+	<key>EmbeddedEpub</key>
+	<real>1</real>
 </dict>
 </plist>
