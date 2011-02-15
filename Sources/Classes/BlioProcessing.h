@@ -17,10 +17,11 @@ typedef enum {
 	BlioBookSourceNotSpecified = 0,
 	BlioBookSourceFileSharing = 1,
 	BlioBookSourceLocalBundle = 2,
-	BlioBookSourceOnlineStore = 3,
-	BlioBookSourceOtherApplications = 4,
-	BlioBookSourceFeedbooks = 5,
-	BlioBookSourceGoogleBooks = 6
+	BlioBookSourceLocalBundleDRM = 3,
+	BlioBookSourceOnlineStore = 4,
+	BlioBookSourceOtherApplications = 5,
+	BlioBookSourceFeedbooks = 6,
+	BlioBookSourceGoogleBooks = 7
 } BlioBookSourceID;
 
 typedef enum {

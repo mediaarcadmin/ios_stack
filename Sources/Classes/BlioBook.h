@@ -43,7 +43,6 @@ static NSString * const BlioXPSEncryptedImagesDir = @"/Resources";
 static NSString * const BlioXPSEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/Flow";
 static NSString * const BlioXPSEnhancedContentDir = @"/Documents/1/Other/KNFB/EnhancedContent";
 static NSString * const BlioXPSEPubMetaInfContainerFile = @"/META-INF/container.xml";
-static NSString * const BlioXPSDRMEPubMetaInfContainerFile = @"/META-INF/container.xml.bin";
 static NSString * const BlioXPSMetaDataDir = @"/Documents/1/Metadata";
 static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.jpg";
 static NSString * const BlioXPSFixedDocumentSequenceFile = @"/FixedDocumentSequence.fdseq";
@@ -55,6 +54,7 @@ static NSString * const BlioXPSAudiobookDirectory = @"/Documents/1/Other/KNFB/Au
 static NSString * const BlioXPSAudiobookMetadataFile = @"/Documents/1/Other/KNFB/Audio/Audio.xml";
 static NSString * const BlioXPSAudiobookReferencesFile = @"/Documents/1/Other/KNFB/Audio/References.xml";
 static NSString * const BlioXPSKNFBDRMHeaderFile = @"/Documents/1/Other/KNFB/DrmpHeader.bin";
+static NSString * const BlioXPSKNFBEPubInfoFile = @"/Documents/1/Other/KNFB/EpubInfo.xml";
 
 static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
 static NSString * const BlioXPSComponentExtensionRels = @"rels";
@@ -62,6 +62,7 @@ static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 
 static NSString * const BlioManifestAudiobookKey = @"BlioManifestAudiobookKey";
 static NSString * const BlioManifestEPubKey = @"BlioManifestEPubKey";
+static NSString * const BlioManifestEPubInfoFileKey = @"BlioManifestEPubInfoFileKey";
 static NSString * const BlioManifestPDFKey = @"BlioManifestPDFKey";
 static NSString * const BlioManifestTextFlowKey = @"BlioManifestTextFlowKey";
 static NSString * const BlioManifestXPSKey = @"BlioManifestXPSKey";
@@ -137,6 +138,7 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @property (nonatomic, assign, readonly) NSString *pdfPath;
 @property (nonatomic, assign, readonly) NSString *xpsPath;
 @property (nonatomic, assign, readonly) BOOL hasEPub;
+@property (nonatomic, assign, readonly) BOOL hasEmbeddedEPub;
 @property (nonatomic, assign, readonly) BOOL hasPdf;
 @property (nonatomic, assign, readonly) BOOL hasXps;
 @property (nonatomic, assign, readonly) BOOL hasCoverImage;

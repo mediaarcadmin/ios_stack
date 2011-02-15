@@ -150,7 +150,7 @@
         else [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
         
 		NSString * locationValue = nil;
-		if (sourceID == BlioBookSourceLocalBundle) locationValue = BlioManifestEntryLocationBundle;
+		if (sourceID == BlioBookSourceLocalBundle || sourceID == BlioBookSourceLocalBundleDRM) locationValue = BlioManifestEntryLocationBundle;
 		else if (sourceID == BlioBookSourceFileSharing) locationValue = BlioManifestEntryLocationDocumentsDirectory;
 		else if (sourceID == BlioBookSourceOtherApplications) locationValue = BlioManifestEntryLocationFileSystemOther;
 		else locationValue = BlioManifestEntryLocationWeb;
@@ -979,7 +979,7 @@
 	NSInteger userNum = [[BlioStoreManager sharedInstance] currentUserNum];
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@ && userNum == %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource],[NSNumber numberWithInt:userNum]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@ && (userNum == %@ || userNum == %@)", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource],[NSNumber numberWithInt:userNum],nil]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -1009,8 +1009,9 @@
 - (void)loginDismissed:(NSNotification*)note {
 //	NSLog(@"BlioProcessingManager loginDismissed entered");
 	BlioBookSourceID sourceID = [[[note userInfo] valueForKey:@"sourceID"] intValue];
-	if (sourceID == BlioBookSourceOnlineStore && [[BlioStoreManager sharedInstance] isLoggedInForSourceID:sourceID]) {
-		[self resumeProcessingForSourceID:sourceID];
+	if ((sourceID == BlioBookSourceOnlineStore || sourceID == BlioBookSourceLocalBundleDRM) && [[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+		[self resumeProcessingForSourceID:BlioBookSourceOnlineStore];
+		[self resumeProcessingForSourceID:BlioBookSourceLocalBundleDRM];
 	}
 	else {
 //		ALERT user that we needed a token from login.
