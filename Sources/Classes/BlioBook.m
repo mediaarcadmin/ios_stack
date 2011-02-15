@@ -172,7 +172,7 @@
     return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
 }
 -(BOOL)fixedViewEnabled {
-	return ([self hasPdf] || [self hasXps]);
+	return ([self hasPdf] || ([self hasXps] && ![self hasEmbeddedEPub]));
 }
 
 - (NSString *)ePubPath {
@@ -190,7 +190,9 @@
 - (BOOL)hasEPub {
     return [self hasManifestValueForKey:BlioManifestEPubKey];
 }
-
+- (BOOL)hasEmbeddedEPub {
+    return [self manifestPath:BlioXPSEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS];
+}
 - (BOOL)hasPdf {
     return [self hasManifestValueForKey:BlioManifestPDFKey];
 }

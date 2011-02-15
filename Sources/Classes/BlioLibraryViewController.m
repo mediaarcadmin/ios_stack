@@ -319,7 +319,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"PeterRabbit" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"PeterRabbit" // this should normally be BTKey number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
@@ -332,7 +332,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"SleepyHollow" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"SleepyHollow" // this should normally be BTKey number when downloaded from the Book Store
+									  placeholderOnly:NO
+		 ];
+
+		[self.processingDelegate enqueueBookWithTitle:@"Maskerade" 
+                                              authors:[NSArray arrayWithObjects:@"Pratchett, Terry", nil]
+											coverPath:nil
+											 ePubPath:nil
+											  pdfPath:nil
+											  xpsPath:@"XPS-Starters/Maskerade.xps"
+										 textFlowPath:nil
+										audiobookPath:nil
+											 sourceID:BlioBookSourceLocalBundleDRM
+									 sourceSpecificID:@"Maskerade" // this should normally be BTKey number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 		
@@ -360,7 +373,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"Three Little Pigs" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"Three Little Pigs" // this should normally be BTKey number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 			
@@ -373,7 +386,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										  textFlowPath:nil
 										 audiobookPath:nil
 											  sourceID:BlioBookSourceLocalBundle
-									  sourceSpecificID:@"FrommersCancun" // this should normally be ISBN number when downloaded from the Book Store
+									  sourceSpecificID:@"FrommersCancun" // this should normally be BTKey number when downloaded from the Book Store
 									   placeholderOnly:NO
 		 ];
 		 
@@ -387,7 +400,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										 textFlowPath:nil
 										audiobookPath:nil
 											 sourceID:BlioBookSourceLocalBundle
-									 sourceSpecificID:@"OldLady" // this should normally be ISBN number when downloaded from the Book Store
+									 sourceSpecificID:@"OldLady" // this should normally be BTKey number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
 */		
