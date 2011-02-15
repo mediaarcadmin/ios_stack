@@ -156,7 +156,7 @@
         }
                 
         err = css_select_style(_document.selectContext, 
-                               (void *)(uintptr_t)_documentTreeNode.key,
+                               _documentTreeNode,
                                CSS_MEDIA_PRINT, 
                                inlineStyle, 
                                &EucCSSDocumentTreeSelectHandler,
