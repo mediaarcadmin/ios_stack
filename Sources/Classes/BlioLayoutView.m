@@ -265,7 +265,7 @@
 			aSelector.shouldTrackSingleTapsOnHighights = NO;
 			aSelector.dataSource = self;
 			aSelector.delegate =  self;
-			[aSelector attachToView:self];
+			//[aSelector attachToView:self];
 			[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
 			self.selector = aSelector;
 			[aSelector release]; 
@@ -1111,6 +1111,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
 
 				UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectApplyAffineTransform(displayRegion, pageTransform)];
+				webView.delegate = self;
 				webView.scalesPageToFit = NO;
 				webView.backgroundColor = [UIColor yellowColor];
 
@@ -1125,8 +1126,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 				
 				UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+				webView.delegate = self;
 				webView.scalesPageToFit = NO;
-				NSString *videoHTML = [NSString stringWithFormat:@"<html><head> <script type='text/javascript'> document.ontouchmove = function(e){ e.preventDefault(); } </script></head><body style='margin:0px;'><video src='%@' controls width='%f' height='%f'<p>This video format is not supported on this device.</p></video></body></html>", [videoURL absoluteString], webView.bounds.size.width, webView.bounds.size.height];
+				NSString *videoHTML = [NSString stringWithFormat:@"<html><head> <meta name = \"viewport\" content = \"initial-scale = 2.3, user-scalable = no\"></head><body style='margin:0px;'><video src='%@' controls width='%f' height='%f' poster=''><p>This video format is not supported on this device.</p></video></body></html>", [videoURL absoluteString], webView.bounds.size.width, webView.bounds.size.height];
 				//NSString *videoHTML = [NSString stringWithFormat:@"<video src='blioxpsprotocol://movie.ogg' controls='controls'>your browser does not support the video tag</video>", navigateUri];
 
 				//MPMoviePlayerViewController* theMoviePlayer = [[MPMoviePlayerViewController alloc] initWithContentURL: theURL];
@@ -1134,6 +1136,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				
 			//NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:videoURL] autorelease];
 				[webView loadHTMLString:videoHTML baseURL:nil];
+				
 			//[webView loadRequest:request];
 			
 				webView.backgroundColor = [UIColor redColor];
@@ -1163,6 +1166,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 //				
 //	return YES;
 //}
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+	NSString *jsCommand = [NSString stringWithFormat:@"document.documentElement.style.webkitTapHighlightColor = 'rgba(0,0,0,0)';"];
+	[webView stringByEvaluatingJavaScriptFromString:jsCommand];
+	
+	jsCommand = [NSString stringWithFormat:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
+	[webView stringByEvaluatingJavaScriptFromString:jsCommand];
+	
+	jsCommand = [NSString stringWithFormat:@"document.addEventListener('touchstart', function(event) { alert(event.touches.length);}, false);"];
+	[webView stringByEvaluatingJavaScriptFromString:jsCommand];
+	
+	jsCommand = [NSString stringWithFormat:@"document.documentElement.style.webkitTouchCallout = 'none';"];
+	[webView stringByEvaluatingJavaScriptFromString:jsCommand];
+	
+}
 
 #pragma mark -
 #pragma mark highlights

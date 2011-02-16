@@ -367,8 +367,10 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     [renderingLock lock];
         XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
         XPS_SetUserData(xpsHandle, self);
+		[inflateLock lock];
         XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-
+		[inflateLock unlock];
+	
         if (imageInfo) {
             size_t width  = imageInfo->widthInPixels;
             size_t height = imageInfo->height;
@@ -394,6 +396,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
                                  minSize:(CGSize)size 
                               getContext:(id *)context {
 	
+
 	CGRect pageCropRect = [self cropRectForPage:page];
     
     OutputFormat format;
@@ -418,10 +421,13 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     imageInfo = NULL;
     
     [renderingLock lock];
+	[inflateLock lock];
+	
     XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
     XPS_SetUserData(xpsHandle, self);
+	
     XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-    
+	
     CGContextRef bitmapContext = nil;
     
     if (imageInfo) {
@@ -438,8 +444,10 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
                         
         CGColorSpaceRelease(colorSpace);
     }
+	
+	[inflateLock unlock];
     [renderingLock unlock];
-    
+	    
     return (CGContextRef)[(id)bitmapContext autorelease];
 }
 
@@ -860,7 +868,9 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
     
     XPS_FILE_PACKAGE_INFO packageInfo;
     [contentsLock lock];
+	[inflateLock lock];
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
+	[inflateLock unlock];
     [contentsLock unlock];
     if (!ret) {
         NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
@@ -1039,7 +1049,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
     BOOL gzipped = NO;
     BOOL mapped = NO;
     BOOL cached = NO;
-    
+	    
     // TODO: Make sure these checks are ordered from most common to least common for efficiency
     if ([filename isEqualToString:@"Rights.xml"]) {
         if (self.bookIsEncrypted) {
@@ -1147,7 +1157,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
     if (![componentData length]) {
         NSLog(@"Zero length data returned in dataForComponentAtPath: %@", path);
     }
-	
+		
     return componentData;
     
 }
@@ -1386,12 +1396,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	return @"blioxpsprotocol";
 }
 
-/* our own class method.  Here we return the NSString used to identify
- the property we add to the NSURLRequest object for passing around data. */
-+ (NSString *)xpsProtocolProviderKey {
-	return @"specialVarsKey";
-}
-
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
 	NSString *theScheme = [[request URL] scheme];
 	return ([theScheme caseInsensitiveCompare: [BlioXPSProtocol xpsProtocolScheme]] == NSOrderedSame);
@@ -1401,7 +1405,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
  canonicalRequestForRequest method so you have an opportunity to modify
  the NSURLRequest before processing the request */
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
-    return [[request mutableCopy] autorelease];
+    return request;
 }
 
 /* our main loading routine.  This is where we do most of our processing
@@ -1462,31 +1466,8 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	
 }
 
-/* called to stop loading or to abort loading.  We don't do anything special
- here. */
-- (void)stopLoading
-{
-	NSLog(@"%@ received %@", self, NSStringFromSelector(_cmd));
-}
-
-
-@end
-
-@implementation NSURLRequest (BlioXPSProtocol)
-
-- (BlioXPSProvider *)xpsProvider {
-	return [NSURLProtocol propertyForKey:[BlioXPSProtocol xpsProtocolProviderKey] inRequest:self];
-}
-
-@end
-
-
-
-@implementation NSMutableURLRequest (BlioXPSProtocol)
-
-- (void)setXPSProvider:(BlioXPSProvider *)xpsProvider {
-	[NSURLProtocol setProperty:xpsProvider
-						forKey:[BlioXPSProtocol xpsProtocolProviderKey] inRequest:self];
+- (void)stopLoading {
+	// Do nothing
 }
 
 @end
