@@ -84,7 +84,7 @@
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
 
 - (NSArray *)enhancedContentForPage:(NSInteger)page;
-- (void)updateOverlayForPageAtIndex:(NSUInteger)pageIndex;
+- (void)updateOverlayForPagesInRange:(NSRange)pageRange;
 - (void)hideOverlay;
 - (void)showOverlay;
 
@@ -265,7 +265,7 @@
 			aSelector.shouldTrackSingleTapsOnHighights = NO;
 			aSelector.dataSource = self;
 			aSelector.delegate =  self;
-			//[aSelector attachToView:self];
+			[aSelector attachToView:self];
 			[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
 			self.selector = aSelector;
 			[aSelector release]; 
@@ -321,6 +321,7 @@
         self.selector = nil;
     }
 	self.temporaryHighlightRange = nil;
+	[self hideOverlay];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -336,6 +337,14 @@
 		self.selector = aSelector;
 		[aSelector release];
 	}
+	
+	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
+	} else {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
+	}
+	
+	[self showOverlay];
 }
 
 - (UIImage *)dimPageImage
@@ -423,7 +432,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 	self.selector.selectedRange = nil;
 	self.accessibilityElements = nil;
 	
-	[self updateOverlayForPageAtIndex:pageNumber - 1];
+	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
+	} else {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
+	}
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
@@ -1069,7 +1082,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	[overlay setHidden:NO];
 }
 
-- (void)updateOverlayForPageAtIndex:(NSUInteger)pageIndex 
+- (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
 	
 	if (self.pageTurningView) {
@@ -1079,11 +1092,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             frame.size.width /= 2.0f;
             frame.origin.y += frame.size.height / 4.0f;
             frame.size.height /= 2.0f;
-            //overlay = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-			//overlay.frame = frame;
+
 			overlay = [[UIView alloc] init];
 			overlay.frame = self.pageTurningView.bounds;
-			//overlay.frame = frame;
 			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 			overlay.userInteractionEnabled = YES;
 			overlay.backgroundColor = [UIColor clearColor];
@@ -1095,55 +1106,43 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			[view removeFromSuperview];
 		}
 		
-		CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
-		
-		NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
-		for (NSDictionary *dict in content) {
-			NSLog(@"DICT: %@", dict);
-			CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
-			NSString *navigateUri = [dict valueForKey:@"navigateUri"];
-			NSString *controlType = [dict valueForKey:@"controlType"];
-			CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
-			CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
+		for (int i = pageRange.location; i < pageRange.location + pageRange.length; i++) {
 			
-			if ([controlType isEqualToString:@"WebBrowser"]) {
-				NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
-				NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
-
-				UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectApplyAffineTransform(displayRegion, pageTransform)];
-				webView.delegate = self;
-				webView.scalesPageToFit = NO;
-				webView.backgroundColor = [UIColor yellowColor];
-
-				NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
-				
-				[webView loadRequest:request];
-				[overlay addSubview:webView];
-			} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
-				NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
-				//NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
-				//NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
-
-				
-				UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
-				webView.delegate = self;
-				webView.scalesPageToFit = NO;
-				NSString *videoHTML = [NSString stringWithFormat:@"<html><head> <meta name = \"viewport\" content = \"initial-scale = 2.3, user-scalable = no\"></head><body style='margin:0px;'><video src='%@' controls width='%f' height='%f' poster=''><p>This video format is not supported on this device.</p></video></body></html>", [videoURL absoluteString], webView.bounds.size.width, webView.bounds.size.height];
-				//NSString *videoHTML = [NSString stringWithFormat:@"<video src='blioxpsprotocol://movie.ogg' controls='controls'>your browser does not support the video tag</video>", navigateUri];
-
-				//MPMoviePlayerViewController* theMoviePlayer = [[MPMoviePlayerViewController alloc] initWithContentURL: theURL];
-//				[self presentMoviePlayerViewControllerAnimated:theMoviePlayer];
-				
-			//NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:videoURL] autorelease];
-				[webView loadHTMLString:videoHTML baseURL:nil];
-				
-			//[webView loadRequest:request];
+			NSUInteger pageIndex = i;
+			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
 			
-				webView.backgroundColor = [UIColor redColor];
-				[overlay addSubview:webView];
+			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
+			for (NSDictionary *dict in content) {
+				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
+				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
+				NSString *controlType = [dict valueForKey:@"controlType"];
+				CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
+				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
+				
+				if ([controlType isEqualToString:@"WebBrowser"]) {
+					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
+					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
+					
+					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+					webView.delegate = self;
+					webView.scalesPageToFit = NO;
+					
+					NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
+					
+					[webView loadRequest:request];
+					[overlay addSubview:webView];
+				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
+					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
+					
+					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+					webView.scalesPageToFit = NO;
+					NSString *videoHTML = [NSString stringWithFormat:@"<html><head></head><body style='margin:0px;'><video id='%p' src='%@' controls width='%f' height='%f' poster=''><p>This video format is not supported on this device.</p></video></body></html>", webView, [videoURL absoluteString], webView.bounds.size.width, webView.bounds.size.height];
+					[webView loadHTMLString:videoHTML baseURL:nil];
+					[overlay addSubview:webView];
+				}
+				
+				CFRelease(encodedString);
 			}
-			
-			CFRelease(encodedString);
 		}
 			
     }
@@ -1151,35 +1150,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 //#pragma mark -
 //#pragma mark UIWebViewDelegate
-//
-//- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-//{
-//	
-//	if ( [BlioXPSProtocol canInitWithRequest:request] ) {
-//		NSLog(@"shouldStartLoadWithRequest %p %@ (%@)", request, request, [request xpsProvider]);
-//		if ([request isKindOfClass:[NSMutableURLRequest class]]) {
-//			[(NSMutableURLRequest *)request setXPSProvider:(BlioXPSProvider *)self.dataSource];
-//		} else {
-//			NSLog(@"Not mutable!!!");
-//		}
-//	}
-//				
-//	return YES;
-//}
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-	NSString *jsCommand = [NSString stringWithFormat:@"document.documentElement.style.webkitTapHighlightColor = 'rgba(0,0,0,0)';"];
-	[webView stringByEvaluatingJavaScriptFromString:jsCommand];
-	
-	jsCommand = [NSString stringWithFormat:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
-	[webView stringByEvaluatingJavaScriptFromString:jsCommand];
-	
-	jsCommand = [NSString stringWithFormat:@"document.addEventListener('touchstart', function(event) { alert(event.touches.length);}, false);"];
-	[webView stringByEvaluatingJavaScriptFromString:jsCommand];
-	
-	jsCommand = [NSString stringWithFormat:@"document.documentElement.style.webkitTouchCallout = 'none';"];
-	[webView stringByEvaluatingJavaScriptFromString:jsCommand];
-	
+
+- (void)webViewDidFinishLoad:(UIWebView *)aWebView {
+	NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
+	[jsCommand appendString:@"document.documentElement.style.webkitTapHighlightColor = 'rgba(0,0,0,0)';"];
+	[jsCommand appendString:@"document.documentElement.style.webkitTouchCallout = 'none';"];
+	[aWebView stringByEvaluatingJavaScriptFromString:jsCommand];	
 }
+
 
 #pragma mark -
 #pragma mark highlights
