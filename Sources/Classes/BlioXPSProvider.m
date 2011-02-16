@@ -87,7 +87,6 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 - (NSArray *)extractHyperlinks:(NSData *)data;
 - (NSData *)dataFromComponentPartsInArray:(NSArray *)partsArray;
 - (NSArray *)contentsOfXPS;
-- (void)registerProtocolHandlerForXPS;
 
 @end
 
@@ -98,6 +97,12 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @synthesize componentCache;
 @synthesize drmSessionManager;
 @synthesize xpsPagesDirectory;
+
++ (void)initialize {
+    if(self == [BlioXPSProvider class]) {
+       [BlioXPSProtocol registerXPSProtocol];
+    }
+} 	
 
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
@@ -237,8 +242,6 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 			[epubInfoParserDelegate release];
 			[epubInfoParser release];
 		}		
-		
-		[self registerProtocolHandlerForXPS];
     }
     return self;
 }
@@ -1363,14 +1366,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
         }
     }
     return uriMap;
-}
-
-#pragma mark -
-#pragma mark ProtocolHandler
-
-- (void)registerProtocolHandlerForXPS
-{
-	[BlioXPSProtocol registerXPSProtocol];
 }
 
 @end
