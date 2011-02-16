@@ -60,7 +60,7 @@
 		forceLoginDisplayUponFailure = NO;
 		
 #ifdef TEST_MODE
-		self.storeURL = @"http://bliodemo.crosscomm.net/";
+		self.storeURL = @"http://mobile.theretailerplace.net/";
 #else	
 		self.storeURL = @"https://mobile.blioreader.com/";
 #endif
