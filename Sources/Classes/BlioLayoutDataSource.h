@@ -10,6 +10,13 @@
 @class THPair;
 
 @protocol BlioLayoutDataSource
+
+@optional
+
+- (NSString *)enhancedContentRootPath;
+- (NSData *)enhancedContentDataAtPath:(NSString *)path;
+- (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path;
+
 @required
 
 - (NSInteger)pageCount;

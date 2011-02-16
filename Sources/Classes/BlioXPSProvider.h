@@ -53,3 +53,10 @@ typedef enum {
 - (void)reportReadingIfRequired;
 
 @end
+
+@interface BlioXPSProtocol : NSURLProtocol {}
+
++ (NSString *)xpsProtocolScheme;
++ (void)registerXPSProtocol;
+			
+@end
