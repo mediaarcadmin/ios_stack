@@ -26,6 +26,41 @@ void BlioXPSProviderDRMClose(URI_HANDLE h);
 
 NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 
+@interface BlioEPubInfoParserDelegate : NSObject <NSXMLParserDelegate> {
+    NSMutableArray *encryptedPaths;
+}
+
+@property (nonatomic, retain) NSMutableArray *encryptedPaths;
+
+@end
+
+@implementation BlioEPubInfoParserDelegate
+
+@synthesize encryptedPaths;
+
+#pragma mark -
+#pragma mark NSXMLParserDelegate methods
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
+    if ( [elementName isEqualToString:@"File"] ) {
+		if ([[attributeDict objectForKey:@"IsEncrypted"] isEqualToString:@"true"]) {
+			if (!self.encryptedPaths) self.encryptedPaths = [NSMutableArray array];
+			[self.encryptedPaths addObject:[attributeDict objectForKey:@"Path"]];
+		}
+	}
+}
+
+#pragma mark -
+#pragma mark memory management
+
+-(void)dealloc {
+	self.encryptedPaths = nil;
+	[super dealloc];
+}
+
+@end
+
+
 @interface BlioXPSBitmapReleaseCallback : NSObject {
     void *data;
 }
@@ -101,7 +136,11 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
     if (currentUriString) {
         [currentUriString release];
     }
-    
+
+	if (_encryptedEPubPaths) {
+        [_encryptedEPubPaths release];
+    }
+	
     [renderingLock release];
     [contentsLock release];
     [inflateLock release];
@@ -185,6 +224,19 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
         [aCache release];
 		
 		drmSessionManager = nil;
+		
+		NSData * epubInfoData = [self dataForComponentAtPath:BlioXPSKNFBEPubInfoFile];
+		if (epubInfoData) {
+			NSXMLParser * epubInfoParser = [[NSXMLParser alloc] initWithData:epubInfoData];
+			BlioEPubInfoParserDelegate * epubInfoParserDelegate = [[BlioEPubInfoParserDelegate alloc] init];
+			[epubInfoParser setDelegate:epubInfoParserDelegate];
+			[epubInfoParser parse];
+			if (epubInfoParserDelegate.encryptedPaths) {
+				_encryptedEPubPaths = [epubInfoParserDelegate.encryptedPaths retain];
+			}
+			[epubInfoParserDelegate release];
+			[epubInfoParser release];
+		}		
 		
 		[self registerProtocolHandlerForXPS];
     }
@@ -991,7 +1043,14 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
             encrypted = YES;
             gzipped = YES;
         }
-    } else if ([extension isEqualToString:[BlioXPSComponentExtensionFPage uppercaseString]]) {
+	} 
+//	else if ([filename isEqualToString:@"container.xml.bin"]) {
+//			if (self.bookIsEncrypted) {
+//				encrypted = YES;
+//				gzipped = YES;
+//			}
+//	} 
+	else if ([extension isEqualToString:[BlioXPSComponentExtensionFPage uppercaseString]]) {
         if (self.bookIsEncrypted) {
             encrypted = YES;
             gzipped = YES;
@@ -999,7 +1058,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         } else {
             componentPath = [[self xpsPagesDirectory] stringByAppendingPathComponent:path];
         }
-
+		
         mapped = YES;
         cached = YES;
     } else if ([directory isEqualToString:BlioXPSEncryptedImagesDir] && ([extension isEqualToString:@"JPG"] || [extension isEqualToString:@"PNG"])) { 
@@ -1033,6 +1092,12 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         }
         cached = YES;
     }
+	else if (_encryptedEPubPaths) {
+		if ([_encryptedEPubPaths containsObject:path]) {
+			encrypted = YES;
+			gzipped = YES;
+		}
+	}
         
     if (cached) {
         NSData *cacheData = [self.componentCache objectForKey:componentPath];

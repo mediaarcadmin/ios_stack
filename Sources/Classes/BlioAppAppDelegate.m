@@ -387,6 +387,7 @@ static void *background_init_thread(void * arg) {
     self.delayedURLOpens = nil;
 	
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) {
+		[BlioStoreManager sharedInstance].initialLoginCheckFinished = NO;
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
@@ -405,6 +406,7 @@ static void *background_init_thread(void * arg) {
 
 -(void)loginDismissed:(NSNotification*)note {
 //	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
+	[BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {

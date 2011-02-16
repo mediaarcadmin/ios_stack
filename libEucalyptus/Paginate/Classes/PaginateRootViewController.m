@@ -8,6 +8,7 @@
 
 #import "PaginateRootViewController.h"
 #import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucBUpeZipDataProvider.h>
 #import <libEucalyptus/EucBookPageIndex.h>
 #import <libEucalyptus/EucBookPaginator.h>
 #import <unistd.h>
@@ -114,48 +115,49 @@
 - (void)removeFilesMatchingPattern:(NSString *)pattern fromPath:(NSString *)path
 {
     NSString *globPath = [path stringByAppendingPathComponent:pattern];
-    glob_t globValue;
+    glob_t globValue = { 0 };
     int err = glob([globPath fileSystemRepresentation],
                    GLOB_NOSORT,
                    NULL,
                    &globValue);
-    if(err != 0) {
-        NSLog(@"Globbing failed when attempting to remove \"%@\"", globPath);
-    } else {
+    if(err == 0) {
         for(size_t i = 0; i < globValue.gl_pathc; ++i) {
             char *from = globValue.gl_pathv[i];
             NSLog(@"Removing \"%s\"", from);
             unlink(from);
         }
-        globfree(&globValue);
-    }    
+    } else if(err != GLOB_NOMATCH) {
+        NSLog(@"Globbing failed when attempting to remove \"%@\", error %ld", globPath, (long)err);
+    }
+    globfree(&globValue);
 }
 
 - (BOOL)paginateNextBook
 {
     if(toPaginate.count) {
-        NSString *path = [toPaginate objectAtIndex:0];
+        NSString *ePubPath = [toPaginate objectAtIndex:0];
         
-        NSString *lastPathComponent = [path lastPathComponent];
         
 #if TARGET_IPHONE_SIMULATOR
-        NSString *paginationPath = PAGINATION_PATH;
+        NSString *temporaryPath = PAGINATION_PATH;
 #else
-        NSString *paginationPath = NSTemporaryDirectory();
+        NSString *temporaryPath = NSTemporaryDirectory();
 #endif
-        NSString *moveTo = [paginationPath stringByAppendingPathComponent:lastPathComponent];
-        NSString *images = [[paginationPath stringByAppendingPathComponent:@"/Images"] stringByAppendingPathComponent:lastPathComponent];
-        [[NSFileManager defaultManager] copyItemAtPath:path toPath:moveTo error:nil];
+        NSString *lastPathComponent = [ePubPath lastPathComponent];
+        NSString *paginationDirectory = [temporaryPath stringByAppendingPathComponent:[lastPathComponent stringByDeletingPathExtension]];
+        NSString *images = [paginationDirectory stringByAppendingPathComponent:@"/Images"];
         
-        path = moveTo;
-        [toPaginate replaceObjectAtIndex:0 withObject:path];
-        NSLog(@"Paginating \"%@\"", path);
+        [[NSFileManager defaultManager] createDirectoryAtPath:paginationDirectory withIntermediateDirectories:YES attributes:NULL error:NULL];
+        
+        NSLog(@"Paginating \"%@\"", ePubPath);
         
         // Remove old indexes.
-        [self removeFilesMatchingPattern:@"*v*Index*" fromPath:path];
+        [self removeFilesMatchingPattern:@"*v*Index*" fromPath:paginationDirectory];
         
-        EucBUpeFilesystemDataProvider *dataProvider = [[EucBUpeFilesystemDataProvider alloc] initWithBasePath:moveTo];
-        EucBUpeBook *testBook = [[EucBUpeBook alloc] initWithDataProvider:dataProvider cacheDirectoryPath:moveTo];
+        thisBookTime = CFAbsoluteTimeGetCurrent();
+        
+        EucBUpeZipDataProvider *dataProvider = [[EucBUpeZipDataProvider alloc] initWithZipFileAtPath:ePubPath];
+        EucBUpeBook *testBook = [[EucBUpeBook alloc] initWithDataProvider:dataProvider cacheDirectoryPath:paginationDirectory];
         [dataProvider release];
         [paginator paginateBookInBackground:testBook saveImagesTo:saveImages ? images : nil];
         [testBook release];
@@ -166,13 +168,15 @@
 
 - (void)paginationComplete:(NSNotification *)notification
 {
+    CFAbsoluteTime currentTime = CFAbsoluteTimeGetCurrent();
+    
     NSString *path = [toPaginate objectAtIndex:0];
-    NSLog(@"Pagination complete for %@", path);
+    NSLog(@"Pagination complete for %@, %f seconds.", path, currentTime - thisBookTime);
     
     [toPaginate removeObjectAtIndex:0];
                                   
     if(![self paginateNextBook]) {
-        NSLog(@"Pagination done in %f seconds!", CFAbsoluteTimeGetCurrent() - time);
+        NSLog(@"Pagination done in %f seconds.", currentTime - time);
         [toPaginate release];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:EucBookPaginatorCompleteNotification object:paginator];
         [paginator release];
@@ -191,8 +195,7 @@
         NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
         for(NSString *resource in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:resourcePath error:nil]) {
             NSString *fullPath = [resourcePath stringByAppendingPathComponent:resource];
-            BOOL isDirectory = YES;
-            if([[NSFileManager defaultManager] fileExistsAtPath:[fullPath stringByAppendingPathComponent:@"META-INF"] isDirectory:&isDirectory] && isDirectory) {
+            if([[fullPath pathExtension] caseInsensitiveCompare:@"epub"] == NSOrderedSame) {
                 [toPaginate addObject:fullPath];
             }
         }        

@@ -360,7 +360,6 @@
 		7D653B8211AFD17000C47DC6 /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D653B8011AFD17000C47DC6 /* EucConfiguration.plist */; };
 		7D658C6F103DEAD900EB5003 /* THImageFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D658C6D103DEAD900EB5003 /* THImageFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D658C70103DEAD900EB5003 /* THImageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D658C6E103DEAD900EB5003 /* THImageFactory.m */; };
-		7D65AF2312E4B3E70087FEC3 /* Pride and Prejudice in Resources */ = {isa = PBXBuildFile; fileRef = 7D035B6811ECD03B00F39592 /* Pride and Prejudice */; };
 		7D6AAC861028DEAD006289E6 /* THScalableSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAC841028DEAD006289E6 /* THScalableSlider.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D6AAC871028DEAD006289E6 /* THScalableSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6AAC851028DEAD006289E6 /* THScalableSlider.m */; };
 		7D6AAD621028E78E006289E6 /* EucBook.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D6AAD611028E78E006289E6 /* EucBook.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -425,6 +424,11 @@
 		7D9BA83812BF7FA900ABD23C /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D27117A124928110087C4E3 /* Accelerate.framework */; };
 		7DAC9908125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DAC9906125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DAC9909125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAC9907125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.m */; };
+		7DAE3E7C1309958400A45C63 /* Alice In Wonderland.ePub in Resources */ = {isa = PBXBuildFile; fileRef = 7DAE3E771309958400A45C63 /* Alice In Wonderland.ePub */; };
+		7DAE3E7D1309958400A45C63 /* Around The World In 80 Days.ePub in Resources */ = {isa = PBXBuildFile; fileRef = 7DAE3E781309958400A45C63 /* Around The World In 80 Days.ePub */; };
+		7DAE3E7E1309958400A45C63 /* Down and out in the Magic Kingdom.ePub in Resources */ = {isa = PBXBuildFile; fileRef = 7DAE3E791309958400A45C63 /* Down and out in the Magic Kingdom.ePub */; };
+		7DAE3E7F1309958400A45C63 /* Pride and Prejudice.ePub in Resources */ = {isa = PBXBuildFile; fileRef = 7DAE3E7A1309958400A45C63 /* Pride and Prejudice.ePub */; };
+		7DAE3E801309958400A45C63 /* Readings.ePub in Resources */ = {isa = PBXBuildFile; fileRef = 7DAE3E7B1309958400A45C63 /* Readings.ePub */; };
 		7DB0412411452788000C2980 /* THCALayerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB0409E11451687000C2980 /* THCALayerAdditions.m */; };
 		7DB041251145278F000C2980 /* THCALayerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DB0409D11451687000C2980 /* THCALayerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7DB0901D1110C75300CC5694 /* EucSelectorRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB08CD211106EAC00CC5694 /* EucSelectorRange.m */; };
@@ -464,6 +468,8 @@
 		7DD48EEB10C2E61E0001203D /* UIBarButtonSystemItemRewind.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */; };
 		7DD48EFD10C2E69E0001203D /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD48E5410C2E42C0001203D /* libstdc++.dylib */; };
 		7DD48EFE10C2E6A50001203D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		7DDB062C13098A45000EDA56 /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E1412F98AAF0037D93D /* libminiunzip.a */; };
+		7DDB063013098A5D000EDA56 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDB062F13098A5D000EDA56 /* libz.dylib */; };
 		7DE9CD5F12E43F610031C729 /* computed.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE9CC0012E43F430031C729 /* computed.h */; };
 		7DE9CD6012E43F610031C729 /* errors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE9CC0112E43F430031C729 /* errors.h */; };
 		7DE9CD6112E43F610031C729 /* fpmath.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DE9CC0212E43F430031C729 /* fpmath.h */; };
@@ -913,7 +919,6 @@
 		7D034F9710C2CD820085778B /* TransitionTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionTestMain.m; sourceTree = "<group>"; };
 		7D034F9910C2CD820085778B /* TransitionTestMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestMainWindow.xib; sourceTree = "<group>"; };
 		7D034F9A10C2CD820085778B /* TransitionTestRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionTestRootViewController.xib; sourceTree = "<group>"; };
-		7D035B6811ECD03B00F39592 /* Pride and Prejudice */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Pride and Prejudice"; sourceTree = "<group>"; };
 		7D0372D212D3511500B341BE /* EucCSSLayoutSizedBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutSizedBlock.h; sourceTree = "<group>"; };
 		7D0372D312D3511500B341BE /* EucCSSLayoutSizedBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSLayoutSizedBlock.m; sourceTree = "<group>"; };
 		7D03736612D3772100B341BE /* EucCSSLayoutSizedTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSLayoutSizedTable.h; sourceTree = "<group>"; };
@@ -1102,7 +1107,6 @@
 		7D23416D1149602300C318E7 /* EucCSSRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSRenderer.h; sourceTree = "<group>"; };
 		7D23416E1149602300C318E7 /* EucCSSRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSRenderer.m; sourceTree = "<group>"; };
 		7D2341981149614F00C318E7 /* libEucalyptusCSS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusCSS.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		7D239FB21261C134005B5D78 /* Readings */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Readings; sourceTree = "<group>"; };
 		7D26D23C10DBC3A2002D83C2 /* THEventCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THEventCapturingWindow.h; sourceTree = "<group>"; };
 		7D26D23D10DBC3A2002D83C2 /* THEventCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THEventCapturingWindow.m; sourceTree = "<group>"; };
 		7D27117A124928110087C4E3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -1343,13 +1347,17 @@
 		7D9A96E110D7E42A00C2E00A /* PaginateMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaginateMain.m; sourceTree = "<group>"; };
 		7D9A96E210D7E42A00C2E00A /* PaginateMainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginateMainWindow.xib; sourceTree = "<group>"; };
 		7D9A96E310D7E42A00C2E00A /* PaginateRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginateRootViewController.xib; sourceTree = "<group>"; };
-		7D9A979210D7E48E00C2E00A /* book */ = {isa = PBXFileReference; lastKnownFileType = folder; path = book; sourceTree = "<group>"; };
 		7D9A986610D7E6F100C2E00A /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7D9AA9C9114A8F6A0055C381 /* libEucalyptusBUpe.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libEucalyptusBUpe.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D9AA9E4114A90620055C381 /* EucBUpeBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpeBook.h; sourceTree = "<group>"; };
 		7D9AA9E5114A90620055C381 /* EucBUpeBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBUpeBook.m; sourceTree = "<group>"; };
 		7DAC9906125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucPageTurningTextureGenerationOperation.h; sourceTree = "<group>"; };
 		7DAC9907125DA21C00695E4C /* EucPageTurningTextureGenerationOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucPageTurningTextureGenerationOperation.m; sourceTree = "<group>"; };
+		7DAE3E771309958400A45C63 /* Alice In Wonderland.ePub */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Alice In Wonderland.ePub"; sourceTree = "<group>"; };
+		7DAE3E781309958400A45C63 /* Around The World In 80 Days.ePub */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Around The World In 80 Days.ePub"; sourceTree = "<group>"; };
+		7DAE3E791309958400A45C63 /* Down and out in the Magic Kingdom.ePub */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Down and out in the Magic Kingdom.ePub"; sourceTree = "<group>"; };
+		7DAE3E7A1309958400A45C63 /* Pride and Prejudice.ePub */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pride and Prejudice.ePub"; sourceTree = "<group>"; };
+		7DAE3E7B1309958400A45C63 /* Readings.ePub */ = {isa = PBXFileReference; lastKnownFileType = file; path = Readings.ePub; sourceTree = "<group>"; };
 		7DB0409D11451687000C2980 /* THCALayerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THCALayerAdditions.h; sourceTree = "<group>"; };
 		7DB0409E11451687000C2980 /* THCALayerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THCALayerAdditions.m; sourceTree = "<group>"; };
 		7DB08CD111106EAC00CC5694 /* EucSelectorRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorRange.h; sourceTree = "<group>"; };
@@ -1358,11 +1366,9 @@
 		7DB9F85210F38ABD0010DF0B /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DB9F85310F38ABD0010DF0B /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
 		7DB9F85410F38ABD0010DF0B /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
-		7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Down and out in the Magic Kingdom"; sourceTree = "<group>"; };
 		7DC0FDBA1234059600FBE9B3 /* EucSelectorAccessibilityMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucSelectorAccessibilityMask.h; sourceTree = "<group>"; };
 		7DC0FDBB1234059600FBE9B3 /* EucSelectorAccessibilityMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucSelectorAccessibilityMask.m; sourceTree = "<group>"; };
 		7DCA57B1114981FC007EDB15 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
-		7DCA5804114985C7007EDB15 /* pg103.epub */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pg103.epub; sourceTree = "<group>"; };
 		7DCAC3BE12F9CD0C00FBA7F9 /* EucCSSXHTMLTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucCSSXHTMLTree.h; sourceTree = "<group>"; };
 		7DCAC3BF12F9CD0C00FBA7F9 /* EucCSSXHTMLTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucCSSXHTMLTree.m; sourceTree = "<group>"; };
 		7DD48E5010C2E41C0001203D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1379,6 +1385,7 @@
 		7DD48EC910C2E61E0001203D /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
 		7DD48ED010C2E61E0001203D /* UIBarButtonSystemItemFastForward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemFastForward.png; sourceTree = "<group>"; };
 		7DD48ED110C2E61E0001203D /* UIBarButtonSystemItemRewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UIBarButtonSystemItemRewind.png; sourceTree = "<group>"; };
+		7DDB062F13098A5D000EDA56 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		7DE9CB7B12E436B30031C729 /* Makefile.clang */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.clang; sourceTree = "<group>"; };
 		7DE9CB7C12E436B30031C729 /* Makefile.gcc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.gcc; sourceTree = "<group>"; };
 		7DE9CB7D12E436B30031C729 /* Makefile.norcroft */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.norcroft; sourceTree = "<group>"; };
@@ -1861,6 +1868,8 @@
 				7D2CC98F114D9322007FDEAF /* libcss.a in Frameworks */,
 				7D2CC9B4114D93E9007FDEAF /* libiconv.dylib in Frameworks */,
 				7D27117C1249281D0087C4E3 /* Accelerate.framework in Frameworks */,
+				7DDB062C13098A45000EDA56 /* libminiunzip.a in Frameworks */,
+				7DDB063013098A5D000EDA56 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1910,6 +1919,8 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D412B2F1149667300C003BB /* Cocoa.framework */,
+				7D412B2D1149666C00C003BB /* ApplicationServices.framework */,
 				7D27117A124928110087C4E3 /* Accelerate.framework */,
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 				7DD48E5010C2E41C0001203D /* UIKit.framework */,
@@ -1918,9 +1929,8 @@
 				7DD48E6010C2E46C0001203D /* QuartzCore.framework */,
 				7DD48E7B10C2E5780001203D /* AudioToolbox.framework */,
 				7DCA57B1114981FC007EDB15 /* libiconv.dylib */,
+				7DDB062F13098A5D000EDA56 /* libz.dylib */,
 				7DD48E5410C2E42C0001203D /* libstdc++.dylib */,
-				7D412B2D1149666C00C003BB /* ApplicationServices.framework */,
-				7D412B2F1149667300C003BB /* Cocoa.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2862,11 +2872,11 @@
 		7D9A96F810D7E48200C2E00A /* TestResources */ = {
 			isa = PBXGroup;
 			children = (
-				7D239FB21261C134005B5D78 /* Readings */,
-				7DBBC887114FACF500225E51 /* Down and out in the Magic Kingdom */,
-				7D9A979210D7E48E00C2E00A /* book */,
-				7DCA5804114985C7007EDB15 /* pg103.epub */,
-				7D035B6811ECD03B00F39592 /* Pride and Prejudice */,
+				7DAE3E771309958400A45C63 /* Alice In Wonderland.ePub */,
+				7DAE3E781309958400A45C63 /* Around The World In 80 Days.ePub */,
+				7DAE3E791309958400A45C63 /* Down and out in the Magic Kingdom.ePub */,
+				7DAE3E7A1309958400A45C63 /* Pride and Prejudice.ePub */,
+				7DAE3E7B1309958400A45C63 /* Readings.ePub */,
 			);
 			path = TestResources;
 			sourceTree = "<group>";
@@ -4236,8 +4246,12 @@
 				7D4A009D11DBA34E00DDA5B7 /* SelectionKnob.png in Resources */,
 				7D4A009E11DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */,
 				7D0D92851213185B00CD994D /* EPubOverrides.css in Resources */,
-				7D65AF2312E4B3E70087FEC3 /* Pride and Prejudice in Resources */,
 				7DED87C412EC812400D162E0 /* xhtml-entities.ent in Resources */,
+				7DAE3E7C1309958400A45C63 /* Alice In Wonderland.ePub in Resources */,
+				7DAE3E7D1309958400A45C63 /* Around The World In 80 Days.ePub in Resources */,
+				7DAE3E7E1309958400A45C63 /* Down and out in the Magic Kingdom.ePub in Resources */,
+				7DAE3E7F1309958400A45C63 /* Pride and Prejudice.ePub in Resources */,
+				7DAE3E801309958400A45C63 /* Readings.ePub in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

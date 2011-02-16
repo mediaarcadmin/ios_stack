@@ -199,7 +199,7 @@
 		[self setBookManifestValue:manifestEntry forKey:BlioManifestDrmHeaderKey];
 	}
 	
-	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore) {
+	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore && [[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceLocalBundleDRM) {
 		NSLog(@"ERROR: Title (%@) is not an online store title!",[self getBookValueForKey:@"title"]);
 		NSLog(@"xpsFilename: %@", [self getBookManifestPathForKey:BlioManifestXPSKey]);
 		// TODO: remove the following two lines for final version (we're bypassing for now since Three Little Pigs doesn't need a license)
@@ -221,7 +221,7 @@
 		[self cancel];
 	}
 
-	if ([[self getBookValueForKey:@"userNum"] intValue] != [[BlioStoreManager sharedInstance] currentUserNum]) {  
+	if ([[self getBookValueForKey:@"userNum"] intValue] != [[BlioStoreManager sharedInstance] currentUserNum] && [[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceLocalBundleDRM) {  
 		NSLog(@"Book userNum and currentUserNum do not match! Cancelling BlioProcessingLicenseAcquisitionOperation...");
 		NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
 		[userInfo setObject:self.bookID forKey:@"bookID"];
@@ -855,8 +855,7 @@
 	
 	NSDictionary *manifestEntry = nil;
 	
-	BOOL hasEmbeddedEPub = [self bookManifestPath:BlioXPSEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS] ||
-                           [self bookManifestPath:BlioXPSDRMEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS];
+	BOOL hasEmbeddedEPub = [self bookManifestPath:BlioXPSEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasEmbeddedEPub) {
 		manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];

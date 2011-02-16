@@ -315,7 +315,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (!([self.book hasEPub] || [self.book hasTextFlow]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
         lastLayout = kBlioPageLayoutPlainText;
     }            
-    if (!([self.book hasPdf] || [self.book hasXps]) && (lastLayout == kBlioPageLayoutPageLayout)) {
+    if (![self.book fixedViewEnabled] && (lastLayout == kBlioPageLayoutPageLayout)) {
         lastLayout = kBlioPageLayoutPlainText;
     } else if (((![self.book hasEPub] && ![self.book hasTextFlow]) || ![self.book reflowEnabled]) && (lastLayout == kBlioPageLayoutPlainText)) {
         lastLayout = kBlioPageLayoutPageLayout;
@@ -2331,6 +2331,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
+	NSLog(@"%@%i", NSStringFromSelector(_cmd),finishedSpeaking);
 	if (finishedSpeaking) {
 		// Reached end of block.  Start on the next.
 		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager]; 
@@ -2341,6 +2342,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
+	NSLog(@"%@", NSStringFromSelector(_cmd));
     if(characterRange.location + characterRange.length <= string.length) {
         NSUInteger wordOffset = [_acapelaAudioManager wordOffsetForCharacterRange:characterRange];
         
@@ -2357,10 +2359,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark -
 #pragma mark AVAudioSession Delegate Methods 
 - (void)beginInterruption {
-
+	NSLog(@"%@", NSStringFromSelector(_cmd));
+	// update UI (e.g. play/pause button), stop any animations.
 }
 - (void)endInterruptionWithFlags:(NSUInteger)flags {
-
+	NSLog(@"%@", NSStringFromSelector(_cmd));
+	if (flags == AVAudioSessionInterruptionFlags_ShouldResume) {
+		
+	}
 }
 
 
@@ -2368,6 +2374,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark AVAudioPlayer Delegate Methods 
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag { 
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 	if (!flag) {
 		self.audioPlaying = NO;
         [_audioParagraphSource release];
@@ -2428,6 +2435,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)audioPlayerEndInterruption:(AVAudioPlayer*) player { 
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 	[_audioBookManager playAudio];
 }
 
@@ -2439,7 +2447,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 -(void)remoteControlReceivedWithEvent:(UIEvent*)theEvent {
-	//NSLog(@"remoteControlReceivedWithEvent");
+	NSLog(@"%@", NSStringFromSelector(_cmd));
     if (theEvent.type == UIEventTypeRemoteControl) {
         switch(theEvent.subtype) {
             case UIEventSubtypeRemoteControlTogglePlayPause:
