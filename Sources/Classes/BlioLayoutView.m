@@ -21,6 +21,7 @@
 #import "BlioLayoutGeometry.h"
 #import "BlioLayoutHyperlink.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioLayoutVideoPlayerView.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 #define BLIOLAYOUT_LHSHOTZONE 0.25f
@@ -1073,25 +1074,96 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
 	
 	if (self.pageTurningView) {
-		/*if (!overlay) {
+		if (!overlay) {
             CGRect frame = self.pageTurningView.bounds;
             frame.origin.x += frame.size.width / 4.0f;
             frame.size.width /= 2.0f;
             frame.origin.y += frame.size.height / 4.0f;
             frame.size.height /= 2.0f;
-            overlay = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-			overlay.frame = frame;
+            //overlay = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+			//overlay.frame = frame;
+			overlay = [[UIView alloc] init];
+			overlay.frame = self.pageTurningView.bounds;
+			//overlay.frame = frame;
 			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-			overlay.alpha = 0.3f;
+			overlay.userInteractionEnabled = YES;
+			overlay.backgroundColor = [UIColor clearColor];
+			overlay.multipleTouchEnabled = YES;
 			[self.pageTurningView addSubview:overlay];
 		}
 		
+		for (UIView *view in [overlay subviews]) {
+			[view removeFromSuperview];
+		}
+		
+		CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
+		
 		NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
-		NSLog(@"Content %@", content);
-		[overlay setBackgroundColor:[UIColor colorWithRed:arc4random()%1000/1000.0f green:arc4random()%1000/1000.0f blue:arc4random()%1000/1000.0f alpha:1]];
-	*/
+		for (NSDictionary *dict in content) {
+			NSLog(@"DICT: %@", dict);
+			CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
+			NSString *navigateUri = [dict valueForKey:@"navigateUri"];
+			NSString *controlType = [dict valueForKey:@"controlType"];
+			CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
+			CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
+			
+			if ([controlType isEqualToString:@"WebBrowser"]) {
+				NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
+				NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
+
+				UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectApplyAffineTransform(displayRegion, pageTransform)];
+				webView.scalesPageToFit = NO;
+				webView.backgroundColor = [UIColor yellowColor];
+
+				NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
+				
+				[webView loadRequest:request];
+				[overlay addSubview:webView];
+			} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
+				NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
+				//NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
+				//NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
+
+				
+				UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+				webView.scalesPageToFit = NO;
+				NSString *videoHTML = [NSString stringWithFormat:@"<html><head> <script type='text/javascript'> document.ontouchmove = function(e){ e.preventDefault(); } </script></head><body style='margin:0px;'><video src='%@' controls width='%f' height='%f'<p>This video format is not supported on this device.</p></video></body></html>", [videoURL absoluteString], webView.bounds.size.width, webView.bounds.size.height];
+				//NSString *videoHTML = [NSString stringWithFormat:@"<video src='blioxpsprotocol://movie.ogg' controls='controls'>your browser does not support the video tag</video>", navigateUri];
+
+				//MPMoviePlayerViewController* theMoviePlayer = [[MPMoviePlayerViewController alloc] initWithContentURL: theURL];
+//				[self presentMoviePlayerViewControllerAnimated:theMoviePlayer];
+				
+			//NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:videoURL] autorelease];
+				[webView loadHTMLString:videoHTML baseURL:nil];
+			//[webView loadRequest:request];
+			
+				webView.backgroundColor = [UIColor redColor];
+				[overlay addSubview:webView];
+			}
+			
+			CFRelease(encodedString);
+		}
+			
     }
 }
+
+//#pragma mark -
+//#pragma mark UIWebViewDelegate
+//
+//- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+//{
+//	
+//	if ( [BlioXPSProtocol canInitWithRequest:request] ) {
+//		NSLog(@"shouldStartLoadWithRequest %p %@ (%@)", request, request, [request xpsProvider]);
+//		if ([request isKindOfClass:[NSMutableURLRequest class]]) {
+//			[(NSMutableURLRequest *)request setXPSProvider:(BlioXPSProvider *)self.dataSource];
+//		} else {
+//			NSLog(@"Not mutable!!!");
+//		}
+//	}
+//				
+//	return YES;
+//}
 
 #pragma mark -
 #pragma mark highlights
@@ -1287,13 +1359,40 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Touch Handling
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    if(overlay && [overlay pointInside:[self convertPoint:point toView:overlay] withEvent:event]) {
-        return overlay;
-    } else if ([self pointInside:point withEvent:event]) {
+	UIView *tappedView = [super hitTest:point withEvent:event];
+	
+	if (tappedView == overlay) {
+		if ([self pointInside:point withEvent:event]) {
+			return self;
+		} else {
+			return nil;
+		}
+	} else {
+		return tappedView;
+	}
+	return tappedView;
+	UIView *tappedOverlayView = [self.overlay hitTest:point withEvent:event];
+	
+	return tappedOverlayView;
+	
+    if (overlay) {
+		for (UIView *overlayView in overlay.subviews) {
+			if ([overlayView pointInside:[self convertPoint:point toView:overlayView] withEvent:event]) {
+				return overlayView;
+			}
+		}
+    }
+	
+	if ([self pointInside:point withEvent:event]) {
         return self;
     } else {
         return nil;
     }
+	//if ([self pointInside:point withEvent:event]) {
+//        return self;
+//    } else {
+//        return nil;
+//    }
 }
 
 - (BOOL)touchesShouldBeSuppressed {
