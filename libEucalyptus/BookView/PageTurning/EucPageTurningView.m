@@ -56,6 +56,7 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 @property (nonatomic, assign, readonly) CATransform3D zoomMatrix;
 @property (nonatomic, assign) CGRect leftPageFrame;
 @property (nonatomic, assign) CGRect rightPageFrame;
+@property (nonatomic, assign) EucPageTurningViewAnimationFlags animationFlags;
 
 - (void)_calculateVertexNormals;    
 //- (void)_accumulateForces;  // Not used - see comments around implementation.
@@ -172,6 +173,34 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
             }        
         }
     }
+}
+
+- (void)setAnimationFlags:(EucPageTurningViewAnimationFlags)animationFlags
+{
+    if(animationFlags != _animationFlags) {
+        EucPageTurningViewAnimationFlags oldAnimationFlags = _animationFlags;        
+        if(((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))
+           && !((oldAnimationFlags & EucPageTurningViewAnimationFlagsDragTurn) || (oldAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))) {
+            if([_delegate respondsToSelector:@selector(pageTurningViewWillBeginPageTurn:)]) {
+                [_delegate pageTurningViewWillBeginPageTurn:self];   
+            }
+        }
+        
+        self.animating = (animationFlags != EucPageTurningViewAnimationFlagsNone);
+        _animationFlags = animationFlags;
+        
+        if(((oldAnimationFlags & EucPageTurningViewAnimationFlagsDragTurn) || (oldAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))
+           && !((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))) {
+            if([_delegate respondsToSelector:@selector(pageTurningViewDidEndPageTurn:)]) {
+                [_delegate pageTurningViewDidEndPageTurn:self];   
+            }
+        }
+    }
+}
+
+- (EucPageTurningViewAnimationFlags)animationFlags
+{
+    return _animationFlags;
 }
 
 static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsizei length, const void *pvrtcData)
@@ -1078,8 +1107,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         _automaticTurnPercentage = percentage;
         
-        _animationFlags |= EucPageTurningViewAnimationFlagsAutomaticTurn;
-        self.animating = YES;
+        [self setAnimationFlags:[self animationFlags] |  EucPageTurningViewAnimationFlagsAutomaticTurn];
     }
 }
 
@@ -1375,8 +1403,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             
             _automaticTurnPercentage = percentage;
             		
-            _animationFlags |= EucPageTurningViewAnimationFlagsAutomaticTurn;
-            self.animating = YES;
+            self.animationFlags = self.animationFlags |  EucPageTurningViewAnimationFlagsAutomaticTurn;
         } else {
             [self _setupBitmapPage:rightPageIndex forInternalPageOffset:3];
             if(_twoUp) {
@@ -1564,20 +1591,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {        
     [super drawView];
 	        
-    BOOL animating = self.isAnimating;
-
-    if(THWillLog()) {
-        if(animating) {
-            NSParameterAssert(_animationFlags != EucPageTurningViewAnimationFlagsNone);
-        } else {
-            NSParameterAssert(_animationFlags == EucPageTurningViewAnimationFlagsNone);
-        }
-    }
+    EucPageTurningViewAnimationFlags animationFlags = self.animationFlags;
+    BOOL animating = (animationFlags != EucPageTurningViewAnimationFlagsNone);
     
-    EucPageTurningViewAnimationFlags postDrawAnimationFlags = _animationFlags;
+    EucPageTurningViewAnimationFlags postDrawAnimationFlags = animationFlags;
 	
-    if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
-       (_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
+    if((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
+       (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
         //[self _accumulateForces]; // Not used - see comments around implementation.
         [self _verlet];
         BOOL shouldStopAnimating = [self _satisfyConstraints];
@@ -1588,14 +1608,14 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         }
     }
 	
-	if(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) {
+	if(animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) {
 		BOOL shouldStopAnimating = [self _satisfyPositioningConstraints];
         if(shouldStopAnimating) {
             postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsAutomaticPositioning;
         }
     }
     
-    if(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
+    if(animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
         BOOL shouldStopAnimating = [self _satisfyScrollingConstraints];
         if(shouldStopAnimating) {
             postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
@@ -1986,46 +2006,42 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     if(_viewsNeedRecache) {
         [self _recachePages];
         [self _setNeedsAccessibilityElementsRebuild];
-        if(!(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
+        if(!(animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
             _focusedPageIndex = _pageContentsInformation[2] ? _pageContentsInformation[2].pageIndex : _pageContentsInformation[3].pageIndex;
         }
         UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     }
     
-    if(_animationFlags != postDrawAnimationFlags) {
-        if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) &&
+    if(postDrawAnimationFlags != animationFlags) {
+        if((animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }
-        if((_animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
+        if((animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)) {
             // May as well kick this off now to avoid the 0.2s delay.
             [self _retextureForPanAndZoom];
         }
-        if((_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) &&
+        if((animationFlags & EucPageTurningViewAnimationFlagsDragScroll) &&
            !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsDragScroll)){
             _touchVelocity = CGPointZero;
         }
         
-        _animationFlags = postDrawAnimationFlags;
-        if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
-            self.animating = NO;
-        }
+        [self setAnimationFlags:postDrawAnimationFlags];
     }
 }
 
 - (void)abortAllAnimation
 {
-    if(self.animating) {
+    if(self.animationFlags != EucPageTurningViewAnimationFlagsNone) {
         memcpy(_pageVertices, _stablePageVertices, sizeof(_stablePageVertices));
         memcpy(_oldPageVertices, _stablePageVertices, sizeof(_stablePageVertices));
         _rightFlatPageContentsIndex = 3;
         _touchVelocity = CGPointZero;
-        if(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
+        if(self.animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }    
-        _animationFlags = EucPageTurningViewAnimationFlagsNone;
-        self.animating = NO;
+        [self setAnimationFlags:EucPageTurningViewAnimationFlagsNone];
         [self drawView];
     }
 }
@@ -2100,7 +2116,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
     CGSize size = self.bounds.size;
     CGPoint viewTouchPoint =  [touch locationInView:self];
-
+    EucPageTurningViewAnimationFlags animationFlags = self.animationFlags;
+    
     if(first) {
         _scrollStartZoomMatrix = _zoomMatrix;
     }
@@ -2137,7 +2154,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
     if(first) {
         _scrollStartTranslation = _scrollTranslation;
-        if(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) {
+        if(animationFlags & EucPageTurningViewAnimationFlagsDragTurn) {
             if(_isTurning == -1) {
                 _touchStartPoint.x = _rightPageFrame.origin.x > 0.0f ? (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x) - _rightPageRect.size.width : (pageTouchPoint.x - _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x);
                 _touchStartPoint.y = pageTouchPoint.y;
@@ -2161,26 +2178,25 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     CGFloat oldViewportTouchY = _viewportTouchPoint.y;
 
     if(fabsf(translation.x * _viewportToBoundsPointsTransform.a) > 0.5f || fabsf(translation.y * _viewportToBoundsPointsTransform.d) > 0.5f) {
-        if(!(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || 
-           (_animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
+        if(!(animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || 
+           (animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
             translation.x += _scrollStartTranslation.x;
             translation.y += _scrollStartTranslation.y;
             CGPoint translationAfterScroll = [self _setZoomMatrixFromTranslation:translation zoomFactor:_zoomFactor];
-            if(!(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) && 
-               !(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
+            if(!(animationFlags & EucPageTurningViewAnimationFlagsDragTurn) && 
+               !(animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
                 if(fabsf(translation.x - _scrollStartTranslation.x) * _viewportToBoundsPointsTransform.a > 0.5f &&
                    fabsf((translation.x - translationAfterScroll.x) - _scrollStartTranslation.x) * _viewportToBoundsPointsTransform.a < 0.5f &&
                    fabsf((translation.y - translationAfterScroll.y) - _scrollStartTranslation.y) * _viewportToBoundsPointsTransform.d < 4.0f) {
-                    _animationFlags = EucPageTurningViewAnimationFlagsDragTurn;
+                    self.animationFlags = EucPageTurningViewAnimationFlagsDragTurn;
                 } else {
-                    _animationFlags = EucPageTurningViewAnimationFlagsDragScroll;
+                    self.animationFlags = EucPageTurningViewAnimationFlagsDragScroll;
                 }
-                self.animating = YES;
             }
             translation = translationAfterScroll;
         }
         
-        if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn)) {
+        if((animationFlags & EucPageTurningViewAnimationFlagsDragTurn)) {
             translation.x /= _zoomFactor;
             translation.y /= _zoomFactor;
 
@@ -2202,8 +2218,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 pageTouchPoint = CGPointMake(oldViewportTouchX, translation.y);
             }
             if(_isTurning == 0) {
-                _animationFlags &= ~EucPageTurningViewAnimationFlagsDragTurn;
-                self.animating = NO;  
+                self.animationFlags = [self animationFlags] & ~EucPageTurningViewAnimationFlagsDragTurn;
             }
 
             if(_isTurning != 0) {
@@ -2378,7 +2393,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             //NSLog(@"Real: %f, %f", _touchVelocity.x, _touchVelocity.y);
             
-            if(_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) {
+            if(self.animationFlags & EucPageTurningViewAnimationFlagsDragTurn) {
                 CGFloat absTouchVelocity = fabsf(_touchVelocity.x);
                 if(absTouchVelocity < 0.02f) {
                     _touchVelocity.x = 0;
@@ -2389,14 +2404,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 }
                 _touchVelocity.y = 0.0f;
             } 
-            /*if(_animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
-                _animationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
-                if(_animationFlags == EucPageTurningViewAnimationFlagsNone) {
-                    self.animating = NO;
-                }
-            }*/
             //NSLog(@"Corrected: %f, %f", _touchVelocity.x, _touchVelocity.y);
-            //_pageTouchPoint.x = _pageVertices[_touchRow][X_VERTEX_COUNT - 1].x;
             _touchTime = 0;
             _dragUnderway = NO;
         }
@@ -2834,9 +2842,10 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 - (BOOL)_satisfyConstraints
 {
     BOOL shouldStopAnimating = NO;
+    EucPageTurningViewAnimationFlags animationFlags = self.animationFlags;
     
     BOOL pageHasRigidEdge;
-    if(_animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
+    if(animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
         pageHasRigidEdge = YES;
     } else if([_delegate respondsToSelector:@selector(pageTurningView:viewEdgeIsRigid:)]) {
         pageHasRigidEdge = [_delegate pageTurningView:self viewEdgeIsRigid:_pageContentsInformation[_rightFlatPageContentsIndex-2].view];
@@ -2955,12 +2964,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 if(hasFlipped) {
                     [self _cyclePageContentsInformationForTurnForwards:YES];
                     if(_twoUp) {
-                        if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
+                        if((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
                             _recacheFlags[0] = YES;
                         }                        
                         _recacheFlags[4] = YES;
                     }
-                    if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
+                    if((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
                         _recacheFlags[1] = YES;
                     }
 					_recacheFlags[5] = YES; 
@@ -2973,12 +2982,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     [self _cyclePageContentsInformationForTurnForwards:NO];
                     if(_twoUp) {
                         _recacheFlags[0] = YES;
-                        if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
+                        if((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
                             _recacheFlags[4] = YES;
                         }
                     }                    
                     _recacheFlags[1] = YES;
-                    if((_animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
+                    if((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) != EucPageTurningViewAnimationFlagsDragTurn) {
                         _recacheFlags[5] = YES;
                     }
 					
@@ -3214,8 +3223,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         _animationIndex = 0;
             
-        _animationFlags |= EucPageTurningViewAnimationFlagsAutomaticPositioning;
-        self.animating = YES;
+        self.animationFlags = self.animationFlags | EucPageTurningViewAnimationFlagsAutomaticPositioning;
     } else {
         [self _setTranslation:translation zoomFactor:zoomFactor];
     }
@@ -3393,7 +3401,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
            !CGPointEqualToPoint(_scrollTranslation, previousTranslation)) {
             [self _scheduleRetextureForPanAndZoom];
             
-            
             // Set the transform used by CA to position sublayers - allows
             // users of the class to place UIViews etc. 'on' the page.
             CATransform3D sublayerTransform = zoomMatrix;
@@ -3401,10 +3408,12 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             // points.
             sublayerTransform.m41 *= _viewportToBoundsPointsTransform.a;
             sublayerTransform.m42 *= _viewportToBoundsPointsTransform.d;
+            [CATransaction begin];
+            [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
             self.layer.sublayerTransform = sublayerTransform;
+            [CATransaction commit];
         }
         [self setNeedsDraw];
-
 
         return remainingTranslation;
     }
