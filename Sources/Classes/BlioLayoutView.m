@@ -84,7 +84,7 @@
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
 
 - (NSArray *)enhancedContentForPage:(NSInteger)page;
-- (void)updateOverlayForPageAtIndex:(NSUInteger)pageIndex;
+- (void)updateOverlayForPagesInRange:(NSRange)pageRange;
 - (void)hideOverlay;
 - (void)showOverlay;
 
@@ -321,6 +321,7 @@
         self.selector = nil;
     }
 	self.temporaryHighlightRange = nil;
+	[self hideOverlay];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -336,6 +337,14 @@
 		self.selector = aSelector;
 		[aSelector release];
 	}
+	
+	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
+	} else {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
+	}
+	
+	[self showOverlay];
 }
 
 - (UIImage *)dimPageImage
@@ -423,7 +432,11 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 	self.selector.selectedRange = nil;
 	self.accessibilityElements = nil;
 	
-	[self updateOverlayForPageAtIndex:pageNumber - 1];
+	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
+	} else {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
+	}
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
@@ -1069,29 +1082,82 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	[overlay setHidden:NO];
 }
 
-- (void)updateOverlayForPageAtIndex:(NSUInteger)pageIndex 
+- (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
 	
 	if (self.pageTurningView) {
-		/*if (!overlay) {
+		if (!overlay) {
             CGRect frame = self.pageTurningView.bounds;
             frame.origin.x += frame.size.width / 4.0f;
             frame.size.width /= 2.0f;
             frame.origin.y += frame.size.height / 4.0f;
             frame.size.height /= 2.0f;
-            overlay = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-			overlay.frame = frame;
+
+			overlay = [[UIView alloc] init];
+			overlay.frame = self.pageTurningView.bounds;
 			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-			overlay.alpha = 0.3f;
+			overlay.userInteractionEnabled = YES;
+			overlay.backgroundColor = [UIColor clearColor];
+			overlay.multipleTouchEnabled = YES;
 			[self.pageTurningView addSubview:overlay];
 		}
 		
-		NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
-		NSLog(@"Content %@", content);
-		[overlay setBackgroundColor:[UIColor colorWithRed:arc4random()%1000/1000.0f green:arc4random()%1000/1000.0f blue:arc4random()%1000/1000.0f alpha:1]];
-	*/
+		for (UIView *view in [overlay subviews]) {
+			[view removeFromSuperview];
+		}
+		
+		for (int i = pageRange.location; i < pageRange.location + pageRange.length; i++) {
+			
+			NSUInteger pageIndex = i;
+			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
+			
+			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
+			for (NSDictionary *dict in content) {
+				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
+				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
+				NSString *controlType = [dict valueForKey:@"controlType"];
+				CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
+				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
+				
+				if ([controlType isEqualToString:@"WebBrowser"]) {
+					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
+					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
+					
+					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+					webView.delegate = self;
+					webView.scalesPageToFit = NO;
+					
+					NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
+					
+					[webView loadRequest:request];
+					[overlay addSubview:webView];
+				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
+					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
+					
+					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+					webView.scalesPageToFit = NO;
+					NSString *videoHTML = [NSString stringWithFormat:@"<html><head></head><body style='margin:0px;'><video id='%p' src='%@' controls width='%f' height='%f' poster=''><p>This video format is not supported on this device.</p></video></body></html>", webView, [videoURL absoluteString], webView.bounds.size.width, webView.bounds.size.height];
+					[webView loadHTMLString:videoHTML baseURL:nil];
+					[overlay addSubview:webView];
+				}
+				
+				CFRelease(encodedString);
+			}
+		}
+			
     }
 }
+
+//#pragma mark -
+//#pragma mark UIWebViewDelegate
+
+- (void)webViewDidFinishLoad:(UIWebView *)aWebView {
+	NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
+	[jsCommand appendString:@"document.documentElement.style.webkitTapHighlightColor = 'rgba(0,0,0,0)';"];
+	[jsCommand appendString:@"document.documentElement.style.webkitTouchCallout = 'none';"];
+	[aWebView stringByEvaluatingJavaScriptFromString:jsCommand];	
+}
+
 
 #pragma mark -
 #pragma mark highlights
@@ -1287,13 +1353,40 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Touch Handling
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    if(overlay && [overlay pointInside:[self convertPoint:point toView:overlay] withEvent:event]) {
-        return overlay;
-    } else if ([self pointInside:point withEvent:event]) {
+	UIView *tappedView = [super hitTest:point withEvent:event];
+	
+	if (tappedView == overlay) {
+		if ([self pointInside:point withEvent:event]) {
+			return self;
+		} else {
+			return nil;
+		}
+	} else {
+		return tappedView;
+	}
+	return tappedView;
+	UIView *tappedOverlayView = [self.overlay hitTest:point withEvent:event];
+	
+	return tappedOverlayView;
+	
+    if (overlay) {
+		for (UIView *overlayView in overlay.subviews) {
+			if ([overlayView pointInside:[self convertPoint:point toView:overlayView] withEvent:event]) {
+				return overlayView;
+			}
+		}
+    }
+	
+	if ([self pointInside:point withEvent:event]) {
         return self;
     } else {
         return nil;
     }
+	//if ([self pointInside:point withEvent:event]) {
+//        return self;
+//    } else {
+//        return nil;
+//    }
 }
 
 - (BOOL)touchesShouldBeSuppressed {

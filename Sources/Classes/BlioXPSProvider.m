@@ -98,6 +98,12 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @synthesize drmSessionManager;
 @synthesize xpsPagesDirectory;
 
++ (void)initialize {
+    if(self == [BlioXPSProvider class]) {
+       [BlioXPSProtocol registerXPSProtocol];
+    }
+} 	
+
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
 		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
@@ -111,7 +117,8 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 	return drmSessionManager;
 }
 
-- (void)dealloc {   
+- (void)dealloc {  
+		
     [renderingLock lock];
     [contentsLock lock];
     [inflateLock lock];
@@ -223,22 +230,9 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 		
 		drmSessionManager = nil;
 		
-		NSData * epubInfoData = [self dataForComponentAtPath:BlioXPSKNFBEPubInfoFile];
-		if (epubInfoData) {
-			NSXMLParser * epubInfoParser = [[NSXMLParser alloc] initWithData:epubInfoData];
-			BlioEPubInfoParserDelegate * epubInfoParserDelegate = [[BlioEPubInfoParserDelegate alloc] init];
-			[epubInfoParser setDelegate:epubInfoParserDelegate];
-			[epubInfoParser parse];
-			if (epubInfoParserDelegate.encryptedPaths) {
-				_encryptedEPubPaths = [epubInfoParserDelegate.encryptedPaths retain];
-			}
-			[epubInfoParserDelegate release];
-			[epubInfoParser release];
-		}		
     }
     return self;
 }
-
 - (void)reportReadingIfRequired {
     if (reportingStatus == kBlioXPSProviderReportingStatusRequired) {
         if ([drmSessionManager reportReading]) {
@@ -360,8 +354,10 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     [renderingLock lock];
         XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
         XPS_SetUserData(xpsHandle, self);
+		[inflateLock lock];
         XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-
+		[inflateLock unlock];
+	
         if (imageInfo) {
             size_t width  = imageInfo->widthInPixels;
             size_t height = imageInfo->height;
@@ -387,6 +383,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
                                  minSize:(CGSize)size 
                               getContext:(id *)context {
 	
+
 	CGRect pageCropRect = [self cropRectForPage:page];
     
     OutputFormat format;
@@ -411,10 +408,13 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     imageInfo = NULL;
     
     [renderingLock lock];
+	[inflateLock lock];
+	
     XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
     XPS_SetUserData(xpsHandle, self);
+	
     XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-    
+	
     CGContextRef bitmapContext = nil;
     
     if (imageInfo) {
@@ -431,8 +431,10 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
                         
         CGColorSpaceRelease(colorSpace);
     }
+	
+	[inflateLock unlock];
     [renderingLock unlock];
-    
+	    
     return (CGContextRef)[(id)bitmapContext autorelease];
 }
 
@@ -580,19 +582,125 @@ static void overlayContentXMLParsingStartElementHandler(void *ctx, const XML_Cha
 			  
 }
 
+static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char *name, const XML_Char **atts)  {
+	
+	NSMutableSet *items = (NSMutableSet *)ctx;
+	
+    if (strcmp("Videoinfo", name) == 0) {
+		
+		NSInteger pageNumber = -1;
+		NSString *navigateUri = nil;
+		CGRect displayRegion = CGRectZero;
+		NSInteger videoInfoID = -1;
+		
+        for(int i = 0; atts[i]; i+=2) {
+            if (strcmp("Page", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    pageNumber = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("DisplayRegionLeft", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    displayRegion.origin.x = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("DisplayRegionTop", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    displayRegion.origin.y = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("DisplayRegionWidth", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    displayRegion.size.width = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("DisplayRegionHeight", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    displayRegion.size.height = [attributeString integerValue];
+                    [attributeString release];
+                }
+			} else if (strcmp("NavigateUri", atts[i]) == 0) {
+                navigateUri = [[NSString alloc] initWithUTF8String:atts[i+1]];
+			} else if (strcmp("VideoinfoID", atts[i]) == 0) {
+				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                if (nil != attributeString) {
+                    videoInfoID = [attributeString integerValue];
+                    [attributeString release];
+                }
+			}
+        }
+		NSDictionary *overlayInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:pageNumber], @"pageNumber", 
+									 navigateUri, @"navigateUri",
+									 @"iOSCompatibleVideoContent", @"controlType",
+									 [NSValue valueWithCGRect:displayRegion], @"displayRegion",
+									 [NSNumber numberWithInt:videoInfoID], @"videoInfoID",
+									 nil];
+		
+		[navigateUri release];
+		
+		[items addObject:overlayInfo];				 
+    }
+}
+
+- (NSSet *)extractVideoContent:(NSData *)data
+{
+	NSMutableSet *items = [NSMutableSet set];
+	
+	if(data) {
+        XML_Parser videoParser = XML_ParserCreate(NULL);
+        XML_SetStartElementHandler(videoParser, videoContentXMLParsingStartElementHandler);
+        XML_SetUserData(videoParser, items);    
+		
+        if (!XML_Parse(videoParser, [data bytes], [data length], XML_TRUE)) {
+            char *anError = (char *)XML_ErrorString(XML_GetErrorCode(videoParser));
+            NSLog(@"ExtractVideoContent parsing error: '%s'", anError);
+        }
+        XML_ParserFree(videoParser);
+    }
+	
+	return items;
+	
+}
+
 - (NSArray *)enhancedContentForPage:(NSInteger)page {
 	NSData *overlayContentData = [self dataForComponentAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"OverlayContent.xml"]];
-	NSSet *overlayContentItems = [self extractOverlayContent:overlayContentData];
+	NSMutableSet *enhancedContentItems = [NSMutableSet setWithSet:[self extractOverlayContent:overlayContentData]];
+	
+	NSData *videoContentData = [self dataForComponentAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"VideoContent.xml"]];
+	[enhancedContentItems unionSet:[self extractVideoContent:videoContentData]];
 	
 	NSMutableArray *array = [NSMutableArray array];
 	
-	for (NSDictionary *item in overlayContentItems) {
+	for (NSDictionary *item in enhancedContentItems) {
 		if ([[item valueForKey:@"pageNumber"] intValue] == page - 1) {
 			[array addObject:item];
 		}
 	}
 	
 	return array;
+}
+
+- (NSData *)enhancedContentDataAtPath:(NSString *)path {
+	return [self dataForComponentAtPath:path];
+}
+
+- (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path {
+	NSData *videoData = [self dataForComponentAtPath:path];
+	NSString *tempPath = [self.tempDirectory stringByAppendingPathComponent:[path lastPathComponent]];
+	[videoData writeToFile:tempPath atomically:NO];
+	
+	NSURL *tempURL = [NSURL fileURLWithPath:tempPath];
+
+	return tempURL;
+}
+
+- (NSString *)enhancedContentRootPath {
+	return BlioXPSEnhancedContentDir;
 }
 
 // Not required as XPS document stays open during rendering
@@ -747,7 +855,9 @@ static void overlayContentXMLParsingStartElementHandler(void *ctx, const XML_Cha
     
     XPS_FILE_PACKAGE_INFO packageInfo;
     [contentsLock lock];
+	[inflateLock lock];
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
+	[inflateLock unlock];
     [contentsLock unlock];
     if (!ret) {
         NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
@@ -772,6 +882,25 @@ static void overlayContentXMLParsingStartElementHandler(void *ctx, const XML_Cha
     }
     
     return rawData;
+}
+-(NSArray*)encryptedEPubPaths {
+	if (!_encryptedEPubPaths) {
+		NSData * epubInfoData = nil;
+		if ([self componentExistsAtPath:BlioXPSKNFBEPubInfoFile]) epubInfoData = [self rawDataForComponentAtPath:BlioXPSKNFBEPubInfoFile];
+		if (epubInfoData) {
+			NSXMLParser * epubInfoParser = [[NSXMLParser alloc] initWithData:epubInfoData];
+			BlioEPubInfoParserDelegate * epubInfoParserDelegate = [[BlioEPubInfoParserDelegate alloc] init];
+			[epubInfoParser setDelegate:epubInfoParserDelegate];
+			[epubInfoParser parse];
+			if (epubInfoParserDelegate.encryptedPaths) {
+				_encryptedEPubPaths = [epubInfoParserDelegate.encryptedPaths retain];
+			}
+			else _encryptedEPubPaths = [[NSMutableArray alloc] initWithCapacity:0];
+			[epubInfoParserDelegate release];
+			[epubInfoParser release];
+		}
+	}
+	return _encryptedEPubPaths;
 }
 
 - (NSArray *)contentsOfXPS {
@@ -926,7 +1055,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
     BOOL gzipped = NO;
     BOOL mapped = NO;
     BOOL cached = NO;
-    
+	    
     // TODO: Make sure these checks are ordered from most common to least common for efficiency
     if ([filename isEqualToString:@"Rights.xml"]) {
         if (self.bookIsEncrypted) {
@@ -982,8 +1111,8 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         }
         cached = YES;
     }
-	else if (_encryptedEPubPaths) {
-		if ([_encryptedEPubPaths containsObject:path]) {
+	else if (self.encryptedEPubPaths) {
+		if ([self.encryptedEPubPaths containsObject:path]) {
 			encrypted = YES;
 			gzipped = YES;
 		}
@@ -1034,7 +1163,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
     if (![componentData length]) {
         NSLog(@"Zero length data returned in dataForComponentAtPath: %@", path);
     }
-	
+		
     return componentData;
     
 }
@@ -1253,6 +1382,98 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
         }
     }
     return uriMap;
+}
+
+@end
+
+@implementation BlioXPSProtocol
+
++ (void)registerXPSProtocol {
+	static BOOL inited = NO;
+	if ( ! inited ) {
+		[NSURLProtocol registerClass:[BlioXPSProtocol class]];
+		inited = YES;
+	}
+}
+
+/* our own class method.  Here we return the NSString used to mark
+ urls handled by our special protocol. */
++ (NSString *)xpsProtocolScheme {
+	return @"blioxpsprotocol";
+}
+
++ (BOOL)canInitWithRequest:(NSURLRequest *)request {
+	NSString *theScheme = [[request URL] scheme];
+	return ([theScheme caseInsensitiveCompare: [BlioXPSProtocol xpsProtocolScheme]] == NSOrderedSame);
+}
+
+/* if canInitWithRequest returns true, then webKit will call your
+ canonicalRequestForRequest method so you have an opportunity to modify
+ the NSURLRequest before processing the request */
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
+    return request;
+}
+
+/* our main loading routine.  This is where we do most of our processing
+ for our class.  In this case, all we are doing is taking the path part
+ of the url and rendering it in 36 point system font as a jpeg file.  The
+ interesting part is that we create the jpeg entirely in memory and return
+ it back for rendering in the webView.  */
+- (void)startLoading {
+	
+	
+	/* retrieve the current request. */
+    NSURLRequest *request = [self request];
+	NSString *encodedBookID = [[request URL] host];
+	
+	NSManagedObjectID *bookID = nil;
+	
+	if (encodedBookID) {
+		CFStringRef bookURIStringRef = CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault, (CFStringRef)encodedBookID, CFSTR(""), kCFStringEncodingUTF8);		
+		NSURL *bookURI = [NSURL URLWithString:(NSString *)bookURIStringRef];
+		CFRelease(bookURIStringRef);
+
+		bookID = [[[BlioBookManager sharedBookManager] persistentStoreCoordinator] managedObjectIDForURIRepresentation:bookURI];
+		
+	}
+	
+	if (!bookID) {
+		return;
+	}
+	
+	BlioXPSProvider *xpsProvider = [[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:bookID];
+	
+	NSString *path = [[request URL] path];
+	NSData *data = [xpsProvider dataForComponentAtPath:path];
+	
+	NSURLResponse *response = 
+	[[NSURLResponse alloc] initWithURL:[request URL] 
+							  MIMEType:nil 
+				 expectedContentLength:-1 
+					  textEncodingName:@"utf-8"];
+	
+	/* get a reference to the client so we can hand off the data */
+    id<NSURLProtocolClient> client = [self client];
+	
+	/* turn off caching for this response data */ 
+	[client URLProtocol:self didReceiveResponse:response
+	 cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+	
+	/* set the data in the response to our data */ 
+	[client URLProtocol:self didLoadData:data];
+	
+	/* notify that we completed loading */
+	[client URLProtocolDidFinishLoading:self];
+	
+	/* we can release our copy */
+	[response release];
+	
+	[[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:bookID];
+	
+}
+
+- (void)stopLoading {
+	// Do nothing
 }
 
 @end

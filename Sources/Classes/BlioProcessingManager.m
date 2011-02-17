@@ -1175,7 +1175,7 @@
 	NSArray * relatedOperations = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
 	NSLog(@"Stopping %i operations for sourceSpecificID: %@",[relatedOperations count],aBook.sourceSpecificID);
 	for (BlioProcessingOperation * op in relatedOperations) {
-		NSLog(@"Stopping Operation (%u complete): %@",op.percentageComplete,op);
+		NSLog(@"Stopping Operation (%f complete): %@",op.percentageComplete,op);
 		[op cancel];
 	}
 	/*
