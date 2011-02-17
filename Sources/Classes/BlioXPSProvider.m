@@ -230,22 +230,9 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 		
 		drmSessionManager = nil;
 		
-		NSData * epubInfoData = [self dataForComponentAtPath:BlioXPSKNFBEPubInfoFile];
-		if (epubInfoData) {
-			NSXMLParser * epubInfoParser = [[NSXMLParser alloc] initWithData:epubInfoData];
-			BlioEPubInfoParserDelegate * epubInfoParserDelegate = [[BlioEPubInfoParserDelegate alloc] init];
-			[epubInfoParser setDelegate:epubInfoParserDelegate];
-			[epubInfoParser parse];
-			if (epubInfoParserDelegate.encryptedPaths) {
-				_encryptedEPubPaths = [epubInfoParserDelegate.encryptedPaths retain];
-			}
-			[epubInfoParserDelegate release];
-			[epubInfoParser release];
-		}		
     }
     return self;
 }
-
 - (void)reportReadingIfRequired {
     if (reportingStatus == kBlioXPSProviderReportingStatusRequired) {
         if ([drmSessionManager reportReading]) {
@@ -896,6 +883,25 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
     
     return rawData;
 }
+-(NSArray*)encryptedEPubPaths {
+	if (!_encryptedEPubPaths) {
+		NSData * epubInfoData = nil;
+		if ([self componentExistsAtPath:BlioXPSKNFBEPubInfoFile]) epubInfoData = [self rawDataForComponentAtPath:BlioXPSKNFBEPubInfoFile];
+		if (epubInfoData) {
+			NSXMLParser * epubInfoParser = [[NSXMLParser alloc] initWithData:epubInfoData];
+			BlioEPubInfoParserDelegate * epubInfoParserDelegate = [[BlioEPubInfoParserDelegate alloc] init];
+			[epubInfoParser setDelegate:epubInfoParserDelegate];
+			[epubInfoParser parse];
+			if (epubInfoParserDelegate.encryptedPaths) {
+				_encryptedEPubPaths = [epubInfoParserDelegate.encryptedPaths retain];
+			}
+			else _encryptedEPubPaths = [[NSMutableArray alloc] initWithCapacity:0];
+			[epubInfoParserDelegate release];
+			[epubInfoParser release];
+		}
+	}
+	return _encryptedEPubPaths;
+}
 
 - (NSArray *)contentsOfXPS {
 	void *directoryPtr;
@@ -1105,8 +1111,8 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         }
         cached = YES;
     }
-	else if (_encryptedEPubPaths) {
-		if ([_encryptedEPubPaths containsObject:path]) {
+	else if (self.encryptedEPubPaths) {
+		if ([self.encryptedEPubPaths containsObject:path]) {
 			encrypted = YES;
 			gzipped = YES;
 		}

@@ -46,6 +46,7 @@ typedef enum {
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, readonly) NSArray * encryptedEPubPaths;
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
 - (NSData *)dataForComponentAtPath:(NSString *)path;
