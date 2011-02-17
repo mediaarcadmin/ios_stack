@@ -1592,7 +1592,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     [super drawView];
 	        
     EucPageTurningViewAnimationFlags animationFlags = self.animationFlags;
-    BOOL animating = (animationFlags != EucPageTurningViewAnimationFlagsNone);
     
     EucPageTurningViewAnimationFlags postDrawAnimationFlags = animationFlags;
 	
