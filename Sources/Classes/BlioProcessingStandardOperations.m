@@ -52,11 +52,9 @@
 			else if (op.isCancelled) NSLog(@"NSOperation of class %@ cancelled.",[[op class] description]);
 		}
 	}
-	NSUInteger newPercentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
-	if (newPercentageComplete != self.percentageComplete) {
-//		NSLog(@"%@ progress for %@: %u",[[self class] description],self.sourceSpecificID,newPercentageComplete);
-		self.percentageComplete = newPercentageComplete;
-	}
+	float newPercentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
+//	NSLog(@"%@ progress for %@: %f",[[self class] description],self.sourceSpecificID,newPercentageComplete);
+	self.percentageComplete = newPercentageComplete;
 }
 
 @end
@@ -84,7 +82,7 @@
 			self.operationSuccess = NO;
 			return;
 		}
-//		NSLog(@"completed operation: %@ percentageComplete: %u",blioOp,blioOp.percentageComplete);
+//		NSLog(@"completed operation: %@ percentageComplete: %f",blioOp,blioOp.percentageComplete);
 	}	
 	// delete temp download dir
 	NSString * dirPath = [self.tempDirectory stringByStandardizingPath];
@@ -642,7 +640,7 @@
 //			NSLog(@"[self.downloadFile seekToEndOfFile]: %llu",[self.downloadFile seekToEndOfFile]);
 //			NSLog(@"expectedContentLength: %lld",expectedContentLength);
 			self.percentageComplete = [self.downloadFile seekToEndOfFile]*100/expectedContentLength;
-//			NSLog(@"Download operation percentageComplete for asset %@: %u",self.sourceSpecificID,self.percentageComplete);
+//			NSLog(@"Download operation percentageComplete for asset %@: %f",self.sourceSpecificID,self.percentageComplete);
 		}
 		else self.percentageComplete = 50;
 	}
@@ -1352,7 +1350,7 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationFailedNotification object:self userInfo:userInfo];			
 	}
 }
--(void) setPercentageComplete:(NSUInteger)percentage {
+-(void) setPercentageComplete:(CGFloat)percentage {
 	percentageComplete = percentage;
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:self.voice forKey:@"voice"];

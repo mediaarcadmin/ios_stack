@@ -84,4 +84,14 @@
     return nil;
 }
 
+- (NSString *)title
+{
+    return [self attributeWithName:@"title"];
+}
+
+- (NSString *)altText
+{
+    return [self attributeWithName:@"alt"];
+}
+
 @end

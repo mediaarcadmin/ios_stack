@@ -39,7 +39,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
     BlioBookSourceID sourceID;
     NSString *sourceSpecificID;
     BOOL forceReprocess;
-    NSUInteger percentageComplete;
+    CGFloat percentageComplete;
     NSString *cacheDirectory;
     NSString *tempDirectory;
     BOOL operationSuccess;
@@ -53,7 +53,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 @property (nonatomic, assign) BlioBookSourceID sourceID;
 @property (nonatomic, copy) NSString *sourceSpecificID;
 @property (nonatomic) BOOL forceReprocess;
-@property (nonatomic) NSUInteger percentageComplete;
+@property (nonatomic) CGFloat percentageComplete;
 @property (nonatomic, retain) NSString *cacheDirectory;
 @property (nonatomic, retain) NSString *tempDirectory;
 @property (nonatomic) BOOL operationSuccess;

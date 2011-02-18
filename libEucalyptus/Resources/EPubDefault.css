@@ -69,12 +69,11 @@ center          { text-align: center }
 :link, :visited { text-decoration: underline }
 :focus          { outline: thin dotted invert }
 
-/* Begin bidirectionality settings (do not change) */
-BDO[DIR="ltr"]  { direction: ltr; unicode-bidi: bidi-override }
-BDO[DIR="rtl"]  { direction: rtl; unicode-bidi: bidi-override }
+bdo[dir="ltr"]  { direction: ltr; unicode-bidi: bidi-override }
+bdo[dir="rtl"]  { direction: rtl; unicode-bidi: bidi-override }
 
-*[DIR="ltr"]    { direction: ltr; unicode-bidi: embed }
-*[DIR="rtl"]    { direction: rtl; unicode-bidi: embed }
+*[dir="ltr"]    { direction: ltr; unicode-bidi: embed }
+*[dir="rtl"]    { direction: rtl; unicode-bidi: embed }
 
 @media print {
   h1            { page-break-before: always }

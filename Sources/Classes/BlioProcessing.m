@@ -209,18 +209,21 @@ static int mutationCount = 0;
 	return operationSuccess;
 }
 
--(void) setPercentageComplete:(NSUInteger)percentage {
-	percentageComplete = percentage;
-	if (![self isCancelled]) {
-		NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
-		[userInfo setObject:self.bookID forKey:@"bookID"];
-		[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
-		[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];	
-		[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self userInfo:userInfo];
+-(void) setPercentageComplete:(CGFloat)percentage {
+	CGFloat flooredPercentage = floorf(percentage*10)/10;
+	if (percentageComplete != flooredPercentage) {
+		percentageComplete = flooredPercentage;
+		if (![self isCancelled]) {
+			NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+			[userInfo setObject:self.bookID forKey:@"bookID"];
+			[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
+			[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];	
+			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationProgressNotification object:self userInfo:userInfo];
+		}
 	}
 }
 
--(NSUInteger) percentageComplete {
+-(CGFloat) percentageComplete {
 	return percentageComplete;
 }
 

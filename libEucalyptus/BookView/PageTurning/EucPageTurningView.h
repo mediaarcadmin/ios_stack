@@ -335,6 +335,9 @@ RGBABitmapContextForPageAtIndex:(NSUInteger)index
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)pageTurningView;
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)pageTurningView;
 
+- (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)pageTurningView;
+- (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)pageTurningView;
+
 - (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView; 
 - (void)pageTurningViewDidEndZooming:(EucPageTurningView *)scrollView;
 

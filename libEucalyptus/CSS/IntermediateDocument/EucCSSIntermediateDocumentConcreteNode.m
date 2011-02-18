@@ -120,7 +120,11 @@
 
 - (NSString *)altText
 {
-    return [_documentTreeNode attributeWithName:@"alt"];
+    if([_documentTreeNode respondsToSelector:@selector(altText)]) {
+        return _documentTreeNode.altText;
+    } else {
+        return nil;
+    }
 }
 
 - (void)_computeStyles
@@ -156,7 +160,7 @@
         }
                 
         err = css_select_style(_document.selectContext, 
-                               (void *)(uintptr_t)_documentTreeNode.key,
+                               _documentTreeNode,
                                CSS_MEDIA_PRINT, 
                                inlineStyle, 
                                &EucCSSDocumentTreeSelectHandler,
