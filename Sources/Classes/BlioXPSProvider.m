@@ -80,6 +80,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @property (nonatomic, assign, readonly) BOOL bookIsEncrypted;
 @property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
 @property (nonatomic, retain) NSString *xpsPagesDirectory;
+@property (nonatomic, retain) NSSet *enhancedContentItems; // Lazily instantiated
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -97,6 +98,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @synthesize componentCache;
 @synthesize drmSessionManager;
 @synthesize xpsPagesDirectory;
+@synthesize enhancedContentItems;
 
 + (void)initialize {
     if(self == [BlioXPSProvider class]) {
@@ -137,6 +139,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
     self.xpsData = nil;
     self.uriMap = nil;
 	self.xpsPagesDirectory = nil;
+	self.enhancedContentItems = nil;
     
     if (currentUriString) {
         [currentUriString release];
@@ -675,16 +678,32 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 	
 }
 
+- (NSSet *)enhancedContentItems 
+{
+	if (!enhancedContentItems) {
+		NSMutableSet *items = [NSMutableSet set];
+		
+		if ([self componentExistsAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"OverlayContent.xml"]]) {
+			NSData *overlayContentData = [self dataForComponentAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"OverlayContent.xml"]];
+			[items unionSet:[self extractOverlayContent:overlayContentData]];
+		}
+		
+		if ([self componentExistsAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"VideoContent.xml"]]) {
+			NSData *videoContentData = [self dataForComponentAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"VideoContent.xml"]];
+			[items unionSet:[self extractVideoContent:videoContentData]];
+		}
+		
+		enhancedContentItems = [items retain];
+	}
+	
+	return enhancedContentItems;
+}
+
 - (NSArray *)enhancedContentForPage:(NSInteger)page {
-	NSData *overlayContentData = [self dataForComponentAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"OverlayContent.xml"]];
-	NSMutableSet *enhancedContentItems = [NSMutableSet setWithSet:[self extractOverlayContent:overlayContentData]];
-	
-	NSData *videoContentData = [self dataForComponentAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"VideoContent.xml"]];
-	[enhancedContentItems unionSet:[self extractVideoContent:videoContentData]];
-	
+		
 	NSMutableArray *array = [NSMutableArray array];
 	
-	for (NSDictionary *item in enhancedContentItems) {
+	for (NSDictionary *item in self.enhancedContentItems) {
 		if ([[item valueForKey:@"pageNumber"] intValue] == page - 1) {
 			[array addObject:item];
 		}

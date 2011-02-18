@@ -43,6 +43,8 @@ typedef enum {
     NSNumber *bookIsEncrypted;
     BOOL decryptionAvailable;
     BlioXPSProviderReportingStatus reportingStatus;
+	
+	NSSet *enhancedContentItems;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
