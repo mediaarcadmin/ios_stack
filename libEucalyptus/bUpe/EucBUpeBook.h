@@ -9,14 +9,19 @@
 #import <Foundation/Foundation.h>
 #import "THCache.h"
 #import "EucBook.h"
-#import "EucBUpeLocalBookReference.h"
+#import "EucBookReference.h"
 #import "EucCSSIntermediateDocument.h"
 
 @class EucBookPageIndexPoint, EucCSSIntermediateDocument;
 @protocol EucCSSDocumentTree, EucBUpeDataProvider;
 
-@interface EucBUpeBook : EucBUpeLocalBookReference <EucBook, EucCSSIntermediateDocumentDataProvider> {
+@interface EucBUpeBook : EucBookReference <EucBook, EucCSSIntermediateDocumentDataProvider> {
     id<EucBUpeDataProvider> _dataProvider;
+    NSString *_cacheDirectoryPath;    
+
+    NSString *_title;
+    NSString *_author;
+    NSString *_etextNumber;
     
     NSURL *_root;            // Root of the bundle.
     NSString *_tocNcxId;
@@ -53,6 +58,11 @@
 @property (nonatomic, assign, readonly) CGFloat normalisingScaleFactor;
 @property (nonatomic, retain, readonly) NSURL *coverURL;
 
+@property (nonatomic, copy) NSString *author;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *etextNumber;
+@property (nonatomic, copy) NSString *cacheDirectoryPath;
+
 - (id)initWithDataProvider:(id<EucBUpeDataProvider>)dataProvider 
         cacheDirectoryPath:(NSString *)cacheDirectoryPath;
 
@@ -63,8 +73,7 @@
 - (EucCSSIntermediateDocument *)intermediateDocumentForIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (EucBookPageIndexPoint *)indexPointForId:(NSString *)identifier;
 
-// Takes absolute file:/// url strings (/not/ persistable - they 
-// may change on a iOS backup/restore).
+// Takes absolute url strings.
 @property (nonatomic, readonly, retain) NSDictionary *idToIndexPoint;
 
 // Set to NO to not save the index point internally.
