@@ -367,9 +367,14 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     [renderingLock lock];
         XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
         XPS_SetUserData(xpsHandle, self);
-		[inflateLock lock];
-        XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-		[inflateLock unlock];
+		if (!self.bookIsEncrypted) {
+			[inflateLock lock];
+			XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
+			[inflateLock unlock];
+		} else {
+			XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
+		}
+		
 	
         if (imageInfo) {
             size_t width  = imageInfo->widthInPixels;
@@ -421,7 +426,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     imageInfo = NULL;
     
     [renderingLock lock];
-	[inflateLock lock];
+	if (!self.bookIsEncrypted) {
+		[inflateLock lock];
+	}
 	
     XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
     XPS_SetUserData(xpsHandle, self);
@@ -444,8 +451,9 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
                         
         CGColorSpaceRelease(colorSpace);
     }
-	
-	[inflateLock unlock];
+	if (!self.bookIsEncrypted) {
+		[inflateLock unlock];
+	}
     [renderingLock unlock];
 	    
     return (CGContextRef)[(id)bitmapContext autorelease];

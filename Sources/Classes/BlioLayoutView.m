@@ -45,6 +45,7 @@
 @property (nonatomic, retain) UIAccessibilityElement *pageZone;
 @property (nonatomic, assign) BOOL wasSelectionAtTouchStart;
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
+@property (nonatomic, retain) NSMutableArray *embeddedVideoControllers;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -103,6 +104,7 @@
 @synthesize wasSelectionAtTouchStart;
 @synthesize performingAccessibilityZoom;
 @synthesize overlay;
+@synthesize embeddedVideoControllers;
 
 - (void)dealloc {
 	
@@ -740,6 +742,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Selector
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
+	
     return [self.pageTurningView screenshot];
 }
 
