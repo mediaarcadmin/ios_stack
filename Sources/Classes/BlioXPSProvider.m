@@ -877,6 +877,26 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
     return data;
 }
 
+- (NSData *)mappedDataForComponentAtPath:(NSString *)path {
+	XPS_FILE_PACKAGE_INFO packageInfo;
+    [contentsLock lock];
+	[inflateLock lock];
+    int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
+	[inflateLock unlock];
+    [contentsLock unlock];
+		
+	if (!ret) {
+        NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
+        return nil;
+    } else if (packageInfo.compression_type == 8) {
+		NSLog(@"Error opening mappedFile at path %@ for book with ID %@ - data is deflated - cannot be directly mapped", path, self.bookID);
+        return nil;
+	} else {
+        return [[[NSData alloc] initWithBytesNoCopy:packageInfo.pComponentData length:packageInfo.length freeWhenDone:NO] autorelease];
+	}
+	
+}
+
 - (NSData *)rawDataForComponentAtPath:(NSString *)path {
     NSData *rawData = nil;
     

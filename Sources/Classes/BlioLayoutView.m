@@ -672,12 +672,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Status callbacks
 
+- (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)pageTurningView
+{
+	[self hideOverlay];
+}
+
+- (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)pageTurningView
+{
+	[self showOverlay];
+}
+
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
 {
     self.selector.selectionDisabled = YES;
     [self.selector removeTemporaryHighlight];
-	
-	[self hideOverlay];
     
     if(!self.performingAccessibilityZoom) {
         if(UIAccessibilityIsVoiceOverRunning == nil ||
@@ -702,8 +710,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
 	suppressHistoryAfterTurn = NO;
-	
-	[self showOverlay];
 	
     if(self.temporaryHighlightRange) {
 		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
@@ -1135,8 +1141,19 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					[webView loadRequest:request];
 					[overlay addSubview:webView];
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
+					
+					
+					
+					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
 					
+					//MPMoviePlayerController *player =
+//					[[MPMoviePlayerController alloc] initWithContentURL: myURL];
+//					[[player view] setFrame: [myView bounds]];  // frame must match parent view
+//					[myView addSubview: [player view]];
+//					// ...
+//					[player play]; 
+//					[overlay addSubview:[player view]];
 					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
 					webView.scalesPageToFit = NO;
 					NSString *videoHTML = [NSString stringWithFormat:@"<html><head></head><body style='margin:0px;'><video id='%p' src='%@' controls width='%f' height='%f' poster=''><p>This video format is not supported on this device.</p></video></body></html>", webView, [videoURL absoluteString], webView.bounds.size.width, webView.bounds.size.height];
