@@ -8,12 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum BookAvailabilityState {
-    BookAvailabilityRemote,
-    BookAvailabilityDownloading,
-    BookAvailabilityLocal,
-} BookAvailabilityState;
-
 @interface EucBookReference : NSObject
 
 // Subclasses should implement:

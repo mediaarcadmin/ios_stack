@@ -4,9 +4,7 @@
 //
 //  Created by James Montgomerie on 12/03/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
-//#import "EucCSSLayouter.h"
-
-
+//
 
 #import "THLog.h"
 #import "EucBUpeBook.h"
@@ -78,6 +76,11 @@
 @end
 
 @implementation EucBUpeBook
+
+@synthesize title = _title;
+@synthesize author = _author;
+@synthesize etextNumber = _etextNumber;
+@synthesize cacheDirectoryPath = _cacheDirectoryPath;
 
 @synthesize navPoints = _navPoints;
 @synthesize persistsPositionAutomatically = _persistsPositionAutomatically;
@@ -633,7 +636,17 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
     
     [_dataProvider release];
     
+    [_title release];
+    [_author release];
+    [_etextNumber release];
+    [_cacheDirectoryPath release];    
+    
     [super dealloc];
+}
+
+- (BOOL)paginationIsComplete
+{
+    return [EucBookIndex indexesAreConstructedForBookBundle:self.cacheDirectoryPath];
 }
 
 - (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
@@ -1020,8 +1033,8 @@ static void tocNcxCharacterDataHandler(void *ctx, const XML_Char *chars, int len
 
 - (void)setCacheDirectoryPath:(NSString *)path
 {
-    if(![super.cacheDirectoryPath isEqualToString:path]) {
-        super.cacheDirectoryPath = [path copy];
+    if(![_cacheDirectoryPath isEqualToString:path]) {
+        _cacheDirectoryPath = [path copy];
         [self _restorePersistedCachableDataIfPossible];
     }
 }

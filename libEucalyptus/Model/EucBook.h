@@ -11,6 +11,8 @@
 
 @protocol EucBook <NSObject>
 
+@property (nonatomic, readonly) BOOL paginationIsComplete;
+
 // Array of EucBookNavPoint
 @property (nonatomic, readonly) NSArray *navPoints;
 

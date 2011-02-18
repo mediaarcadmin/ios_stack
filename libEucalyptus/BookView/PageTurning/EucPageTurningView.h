@@ -134,6 +134,7 @@ typedef enum EucPageTurningViewAnimationFlags {
     
     CATransform3D _zoomMatrix;
     CATransform3D _scrollStartZoomMatrix;
+    BOOL _zoomChangedSinceLastDraw;
 	
 	NSInteger _animationIndex;
 	CGFloat _presentationZoomFactor[POSITIONING_ANIMATION_ITERATIONS];

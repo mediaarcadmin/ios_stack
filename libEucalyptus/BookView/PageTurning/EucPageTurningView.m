@@ -2028,6 +2028,21 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         [self setAnimationFlags:postDrawAnimationFlags];
     }
+    
+    if(_zoomChangedSinceLastDraw) {
+        // Set the transform used by CA to position sublayers - allows
+        // users of the class to place UIViews etc. 'on' the page.
+        CATransform3D sublayerTransform = _zoomMatrix;
+        // Make sure the sublayer transform translation is in the UIView
+        // points.
+        sublayerTransform.m41 *= _viewportToBoundsPointsTransform.a;
+        sublayerTransform.m42 *= -_viewportToBoundsPointsTransform.d;
+        [CATransaction begin];
+        [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+        self.layer.sublayerTransform = sublayerTransform;
+        [CATransaction commit];
+        _zoomChangedSinceLastDraw = NO;
+    }
 }
 
 - (void)abortAllAnimation
@@ -3400,17 +3415,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
            !CGPointEqualToPoint(_scrollTranslation, previousTranslation)) {
             [self _scheduleRetextureForPanAndZoom];
             
-            // Set the transform used by CA to position sublayers - allows
-            // users of the class to place UIViews etc. 'on' the page.
-            CATransform3D sublayerTransform = zoomMatrix;
-            // Make sure the sublayer transform translation is in the UIView
-            // points.
-            sublayerTransform.m41 *= _viewportToBoundsPointsTransform.a;
-            sublayerTransform.m42 *= _viewportToBoundsPointsTransform.d;
-            [CATransaction begin];
-            [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-            self.layer.sublayerTransform = sublayerTransform;
-            [CATransaction commit];
+            // We'll set the sublayertransform on the next draw.
+            _zoomChangedSinceLastDraw = YES;
         }
         [self setNeedsDraw];
 
