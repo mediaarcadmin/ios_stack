@@ -61,7 +61,7 @@
 	UIAccessibilityElement *nextZone;
 	UIAccessibilityElement *pageZone;
 	
-	NSMutableArray *embeddedVideoControllers;
+	NSMutableArray *mediaViews;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
