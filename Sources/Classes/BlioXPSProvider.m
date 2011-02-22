@@ -123,13 +123,11 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 		
     [renderingLock lock];
     [contentsLock lock];
-    [inflateLock lock];
     XPS_Cancel(xpsHandle);
     XPS_Close(xpsHandle);
     XPS_End();
     [renderingLock unlock];
     [contentsLock unlock];
-    [inflateLock unlock];
     
     [self deleteTemporaryDirectoryAtPath:self.tempDirectory];
     
@@ -151,7 +149,6 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 	
     [renderingLock release];
     [contentsLock release];
-    [inflateLock release];
     
     self.componentCache = nil;
     
@@ -168,7 +165,6 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 		
         renderingLock = [[NSLock alloc] init];
         contentsLock = [[NSLock alloc] init];
-        inflateLock = [[NSLock alloc] init];
         
         CFUUIDRef theUUID = CFUUIDCreate(NULL);
         CFStringRef UUIDString = CFUUIDCreateString(NULL, theUUID);
@@ -357,14 +353,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     [renderingLock lock];
         XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
         XPS_SetUserData(xpsHandle, self);
-		if (!self.bookIsEncrypted) {
-			[inflateLock lock];
-			XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-			[inflateLock unlock];
-		} else {
-			XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
-		}
-		
+		XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
 	
         if (imageInfo) {
             size_t width  = imageInfo->widthInPixels;
@@ -416,9 +405,6 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     imageInfo = NULL;
     
     [renderingLock lock];
-	if (!self.bookIsEncrypted) {
-		[inflateLock lock];
-	}
 	
     XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
     XPS_SetUserData(xpsHandle, self);
@@ -441,9 +427,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
                         
         CGColorSpaceRelease(colorSpace);
     }
-	if (!self.bookIsEncrypted) {
-		[inflateLock unlock];
-	}
+
     [renderingLock unlock];
 	    
     return (CGContextRef)[(id)bitmapContext autorelease];
@@ -880,9 +864,7 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 - (NSData *)mappedDataForComponentAtPath:(NSString *)path {
 	XPS_FILE_PACKAGE_INFO packageInfo;
     [contentsLock lock];
-	[inflateLock lock];
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
-	[inflateLock unlock];
     [contentsLock unlock];
 		
 	if (!ret) {
@@ -902,9 +884,7 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
     
     XPS_FILE_PACKAGE_INFO packageInfo;
     [contentsLock lock];
-	[inflateLock lock];
     int ret = XPS_GetComponentInfo(xpsHandle, (char *)[path UTF8String], &packageInfo);
-	[inflateLock unlock];
     [contentsLock unlock];
     if (!ret) {
         NSLog(@"Error opening component at path %@ for book with ID %@", path, self.bookID);
@@ -1313,8 +1293,10 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 #pragma mark -
 #pragma mark Decompress methods
 
+#define CHUNK 16384
+
 - (NSData *)decompress:(NSData *)data windowBits:(NSInteger)windowBits {
-    
+	
 	int ret;
 	unsigned bytesDecompressed;
 	z_stream strm;
@@ -1322,25 +1304,16 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	unsigned char outbuf[BUFSIZE];
 	NSMutableData* outData = [[NSMutableData alloc] init];
 	
-	// Read the gzip header.
-	// TESTING
-	//unsigned char ID1 = inBuffer[0];  // should be x1f
-	//unsigned char ID2 = inBuffer[1];  // should be x8b
-	//unsigned char CM = inBuffer[2];   // should be 8
-	
 	// Allocate inflate state.
 	strm.zalloc = Z_NULL;
 	strm.zfree = Z_NULL;
 	strm.opaque = Z_NULL;
 	strm.avail_in = 0;
 	strm.next_in = Z_NULL;
-	
-    [inflateLock lock];
-    
-	ret = XPS_inflateInit2(&strm, windowBits);
+	    
+	ret = inflateInit2(&strm, windowBits);
 	
 	if (ret != Z_OK) {
-        [inflateLock unlock];
         [outData release];
 		return nil;
     }
@@ -1351,15 +1324,14 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	do {
 		strm.avail_out = BUFSIZE;
 		strm.next_out = outbuf;
-		ret = XPS_inflate(&strm,Z_NO_FLUSH); 
+		ret = inflate(&strm,Z_NO_FLUSH); 
 		// ret should be Z_STREAM_END
 		switch (ret) {
 			case Z_NEED_DICT:
 				//ret = Z_DATA_ERROR;
 			case Z_DATA_ERROR:
 			case Z_MEM_ERROR:
-				XPS_inflateEnd(&strm);
-                [inflateLock unlock];
+				inflateEnd(&strm);
                 [outData release];
 				return nil;
 		}
@@ -1367,15 +1339,14 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 		[outData appendBytes:outbuf length:bytesDecompressed];
 	}
 	while (strm.avail_out == 0);
-	XPS_inflateEnd(&strm);
-	
-    [inflateLock unlock];
-	
+	inflateEnd(&strm);
+		
 	if (ret == Z_STREAM_END || ret == Z_OK)
 		return [outData autorelease];
     
     [outData release];
 	return nil;
+	
 }
 
 - (NSData *)decompressWithRawDeflate:(NSData *)data {

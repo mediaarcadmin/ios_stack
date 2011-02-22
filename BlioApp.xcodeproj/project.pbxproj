@@ -988,6 +988,15 @@
 		C9923A14126CCF2D00BA364A /* searchFieldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */; };
 		C9923A15126CCF2D00BA364A /* searchFieldIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */; };
 		C99860DB113FD284009E5263 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = C99860DA113FD284009E5263 /* check.png */; };
+		C9A9B9AE130EC9CA009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
+		C9A9B9B1130EC9FC009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
+		C9A9B9B3130ECA28009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
+		C9A9DABA1312B73B009B950F /* BlioMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A9DAB91312B73B009B950F /* BlioMediaView.m */; };
+		C9A9DABB1312B73B009B950F /* BlioMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A9DAB91312B73B009B950F /* BlioMediaView.m */; };
+		C9A9DABC1312B73B009B950F /* BlioMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A9DAB91312B73B009B950F /* BlioMediaView.m */; };
+		C9A9DAED1312BC22009B950F /* playButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9A9DAEC1312BC22009B950F /* playButton.png */; };
+		C9A9DAEE1312BC22009B950F /* playButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9A9DAEC1312BC22009B950F /* playButton.png */; };
+		C9A9DAEF1312BC22009B950F /* playButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9A9DAEC1312BC22009B950F /* playButton.png */; };
 		C9AC4A8511C7A2BA007B569B /* BlioBookSearchToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AC4A8311C7A2BA007B569B /* BlioBookSearchToolbar.m */; };
 		C9AF20E8114A67C3007D7AFC /* UIDevice+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */; };
 		C9B61CC21136BA620012CE7E /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
@@ -1884,6 +1893,10 @@
 		C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchFieldIcon.png; sourceTree = "<group>"; };
 		C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "searchFieldIcon@2x.png"; sourceTree = "<group>"; };
 		C99860DA113FD284009E5263 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
+		C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		C9A9DAB81312B73B009B950F /* BlioMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMediaView.h; sourceTree = "<group>"; };
+		C9A9DAB91312B73B009B950F /* BlioMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMediaView.m; sourceTree = "<group>"; };
+		C9A9DAEC1312BC22009B950F /* playButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playButton.png; sourceTree = "<group>"; };
 		C9AC4A8211C7A2BA007B569B /* BlioBookSearchToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookSearchToolbar.h; sourceTree = "<group>"; };
 		C9AC4A8311C7A2BA007B569B /* BlioBookSearchToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookSearchToolbar.m; sourceTree = "<group>"; };
 		C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+BlioAdditions.h"; sourceTree = "<group>"; };
@@ -2075,6 +2088,7 @@
 				DCA1BD691222FD080022D410 /* StoreKit.framework in Frameworks */,
 				7D2711AE124931D40087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224712F890460016C0B9 /* MobileCoreServices.framework in Frameworks */,
+				C9A9B9AE130EC9CA009B950F /* MediaPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2114,6 +2128,7 @@
 				A30E103F123EA5B400D31157 /* StoreKit.framework in Frameworks */,
 				7D2711B0124931E40087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224912F8905E0016C0B9 /* MobileCoreServices.framework in Frameworks */,
+				C9A9B9B3130ECA28009B950F /* MediaPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2153,6 +2168,7 @@
 				DCA1BD6A1222FD080022D410 /* StoreKit.framework in Frameworks */,
 				7D2711AF124931DA0087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224812F890530016C0B9 /* MobileCoreServices.framework in Frameworks */,
+				C9A9B9B1130EC9FC009B950F /* MediaPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2226,6 +2242,7 @@
 				A37FC20B10EA770500F3DC5A /* Libraries */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -2329,6 +2346,7 @@
 				5590D316111C8E7D00CE0C4F /* roundedcorners.png */,
 				553E98FA1107B8E600FB309D /* speedread-thumb.png */,
 				7DB9F95210F3A08C0010DF0B /* logo-white.png */,
+				C9A9DAEC1312BC22009B950F /* playButton.png */,
 				55822F0310F286BB008614FD /* button-list.png */,
 				55822F0410F286BB008614FD /* button-grid.png */,
 				556D1D5A10F3BE580019315C /* Icon.png */,
@@ -2980,6 +2998,8 @@
 				C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */,
 				C90DAEBB125CB46E00D8E663 /* BlioLayoutPDFDataSource.h */,
 				C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */,
+				C9A9DAB81312B73B009B950F /* BlioMediaView.h */,
+				C9A9DAB91312B73B009B950F /* BlioMediaView.m */,
 			);
 			name = LayoutView;
 			sourceTree = "<group>";
@@ -3625,6 +3645,7 @@
 				7DED87DE12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 				7D07620312EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8713097EB900814B75 /* minizip-license.html in Resources */,
+				C9A9DAEE1312BC22009B950F /* playButton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3863,6 +3884,7 @@
 				7DED87DF12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 				7D07620412EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8613097EB900814B75 /* minizip-license.html in Resources */,
+				C9A9DAED1312BC22009B950F /* playButton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4101,6 +4123,7 @@
 				7DED87DD12EC829F00D162E0 /* xhtml-entities.ent in Resources */,
 				7D07620212EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8513097EB900814B75 /* minizip-license.html in Resources */,
+				C9A9DAEF1312BC22009B950F /* playButton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4240,6 +4263,7 @@
 				7D05F86D12E8A123007150FF /* BlioZipArchive.m in Sources */,
 				DCF6C56212EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 				7D229FB312F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
+				C9A9DABB1312B73B009B950F /* BlioMediaView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4375,6 +4399,7 @@
 				7D05F86E12E8A123007150FF /* BlioZipArchive.m in Sources */,
 				DCF6C56312EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 				7D229FB412F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
+				C9A9DABA1312B73B009B950F /* BlioMediaView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4510,6 +4535,7 @@
 				7D05F86C12E8A123007150FF /* BlioZipArchive.m in Sources */,
 				DCF6C56112EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 				7D229FB212F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
+				C9A9DABC1312B73B009B950F /* BlioMediaView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,6 +21,7 @@
 #import "BlioLayoutGeometry.h"
 #import "BlioLayoutHyperlink.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioMediaView.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 #define BLIOLAYOUT_LHSHOTZONE 0.25f
@@ -45,7 +46,8 @@
 @property (nonatomic, retain) UIAccessibilityElement *pageZone;
 @property (nonatomic, assign) BOOL wasSelectionAtTouchStart;
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
-@property (nonatomic, retain) NSMutableArray *embeddedVideoControllers;
+@property (nonatomic, retain) NSMutableArray *mediaViews;
+@property (nonatomic, retain) NSMutableArray *webViews;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -88,6 +90,8 @@
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange;
 - (void)hideOverlay;
 - (void)showOverlay;
+- (void)freezeOverlayContents;
+- (UIImage *)generateSnapshotForOverlay;
 
 @end
 
@@ -104,9 +108,13 @@
 @synthesize wasSelectionAtTouchStart;
 @synthesize performingAccessibilityZoom;
 @synthesize overlay;
-@synthesize embeddedVideoControllers;
+@synthesize mediaViews;
+@synthesize webViews;
 
 - (void)dealloc {
+	
+	self.mediaViews = nil;
+	self.webViews = nil;
 	
     [self.delayedTouchesBeganTimer invalidate];
     self.delayedTouchesBeganTimer = nil;
@@ -674,7 +682,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)pageTurningView
 {
+	[self generateSnapshotForOverlay];
 	[self hideOverlay];
+	[self freezeOverlayContents];
 }
 
 - (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)pageTurningView
@@ -749,7 +759,26 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
 	
-    return [self.pageTurningView screenshot];
+	[self freezeOverlayContents];
+	UIImage *overlayImage = [self generateSnapshotForOverlay];
+	UIImage *pageScreenShot = [self.pageTurningView screenshot];
+	
+	if (pageScreenShot) {
+		CGSize size = self.bounds.size;
+		if(UIGraphicsBeginImageContextWithOptions != nil) {
+			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+		} else {
+			UIGraphicsBeginImageContext(size);
+		}
+		CGContextClearRect(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, pageScreenShot.size.width, pageScreenShot.size.height));
+		[pageScreenShot drawAtPoint:CGPointZero];
+		[overlayImage drawAtPoint:CGPointZero];
+		UIImage *composite = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		return composite;
+	} else {
+		return pageScreenShot;
+	}
 }
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
@@ -1091,6 +1120,40 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	[overlay setHidden:NO];
 }
 
+- (void)freezeOverlayContents
+{
+	for (BlioMediaView *mediaView in self.mediaViews) {
+		[mediaView pauseMediaPlayer];
+	}
+}
+
+- (UIImage *)generateSnapshotForOverlay
+{
+	UIImage *container = nil;
+	
+	if ([self.mediaViews count] || [self.webViews count]) {
+		CGSize size = self.bounds.size;
+		
+		if(UIGraphicsBeginImageContextWithOptions != nil) {
+			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+		} else {
+			UIGraphicsBeginImageContext(size);
+		}
+			
+		CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
+		[overlay.layer renderInContext:UIGraphicsGetCurrentContext()];
+		
+		container = UIGraphicsGetImageFromCurrentImageContext();
+		
+		UIGraphicsEndImageContext();
+		
+	}
+	
+	return container;
+}
+		  
+		  
+
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
 	
@@ -1110,10 +1173,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			overlay.multipleTouchEnabled = YES;
 			[self.pageTurningView addSubview:overlay];
 		}
+
+		[self.mediaViews makeObjectsPerformSelector:@selector(pauseMediaPlayer)];
 		
 		for (UIView *view in [overlay subviews]) {
 			[view removeFromSuperview];
 		}
+		
+		self.mediaViews = [NSMutableArray array];
+		self.webViews = [NSMutableArray array];
 		
 		for (int i = pageRange.location; i < pageRange.location + pageRange.length; i++) {
 			
@@ -1121,7 +1189,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
 			
 			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
-			for (NSDictionary *dict in content) {
+			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
 				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
 				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
 				NSString *controlType = [dict valueForKey:@"controlType"];
@@ -1135,36 +1203,24 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
+					[self.webViews addObject:webView];
 					
 					NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
 					
 					[webView loadRequest:request];
 					[overlay addSubview:webView];
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
-					
-					
-					
-					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
-					
-					//MPMoviePlayerController *player =
-//					[[MPMoviePlayerController alloc] initWithContentURL: myURL];
-//					[[player view] setFrame: [myView bounds]];  // frame must match parent view
-//					[myView addSubview: [player view]];
-//					// ...
-//					[player play]; 
-//					[overlay addSubview:[player view]];
-					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
-					webView.scalesPageToFit = NO;
-					NSString *videoHTML = [NSString stringWithFormat:@"<html><head></head><body style='margin:0px;'><video id='%p' src='%@' controls width='%f' height='%f' poster=''><p>This video format is not supported on this device.</p></video></body></html>", webView, [videoURL absoluteString], webView.bounds.size.width, webView.bounds.size.height];
-					[webView loadHTMLString:videoHTML baseURL:nil];
-					[overlay addSubview:webView];
+					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform)) contentURL:videoURL];
+					[overlay addSubview:mediaView];
+					[self.mediaViews addObject:mediaView];
+					[mediaView release];
 				}
 				
 				CFRelease(encodedString);
 			}
 		}
-			
+					
     }
 }
 

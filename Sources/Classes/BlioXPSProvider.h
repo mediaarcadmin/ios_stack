@@ -25,7 +25,6 @@ typedef enum {
     
     NSLock *renderingLock;
     NSLock *contentsLock;
-    NSLock *inflateLock;
     
     NSString *tempDirectory;
     NSInteger pageCount;
