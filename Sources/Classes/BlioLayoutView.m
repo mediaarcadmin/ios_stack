@@ -47,6 +47,7 @@
 @property (nonatomic, assign) BOOL wasSelectionAtTouchStart;
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
 @property (nonatomic, retain) NSMutableArray *mediaViews;
+@property (nonatomic, retain) NSMutableArray *webViews;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -89,6 +90,8 @@
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange;
 - (void)hideOverlay;
 - (void)showOverlay;
+- (void)freezeOverlayContents;
+- (UIImage *)generateSnapshotForOverlay;
 
 @end
 
@@ -106,8 +109,12 @@
 @synthesize performingAccessibilityZoom;
 @synthesize overlay;
 @synthesize mediaViews;
+@synthesize webViews;
 
 - (void)dealloc {
+	
+	self.mediaViews = nil;
+	self.webViews = nil;
 	
     [self.delayedTouchesBeganTimer invalidate];
     self.delayedTouchesBeganTimer = nil;
@@ -675,7 +682,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)pageTurningView
 {
+	[self generateSnapshotForOverlay];
 	[self hideOverlay];
+	[self freezeOverlayContents];
 }
 
 - (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)pageTurningView
@@ -750,7 +759,26 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
 	
-    return [self.pageTurningView screenshot];
+	[self freezeOverlayContents];
+	UIImage *overlayImage = [self generateSnapshotForOverlay];
+	UIImage *pageScreenShot = [self.pageTurningView screenshot];
+	
+	if (pageScreenShot) {
+		CGSize size = self.bounds.size;
+		if(UIGraphicsBeginImageContextWithOptions != nil) {
+			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+		} else {
+			UIGraphicsBeginImageContext(size);
+		}
+		CGContextClearRect(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, pageScreenShot.size.width, pageScreenShot.size.height));
+		[pageScreenShot drawAtPoint:CGPointZero];
+		[overlayImage drawAtPoint:CGPointZero];
+		UIImage *composite = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		return composite;
+	} else {
+		return pageScreenShot;
+	}
 }
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
@@ -1085,16 +1113,46 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)hideOverlay 
 {
 	[overlay setHidden:YES];
-	
-	for (BlioMediaView *mediaView in self.mediaViews) {
-		[mediaView pauseMediaPlayer];
-	}
 }
 
 - (void)showOverlay
 {
 	[overlay setHidden:NO];
 }
+
+- (void)freezeOverlayContents
+{
+	for (BlioMediaView *mediaView in self.mediaViews) {
+		[mediaView pauseMediaPlayer];
+	}
+}
+
+- (UIImage *)generateSnapshotForOverlay
+{
+	UIImage *container = nil;
+	
+	if ([self.mediaViews count] || [self.webViews count]) {
+		CGSize size = self.bounds.size;
+		
+		if(UIGraphicsBeginImageContextWithOptions != nil) {
+			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+		} else {
+			UIGraphicsBeginImageContext(size);
+		}
+			
+		CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
+		[overlay.layer renderInContext:UIGraphicsGetCurrentContext()];
+		
+		container = UIGraphicsGetImageFromCurrentImageContext();
+		
+		UIGraphicsEndImageContext();
+		
+	}
+	
+	return container;
+}
+		  
+		  
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
@@ -1115,16 +1173,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			overlay.multipleTouchEnabled = YES;
 			[self.pageTurningView addSubview:overlay];
 		}
+
+		[self.mediaViews makeObjectsPerformSelector:@selector(pauseMediaPlayer)];
 		
 		for (UIView *view in [overlay subviews]) {
 			[view removeFromSuperview];
 		}
 		
-		for (BlioMediaView *mediaView in self.mediaViews) {
-			[mediaView pauseMediaPlayer];
-		}
-
 		self.mediaViews = [NSMutableArray array];
+		self.webViews = [NSMutableArray array];
 		
 		for (int i = pageRange.location; i < pageRange.location + pageRange.length; i++) {
 			
@@ -1146,6 +1203,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
+					[self.webViews addObject:webView];
 					
 					NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
 					
