@@ -1107,7 +1107,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         _automaticTurnPercentage = percentage;
         
-        [self setAnimationFlags:[self animationFlags] |  EucPageTurningViewAnimationFlagsAutomaticTurn];
+        self.animationFlags = self.animationFlags | EucPageTurningViewAnimationFlagsAutomaticTurn;
     }
 }
 
@@ -2026,7 +2026,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             _touchVelocity = CGPointZero;
         }
         
-        [self setAnimationFlags:postDrawAnimationFlags];
+        self.animationFlags = postDrawAnimationFlags;
     }
     
     if(_zoomChangedSinceLastDraw) {
@@ -2055,7 +2055,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         if(self.animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) {
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }    
-        [self setAnimationFlags:EucPageTurningViewAnimationFlagsNone];
+        self.animationFlags = EucPageTurningViewAnimationFlagsNone;
         [self drawView];
     }
 }
@@ -2202,10 +2202,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 if(fabsf(translation.x - _scrollStartTranslation.x) * _viewportToBoundsPointsTransform.a > 0.5f &&
                    fabsf((translation.x - translationAfterScroll.x) - _scrollStartTranslation.x) * _viewportToBoundsPointsTransform.a < 0.5f &&
                    fabsf((translation.y - translationAfterScroll.y) - _scrollStartTranslation.y) * _viewportToBoundsPointsTransform.d < 4.0f) {
-                    self.animationFlags = EucPageTurningViewAnimationFlagsDragTurn;
+                    animationFlags = EucPageTurningViewAnimationFlagsDragTurn;
                 } else {
-                    self.animationFlags = EucPageTurningViewAnimationFlagsDragScroll;
+                    animationFlags = EucPageTurningViewAnimationFlagsDragScroll;
                 }
+                self.animationFlags = animationFlags;
             }
             translation = translationAfterScroll;
         }
@@ -2232,7 +2233,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 pageTouchPoint = CGPointMake(oldViewportTouchX, translation.y);
             }
             if(_isTurning == 0) {
-                self.animationFlags = [self animationFlags] & ~EucPageTurningViewAnimationFlagsDragTurn;
+                self.animationFlags = animationFlags & ~EucPageTurningViewAnimationFlagsDragTurn;
             }
 
             if(_isTurning != 0) {
