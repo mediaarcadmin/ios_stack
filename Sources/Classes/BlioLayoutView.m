@@ -92,7 +92,7 @@
 - (void)hideOverlay;
 - (void)showOverlay;
 - (void)freezeOverlayContents;
-- (UIImage *)generateSnapshotForOverlay;
+- (NSArray *)overlayPositionedContexts;
 
 @end
 
@@ -684,7 +684,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)pageTurningView
 {
-	[self generateSnapshotForOverlay];
 	[self hideOverlay];
 	[self freezeOverlayContents];
 }
@@ -762,20 +761,34 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
 	
 	[self freezeOverlayContents];
-	UIImage *overlayImage = [self generateSnapshotForOverlay];
-	//NSArray *overlayBitmapContexts = [self overlayBitmapContexts];
+	//UIImage *overlayImage = [self generateSnapshotForOverlay];
+	NSArray *positionedContexts = [self overlayPositionedContexts];
 	UIImage *pageScreenShot = [self.pageTurningView screenshot];
 	
-	if (overlayImage) {
+	if ([positionedContexts count]) {
 		CGSize size = self.bounds.size;
 		if(UIGraphicsBeginImageContextWithOptions != nil) {
 			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
 		} else {
 			UIGraphicsBeginImageContext(size);
 		}
-		CGContextClearRect(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, pageScreenShot.size.width, pageScreenShot.size.height));
+		
+		CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
 		[pageScreenShot drawAtPoint:CGPointZero];
-		[overlayImage drawAtPoint:CGPointZero];
+		
+		for (THPositionedCGContext *positionedContext in positionedContexts) {
+			CGContextRef overlayContext = [positionedContext CGContext];
+						
+			CGImageRef overlayImage = CGBitmapContextCreateImage(overlayContext);
+			
+			CGRect rect = CGRectZero;
+			rect.origin = positionedContext.origin;
+			rect.size = CGSizeMake(CGImageGetWidth(overlayImage), CGImageGetHeight(overlayImage));
+			
+			CGContextDrawImage(UIGraphicsGetCurrentContext(), rect, overlayImage);
+			CGImageRelease(overlayImage);
+		}
+		
 		UIImage *composite = UIGraphicsGetImageFromCurrentImageContext();
 		UIGraphicsEndImageContext();
 		return composite;
@@ -1130,37 +1143,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	}
 }
 
-- (UIImage *)generateSnapshotForOverlay
-{
-	UIImage *container = nil;
-	
-	if ([self.mediaViews count] || [self.webViews count]) {
-		CGSize size = self.bounds.size;
-		
-		if(UIGraphicsBeginImageContextWithOptions != nil) {
-			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
-		} else {
-			UIGraphicsBeginImageContext(size);
-		}
-			
-		CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
-		[overlay.layer renderInContext:UIGraphicsGetCurrentContext()];
-		
-		container = UIGraphicsGetImageFromCurrentImageContext();
-		
-		UIGraphicsEndImageContext();
-		
-	}
-	
-	return container;
-}
-
-- (NSArray *)overlayBitmapContexts {
+- (NSArray *)overlayPositionedContexts {
 	
 	NSUInteger viewCount = [self.mediaViews count] + [self.webViews count];
 	
 	NSMutableArray *overlayViews = [NSMutableArray arrayWithCapacity:viewCount];
-	NSMutableArray *bitmapContexts = [NSMutableArray arrayWithCapacity:viewCount];
+	NSMutableArray *positionedContexts = [NSMutableArray arrayWithCapacity:viewCount];
 	
 	[overlayViews addObjectsFromArray:self.mediaViews];
 	[overlayViews addObjectsFromArray:self.webViews];
@@ -1168,6 +1156,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	for (UIView *view in overlayViews) {
 		
 		CGSize size = view.bounds.size;
+		CGPoint origin = view.frame.origin;
 		
 		size_t width  = size.width;
 		size_t height = size.height;
@@ -1179,18 +1168,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		NSMutableData *bitmapData = [[[NSMutableData alloc] initWithCapacity:totalBytes] autorelease];
 		[bitmapData setLength:totalBytes];
 		
-		CGContextRef bitmapContext = CGBitmapContextCreate([bitmapData mutableBytes], width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
+		CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
 		CGColorSpaceRelease(colorSpace);
 		
-		CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
-		CGContextTranslateCTM(bitmapContext, -view.bounds.origin.x, -view.bounds.origin.y);
+		CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
+		CGContextTranslateCTM(bitmapContext, -origin.x, -origin.y);
 		[overlay.layer renderInContext:bitmapContext];
 		
-		[bitmapContexts addObject:(id)bitmapContext];
+		THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
+		[positionedContexts addObject:positionedContext];
+	
 		CGContextRelease(bitmapContext);
 	}
 
-	return bitmapContexts;
+	return positionedContexts;
 }
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
