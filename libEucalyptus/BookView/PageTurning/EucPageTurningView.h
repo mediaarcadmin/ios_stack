@@ -229,6 +229,7 @@ typedef enum EucPageTurningViewAnimationFlags {
 
 @property (nonatomic, assign) NSUInteger zoomedTextureWidth; // default = 1024
 
+- (void)accessibilityAnnouncePageSummaryIfAfterTurn;
 - (void)abortAllAnimation;
 
 #pragma mark View based page contents
@@ -250,11 +251,10 @@ typedef enum EucPageTurningViewAnimationFlags {
 - (BOOL)stepPageForwards:(BOOL)forwards;
 
 - (void)refreshPageAtIndex:(NSUInteger)pageIndex;
+- (void)overlayPageAtIndex:(NSUInteger)pageIndex withPositionedRGBABitmapContexts:(NSArray *)contexts;
 - (void)refreshHighlightsForPageAtIndex:(NSUInteger)index;
 
 - (void)waitForAllPageImagesToBeAvailable;
-
-- (void)accessibilityAnnouncePageSummaryIfAfterTurn;
 
 #pragma mark Light-related properties.
 
