@@ -763,7 +763,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	UIImage *overlayImage = [self generateSnapshotForOverlay];
 	UIImage *pageScreenShot = [self.pageTurningView screenshot];
 	
-	if (pageScreenShot) {
+	if (overlayImage) {
 		CGSize size = self.bounds.size;
 		if(UIGraphicsBeginImageContextWithOptions != nil) {
 			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
