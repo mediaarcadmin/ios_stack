@@ -1222,9 +1222,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                 // We're finished with this because we're using our own context now.
                 [memoryContext release];
             }          
-            memoryContext = [NSData dataWithBytesNoCopy:textureData
-                                                 length:bufferLength
-                                           freeWhenDone:YES];
+            memoryContext = [[NSData alloc] initWithBytesNoCopy:textureData
+                                                         length:bufferLength
+                                                   freeWhenDone:YES];
         } 
                 
         bitmapPair = [THPair pairWithFirst:[NSData dataWithBytesNoCopy:textureData
@@ -1246,9 +1246,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)_setupBitmapPage:(NSUInteger)newPageIndex 
    forInternalPageOffset:(NSUInteger)pageOffset
-                 minSize:(CGSize)minSize
+                  atSize:(CGSize)size
 {
-    THLog(@"requesting Texture of size (%f, %f)", minSize.width, minSize.height);
+    THLog(@"requesting Texture of size (%f, %f)", size.width, size.height);
 
     CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
                                    contentRectForPageAtIndex:newPageIndex];
@@ -1282,7 +1282,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         textureUploadInvocation.target = self;
         [textureUploadInvocation setArgument:&newPageIndex atIndex:2];
         [textureUploadInvocation setArgument:&thisPageRect atIndex:3];
-        [textureUploadInvocation setArgument:&minSize atIndex:4];
+        [textureUploadInvocation setArgument:&size atIndex:4];
         BOOL no = NO;
         [textureUploadInvocation setArgument:&no atIndex:5];
 		
@@ -1310,7 +1310,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
     minSize.width = roundf(minSize.width);
     minSize.height = roundf(minSize.height);
-    [self _setupBitmapPage:newPageIndex forInternalPageOffset:pageOffset minSize:minSize];
+    [self _setupBitmapPage:newPageIndex forInternalPageOffset:pageOffset atSize:minSize];
 }
 
 - (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated
