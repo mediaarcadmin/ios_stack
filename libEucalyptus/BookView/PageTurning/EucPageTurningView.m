@@ -852,6 +852,50 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     [timer report];
 }
 
+- (void)_subTextureInTexture:(GLuint)textureRef 
+       fromRGBABitmapContext:(CGContextRef)context 
+                     atPoint:(CGPoint)origin
+{
+    size_t contextWidth = CGBitmapContextGetWidth(context);
+    size_t contextHeight = CGBitmapContextGetHeight(context);
+ 
+    CGContextRef textureContext = NULL;
+    uint8_t *textureData;
+    BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(context) != contextWidth * 4;
+    if(dataIsNonContiguous || (textureData = CGBitmapContextGetData(context)) == NULL) {
+        // We need to generate contiguous data to upload, and we need to be
+        // able to access the context's backing data.
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        textureData = malloc(contextHeight * contextWidth * 4);
+        textureContext = CGBitmapContextCreate(NULL, contextWidth, contextHeight, 8, contextWidth * 4, 
+                                               colorSpace, kCGImageAlphaPremultipliedLast);
+        CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
+        
+        CGImageRef image = CGBitmapContextCreateImage(context);
+        CGContextDrawImage(textureContext, CGRectMake(0.0f, 0.0f, contextWidth, contextHeight), image);
+        CGImageRelease(image);
+        CGColorSpaceRelease(colorSpace);
+    }
+    
+    
+    EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
+    [eaglContext thPush];
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glBindTexture(GL_TEXTURE_2D, textureRef); 
+    glTexSubImage2D(GL_TEXTURE_2D, 0, origin.x, origin.y, contextWidth, contextHeight, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+    
+    [eaglContext thPop];
+    [_texturePool checkInEAGLContext];
+    
+    if(textureContext) {
+        CGContextRelease(textureContext);
+        free(textureData);
+    }
+    
+    THLog(@"Uploaded subtexture of size (%ld, %ld)", (long)contextWidth, (long)contextHeight);
+}
+
 - (GLuint)_createTextureFromRGBABitmapContext:(CGContextRef)context storeAsRGB565:(BOOL)storeAsRGB565
 {
     size_t contextWidth = CGBitmapContextGetWidth(context);
@@ -1222,9 +1266,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                 // We're finished with this because we're using our own context now.
                 [memoryContext release];
             }          
-            memoryContext = [NSData dataWithBytesNoCopy:textureData
-                                                 length:bufferLength
-                                           freeWhenDone:YES];
+            memoryContext = [[NSData alloc] initWithBytesNoCopy:textureData
+                                                         length:bufferLength
+                                                   freeWhenDone:YES];
         } 
                 
         bitmapPair = [THPair pairWithFirst:[NSData dataWithBytesNoCopy:textureData
@@ -1246,9 +1290,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)_setupBitmapPage:(NSUInteger)newPageIndex 
    forInternalPageOffset:(NSUInteger)pageOffset
-                 minSize:(CGSize)minSize
+                  atSize:(CGSize)size
 {
-    THLog(@"requesting Texture of size (%f, %f)", minSize.width, minSize.height);
+    THLog(@"requesting Texture of size (%f, %f)", size.width, size.height);
 
     CGRect thisPageRect = [_bitmapDataSource pageTurningView:self 
                                    contentRectForPageAtIndex:newPageIndex];
@@ -1282,7 +1326,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         textureUploadInvocation.target = self;
         [textureUploadInvocation setArgument:&newPageIndex atIndex:2];
         [textureUploadInvocation setArgument:&thisPageRect atIndex:3];
-        [textureUploadInvocation setArgument:&minSize atIndex:4];
+        [textureUploadInvocation setArgument:&size atIndex:4];
         BOOL no = NO;
         [textureUploadInvocation setArgument:&no atIndex:5];
 		
@@ -1310,7 +1354,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
     minSize.width = roundf(minSize.width);
     minSize.height = roundf(minSize.height);
-    [self _setupBitmapPage:newPageIndex forInternalPageOffset:pageOffset minSize:minSize];
+    [self _setupBitmapPage:newPageIndex forInternalPageOffset:pageOffset atSize:minSize];
 }
 
 - (void)turnToPageAtIndex:(NSUInteger)newPageIndex animated:(BOOL)animated
@@ -1435,6 +1479,33 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
     }
 }
+
+- (void)overlayPageAtIndex:(NSUInteger)pageIndex withPositionedRGBABitmapContexts :(NSArray *)contexts
+{
+    EucPageTurningPageContentsInformation *pageContentsInformation = nil;
+    for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
+        if(pageIndex == _pageContentsInformation[i].pageIndex) {
+            pageContentsInformation = _pageContentsInformation[i];
+            break;
+        }
+    }
+    
+    if(!pageContentsInformation) {
+        THWarn(@"%s called with page index we don't know about", __PRETTY_FUNCTION__);
+    } else {
+        GLuint texture = pageContentsInformation.texture;
+        if(!texture) {
+            THWarn(@"%s called with page index we don't yet have a texture for", __PRETTY_FUNCTION__);
+        } else {
+            for(THPositionedCGContext *positionedContext in contexts) {
+                [self _subTextureInTexture:texture 
+                     fromRGBABitmapContext:positionedContext.CGContext
+                                   atPoint:positionedContext.origin];
+            }
+        }
+    }
+}
+
 
 static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 {
