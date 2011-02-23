@@ -761,6 +761,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	
 	[self freezeOverlayContents];
 	UIImage *overlayImage = [self generateSnapshotForOverlay];
+	//NSArray *overlayBitmapContexts = [self overlayBitmapContexts];
 	UIImage *pageScreenShot = [self.pageTurningView screenshot];
 	
 	if (overlayImage) {
@@ -1151,8 +1152,44 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	
 	return container;
 }
-		  
-		  
+
+- (NSArray *)overlayBitmapContexts {
+	
+	NSUInteger viewCount = [self.mediaViews count] + [self.webViews count];
+	
+	NSMutableArray *overlayViews = [NSMutableArray arrayWithCapacity:viewCount];
+	NSMutableArray *bitmapContexts = [NSMutableArray arrayWithCapacity:viewCount];
+	
+	[overlayViews addObjectsFromArray:self.mediaViews];
+	[overlayViews addObjectsFromArray:self.webViews];
+	
+	for (UIView *view in overlayViews) {
+		
+		CGSize size = view.bounds.size;
+		
+		size_t width  = size.width;
+		size_t height = size.height;
+		size_t bytesPerRow = 4 * width;
+		size_t totalBytes = bytesPerRow * height;
+		
+		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+		
+		NSMutableData *bitmapData = [[[NSMutableData alloc] initWithCapacity:totalBytes] autorelease];
+		[bitmapData setLength:totalBytes];
+		
+		CGContextRef bitmapContext = CGBitmapContextCreate([bitmapData mutableBytes], width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
+		CGColorSpaceRelease(colorSpace);
+		
+		CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
+		CGContextTranslateCTM(bitmapContext, -view.bounds.origin.x, -view.bounds.origin.y);
+		[overlay.layer renderInContext:bitmapContext];
+		
+		[bitmapContexts addObject:(id)bitmapContext];
+		CGContextRelease(bitmapContext);
+	}
+
+	return bitmapContexts;
+}
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
