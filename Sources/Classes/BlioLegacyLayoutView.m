@@ -2682,12 +2682,12 @@ static CGAffineTransform transformRectToFitRectWidth(CGRect sourceRect, CGRect t
 
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect
-                                 minSize:(CGSize)size
-                              getContext:(id *)context {
+                                 atSize:(CGSize)size
+                              getBacking:(id *)context {
     return nil;
 }
 
-- (THPair *)RGBABitmapDataForPage:(NSUInteger)page fromRect:(CGRect)rect minSize:(CGSize)size {
+- (THPair *)RGBABitmapDataForPage:(NSUInteger)page fromRect:(CGRect)rect atSize:(CGSize)size {
 	return nil;
 }
 

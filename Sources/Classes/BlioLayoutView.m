@@ -13,6 +13,7 @@
 #import "BlioWebToolsViewController.h"
 #import <libEucalyptus/EucMenuItem.h>
 #import <libEucalyptus/EucSelectorRange.h>
+#import <libEucalyptus/THPositionedCGContext.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THUIDeviceAdditions.h>
 #import "UIDevice+BlioAdditions.h"
@@ -375,15 +376,16 @@
     return [self cropForPage:index + 1];
 }
 
-- (CGContextRef)pageTurningView:(EucPageTurningView *)aPageTurningView 
-RGBABitmapContextForPageAtIndex:(NSUInteger)index
-                       fromRect:(CGRect)rect 
-                        minSize:(CGSize)size 
-                     getContext:(id *)context {
-    return [self.dataSource RGBABitmapContextForPage:index + 1
-                                            fromRect:rect 
-                                             minSize:size
-                                          getContext:context];
+- (THPositionedCGContext *)pageTurningView:(EucPageTurningView *)aPageTurningView 
+           RGBABitmapContextForPageAtIndex:(NSUInteger)index
+                                  fromRect:(CGRect)rect 
+                                    atSize:(CGSize)size {
+    id backing = nil;
+    CGContextRef CGContext = [self.dataSource RGBABitmapContextForPage:index + 1
+                                                              fromRect:rect 
+                                                                atSize:size
+                                                            getBacking:&backing];
+    return [[[THPositionedCGContext alloc] initWithCGContext:CGContext backing:backing] autorelease];
 }
 
 - (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 

@@ -377,8 +377,8 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect
-                                 minSize:(CGSize)size 
-                              getContext:(id *)context {
+                                 atSize:(CGSize)size 
+                              getBacking:(id *)context {
 	
 
 	CGRect pageCropRect = [self cropRectForPage:page];

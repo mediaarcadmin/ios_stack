@@ -20,6 +20,7 @@
 #import "THBaseEAGLView.h"
 #import "THOpenGLTexturePool.h"
 #import "THGeometryUtils.h"
+#import "THPositionedCGContext.h"
 #import "THEmbeddedResourceManager.h"
 #import "THRoundRects.h"
 #import "THPair.h"
@@ -802,6 +803,55 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
+- (void)_invertLuminanceOfRGBABitmap:(void *)RGBABitmap byteLength:(size_t)byteLength
+{
+    size_t elements = byteLength / 4;
+    for(size_t i = 0; i < elements; ++i) {
+        uint32_t pixel = ((uint32_t *)RGBABitmap)[i];
+        
+        uint32_t blue =  (pixel & 0x00ff0000) >> 16;
+        uint32_t green = (pixel & 0x0000ff00) >> 8;
+        uint32_t red =   (pixel & 0x000000ff);
+        
+        CGFloat total = ((CGFloat)red * 0.299 + (CGFloat)green * 0.587 + (CGFloat)blue * 0.114) / 255.0;
+        
+        if(total <= 0.0f) {
+            pixel = 0xffffffff;
+        } else if(total >= 1.0f) {
+            pixel = 0xff000000;
+        } else {
+            CGFloat scale = ((1.0 - total) / total);
+            pixel = 0xff000000;
+            pixel |= ((uint32_t)((CGFloat)blue * scale)) << 16;
+            pixel |= ((uint32_t)((CGFloat)green * scale)) << 8;
+            pixel |= ((uint32_t)((CGFloat)red * scale));
+        }
+        
+        ((uint32_t *)RGBABitmap)[i] = pixel;
+    }
+}
+
+- (void)_convertRGBABitmap:(void *)RGBABitmap
+                byteLength:(size_t)byteLength
+            toRGB565Bitmap:(void *)RGB565Bitmap
+{
+    THTimer *timer = [THTimer timerWithName:@"Convert to RGB565"];
+    
+    uint8_t *RGBATextureData = (uint8_t *)RGBABitmap;        
+    uint16_t *RGB565TextureData = (uint16_t *)RGB565Bitmap;        
+    for(int i = 0; i < byteLength; i += 4) {
+        uint16_t result = 0;
+        result |= RGBATextureData[i] >> 3;
+        result <<= 6;
+        result |= RGBATextureData[i+1] >> 2; 
+        result <<= 5; 
+        result |= RGBATextureData[i+2] >> 3;
+        RGB565TextureData[i / 4] = result;
+    }
+    
+    [timer report];
+}
+
 - (GLuint)_createTextureFromRGBABitmapContext:(CGContextRef)context storeAsRGB565:(BOOL)storeAsRGB565
 {
     size_t contextWidth = CGBitmapContextGetWidth(context);
@@ -825,24 +875,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         CGColorSpaceRelease(colorSpace);
     }
     
-    uint16_t *RGB565TextureData = NULL;
     if(storeAsRGB565) {
-        THTimer *timer = [THTimer timerWithName:@"Convert to RGB565"];
-        size_t bufferLength = contextWidth * contextHeight * 4;
-        
-        // Convert in-place.
-        uint16_t *RGB565TextureData = (uint16_t *)textureData;        
-        for(int i = 0; i < bufferLength; i += 4) {
-            uint16_t result = 0;
-            result |= textureData[i] >> 3;
-            result <<= 6;
-            result |= textureData[i+1] >> 2; 
-            result <<= 5; 
-            result |= textureData[i+2] >> 3;
-            RGB565TextureData[i / 4] = result;
-        }
-        
-        [timer report];
+        // Convert in place.
+        [self _convertRGBABitmap:textureData 
+                      byteLength:contextWidth * contextHeight * 4
+                  toRGB565Bitmap:textureData];
     }
     
     EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
@@ -872,9 +909,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     if(textureContext) {
         CGContextRelease(textureContext);
         free(textureData);
-    }
-    if(RGB565TextureData) {
-        free(RGB565TextureData);
     }
     
     THLog(@"Created Texture of size (%ld, %ld)", (long)contextWidth, (long)contextHeight);
@@ -943,30 +977,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
         
     if(invertingLuminance) {
-        size_t elements = bufferLength / 4;
-        for(size_t i = 0; i < elements; ++i) {
-            uint32_t pixel = ((uint32_t *)textureData)[i];
-            
-            uint32_t blue =  (pixel & 0x00ff0000) >> 16;
-            uint32_t green = (pixel & 0x0000ff00) >> 8;
-            uint32_t red =   (pixel & 0x000000ff);
-            
-            CGFloat total = ((CGFloat)red * 0.299 + (CGFloat)green * 0.587 + (CGFloat)blue * 0.114) / 255.0;
-
-            if(total <= 0.0f) {
-                pixel = 0xffffffff;
-            } else if(total >= 1.0f) {
-                pixel = 0xff000000;
-            } else {
-                CGFloat scale = ((1.0 - total) / total);
-                pixel = 0xff000000;
-                pixel |= ((uint32_t)((CGFloat)blue * scale)) << 16;
-                pixel |= ((uint32_t)((CGFloat)green * scale)) << 8;
-                pixel |= ((uint32_t)((CGFloat)red * scale));
-            }
-            
-            ((uint32_t *)textureData)[i] = pixel;
-        }
+        [self _invertLuminanceOfRGBABitmap:textureData byteLength:bufferLength];
     }
     
     CGColorSpaceRelease(colorSpace);
@@ -1159,20 +1170,12 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     [_bitmapDataSourceLock lock];
     if(_bitmapDataSource) {
-		if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:RGBABitmapContextForPageAtIndex:fromRect:minSize:getContext:)]) {
-            pageBitmapContext = [_bitmapDataSource pageTurningView:self
-                                   RGBABitmapContextForPageAtIndex:index
-                                                          fromRect:pageRect
-                                                           minSize:size
-                                                        getContext:&memoryContext];
-            [memoryContext retain]; // We'll release it when we're done, below.
-        } else {
-            pageBitmapContext = [_bitmapDataSource pageTurningView:self
-                                   RGBABitmapContextForPageAtIndex:index
-                                                          fromRect:pageRect
-                                                           minSize:size];
-            
-        }
+        THPositionedCGContext *pagePositionedBitmapContext = [_bitmapDataSource pageTurningView:self
+                                                                RGBABitmapContextForPageAtIndex:index
+                                                                                       fromRect:pageRect
+                                                                                         atSize:size];
+        pageBitmapContext = CGContextRetain(pagePositionedBitmapContext.CGContext);
+        memoryContext = [pagePositionedBitmapContext.backing retain];
         
         size_t contextWidth = CGBitmapContextGetWidth(pageBitmapContext);
         size_t contextHeight = CGBitmapContextGetHeight(pageBitmapContext);
@@ -1194,8 +1197,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             CGContextStrokeRectWithWidth(pageBitmapContext, CGRectMake(0.5f, 0.5f, correctedSize.width - 1.0f, correctedSize.height - 1.0f), 1.0f);
         }
         
-        CGContextRef textureContext = NULL;
-        unsigned char *textureData;
+        unsigned char *textureData = NULL;
         BOOL dataIsNonContiguous = CGBitmapContextGetBytesPerRow(pageBitmapContext) != contextWidth * 4;
         if(dataIsNonContiguous || (textureData = CGBitmapContextGetData(pageBitmapContext)) == NULL) {
             // We need to generate contiguous data to upload, and we need to be
@@ -1205,38 +1207,37 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
             
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
             textureData = malloc(bufferLength);
-            textureContext = CGBitmapContextCreate(NULL, contextWidth, contextHeight, 8, contextWidth * 4, 
-                                                   colorSpace, kCGImageAlphaPremultipliedLast);
+            CGContextRef textureContext = CGBitmapContextCreate(NULL, contextWidth, contextHeight, 8, contextWidth * 4, 
+                                                                colorSpace, kCGImageAlphaPremultipliedLast);
             CGContextSetBlendMode(textureContext, kCGBlendModeCopy);
             
             CGImageRef image = CGBitmapContextCreateImage(pageBitmapContext);
             CGContextDrawImage(textureContext, CGRectMake(0.0f, 0.0f, contextWidth, contextHeight), image);
             CGImageRelease(image);
             CGColorSpaceRelease(colorSpace);
+            
+            CGContextRelease(pageBitmapContext);
+            pageBitmapContext = textureContext;
+            if(memoryContext) {
+                // We're finished with this because we're using our own context now.
+                [memoryContext release];
+            }          
+            memoryContext = [NSData dataWithBytesNoCopy:textureData
+                                                 length:bufferLength
+                                           freeWhenDone:YES];
         } 
                 
         bitmapPair = [THPair pairWithFirst:[NSData dataWithBytesNoCopy:textureData
                                                                 length:bufferLength
-                                                          freeWhenDone:textureContext != NULL]
+                                                          freeWhenDone:NO]
                                     second:[NSValue valueWithCGSize:correctedSize]];
-        
-        if(textureContext) {
-            if(memoryContext) {
-                // We're finished with this because we're using our own context now.
-                [memoryContext release];
-            }
-            
-            CGContextRelease(textureContext);
-            // The backing textureData is owned by the NSData in the pair we're 
-            // returning now, so don't free it here.
-        } else {
-            if(memoryContext) {
-                // Keep the memory context we've been handed alive for as long
-                // as its accociated NSData.
-                objc_setAssociatedObject(bitmapPair.first, memoryContext, @"EucPageTurningViewBitmapMemoryContext", OBJC_ASSOCIATION_RETAIN);
-                [memoryContext release];
-            }
+        if(memoryContext) {
+            // Keep the memory context we've been handed alive for as long
+            // as its accociated NSData.
+            objc_setAssociatedObject(bitmapPair.first, memoryContext, @"EucPageTurningViewBitmapMemoryContext", OBJC_ASSOCIATION_RETAIN);
+            [memoryContext release];
         }
+        CGContextRelease(pageBitmapContext);        
     }
     [_bitmapDataSourceLock unlock];
 
@@ -1259,13 +1260,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
 
         if(!_pageContentsInformation[pageOffset].texture) {
-            UIImage *fastImage = nil;
             if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:fastUIImageForPageAtIndex:)]) {
-                fastImage = [_bitmapDataSource pageTurningView:self fastUIImageForPageAtIndex:newPageIndex];
-            }
-            
-            if(fastImage) {
-                _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage invertingLuminance:NO storeAsRGB565:YES];
+                UIImage *fastImage = [_bitmapDataSource pageTurningView:self fastUIImageForPageAtIndex:newPageIndex];
+                if(fastImage) {
+                    _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage invertingLuminance:NO storeAsRGB565:YES];
+                }                
             }
         }
         
