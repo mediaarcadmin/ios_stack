@@ -108,8 +108,8 @@
 
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect
-                                 minSize:(CGSize)size 
-                              getContext:(id *)context {
+                                 atSize:(CGSize)size 
+                              getBacking:(id *)context {
 	
 //	NSLog(@"Requested rect %@ of size %@", NSStringFromCGRect(rect), NSStringFromCGSize(size));
 	

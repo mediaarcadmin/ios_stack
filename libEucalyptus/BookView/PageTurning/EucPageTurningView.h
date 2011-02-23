@@ -15,7 +15,7 @@
 #import "EucPageTurningTextureGenerationOperation.h"
 #import "THPair.h"
 
-@class EucPageTurningPageContentsInformation, THOpenGLTexturePool;
+@class EucPageTurningPageContentsInformation, THOpenGLTexturePool, THPositionedCGContext;
 @protocol EucPageTurningViewDelegate, EucPageTurningViewViewDataSource, EucPageTurningViewBitmapDataSource;
 
 
@@ -298,26 +298,12 @@ typedef enum EucPageTurningViewAnimationFlags {
 // two numbers (if two pages are visible).
 - (NSString *)pageTurningViewAccessibilityPageDescriptionForPagesAtIndexes:(NSArray *)pageIndexes;
 
+- (THPositionedCGContext *)pageTurningView:(EucPageTurningView *)pageTurningView 
+           RGBABitmapContextForPageAtIndex:(NSUInteger)index
+                                  fromRect:(CGRect)rect
+                                    atSize:(CGSize)rect;
+
 @optional
-- (CGContextRef)pageTurningView:(EucPageTurningView *)pageTurningView 
-RGBABitmapContextForPageAtIndex:(NSUInteger)index
-                       fromRect:(CGRect)rect
-                        minSize:(CGSize)rect;
-
-// 'context' is an optional object that will be kept alive alongside the
-// CGContextRef.  
-// This callback was created because before iOS 4 there was no way to specify
-// how to free bitmap data that a context had been created 'around'. 
-// (CGBitmapContextCreateWithData is new in iOS 4).
-// After libEucalyptus supports only iOS 4+, this callback
-// will be removed and the regular RGBABitmapContextForPageAtIndex: callback
-// made required rather than optional.
-- (CGContextRef)pageTurningView:(EucPageTurningView *)pageTurningView 
-RGBABitmapContextForPageAtIndex:(NSUInteger)index
-                       fromRect:(CGRect)rect
-                        minSize:(CGSize)rect
-                     getContext:(id *)context;
-
 - (UIImage *)pageTurningView:(EucPageTurningView *)aPageTurningView 
    fastUIImageForPageAtIndex:(NSUInteger)index;
 

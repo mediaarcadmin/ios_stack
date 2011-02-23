@@ -157,6 +157,8 @@
 		7D412B291149664C00C003BB /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900CD11494A0C00375803 /* libparserutils.a */; };
 		7D412B2A1149664C00C003BB /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D1900981149490E00375803 /* libwapcaplet.a */; };
 		7D412B2E1149666C00C003BB /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D412B2D1149666C00C003BB /* ApplicationServices.framework */; };
+		7D43494513152A3800796B67 /* THPositionedCGContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4349271315273400796B67 /* THPositionedCGContext.m */; };
+		7D43494613152A4000796B67 /* THPositionedCGContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D4349261315273400796B67 /* THPositionedCGContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D4A003511DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000011DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png */; };
 		7D4A003611DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */; };
 		7D4A003711DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A000211DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png */; };
@@ -1143,6 +1145,8 @@
 		7D3F4D3311EF395B0065A5F7 /* THStringRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THStringRenderer.m; sourceTree = "<group>"; };
 		7D412B2D1149666C00C003BB /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		7D412B2F1149667300C003BB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		7D4349261315273400796B67 /* THPositionedCGContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THPositionedCGContext.h; sourceTree = "<group>"; };
+		7D4349271315273400796B67 /* THPositionedCGContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THPositionedCGContext.m; sourceTree = "<group>"; };
 		7D4A000011DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderBlueLeftCap.png; sourceTree = "<group>"; };
 		7D4A000111DBA34E00DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderBlueLeftCap@2x.png"; sourceTree = "<group>"; };
 		7D4A000211DBA34E00DDA5B7 /* iPodLikeSliderKnob-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small.png"; sourceTree = "<group>"; };
@@ -2685,6 +2689,8 @@
 				7DF012AE103EDD5600DAA9DA /* THTextFittingLabel.m */,
 				7D27DC631223DE5C009E7B64 /* THAccessibilityElement.h */,
 				7D27DC641223DE5C009E7B64 /* THAccessibilityElement.m */,
+				7D4349261315273400796B67 /* THPositionedCGContext.h */,
+				7D4349271315273400796B67 /* THPositionedCGContext.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -3818,6 +3824,7 @@
 				7D868B2012802F9F003A3ACD /* THEAGLContextAdditions.h in Headers */,
 				7D868B2612802FB9003A3ACD /* THOpenGLTexturePool.h in Headers */,
 				7DF823F51291E3FC0072C02B /* EucBookNavPoint.h in Headers */,
+				7D43494613152A4000796B67 /* THPositionedCGContext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4736,6 +4743,7 @@
 				7D868B2112802FA5003A3ACD /* THEAGLContextAdditions.m in Sources */,
 				7D868B2212802FAF003A3ACD /* THOpenGLTexturePool.m in Sources */,
 				7DF823F61291E3FC0072C02B /* EucBookNavPoint.m in Sources */,
+				7D43494513152A3800796B67 /* THPositionedCGContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
