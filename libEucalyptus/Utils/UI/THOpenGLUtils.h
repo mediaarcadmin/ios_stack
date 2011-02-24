@@ -162,6 +162,14 @@ static inline GLuint THGLIndexForColumnAndRow(GLuint column, GLuint row, GLuint 
 #pragma mark -
 #pragma mark Utility Functions
 
+static inline THVec3 THTriangleNormal(THVec3 left, THVec3 middle, THVec3 right)
+{
+    THVec3 leftVector = THVec3Subtract(right, middle);
+    THVec3 rightVector = THVec3Subtract(right, left);
+    
+    return THVec3Normalize(THVec3CrossProduct(leftVector, rightVector));
+}
+
 GLuint THGLLoadShader(GLenum type, const char *shaderSource, GLint shaderSourceLength);
 
 CATransform3D THCATransform3DLookAt(CATransform3D modelViewMatrix, THVec3 eye, THVec3 lookAt, THVec3 up);
