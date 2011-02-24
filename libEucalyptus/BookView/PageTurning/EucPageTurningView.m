@@ -3616,7 +3616,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     BOOL gotHighlights = NO;
     if([NSThread isMainThread]) {
         // Don't do this first on a non-main thread, it will cause 
-        // glitching.
+        // glitching if we try to draw simultaneously to this method running.
+        // On the main thread we can do it now to save some transitory 
+        // texture RAM, since we know we won't draw until this method is over.
         _pageContentsInformation[index].highlightTexture = 0;
     }
     if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:highlightsForPageAtIndex:)]) {
