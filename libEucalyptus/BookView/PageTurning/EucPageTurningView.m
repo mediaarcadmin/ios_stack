@@ -19,6 +19,7 @@
 #import <tgmath.h>
 #import "THBaseEAGLView.h"
 #import "THOpenGLTexturePool.h"
+#import "THPixelFormatUtils.h"
 #import "THGeometryUtils.h"
 #import "THPositionedCGContext.h"
 #import "THEmbeddedResourceManager.h"
@@ -803,7 +804,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
-- (void)_invertLuminanceOfRGBABitmap:(void *)RGBABitmap byteLength:(size_t)byteLength
+- (void)_invertLuminanceOfRGBABitmap:(void *)RGBABitmap
+                          byteLength:(size_t)byteLength
 {
     size_t elements = byteLength / 4;
     for(size_t i = 0; i < elements; ++i) {
@@ -829,27 +831,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         ((uint32_t *)RGBABitmap)[i] = pixel;
     }
-}
-
-- (void)_convertRGBABitmap:(void *)RGBABitmap
-                byteLength:(size_t)byteLength
-            toRGB565Bitmap:(void *)RGB565Bitmap
-{
-    THTimer *timer = [THTimer timerWithName:@"Convert to RGB565"];
-    
-    uint8_t *RGBATextureData = (uint8_t *)RGBABitmap;        
-    uint16_t *RGB565TextureData = (uint16_t *)RGB565Bitmap;        
-    for(int i = 0; i < byteLength; i += 4) {
-        uint16_t result = 0;
-        result |= RGBATextureData[i] >> 3;
-        result <<= 6;
-        result |= RGBATextureData[i+1] >> 2; 
-        result <<= 5; 
-        result |= RGBATextureData[i+2] >> 3;
-        RGB565TextureData[i / 4] = result;
-    }
-    
-    [timer report];
 }
 
 - (void)_subTextureInTexture:(GLuint)textureRef 
@@ -920,10 +901,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
     
     if(storeAsRGB565) {
-        // Convert in place.
-        [self _convertRGBABitmap:textureData 
-                      byteLength:contextWidth * contextHeight * 4
-                  toRGB565Bitmap:textureData];
+        THTimer *timer = [THTimer timerWithName:@"Convert to RGB565"];
+        convertRGBABitmapToRGB565Bitmap(textureData, contextWidth * contextHeight * 4, textureData);
+        [timer report];
     }
     
     EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
@@ -3683,27 +3663,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             CGContextRelease(textureContext);
             
-            THTimer *timer = [THTimer timerWithName:@"Convert to RGBA4444"];
-            
             // Unpremultiply, and convert to RGBA4444 to save RAM.
             // Do the conversion in-place.
-            uint16_t *newTextureData = (uint16_t *)textureData;
-            for(int i = 0; i < bufferLength; i += 4) {
-                uint16_t result = 0;
-                uint32_t alpha = textureData[i+3];
-                if(alpha) {
-                    result |= ((255 * (uint32_t)textureData[i]) / alpha) >> 4;
-                    result <<= 4;
-                    result |= ((255 * (uint32_t)textureData[i+1]) / alpha) >> 4; 
-                    result <<= 4; 
-                    result |= ((255 * (uint32_t)textureData[i+2]) / alpha) >> 4;
-                    result <<= 4;
-                    result |= alpha >> 4;
-                }
-                newTextureData[i / 4] = result;
-            }
-            
-            [timer report];
+            THTimer *timer = [THTimer timerWithName:@"Convert to RGBA4444"];
+            convertPremultipliedRGBABitmapToNonpremultipliedRGBA4444Bitmap(textureData, bufferLength, textureData);
+            [timer report];            
             
             EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
             [eaglContext thPush];
