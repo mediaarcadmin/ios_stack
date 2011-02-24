@@ -1672,8 +1672,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         BOOL shouldStopAnimating = [self _satisfyConstraints];
         [self _calculateVertexNormals];
         if(shouldStopAnimating) {
-            postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragTurn;
-            postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsAutomaticTurn;
+            postDrawAnimationFlags &= ~(EucPageTurningViewAnimationFlagsDragTurn | EucPageTurningViewAnimationFlagsAutomaticTurn);
         }
     }
 	
@@ -2267,14 +2266,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             translation.x += _scrollStartTranslation.x;
             translation.y += _scrollStartTranslation.y;
             CGPoint translationAfterScroll = [self _setZoomMatrixFromTranslation:translation zoomFactor:_zoomFactor];
-            if(!(animationFlags & EucPageTurningViewAnimationFlagsDragTurn) && 
-               !(animationFlags & EucPageTurningViewAnimationFlagsDragScroll)) {
+            if(!(animationFlags & (EucPageTurningViewAnimationFlagsDragTurn | EucPageTurningViewAnimationFlagsDragScroll))) {
                 if(fabsf(translation.x - _scrollStartTranslation.x) * _viewportToBoundsPointsTransform.a > 0.5f &&
                    fabsf((translation.x - translationAfterScroll.x) - _scrollStartTranslation.x) * _viewportToBoundsPointsTransform.a < 0.5f &&
                    fabsf((translation.y - translationAfterScroll.y) - _scrollStartTranslation.y) * _viewportToBoundsPointsTransform.d < 4.0f) {
-                    animationFlags = EucPageTurningViewAnimationFlagsDragTurn;
+                    animationFlags |= EucPageTurningViewAnimationFlagsDragTurn;
                 } else {
-                    animationFlags = EucPageTurningViewAnimationFlagsDragScroll;
+                    animationFlags |= EucPageTurningViewAnimationFlagsDragScroll;
                 }
                 self.animationFlags = animationFlags;
             }
@@ -2303,7 +2301,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 pageTouchPoint = CGPointMake(oldViewportTouchX, translation.y);
             }
             if(_isTurning == 0) {
-                self.animationFlags = animationFlags & ~EucPageTurningViewAnimationFlagsDragTurn;
+                animationFlags &= ~EucPageTurningViewAnimationFlagsDragTurn;
+                self.animationFlags = animationFlags;
             }
 
             if(_isTurning != 0) {
@@ -2955,13 +2954,13 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             THVec3 a = flatPageVertices[constraint.particleAIndex];
             THVec3 b = flatPageVertices[constraint.particleBIndex];
             THVec3 delta = THVec3Subtract(b, a);
-            /*
-            GLfloat distance = magnitude(delta);
-            GLfloat diff = (distance - constraint.length)/distance;
+            
+            /*GLfloat distance = THVec3AbsMagnitude(delta);
+            GLfloat diff = (distance - sqrtf(constraint.lengthSquared))/distance;
             if(diff) {
-                GLfloatTriplet deltaTimesHalfDiff = multiplyVector(delta, diff / 2);
-                flatPageVertices[constraint.particleAIndex] = addVector(a, deltaTimesHalfDiff); 
-                flatPageVertices[constraint.particleBIndex] = subtractVector(b, deltaTimesHalfDiff); 
+                THVec3 deltaTimesHalfDiff = THVec3Multiply(delta, diff / 2);
+                flatPageVertices[constraint.particleAIndex] = THVec3Add(a, deltaTimesHalfDiff); 
+                flatPageVertices[constraint.particleBIndex] = THVec3Subtract(b, deltaTimesHalfDiff); 
             }*/
             // Sqrt-approximated version of above code:
             CGFloat contraintLengthSquared = constraint.lengthSquared;
@@ -2988,7 +2987,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                 GLfloat diff = yCoord - vertex.y;
                 _pageVertices[row][column].y = (vertex.y += diff * 0.5f);
 
-                // Test if this vertes is out of our field of view.
+                // Test if this vertex is out of our field of view.
                 if(hasFlipped && 
                    column > 0) {
                     // See if the vertex is outside the FOV angle.
