@@ -18,7 +18,6 @@
     self = [super initWithFrame:frame];
     if (self) {
 		CGFloat playButtonDiameter = 50.0f;
-		self.backgroundColor = [UIColor grayColor];
         // Initialization code.
 		moviePlayerController = [[MPMoviePlayerController alloc] initWithContentURL:url];
 		moviePlayerController.shouldAutoplay = NO;
@@ -27,7 +26,8 @@
 		thumbnailView = [[UIImageView alloc] initWithFrame:[self bounds]];
 		thumbnailView.backgroundColor = [UIColor blackColor];
 		thumbnailView.contentMode = UIViewContentModeScaleAspectFit;
-		thumbnailView.image = [moviePlayerController thumbnailImageAtTime:4 timeOption:MPMovieTimeOptionNearestKeyFrame];
+		[self performSelector:@selector(genThumb) withObject:nil afterDelay:0.1f];
+		//thumbnailView.image = [moviePlayerController thumbnailImageAtTime:4 timeOption:MPMovieTimeOptionNearestKeyFrame];
 		[self addSubview:thumbnailView];
 		playButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 		playButton.frame = CGRectMake((self.bounds.size.width-playButtonDiameter)/2, (self.bounds.size.height-playButtonDiameter)/2, playButtonDiameter, playButtonDiameter);
@@ -43,6 +43,10 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveBlioMediaViewWillPlayMovieNotification:) name:BlioMediaViewWillPlayMovieNotification object:nil];
     }
     return self;
+}
+
+- (void)genThumb {
+	thumbnailView.image = [moviePlayerController thumbnailImageAtTime:4 timeOption:MPMovieTimeOptionNearestKeyFrame];
 }
 
 /*
