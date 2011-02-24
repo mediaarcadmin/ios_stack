@@ -407,11 +407,18 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     imageInfo = NULL;
     
     [renderingLock lock];
+	if (![self bookIsEncrypted]) {
+		[contentsLock lock];
+	}
 	
     XPS_RegisterPageCompleteCallback(xpsHandle, XPSPageCompleteCallback);
     XPS_SetUserData(xpsHandle, self);
 	
     XPS_Convert(xpsHandle, NULL, 0, page - 1, 1, &format);
+	
+	if (![self bookIsEncrypted]) {
+		[contentsLock unlock];
+	}
 	
     CGContextRef bitmapContext = nil;
     
@@ -705,10 +712,8 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 - (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path {
 	NSData *videoData = [self dataForComponentAtPath:path];
 	
-	NSString *tempDir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"enhancedContent"];
-	NSString *tempPath = [tempDir stringByAppendingPathComponent:[path lastPathComponent]];
+	NSString *tempPath = [self.tempDirectory stringByAppendingPathComponent:[path lastPathComponent]];
 	[videoData writeToFile:tempPath atomically:YES];
-						  NSLog(@"tempPath %@", tempPath);
 	NSURL *tempURL = [NSURL fileURLWithPath:tempPath];
 
 	return tempURL;
