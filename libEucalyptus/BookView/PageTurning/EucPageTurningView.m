@@ -19,6 +19,7 @@
 #import <tgmath.h>
 #import "THBaseEAGLView.h"
 #import "THOpenGLTexturePool.h"
+#import "THPixelFormatUtils.h"
 #import "THGeometryUtils.h"
 #import "THPositionedCGContext.h"
 #import "THEmbeddedResourceManager.h"
@@ -117,6 +118,9 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 
 @synthesize focusedPageIndex = _focusedPageIndex;
 
+#pragma mark -
+#pragma mark Properties
+
 - (UIColor *)specularColor
 {
     return [UIColor colorWithRed:_specularColor[0] green:_specularColor[1] blue:_specularColor[2] alpha:_specularColor[3]];
@@ -151,6 +155,17 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
     const CGFloat *components = CGColorGetComponents(color.CGColor);
     memcpy(_diffuseLightColor, components, 4 * sizeof(GLfloat));
     [self setNeedsLayout];
+}
+
+- (void)setDimQuotient:(CGFloat)dimQuotient
+{
+    _dimQuotient = dimQuotient;
+    [self drawView];
+}
+
+- (CGFloat)dimQuotient
+{
+    return _dimQuotient;
 }
 
 - (void)setAnimating:(BOOL)animating
@@ -203,6 +218,9 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 {
     return _animationFlags;
 }
+
+#pragma mark -
+#pragma mark Initialisation/Setup
 
 static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsizei length, const void *pvrtcData)
 {
@@ -803,7 +821,11 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     return ret;
 }
 
-- (void)_invertLuminanceOfRGBABitmap:(void *)RGBABitmap byteLength:(size_t)byteLength
+#pragma mark -
+#pragma mark Texture Management
+
+- (void)_invertLuminanceOfRGBABitmap:(void *)RGBABitmap
+                          byteLength:(size_t)byteLength
 {
     size_t elements = byteLength / 4;
     for(size_t i = 0; i < elements; ++i) {
@@ -829,27 +851,6 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         
         ((uint32_t *)RGBABitmap)[i] = pixel;
     }
-}
-
-- (void)_convertRGBABitmap:(void *)RGBABitmap
-                byteLength:(size_t)byteLength
-            toRGB565Bitmap:(void *)RGB565Bitmap
-{
-    THTimer *timer = [THTimer timerWithName:@"Convert to RGB565"];
-    
-    uint8_t *RGBATextureData = (uint8_t *)RGBABitmap;        
-    uint16_t *RGB565TextureData = (uint16_t *)RGB565Bitmap;        
-    for(int i = 0; i < byteLength; i += 4) {
-        uint16_t result = 0;
-        result |= RGBATextureData[i] >> 3;
-        result <<= 6;
-        result |= RGBATextureData[i+1] >> 2; 
-        result <<= 5; 
-        result |= RGBATextureData[i+2] >> 3;
-        RGB565TextureData[i / 4] = result;
-    }
-    
-    [timer report];
 }
 
 - (void)_subTextureInTexture:(GLuint)textureRef 
@@ -920,10 +921,9 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
     
     if(storeAsRGB565) {
-        // Convert in place.
-        [self _convertRGBABitmap:textureData 
-                      byteLength:contextWidth * contextHeight * 4
-                  toRGB565Bitmap:textureData];
+        THTimer *timer = [THTimer timerWithName:@"Convert to RGB565"];
+        convertRGBABitmapToRGB565Bitmap(textureData, contextWidth * contextHeight * 4, textureData);
+        [timer report];
     }
     
     EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
@@ -1048,6 +1048,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
                                    storeAsRGB565:YES];
     _pageTextureIsDark = isDark;
 }
+
+
+#pragma mark -
+#pragma mark UIView-based Page Setup
 
 - (void)_setView:(UIView *)view forInternalPageOffsetPage:(int)page forceRefresh:(BOOL)forceRefresh
 {
@@ -1175,6 +1179,10 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
     }
 }
+
+
+#pragma mark -
+#pragma mark Bitmap-based Page Setup
 
 - (NSUInteger)leftPageIndex 
 {
@@ -1506,14 +1514,97 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
 }
 
+#pragma mark -
+#pragma mark Shared Page Setup
 
-static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
+- (void)_cyclePageContentsInformationForTurnForwards:(BOOL)forwards
 {
-    THVec3 leftVector = THVec3Subtract(right, middle);
-    THVec3 rightVector = THVec3Subtract(right, left);
-
-    return THVec3Normalize(THVec3CrossProduct(leftVector, rightVector));
+    // Clear out the zoomed textures for the old frontmost pages.
+    // Pending generations operations will be cancelled in the setters when 
+    // they're set to nil.  Any that /do/ complete (because they're already
+    // executing) will be ignored in the callbacks unless they're for the 
+    // main, non-zoomed, texture.
+    _pageContentsInformation[2].currentZoomedTextureGenerationOperation = nil;
+    _pageContentsInformation[2].zoomedTexture = 0;
+    _pageContentsInformation[3].currentZoomedTextureGenerationOperation = nil;
+    _pageContentsInformation[3].zoomedTexture = 0;
+    
+    // Now cycle the pages.
+    if(forwards) {
+        EucPageTurningPageContentsInformation *tempView0 = _pageContentsInformation[0];
+        EucPageTurningPageContentsInformation *tempView1 = _pageContentsInformation[1];
+        _pageContentsInformation[0] = _pageContentsInformation[2];
+        _pageContentsInformation[1] = _pageContentsInformation[3];
+        _pageContentsInformation[2] = _pageContentsInformation[4];
+        _pageContentsInformation[3] = _pageContentsInformation[5];
+        _pageContentsInformation[4] = tempView0;
+        _pageContentsInformation[5] = tempView1;
+    } else {
+        EucPageTurningPageContentsInformation *tempView4 = _pageContentsInformation[4];
+        EucPageTurningPageContentsInformation *tempView5 = _pageContentsInformation[5];
+        _pageContentsInformation[4] = _pageContentsInformation[2];
+        _pageContentsInformation[5] = _pageContentsInformation[3];
+        _pageContentsInformation[2] = _pageContentsInformation[0];
+        _pageContentsInformation[3] = _pageContentsInformation[1];
+        _pageContentsInformation[0] = tempView4;
+        _pageContentsInformation[1] = tempView5;
+    }
+    
+    [self _retextureForPanAndZoom];
 }
+
+- (BOOL)stepPageForwards:(BOOL)forwards
+{
+    BOOL ret = NO;
+    if(_bitmapDataSource) {
+        NSUInteger turnTo = NSUIntegerMax;
+        if(forwards) {
+            if(_pageContentsInformation[4]) {
+                turnTo = _pageContentsInformation[4].pageIndex;
+            } else if(_pageContentsInformation[5]) {
+                turnTo = _pageContentsInformation[5].pageIndex;
+            }
+        } else {
+            if(_pageContentsInformation[0]) {
+                turnTo = _pageContentsInformation[0].pageIndex;
+            } else if(_pageContentsInformation[1]) {
+                turnTo = _pageContentsInformation[1].pageIndex;
+            }
+        } 
+        if(turnTo != NSUIntegerMax) {
+            [self turnToPageAtIndex:turnTo animated:YES]; 
+            ret = YES;
+        }        
+    } else {
+        BOOL onLeft = NO;
+        UIView *view = nil;
+        if(forwards) {
+            if(_pageContentsInformation[4].view) {
+                view = _pageContentsInformation[4].view;
+                onLeft = YES;
+            } else {
+                view = _pageContentsInformation[5].view;
+                onLeft = NO;
+            }
+        } else {
+            if(_pageContentsInformation[0].view) {
+                view = _pageContentsInformation[0].view;
+                onLeft = YES;
+            } else {
+                view = _pageContentsInformation[1].view;
+                onLeft = NO;
+            }
+        } 
+        if(view) {
+            [self turnToPageView:view forwards:forwards pageCount:1 onLeft:onLeft]; 
+            ret = YES;
+        }        
+    }
+    return ret;
+}
+
+#pragma mark -
+#pragma mark Physics Setup
 
 - (void)_addConstraintFrom:(GLubyte)indexA to:(GLubyte)indexB
 {
@@ -1607,7 +1698,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             THVec3 middleVertex = ((THVec3 *)_pageVertices)[middleVertexIndex];
             THVec3 rightVertex = ((THVec3 *)_pageVertices)[rightVertexIndex];
             
-            THVec3 normal = triangleNormal(leftVertex, middleVertex, rightVertex);
+            THVec3 normal = THTriangleNormal(leftVertex, middleVertex, rightVertex);
             flatPageVertexNormals[leftVertexIndex] = 
                             THVec3Add(flatPageVertexNormals[leftVertexIndex], normal);
             flatPageVertexNormals[middleVertexIndex] = 
@@ -1621,41 +1712,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     }
 }
 
-- (void)_cyclePageContentsInformationForTurnForwards:(BOOL)forwards
-{
-    // Clear out the zoomed textures for the old frontmost pages.
-    // Pending generations operations will be cancelled in the setters when 
-    // they're set to nil.  Any that /do/ complete (because they're already
-    // executing) will be ignored in the callbacks unless they're for the 
-    // main, non-zoomed, texture.
-    _pageContentsInformation[2].currentZoomedTextureGenerationOperation = nil;
-    _pageContentsInformation[2].zoomedTexture = 0;
-    _pageContentsInformation[3].currentZoomedTextureGenerationOperation = nil;
-    _pageContentsInformation[3].zoomedTexture = 0;
-
-    // Now cycle the pages.
-    if(forwards) {
-        EucPageTurningPageContentsInformation *tempView0 = _pageContentsInformation[0];
-        EucPageTurningPageContentsInformation *tempView1 = _pageContentsInformation[1];
-        _pageContentsInformation[0] = _pageContentsInformation[2];
-        _pageContentsInformation[1] = _pageContentsInformation[3];
-        _pageContentsInformation[2] = _pageContentsInformation[4];
-        _pageContentsInformation[3] = _pageContentsInformation[5];
-        _pageContentsInformation[4] = tempView0;
-        _pageContentsInformation[5] = tempView1;
-    } else {
-        EucPageTurningPageContentsInformation *tempView4 = _pageContentsInformation[4];
-        EucPageTurningPageContentsInformation *tempView5 = _pageContentsInformation[5];
-        _pageContentsInformation[4] = _pageContentsInformation[2];
-        _pageContentsInformation[5] = _pageContentsInformation[3];
-        _pageContentsInformation[2] = _pageContentsInformation[0];
-        _pageContentsInformation[3] = _pageContentsInformation[1];
-        _pageContentsInformation[0] = tempView4;
-        _pageContentsInformation[1] = tempView5;
-    }
-    
-    [self _retextureForPanAndZoom];
-}
+#pragma mark -
+#pragma mark Drawing
 
 - (void)drawView 
 {        
@@ -2031,7 +2089,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
                     THVec3 middleVertex = flatPageEdge[middleVertexIndex];
                     THVec3 rightVertex = flatPageEdge[rightVertexIndex];
                     
-                    THVec3 normal = triangleNormal(leftVertex, middleVertex, rightVertex);
+                    THVec3 normal = THTriangleNormal(leftVertex, middleVertex, rightVertex);
                     pageEdgeNormals[leftVertexIndex] = 
                         THVec3Add(pageEdgeNormals[leftVertexIndex], normal);
                     pageEdgeNormals[middleVertexIndex] = 
@@ -2128,6 +2186,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         [self drawView];
     }
 }
+
+#pragma mark -
+#pragma mark Touch Handling
 
 - (void)_setPageTouchPointForPageX:(GLfloat)x
 {
@@ -2620,6 +2681,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return ret;
 }
 
+#pragma mark -
+#pragma mark Accessibility
+
 - (NSArray *)accessibilityElements
 {
     if(!_accessibilityElements) {
@@ -2785,55 +2849,52 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     return _accessibilityScrollUnderway;
 }
 
-- (BOOL)stepPageForwards:(BOOL)forwards
+
+#pragma mark -
+#pragma mark Positioning Physice
+
+- (BOOL)_satisfyScrollingConstraints
 {
-    BOOL ret = NO;
-    if(_bitmapDataSource) {
-        NSUInteger turnTo = NSUIntegerMax;
-        if(forwards) {
-            if(_pageContentsInformation[4]) {
-                turnTo = _pageContentsInformation[4].pageIndex;
-            } else if(_pageContentsInformation[5]) {
-                turnTo = _pageContentsInformation[5].pageIndex;
-            }
+    BOOL shouldStopAnimating = NO;
+
+    if(!_dragUnderway) {
+        _touchVelocity.x *= 0.875f;
+        _touchVelocity.y *= 0.857f;
+        if(fabsf(_touchVelocity.x * _viewportToBoundsPointsTransform.a) < 0.1f &&
+           fabsf(_touchVelocity.y * _viewportToBoundsPointsTransform.d) < 0.1f) {
+            _touchVelocity = CGPointZero;
+            shouldStopAnimating = YES;
         } else {
-            if(_pageContentsInformation[0]) {
-                turnTo = _pageContentsInformation[0].pageIndex;
-            } else if(_pageContentsInformation[1]) {
-                turnTo = _pageContentsInformation[1].pageIndex;
-            }
-        } 
-        if(turnTo != NSUIntegerMax) {
-            [self turnToPageAtIndex:turnTo animated:YES]; 
-            ret = YES;
-        }        
-    } else {
-        BOOL onLeft = NO;
-        UIView *view = nil;
-        if(forwards) {
-            if(_pageContentsInformation[4].view) {
-                view = _pageContentsInformation[4].view;
-                onLeft = YES;
-            } else {
-                view = _pageContentsInformation[5].view;
-                onLeft = NO;
-            }
-        } else {
-            if(_pageContentsInformation[0].view) {
-                view = _pageContentsInformation[0].view;
-                onLeft = YES;
-            } else {
-                view = _pageContentsInformation[1].view;
-                onLeft = NO;
-            }
-        } 
-        if(view) {
-            [self turnToPageView:view forwards:forwards pageCount:1 onLeft:onLeft]; 
-            ret = YES;
-        }        
-    }
-    return ret;
+            CGPoint newTranslation = _scrollTranslation;
+            newTranslation.x += _touchVelocity.x * _zoomFactor;
+            newTranslation.y += _touchVelocity.y * _zoomFactor;
+            [self _setZoomMatrixFromTranslation:newTranslation zoomFactor:_zoomFactor];
+        }
+    }   
+    
+    return shouldStopAnimating;
 }
+
+- (BOOL)_satisfyPositioningConstraints
+{
+    BOOL shouldStopAnimating = NO;
+	
+	if (_animationIndex >= 0) {
+		[self _setTranslation:CGPointMake(_presentationTranslationX[_animationIndex], _presentationTranslationY[_animationIndex]) zoomFactor:_presentationZoomFactor[_animationIndex]];
+		_animationIndex++;
+	}
+	
+	if (_animationIndex >= POSITIONING_ANIMATION_ITERATIONS) {
+		_animationIndex = -1;
+		shouldStopAnimating = YES;
+	}
+	
+	return shouldStopAnimating;	
+}
+
+
+#pragma mark -
+#pragma mark Page Physics
 
 // Since gravity is the only force we're using, we just manually add it in 
 // -_verlet;
@@ -2880,45 +2941,6 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
         
         flatOldPageVertices[i] = temp;
     }
-}
-
-- (BOOL)_satisfyScrollingConstraints
-{
-    BOOL shouldStopAnimating = NO;
-
-    if(!_dragUnderway) {
-        _touchVelocity.x *= 0.875f;
-        _touchVelocity.y *= 0.857f;
-        if(fabsf(_touchVelocity.x * _viewportToBoundsPointsTransform.a) < 0.1f &&
-           fabsf(_touchVelocity.y * _viewportToBoundsPointsTransform.d) < 0.1f) {
-            _touchVelocity = CGPointZero;
-            shouldStopAnimating = YES;
-        } else {
-            CGPoint newTranslation = _scrollTranslation;
-            newTranslation.x += _touchVelocity.x * _zoomFactor;
-            newTranslation.y += _touchVelocity.y * _zoomFactor;
-            [self _setZoomMatrixFromTranslation:newTranslation zoomFactor:_zoomFactor];
-        }
-    }   
-    
-    return shouldStopAnimating;
-}
-
-- (BOOL)_satisfyPositioningConstraints
-{
-    BOOL shouldStopAnimating = NO;
-	
-	if (_animationIndex >= 0) {
-		[self _setTranslation:CGPointMake(_presentationTranslationX[_animationIndex], _presentationTranslationY[_animationIndex]) zoomFactor:_presentationZoomFactor[_animationIndex]];
-		_animationIndex++;
-	}
-	
-	if (_animationIndex >= POSITIONING_ANIMATION_ITERATIONS) {
-		_animationIndex = -1;
-		shouldStopAnimating = YES;
-	}
-	
-	return shouldStopAnimating;	
 }
 
 #define NUM_ITERATIONS 40
@@ -3232,16 +3254,8 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     _accessibilityElements = nil;
 }
 
-- (void)setDimQuotient:(CGFloat)dimQuotient
-{
-    _dimQuotient = dimQuotient;
-    [self drawView];
-}
-
-- (CGFloat)dimQuotient
-{
-    return _dimQuotient;
-}
+#pragma mark -
+#pragma mark Scroll and Zoom
 
 - (CGFloat)zoomFactor
 {
@@ -3496,7 +3510,7 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
 
 - (void)_retextureForPanAndZoom
 {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_retextureForPanAndZoom) object:nil];
+    [self _cancelRetextureForPanAndZoom];
     if(_zoomFactor != 1.0f) {
         CGFloat contentScaleFactor;
         if([self respondsToSelector:@selector(contentScaleFactor)]) {
@@ -3636,7 +3650,9 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
     BOOL gotHighlights = NO;
     if([NSThread isMainThread]) {
         // Don't do this first on a non-main thread, it will cause 
-        // glitching.
+        // glitching if we try to draw simultaneously to this method running.
+        // On the main thread we can do it now to save some transitory 
+        // texture RAM, since we know we won't draw until this method is over.
         _pageContentsInformation[index].highlightTexture = 0;
     }
     if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:highlightsForPageAtIndex:)]) {
@@ -3683,27 +3699,11 @@ static THVec3 triangleNormal(THVec3 left, THVec3 middle, THVec3 right)
             }
             CGContextRelease(textureContext);
             
-            THTimer *timer = [THTimer timerWithName:@"Convert to RGBA4444"];
-            
             // Unpremultiply, and convert to RGBA4444 to save RAM.
             // Do the conversion in-place.
-            uint16_t *newTextureData = (uint16_t *)textureData;
-            for(int i = 0; i < bufferLength; i += 4) {
-                uint16_t result = 0;
-                uint32_t alpha = textureData[i+3];
-                if(alpha) {
-                    result |= ((255 * (uint32_t)textureData[i]) / alpha) >> 4;
-                    result <<= 4;
-                    result |= ((255 * (uint32_t)textureData[i+1]) / alpha) >> 4; 
-                    result <<= 4; 
-                    result |= ((255 * (uint32_t)textureData[i+2]) / alpha) >> 4;
-                    result <<= 4;
-                    result |= alpha >> 4;
-                }
-                newTextureData[i / 4] = result;
-            }
-            
-            [timer report];
+            THTimer *timer = [THTimer timerWithName:@"Convert to RGBA4444"];
+            convertPremultipliedRGBABitmapToNonpremultipliedRGBA4444Bitmap(textureData, bufferLength, textureData);
+            [timer report];            
             
             EAGLContext *eaglContext = [_texturePool checkOutEAGLContext];
             [eaglContext thPush];

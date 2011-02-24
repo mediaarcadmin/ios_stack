@@ -265,6 +265,7 @@
 		7D4A009C11DBA34E00DDA5B7 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A003211DBA34E00DDA5B7 /* SelectionEnd.png */; };
 		7D4A009D11DBA34E00DDA5B7 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A003311DBA34E00DDA5B7 /* SelectionKnob.png */; };
 		7D4A009E11DBA34E00DDA5B7 /* SelectionKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A003411DBA34E00DDA5B7 /* SelectionKnob@2x.png */; };
+		7D4E95F91316AC49001CB293 /* THPixelFormatUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D4E95F81316AC49001CB293 /* THPixelFormatUtils.c */; };
 		7D4E97B6114A94740044C513 /* EucBUpeBook.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D9AA9E4114A90620055C381 /* EucBUpeBook.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D4E97B7114A94740044C513 /* EucBUpeBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9AA9E5114A90620055C381 /* EucBUpeBook.m */; };
 		7D4E999D114AC4350044C513 /* EucBUpePageTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D4E9977114AB2520044C513 /* EucBUpePageTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1200,6 +1201,8 @@
 		7D4A003211DBA34E00DDA5B7 /* SelectionEnd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionEnd.png; sourceTree = "<group>"; };
 		7D4A003311DBA34E00DDA5B7 /* SelectionKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectionKnob.png; sourceTree = "<group>"; };
 		7D4A003411DBA34E00DDA5B7 /* SelectionKnob@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectionKnob@2x.png"; sourceTree = "<group>"; };
+		7D4E95F71316AC49001CB293 /* THPixelFormatUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THPixelFormatUtils.h; sourceTree = "<group>"; };
+		7D4E95F81316AC49001CB293 /* THPixelFormatUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = THPixelFormatUtils.c; sourceTree = "<group>"; };
 		7D4E9977114AB2520044C513 /* EucBUpePageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EucBUpePageTextView.h; sourceTree = "<group>"; };
 		7D4E9978114AB2520044C513 /* EucBUpePageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EucBUpePageTextView.m; sourceTree = "<group>"; };
 		7D4E9AAE114D33910044C513 /* THNSURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THNSURLAdditions.h; sourceTree = "<group>"; };
@@ -2659,6 +2662,8 @@
 			children = (
 				7D3637911238F889002BDD2B /* THOpenGLUtils.h */,
 				7D4F3108124CD872001C2D8A /* THOpenGLUtils.m */,
+				7D4E95F71316AC49001CB293 /* THPixelFormatUtils.h */,
+				7D4E95F81316AC49001CB293 /* THPixelFormatUtils.c */,
 				7DF8BC3111B526E3003B7A97 /* THBaseEAGLView.h */,
 				7DF8BC3211B526E3003B7A97 /* THBaseEAGLView.m */,
 				7D868B0112802AE5003A3ACD /* THOpenGLTexturePool.h */,
@@ -4670,6 +4675,7 @@
 				7D9A96E410D7E42A00C2E00A /* PaginateAppDelegate.m in Sources */,
 				7D9A96E510D7E42A00C2E00A /* PaginateRootViewController.m in Sources */,
 				7D9A96E710D7E42A00C2E00A /* PaginateMain.m in Sources */,
+				7D4E95F91316AC49001CB293 /* THPixelFormatUtils.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
