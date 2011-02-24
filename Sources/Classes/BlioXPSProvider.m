@@ -382,6 +382,8 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	
 
 	CGRect pageCropRect = [self cropRectForPage:page];
+	
+	NSLog(@"RGBABitmapContextForPage %d", page);
     
     OutputFormat format;
     memset(&format,0,sizeof(format));
@@ -702,9 +704,11 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 
 - (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path {
 	NSData *videoData = [self dataForComponentAtPath:path];
-	NSString *tempPath = [self.tempDirectory stringByAppendingPathComponent:[path lastPathComponent]];
-	[videoData writeToFile:tempPath atomically:NO];
 	
+	NSString *tempDir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"enhancedContent"];
+	NSString *tempPath = [tempDir stringByAppendingPathComponent:[path lastPathComponent]];
+	[videoData writeToFile:tempPath atomically:YES];
+						  NSLog(@"tempPath %@", tempPath);
 	NSURL *tempURL = [NSURL fileURLWithPath:tempPath];
 
 	return tempURL;

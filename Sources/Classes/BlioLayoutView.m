@@ -682,15 +682,17 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Status callbacks
 
-- (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)pageTurningView
+- (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)aPageTurningView
 {
-	[self hideOverlay];
-	[self freezeOverlayContents];
+	
+	//[self freezeOverlayContents];
+	//[aPageTurningView overlayPageAtIndex:aPageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContexts]];
+	//[self hideOverlay];
 }
 
-- (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)pageTurningView
+- (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)aPageTurningView
 {
-	[self showOverlay];
+	//[self showOverlay];
 }
 
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
@@ -1104,6 +1106,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark EnhancedContent
 
 - (NSArray *)enhancedContentForPage:(NSInteger)page {
+	
+	return nil;
     
     [enhancedContentCacheLock lock];
     
@@ -1153,11 +1157,22 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	[overlayViews addObjectsFromArray:self.mediaViews];
 	[overlayViews addObjectsFromArray:self.webViews];
 	
+	CGFloat scale = 1;
+	
+	if ([self respondsToSelector:@selector(contentScaleFactor)]) {
+		scale = [self contentScaleFactor];
+	}
+				 
 	for (UIView *view in overlayViews) {
 		
 		CGSize size = view.bounds.size;
-		CGPoint origin = view.frame.origin;
+		size.width *= scale;
+		size.height *= scale;
 		
+		CGPoint origin = view.frame.origin;
+		//origin.x *= scale;
+//		origin.y *= scale;
+
 		size_t width  = size.width;
 		size_t height = size.height;
 		size_t bytesPerRow = 4 * width;
@@ -1171,9 +1186,18 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
 		CGColorSpaceRelease(colorSpace);
 		
+		
+		//CGContextScaleCTM(bitmapContext, 1, -1);
+		//CGContextTranslateCTM(bitmapContext, 0, height);
+		
+		
+		
 		CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
 		CGContextTranslateCTM(bitmapContext, -origin.x, -origin.y);
-		[overlay.layer renderInContext:bitmapContext];
+		CGContextSetRGBFillColor(bitmapContext, 1, 0, 0, 1);
+		CGContextFillRect(bitmapContext, CGRectMake(origin.x, origin.y, width, height));
+		CGContextSetAlpha(bitmapContext, 0.2f);
+		//[overlay.layer renderInContext:bitmapContext];
 		
 		THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
 		[positionedContexts addObject:positionedContext];
@@ -1186,7 +1210,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
-	
+	NSLog(@"updateOverlayForPagesInRange %@", NSStringFromRange(pageRange));
 	if (self.pageTurningView) {
 		if (!overlay) {
             CGRect frame = self.pageTurningView.bounds;
@@ -1219,6 +1243,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
 			
 			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
+			
+			
 			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
 				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
 				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
@@ -1226,8 +1252,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
 				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
 				
+				
 				if ([controlType isEqualToString:@"WebBrowser"]) {
+					
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
+					if (0) {
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
 					
 					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
@@ -1239,13 +1268,21 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					
 					[webView loadRequest:request];
 					[overlay addSubview:webView];
+					}
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
+					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
+					videoURL = videoURL;
+					if (1) {
 					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform)) contentURL:videoURL];
-					[overlay addSubview:mediaView];
-					[self.mediaViews addObject:mediaView];
+						//BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform)) contentURL:nil];
+						//UIView *mediaView = [[UIView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+					//[overlay addSubview:mediaView];
+					//[self.mediaViews addObject:mediaView];
 					[mediaView release];
+					}
 				}
+				
 				
 				CFRelease(encodedString);
 			}
