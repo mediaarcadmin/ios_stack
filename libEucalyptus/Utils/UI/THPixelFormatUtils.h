@@ -7,9 +7,11 @@
  *
  */
 
+#include <sys/types.h>
+
 void convertPremultipliedRGBABitmapToNonpremultipliedRGBA4444Bitmap(void *premultipliedRGBABitmap, 
-                                                                   size_t premultipliedRGBABitmapByteSize,
-                                                                   void *nonpremultipliedRGBA4444BitmapOut);
+                                                                    size_t premultipliedRGBABitmapByteSize,
+                                                                    void *nonpremultipliedRGBA4444BitmapOut);
 void convertRGBABitmapToRGB565Bitmap(void *RGBABitmap, 
                                      size_t RGBABitmapByteSize,
                                      void *RGB565BitmapOut);

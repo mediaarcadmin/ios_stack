@@ -37,7 +37,7 @@ void convertRGBABitmapToRGB565Bitmap(void *RGBABitmap,
 {
     uint8_t *RGBATextureData = (uint8_t *)RGBABitmap;        
     uint16_t *RGB565TextureData = (uint16_t *)RGB565BitmapOut;        
-    for(int i = 0; i < byteLength; i += 4) {
+    for(int i = 0; i < RGBABitmapByteSize; i += 4) {
         uint16_t result = 0;
         result |= RGBATextureData[i] >> 3;
         result <<= 6;
