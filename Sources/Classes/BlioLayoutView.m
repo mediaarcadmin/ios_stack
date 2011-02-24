@@ -685,14 +685,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)aPageTurningView
 {
 	
-	//[self freezeOverlayContents];
-	//[aPageTurningView overlayPageAtIndex:aPageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContexts]];
-	//[self hideOverlay];
+	[self freezeOverlayContents];
+	[aPageTurningView overlayPageAtIndex:aPageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContexts]];
+	[self hideOverlay];
 }
 
 - (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)aPageTurningView
 {
-	//[self showOverlay];
+	[self showOverlay];
 }
 
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
@@ -1170,8 +1170,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		size.height *= scale;
 		
 		CGPoint origin = view.frame.origin;
-		//origin.x *= scale;
-//		origin.y *= scale;
+		origin.x *= scale;
+		origin.y *= scale;
 
 		size_t width  = size.width;
 		size_t height = size.height;
@@ -1186,18 +1186,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
 		CGColorSpaceRelease(colorSpace);
 		
-		
-		//CGContextScaleCTM(bitmapContext, 1, -1);
-		//CGContextTranslateCTM(bitmapContext, 0, height);
-		
-		
+		CGContextScaleCTM(bitmapContext, 1, -1);
+		CGContextTranslateCTM(bitmapContext, -origin.x, -view.bounds.size.height - origin.y);
 		
 		CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
-		CGContextTranslateCTM(bitmapContext, -origin.x, -origin.y);
-		CGContextSetRGBFillColor(bitmapContext, 1, 0, 0, 1);
-		CGContextFillRect(bitmapContext, CGRectMake(origin.x, origin.y, width, height));
-		CGContextSetAlpha(bitmapContext, 0.2f);
-		//[overlay.layer renderInContext:bitmapContext];
+		[overlay.layer renderInContext:bitmapContext];
 		
 		THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
 		[positionedContexts addObject:positionedContext];
@@ -1256,7 +1249,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				if ([controlType isEqualToString:@"WebBrowser"]) {
 					
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
-					if (0) {
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
 					
 					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
@@ -1268,19 +1260,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					
 					[webView loadRequest:request];
 					[overlay addSubview:webView];
-					}
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
 					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
-					videoURL = videoURL;
-					if (1) {
 					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform)) contentURL:videoURL];
-						//BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform)) contentURL:nil];
-						//UIView *mediaView = [[UIView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
-					//[overlay addSubview:mediaView];
-					//[self.mediaViews addObject:mediaView];
+					[overlay addSubview:mediaView];
+					[self.mediaViews addObject:mediaView];
 					[mediaView release];
-					}
 				}
 				
 				
