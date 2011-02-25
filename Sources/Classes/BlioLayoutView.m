@@ -28,6 +28,9 @@
 #define BLIOLAYOUT_LHSHOTZONE 0.25f
 #define BLIOLAYOUT_RHSHOTZONE 0.75f
 
+@interface BlioBlendView : UIView {}
+@end
+
 @interface BlioLayoutView()
 
 @property (nonatomic, retain) UIView *overlay;
@@ -1203,7 +1206,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
-	NSLog(@"updateOverlayForPagesInRange %@", NSStringFromRange(pageRange));
 	if (self.pageTurningView) {
 		if (!overlay) {
             CGRect frame = self.pageTurningView.bounds;
@@ -1212,21 +1214,22 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             frame.origin.y += frame.size.height / 4.0f;
             frame.size.height /= 2.0f;
 
-			overlay = [[UIView alloc] init];
+			overlay = [[BlioBlendView alloc] init];
 			overlay.frame = self.pageTurningView.bounds;
 			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 			overlay.userInteractionEnabled = YES;
 			overlay.backgroundColor = [UIColor clearColor];
 			overlay.multipleTouchEnabled = YES;
+			
+			[(CAReplicatorLayer *)[overlay layer] setInstanceCount:1];
+			[(CAReplicatorLayer *)[overlay layer] setInstanceColor:[UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.000].CGColor];
+			
 			[self.pageTurningView addSubview:overlay];
 		}
 
 		[self.mediaViews makeObjectsPerformSelector:@selector(pauseMediaPlayer)];
-		
-		for (UIView *view in [overlay subviews]) {
-			[view removeFromSuperview];
-		}
-		
+		[overlay.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+				
 		self.mediaViews = [NSMutableArray array];
 		self.webViews = [NSMutableArray array];
 		
@@ -1245,31 +1248,34 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
 				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
 				
-				
 				if ([controlType isEqualToString:@"WebBrowser"]) {
-					
+										
+							
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
 					
 					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
+					
+					[overlay.layer addSublayer:webView.layer];
+					
 					[self.webViews addObject:webView];
 					
+								
 					NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
 					
 					[webView loadRequest:request];
-					[overlay addSubview:webView];
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
 					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
 					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform)) contentURL:videoURL];
-					[overlay addSubview:mediaView];
+					[overlay.layer addSublayer:mediaView.layer];
 					[self.mediaViews addObject:mediaView];
 					[mediaView release];
 				}
-				
-				
+					
 				CFRelease(encodedString);
 			}
 		}
@@ -2797,4 +2803,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 @end
 
+@implementation BlioBlendView
+
++ (Class)layerClass {
+	return [CAReplicatorLayer class];
+}
+
+@end
  
