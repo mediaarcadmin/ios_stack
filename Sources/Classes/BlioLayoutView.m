@@ -1168,11 +1168,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				 
 	for (UIView *view in overlayViews) {
 		
-		CGSize size = view.bounds.size;
+		CGRect viewFrame = [view.layer convertRect:view.layer.frame toLayer:overlay.layer];
+		
+		CGSize size = viewFrame.size;
 		size.width *= scale;
 		size.height *= scale;
 		
-		CGPoint origin = view.frame.origin;
+		CGPoint origin = viewFrame.origin;
 		origin.x *= scale;
 		origin.y *= scale;
 
@@ -1206,6 +1208,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
+	NSLog(@"updateOverlayForPagesInRange %@", NSStringFromRange(pageRange));
 	if (self.pageTurningView) {
 		if (!overlay) {
             CGRect frame = self.pageTurningView.bounds;
@@ -1214,22 +1217,21 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             frame.origin.y += frame.size.height / 4.0f;
             frame.size.height /= 2.0f;
 
-			overlay = [[BlioBlendView alloc] init];
+			overlay = [[UIView alloc] init];
 			overlay.frame = self.pageTurningView.bounds;
 			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 			overlay.userInteractionEnabled = YES;
 			overlay.backgroundColor = [UIColor clearColor];
 			overlay.multipleTouchEnabled = YES;
-			
-			[(CAReplicatorLayer *)[overlay layer] setInstanceCount:1];
-			[(CAReplicatorLayer *)[overlay layer] setInstanceColor:[UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.000].CGColor];
-			
 			[self.pageTurningView addSubview:overlay];
 		}
 
 		[self.mediaViews makeObjectsPerformSelector:@selector(pauseMediaPlayer)];
-		[overlay.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
-				
+		
+		for (UIView *view in [overlay subviews]) {
+			[view removeFromSuperview];
+		}
+		
 		self.mediaViews = [NSMutableArray array];
 		self.webViews = [NSMutableArray array];
 		
@@ -1248,18 +1250,24 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
 				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
 				
+				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+				CAReplicatorLayer *replicatorLayer = (CAReplicatorLayer *)blendView.layer;
+				replicatorLayer.instanceCount = 1;
+				replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.000].CGColor;
+				
 				if ([controlType isEqualToString:@"WebBrowser"]) {
 										
 							
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
 					
-					UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+					//UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+					UIWebView *webView = [[UIWebView alloc] initWithFrame:blendView.bounds];
 
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
 					
-					[overlay.layer addSublayer:webView.layer];
+					[replicatorLayer addSublayer:webView.layer];
 					
 					[self.webViews addObject:webView];
 					
@@ -1270,12 +1278,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
 					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
-					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform)) contentURL:videoURL];
-					[overlay.layer addSublayer:mediaView.layer];
+					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:blendView.bounds contentURL:videoURL];
+					[replicatorLayer addSublayer:mediaView.layer];
 					[self.mediaViews addObject:mediaView];
 					[mediaView release];
 				}
-					
+					 
+				[overlay addSubview:blendView];
+				
 				CFRelease(encodedString);
 			}
 		}
