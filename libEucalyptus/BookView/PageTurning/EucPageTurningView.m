@@ -73,6 +73,8 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 - (CGPoint)_setZoomMatrixFromTranslation:(CGPoint)translation zoomFactor:(CGFloat)zoomFactor;
 - (void)_prepareForTurnForwards:(BOOL)forwards;
 
+- (void)_drawViewIncludingPageContent:(BOOL)includePageContent
+                          intoBuffer:(GLvoid *)screenshotBuffer;
 - (void)_retextureForPanAndZoom;
 - (void)_scheduleRetextureForPanAndZoom;
 - (void)_cancelRetextureForPanAndZoom;
@@ -775,19 +777,23 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     }
 }
 
+static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *data, size_t size)
+{
+    free(info);
+}
+
 - (UIImage *)screenshot
 {
-    CGRect bounds = self.bounds;
-    
-    CFIndex capacity = _backingWidth * _backingHeight * 4;
-    CFMutableDataRef newBitmapData = CFDataCreateMutable(kCFAllocatorDefault, capacity);
-    CFDataIncreaseLength(newBitmapData, capacity);
-    
-    _atRenderScreenshotBuffer = CFDataGetMutableBytePtr(newBitmapData);
-    
-    [self drawView];
-    
-    CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(newBitmapData);
+    size_t capacity = _backingWidth * _backingHeight * 4;
+
+    void *newBitmap = malloc(capacity);
+
+    [self _drawViewIncludingPageContent:YES
+                             intoBuffer:newBitmap];
+
+    // Will free the data when it is done with it.
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(newBitmap, newBitmap, capacity, CGDataProviderFreeMallocedBufferCallback);
+
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGImageRef newImageRef = CGImageCreate(_backingWidth, _backingHeight,
                                            8, 32, 4 * _backingWidth, 
@@ -797,6 +803,7 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     CGDataProviderRelease(dataProvider);
     CGColorSpaceRelease(colorSpace);
     
+    CGRect bounds = self.bounds;
     CGFloat scaleFactor;
     if([self respondsToSelector:@selector(contentScaleFactor)]) {
         scaleFactor = self.contentScaleFactor;
@@ -816,8 +823,92 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     UIGraphicsEndImageContext();
     
     CGImageRelease(newImageRef);
-    CFRelease(newBitmapData);
-    _atRenderScreenshotBuffer = nil;
+
+    return ret;
+}
+
+- (UIImage *)pagesAlphaMask
+{
+    size_t capacity = _backingWidth * _backingHeight * 4;
+    
+    uint32_t *screenshotBitmap = malloc(capacity);
+    
+    CATransform3D _zoomMatrixWas = _zoomMatrix;
+    _zoomMatrix = CATransform3DIdentity;
+    [self _drawViewIncludingPageContent:NO
+                             intoBuffer:screenshotBitmap];
+    _zoomMatrix = _zoomMatrixWas;
+    
+    
+    CGRect pageRect;
+    if(_twoUp) {
+        pageRect = CGRectUnion(_unzoomedLeftPageFrame, _unzoomedRightPageFrame);
+    } else {
+        pageRect = _unzoomedRightPageFrame;
+    }    
+    
+    CGFloat scaleFactor;
+    if([self respondsToSelector:@selector(contentScaleFactor)]) {
+        scaleFactor = self.contentScaleFactor;
+    } else {
+        scaleFactor = 1.0f;
+    }    
+    CGRect pixelPageRect = CGRectMake(roundf(pageRect.origin.x * scaleFactor),
+                                      roundf(pageRect.origin.y * scaleFactor),
+                                      roundf(pageRect.size.width * scaleFactor),
+                                      roundf(pageRect.size.height * scaleFactor));
+    
+    off_t xStart = pixelPageRect.origin.x;
+    off_t xLimit = pixelPageRect.origin.x + pixelPageRect.size.width;
+    off_t yStart = pixelPageRect.origin.y;
+    off_t yLimit = pixelPageRect.origin.y + pixelPageRect.size.height;
+    
+    size_t alphaMaskBitmapCapacity = pixelPageRect.size.width * pixelPageRect.size.height * 4;
+    uint32_t *alphaMaskBitmap = malloc(alphaMaskBitmapCapacity);
+    
+    // Flip horizontally while translating the brightness to alpha.
+    uint32_t *alphaMaskBitmapCursor = alphaMaskBitmap;
+    for(off_t y = yLimit - 1; y >= yStart; --y) {
+        uint32_t *screenshotRow = screenshotBitmap + _backingWidth * y;
+        for(off_t x = xStart; x < xLimit; ++x) {
+            uint32_t pixel = screenshotRow[x];
+            
+            uint32_t blue =  (pixel & 0x00ff0000) >> 16;
+            uint32_t green = (pixel & 0x0000ff00) >> 8;
+            uint32_t red =   (pixel & 0x000000ff);
+            
+            uint32_t brightness = (red + blue + green) / 3;
+            
+            //CGFloat brightness = ((CGFloat)red * 0.299 + (CGFloat)green * 0.587 + (CGFloat)blue * 0.114) / 255.0;
+            
+            *(alphaMaskBitmapCursor++) = (((uint8_t)255 - (uint8_t)brightness) << 24);
+        }
+    }
+
+    free(screenshotBitmap);
+    
+    // Will free alphaMaskBitmap when it's done with it.
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(alphaMaskBitmap, alphaMaskBitmap, alphaMaskBitmapCapacity, CGDataProviderFreeMallocedBufferCallback);
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGImageRef alphaMaskCGImage = CGImageCreate(pixelPageRect.size.width, pixelPageRect.size.height,
+                                                8, 32, 4 * pixelPageRect.size.width, 
+                                                colorSpace, 
+                                                kCGBitmapByteOrderDefault | kCGImageAlphaLast, 
+                                                dataProvider, NULL, YES, kCGRenderingIntentDefault);
+    CGDataProviderRelease(dataProvider);
+    CGColorSpaceRelease(colorSpace);
+    
+    UIImage *ret;
+    if(scaleFactor != 1.0f) {
+        ret = [UIImage imageWithCGImage:alphaMaskCGImage scale:scaleFactor orientation:UIImageOrientationUp];
+    } else {
+        ret = [UIImage imageWithCGImage:alphaMaskCGImage];
+    }
+    CGImageRelease(alphaMaskCGImage);
+    
+    //[UIImagePNGRepresentation(ret) writeToFile:@"/tmp/mask.png" atomically:NO];
+    
     return ret;
 }
 
@@ -1490,6 +1581,8 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 
 - (void)overlayPageAtIndex:(NSUInteger)pageIndex withPositionedRGBABitmapContexts :(NSArray *)contexts
 {
+    [self pagesAlphaMask];
+    
     EucPageTurningPageContentsInformation *pageContentsInformation = nil;
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
         if(pageIndex == _pageContentsInformation[i].pageIndex) {
@@ -1715,38 +1808,45 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
 #pragma mark -
 #pragma mark Drawing
 
-- (void)drawView 
-{        
+- (void)drawView
+{
     [super drawView];
-	        
+    [self _drawViewIncludingPageContent:YES intoBuffer:NULL];
+}
+
+- (void)_drawViewIncludingPageContent:(BOOL)includePageContent
+                           intoBuffer:(GLvoid *)screenshotBuffer
+{        
     EucPageTurningViewAnimationFlags animationFlags = self.animationFlags;
     
     EucPageTurningViewAnimationFlags postDrawAnimationFlags = animationFlags;
 	
-    if((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
-       (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
-        //[self _accumulateForces]; // Not used - see comments around implementation.
-        [self _verlet];
-        BOOL shouldStopAnimating = [self _satisfyConstraints];
-        [self _calculateVertexNormals];
-        if(shouldStopAnimating) {
-            postDrawAnimationFlags &= ~(EucPageTurningViewAnimationFlagsDragTurn | EucPageTurningViewAnimationFlagsAutomaticTurn);
+    if(!screenshotBuffer) {
+        if((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
+           (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
+            //[self _accumulateForces]; // Not used - see comments around implementation.
+            [self _verlet];
+            BOOL shouldStopAnimating = [self _satisfyConstraints];
+            [self _calculateVertexNormals];
+            if(shouldStopAnimating) {
+                postDrawAnimationFlags &= ~(EucPageTurningViewAnimationFlagsDragTurn | EucPageTurningViewAnimationFlagsAutomaticTurn);
+            }
         }
+        
+        if(animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) {
+            BOOL shouldStopAnimating = [self _satisfyPositioningConstraints];
+            if(shouldStopAnimating) {
+                postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsAutomaticPositioning;
+            }
+        }
+        
+        if(animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
+            BOOL shouldStopAnimating = [self _satisfyScrollingConstraints];
+            if(shouldStopAnimating) {
+                postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
+            }
+        }    
     }
-	
-	if(animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) {
-		BOOL shouldStopAnimating = [self _satisfyPositioningConstraints];
-        if(shouldStopAnimating) {
-            postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsAutomaticPositioning;
-        }
-    }
-    
-    if(animationFlags & EucPageTurningViewAnimationFlagsDragScroll) {
-        BOOL shouldStopAnimating = [self _satisfyScrollingConstraints];
-        if(shouldStopAnimating) {
-            postDrawAnimationFlags &= ~EucPageTurningViewAnimationFlagsDragScroll;
-        }
-    }    
     	    
     EAGLContext *eaglContext = self.eaglContext;
     [eaglContext thPush];
@@ -1809,9 +1909,17 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
     
     // Assign GL_TEXTUREs to our samplers (we'll bind the textures before use).    
     glUniform1i(glGetUniformLocation(_program, "sPaperTexture"), 0);
-    glUniform1i(glGetUniformLocation(_program, "sContentsTexture"), 1);
-    glUniform1i(glGetUniformLocation(_program, "sZoomedContentsTexture"), 2);
-    glUniform1i(glGetUniformLocation(_program, "sHighlightTexture"), 3);
+    if(includePageContent) {
+        glUniform1i(glGetUniformLocation(_program, "sContentsTexture"), 1);
+        glUniform1i(glGetUniformLocation(_program, "sZoomedContentsTexture"), 2);
+        glUniform1i(glGetUniformLocation(_program, "sHighlightTexture"), 3);
+    } else {
+        glUniform1i(glGetUniformLocation(_program, "sContentsTexture"), 4);
+        glUniform1i(glGetUniformLocation(_program, "sZoomedContentsTexture"), 4);
+        glUniform1i(glGetUniformLocation(_program, "sHighlightTexture"), 4);   
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, _whiteTexture);
+    }
 
     // 'disable' the zoomed texture
     CGRect invisibleZoomedTextureRect = { { -1.0f, -1.0f } , { -1.0f, -1.0f } };
@@ -2120,55 +2228,57 @@ static void texImage2DPVRTC(GLint level, GLsizei bpp, GLboolean hasAlpha, GLsize
         }
     }        
     
-    if(_atRenderScreenshotBuffer) {
-        glReadPixels(0, 0, _backingWidth, _backingHeight, GL_RGBA, GL_UNSIGNED_BYTE, _atRenderScreenshotBuffer);
+    if(screenshotBuffer) {
+        glReadPixels(0, 0, _backingWidth, _backingHeight, GL_RGBA, GL_UNSIGNED_BYTE, screenshotBuffer);
+    } else {
+        glBindRenderbuffer(GL_RENDERBUFFER, _viewRenderbuffer);
+        [eaglContext presentRenderbuffer:GL_RENDERBUFFER];
     }
     
-    glBindRenderbuffer(GL_RENDERBUFFER, _viewRenderbuffer);
-    [eaglContext presentRenderbuffer:GL_RENDERBUFFER];
-
     [eaglContext thPop];
     
-    if(_viewsNeedRecache) {
-        [self _recachePages];
-        [self _setNeedsAccessibilityElementsRebuild];
-        if(!(animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
-            _focusedPageIndex = _pageContentsInformation[2] ? _pageContentsInformation[2].pageIndex : _pageContentsInformation[3].pageIndex;
-        }
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-    }
-    
-    if(postDrawAnimationFlags != animationFlags) {
-        if((animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) &&
-           !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        }
-        if((animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
-           !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)) {
-            // May as well kick this off now to avoid the 0.2s delay.
-            [self _retextureForPanAndZoom];
-        }
-        if((animationFlags & EucPageTurningViewAnimationFlagsDragScroll) &&
-           !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsDragScroll)){
-            _touchVelocity = CGPointZero;
+    if(!screenshotBuffer) {
+        if(_viewsNeedRecache) {
+            [self _recachePages];
+            [self _setNeedsAccessibilityElementsRebuild];
+            if(!(animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
+                _focusedPageIndex = _pageContentsInformation[2] ? _pageContentsInformation[2].pageIndex : _pageContentsInformation[3].pageIndex;
+            }
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
         }
         
-        self.animationFlags = postDrawAnimationFlags;
-    }
-    
-    if(_zoomChangedSinceLastDraw) {
-        // Set the transform used by CA to position sublayers - allows
-        // users of the class to place UIViews etc. 'on' the page.
-        CATransform3D sublayerTransform = _zoomMatrix;
-        // Make sure the sublayer transform translation is in the UIView
-        // points.
-        sublayerTransform.m41 *= _viewportToBoundsPointsTransform.a;
-        sublayerTransform.m42 *= -_viewportToBoundsPointsTransform.d;
-        [CATransaction begin];
-        [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-        self.layer.sublayerTransform = sublayerTransform;
-        [CATransaction commit];
-        _zoomChangedSinceLastDraw = NO;
+        if(postDrawAnimationFlags != animationFlags) {
+            if((animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn) &&
+               !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn)) {
+                [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+            }
+            if((animationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning) &&
+               !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticPositioning)) {
+                // May as well kick this off now to avoid the 0.2s delay.
+                [self _retextureForPanAndZoom];
+            }
+            if((animationFlags & EucPageTurningViewAnimationFlagsDragScroll) &&
+               !(postDrawAnimationFlags & EucPageTurningViewAnimationFlagsDragScroll)){
+                _touchVelocity = CGPointZero;
+            }
+            
+            self.animationFlags = postDrawAnimationFlags;
+        }
+        
+        if(_zoomChangedSinceLastDraw) {
+            // Set the transform used by CA to position sublayers - allows
+            // users of the class to place UIViews etc. 'on' the page.
+            CATransform3D sublayerTransform = _zoomMatrix;
+            // Make sure the sublayer transform translation is in the UIView
+            // points.
+            sublayerTransform.m41 *= _viewportToBoundsPointsTransform.a;
+            sublayerTransform.m42 *= -_viewportToBoundsPointsTransform.d;
+            [CATransaction begin];
+            [CATransaction setValue:(id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+            self.layer.sublayerTransform = sublayerTransform;
+            [CATransaction commit];
+            _zoomChangedSinceLastDraw = NO;
+        }
     }
 }
 
