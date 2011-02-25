@@ -8,6 +8,7 @@
  */
 
 #include "THPixelFormatUtils.h"
+#include <stdint.h>
 
 void convertPremultipliedRGBABitmapToNonpremultipliedRGBA4444Bitmap(void *premultipliedRGBABitmap, 
                                                                     size_t premultipliedRGBABitmapByteSize,
