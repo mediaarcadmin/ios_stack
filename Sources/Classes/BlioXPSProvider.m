@@ -382,9 +382,7 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
 	
 
 	CGRect pageCropRect = [self cropRectForPage:page];
-	
-	NSLog(@"RGBABitmapContextForPage %d", page);
-    
+	    
     OutputFormat format;
     memset(&format,0,sizeof(format));
     
