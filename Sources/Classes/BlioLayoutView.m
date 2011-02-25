@@ -1266,7 +1266,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				
 				CAReplicatorLayer *replicatorLayer = (CAReplicatorLayer *)blendView.layer;
 				replicatorLayer.instanceCount = 1;
-				//replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.0f].CGColor;
+				replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.0f].CGColor;
+				replicatorLayer.instanceColor = [UIColor colorWithRed:1.000 green:0.938 blue:0.868 alpha:1.000].CGColor;
 								
 				if ([controlType isEqualToString:@"WebBrowser"]) {
 										
@@ -1333,6 +1334,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			alphaLayer.contentsGravity = kCAGravityResizeAspect;
 			alphaLayer.opaque = NO;
 			alphaLayer.frame = overlay.bounds;
+			alphaLayer.opacity = 0.72f;
 			alphaMaskLayer.path = maskPath;
 			CGPathRelease(maskPath);
 			alphaLayer.mask = alphaMaskLayer;
