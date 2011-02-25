@@ -1192,10 +1192,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		CGColorSpaceRelease(colorSpace);
 		
 		CGContextScaleCTM(bitmapContext, 1, -1);
-		CGContextTranslateCTM(bitmapContext, -origin.x, -view.bounds.size.height - origin.y);
+		CGContextTranslateCTM(bitmapContext, 0, -view.bounds.size.height);
+		//CGContextTranslateCTM(bitmapContext, -origin.x, -view.bounds.size.height - origin.y);
 		
 		CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
-		[overlay.layer renderInContext:bitmapContext];
+		[view.layer renderInContext:bitmapContext];
+		//[overlay.layer renderInContext:bitmapContext];
 		
 		THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
 		[positionedContexts addObject:positionedContext];
@@ -1232,8 +1234,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			[view removeFromSuperview];
 		}
 		
+		
+		[overlay.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+		
 		self.mediaViews = [NSMutableArray array];
 		self.webViews = [NSMutableArray array];
+		
+	
+		CGMutablePathRef maskPath = CGPathCreateMutable();
+		
 		
 		for (int i = pageRange.location; i < pageRange.location + pageRange.length; i++) {
 			
@@ -1250,11 +1259,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
 				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
 				
+								
 				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+				
+				CGPathAddRect(maskPath, NULL, blendView.frame);
+				
 				CAReplicatorLayer *replicatorLayer = (CAReplicatorLayer *)blendView.layer;
 				replicatorLayer.instanceCount = 1;
-				replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.000].CGColor;
-				
+				//replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.0f].CGColor;
+								
 				if ([controlType isEqualToString:@"WebBrowser"]) {
 										
 							
@@ -1267,7 +1280,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
 					
-					[replicatorLayer addSublayer:webView.layer];
+					[blendView.layer addSublayer:webView.layer];
 					
 					[self.webViews addObject:webView];
 					
@@ -1279,15 +1292,54 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
 					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:blendView.bounds contentURL:videoURL];
-					[replicatorLayer addSublayer:mediaView.layer];
+					[blendView.layer addSublayer:mediaView.layer];
 					[self.mediaViews addObject:mediaView];
 					[mediaView release];
 				}
+				
+				
 					 
 				[overlay addSubview:blendView];
+				//overlay.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.5f];
+//				
+//				CALayer *alphaLayer = [CALayer layer];
+//				alphaLayer.contents = (id)alphaMask.CGImage;
+//				alphaLayer.contentsGravity = kCAGravityResizeAspect;
+//				alphaLayer.opaque = NO;
+//				alphaLayer.frame = overlay.frame;
+//				//alphaLayer.contentsRect = CGRectMake(0.1, 0.1, 0.9, 0.4);
+//				alphaLayer.masksToBounds = YES;
+//				[overlay.layer addSublayer:alphaLayer];
+				//UIImageView *alphaView = [[UIImageView alloc] initWithImage:alphaMask];
+//				alphaView.backgroundColor = [UIColor clearColor];
+//				alphaView.clipsToBounds = YES;
+//				alphaView.contentMode = UIViewContentModeTopLeft;
+//				alphaView.layer.contentsRect
+//				alphaView.frame = blendView.frame;
+//				[overlay addSubview:alphaView];
 				
 				CFRelease(encodedString);
 			}
+			
+			CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
+			alphaMaskLayer.frame = overlay.bounds;
+			alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
+			
+			UIImage *alphaMask = self.pageTurningView.pagesAlphaMask;
+			
+			CALayer *alphaLayer = [CALayer layer];
+			alphaLayer.backgroundColor = [UIColor clearColor].CGColor;
+			alphaLayer.contents = (id)alphaMask.CGImage;
+			alphaLayer.contentsGravity = kCAGravityResizeAspect;
+			alphaLayer.opaque = NO;
+			alphaLayer.frame = overlay.bounds;
+			alphaMaskLayer.path = maskPath;
+			CGPathRelease(maskPath);
+			alphaLayer.mask = alphaMaskLayer;
+			
+			[overlay.layer addSublayer:alphaLayer];
+			
+			
 		}
 					
     }
