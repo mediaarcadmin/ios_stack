@@ -166,8 +166,6 @@ typedef enum EucPageTurningViewAnimationFlags {
     BOOL _viewsNeedRecache;
     BOOL _recacheFlags[6];
     
-    GLvoid *_atRenderScreenshotBuffer;
-    
     GLfloat _dimQuotient;
     NSInteger _reverseAnimatedTurnFrameCount;
     
@@ -202,6 +200,8 @@ typedef enum EucPageTurningViewAnimationFlags {
 @property (nonatomic, assign) CGFloat dimQuotient;
 
 @property (nonatomic, readonly) UIImage *screenshot;
+@property (nonatomic, readonly) UIImage *pagesAlphaMask;
+
 
 // These must be set up before the view appears.
 @property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.
