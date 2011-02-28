@@ -827,7 +827,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     return ret;
 }
 
-- (UIImage *)pagesAlphaMask
+- (UIImage *)pagesAlphaMaskGetAverageColor:(UIColor **)averageColor
 {
     size_t capacity = _backingWidth * _backingHeight * 4;
     
@@ -866,7 +866,21 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     size_t alphaMaskBitmapCapacity = pixelPageRect.size.width * pixelPageRect.size.height * 4;
     uint32_t *alphaMaskBitmap = malloc(alphaMaskBitmapCapacity);
     
+    off_t pixelCount = 0;
+    
+    CGFloat runningHueAveragePixelCount = 0;
+    CGFloat runningAverageHueAngle = 0.0f;
+    CGFloat runningSaturationAveragePixelCount = 0;
+
+    CGFloat runningAverageSaturation = 0.0f;
+    
+    float minHueAngle = (2.0f * (float)M_PI);
+    float maxHueAngle = 0.0f;
+    
     // Flip horizontally while translating the brightness to alpha.
+    // Also extract the 'average' hue and saturation.
+    // Thanks to http://www.alvyray.com/Papers/hsv2rgb.htm for the explanation
+    // on HSV.
     uint32_t *alphaMaskBitmapCursor = alphaMaskBitmap;
     for(off_t y = yLimit - 1; y >= yStart; --y) {
         uint32_t *screenshotRow = screenshotBitmap + _backingWidth * y;
@@ -879,12 +893,64 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
             
             uint32_t brightness = (red + blue + green) / 3;
             
+            brightness = MAX(MAX(red, green), blue);
+            
             //CGFloat brightness = ((CGFloat)red * 0.299 + (CGFloat)green * 0.587 + (CGFloat)blue * 0.114) / 255.0;
             
-            *(alphaMaskBitmapCursor++) = (((uint8_t)255 - (uint8_t)brightness) << 24);
+            alphaMaskBitmapCursor[pixelCount] = (((uint8_t)255 - (uint8_t)brightness) << 24);
+            
+            float BRI = 255.0f / brightness;
+            float R = (red / 255.0f) * BRI;
+            float G = (green / 255.0f) * BRI;
+            float B = (blue / 255.0f) * BRI;
+            float x = MIN(MIN(R, G), B);
+            float v = MAX(MAX(R, G), B);
+            
+            float saturation = (v - x) / v;
+            ++runningSaturationAveragePixelCount;
+            if(runningSaturationAveragePixelCount != 1) {
+                runningAverageSaturation = runningAverageSaturation + ((saturation - runningAverageSaturation ) / runningSaturationAveragePixelCount);
+            } else {
+                runningAverageSaturation = saturation;
+            }
+            
+            if(x != v) { // i.e. if we're not a grayscale - we have a hue.
+
+                float r = (v-R)/(v-x);
+                float g = (v-G)/(v-x);
+                float b = (v-B)/(v-x);
+                
+                float hue = (R == x) ? 3.0f + (g - b) :
+                            (G == x) ? 5.0f + (b - r) : 
+                            1.0f + (r - g);
+                
+                float hueAngle =  (2.0f * (float)M_PI) * (hue / 6.0f);
+                
+                if(hueAngle < minHueAngle) {
+                    minHueAngle = hueAngle;
+                }
+                if(hueAngle > maxHueAngle) {
+                    maxHueAngle = hueAngle;
+                }
+                
+                ++runningHueAveragePixelCount;
+
+                if(runningHueAveragePixelCount != 1) {
+                    runningAverageHueAngle = atan2f(sinf(runningAverageHueAngle) + (sinf(hueAngle) - sinf(runningAverageHueAngle)) / runningHueAveragePixelCount,
+                                                    cosf(runningAverageHueAngle) + (cosf(hueAngle) - cosf(runningAverageHueAngle)) / runningHueAveragePixelCount);
+                    //runningAverageHueAngle = runningAverageHueAngle + ((hueAngle - runningAverageHueAngle ) / runningHueAveragePixelCount);
+                } else {
+                    runningAverageHueAngle = hueAngle;
+                }
+            }
+            
+            ++pixelCount;
         }
     }
 
+    NSLog(@"Hue angle is %f, saturation %f", runningAverageHueAngle / (2.0f * (float)M_PI), runningAverageSaturation);
+    NSLog(@"Max Hue: %f, Min Hue:%f", minHueAngle / (2.0f * (float)M_PI), maxHueAngle / (2.0f * (float)M_PI));
+    
     free(screenshotBitmap);
     
     // Will free alphaMaskBitmap when it's done with it.
@@ -907,7 +973,24 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     }
     CGImageRelease(alphaMaskCGImage);
     
-    //[UIImagePNGRepresentation(ret) writeToFile:@"/tmp/mask.png" atomically:NO];
+    if(averageColor) {
+        if(!runningHueAveragePixelCount) {
+            *averageColor = [UIColor whiteColor];
+        } else {
+            *averageColor = [UIColor colorWithHue:runningAverageHueAngle / (2.0f * (float)M_PI)
+                                       saturation:runningAverageSaturation
+                                       brightness:1.0f 
+                                            alpha:1.0f];
+        }
+        
+        UIGraphicsBeginImageContext(pixelPageRect.size);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextSetFillColorWithColor(context, (*averageColor).CGColor);
+        CGContextFillRect(context, CGRectMake(0, 0, pixelPageRect.size.width, pixelPageRect.size.height));
+        CGContextDrawImage(context, CGRectMake(0, 0, pixelPageRect.size.width, pixelPageRect.size.height), ret.CGImage);
+        [UIImagePNGRepresentation(UIGraphicsGetImageFromCurrentImageContext()) writeToFile:@"/tmp/mask.png" atomically:NO];
+        UIGraphicsEndImageContext();
+    }
     
     return ret;
 }
@@ -1580,9 +1663,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 }
 
 - (void)overlayPageAtIndex:(NSUInteger)pageIndex withPositionedRGBABitmapContexts :(NSArray *)contexts
-{
-    [self pagesAlphaMask];
-    
+{    
     EucPageTurningPageContentsInformation *pageContentsInformation = nil;
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
         if(pageIndex == _pageContentsInformation[i].pageIndex) {

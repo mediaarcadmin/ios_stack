@@ -200,8 +200,7 @@ typedef enum EucPageTurningViewAnimationFlags {
 @property (nonatomic, assign) CGFloat dimQuotient;
 
 @property (nonatomic, readonly) UIImage *screenshot;
-@property (nonatomic, readonly) UIImage *pagesAlphaMask;
-
+- (UIImage *)pagesAlphaMaskGetAverageColor:(UIColor **)averageColor;
 
 // These must be set up before the view appears.
 @property (nonatomic, assign) CGFloat pageAspectRatio; // width / height.  0 = matches screen.  Default is 0.

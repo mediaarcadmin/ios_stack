@@ -1241,8 +1241,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		self.webViews = [NSMutableArray array];
 		
 	
-		CGMutablePathRef maskPath = CGPathCreateMutable();
-		
+		CGMutablePathRef maskPath = nil;
 		
 		for (int i = pageRange.location; i < pageRange.location + pageRange.length; i++) {
 			
@@ -1250,8 +1249,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
 			
 			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
-			
-			
+            
 			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
 				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
 				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
@@ -1262,13 +1260,21 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 								
 				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
 				
+                if(!maskPath) {
+                    maskPath = CGPathCreateMutable();
+                }
 				CGPathAddRect(maskPath, NULL, blendView.frame);
 				
 				CAReplicatorLayer *replicatorLayer = (CAReplicatorLayer *)blendView.layer;
 				replicatorLayer.instanceCount = 1;
-				replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.0f].CGColor;
-				replicatorLayer.instanceColor = [UIColor colorWithRed:1.000 green:0.938 blue:0.868 alpha:1.000].CGColor;
+				//replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.0f].CGColor;
+				//replicatorLayer.instanceColor = [UIColor colorWithRed:1.000 green:0.938 blue:0.868 alpha:1.000].CGColor;
 								
+                UIColor *pageMultiplyColor = nil;
+                [self.pageTurningView pagesAlphaMaskGetAverageColor:&pageMultiplyColor];
+				replicatorLayer.instanceColor = pageMultiplyColor.CGColor;
+
+                
 				if ([controlType isEqualToString:@"WebBrowser"]) {
 										
 							
@@ -1322,28 +1328,27 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				CFRelease(encodedString);
 			}
 			
-			CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
-			alphaMaskLayer.frame = overlay.bounds;
-			alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
-			
-			UIImage *alphaMask = self.pageTurningView.pagesAlphaMask;
-			
-			CALayer *alphaLayer = [CALayer layer];
-			alphaLayer.backgroundColor = [UIColor clearColor].CGColor;
-			alphaLayer.contents = (id)alphaMask.CGImage;
-			alphaLayer.contentsGravity = kCAGravityResizeAspect;
-			alphaLayer.opaque = NO;
-			alphaLayer.frame = overlay.bounds;
-			alphaLayer.opacity = 0.72f;
-			alphaMaskLayer.path = maskPath;
-			CGPathRelease(maskPath);
-			alphaLayer.mask = alphaMaskLayer;
-			
-			[overlay.layer addSublayer:alphaLayer];
-			
-			
+            if(maskPath) {
+                CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
+                alphaMaskLayer.frame = overlay.bounds;
+                alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
+                
+                UIImage *alphaMask = [self.pageTurningView pagesAlphaMaskGetAverageColor:&(UIColor *){nil}];
+                
+                CALayer *alphaLayer = [CALayer layer];
+                alphaLayer.backgroundColor = [UIColor clearColor].CGColor;
+                alphaLayer.contents = (id)alphaMask.CGImage;
+                alphaLayer.contentsGravity = kCAGravityResize;
+                alphaLayer.opaque = NO;
+                alphaLayer.frame = overlay.bounds;
+                //alphaLayer.opacity = 0.72f;
+                alphaMaskLayer.path = maskPath;
+                CGPathRelease(maskPath);
+                alphaLayer.mask = alphaMaskLayer;
+                
+                [overlay.layer addSublayer:alphaLayer];
+            }
 		}
-					
     }
 }
 
