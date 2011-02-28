@@ -43,7 +43,25 @@ void convertRGBABitmapToRGB565Bitmap(void *RGBABitmap,
         result |= RGBATextureData[i] >> 3;
         result <<= 6;
         result |= RGBATextureData[i+1] >> 2; 
-        result <<= 5; 
+        result <<= 5;
+        result |= RGBATextureData[i+2] >> 3;
+        RGB565TextureData[i / 4] = result;
+    }    
+}
+
+void convertRGBABitmapToRGB555InRGB565Bitmap(void *RGBABitmap, 
+                                             size_t RGBABitmapByteSize,
+                                             void *RGB565BitmapOut)
+{
+    uint8_t *RGBATextureData = (uint8_t *)RGBABitmap;        
+    uint16_t *RGB565TextureData = (uint16_t *)RGB565BitmapOut;        
+    for(int i = 0; i < RGBABitmapByteSize; i += 4) {
+        uint16_t result = 0;
+        result |= RGBATextureData[i] >> 3;
+        result <<= 5;
+        result |= RGBATextureData[i+1] >> 3; 
+        result = (result << 1) | 0x1;
+        result <<= 5;
         result |= RGBATextureData[i+2] >> 3;
         RGB565TextureData[i / 4] = result;
     }    

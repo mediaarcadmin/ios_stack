@@ -868,14 +868,11 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     
     off_t pixelCount = 0;
     
-    CGFloat runningHueAveragePixelCount = 0;
-    CGFloat runningAverageHueAngle = 0.0f;
-    CGFloat runningSaturationAveragePixelCount = 0;
-
-    CGFloat runningAverageSaturation = 0.0f;
+    float runningAverageHuePixelCount = 0.0f;
+    float runningAverageHueAngle = 0.0f;
     
-    float minHueAngle = (2.0f * (float)M_PI);
-    float maxHueAngle = 0.0f;
+    float runningAverageSaturationPixelCount = 0.0f;
+    float runningAverageSaturation = 0.0f;
     
     // Flip horizontally while translating the brightness to alpha.
     // Also extract the 'average' hue and saturation.
@@ -887,71 +884,105 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
         for(off_t x = xStart; x < xLimit; ++x) {
             uint32_t pixel = screenshotRow[x];
             
-            uint32_t blue =  (pixel & 0x00ff0000) >> 16;
-            uint32_t green = (pixel & 0x0000ff00) >> 8;
-            uint32_t red =   (pixel & 0x000000ff);
+            int32_t blue =  (pixel & 0x00ff0000) >> 16;
+            int32_t green = (pixel & 0x0000ff00) >> 8;
+            int32_t red =   (pixel & 0x000000ff);
             
-            uint32_t brightness = (red + blue + green) / 3;
+            int32_t vI = MAX(MAX(red, green), blue);
+                        
+            alphaMaskBitmapCursor[pixelCount] = (((uint8_t)0xFF - (uint8_t)vI) << 24);
             
-            brightness = MAX(MAX(red, green), blue);
-            
-            //CGFloat brightness = ((CGFloat)red * 0.299 + (CGFloat)green * 0.587 + (CGFloat)blue * 0.114) / 255.0;
-            
-            alphaMaskBitmapCursor[pixelCount] = (((uint8_t)255 - (uint8_t)brightness) << 24);
-            
-            float BRI = 255.0f / brightness;
-            float R = (red / 255.0f) * BRI;
-            float G = (green / 255.0f) * BRI;
-            float B = (blue / 255.0f) * BRI;
-            float x = MIN(MIN(R, G), B);
-            float v = MAX(MAX(R, G), B);
-            
-            float saturation = (v - x) / v;
-            ++runningSaturationAveragePixelCount;
-            if(runningSaturationAveragePixelCount != 1) {
-                runningAverageSaturation = runningAverageSaturation + ((saturation - runningAverageSaturation ) / runningSaturationAveragePixelCount);
-            } else {
-                runningAverageSaturation = saturation;
-            }
-            
-            if(x != v) { // i.e. if we're not a grayscale - we have a hue.
+            int32_t xI = MIN(MIN(red, green), blue);
+            float saturation;
 
-                float r = (v-R)/(v-x);
-                float g = (v-G)/(v-x);
-                float b = (v-B)/(v-x);
-                
-                float hue = (R == x) ? 3.0f + (g - b) :
-                            (G == x) ? 5.0f + (b - r) : 
-                            1.0f + (r - g);
-                
-                float hueAngle =  (2.0f * (float)M_PI) * (hue / 6.0f);
-                
-                if(hueAngle < minHueAngle) {
-                    minHueAngle = hueAngle;
-                }
-                if(hueAngle > maxHueAngle) {
-                    maxHueAngle = hueAngle;
-                }
-                
-                ++runningHueAveragePixelCount;
+            if(xI != vI) {     
+                /*
+                 static const float scaleToFloatFator  = (1.0f / 255.0f);
+                 
+                 float x = xI * scaleToFloatFator;
+                 float v = vI * scaleToFloatFator;
+                 
+                 float vMx = v - x;
+                 saturation = vMx / v;
 
-                if(runningHueAveragePixelCount != 1) {
-                    runningAverageHueAngle = atan2f(sinf(runningAverageHueAngle) + (sinf(hueAngle) - sinf(runningAverageHueAngle)) / runningHueAveragePixelCount,
-                                                    cosf(runningAverageHueAngle) + (cosf(hueAngle) - cosf(runningAverageHueAngle)) / runningHueAveragePixelCount);
-                    //runningAverageHueAngle = runningAverageHueAngle + ((hueAngle - runningAverageHueAngle ) / runningHueAveragePixelCount);
+                 float R = red * scaleToFloatFator;
+                 float G = green * scaleToFloatFator;
+                 float B = blue * scaleToFloatFator;
+                 
+                 float r = ((v-R) / vMx)
+                 float g = ((v-G) / vMx)
+                 float b = ((v-B) / vMx);
+                
+                 float hue = (R == x) ? 3.0f + (g - b) :
+                             (G == x) ? 5.0f + (b - r) : 
+                             1.0f + (r - g);
+                 
+                 float hueAngle =  (2.0f * (float)M_PI) * (hue / 6.0f);
+                */
+                
+                float vMx = (float)(vI - xI);
+                saturation = vMx / (float)vI;
+                const float oOvMx = 1.0f / vMx;
+                float hue;
+                if(red == xI) {
+                    hue = 3.0f + ((vI-green) - (vI-blue)) * oOvMx;
+                } else if (green == xI) {
+                    hue = 5.0f + ((vI-blue) - (vI-red)) * oOvMx;
+                } else {
+                    hue = 1.0f + ((vI-red) - (vI-green)) * oOvMx;
+                }
+
+                static const float radiansPerHueUnit = (2.0f * (float)M_PI) / 6.0f;
+                float hueAngle = hue * radiansPerHueUnit;
+                
+                ++runningAverageHuePixelCount;
+
+                if(runningAverageHuePixelCount != 1.0f) {
+                    // With a little help from:
+                    // http://en.wikipedia.org/wiki/Mean_of_circular_quantities
+                    float sinRunningAverageHueAngle = sinf(runningAverageHueAngle);
+                    float cosRunningAverageHueAngle = cosf(runningAverageHueAngle);
+                    float oneOverRunningAverageCount = 1.0f / runningAverageHuePixelCount;
+                    runningAverageHueAngle = atan2f(sinRunningAverageHueAngle + (sinf(hueAngle) - sinRunningAverageHueAngle) * oneOverRunningAverageCount,
+                                                    cosRunningAverageHueAngle + (cosf(hueAngle) - cosRunningAverageHueAngle) * oneOverRunningAverageCount);
                 } else {
                     runningAverageHueAngle = hueAngle;
                 }
+            } else {
+                saturation = 0.0f;
             }
             
+            ++runningAverageSaturationPixelCount;
+            if(runningAverageSaturationPixelCount != 1.0f) {
+                runningAverageSaturation = runningAverageSaturation + ((saturation - runningAverageSaturation ) / runningAverageSaturationPixelCount);
+            } else {
+                runningAverageSaturation = saturation;
+            }
+
             ++pixelCount;
         }
     }
 
-    NSLog(@"Hue angle is %f, saturation %f", runningAverageHueAngle / (2.0f * (float)M_PI), runningAverageSaturation);
-    NSLog(@"Max Hue: %f, Min Hue:%f", minHueAngle / (2.0f * (float)M_PI), maxHueAngle / (2.0f * (float)M_PI));
+    THLog(@"Hue angle is %f, saturation %f", runningAverageHueAngle / (2.0f * (float)M_PI), runningAverageSaturation);
     
+#if 0
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(screenshotBitmap, screenshotBitmap, capacity, CGDataProviderFreeMallocedBufferCallback);
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGImageRef newImageRef = CGImageCreate(_backingWidth, _backingHeight,
+                                           8, 32, 4 * _backingWidth, 
+                                           colorSpace, 
+                                           kCGBitmapByteOrderDefault | kCGImageAlphaLast, 
+                                           dataProvider, NULL, YES, kCGRenderingIntentDefault);
+    CGDataProviderRelease(dataProvider);
+    CGColorSpaceRelease(colorSpace);
+    
+    [UIImagePNGRepresentation([UIImage imageWithCGImage:newImageRef]) writeToFile:@"/tmp/blankpage.png" atomically:NO];
+    
+    CGImageRelease(newImageRef);
+#else    
     free(screenshotBitmap);
+#endif
     
     // Will free alphaMaskBitmap when it's done with it.
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(alphaMaskBitmap, alphaMaskBitmap, alphaMaskBitmapCapacity, CGDataProviderFreeMallocedBufferCallback);
@@ -974,7 +1005,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     CGImageRelease(alphaMaskCGImage);
     
     if(averageColor) {
-        if(!runningHueAveragePixelCount) {
+        if(!runningAverageHuePixelCount) {
             *averageColor = [UIColor whiteColor];
         } else {
             *averageColor = [UIColor colorWithHue:runningAverageHueAngle / (2.0f * (float)M_PI)
@@ -982,7 +1013,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
                                        brightness:1.0f 
                                             alpha:1.0f];
         }
-        
+#if 0
         UIGraphicsBeginImageContext(pixelPageRect.size);
         CGContextRef context = UIGraphicsGetCurrentContext();
         CGContextSetFillColorWithColor(context, (*averageColor).CGColor);
@@ -990,6 +1021,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
         CGContextDrawImage(context, CGRectMake(0, 0, pixelPageRect.size.width, pixelPageRect.size.height), ret.CGImage);
         [UIImagePNGRepresentation(UIGraphicsGetImageFromCurrentImageContext()) writeToFile:@"/tmp/mask.png" atomically:NO];
         UIGraphicsEndImageContext();
+#endif
     }
     
     return ret;

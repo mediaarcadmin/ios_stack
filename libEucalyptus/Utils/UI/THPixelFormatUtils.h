@@ -15,3 +15,7 @@ void convertPremultipliedRGBABitmapToNonpremultipliedRGBA4444Bitmap(void *premul
 void convertRGBABitmapToRGB565Bitmap(void *RGBABitmap, 
                                      size_t RGBABitmapByteSize,
                                      void *RGB565BitmapOut);
+
+void convertRGBABitmapToRGB555InRGB565Bitmap(void *RGBABitmap, 
+                                             size_t RGBABitmapByteSize,
+                                             void *RGB565BitmapOut);
