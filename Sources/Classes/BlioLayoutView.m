@@ -328,11 +328,21 @@
         if(self.selector.tracking) {
             [self.selector setSelectedRange:nil];
         }
+		
+		BOOL firstLayout = NO;
+		if (CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
+			firstLayout = YES;
+		}
+		
 		self.pageSize = newSize;
         // Perform this after a delay in order to give time for layoutSubviews 
         // to be called on the pageTurningView before we start the zoom
         // (Ick!).
         [self performSelector:@selector(zoomForNewPageAnimatedWithNumberThunk:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.0f];;
+		
+		if (firstLayout) {
+			[self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.0f];
+		}
     }
 }
 
@@ -1165,7 +1175,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
-	if (self.pageTurningView) {
+	if (self.pageTurningView && !CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
 		if (!overlay) {
 			overlay = [[UIView alloc] init];
 			overlay.frame = self.pageTurningView.bounds;
