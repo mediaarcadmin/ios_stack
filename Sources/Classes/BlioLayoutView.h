@@ -63,6 +63,9 @@
 	
 	NSMutableArray *mediaViews;
 	NSMutableArray *webViews;
+	
+	UIImage *pageAlphaMask;
+	UIColor *pageMultiplyColor;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;

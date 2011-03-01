@@ -52,6 +52,8 @@
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
 @property (nonatomic, retain) NSMutableArray *mediaViews;
 @property (nonatomic, retain) NSMutableArray *webViews;
+@property (nonatomic, readonly, retain) UIImage *pageAlphaMask;
+@property (nonatomic, readonly, retain) UIColor *pageMultiplyColor;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -90,6 +92,8 @@
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
 
+- (void)updateOverlay;
+- (void)clearOverlayCaches;
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange;
 - (void)hideOverlay;
 - (void)showOverlay;
@@ -113,6 +117,8 @@
 @synthesize overlay;
 @synthesize mediaViews;
 @synthesize webViews;
+@synthesize pageAlphaMask;
+@synthesize pageMultiplyColor;
 
 - (void)dealloc {
 	
@@ -163,6 +169,9 @@
 	self.prevZone = nil;
 	self.nextZone = nil;
 	self.pageZone = nil;
+	
+	[pageAlphaMask release], pageAlphaMask = nil;
+	[pageMultiplyColor release], pageMultiplyColor = nil;
         
     [super dealloc];
 }
@@ -335,6 +344,7 @@
     }
 	self.temporaryHighlightRange = nil;
 	[self hideOverlay];
+	[self clearOverlayCaches];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -351,12 +361,7 @@
 		[aSelector release];
 	}
 	
-	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
-		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
-	} else {
-		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
-	}
-	
+	[self updateOverlay];
 	[self showOverlay];
 }
 
@@ -446,11 +451,7 @@
 	self.selector.selectedRange = nil;
 	self.accessibilityElements = nil;
 	
-	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
-		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
-	} else {
-		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
-	}
+	[self updateOverlay];
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
@@ -459,6 +460,9 @@
         [self.pageTurningView setNeedsDraw];
         self.pageTexture = aPageTexture;
         self.pageTextureIsDark = isDarkIn;
+		
+		[self clearOverlayCaches];
+		[self updateOverlay];
     }
 }
 
@@ -1163,12 +1167,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
 	if (self.pageTurningView) {
 		if (!overlay) {
-            CGRect frame = self.pageTurningView.bounds;
-            frame.origin.x += frame.size.width / 4.0f;
-            frame.size.width /= 2.0f;
-            frame.origin.y += frame.size.height / 4.0f;
-            frame.size.height /= 2.0f;
-
 			overlay = [[UIView alloc] init];
 			overlay.frame = self.pageTurningView.bounds;
 			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -1199,7 +1197,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
 			
 			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
-            
+						
 			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
 				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
 				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
@@ -1217,21 +1215,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				
 				CAReplicatorLayer *replicatorLayer = (CAReplicatorLayer *)blendView.layer;
 				replicatorLayer.instanceCount = 1;
-				//replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.0f].CGColor;
-				//replicatorLayer.instanceColor = [UIColor colorWithRed:1.000 green:0.938 blue:0.868 alpha:1.000].CGColor;
-								
-                UIColor *pageMultiplyColor = nil;
-                [self.pageTurningView pagesAlphaMaskGetAverageColor:&pageMultiplyColor];
-				replicatorLayer.instanceColor = pageMultiplyColor.CGColor;
-
-                
+				replicatorLayer.instanceColor = self.pageMultiplyColor.CGColor;
+				
 				if ([controlType isEqualToString:@"WebBrowser"]) {
 										
 							
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
 					
-					//UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
 					UIWebView *webView = [[UIWebView alloc] initWithFrame:blendView.bounds];
 
 					webView.delegate = self;
@@ -1257,23 +1248,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				
 					 
 				[overlay addSubview:blendView];
-				//overlay.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.5f];
-//				
-//				CALayer *alphaLayer = [CALayer layer];
-//				alphaLayer.contents = (id)alphaMask.CGImage;
-//				alphaLayer.contentsGravity = kCAGravityResizeAspect;
-//				alphaLayer.opaque = NO;
-//				alphaLayer.frame = overlay.frame;
-//				//alphaLayer.contentsRect = CGRectMake(0.1, 0.1, 0.9, 0.4);
-//				alphaLayer.masksToBounds = YES;
-//				[overlay.layer addSublayer:alphaLayer];
-				//UIImageView *alphaView = [[UIImageView alloc] initWithImage:alphaMask];
-//				alphaView.backgroundColor = [UIColor clearColor];
-//				alphaView.clipsToBounds = YES;
-//				alphaView.contentMode = UIViewContentModeTopLeft;
-//				alphaView.layer.contentsRect
-//				alphaView.frame = blendView.frame;
-//				[overlay addSubview:alphaView];
 				
 				CFRelease(encodedString);
 			}
@@ -1282,16 +1256,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
                 alphaMaskLayer.frame = overlay.bounds;
                 alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
-                
-                UIImage *alphaMask = [self.pageTurningView pagesAlphaMaskGetAverageColor:&(UIColor *){nil}];
-                
+                                
                 CALayer *alphaLayer = [CALayer layer];
                 alphaLayer.backgroundColor = [UIColor clearColor].CGColor;
-                alphaLayer.contents = (id)alphaMask.CGImage;
+                alphaLayer.contents = (id)self.pageAlphaMask.CGImage;
                 alphaLayer.contentsGravity = kCAGravityResize;
                 alphaLayer.opaque = NO;
                 alphaLayer.frame = overlay.bounds;
-                //alphaLayer.opacity = 0.72f;
                 alphaMaskLayer.path = maskPath;
                 CGPathRelease(maskPath);
                 alphaLayer.mask = alphaMaskLayer;
@@ -1302,8 +1273,39 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
-//#pragma mark -
-//#pragma mark UIWebViewDelegate
+- (UIColor *)pageMultiplyColor {
+	if (!pageMultiplyColor) {
+		[self.pageTurningView pagesAlphaMaskGetAverageColor:&pageMultiplyColor];
+		[pageMultiplyColor retain];
+	}
+	
+	return pageMultiplyColor;
+}	
+
+- (UIImage *)pageAlphaMask {
+	if (!pageAlphaMask) {
+		pageAlphaMask = [self.pageTurningView pagesAlphaMaskGetAverageColor:&(UIColor *){nil}];
+		[pageAlphaMask retain];
+	}
+	
+	return pageAlphaMask;
+}
+
+- (void)updateOverlay {
+	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
+	} else {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
+	}
+}
+
+- (void)clearOverlayCaches {
+	[pageAlphaMask release], pageAlphaMask = nil;
+	[pageMultiplyColor release], pageMultiplyColor = nil;
+}
+
+#pragma mark -
+#pragma mark UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)aWebView {
 	NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
