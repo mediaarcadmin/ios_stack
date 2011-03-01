@@ -90,7 +90,6 @@
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
 
-- (NSArray *)enhancedContentForPage:(NSInteger)page;
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange;
 - (void)hideOverlay;
 - (void)showOverlay;
@@ -766,40 +765,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
 	
 	[self freezeOverlayContents];
-	//UIImage *overlayImage = [self generateSnapshotForOverlay];
-	NSArray *positionedContexts = [self overlayPositionedContexts];
-	UIImage *pageScreenShot = [self.pageTurningView screenshot];
-	
-	if ([positionedContexts count]) {
-		CGSize size = self.bounds.size;
-		if(UIGraphicsBeginImageContextWithOptions != nil) {
-			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
-		} else {
-			UIGraphicsBeginImageContext(size);
-		}
-		
-		CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
-		[pageScreenShot drawAtPoint:CGPointZero];
-		
-		for (THPositionedCGContext *positionedContext in positionedContexts) {
-			CGContextRef overlayContext = [positionedContext CGContext];
-						
-			CGImageRef overlayImage = CGBitmapContextCreateImage(overlayContext);
-			
-			CGRect rect = CGRectZero;
-			rect.origin = positionedContext.origin;
-			rect.size = CGSizeMake(CGImageGetWidth(overlayImage), CGImageGetHeight(overlayImage));
-			
-			CGContextDrawImage(UIGraphicsGetCurrentContext(), rect, overlayImage);
-			CGImageRelease(overlayImage);
-		}
-		
-		UIImage *composite = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
-		return composite;
-	} else {
-		return pageScreenShot;
-	}
+	[self.pageTurningView overlayPageAtIndex:self.pageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContexts]];
+
+	return [self.pageTurningView screenshot];
 }
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
@@ -1108,31 +1076,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark EnhancedContent
 
-- (NSArray *)enhancedContentForPage:(NSInteger)page {
-	
-	return nil;
-    
-    [enhancedContentCacheLock lock];
-    
-    NSArray *enhancedContentArray = [self.enhancedContentCache objectForKey:[NSNumber numberWithInt:page]];
-    
-    if (nil == enhancedContentArray) {
-        if (nil == self.enhancedContentCache) {
-            self.enhancedContentCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
-        }
-        
-        NSArray *enhancedContent = [self.dataSource enhancedContentForPage:page];
-        if (enhancedContent != nil) {
-            [self.enhancedContentCache setObject:enhancedContent forKey:[NSNumber numberWithInt:page]];
-        }
-        enhancedContentArray = [self.enhancedContentCache objectForKey:[NSNumber numberWithInt:page]];
-    }
-    
-    [enhancedContentCacheLock unlock];
-    
-    return enhancedContentArray;
-}
-
 - (void)hideOverlay 
 {
 	[overlay setHidden:YES];
@@ -1161,9 +1104,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	[overlayViews addObjectsFromArray:self.webViews];
 	
 	CGFloat scale = 1;
-	
-	if ([self respondsToSelector:@selector(contentScaleFactor)]) {
-		scale = [self contentScaleFactor];
+		
+	if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+		scale = [[UIScreen mainScreen] scale];
 	}
 				 
 	for (UIView *view in overlayViews) {
@@ -1174,14 +1117,22 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		size.width *= scale;
 		size.height *= scale;
 		
-		CGPoint origin = viewFrame.origin;
+		CGAffineTransform pageTransform;
+		
+		if (CGRectContainsRect(self.pageTurningView.leftPageFrame, viewFrame)) {
+			pageTransform = [self pageTurningViewTransformForPageAtIndex:self.pageTurningView.leftPageIndex offsetOrigin:YES applyZoom:NO];
+		} else {
+			pageTransform = [self pageTurningViewTransformForPageAtIndex:self.pageTurningView.rightPageIndex offsetOrigin:YES applyZoom:NO];
+		}
+		
+		CGPoint origin = CGPointMake(viewFrame.origin.x - pageTransform.tx, viewFrame.origin.y - pageTransform.ty);
 		origin.x *= scale;
 		origin.y *= scale;
 
-		size_t width  = size.width;
-		size_t height = size.height;
-		size_t bytesPerRow = 4 * width;
-		size_t totalBytes = bytesPerRow * height;
+		NSInteger width  = size.width;
+		NSInteger height = size.height;
+		NSInteger bytesPerRow = 4 * width;
+		NSInteger totalBytes = bytesPerRow * height;
 		
 		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 		
@@ -1192,12 +1143,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		CGColorSpaceRelease(colorSpace);
 		
 		CGContextScaleCTM(bitmapContext, 1, -1);
-		CGContextTranslateCTM(bitmapContext, 0, -view.bounds.size.height);
-		//CGContextTranslateCTM(bitmapContext, -origin.x, -view.bounds.size.height - origin.y);
+		CGContextTranslateCTM(bitmapContext, 0, -height);
 		
-		CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
+		
+		//CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
+		CGContextScaleCTM(bitmapContext, scale, scale);
 		[view.layer renderInContext:bitmapContext];
-		//[overlay.layer renderInContext:bitmapContext];
 		
 		THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
 		[positionedContexts addObject:positionedContext];
@@ -1210,7 +1161,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
-	NSLog(@"updateOverlayForPagesInRange %@", NSStringFromRange(pageRange));
 	if (self.pageTurningView) {
 		if (!overlay) {
             CGRect frame = self.pageTurningView.bounds;
