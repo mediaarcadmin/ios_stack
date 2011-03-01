@@ -1729,7 +1729,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 {    
     EucPageTurningPageContentsInformation *pageContentsInformation = nil;
     for(NSUInteger i = 0; i < sizeof(_pageContentsInformation) / sizeof(EucPageTurningPageContentsInformation *); ++i) {
-        if(pageIndex == _pageContentsInformation[i].pageIndex) {
+        if(_pageContentsInformation[i] && (pageIndex == _pageContentsInformation[i].pageIndex)) {
             pageContentsInformation = _pageContentsInformation[i];
             break;
         }
