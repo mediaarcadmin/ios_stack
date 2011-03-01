@@ -74,7 +74,8 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 - (void)_prepareForTurnForwards:(BOOL)forwards;
 
 - (void)_drawViewIncludingPageContent:(BOOL)includePageContent
-                          intoBuffer:(GLvoid *)screenshotBuffer;
+                          intoBuffer:(GLvoid *)screenshotBuffer
+                       getPixelFormat:(GLint *)pixelFormatOut;
 - (void)_retextureForPanAndZoom;
 - (void)_scheduleRetextureForPanAndZoom;
 - (void)_cancelRetextureForPanAndZoom;
@@ -788,17 +789,25 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 
     void *newBitmap = malloc(capacity);
 
+    GLint pixelFormat = 0;
     [self _drawViewIncludingPageContent:YES
-                             intoBuffer:newBitmap];
+                             intoBuffer:newBitmap
+                         getPixelFormat:&pixelFormat];
 
     // Will free the data when it is done with it.
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(newBitmap, newBitmap, capacity, CGDataProviderFreeMallocedBufferCallback);
 
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGBitmapInfo bitmapInfo;
+    if(pixelFormat == GL_BGRA_EXT) {
+        bitmapInfo = kCGBitmapByteOrder32Little | kCGImageAlphaFirst;
+    } else /* pixelFormat == GL_RGBA */ {
+        bitmapInfo = kCGBitmapByteOrder32Big| kCGImageAlphaLast;
+    }    
     CGImageRef newImageRef = CGImageCreate(_backingWidth, _backingHeight,
                                            8, 32, 4 * _backingWidth, 
                                            colorSpace, 
-                                           kCGBitmapByteOrderDefault | kCGImageAlphaLast, 
+                                           bitmapInfo, 
                                            dataProvider, NULL, YES, kCGRenderingIntentDefault);
     CGDataProviderRelease(dataProvider);
     CGColorSpaceRelease(colorSpace);
@@ -831,14 +840,29 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 {
     size_t capacity = _backingWidth * _backingHeight * 4;
     
+    GLint pixelFormat = 0;
     uint32_t *screenshotBitmap = malloc(capacity);
     
     CATransform3D _zoomMatrixWas = _zoomMatrix;
     _zoomMatrix = CATransform3DIdentity;
     [self _drawViewIncludingPageContent:NO
-                             intoBuffer:screenshotBitmap];
+                             intoBuffer:screenshotBitmap
+                         getPixelFormat:&pixelFormat];
     _zoomMatrix = _zoomMatrixWas;
     
+    uint32_t redMask, redShift;
+    uint32_t greenMask, greenShift;
+    uint32_t blueMask, blueShift;
+    
+    if(pixelFormat == GL_BGRA_EXT) {
+        redMask = 0x00ff0000; redShift = 16;
+        greenMask = 0x0000ff00; greenShift = 8;
+        blueMask = 0x000000ff; blueShift = 0;
+    } else /* pixelFormat == GL_RGBA */ {
+        redMask = 0x000000ff; redShift = 0;
+        greenMask = 0x0000ff00; greenShift = 8;
+        blueMask = 0x00ff0000; blueShift = 16;
+    }
     
     CGRect pageRect;
     if(_twoUp) {
@@ -868,8 +892,9 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     
     off_t pixelCount = 0;
     
-    float runningAverageHuePixelCount = 0.0f;
-    float runningAverageHueAngle = 0.0f;
+    uint32_t runningAverageHuePixelCount = 0;
+    float runningAverageHueAngleSin = 0.0f;
+    float runningAverageHueAngleCos = 0.0f;
     
     float runningAverageSaturationPixelCount = 0.0f;
     float runningAverageSaturation = 0.0f;
@@ -880,14 +905,14 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     // on HSV.
     uint32_t *alphaMaskBitmapCursor = alphaMaskBitmap;
     for(off_t y = yLimit - 1; y >= yStart; --y) {
-        uint32_t *screenshotRow = screenshotBitmap + _backingWidth * y;
+        uint32_t *screenshotRowCursor = screenshotBitmap + _backingWidth * y;
         for(off_t x = xStart; x < xLimit; ++x) {
-            uint32_t pixel = screenshotRow[x];
+            uint32_t pixel = *(screenshotRowCursor++);
             
-            int32_t blue =  (pixel & 0x00ff0000) >> 16;
-            int32_t green = (pixel & 0x0000ff00) >> 8;
-            int32_t red =   (pixel & 0x000000ff);
-            
+            int32_t red =   (pixel & redMask) >> redShift;
+            int32_t green = (pixel & greenMask) >> greenShift;
+            int32_t blue =  (pixel & blueMask) >> blueShift;
+
             int32_t vI = MAX(MAX(red, green), blue);
                         
             alphaMaskBitmapCursor[pixelCount] = (((uint8_t)0xFF - (uint8_t)vI) << 24);
@@ -922,38 +947,36 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
                 
                 float vMx = (float)(vI - xI);
                 saturation = vMx / (float)vI;
-                const float oOvMx = 1.0f / vMx;
-                float hue;
+                
+                static const float radiansPerHueUnit = (2.0f * (float)M_PI) / 6.0f;
+                
+                const float oOvMx = radiansPerHueUnit / vMx;
+                float hueAngle;
                 if(red == xI) {
-                    hue = 3.0f + ((vI-green) - (vI-blue)) * oOvMx;
+                    hueAngle = (radiansPerHueUnit * 3.0f) + ((vI-green) - (vI-blue)) * oOvMx;
                 } else if (green == xI) {
-                    hue = 5.0f + ((vI-blue) - (vI-red)) * oOvMx;
+                    hueAngle = (radiansPerHueUnit * 5.0f) + ((vI-blue) - (vI-red)) * oOvMx;
                 } else {
-                    hue = 1.0f + ((vI-red) - (vI-green)) * oOvMx;
+                    hueAngle = (radiansPerHueUnit * 1.0f) + ((vI-red) - (vI-green)) * oOvMx;
                 }
 
-                static const float radiansPerHueUnit = (2.0f * (float)M_PI) / 6.0f;
-                float hueAngle = hue * radiansPerHueUnit;
-                
                 ++runningAverageHuePixelCount;
-
-                if(runningAverageHuePixelCount != 1.0f) {
+                if(runningAverageHuePixelCount == 1)  {
+                    runningAverageHueAngleSin = sinf(hueAngle);
+                    runningAverageHueAngleCos = sinf(hueAngle);
+                } else {
                     // With a little help from:
                     // http://en.wikipedia.org/wiki/Mean_of_circular_quantities
-                    float sinRunningAverageHueAngle = sinf(runningAverageHueAngle);
-                    float cosRunningAverageHueAngle = cosf(runningAverageHueAngle);
-                    float oneOverRunningAverageCount = 1.0f / runningAverageHuePixelCount;
-                    runningAverageHueAngle = atan2f(sinRunningAverageHueAngle + (sinf(hueAngle) - sinRunningAverageHueAngle) * oneOverRunningAverageCount,
-                                                    cosRunningAverageHueAngle + (cosf(hueAngle) - cosRunningAverageHueAngle) * oneOverRunningAverageCount);
-                } else {
-                    runningAverageHueAngle = hueAngle;
+                    float oneOverRunningAverageCount = 1.0f / (float)runningAverageHuePixelCount;
+                    runningAverageHueAngleSin = runningAverageHueAngleSin + ((sinf(hueAngle) - runningAverageHueAngleSin) * oneOverRunningAverageCount);
+                    runningAverageHueAngleCos = runningAverageHueAngleCos + ((cosf(hueAngle) - runningAverageHueAngleCos) * oneOverRunningAverageCount);
                 }
             } else {
                 saturation = 0.0f;
             }
             
             ++runningAverageSaturationPixelCount;
-            if(runningAverageSaturationPixelCount != 1.0f) {
+            if(pixelCount) {
                 runningAverageSaturation = runningAverageSaturation + ((saturation - runningAverageSaturation ) / runningAverageSaturationPixelCount);
             } else {
                 runningAverageSaturation = saturation;
@@ -963,16 +986,24 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
         }
     }
 
+    float runningAverageHueAngle = atan2f(runningAverageHueAngleSin, runningAverageHueAngleCos);
+
     THLog(@"Hue angle is %f, saturation %f", runningAverageHueAngle / (2.0f * (float)M_PI), runningAverageSaturation);
     
 #if 0
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(screenshotBitmap, screenshotBitmap, capacity, CGDataProviderFreeMallocedBufferCallback);
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGBitmapInfo bitmapInfo;
+    if(pixelFormat == GL_BGRA_EXT) {
+        bitmapInfo = kCGBitmapByteOrder32Little | kCGImageAlphaFirst;
+    } else /* pixelFormat == GL_RGBA */ {
+        bitmapInfo = kCGBitmapByteOrder32Big| kCGImageAlphaLast;
+    }        
     CGImageRef newImageRef = CGImageCreate(_backingWidth, _backingHeight,
                                            8, 32, 4 * _backingWidth, 
                                            colorSpace, 
-                                           kCGBitmapByteOrderDefault | kCGImageAlphaLast, 
+                                           bitmapInfo, 
                                            dataProvider, NULL, YES, kCGRenderingIntentDefault);
     CGDataProviderRelease(dataProvider);
     CGColorSpaceRelease(colorSpace);
@@ -1924,11 +1955,12 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 - (void)drawView
 {
     [super drawView];
-    [self _drawViewIncludingPageContent:YES intoBuffer:NULL];
+    [self _drawViewIncludingPageContent:YES intoBuffer:NULL getPixelFormat:NULL];
 }
 
 - (void)_drawViewIncludingPageContent:(BOOL)includePageContent
                            intoBuffer:(GLvoid *)screenshotBuffer
+                       getPixelFormat:(GLint *)pixelFormatOut
 {        
     EucPageTurningViewAnimationFlags animationFlags = self.animationFlags;
     
@@ -2342,7 +2374,18 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     }        
     
     if(screenshotBuffer) {
-        glReadPixels(0, 0, _backingWidth, _backingHeight, GL_RGBA, GL_UNSIGNED_BYTE, screenshotBuffer);
+        GLint implementationColorReadFormat = 0;
+        glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &implementationColorReadFormat);
+        GLint implementationColorReadType = 0;
+        glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE, &implementationColorReadType);
+        
+        if(implementationColorReadFormat == GL_BGRA_EXT && implementationColorReadType == GL_UNSIGNED_BYTE) {
+            glReadPixels(0, 0, _backingWidth, _backingHeight, implementationColorReadFormat, implementationColorReadType, screenshotBuffer);
+            *pixelFormatOut = GL_BGRA_EXT;
+        } else {
+            glReadPixels(0, 0, _backingWidth, _backingHeight, GL_RGBA, GL_UNSIGNED_BYTE, screenshotBuffer);
+            *pixelFormatOut = GL_RGBA;
+        }
     } else {
         glBindRenderbuffer(GL_RENDERBUFFER, _viewRenderbuffer);
         [eaglContext presentRenderbuffer:GL_RENDERBUFFER];
