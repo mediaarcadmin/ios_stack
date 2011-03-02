@@ -709,6 +709,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)aPageTurningView
 {
+	NSUInteger pageIndex = aPageTurningView.focusedPageIndex;
+    if(self.pageNumber != pageIndex + 1) {
+		if (!suppressHistoryAfterTurn) {
+			[self pushCurrentBookmarkPoint];
+		}
+        self.pageNumber = pageIndex + 1;
+    }
+	
 	[self showOverlay];
 }
 
@@ -729,14 +737,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
 {
-    NSUInteger pageIndex = aPageTurningView.focusedPageIndex;
-    if(self.pageNumber != pageIndex + 1) {
-		if (!suppressHistoryAfterTurn) {
-			[self pushCurrentBookmarkPoint];
-		}
-        self.pageNumber = pageIndex + 1;
-    }
-	
+    	
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
 	suppressHistoryAfterTurn = NO;
