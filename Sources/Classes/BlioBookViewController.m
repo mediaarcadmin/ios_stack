@@ -2033,17 +2033,25 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [(BlioSpeedReadView*)bookView setColor:newColor];
     } else {
         if([bookView respondsToSelector:(@selector(setPageTexture:isDark:))]) {
+            // First we look for a low-res texture to save RAM.
+            // TODO: Remove this.  This was added th allow us to 
+            // use 32-bit page textures so that Quark overlays would composit
+            // correctly on flat pages (using 16-bit page textures exposes
+            // too many rounding errors when used alongside our multiply +
+            // alpha mask trick).
+            
             UIImage *pageTexture = nil;
             if([[UIDevice currentDevice] compareSystemVersion:@"4"] >= NSOrderedSame) {
-                pageTexture = [UIImage imageNamed:kBlioFontPageTextureNamesArray[newColor]];
+                NSString *name = kBlioFontPageTextureNamesArray[newColor];
+                name = [[[name stringByDeletingPathExtension] stringByAppendingString:@"-quartered"] stringByAppendingPathExtension:[name pathExtension]];
+                pageTexture = [UIImage imageNamed:name];
+                if(!pageTexture) {
+                    NSString *name = kBlioFontPageTextureNamesArray[newColor];
+                    pageTexture = [UIImage imageNamed:name];
+                }
             } else {
-                // First we look for a low-res texture to save RAM.
-                // TODO: Remove this.  This was added th allow us to 
-                // use 32-bit page textures so that Quark overlays would composit
-                // correctly on flat pages (using 16-bit page textures exposes
-                // too many rounding errors when used alongside our multiply +
-                // alpha mask trick).
-                NSString *name = [kBlioFontPageTextureNamesArray[newColor] stringByAppendingString:@"-quartered"];
+                NSString *name = kBlioFontPageTextureNamesArray[newColor];
+                name = [[[name stringByDeletingPathExtension] stringByAppendingString:@"-quartered"] stringByAppendingPathExtension:[name pathExtension]];
                 if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                     // iPad doesn't automatically look for its own images with < OS 4.0
                     name = [[[name stringByDeletingPathExtension] stringByAppendingString:@"~ipad"] stringByAppendingPathExtension:[name pathExtension]];
