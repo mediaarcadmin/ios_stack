@@ -2037,13 +2037,30 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if([[UIDevice currentDevice] compareSystemVersion:@"4"] >= NSOrderedSame) {
                 pageTexture = [UIImage imageNamed:kBlioFontPageTextureNamesArray[newColor]];
             } else {
-                // iPad doesn't automatically look for its own images with < OS 4.0
+                // First we look for a low-res texture to save RAM.
+                // TODO: Remove this.  This was added th allow us to 
+                // use 32-bit page textures so that Quark overlays would composit
+                // correctly on flat pages (using 16-bit page textures exposes
+                // too many rounding errors when used alongside our multiply +
+                // alpha mask trick).
+                NSString *name = [kBlioFontPageTextureNamesArray[newColor] stringByAppendingString:@"-quartered"];
                 if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                    NSString *name = kBlioFontPageTextureNamesArray[newColor];
+                    // iPad doesn't automatically look for its own images with < OS 4.0
                     name = [[[name stringByDeletingPathExtension] stringByAppendingString:@"~ipad"] stringByAppendingPathExtension:[name pathExtension]];
                     pageTexture = [UIImage imageNamed:name];
                 } else {
-                    pageTexture = [UIImage imageNamed:kBlioFontPageTextureNamesArray[newColor]];
+                    pageTexture = [UIImage imageNamed:name];
+                }
+                
+                if(!pageTexture) {
+                    NSString *name = kBlioFontPageTextureNamesArray[newColor];
+                    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                        // iPad doesn't automatically look for its own images with < OS 4.0
+                        name = [[[name stringByDeletingPathExtension] stringByAppendingString:@"~ipad"] stringByAppendingPathExtension:[name pathExtension]];
+                        pageTexture = [UIImage imageNamed:name];
+                    } else {
+                        pageTexture = [UIImage imageNamed:name];
+                    }
                 }
             }
             [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];

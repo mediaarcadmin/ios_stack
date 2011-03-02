@@ -1414,7 +1414,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     _blankPageTexture = [self _createTextureFrom:pageTexture
                               invertingLuminance:isDark
                       equalizingHueAndSaturation:YES 
-                                   storeAsRGB565:YES];
+                                   storeAsRGB565:NO];
     _pageTextureIsDark = isDark;
 }
 
@@ -1881,6 +1881,8 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
             }
         }
     }
+    
+    [self drawView];
 }
 
 #pragma mark -
