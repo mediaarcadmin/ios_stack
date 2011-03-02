@@ -1140,8 +1140,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		}
 		
 		CGPoint origin = CGPointMake(viewFrame.origin.x - pageTransform.tx, viewFrame.origin.y - pageTransform.ty);
-		origin.x *= scale;
-		origin.y *= scale;
+		origin.x = roundf(origin.x * scale);
+		origin.y = roundf(origin.y * scale);
 
 		NSInteger width  = size.width;
 		NSInteger height = size.height;
@@ -1216,12 +1216,19 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
 				
 								
-				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
+                CGRect blendViewFrame = CGRectApplyAffineTransform(displayRegion, pageTransform);
+                blendViewFrame.origin.x = roundf(blendViewFrame.origin.x);
+                blendViewFrame.origin.y = roundf(blendViewFrame.origin.y);
+                blendViewFrame.size.width = roundf(blendViewFrame.size.width);
+                blendViewFrame.size.height = roundf(blendViewFrame.size.height);
+				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
 				
+                CGRect blendViewBounds = blendView.bounds;
+                
                 if(!maskPath) {
                     maskPath = CGPathCreateMutable();
                 }
-				CGPathAddRect(maskPath, NULL, blendView.frame);
+				CGPathAddRect(maskPath, NULL, blendViewFrame);
 				
 				CAReplicatorLayer *replicatorLayer = (CAReplicatorLayer *)blendView.layer;
 				replicatorLayer.instanceCount = 1;
@@ -1233,7 +1240,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
 					
-					UIWebView *webView = [[UIWebView alloc] initWithFrame:blendView.bounds];
+					UIWebView *webView = [[UIWebView alloc] initWithFrame:blendViewBounds];
 
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
@@ -1249,7 +1256,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
 					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
-					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:blendView.bounds contentURL:videoURL];
+					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:blendViewBounds contentURL:videoURL];
 					[blendView.layer addSublayer:mediaView.layer];
 					[self.mediaViews addObject:mediaView];
 					[mediaView release];
@@ -1270,7 +1277,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 CALayer *alphaLayer = [CALayer layer];
                 alphaLayer.backgroundColor = [UIColor clearColor].CGColor;
                 alphaLayer.contents = (id)self.pageAlphaMask.CGImage;
-                alphaLayer.contentsGravity = kCAGravityResize;
+                alphaLayer.contentsGravity = kCAGravityResizeAspect;
                 alphaLayer.opaque = NO;
                 alphaLayer.frame = overlay.bounds;
                 alphaMaskLayer.path = maskPath;
