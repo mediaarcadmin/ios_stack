@@ -836,59 +836,32 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     return ret;
 }
 
-- (UIImage *)pagesAlphaMaskGetAverageColor:(UIColor **)averageColor
+- (void)extractAlphaMaskFromBitmap:(uint32_t *)screenshotBitmap 
+                              size:(CGSize)size
+                       pixelFormat:(GLint)pixelFormat 
+             toRGBAAlphaMaskBitmap:(uint32_t *)alphaMaskBitmap 
+                           subRect:(CGRect)subRect 
+                   averageColorOut:(UIColor **)averageColorOut
+                              flip:(BOOL)flip
 {
-    size_t capacity = _backingWidth * _backingHeight * 4;
-    
-    GLint pixelFormat = 0;
-    uint32_t *screenshotBitmap = malloc(capacity);
-    
-    CATransform3D _zoomMatrixWas = _zoomMatrix;
-    _zoomMatrix = CATransform3DIdentity;
-    [self _drawViewIncludingPageContent:NO
-                             intoBuffer:screenshotBitmap
-                         getPixelFormat:&pixelFormat];
-    _zoomMatrix = _zoomMatrixWas;
+    off_t xStart = subRect.origin.x;
+    off_t xLimit = subRect.origin.x + subRect.size.width;
+    off_t yStart = subRect.origin.y;
+    off_t yLimit = subRect.origin.y + subRect.size.height;
     
     uint32_t redMask, redShift;
     uint32_t greenMask, greenShift;
     uint32_t blueMask, blueShift;
     
     if(pixelFormat == GL_BGRA_EXT) {
-        redMask = 0x00ff0000; redShift = 16;
+        redMask   = 0x00ff0000; redShift   = 16;
         greenMask = 0x0000ff00; greenShift = 8;
-        blueMask = 0x000000ff; blueShift = 0;
+        blueMask  = 0x000000ff; blueShift  = 0;
     } else /* pixelFormat == GL_RGBA */ {
-        redMask = 0x000000ff; redShift = 0;
+        redMask   = 0x000000ff; redShift   = 0;
         greenMask = 0x0000ff00; greenShift = 8;
-        blueMask = 0x00ff0000; blueShift = 16;
-    }
-    
-    CGRect pageRect;
-    if(_twoUp) {
-        pageRect = CGRectUnion(_unzoomedLeftPageFrame, _unzoomedRightPageFrame);
-    } else {
-        pageRect = _unzoomedRightPageFrame;
+        blueMask  = 0x00ff0000; blueShift  = 16;
     }    
-    
-    CGFloat scaleFactor;
-    if([self respondsToSelector:@selector(contentScaleFactor)]) {
-        scaleFactor = self.contentScaleFactor;
-    } else {
-        scaleFactor = 1.0f;
-    }    
-    CGRect pixelPageRect = CGRectMake(roundf(pageRect.origin.x * scaleFactor),
-                                      roundf(pageRect.origin.y * scaleFactor),
-                                      roundf(pageRect.size.width * scaleFactor),
-                                      roundf(pageRect.size.height * scaleFactor));
-    
-    off_t xStart = pixelPageRect.origin.x;
-    off_t xLimit = pixelPageRect.origin.x + pixelPageRect.size.width;
-    off_t yStart = pixelPageRect.origin.y;
-    off_t yLimit = pixelPageRect.origin.y + pixelPageRect.size.height;
-    
-    size_t alphaMaskBitmapCapacity = pixelPageRect.size.width * pixelPageRect.size.height * 4;
-    uint32_t *alphaMaskBitmap = malloc(alphaMaskBitmapCapacity);
     
     off_t pixelCount = 0;
     
@@ -904,22 +877,30 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     // Thanks to http://www.alvyray.com/Papers/hsv2rgb.htm for the explanation
     // on HSV.
     uint32_t *alphaMaskBitmapCursor = alphaMaskBitmap;
-    for(off_t y = yLimit - 1; y >= yStart; --y) {
-        uint32_t *screenshotRowCursor = screenshotBitmap + _backingWidth * y;
+    uint32_t intWidth = size.width;
+    for(off_t y = yStart; y < yLimit; ++y) {
+        uint32_t *screenshotRowCursor;
+        if(flip) {
+            screenshotRowCursor = screenshotBitmap + intWidth * (yLimit - y);
+        } else {
+            screenshotRowCursor = screenshotBitmap + intWidth * y;
+        }
         for(off_t x = xStart; x < xLimit; ++x) {
             uint32_t pixel = *(screenshotRowCursor++);
             
-            int32_t red =   (pixel & redMask) >> redShift;
+            int32_t red   = (pixel & redMask)   >> redShift;
             int32_t green = (pixel & greenMask) >> greenShift;
-            int32_t blue =  (pixel & blueMask) >> blueShift;
+            int32_t blue  = (pixel & blueMask)  >> blueShift;
 
-            int32_t vI = MAX(MAX(red, green), blue);
-                        
-            alphaMaskBitmapCursor[pixelCount] = (((uint8_t)0xFF - (uint8_t)vI) << 24);
+            //int32_t xI = MIN(MIN(red, green), blue);
+            int32_t xI = red < green ? (red < blue ? red : blue) : (green < blue ? green : blue);
+
+            //int32_t vI = MAX(MAX(red, green), blue);
+            int32_t vI = red > green ? (red > blue ? red : blue) : (green > blue ? green : blue);
             
-            int32_t xI = MIN(MIN(red, green), blue);
-            float saturation;
+            alphaMaskBitmapCursor[pixelCount] = (((uint8_t)0xFF - (uint8_t)vI) << 24);
 
+            float saturation;
             if(xI != vI) {     
                 /*
                  static const float scaleToFloatFator  = (1.0f / 255.0f);
@@ -986,9 +967,90 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
         }
     }
 
-    float runningAverageHueAngle = atan2f(runningAverageHueAngleSin, runningAverageHueAngleCos);
+    if(!runningAverageHuePixelCount) {
+        *averageColorOut = [UIColor colorWithRed:1.0f
+                                           green:1.0f
+                                            blue:1.0f
+                                           alpha:1.0f];
+    } else {
+        float hueAngle = atan2f(runningAverageHueAngleSin, runningAverageHueAngleCos);
+        THLog(@"Hue angle is %f, saturation %f", hueAngle / (1.0f / (2.0f * (float)M_PI)), runningAverageSaturation);
+        float h = hueAngle * (1.0f / (2.0f * (float)M_PI)) * 6.0f;
+        float s = runningAverageSaturation;
+        float v = 1.0f;
+        
+        float i = floorf(h);
+        uint32_t ii = (uint32_t)i;
+        
+        float f = h - i;
+        if(!(ii & 0x1)) {  // if i is even
+            f = 1.0f - f;
+        }
+        float m = v * (1.0f - s);
+        float n = v * (1.0f - s * f);
+        
+        CGFloat rgb[3];
+        switch(ii) {
+            default:
+            case 6:
+            case 0: rgb[0] = v, rgb[1] = n, rgb[2] = m; break;
+            case 1: rgb[0] = n, rgb[1] = v, rgb[2] = m; break;
+            case 2: rgb[0] = m, rgb[1] = v, rgb[2] = n; break;
+            case 3: rgb[0] = m, rgb[1] = n, rgb[2] = v; break;
+            case 4: rgb[0] = n, rgb[1] = m, rgb[2] = v; break;
+            case 5: rgb[0] = v, rgb[1] = m, rgb[2] = n; break;
+        }        
+        
+        *averageColorOut = [UIColor colorWithRed:rgb[0]
+                                           green:rgb[1]
+                                            blue:rgb[2]
+                                           alpha:1.0f];
+    }
+}
 
-    THLog(@"Hue angle is %f, saturation %f", runningAverageHueAngle / (2.0f * (float)M_PI), runningAverageSaturation);
+- (UIImage *)pagesAlphaMaskGetAverageColor:(UIColor **)averageColorOut
+{
+    size_t capacity = _backingWidth * _backingHeight * 4;
+    
+    GLint pixelFormat = 0;
+    uint32_t *screenshotBitmap = malloc(capacity);
+    
+    CATransform3D _zoomMatrixWas = _zoomMatrix;
+    _zoomMatrix = CATransform3DIdentity;
+    [self _drawViewIncludingPageContent:NO
+                             intoBuffer:screenshotBitmap
+                         getPixelFormat:&pixelFormat];
+    _zoomMatrix = _zoomMatrixWas;
+    
+    CGRect pageRect;
+    if(_twoUp) {
+        pageRect = CGRectUnion(_unzoomedLeftPageFrame, _unzoomedRightPageFrame);
+    } else {
+        pageRect = _unzoomedRightPageFrame;
+    }    
+    
+    CGFloat scaleFactor;
+    if([self respondsToSelector:@selector(contentScaleFactor)]) {
+        scaleFactor = self.contentScaleFactor;
+    } else {
+        scaleFactor = 1.0f;
+    }    
+    CGRect pixelPageRect = CGRectMake(roundf(pageRect.origin.x * scaleFactor),
+                                      roundf(pageRect.origin.y * scaleFactor),
+                                      roundf(pageRect.size.width * scaleFactor),
+                                      roundf(pageRect.size.height * scaleFactor));
+    
+    size_t alphaMaskBitmapCapacity = pixelPageRect.size.width * pixelPageRect.size.height * 4;
+    uint32_t *alphaMaskBitmap = malloc(alphaMaskBitmapCapacity);
+        
+    UIColor *averageColor;
+    [self extractAlphaMaskFromBitmap:screenshotBitmap 
+                                size:CGSizeMake(_backingWidth, _backingHeight)
+                         pixelFormat:pixelFormat 
+               toRGBAAlphaMaskBitmap:alphaMaskBitmap 
+                             subRect:pixelPageRect
+                     averageColorOut:&averageColor
+                                flip:YES];
     
 #if 0
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(screenshotBitmap, screenshotBitmap, capacity, CGDataProviderFreeMallocedBufferCallback);
@@ -1035,19 +1097,12 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     }
     CGImageRelease(alphaMaskCGImage);
     
-    if(averageColor) {
-        if(!runningAverageHuePixelCount) {
-            *averageColor = [UIColor whiteColor];
-        } else {
-            *averageColor = [UIColor colorWithHue:runningAverageHueAngle / (2.0f * (float)M_PI)
-                                       saturation:runningAverageSaturation
-                                       brightness:1.0f 
-                                            alpha:1.0f];
-        }
+    if(averageColorOut) {
+        *averageColorOut = averageColor;
 #if 0
         UIGraphicsBeginImageContext(pixelPageRect.size);
         CGContextRef context = UIGraphicsGetCurrentContext();
-        CGContextSetFillColorWithColor(context, (*averageColor).CGColor);
+        CGContextSetFillColorWithColor(context, (*averageColorOut).CGColor);
         CGContextFillRect(context, CGRectMake(0, 0, pixelPageRect.size.width, pixelPageRect.size.height));
         CGContextDrawImage(context, CGRectMake(0, 0, pixelPageRect.size.width, pixelPageRect.size.height), ret.CGImage);
         [UIImagePNGRepresentation(UIGraphicsGetImageFromCurrentImageContext()) writeToFile:@"/tmp/mask.png" atomically:NO];
@@ -1060,6 +1115,72 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 
 #pragma mark -
 #pragma mark Texture Management
+
+- (void)_equalizeHueAndSaturationOfRGBABitmap:(uint32_t *)RGBABitmap
+                                         size:(CGSize)size
+{
+    {
+        CGDataProviderRef dataProvider = CGDataProviderCreateWithData(RGBABitmap, RGBABitmap, 4 * size.width * size.height, NULL);
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        CGImageRef newImageRef = CGImageCreate(size.width, size.height,
+                                               8, 32, 4 * size.width, 
+                                               colorSpace, 
+                                               kCGBitmapByteOrder32Big| kCGImageAlphaLast, 
+                                               dataProvider, NULL, YES, kCGRenderingIntentDefault);
+        CGDataProviderRelease(dataProvider);
+        CGColorSpaceRelease(colorSpace);
+        
+        [UIImagePNGRepresentation([UIImage imageWithCGImage:newImageRef]) writeToFile:@"/tmp/blankpage1.png" atomically:NO];
+    }
+    
+    UIColor *averageColor = nil;
+    [self extractAlphaMaskFromBitmap:RGBABitmap
+                                size:size 
+                         pixelFormat:GL_RGB 
+               toRGBAAlphaMaskBitmap:RGBABitmap 
+                             subRect:CGRectMake(0, 0, size.width, size.height)
+                     averageColorOut:&averageColor
+                                flip:NO];
+
+    const CGFloat *c = CGColorGetComponents(averageColor.CGColor);
+    
+    uint32_t red = roundf(c[0] * 255.0f);
+    if(red > 255) red = 255;
+    
+    uint32_t green = roundf(c[1] * 255.0f);
+    if(green > 255) green = 255;
+    
+    uint32_t blue = roundf(c[2] * 255.0f);
+    if(blue > 255) blue = 255;
+    
+    uint32_t *pixelCursor = RGBABitmap;
+    uint32_t *pixelCursorLimit = RGBABitmap + (int32_t)size.width * (int32_t)size.height;
+
+    while(pixelCursor < pixelCursorLimit) {
+        uint32_t darkenBy = 255 - ((*pixelCursor >> 24) & 0xff);
+        uint32_t newPixel = 0xff000000 |
+                            (((blue * darkenBy)  / 255) << 16) |
+                            (((green * darkenBy) / 255) << 8) |
+                            (((red * darkenBy)   / 255));
+        *pixelCursor = newPixel;
+        ++pixelCursor;
+    }
+    
+    {
+        CGDataProviderRef dataProvider = CGDataProviderCreateWithData(RGBABitmap, RGBABitmap, 4 * size.width * size.height, NULL);
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+        CGImageRef newImageRef = CGImageCreate(size.width, size.height,
+                                               8, 32, 4 * size.width, 
+                                               colorSpace, 
+                                               kCGBitmapByteOrder32Big| kCGImageAlphaLast, 
+                                               dataProvider, NULL, YES, kCGRenderingIntentDefault);
+        CGDataProviderRelease(dataProvider);
+        CGColorSpaceRelease(colorSpace);
+
+        [UIImagePNGRepresentation([UIImage imageWithCGImage:newImageRef]) writeToFile:@"/tmp/blankpage2.png" atomically:NO];
+    }
+}
+
 
 - (void)_invertLuminanceOfRGBABitmap:(void *)RGBABitmap
                           byteLength:(size_t)byteLength
@@ -1197,7 +1318,10 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     return textureRef;
 }
 
-- (GLuint)_createTextureFrom:(id)viewOrImage invertingLuminance:(BOOL)invertingLuminance storeAsRGB565:(BOOL)storeAsRGB565
+- (GLuint)_createTextureFrom:(id)viewOrImage 
+          invertingLuminance:(BOOL)invertingLuminance
+  equalizingHueAndSaturation:(BOOL)equalizingHueAndSaturation
+               storeAsRGB565:(BOOL)storeAsRGB565
 {   
     CGFloat scaleFactor = 1.0f;
     CGSize scaledSize, rawSize;
@@ -1257,6 +1381,9 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
         CGContextDrawImage(textureContext, CGRectMake(0, 0, scaledSize.width, scaledSize.height), ((UIImage *)viewOrImage).CGImage);
     }
         
+    if(equalizingHueAndSaturation) {
+        [self _equalizeHueAndSaturationOfRGBABitmap:textureData size:scaledSize];
+    }    
     if(invertingLuminance) {
         [self _invertLuminanceOfRGBABitmap:textureData byteLength:bufferLength];
     }
@@ -1275,13 +1402,14 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 
 - (GLuint)_createTextureFrom:(id)viewOrImage
 {
-    return [self _createTextureFrom:viewOrImage invertingLuminance:NO storeAsRGB565:NO];
+    return [self _createTextureFrom:viewOrImage invertingLuminance:NO equalizingHueAndSaturation:NO storeAsRGB565:NO];
 }
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
     _blankPageTexture = [self _createTextureFrom:pageTexture
                               invertingLuminance:isDark
+                      equalizingHueAndSaturation:YES 
                                    storeAsRGB565:YES];
     _pageTextureIsDark = isDark;
 }
@@ -1552,7 +1680,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
             if([_bitmapDataSource respondsToSelector:@selector(pageTurningView:fastUIImageForPageAtIndex:)]) {
                 UIImage *fastImage = [_bitmapDataSource pageTurningView:self fastUIImageForPageAtIndex:newPageIndex];
                 if(fastImage) {
-                    _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage invertingLuminance:NO storeAsRGB565:YES];
+                    _pageContentsInformation[pageOffset].texture = [self _createTextureFrom:fastImage invertingLuminance:NO equalizingHueAndSaturation:NO storeAsRGB565:YES];
                 }                
             }
         }
