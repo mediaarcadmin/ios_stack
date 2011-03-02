@@ -1275,6 +1275,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 alphaLayer.frame = overlay.bounds;
                 alphaMaskLayer.path = maskPath;
                 CGPathRelease(maskPath);
+				maskPath = nil;
                 alphaLayer.mask = alphaMaskLayer;
                 
                 [overlay.layer addSublayer:alphaLayer];
