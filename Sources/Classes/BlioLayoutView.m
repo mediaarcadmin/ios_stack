@@ -52,6 +52,8 @@
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
 @property (nonatomic, retain) NSMutableArray *mediaViews;
 @property (nonatomic, retain) NSMutableArray *webViews;
+@property (nonatomic, readonly, retain) UIImage *pageAlphaMask;
+@property (nonatomic, readonly, retain) UIColor *pageMultiplyColor;
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -90,7 +92,8 @@
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
 
-- (NSArray *)enhancedContentForPage:(NSInteger)page;
+- (void)updateOverlay;
+- (void)clearOverlayCaches;
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange;
 - (void)hideOverlay;
 - (void)showOverlay;
@@ -114,6 +117,8 @@
 @synthesize overlay;
 @synthesize mediaViews;
 @synthesize webViews;
+@synthesize pageAlphaMask;
+@synthesize pageMultiplyColor;
 
 - (void)dealloc {
 	
@@ -164,6 +169,9 @@
 	self.prevZone = nil;
 	self.nextZone = nil;
 	self.pageZone = nil;
+	
+	[pageAlphaMask release], pageAlphaMask = nil;
+	[pageMultiplyColor release], pageMultiplyColor = nil;
         
     [super dealloc];
 }
@@ -320,11 +328,21 @@
         if(self.selector.tracking) {
             [self.selector setSelectedRange:nil];
         }
+		
+		BOOL firstLayout = NO;
+		if (CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
+			firstLayout = YES;
+		}
+		
 		self.pageSize = newSize;
         // Perform this after a delay in order to give time for layoutSubviews 
         // to be called on the pageTurningView before we start the zoom
         // (Ick!).
         [self performSelector:@selector(zoomForNewPageAnimatedWithNumberThunk:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.0f];;
+		
+		if (firstLayout) {
+			[self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.0f];
+		}
     }
 }
 
@@ -336,6 +354,7 @@
     }
 	self.temporaryHighlightRange = nil;
 	[self hideOverlay];
+	[self clearOverlayCaches];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -352,12 +371,7 @@
 		[aSelector release];
 	}
 	
-	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
-		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
-	} else {
-		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
-	}
-	
+	[self updateOverlay];
 	[self showOverlay];
 }
 
@@ -447,11 +461,7 @@
 	self.selector.selectedRange = nil;
 	self.accessibilityElements = nil;
 	
-	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
-		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
-	} else {
-		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
-	}
+	[self updateOverlay];
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
@@ -460,6 +470,9 @@
         [self.pageTurningView setNeedsDraw];
         self.pageTexture = aPageTexture;
         self.pageTextureIsDark = isDarkIn;
+		
+		[self clearOverlayCaches];
+		[self updateOverlay];
     }
 }
 
@@ -766,40 +779,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
 	
 	[self freezeOverlayContents];
-	//UIImage *overlayImage = [self generateSnapshotForOverlay];
-	NSArray *positionedContexts = [self overlayPositionedContexts];
-	UIImage *pageScreenShot = [self.pageTurningView screenshot];
-	
-	if ([positionedContexts count]) {
-		CGSize size = self.bounds.size;
-		if(UIGraphicsBeginImageContextWithOptions != nil) {
-			UIGraphicsBeginImageContextWithOptions(size, NO, 0);
-		} else {
-			UIGraphicsBeginImageContext(size);
-		}
-		
-		CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
-		[pageScreenShot drawAtPoint:CGPointZero];
-		
-		for (THPositionedCGContext *positionedContext in positionedContexts) {
-			CGContextRef overlayContext = [positionedContext CGContext];
-						
-			CGImageRef overlayImage = CGBitmapContextCreateImage(overlayContext);
-			
-			CGRect rect = CGRectZero;
-			rect.origin = positionedContext.origin;
-			rect.size = CGSizeMake(CGImageGetWidth(overlayImage), CGImageGetHeight(overlayImage));
-			
-			CGContextDrawImage(UIGraphicsGetCurrentContext(), rect, overlayImage);
-			CGImageRelease(overlayImage);
-		}
-		
-		UIImage *composite = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
-		return composite;
-	} else {
-		return pageScreenShot;
-	}
+	[self.pageTurningView overlayPageAtIndex:self.pageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContexts]];
+
+	return [self.pageTurningView screenshot];
 }
 
 - (NSArray *)blockIdentifiersForEucSelector:(EucSelector *)selector {
@@ -1108,31 +1090,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark EnhancedContent
 
-- (NSArray *)enhancedContentForPage:(NSInteger)page {
-	
-	return nil;
-    
-    [enhancedContentCacheLock lock];
-    
-    NSArray *enhancedContentArray = [self.enhancedContentCache objectForKey:[NSNumber numberWithInt:page]];
-    
-    if (nil == enhancedContentArray) {
-        if (nil == self.enhancedContentCache) {
-            self.enhancedContentCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
-        }
-        
-        NSArray *enhancedContent = [self.dataSource enhancedContentForPage:page];
-        if (enhancedContent != nil) {
-            [self.enhancedContentCache setObject:enhancedContent forKey:[NSNumber numberWithInt:page]];
-        }
-        enhancedContentArray = [self.enhancedContentCache objectForKey:[NSNumber numberWithInt:page]];
-    }
-    
-    [enhancedContentCacheLock unlock];
-    
-    return enhancedContentArray;
-}
-
 - (void)hideOverlay 
 {
 	[overlay setHidden:YES];
@@ -1161,9 +1118,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	[overlayViews addObjectsFromArray:self.webViews];
 	
 	CGFloat scale = 1;
-	
-	if ([self respondsToSelector:@selector(contentScaleFactor)]) {
-		scale = [self contentScaleFactor];
+		
+	if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+		scale = [[UIScreen mainScreen] scale];
 	}
 				 
 	for (UIView *view in overlayViews) {
@@ -1174,14 +1131,22 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		size.width *= scale;
 		size.height *= scale;
 		
-		CGPoint origin = viewFrame.origin;
+		CGAffineTransform pageTransform;
+		
+		if (CGRectContainsRect(self.pageTurningView.leftPageFrame, viewFrame)) {
+			pageTransform = [self pageTurningViewTransformForPageAtIndex:self.pageTurningView.leftPageIndex offsetOrigin:YES applyZoom:NO];
+		} else {
+			pageTransform = [self pageTurningViewTransformForPageAtIndex:self.pageTurningView.rightPageIndex offsetOrigin:YES applyZoom:NO];
+		}
+		
+		CGPoint origin = CGPointMake(viewFrame.origin.x - pageTransform.tx, viewFrame.origin.y - pageTransform.ty);
 		origin.x *= scale;
 		origin.y *= scale;
 
-		size_t width  = size.width;
-		size_t height = size.height;
-		size_t bytesPerRow = 4 * width;
-		size_t totalBytes = bytesPerRow * height;
+		NSInteger width  = size.width;
+		NSInteger height = size.height;
+		NSInteger bytesPerRow = 4 * width;
+		NSInteger totalBytes = bytesPerRow * height;
 		
 		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 		
@@ -1192,12 +1157,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		CGColorSpaceRelease(colorSpace);
 		
 		CGContextScaleCTM(bitmapContext, 1, -1);
-		CGContextTranslateCTM(bitmapContext, 0, -view.bounds.size.height);
-		//CGContextTranslateCTM(bitmapContext, -origin.x, -view.bounds.size.height - origin.y);
+		CGContextTranslateCTM(bitmapContext, 0, -height);
 		
-		CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
+		
+		//CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
+		CGContextScaleCTM(bitmapContext, scale, scale);
 		[view.layer renderInContext:bitmapContext];
-		//[overlay.layer renderInContext:bitmapContext];
 		
 		THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
 		[positionedContexts addObject:positionedContext];
@@ -1210,15 +1175,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
-	NSLog(@"updateOverlayForPagesInRange %@", NSStringFromRange(pageRange));
-	if (self.pageTurningView) {
+	if (self.pageTurningView && !CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
 		if (!overlay) {
-            CGRect frame = self.pageTurningView.bounds;
-            frame.origin.x += frame.size.width / 4.0f;
-            frame.size.width /= 2.0f;
-            frame.origin.y += frame.size.height / 4.0f;
-            frame.size.height /= 2.0f;
-
 			overlay = [[UIView alloc] init];
 			overlay.frame = self.pageTurningView.bounds;
 			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -1249,7 +1207,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
 			
 			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
-            
+						
 			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
 				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
 				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
@@ -1267,21 +1225,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				
 				CAReplicatorLayer *replicatorLayer = (CAReplicatorLayer *)blendView.layer;
 				replicatorLayer.instanceCount = 1;
-				//replicatorLayer.instanceColor = [UIColor colorWithRed:0.859 green:0.804 blue:0.741 alpha:1.0f].CGColor;
-				//replicatorLayer.instanceColor = [UIColor colorWithRed:1.000 green:0.938 blue:0.868 alpha:1.000].CGColor;
-								
-                UIColor *pageMultiplyColor = nil;
-                [self.pageTurningView pagesAlphaMaskGetAverageColor:&pageMultiplyColor];
-				replicatorLayer.instanceColor = pageMultiplyColor.CGColor;
-
-                
+				replicatorLayer.instanceColor = self.pageMultiplyColor.CGColor;
+				
 				if ([controlType isEqualToString:@"WebBrowser"]) {
 										
 							
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
 					
-					//UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform))];
 					UIWebView *webView = [[UIWebView alloc] initWithFrame:blendView.bounds];
 
 					webView.delegate = self;
@@ -1307,23 +1258,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				
 					 
 				[overlay addSubview:blendView];
-				//overlay.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.5f];
-//				
-//				CALayer *alphaLayer = [CALayer layer];
-//				alphaLayer.contents = (id)alphaMask.CGImage;
-//				alphaLayer.contentsGravity = kCAGravityResizeAspect;
-//				alphaLayer.opaque = NO;
-//				alphaLayer.frame = overlay.frame;
-//				//alphaLayer.contentsRect = CGRectMake(0.1, 0.1, 0.9, 0.4);
-//				alphaLayer.masksToBounds = YES;
-//				[overlay.layer addSublayer:alphaLayer];
-				//UIImageView *alphaView = [[UIImageView alloc] initWithImage:alphaMask];
-//				alphaView.backgroundColor = [UIColor clearColor];
-//				alphaView.clipsToBounds = YES;
-//				alphaView.contentMode = UIViewContentModeTopLeft;
-//				alphaView.layer.contentsRect
-//				alphaView.frame = blendView.frame;
-//				[overlay addSubview:alphaView];
 				
 				CFRelease(encodedString);
 			}
@@ -1332,16 +1266,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
                 alphaMaskLayer.frame = overlay.bounds;
                 alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
-                
-                UIImage *alphaMask = [self.pageTurningView pagesAlphaMaskGetAverageColor:&(UIColor *){nil}];
-                
+                                
                 CALayer *alphaLayer = [CALayer layer];
                 alphaLayer.backgroundColor = [UIColor clearColor].CGColor;
-                alphaLayer.contents = (id)alphaMask.CGImage;
+                alphaLayer.contents = (id)self.pageAlphaMask.CGImage;
                 alphaLayer.contentsGravity = kCAGravityResize;
                 alphaLayer.opaque = NO;
                 alphaLayer.frame = overlay.bounds;
-                //alphaLayer.opacity = 0.72f;
                 alphaMaskLayer.path = maskPath;
                 CGPathRelease(maskPath);
                 alphaLayer.mask = alphaMaskLayer;
@@ -1352,8 +1283,39 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
-//#pragma mark -
-//#pragma mark UIWebViewDelegate
+- (UIColor *)pageMultiplyColor {
+	if (!pageMultiplyColor) {
+		[self.pageTurningView pagesAlphaMaskGetAverageColor:&pageMultiplyColor];
+		[pageMultiplyColor retain];
+	}
+	
+	return pageMultiplyColor;
+}	
+
+- (UIImage *)pageAlphaMask {
+	if (!pageAlphaMask) {
+		pageAlphaMask = [self.pageTurningView pagesAlphaMaskGetAverageColor:&(UIColor *){nil}];
+		[pageAlphaMask retain];
+	}
+	
+	return pageAlphaMask;
+}
+
+- (void)updateOverlay {
+	if ([self.pageTurningView isTwoUp] && (self.pageTurningView.leftPageIndex != NSUIntegerMax)) {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.leftPageIndex, 2)];
+	} else {
+		[self updateOverlayForPagesInRange:NSMakeRange(self.pageTurningView.rightPageIndex, 1)];
+	}
+}
+
+- (void)clearOverlayCaches {
+	[pageAlphaMask release], pageAlphaMask = nil;
+	[pageMultiplyColor release], pageMultiplyColor = nil;
+}
+
+#pragma mark -
+#pragma mark UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)aWebView {
 	NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];

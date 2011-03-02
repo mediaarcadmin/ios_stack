@@ -7,7 +7,7 @@
 //
 
 #import "BlioMediaView.h"
-
+#import <QuartzCore/QuartzCore.h>
 
 @implementation BlioMediaView
 
@@ -108,7 +108,10 @@
 -(void)didReceiveBlioMediaViewWillPlayMovieNotification:(NSNotification*)notification {
 	if ([notification object] != self && isActive == YES) {
 		if (moviePlayerController.playbackState != MPMoviePlaybackStatePaused) {
+			[CATransaction begin];
+			[CATransaction disableActions];
 			[moviePlayerController pause];
+			[CATransaction commit];
 		}
 		isActive = NO;
 	}
@@ -116,7 +119,10 @@
 
 -(void)pauseMediaPlayer {
 	if (moviePlayerController.playbackState != MPMoviePlaybackStatePaused) {
+		[CATransaction begin];
+		[CATransaction disableActions];
 		[moviePlayerController pause];
+		[CATransaction commit];
 	}
 	isActive = NO;
 }
