@@ -98,7 +98,8 @@
 - (void)hideOverlay;
 - (void)showOverlay;
 - (void)freezeOverlayContents;
-- (NSArray *)overlayPositionedContexts;
+- (NSArray *)overlayPositionedContextsForPageAtIndex:(NSUInteger)index;
+- (void)updatePositionedOverlayContexts;
 
 @end
 
@@ -702,7 +703,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
 	
 	[self freezeOverlayContents];
-	[aPageTurningView overlayPageAtIndex:aPageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContexts]];
+    [self updatePositionedOverlayContexts];
 	[self hideOverlay];
 }
 
@@ -779,8 +780,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
 	
 	[self freezeOverlayContents];
-	[self.pageTurningView overlayPageAtIndex:self.pageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContexts]];
-
+    [self updatePositionedOverlayContexts];
 	return [self.pageTurningView screenshot];
 }
 
@@ -1107,7 +1107,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	}
 }
 
-- (NSArray *)overlayPositionedContexts {
+- (NSArray *)overlayPositionedContextsForPageAtIndex:(NSUInteger)pageIndex {
 	
 	NSUInteger viewCount = [self.mediaViews count] + [self.webViews count];
 	
@@ -1131,46 +1131,61 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		size.width *= scale;
 		size.height *= scale;
 		
+        BOOL onCorrectPage = NO;
 		CGAffineTransform pageTransform;
-		
-		if (CGRectContainsRect(self.pageTurningView.leftPageFrame, viewFrame)) {
-			pageTransform = [self pageTurningViewTransformForPageAtIndex:self.pageTurningView.leftPageIndex offsetOrigin:YES applyZoom:NO];
+		if(pageIndex == self.pageTurningView.leftPageIndex && CGRectContainsRect(self.pageTurningView.unzoomedLeftPageFrame, viewFrame)) {
+			pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
+            onCorrectPage = YES;
 		} else {
-			pageTransform = [self pageTurningViewTransformForPageAtIndex:self.pageTurningView.rightPageIndex offsetOrigin:YES applyZoom:NO];
+			pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
+            onCorrectPage = YES;
 		}
 		
-		CGPoint origin = CGPointMake(viewFrame.origin.x - pageTransform.tx, viewFrame.origin.y - pageTransform.ty);
-		origin.x = roundf(origin.x * scale);
-		origin.y = roundf(origin.y * scale);
+        if(onCorrectPage) {
+            CGPoint origin = CGPointMake(viewFrame.origin.x - pageTransform.tx, viewFrame.origin.y - pageTransform.ty);
+            origin.x = roundf(origin.x * scale);
+            origin.y = roundf(origin.y * scale);
 
-		NSInteger width  = size.width;
-		NSInteger height = size.height;
-		NSInteger bytesPerRow = 4 * width;
-		NSInteger totalBytes = bytesPerRow * height;
-		
-		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-		
-		NSMutableData *bitmapData = [[[NSMutableData alloc] initWithCapacity:totalBytes] autorelease];
-		[bitmapData setLength:totalBytes];
-		
-		CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
-		CGColorSpaceRelease(colorSpace);
-		
-		CGContextScaleCTM(bitmapContext, 1, -1);
-		CGContextTranslateCTM(bitmapContext, 0, -height);
-		
-		
-		//CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
-		CGContextScaleCTM(bitmapContext, scale, scale);
-		[view.layer renderInContext:bitmapContext];
-		
-		THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
-		[positionedContexts addObject:positionedContext];
-	
-		CGContextRelease(bitmapContext);
+            NSInteger width  = size.width;
+            NSInteger height = size.height;
+            NSInteger bytesPerRow = 4 * width;
+            NSInteger totalBytes = bytesPerRow * height;
+            
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+            
+            NSMutableData *bitmapData = [[[NSMutableData alloc] initWithCapacity:totalBytes] autorelease];
+            [bitmapData setLength:totalBytes];
+            
+            CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
+            CGColorSpaceRelease(colorSpace);
+            
+            CGContextScaleCTM(bitmapContext, 1, -1);
+            CGContextTranslateCTM(bitmapContext, 0, -height);
+            
+            
+            //CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationNone);
+            CGContextScaleCTM(bitmapContext, scale, scale);
+            [view.layer renderInContext:bitmapContext];
+            
+            THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
+            [positionedContexts addObject:positionedContext];
+        
+            CGContextRelease(bitmapContext);
+        }
 	}
 
 	return positionedContexts;
+}
+
+- (void)updatePositionedOverlayContexts
+{
+    EucPageTurningView *aPageTurningView = self.pageTurningView;
+    if(aPageTurningView.leftPageIndex != NSUIntegerMax) {
+        [aPageTurningView overlayPageAtIndex:aPageTurningView.leftPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContextsForPageAtIndex:aPageTurningView.leftPageIndex]];
+    } 
+    if(aPageTurningView.rightPageIndex != NSUIntegerMax) {
+        [aPageTurningView overlayPageAtIndex:aPageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContextsForPageAtIndex:aPageTurningView.rightPageIndex]];
+    }
 }
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
