@@ -881,9 +881,9 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     for(off_t y = yStart; y < yLimit; ++y) {
         uint32_t *screenshotRowCursor;
         if(flip) {
-            screenshotRowCursor = screenshotBitmap + intWidth * (yLimit - y - 1);
+            screenshotRowCursor = screenshotBitmap + intWidth * (yLimit - y - 1) + xStart;
         } else {
-            screenshotRowCursor = screenshotBitmap + intWidth * y;
+            screenshotRowCursor = screenshotBitmap + intWidth * y + xStart;
         }
         for(off_t x = xStart; x < xLimit; ++x) {
             uint32_t pixel = *(screenshotRowCursor++);
