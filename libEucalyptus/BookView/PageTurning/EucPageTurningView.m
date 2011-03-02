@@ -881,7 +881,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
     for(off_t y = yStart; y < yLimit; ++y) {
         uint32_t *screenshotRowCursor;
         if(flip) {
-            screenshotRowCursor = screenshotBitmap + intWidth * (yLimit - y);
+            screenshotRowCursor = screenshotBitmap + intWidth * (yLimit - y - 1);
         } else {
             screenshotRowCursor = screenshotBitmap + intWidth * y;
         }
@@ -1119,6 +1119,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 - (void)_equalizeHueAndSaturationOfRGBABitmap:(uint32_t *)RGBABitmap
                                          size:(CGSize)size
 {
+#if 0
     {
         CGDataProviderRef dataProvider = CGDataProviderCreateWithData(RGBABitmap, RGBABitmap, 4 * size.width * size.height, NULL);
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -1132,6 +1133,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
         
         [UIImagePNGRepresentation([UIImage imageWithCGImage:newImageRef]) writeToFile:@"/tmp/blankpage1.png" atomically:NO];
     }
+#endif
     
     UIColor *averageColor = nil;
     [self extractAlphaMaskFromBitmap:RGBABitmap
@@ -1166,6 +1168,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
         ++pixelCursor;
     }
     
+#if 0
     {
         CGDataProviderRef dataProvider = CGDataProviderCreateWithData(RGBABitmap, RGBABitmap, 4 * size.width * size.height, NULL);
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -1179,6 +1182,7 @@ static void CGDataProviderFreeMallocedBufferCallback(void *info, const void *dat
 
         [UIImagePNGRepresentation([UIImage imageWithCGImage:newImageRef]) writeToFile:@"/tmp/blankpage2.png" atomically:NO];
     }
+#endif
 }
 
 
