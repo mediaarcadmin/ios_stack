@@ -106,16 +106,19 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
     }
 } 	
 
+- (void)bindToDRMLicense {
+	if ([self.drmSessionManager bindToLicense]) {
+		decryptionAvailable = YES;
+		if (reportingStatus != kBlioXPSProviderReportingStatusComplete) {
+			reportingStatus = kBlioXPSProviderReportingStatusRequired;
+		}
+	}	
+}
+
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
-		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
-        if ([drmSessionManager bindToLicense]) {
-            decryptionAvailable = YES;
-            if (reportingStatus != kBlioXPSProviderReportingStatusComplete) {
-                reportingStatus = kBlioXPSProviderReportingStatusRequired;
-            }
-        }
-    }
+		drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:self.bookID];
+	}
 	return drmSessionManager;
 }
 
@@ -1165,7 +1168,8 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         BOOL decrypted = NO;
         if (!decryptionAvailable) {
             // Check if this is first run
-            if (self.drmSessionManager && decryptionAvailable) {
+			[self bindToDRMLicense];
+            if (decryptionAvailable) {
                 if ([self.drmSessionManager decryptData:componentData]) {
                     decrypted = YES;
                 }
