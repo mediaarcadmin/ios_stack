@@ -25,6 +25,7 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/THUIDeviceAdditions.h>
 #import "BlioWelcomeViewController.h"
+#import "BlioXPSProvider.h"
 
 @interface BlioAppAppDelegate ()
 
@@ -337,8 +338,16 @@ static void *background_init_thread(void * arg) {
 		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
 		[fetchRequest release];
         if(!errorExecute && results.count == 1) {
-            [libraryController openBook:[results objectAtIndex:0]];
-            openedBook = YES;
+			if ([[results objectAtIndex:0] isEncrypted]) {
+				if ([[results objectAtIndex:0] decryptionIsAvailable]) {
+					[libraryController openBook:[results objectAtIndex:0]];
+					openedBook = YES;
+				}
+			}
+			else {
+				[libraryController openBook:[results objectAtIndex:0]];
+				openedBook = YES;
+			}
         }
     }
     
