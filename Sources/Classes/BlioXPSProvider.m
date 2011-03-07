@@ -120,8 +120,6 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 }
 
 - (BOOL)decryptionIsAvailable {
-	// TODO? move bindToLicense out of initialization to here?
-	// Problem: needed for pagination too
 	return self.drmSessionManager && decryptionAvailable;
 }
 

@@ -25,7 +25,6 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/THUIDeviceAdditions.h>
 #import "BlioWelcomeViewController.h"
-#import "BlioXPSProvider.h"
 
 @interface BlioAppAppDelegate ()
 
