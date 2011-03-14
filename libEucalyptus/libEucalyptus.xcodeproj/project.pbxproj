@@ -4842,14 +4842,13 @@
 				DSTROOT = /tmp/libEucalyptus.dst;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
 				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
 				PRODUCT_NAME = Eucalyptus;
 				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -4858,13 +4857,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DSTROOT = /tmp/libEucalyptus.dst;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
 				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
 				PRODUCT_NAME = Eucalyptus;
 				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};
@@ -4885,10 +4884,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_LDFLAGS = "-ObjC";
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.2;
+				SDKROOT = iphoneos4.3;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macos";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Debug;
@@ -4909,10 +4907,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_LDFLAGS = "-ObjC";
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.2;
+				SDKROOT = iphoneos4.3;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macos";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Release;
@@ -4936,6 +4933,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = TransitionTest;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -4957,6 +4955,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = TransitionTest;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -4977,6 +4976,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = TransitionTest;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Beta;
 		};
@@ -4996,6 +4996,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = TransitionTest;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = AppStore;
 		};
@@ -5456,6 +5457,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = CSSTest;
 				SDKROOT = macosx10.6;
+				SUPPORTED_PLATFORMS = macos;
 			};
 			name = Debug;
 		};
@@ -5483,7 +5485,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = CSSTest;
 				SDKROOT = macosx10.6;
-				VALID_ARCHS = "armv7 armv6 x86_64";
+				SUPPORTED_PLATFORMS = macos;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -5511,7 +5513,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = CSSTest;
 				SDKROOT = macosx10.6;
-				VALID_ARCHS = "armv7 armv6 x86_64";
+				SUPPORTED_PLATFORMS = macos;
 			};
 			name = Beta;
 		};
@@ -5538,7 +5540,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = CSSTest;
 				SDKROOT = macosx10.6;
-				VALID_ARCHS = "armv7 armv6 x86_64";
+				SUPPORTED_PLATFORMS = macos;
 			};
 			name = AppStore;
 		};
@@ -5630,6 +5632,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Paginate;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -5650,6 +5653,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Paginate;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -5669,6 +5673,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Paginate;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Beta;
 		};
@@ -5687,6 +5692,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Paginate;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = AppStore;
 		};
@@ -5756,10 +5762,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_LDFLAGS = "-ObjC";
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.2;
+				SDKROOT = iphoneos4.3;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macos";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Beta;
@@ -5769,13 +5774,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DSTROOT = /tmp/libEucalyptus.dst;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
 				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
 				PRODUCT_NAME = Eucalyptus;
 				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Beta;
 		};
@@ -5826,10 +5831,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_LDFLAGS = "-ObjC";
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.2;
+				SDKROOT = iphoneos4.3;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macos";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = AppStore;
@@ -5839,13 +5843,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DSTROOT = /tmp/libEucalyptus.dst;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
 				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
 				PRODUCT_NAME = Eucalyptus;
 				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = AppStore;
 		};
@@ -5896,10 +5900,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_LDFLAGS = "-ObjC";
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.2;
+				SDKROOT = iphoneos4.3;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macos";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv6 i386 ppc ppc64 ppc7400 ppc970 x86_64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Distribution;
@@ -5909,13 +5912,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DSTROOT = /tmp/libEucalyptus.dst;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libEucalyptus_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
 				PRIVATE_HEADERS_FOLDER_PATH = include/libEucalyptus;
 				PRODUCT_NAME = Eucalyptus;
 				PUBLIC_HEADERS_FOLDER_PATH = include/libEucalyptus;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Distribution;
 		};
@@ -6070,6 +6073,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = TransitionTest;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				ZERO_LINK = NO;
 			};
 			name = Distribution;
@@ -6091,6 +6095,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = Paginate;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				ZERO_LINK = NO;
 			};
 			name = Distribution;
@@ -6119,6 +6124,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = CSSTest;
 				SDKROOT = macosx10.6;
+				SUPPORTED_PLATFORMS = macos;
 				ZERO_LINK = NO;
 			};
 			name = Distribution;
