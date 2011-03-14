@@ -4,7 +4,7 @@
 
 #import "EucCSSInternal.h"
 
-#import "EucCSSXMLTree.h"
+#import "EucCSSXHTMLTree.h"
 #import "EucCSSXHTMLTreeNode.h"
 
 #import "EucCSSIntermediateDocument.h"
@@ -34,16 +34,16 @@ int main (int argc, const char * argv[]) {
 
     THProcessLoggingDefaults();
             
-    NSString *xmlPath = [NSString stringWithUTF8String:argv[3]];
+    NSString *xmlPath = [NSString stringWithUTF8String:argv[2]];
     NSData *xmlData = [[NSData alloc] initWithContentsOfMappedFile:xmlPath];
-    EucCSSXMLTree *xmlTree = [[EucCSSXMLTree alloc] initWithData:xmlData xmlTreeNodeClass:[EucCSSXHTMLTreeNode class]];
+    EucCSSXMLTree *xmlTree = [[EucCSSXHTMLTree alloc] initWithData:xmlData];
     [xmlData release];
     
     SimpleEucCSSIntermediateDocumentDataProvider *dataSource = [[SimpleEucCSSIntermediateDocumentDataProvider alloc] init];
     EucCSSIntermediateDocument *document = [[EucCSSIntermediateDocument alloc] initWithDocumentTree:xmlTree
                                                                                              forURL:[NSURL fileURLWithPath:xmlPath]
                                                                                          dataSource:dataSource
-                                                                                       baseCSSPaths:[NSArray arrayWithObject:[NSString stringWithUTF8String:argv[2]]]
+                                                                                       baseCSSPaths:[NSArray arrayWithObject:[NSString stringWithUTF8String:argv[1]]]
                                                                                        userCSSPaths:nil];
     
     EucCSSLayouter *layouter = [[EucCSSLayouter alloc] init];
@@ -79,25 +79,26 @@ int main (int argc, const char * argv[]) {
                                                               returningCompleted:&completed
                                                                      scaleFactor:1.0f];
         
-        CGContextSaveGState(renderingContext);
-        const CGFloat white[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };
-        CGContextSetFillColor(renderingContext, white);
-        CGContextFillRect(renderingContext, frame);
-        CGContextRestoreGState(renderingContext);
-        
-        [renderer render:positionedBlock atPoint:CGPointZero];
+        if(positionedBlock) {
+            CGContextSaveGState(renderingContext);
+            const CGFloat white[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };
+            CGContextSetFillColor(renderingContext, white);
+            CGContextFillRect(renderingContext, frame);
+            CGContextRestoreGState(renderingContext);
             
-        CGImageRef image = CGBitmapContextCreateImage(renderingContext);
-        
-        CGImageDestinationRef pngDestination = CGImageDestinationCreateWithURL((CFURLRef)[NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/rendered%ld.png", (long)pageCount]], 
-                                                                               kUTTypePNG, 
-                                                                               1, 
-                                                                               NULL);
-        CGImageDestinationAddImage(pngDestination, image, NULL);
-        CGImageDestinationFinalize(pngDestination);
-        CFRelease(pngDestination);
-        CGImageRelease(image);
-        
+            [renderer render:positionedBlock atPoint:CGPointZero];
+                
+            CGImageRef image = CGBitmapContextCreateImage(renderingContext);
+            
+            CGImageDestinationRef pngDestination = CGImageDestinationCreateWithURL((CFURLRef)[NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/rendered%ld.png", (long)pageCount]], 
+                                                                                   kUTTypePNG, 
+                                                                                   1, 
+                                                                                   NULL);
+            CGImageDestinationAddImage(pngDestination, image, NULL);
+            CGImageDestinationFinalize(pngDestination);
+            CFRelease(pngDestination);
+            CGImageRelease(image);
+        }
         [pool drain];
     }      
     [renderer release];
