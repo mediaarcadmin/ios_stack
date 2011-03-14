@@ -198,8 +198,10 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
 {
     if(animationFlags != _animationFlags) {
         EucPageTurningViewAnimationFlags oldAnimationFlags = _animationFlags;        
-        if(((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))
-           && !((oldAnimationFlags & EucPageTurningViewAnimationFlagsDragTurn) || (oldAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))) {
+        if(((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || 
+            (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))
+           && !((oldAnimationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
+                (oldAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))) {
             if([_delegate respondsToSelector:@selector(pageTurningViewWillBeginPageTurn:)]) {
                 [_delegate pageTurningViewWillBeginPageTurn:self];   
             }
@@ -208,8 +210,10 @@ static CGFloat easeInOut (CGFloat t, CGFloat b, CGFloat c) {
         self.animating = (animationFlags != EucPageTurningViewAnimationFlagsNone);
         _animationFlags = animationFlags;
         
-        if(((oldAnimationFlags & EucPageTurningViewAnimationFlagsDragTurn) || (oldAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))
-           && !((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))) {
+        if(((oldAnimationFlags & EucPageTurningViewAnimationFlagsDragTurn) ||
+            (oldAnimationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))
+           && !((animationFlags & EucPageTurningViewAnimationFlagsDragTurn) || 
+                (animationFlags & EucPageTurningViewAnimationFlagsAutomaticTurn))) {
             if([_delegate respondsToSelector:@selector(pageTurningViewDidEndPageTurn:)]) {
                 [_delegate pageTurningViewDidEndPageTurn:self];   
             }
