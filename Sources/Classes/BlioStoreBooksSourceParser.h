@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <GDataBooks.h>
+#import <GData/GDataBooks.h>
 
 @interface BlioStoreParsedCategory : NSObject {
     NSString *title;
