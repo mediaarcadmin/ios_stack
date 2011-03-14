@@ -218,6 +218,10 @@
     return [self hasManifestValueForKey:BlioManifestDrmHeaderKey];
 }
 
+- (BOOL)decryptionIsAvailable {
+    return [[self xpsProvider] decryptionIsAvailable];
+}
+
 - (BOOL)firstLayoutPageOnLeft {
     return [self hasManifestValueForKey:BlioManifestFirstLayoutPageOnLeftKey];
 }

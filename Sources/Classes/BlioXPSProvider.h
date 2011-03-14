@@ -53,6 +53,7 @@ typedef enum {
 - (NSData *)dataForComponentAtPath:(NSString *)path;
 - (BOOL)componentExistsAtPath:(NSString *)path;
 - (void)reportReadingIfRequired;
+- (BOOL)decryptionIsAvailable;
 
 @end
 

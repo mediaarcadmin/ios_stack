@@ -108,15 +108,19 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
-		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]];
-        if ([drmSessionManager bindToLicense]) {
-            decryptionAvailable = YES;
-            if (reportingStatus != kBlioXPSProviderReportingStatusComplete) {
-                reportingStatus = kBlioXPSProviderReportingStatusRequired;
-            }
-        }
-    }
+		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]]; 
+		if ([drmSessionManager bindToLicense]) { 
+			decryptionAvailable = YES; 
+			if (reportingStatus != kBlioXPSProviderReportingStatusComplete) { 
+				reportingStatus = kBlioXPSProviderReportingStatusRequired; 
+			} 
+		} 
+	} 
 	return drmSessionManager;
+}
+
+- (BOOL)decryptionIsAvailable {
+	return self.drmSessionManager && decryptionAvailable;
 }
 
 - (void)dealloc {  
@@ -1165,7 +1169,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         BOOL decrypted = NO;
         if (!decryptionAvailable) {
             // Check if this is first run
-            if (self.drmSessionManager && decryptionAvailable) {
+			if (self.drmSessionManager && decryptionAvailable) {
                 if ([self.drmSessionManager decryptData:componentData]) {
                     decrypted = YES;
                 }
