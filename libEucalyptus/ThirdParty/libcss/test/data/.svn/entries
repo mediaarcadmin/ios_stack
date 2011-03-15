@@ -1,49 +1,0 @@
-10
-
-dir
-11345
-svn://svn.netsurf-browser.org/trunk/libcss/test/data
-svn://svn.netsurf-browser.org
-
-
-
-2010-12-30T14:56:19.553615Z
-11173
-tlsa
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-d004b94f-0d10-0410-95b5-d60e4a4a7a9a
-
-select
-dir
-
-css
-dir
-
-lex
-dir
-
-number
-dir
-
-parse
-dir
-
-parse2
-dir
-
-csdetect
-dir
-
