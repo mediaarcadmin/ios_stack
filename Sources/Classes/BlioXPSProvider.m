@@ -1443,11 +1443,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
     return request;
 }
 
-/* our main loading routine.  This is where we do most of our processing
- for our class.  In this case, all we are doing is taking the path part
- of the url and rendering it in 36 point system font as a jpeg file.  The
- interesting part is that we create the jpeg entirely in memory and return
- it back for rendering in the webView.  */
 - (void)startLoading {
 	
 	
@@ -1457,7 +1452,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 	
 	NSManagedObjectID *bookID = nil;
 	
-	if (encodedBookID) {
+	if (encodedBookID && ![encodedBookID isEqualToString:@"undefined"]) {
 		CFStringRef bookURIStringRef = CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault, (CFStringRef)encodedBookID, CFSTR(""), kCFStringEncodingUTF8);		
 		NSURL *bookURI = [NSURL URLWithString:(NSString *)bookURIStringRef];
 		CFRelease(bookURIStringRef);
