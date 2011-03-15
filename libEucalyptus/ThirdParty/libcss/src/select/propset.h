@@ -1841,9 +1841,9 @@ static inline css_error set_page_break_before(
 
 	return CSS_OK;
 }
-#undef PAGE_BREAK_BEFORE_INDEX 0
-#undef PAGE_BREAK_BEFORE_SHIFT 0
-#undef PAGE_BREAK_BEFORE_MASK 0x7
+#undef PAGE_BREAK_BEFORE_INDEX
+#undef PAGE_BREAK_BEFORE_SHIFT
+#undef PAGE_BREAK_BEFORE_MASK
 
 #define PAGE_BREAK_INSIDE_INDEX 0
 #define PAGE_BREAK_INSIDE_SHIFT 6

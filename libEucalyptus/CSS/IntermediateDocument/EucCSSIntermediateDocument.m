@@ -80,7 +80,7 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
                                                                    [stylesheetData bytes],
                                                                    [stylesheetData length]);
                         if(err != CSS_NEEDDATA) {
-                            THWarn(@"Unexpected error %ld parsing stylesheet ar URL %@", err, [resolvedImportUrl absoluteString]);
+                            THWarn(@"Unexpected error %ld parsing stylesheet ar URL %@", (long)err, [resolvedImportUrl absoluteString]);
                         }
                         err = css_stylesheet_data_done(import);
                         if(err == CSS_IMPORTS_PENDING) {
@@ -219,7 +219,7 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
                                     styleContents.kind == EucCSSDocumentTreeNodeKindText);
                             
                             if(err != CSS_NEEDDATA) {
-                                THWarn(@"Unexpected error %ld parsing inline stylesheet", err);
+                                THWarn(@"Unexpected error %ld parsing inline stylesheet", (long)err);
                             }
                             
                             err = css_stylesheet_data_done(stylesheet);
@@ -269,7 +269,7 @@ css_error EucResolveURL(void *pw, const char *base, lwc_string *rel, lwc_string 
                                                                            [stylesheetData length]);
                                 
                                 if(err != CSS_NEEDDATA) {
-                                    THWarn(@"Unexpected error %ld parsing stylesheet at URL %@", err, [stylesheetUrl absoluteString]);
+                                    THWarn(@"Unexpected error %ld parsing stylesheet at URL %@", (long)err, [stylesheetUrl absoluteString]);
                                 }
                                 
                                 err = css_stylesheet_data_done(stylesheet);

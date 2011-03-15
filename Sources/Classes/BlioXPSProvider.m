@@ -1181,7 +1181,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         }
         
         if (!decrypted) {
-			NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
+			NSLog(@"Error whilst decrypting data at path %@ for bookID: %@", componentPath,self.bookID);
             return nil;
         }
     }

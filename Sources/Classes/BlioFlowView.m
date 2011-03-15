@@ -12,6 +12,7 @@
 #import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import "BlioParagraphSource.h"
+#import "BlioBUpeBook.h"
 #import "levenshtein_distance.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
@@ -62,7 +63,7 @@
                 [bookManager checkInTextFlowForBookWithID:bookID];
             }            
             
-            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:_eucBook])) {
+            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:(EucBUpeBook *)_eucBook])) {
                 _eucBookView.delegate = self;
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;

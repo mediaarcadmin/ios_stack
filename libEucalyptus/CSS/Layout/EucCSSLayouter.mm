@@ -142,7 +142,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
             element = pageBreakReverseIterator->second;
             elementAbsoluteFrame = element.absoluteFrame;        
             
-            THLogVerbose(@"[%ld, %ld, %ld], %@, %@", point.nodeKey, point.word, point.element, NSStringFromCGRect(elementAbsoluteFrame), NSStringFromClass([element class]));
+            THLogVerbose(@"[%ld, %ld, %ld], %@, %@", (long)point.nodeKey, (long)point.word, (long)point.element, NSStringFromCGRect(elementAbsoluteFrame), NSStringFromClass([element class]));
             
             ++pageBreakReverseIterator;
         } 
@@ -160,7 +160,7 @@ pageBreaksDisallowedByRuleD:(vector<EucCSSLayoutPoint> *)pageBreaksDisallowedByR
         
         if(THWillLogVerbose()) {
             EucCSSLayoutPoint point = pageBreakReverseIterator->first;
-            THLogVerbose(@"[%ld, %ld, %ld], %f, %@, %@", point.nodeKey, point.word, point.element, maxY, NSStringFromCGRect(elementAbsoluteFrame), NSStringFromClass([element class]));
+            THLogVerbose(@"[%ld, %ld, %ld], %f, %@, %@", (long)point.nodeKey, (long)point.word, (long)point.element, maxY, NSStringFromCGRect(elementAbsoluteFrame), NSStringFromClass([element class]));
         }
         if(elementAbsoluteFrame.origin.y <= maxY) {
             // The origin of the element after the break matches is the 

@@ -108,7 +108,7 @@ static void BlioTextFlowFlowTreeStartElementHandler(void *ctx, const XML_Char *n
             NSLog(@"Unexpectedly seeing <Words> node as non-paragraph-child node - ignoring.");
         }
     } else {
-        NSLog(@"Unexpectedly seeing <%s> node - ignoring.");
+        NSLog(@"Unexpectedly seeing <%s> node - ignoring.", name);
     }
 }
 

@@ -24,7 +24,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 @property (nonatomic, retain) NSManagedObjectID *bookID;
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, retain) id currentParagraphID;
-@property (nonatomic) uint32_t currentWordOffset;
+@property (nonatomic) int32_t currentWordOffset;
 @property (nonatomic, retain) NSArray *textArray;
 
 @end
