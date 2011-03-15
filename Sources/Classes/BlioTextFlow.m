@@ -337,7 +337,7 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         
         NSUInteger newBlockIndex = [blockArray count];
         if (newBlockIndex != [newBlockIDString integerValue]) {
-            NSLog(@"Warning: block read with unexpected index - \"%@\" expected \"%ld\", will cause incorrect flow conversion.", newBlockIDString, newBlockIndex);
+            NSLog(@"Warning: block read with unexpected index - \"%@\" expected \"%ld\", will cause incorrect flow conversion.", newBlockIDString, (long)newBlockIndex);
         }
             
         BlioTextFlowBlock *block = [[BlioTextFlowBlock alloc] init];
@@ -425,7 +425,7 @@ static void fragmentXMLParsingEndElementHandler(void *ctx, const XML_Char *name)
             }
         }
         
-        if ((dataLength - offset) < 0) {
+        if (offset > dataLength) {
             NSLog(@"offset is too large");
             return nil;
         }

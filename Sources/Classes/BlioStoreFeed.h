@@ -27,7 +27,7 @@
 	NSInteger previousFeedCount;
 }
 
-@property (nonatomic) Class parserClass;
+@property (nonatomic, retain) Class parserClass;
 @property (nonatomic, retain) BlioStoreBooksSourceParser *parser;
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSMutableArray *categories;

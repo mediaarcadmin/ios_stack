@@ -11,6 +11,7 @@
 #import "BlioProcessingStandardOperations.h"
 #import <libEucalyptus/THUIImageAdditions.h>
 #import "BlioBook.h"
+#import <objc/message.h>
 
 #define AUTHORPADDINGABOVE 4
 #define AUTHORPADDINGBELOW 9
@@ -342,7 +343,7 @@ pages, publisher, releaseDateLabel, publicationDateLabel, pagesLabel, publisherL
 
 		BlioProcessingCompleteOperation * completeOperation = [self.processingDelegate processingCompleteOperationForSourceID:self.feed.sourceID sourceSpecificID:self.entity.id];
 		if (completeOperation == nil) {
-			NSLog(@"WARNING: cannot find completeOperation for recently enqueued book sourceID:%i sourceSpecificID:%@",self.feed.id,self.entity.id);
+			NSLog(@"WARNING: cannot find completeOperation for recently enqueued book sourceID:%p sourceSpecificID:%@",self.feed.id,self.entity.id);
 		}
 		else {
 //			NSLog(@"completeOperation found, BlioStoreBookViewController becoming listener...");

@@ -12,7 +12,7 @@
 #import "BlioBook.h"
 #import "BlioBookmark.h"
 
-@protocol BlioContentsTabViewControllerDelegate <NSObject>
+@protocol BlioContentsTabViewControllerDelegate <NSObject, UINavigationControllerDelegate>
 
 @optional
 

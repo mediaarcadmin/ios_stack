@@ -289,7 +289,7 @@
 		}
 		else if ([bodyPart isKindOfClass:[SOAPFault class]]) {
 			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error for ContentCafe_XmlClassResponse: %s",err);
+			NSLog(@"SOAP error for ContentCafe_XmlClassResponse: %@",err);
 			// TODO: Message
 		}
 		else if ( (requestItems = [[bodyPart ContentCafe] RequestItems]) ) { 
