@@ -13,7 +13,6 @@ build
 *.mode?v?
 *.perspective
 *.perspectivev3
-
-Page_??????.png
+xcuserdata
 
 *.tokens

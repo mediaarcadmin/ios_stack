@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -93,7 +93,6 @@
 		7D381B5F10D92E86008D34E2 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
 		7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
-		7D381B9B10D92F2C008D34E2 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */; };
 		7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
 		7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
 		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
@@ -155,6 +154,9 @@
 		7D5DFC691295580A00F7B41C /* ePubBaseOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */; };
 		7D5DFC6A1295580A00F7B41C /* ePubBaseOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */; };
 		7D5DFC6B1295580A00F7B41C /* ePubBaseOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */; };
+		7D662008132E7E9B00242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
+		7D662009132E7F1600242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
+		7D66200A132E7F2100242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
 		7D6D9FF1124E9DC5005FD8CE /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
 		7D6D9FF2124E9DC5005FD8CE /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		7D6D9FF3124E9DC5005FD8CE /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
@@ -229,6 +231,9 @@
 		7DCD8E5511E32EFF00BA3255 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
 		7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
 		7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */; };
+		7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
+		7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
+		7DDCC010132E88F200FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DE310381281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
 		7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
 		7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
@@ -539,7 +544,6 @@
 		A30E1030123EA5B400D31157 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		A30E1031123EA5B400D31157 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		A30E1032123EA5B400D31157 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
-		A30E1033123EA5B400D31157 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */; };
 		A30E1034123EA5B400D31157 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5467510F77EDD00ECE126 /* CoreData.framework */; };
 		A30E1035123EA5B400D31157 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B61FF41137AF840012CE7E /* libz.dylib */; };
 		A30E1036123EA5B400D31157 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
@@ -824,7 +828,6 @@
 		A36D35E5120B136700E1A035 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		A36D35E6120B136700E1A035 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		A36D35E7120B136700E1A035 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
-		A36D35E8120B136700E1A035 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */; };
 		A36D35E9120B136700E1A035 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5467510F77EDD00ECE126 /* CoreData.framework */; };
 		A36D35EA120B136700E1A035 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B61FF41137AF840012CE7E /* libz.dylib */; };
 		A36D35EB120B136700E1A035 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
@@ -1420,7 +1423,6 @@
 		7D2711AD124931D40087C4E3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		7D381B9410D92F14008D34E2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		7D381B9610D92F14008D34E2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "usr/lib/libstdc++.6.dylib"; sourceTree = SDKROOT; };
 		7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
 		7D381CDF10D93023008D34E2 /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
 		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
@@ -1481,6 +1483,7 @@
 		7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmark.m; sourceTree = "<group>"; };
 		7D529C101158DC1100548C00 /* TextFlowCover.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = TextFlowCover.xhtml; sourceTree = "<group>"; };
 		7D5DFC681295580A00F7B41C /* ePubBaseOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ePubBaseOverrides.css; sourceTree = "<group>"; };
+		7D662007132E7E9B00242F63 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
 		7D79183410F2257C00C4D839 /* BlioFlowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowView.h; sourceTree = "<group>"; };
@@ -1540,6 +1543,7 @@
 		7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioEPubBook.m; sourceTree = "<group>"; };
 		7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSelectableBookView.h; sourceTree = "<group>"; };
 		7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSelectableBookView.m; sourceTree = "<group>"; };
+		7DDCC00D132E88C800FE8201 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
 		7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
@@ -2068,6 +2072,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */,
+				7D662009132E7F1600242F63 /* libstdc++.dylib in Frameworks */,
 				7D381B5C10D92E86008D34E2 /* libEucalyptus.a in Frameworks */,
 				7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */,
 				7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */,
@@ -2084,7 +2090,6 @@
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
 				7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */,
 				7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */,
-				7D381B9B10D92F2C008D34E2 /* libstdc++.6.dylib in Frameworks */,
 				C9C5467610F77EDD00ECE126 /* CoreData.framework in Frameworks */,
 				C9B61FF51137AF840012CE7E /* libz.dylib in Frameworks */,
 				C974F222113C1AA0007B5868 /* CFNetwork.framework in Frameworks */,
@@ -2108,6 +2113,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DDCC010132E88F200FE8201 /* libxml2.dylib in Frameworks */,
+				7D66200A132E7F2100242F63 /* libstdc++.dylib in Frameworks */,
 				A30E1023123EA5B400D31157 /* libXpsSDKipad.a in Frameworks */,
 				A30E1024123EA5B400D31157 /* libEucalyptus.a in Frameworks */,
 				A30E1025123EA5B400D31157 /* libEucalyptusBase.a in Frameworks */,
@@ -2125,7 +2132,6 @@
 				A30E1030123EA5B400D31157 /* CoreGraphics.framework in Frameworks */,
 				A30E1031123EA5B400D31157 /* OpenGLES.framework in Frameworks */,
 				A30E1032123EA5B400D31157 /* QuartzCore.framework in Frameworks */,
-				A30E1033123EA5B400D31157 /* libstdc++.6.dylib in Frameworks */,
 				A30E1034123EA5B400D31157 /* CoreData.framework in Frameworks */,
 				A30E1035123EA5B400D31157 /* libz.dylib in Frameworks */,
 				A30E1036123EA5B400D31157 /* CFNetwork.framework in Frameworks */,
@@ -2148,6 +2154,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */,
+				7D662008132E7E9B00242F63 /* libstdc++.dylib in Frameworks */,
 				A31E837B120B522F00CB6657 /* libXpsSDKipad.a in Frameworks */,
 				A36D35D9120B136700E1A035 /* libEucalyptus.a in Frameworks */,
 				A36D35DA120B136700E1A035 /* libEucalyptusBase.a in Frameworks */,
@@ -2165,7 +2173,6 @@
 				A36D35E5120B136700E1A035 /* CoreGraphics.framework in Frameworks */,
 				A36D35E6120B136700E1A035 /* OpenGLES.framework in Frameworks */,
 				A36D35E7120B136700E1A035 /* QuartzCore.framework in Frameworks */,
-				A36D35E8120B136700E1A035 /* libstdc++.6.dylib in Frameworks */,
 				A36D35E9120B136700E1A035 /* CoreData.framework in Frameworks */,
 				A36D35EA120B136700E1A035 /* libz.dylib in Frameworks */,
 				A36D35EB120B136700E1A035 /* CFNetwork.framework in Frameworks */,
@@ -2254,7 +2261,6 @@
 				A37FC20B10EA770500F3DC5A /* Libraries */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -2465,9 +2471,11 @@
 				DCA1BD681222FD080022D410 /* StoreKit.framework */,
 				A32D885911FE04DA00D2AE17 /* Security.framework */,
 				7DCA224612F890460016C0B9 /* MobileCoreServices.framework */,
-				7D381B9A10D92F2C008D34E2 /* libstdc++.6.dylib */,
+				C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */,
+				7D662007132E7E9B00242F63 /* libstdc++.dylib */,
 				C9B61FF41137AF840012CE7E /* libz.dylib */,
 				7DAA30C311512B1C006634CC /* libiconv.dylib */,
+				7DDCC00D132E88C800FE8201 /* libxml2.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2973,7 +2981,7 @@
 		C9867653112411060070A03E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C986765B112411060070A03E /* GData.framework */,
+				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
 				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
@@ -3270,7 +3278,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "BlioApp" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -3386,10 +3394,10 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C986765B112411060070A03E /* GData.framework */ = {
+		C986765B112411060070A03E /* GData */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = GData.framework;
+			path = GData;
 			remoteRef = C986765A112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -4628,11 +4636,9 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Libraries/TTS\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
-					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
+					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -4641,7 +4647,6 @@
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
@@ -4666,11 +4671,9 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Libraries/TTS\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
-					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
+					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -4679,7 +4682,6 @@
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
@@ -4707,8 +4709,6 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
@@ -4718,12 +4718,10 @@
 					"-DNOCRYPT",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -4746,8 +4744,6 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
@@ -4757,12 +4753,10 @@
 					"-DNOCRYPT",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -4785,8 +4779,6 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
@@ -4796,12 +4788,10 @@
 					"-DNOCRYPT",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -4816,16 +4806,14 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "906AF447-5F1C-4A13-9A64-ABA631581901";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
 			};
@@ -4847,11 +4835,9 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Libraries/TTS\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
-					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
+					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/TTS\"",
 				);
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
@@ -4860,7 +4846,6 @@
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
@@ -4888,8 +4873,6 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
@@ -4900,12 +4883,10 @@
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -4928,8 +4909,6 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
@@ -4940,12 +4919,10 @@
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -4968,8 +4945,6 @@
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Sources/Classes\"",
 					"\"$(SRCROOT)/Libraries/XPS\"",
 					"\"$(SRCROOT)/Libraries/DRM\"",
 					"\"$(SRCROOT)/Libraries/TTS\"",
@@ -4980,12 +4955,10 @@
 					"-DTEST_MODE",
 				);
 				OTHER_LDFLAGS = (
-					"-lxml2",
 					"-ObjC",
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -4999,16 +4972,15 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
 			};
@@ -5022,15 +4994,14 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
 			};

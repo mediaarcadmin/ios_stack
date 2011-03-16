@@ -782,7 +782,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		cell.statusBadge.hidden = YES;
 		cell.previewBadge.alpha = 0;
 		selectedGridIndex = index;
-		[self bookSelected:cell.bookView];
+		if ([cell.bookView.book isEncrypted]) {
+			if ([cell.bookView.book decryptionIsAvailable])
+				[self bookSelected:cell.bookView];
+		}
+		else {
+			[self bookSelected:cell.bookView];
+		}
 	}
 }
 -(void)gridView:(MRGridView *)gridView confirmationForDeletionAtIndex:(NSInteger)index {
@@ -862,7 +868,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
     BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
-        [self openBook:selectedBook];
+        if ([selectedBook isEncrypted]) {
+			if ([selectedBook decryptionIsAvailable])
+				[self openBook:selectedBook];
+		}
+		else {
+			[self openBook:selectedBook];
+		}
 		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	}    
 	else [self.tableView deselectRowAtIndexPath:indexPath animated:NO];

@@ -190,8 +190,7 @@ ErrorExit:
 		return YES;
 	}
 	else if (result==DRM_E_LICEVAL_LICENSE_REVOKED) { 
-		[BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
-											  title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"LICENSE_REVOKED",nil,[NSBundle mainBundle],@"The license for one your books has been revoked.  Please contact Blio technical support.",@"Description of license revocation.")
 									delegate:nil 
 						   cancelButtonTitle:nil
@@ -216,6 +215,23 @@ ErrorExit:
 						   otherButtonTitles:@"OK", nil];
 		return YES;
 	}
+	else if (result==DRM_E_LICENSEEXPIRED) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+											message:NSLocalizedStringWithDefaultValue(@"LICENSE_EXPIRED",nil,[NSBundle mainBundle],@"The license for this book has expired.",@"Description of license expiration.")
+										   delegate:nil 
+								  cancelButtonTitle:nil
+								  otherButtonTitles:@"OK", nil];
+		return YES;
+	}
+	else if (result==DRM_E_LICENSENOTFOUND) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+											message:NSLocalizedStringWithDefaultValue(@"LICENSE_NOT_FOUND",nil,[NSBundle mainBundle],@"This book is not licensed.",@"Description of license absence.")
+										   delegate:nil 
+								  cancelButtonTitle:nil
+								  otherButtonTitles:@"OK", nil];
+		return YES;
+	}
+	
 	return NO;
 }
 
@@ -612,6 +628,7 @@ ErrorExit:
 ErrorExit:
 	return dr;
 }
+
 -(DRM_DOMAIN_ID)domainIDFromSavedRegistration {
 	DRM_DOMAIN_ID oDomainIdFromNSUserDefaults;
 
@@ -724,6 +741,8 @@ ErrorExit:
 	}
 	
 ErrorExit:
+	if ([self checkPriorityError:dr])
+		return NO;
 	if (dr != DRM_SUCCESS) {
 		//NSLog(@"DRM bind error: %08X",dr);
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 

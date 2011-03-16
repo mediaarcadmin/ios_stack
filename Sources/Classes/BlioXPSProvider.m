@@ -106,20 +106,21 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
     }
 } 	
 
-- (void)bindToDRMLicense {
-	if ([self.drmSessionManager bindToLicense]) {
-		decryptionAvailable = YES;
-		if (reportingStatus != kBlioXPSProviderReportingStatusComplete) {
-			reportingStatus = kBlioXPSProviderReportingStatusRequired;
-		}
-	}	
-}
-
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
-		drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:self.bookID];
-	}
+		[self setDrmSessionManager:[[BlioDrmSessionManager alloc] initWithBookID:self.bookID]]; 
+		if ([drmSessionManager bindToLicense]) { 
+			decryptionAvailable = YES; 
+			if (reportingStatus != kBlioXPSProviderReportingStatusComplete) { 
+				reportingStatus = kBlioXPSProviderReportingStatusRequired; 
+			} 
+		} 
+	} 
 	return drmSessionManager;
+}
+
+- (BOOL)decryptionIsAvailable {
+	return self.drmSessionManager && decryptionAvailable;
 }
 
 - (void)dealloc {  
@@ -1168,8 +1169,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         BOOL decrypted = NO;
         if (!decryptionAvailable) {
             // Check if this is first run
-			[self bindToDRMLicense];
-            if (decryptionAvailable) {
+			if (self.drmSessionManager && decryptionAvailable) {
                 if ([self.drmSessionManager decryptData:componentData]) {
                     decrypted = YES;
                 }
@@ -1181,7 +1181,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context) {
         }
         
         if (!decrypted) {
-			NSLog(@"Error whilst decrypting data at path %@ for bookID: %i", componentPath,self.bookID);
+			NSLog(@"Error whilst decrypting data at path %@ for bookID: %@", componentPath,self.bookID);
             return nil;
         }
     }

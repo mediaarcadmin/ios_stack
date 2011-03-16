@@ -1,0 +1,3 @@
+[submodule "libEucalyptus"]
+	path = libEucalyptus
+	url = git@codebasehq.com:otherthings/libeucalyptus/libeucalyptus.git

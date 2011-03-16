@@ -144,6 +144,7 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @property (nonatomic, assign, readonly) BOOL hasCoverImage;
 @property (nonatomic, assign, readonly) BOOL hasTextFlow;
 @property (nonatomic, assign, readonly) BOOL isEncrypted;
+@property (nonatomic, assign, readonly) BOOL decryptionIsAvailable;
 @property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForList;
 @property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForGrid;
 @property (nonatomic, assign, readonly) BOOL firstLayoutPageOnLeft;

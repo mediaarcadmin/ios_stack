@@ -219,7 +219,7 @@
 	NSLog(@"Transaction completing...");
 	//If you want to save the transaction
 	// [self recordTransaction:transaction];
-	NSLog(@"Transaction: ",transaction);
+	NSLog(@"Transaction: %@",transaction);
 	NSLog(@"Transaction state: %i identifier %@",transaction.transactionState,transaction.transactionIdentifier);
 	
 	NSLog(@"verify receipt for debugging purposes: %i",[self verifyReceipt:transaction]);

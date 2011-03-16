@@ -24,7 +24,7 @@
     id<BlioParagraphSource> paragraphSource;
     id<BlioBookViewDelegate> delegate;
     id currentParagraphID;
-	uint32_t currentWordOffset;
+	int32_t currentWordOffset;
     
     UIView *fingerImageHolder;
     CALayer *fingerImage;
