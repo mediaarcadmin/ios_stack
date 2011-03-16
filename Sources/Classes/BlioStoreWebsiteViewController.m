@@ -107,7 +107,7 @@
 		headerLabel.font = [UIFont boldSystemFontOfSize:24.0f];
 //		headerLabel.font = [UIFont boldSystemFontOfSize:18.0f];
 		headerLabel.backgroundColor = [UIColor clearColor];
-		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
+		headerLabel.text = NSLocalizedString(@"mobile.BlioReader.com",@"Buy Books View Header");
 		headerLabel.numberOfLines = 1;
 		headerLabel.adjustsFontSizeToFitWidth = YES;
 		[self.phoneContentView addSubview:headerLabel];
@@ -154,8 +154,8 @@
 //		[gradientLayer release];
 //		launchButton.backgroundColor = [UIColor clearColor];
 		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
-		[self.phoneContentView addSubview:launchButton];
-		
+//		[self.phoneContentView addSubview:launchButton]; // NOTE: quick hack to remove launch button from view due to resubmission requirements.
+		// TODO: re-enable launch button after things are worked out with Apple.
 		
 		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		CGRect createAccountButtonFrame = launchButton.frame;
@@ -186,7 +186,7 @@
 		[contentView addSubview:headerLabel];
 		headerLabel.font = [UIFont boldSystemFontOfSize:45.0f];
 		headerLabel.backgroundColor = [UIColor clearColor];
-		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
+		headerLabel.text = NSLocalizedString(@"mobile.BlioReader.com",@"Buy Books View Header");
 		// sub-header
 		UILabel * subHeaderLabel = [[[UILabel alloc] initWithFrame:CGRectMake(125,60,480,40)] autorelease];
 		[contentView addSubview:subHeaderLabel];
@@ -217,8 +217,9 @@
 		launchButton.titleLabel.adjustsFontSizeToFitWidth = YES;
 		launchButton.titleLabel.font = [UIFont systemFontOfSize:16.0f];
 		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
-		[contentView addSubview:launchButton];
-		
+		//		[contentView addSubview:launchButton];  // NOTE: quick hack to remove launch button from view due to resubmission requirements.
+		// TODO: re-enable launch button after things are worked out with Apple.
+
 		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		CGRect createAccountButtonFrame = launchButton.frame;
 		createAccountButtonFrame.origin.y = launchButton.frame.origin.y + launchButton.frame.size.height + kTweenMargin;
@@ -247,7 +248,7 @@
 }
 -(void)updateExplanation {
 	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse today's hot titles as well as full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.",@"Explanation text for how to buy books through the website/mobile Safari.");
+		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"In mobile.BlioReader.com, you can browse today's hot titles as well as full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.",@"Explanation text for how to buy books through the website/mobile Safari.");
 		//if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		//	NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
 		//	labelTitle = [NSString stringWithFormat:@"%@ %@",labelTitle,getStarted];
