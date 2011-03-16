@@ -34,12 +34,14 @@
     
     if(UIInterfaceOrientationIsLandscape(orientation)) {
 		self.screenshotView.frame = CGRectMake(10,10,160,202);
-		self.headerLabel.hidden = YES;
+//		self.headerLabel.hidden = YES;
+		self.headerLabel.frame = CGRectMake(185,20,340,28);
 		self.subHeaderLabel.hidden = YES;
 	}
 	else {
 		self.screenshotView.frame = CGRectMake(10,15,105,132);
 		self.headerLabel.hidden = NO;
+		self.headerLabel.frame = CGRectMake(120,75,185,28);
 		self.subHeaderLabel.hidden = NO;
 	}
 		
@@ -125,11 +127,11 @@
 
 		// Display instructions for website.
 		
-		CGFloat yPlacement = 268;
+		CGFloat yPlacement = 230;
 		CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
 		
 		self.explanationLabel = [BlioStoreWebsiteViewController labelWithFrame:frame title:@""];
-		self.explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+		self.explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
 		[self updateExplanation];
 		[self.phoneContentView addSubview:self.explanationLabel];
 		
@@ -248,7 +250,7 @@
 }
 -(void)updateExplanation {
 	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"In mobile.BlioReader.com, you can browse today's hot titles as well as full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.",@"Explanation text for how to buy books through the website/mobile Safari.");
+		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse today's hot titles as well as full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.",@"Explanation text for how to buy books through the website/mobile Safari.");
 		//if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		//	NSString * getStarted = NSLocalizedStringWithDefaultValue(@"TO_GET_STARTED_PLEASE_LOGIN",nil,[NSBundle mainBundle],@"To get started, please log in or create an account.",@"Explanation encouraging the end user to get started purchasing books by first logging in.");
 		//	labelTitle = [NSString stringWithFormat:@"%@ %@",labelTitle,getStarted];
