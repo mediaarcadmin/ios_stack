@@ -2989,7 +2989,7 @@
 				C986765B112411060070A03E /* GData */,
 				C986765D112411060070A03E /* libGDataTouchStaticLib.a */,
 				C986765F112411060070A03E /* GDataUnitTests.octest */,
-				C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */,
+				C9867661112411060070A03E /* GDataTouchUnitTests.octest */,
 				C9867663112411060070A03E /* DevelopmentTestTool */,
 			);
 			name = Products;
@@ -3422,10 +3422,10 @@
 			remoteRef = C986765E112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9867661112411060070A03E /* GDataIPhoneUnitTests.octest */ = {
+		C9867661112411060070A03E /* GDataTouchUnitTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = GDataIPhoneUnitTests.octest;
+			path = GDataTouchUnitTests.octest;
 			remoteRef = C9867660112411060070A03E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -4640,7 +4640,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4675,7 +4675,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4713,7 +4713,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4748,7 +4748,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4783,7 +4783,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4816,7 +4816,6 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
@@ -4839,7 +4838,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4877,7 +4876,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4913,7 +4912,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4949,7 +4948,7 @@
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Headers/",
+					"$(SRCROOT)/Libraries/GData/current/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 					"$(SRCROOT)/libEucalyptus/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include/",
 				);
 				INFOPLIST_FILE = "Resources/BlioApp-Info.plist";
@@ -4982,7 +4981,6 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
@@ -5004,7 +5002,6 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;

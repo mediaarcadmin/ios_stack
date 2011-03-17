@@ -34,12 +34,14 @@
     
     if(UIInterfaceOrientationIsLandscape(orientation)) {
 		self.screenshotView.frame = CGRectMake(10,10,160,202);
-		self.headerLabel.hidden = YES;
+//		self.headerLabel.hidden = YES;
+		self.headerLabel.frame = CGRectMake(185,20,340,28);
 		self.subHeaderLabel.hidden = YES;
 	}
 	else {
 		self.screenshotView.frame = CGRectMake(10,15,105,132);
 		self.headerLabel.hidden = NO;
+		self.headerLabel.frame = CGRectMake(120,75,185,28);
 		self.subHeaderLabel.hidden = NO;
 	}
 		
@@ -107,7 +109,7 @@
 		headerLabel.font = [UIFont boldSystemFontOfSize:24.0f];
 //		headerLabel.font = [UIFont boldSystemFontOfSize:18.0f];
 		headerLabel.backgroundColor = [UIColor clearColor];
-		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
+		headerLabel.text = NSLocalizedString(@"mobile.BlioReader.com",@"Buy Books View Header");
 		headerLabel.numberOfLines = 1;
 		headerLabel.adjustsFontSizeToFitWidth = YES;
 		[self.phoneContentView addSubview:headerLabel];
@@ -125,11 +127,11 @@
 
 		// Display instructions for website.
 		
-		CGFloat yPlacement = 268;
+		CGFloat yPlacement = 230;
 		CGRect frame = CGRectMake(kLeftMargin, yPlacement, self.view.bounds.size.width - kLeftMargin - kRightMargin, 5*kLabelHeight);
 		
 		self.explanationLabel = [BlioStoreWebsiteViewController labelWithFrame:frame title:@""];
-		self.explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+		self.explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
 		[self updateExplanation];
 		[self.phoneContentView addSubview:self.explanationLabel];
 		
@@ -154,8 +156,8 @@
 //		[gradientLayer release];
 //		launchButton.backgroundColor = [UIColor clearColor];
 		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
-		[self.phoneContentView addSubview:launchButton];
-		
+//		[self.phoneContentView addSubview:launchButton]; // NOTE: quick hack to remove launch button from view due to resubmission requirements.
+		// TODO: re-enable launch button after things are worked out with Apple.
 		
 		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		CGRect createAccountButtonFrame = launchButton.frame;
@@ -186,7 +188,7 @@
 		[contentView addSubview:headerLabel];
 		headerLabel.font = [UIFont boldSystemFontOfSize:45.0f];
 		headerLabel.backgroundColor = [UIColor clearColor];
-		headerLabel.text = NSLocalizedString(@"BlioReader.com",@"Buy Books View Header");
+		headerLabel.text = NSLocalizedString(@"mobile.BlioReader.com",@"Buy Books View Header");
 		// sub-header
 		UILabel * subHeaderLabel = [[[UILabel alloc] initWithFrame:CGRectMake(125,60,480,40)] autorelease];
 		[contentView addSubview:subHeaderLabel];
@@ -217,8 +219,9 @@
 		launchButton.titleLabel.adjustsFontSizeToFitWidth = YES;
 		launchButton.titleLabel.font = [UIFont systemFontOfSize:16.0f];
 		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
-		[contentView addSubview:launchButton];
-		
+		//		[contentView addSubview:launchButton];  // NOTE: quick hack to remove launch button from view due to resubmission requirements.
+		// TODO: re-enable launch button after things are worked out with Apple.
+
 		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		CGRect createAccountButtonFrame = launchButton.frame;
 		createAccountButtonFrame.origin.y = launchButton.frame.origin.y + launchButton.frame.size.height + kTweenMargin;

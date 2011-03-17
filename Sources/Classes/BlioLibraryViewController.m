@@ -335,7 +335,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"SleepyHollow" // this should normally be BTKey number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-
+/*
 		[self.processingDelegate enqueueBookWithTitle:@"Maskerade" 
                                               authors:[NSArray arrayWithObjects:@"Pratchett, Terry", nil]
 											coverPath:nil
@@ -348,7 +348,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"Maskerade" // this should normally be BTKey number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
-		
+*/	
 #ifdef DEMO_MODE		
 		
         [self.processingDelegate enqueueBookWithTitle:@"Toy Story" 

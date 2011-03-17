@@ -477,7 +477,7 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioStoreRetrieveBooksStarted object:self userInfo:userInfo];
 
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = NO;
+	vaultBinding.logXMLInOut = YES;
 //	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
 	BookVault_VaultContentsWithTokenEx* vaultContentsRequest = [[BookVault_VaultContentsWithTokenEx new] autorelease];
 	vaultContentsRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
