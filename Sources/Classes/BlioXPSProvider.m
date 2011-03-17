@@ -80,7 +80,9 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @property (nonatomic, assign, readonly) BOOL bookIsEncrypted;
 @property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
 @property (nonatomic, retain) NSString *xpsPagesDirectory;
+#if OVERLAY_CODE_AVAILABLE
 @property (nonatomic, retain) NSSet *enhancedContentItems; // Lazily instantiated
+#endif
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -98,6 +100,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @synthesize componentCache;
 @synthesize drmSessionManager;
 @synthesize xpsPagesDirectory;
+#if OVERLAY_CODE_AVAILABLE
 @synthesize enhancedContentItems;
 
 + (void)initialize {
@@ -105,6 +108,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
        [BlioXPSProtocol registerXPSProtocol];
     }
 } 	
+#endif
 
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
@@ -141,8 +145,10 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
     self.xpsData = nil;
     self.uriMap = nil;
 	self.xpsPagesDirectory = nil;
+#if OVERLAY_CODE_AVAILABLE	    
 	self.enhancedContentItems = nil;
-    
+#endif    
+
     if (currentUriString) {
         [currentUriString release];
     }
@@ -177,9 +183,10 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
         //NSLog(@"temp string is %@ for book with ID %@", (NSString *)UUIDString, self.bookID);
         
         NSError *error;
+        NSFileManager *threadSafeManager = [[[NSFileManager alloc] init] autorelease];
         
-        if (![[NSFileManager defaultManager] fileExistsAtPath:self.tempDirectory]) {
-            if (![[NSFileManager defaultManager] createDirectoryAtPath:self.tempDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
+        if (![threadSafeManager fileExistsAtPath:self.tempDirectory]) {
+            if (![threadSafeManager createDirectoryAtPath:self.tempDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
                 NSLog(@"Unable to create temp XPS directory at path %@ with error %@ : %@", self.tempDirectory, error, [error userInfo]);
                 CFRelease(UUIDString);
                 return nil;
@@ -188,12 +195,12 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
         
         XPS_Start();
         NSString *xpsPath = [self.book xpsPath];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:xpsPath]) {
+        if (![threadSafeManager fileExistsAtPath:xpsPath]) {
             NSLog(@"Error creating xpsProvider. File does not exist at path: %@", xpsPath);
             CFRelease(UUIDString);
             return nil;
         }
-        
+                
         xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
         decryptionAvailable = NO;
@@ -464,6 +471,8 @@ static void XPSDataReleaseCallback(void *info, const void *data, size_t size) {
     return hyperlinks;
 }
 
+#if OVERLAY_CODE_AVAILABLE	    
+
 #pragma mark -
 #pragma mark EnhancedContent Parsing
 
@@ -724,6 +733,8 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 - (NSString *)enhancedContentRootPath {
 	return BlioXPSEnhancedContentDir;
 }
+
+#endif
 
 // Not required as XPS document stays open during rendering
 - (void)openDocumentIfRequired {}
@@ -1415,6 +1426,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 
 @end
 
+#if OVERLAY_CODE_AVAILABLE	
 @implementation BlioXPSProtocol
 
 + (void)registerXPSProtocol {
@@ -1501,6 +1513,7 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
 }
 
 @end
+#endif
 
 @implementation BlioXPSBitmapReleaseCallback
 

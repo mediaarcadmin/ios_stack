@@ -924,6 +924,9 @@
 		A3FE55B712074EFA0038DA0C /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
 		A3FE55B812074EFA0038DA0C /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B512074EFA0038DA0C /* eula.html */; };
 		A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B612074EFA0038DA0C /* userdoc.html */; };
+		C90889B61330F2990066F103 /* BlioGestureSupressingBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioGestureSupressingBlendView.m */; };
+		C90889B71330F2990066F103 /* BlioGestureSupressingBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioGestureSupressingBlendView.m */; };
+		C90889B81330F2990066F103 /* BlioGestureSupressingBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioGestureSupressingBlendView.m */; };
 		C90DAB361256289900D8E663 /* BlioLegacyLayoutContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAB301256289900D8E663 /* BlioLegacyLayoutContentView.m */; };
 		C90DAB371256289900D8E663 /* BlioLegacyLayoutScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAB321256289900D8E663 /* BlioLegacyLayoutScrollView.m */; };
 		C90DAB381256289900D8E663 /* BlioLegacyLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAB341256289900D8E663 /* BlioLegacyLayoutView.m */; };
@@ -1818,6 +1821,8 @@
 		A3FE55B412074EFA0038DA0C /* credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = credits.html; sourceTree = "<group>"; };
 		A3FE55B512074EFA0038DA0C /* eula.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = eula.html; sourceTree = "<group>"; };
 		A3FE55B612074EFA0038DA0C /* userdoc.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = userdoc.html; sourceTree = "<group>"; };
+		C90889B41330F2990066F103 /* BlioGestureSupressingBlendView.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BlioGestureSupressingBlendView.h; sourceTree = "<group>"; };
+		C90889B51330F2990066F103 /* BlioGestureSupressingBlendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioGestureSupressingBlendView.m; sourceTree = "<group>"; };
 		C90DAB301256289900D8E663 /* BlioLegacyLayoutContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLegacyLayoutContentView.m; sourceTree = "<group>"; };
 		C90DAB311256289900D8E663 /* BlioLegacyLayoutContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLegacyLayoutContentView.h; sourceTree = "<group>"; };
 		C90DAB321256289900D8E663 /* BlioLegacyLayoutScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLegacyLayoutScrollView.m; sourceTree = "<group>"; };
@@ -3020,6 +3025,8 @@
 				C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */,
 				C9A9DAB81312B73B009B950F /* BlioMediaView.h */,
 				C9A9DAB91312B73B009B950F /* BlioMediaView.m */,
+				C90889B41330F2990066F103 /* BlioGestureSupressingBlendView.h */,
+				C90889B51330F2990066F103 /* BlioGestureSupressingBlendView.m */,
 			);
 			name = LayoutView;
 			sourceTree = "<group>";
@@ -4296,6 +4303,7 @@
 				DCF6C56212EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 				7D229FB312F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
 				C9A9DABB1312B73B009B950F /* BlioMediaView.m in Sources */,
+				C90889B61330F2990066F103 /* BlioGestureSupressingBlendView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4432,6 +4440,7 @@
 				DCF6C56312EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 				7D229FB412F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
 				C9A9DABA1312B73B009B950F /* BlioMediaView.m in Sources */,
+				C90889B81330F2990066F103 /* BlioGestureSupressingBlendView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4568,6 +4577,7 @@
 				DCF6C56112EE23D00022E2E5 /* SFHFKeychainUtils.m in Sources */,
 				7D229FB212F9AA430037D93D /* BlioEPubXPSDataProvider.m in Sources */,
 				C9A9DABC1312B73B009B950F /* BlioMediaView.m in Sources */,
+				C90889B71330F2990066F103 /* BlioGestureSupressingBlendView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

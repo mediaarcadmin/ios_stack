@@ -22,19 +22,20 @@
 #import "BlioLayoutGeometry.h"
 #import "BlioLayoutHyperlink.h"
 #import "BlioAppSettingsConstants.h"
+#if OVERLAY_CODE_AVAILABLE	
 #import "BlioMediaView.h"
+#import "BlioGestureSupressingBlendView.h"
+#endif
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 #define BLIOLAYOUT_LHSHOTZONE 0.25f
 #define BLIOLAYOUT_RHSHOTZONE 0.75f
 
-@interface BlioBlendView : UIView {}
-@end
-
 @interface BlioLayoutView()
 
+#if OVERLAY_CODE_AVAILABLE
 @property (nonatomic, retain) UIView *overlay;
-
+#endif
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
@@ -50,10 +51,12 @@
 @property (nonatomic, retain) UIAccessibilityElement *pageZone;
 @property (nonatomic, assign) BOOL wasSelectionAtTouchStart;
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
+#if OVERLAY_CODE_AVAILABLE	
 @property (nonatomic, retain) NSMutableArray *mediaViews;
 @property (nonatomic, retain) NSMutableArray *webViews;
 @property (nonatomic, readonly, retain) UIImage *pageAlphaMask;
 @property (nonatomic, readonly, retain) UIColor *pageMultiplyColor;
+#endif
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -91,7 +94,7 @@
 - (void)zoomForNewPageAnimatedWithNumberThunk:(NSNumber *)animated;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
-
+#if OVERLAY_CODE_AVAILABLE	
 - (void)updateOverlay;
 - (void)clearOverlayCaches;
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange;
@@ -100,13 +103,14 @@
 - (void)freezeOverlayContents;
 - (NSArray *)overlayPositionedContextsForPageAtIndex:(NSUInteger)index;
 - (void)updatePositionedOverlayContexts;
+#endif
 
 @end
 
 @implementation BlioLayoutView
 
 @synthesize bookID, textFlow, pageNumber, pageCount, selector, pageSize;
-@synthesize pageCropsCache, viewTransformsCache, hyperlinksCache, enhancedContentCache;
+@synthesize pageCropsCache, viewTransformsCache, hyperlinksCache;
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
 @synthesize lastBlock;
@@ -115,16 +119,22 @@
 @synthesize temporaryHighlightRange;
 @synthesize wasSelectionAtTouchStart;
 @synthesize performingAccessibilityZoom;
+#if OVERLAY_CODE_AVAILABLE	
 @synthesize overlay;
 @synthesize mediaViews;
 @synthesize webViews;
 @synthesize pageAlphaMask;
 @synthesize pageMultiplyColor;
+#endif
 
 - (void)dealloc {
 	
+#if OVERLAY_CODE_AVAILABLE	  
 	self.mediaViews = nil;
 	self.webViews = nil;
+    [pageAlphaMask release], pageAlphaMask = nil;
+	[pageMultiplyColor release], pageMultiplyColor = nil;
+#endif
 	
     [self.delayedTouchesBeganTimer invalidate];
     self.delayedTouchesBeganTimer = nil;
@@ -134,12 +144,11 @@
     
     self.pageCropsCache = nil;
     self.hyperlinksCache = nil;
-	self.enhancedContentCache = nil;
     self.viewTransformsCache = nil;
     self.lastBlock = nil;
 	self.temporaryHighlightRange = nil;
     
-	[overlay release], overlay = nil;
+	//[overlay release], overlay = nil;
     self.pageTurningView = nil;
     self.pageTexture = nil;
         
@@ -164,15 +173,11 @@
     self.bookID = nil;
     [layoutCacheLock release];
     [hyperlinksCacheLock release];
-	[enhancedContentCacheLock release];
 	
 	self.accessibilityElements = nil;
 	self.prevZone = nil;
 	self.nextZone = nil;
 	self.pageZone = nil;
-	
-	[pageAlphaMask release], pageAlphaMask = nil;
-	[pageMultiplyColor release], pageMultiplyColor = nil;
         
     [super dealloc];
 }
@@ -202,7 +207,6 @@
         
         layoutCacheLock = [[NSLock alloc] init];
         hyperlinksCacheLock = [[NSLock alloc] init];
-		enhancedContentCacheLock = [[NSLock alloc] init];
         
         // Prefer the checkout over calling [aBook textFlow] because we wat to retain the result
         textFlow = [[[BlioBookManager sharedBookManager] checkOutTextFlowForBookWithID:self.bookID] retain];
@@ -329,21 +333,23 @@
         if(self.selector.tracking) {
             [self.selector setSelectedRange:nil];
         }
-		
+        
+#if OVERLAY_CODE_AVAILABLE
 		BOOL firstLayout = NO;
 		if (CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
 			firstLayout = YES;
 		}
-		
+#endif		
 		self.pageSize = newSize;
         // Perform this after a delay in order to give time for layoutSubviews 
         // to be called on the pageTurningView before we start the zoom
         // (Ick!).
         [self performSelector:@selector(zoomForNewPageAnimatedWithNumberThunk:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.0f];;
-		
+#if OVERLAY_CODE_AVAILABLE		
 		if (firstLayout) {
 			[self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.0f];
 		}
+#endif
     }
 }
 
@@ -354,8 +360,10 @@
         self.selector = nil;
     }
 	self.temporaryHighlightRange = nil;
+#if OVERLAY_CODE_AVAILABLE
 	[self hideOverlay];
 	[self clearOverlayCaches];
+#endif
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -371,9 +379,10 @@
 		self.selector = aSelector;
 		[aSelector release];
 	}
-	
+#if OVERLAY_CODE_AVAILABLE	
 	[self updateOverlay];
 	[self showOverlay];
+#endif
 }
 
 - (UIImage *)dimPageImage
@@ -461,8 +470,10 @@
 	pageNumber = newPageNumber;
 	self.selector.selectedRange = nil;
 	self.accessibilityElements = nil;
-	
+    
+#if OVERLAY_CODE_AVAILABLE	
 	[self updateOverlay];
+#endif
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
@@ -471,9 +482,10 @@
         [self.pageTurningView setNeedsDraw];
         self.pageTexture = aPageTexture;
         self.pageTextureIsDark = isDarkIn;
-		
+#if OVERLAY_CODE_AVAILABLE		
 		[self clearOverlayCaches];
 		[self updateOverlay];
+#endif
     }
 }
 
@@ -701,10 +713,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)aPageTurningView
 {
-	
+#if OVERLAY_CODE_AVAILABLE	
 	[self freezeOverlayContents];
     [self updatePositionedOverlayContexts];
 	[self hideOverlay];
+#endif
 }
 
 - (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)aPageTurningView
@@ -716,8 +729,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		}
         self.pageNumber = pageIndex + 1;
     }
-	
+    
+#if OVERLAY_CODE_AVAILABLE	
 	[self showOverlay];
+#endif
 }
 
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
@@ -779,9 +794,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Selector
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
-	
+#if OVERLAY_CODE_AVAILABLE	
 	[self freezeOverlayContents];
     [self updatePositionedOverlayContexts];
+#endif
 	return [self.pageTurningView screenshot];
 }
 
@@ -1088,6 +1104,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return [range autorelease];
 }
 
+#if OVERLAY_CODE_AVAILABLE
 #pragma mark -
 #pragma mark EnhancedContent
 
@@ -1199,6 +1216,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			overlay.userInteractionEnabled = YES;
 			overlay.backgroundColor = [UIColor clearColor];
 			overlay.multipleTouchEnabled = YES;
+                        
 			[self.pageTurningView addSubview:overlay];
 		}
 
@@ -1237,7 +1255,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 blendViewFrame.origin.y = roundf(blendViewFrame.origin.y);
                 blendViewFrame.size.width = roundf(blendViewFrame.size.width);
                 blendViewFrame.size.height = roundf(blendViewFrame.size.height);
-				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
+				BlioGestureSupressingBlendView *blendView = [[BlioGestureSupressingBlendView alloc] initWithFrame:blendViewFrame];
 				
                 CGRect blendViewBounds = blendView.bounds;
                 
@@ -1255,32 +1273,28 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 							
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
-					
-					UIWebView *webView = [[UIWebView alloc] initWithFrame:blendViewBounds];
-
+                    
+					UIWebView *webView = [[[UIWebView alloc] initWithFrame:blendViewBounds] autorelease];
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
 					
-					[blendView.layer addSublayer:webView.layer];
+                    [blendView addSubview:webView];
 					
 					[self.webViews addObject:webView];
-					
-								
+ 								
 					NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
 					
 					[webView loadRequest:request];
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
 					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
-					BlioMediaView * mediaView = [[BlioMediaView alloc] initWithFrame:blendViewBounds contentURL:videoURL];
-					[blendView.layer addSublayer:mediaView.layer];
+					BlioMediaView * mediaView = [[[BlioMediaView alloc] initWithFrame:blendViewBounds contentURL:videoURL] autorelease];
+					[blendView addSubview:mediaView];
 					[self.mediaViews addObject:mediaView];
-					[mediaView release];
 				}
-				
-				
-					 
+ 
 				[overlay addSubview:blendView];
+
 				
 				CFRelease(encodedString);
 			}
@@ -1337,6 +1351,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	[pageAlphaMask release], pageAlphaMask = nil;
 	[pageMultiplyColor release], pageMultiplyColor = nil;
 }
+#endif
 
 #pragma mark -
 #pragma mark UIWebViewDelegate
@@ -1543,22 +1558,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Touch Handling
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-	UIView *tappedView = [super hitTest:point withEvent:event];
-	
-	if (tappedView == overlay) {
-		if ([self pointInside:point withEvent:event]) {
-			return self;
-		} else {
-			return nil;
-		}
-	} else {
-		return tappedView;
-	}
-	return tappedView;
-	UIView *tappedOverlayView = [self.overlay hitTest:point withEvent:event];
-	
-	return tappedOverlayView;
-	
+     
+#if OVERLAY_CODE_AVAILABLE	
     if (overlay) {
 		for (UIView *overlayView in overlay.subviews) {
 			if ([overlayView pointInside:[self convertPoint:point toView:overlayView] withEvent:event]) {
@@ -1566,27 +1567,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			}
 		}
     }
-	
+#endif
 	if ([self pointInside:point withEvent:event]) {
         return self;
     } else {
         return nil;
     }
-	//if ([self pointInside:point withEvent:event]) {
-//        return self;
-//    } else {
-//        return nil;
-//    }
 }
 
 - (BOOL)touchesShouldBeSuppressed {
 	return YES;
-    //if (hyperlinkTapped || pageViewIsTurning || self.selector.tracking || self.selector.selectedRange) {
-//        hyperlinkTapped = NO;
-//        return YES;
-//    } else {
-//        return NO;
-    //}
 }
 
 - (void)delayedTouchesBegan:(NSTimer *)timer {
@@ -1599,7 +1589,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	self.lastBlock = nil;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {   	
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {   
 	if (([touches count] == 1) 
         && ([[touches anyObject] tapCount] > 1) 
         && !self.pageTurningView.animating) {
@@ -1651,7 +1641,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)delayedTouchesEnded:(NSTimer *)timer {
-
     startTouchPoint = CGPointMake(-1, -1);
 	
     NSDictionary *touchesInfo = [timer userInfo];
@@ -1671,7 +1660,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-
 	[self.delayedTouchesEndedTimer invalidate];
     self.delayedTouchesEndedTimer = nil;
 	
@@ -1734,7 +1722,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)handleSingleTapAtPoint:(CGPoint)point {
-	
 	BOOL voiceOverRunning = NO;
 	
 	if (UIAccessibilityIsVoiceOverRunning != nil) {
@@ -2856,13 +2843,4 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [self zoomForNewPageAnimated:[number boolValue]];
 }
 
-@end
-
-@implementation BlioBlendView
-
-+ (Class)layerClass {
-	return [CAReplicatorLayer class];
-}
-
-@end
- 
+@end 

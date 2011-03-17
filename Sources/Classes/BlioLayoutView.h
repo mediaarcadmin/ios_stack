@@ -60,12 +60,14 @@
 	UIAccessibilityElement *prevZone;
 	UIAccessibilityElement *nextZone;
 	UIAccessibilityElement *pageZone;
-	
+    
+#if OVERLAY_CODE_AVAILABLE		
 	NSMutableArray *mediaViews;
 	NSMutableArray *webViews;
 	
 	UIImage *pageAlphaMask;
 	UIColor *pageMultiplyColor;
+#endif
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -77,6 +79,5 @@
 @property (nonatomic, retain) NSMutableDictionary *pageCropsCache;
 @property (nonatomic, retain) NSMutableDictionary *viewTransformsCache;
 @property (nonatomic, retain) NSMutableDictionary *hyperlinksCache;
-@property (nonatomic, retain) NSMutableDictionary *enhancedContentCache;
 
 @end
