@@ -75,7 +75,6 @@
                                            cancelButtonTitle:cancelButtonTitle
                                            otherButtonTitles:nil] autorelease];
     if (otherButtonTitles != nil) {
-		[alert addButtonWithTitle:otherButtonTitles];
 		va_list args;
 		va_start(args, otherButtonTitles);
 		NSString * title = nil;
@@ -85,7 +84,7 @@
 		va_end(args);
     }
 	
-    [alert show];	
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];	
 }
 +(void)removeSuppressionForAlertType:(NSString*)alertType {
 	[[BlioAlertManager sharedInstance].suppressedAlertTypes removeObjectForKey:alertType];
