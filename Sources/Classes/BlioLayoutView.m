@@ -1557,6 +1557,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Touch Handling
 
+- (void)pageTurningView:(EucPageTurningView *)pageTurningView unhandledTapAtPoint:(CGPoint)point
+{
+    [self handleSingleTapAtPoint:point];
+}
+
+#if 0
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
      
 #if OVERLAY_CODE_AVAILABLE	
@@ -1574,11 +1580,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         return nil;
     }
 }
-
+#endif
 - (BOOL)touchesShouldBeSuppressed {
 	return YES;
 }
 
+#if 0
 - (void)delayedTouchesBegan:(NSTimer *)timer {
     startTouchPoint = CGPointMake(-1, -1);
 
@@ -1720,6 +1727,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         [self.pageTurningView touchesCancelled:touches withEvent:event];
     }
 }
+
+#endif
 
 - (void)handleSingleTapAtPoint:(CGPoint)point {
 	BOOL voiceOverRunning = NO;
