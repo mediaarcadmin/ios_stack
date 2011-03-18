@@ -126,7 +126,7 @@
 
 - (BOOL)wantsTouchesSniffed 
 {
-    return YES;
+    return NO;
 }
 
 - (CGRect)firstPageRect
@@ -346,8 +346,6 @@
 
 - (void)bookViewPageTurnWillBegin:(EucBookView *)bookView
 {
-	[_delegate cancelPendingToolbarShow];
-	
     if(UIAccessibilityIsVoiceOverRunning == nil ||
        !UIAccessibilityIsVoiceOverRunning()) {
         [_delegate hideToolbars];
@@ -409,8 +407,6 @@
 
 - (BOOL)bookView:(EucBookView *)bookView shouldHandleTapOnHyperlink:(NSURL *)link
 {
-    [_delegate cancelPendingToolbarShow];
-
     BOOL handled = NO;
     if([link.scheme isEqualToString:@"textflow"]) {
         NSString *internalURI = link.relativeString;
@@ -454,6 +450,11 @@
     }
         
     return !handled;
+}
+
+- (void)bookView:(EucBookView *)bookView unhandledTapAtPoint:(CGPoint)point
+{
+    [_delegate toggleToolbars];
 }
 
 #pragma mark -
@@ -531,14 +532,12 @@
 
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
 {
-    [_delegate cancelPendingToolbarShow];
     [_delegate hideToolbars];
     return [_eucBookView eucSelector:selector willBeginEditingHighlightWithRange:selectedRange];
 }
 
 - (void)eucSelector:(EucSelector *)selector didEndEditingHighlightWithRange:(EucSelectorRange *)fromRange movedToRange:(EucSelectorRange *)toRange
 {
-    [_delegate cancelPendingToolbarShow];
     return [_eucBookView eucSelector:selector didEndEditingHighlightWithRange:fromRange movedToRange:toRange];
 }
 
