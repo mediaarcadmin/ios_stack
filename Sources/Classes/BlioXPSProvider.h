@@ -13,8 +13,6 @@
 #import "BlioDrmSessionManager.h"
 #import "XpsSdk.h"
 
-#define OVERLAY_CODE_AVAILABLE 0
-
 typedef enum {
     kBlioXPSProviderReportingStatusNotRequired = 0,
     kBlioXPSProviderReportingStatusRequired,

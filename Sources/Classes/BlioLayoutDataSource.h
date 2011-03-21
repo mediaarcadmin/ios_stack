@@ -9,6 +9,8 @@
 
 @class THPair;
 
+#define OVERLAY_CODE_AVAILABLE 1
+
 @protocol BlioLayoutDataSource
 
 #if OVERLAY_CODE_AVAILABLE
