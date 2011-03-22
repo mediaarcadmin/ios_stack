@@ -1241,8 +1241,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		for (int i = pageRange.location; i < pageRange.location + pageRange.length; i++) {
 			
 			NSUInteger pageIndex = i;
-			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
-			
+			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
+            
 			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
 						
 			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
