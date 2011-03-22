@@ -24,7 +24,8 @@
 #import "BlioAppSettingsConstants.h"
 #if OVERLAY_CODE_AVAILABLE	
 #import "BlioMediaView.h"
-#import "BlioGestureSupressingBlendView.h"
+#import "BlioBlendView.h"
+#import "BlioGestureSuppressingView.h"
 #endif
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
@@ -34,7 +35,7 @@
 @interface BlioLayoutView()
 
 #if OVERLAY_CODE_AVAILABLE
-@property (nonatomic, retain) UIView *overlay;
+@property (nonatomic, retain) BlioGestureSuppressingView *overlay;
 #endif
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
@@ -130,6 +131,7 @@
 	self.webViews = nil;
     [pageAlphaMask release], pageAlphaMask = nil;
 	[pageMultiplyColor release], pageMultiplyColor = nil;
+    [overlay release], overlay = nil;
 #endif
     
     self.pageCropsCache = nil;
@@ -138,7 +140,6 @@
     self.lastBlock = nil;
 	self.temporaryHighlightRange = nil;
     
-	//[overlay release], overlay = nil;
     self.pageTurningView = nil;
     self.pageTexture = nil;
         
@@ -284,7 +285,7 @@
 			aSelector.shouldTrackSingleTapsOnHighights = NO;
 			aSelector.dataSource = self;
 			aSelector.delegate =  self;
-			[aSelector attachToView:self];
+			//[aSelector attachToView:self];
 			[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
 			self.selector = aSelector;
 			[aSelector release]; 
@@ -366,7 +367,7 @@
 		aSelector.shouldSniffTouches = YES;
 		aSelector.dataSource = self;
 		aSelector.delegate =  self;
-		[aSelector attachToView:self];
+		//[aSelector attachToView:self];
 		[aSelector addObserver:self forKeyPath:@"tracking" options:0 context:NULL];
 		self.selector = aSelector;
 		[aSelector release];
@@ -1201,20 +1202,24 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
 	if (self.pageTurningView && !CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
-		if (!overlay) {
-			overlay = [[UIView alloc] init];
-			overlay.frame = self.pageTurningView.bounds;
-			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-			overlay.userInteractionEnabled = YES;
-			overlay.backgroundColor = [UIColor clearColor];
-			overlay.multipleTouchEnabled = YES;
+		if (!self.overlay) {
+			self.overlay = [[BlioGestureSuppressingView alloc] init];
+			self.overlay.frame = self.pageTurningView.bounds;
+			self.overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+			self.overlay.backgroundColor = [UIColor clearColor];
+            
+            for (UIGestureRecognizer *recognizer in self.pageTurningView.gestureRecognizers) {
+                if (![recognizer isEqual:self.pageTurningView.tapGestureRecognizer]) {
+                    [self.overlay.suppressingGestureRecognizer requireGestureRecognizerToFail:recognizer];
+                }
+            }
                         
-			[self.pageTurningView addSubview:overlay];
+			[self.pageTurningView addSubview:self.overlay];
 		}
 
 		[self.mediaViews makeObjectsPerformSelector:@selector(pauseMediaPlayer)];
 		
-		for (UIView *view in [overlay subviews]) {
+		for (UIView *view in [self.overlay subviews]) {
 			[view removeFromSuperview];
 		}
 		
@@ -1247,8 +1252,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 blendViewFrame.origin.y = roundf(blendViewFrame.origin.y);
                 blendViewFrame.size.width = roundf(blendViewFrame.size.width);
                 blendViewFrame.size.height = roundf(blendViewFrame.size.height);
-				BlioGestureSupressingBlendView *blendView = [[BlioGestureSupressingBlendView alloc] initWithFrame:blendViewFrame];
-				
+				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
+                
                 CGRect blendViewBounds = blendView.bounds;
                 
                 if(!maskPath) {
@@ -1293,7 +1298,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			
             if(maskPath) {
                 CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
-                alphaMaskLayer.frame = overlay.bounds;
+                alphaMaskLayer.frame = self.overlay.bounds;
                 alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
                                 
                 CALayer *alphaLayer = [CALayer layer];
@@ -1301,13 +1306,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 alphaLayer.contents = (id)self.pageAlphaMask.CGImage;
                 alphaLayer.contentsGravity = kCAGravityResizeAspect;
                 alphaLayer.opaque = NO;
-                alphaLayer.frame = overlay.bounds;
+                alphaLayer.frame = self.overlay.bounds;
                 alphaMaskLayer.path = maskPath;
                 CGPathRelease(maskPath);
 				maskPath = nil;
                 alphaLayer.mask = alphaMaskLayer;
                 
-                [overlay.layer addSublayer:alphaLayer];
+                [self.overlay.layer addSublayer:alphaLayer];
             }
 		}
     }
@@ -1349,7 +1354,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)aWebView {
-	NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
+	//NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
+    NSMutableString *jsCommand = [NSMutableString string];
 	[jsCommand appendString:@"document.documentElement.style.webkitTapHighlightColor = 'rgba(0,0,0,0)';"];
 	[jsCommand appendString:@"document.documentElement.style.webkitTouchCallout = 'none';"];
 	[aWebView stringByEvaluatingJavaScriptFromString:jsCommand];	
@@ -1548,26 +1554,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 #pragma mark -
 #pragma mark Touch Handling
-
-#if OVERLAY_CODE_AVAILABLE	
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-     
-    if (overlay) {
-		for (UIView *overlayView in overlay.subviews) {
-			if ([overlayView pointInside:[self convertPoint:point toView:overlayView] withEvent:event]) {
-				return overlayView;
-			}
-		}
-    }
-
-	if ([self pointInside:point withEvent:event]) {
-        return self;
-    } else {
-        return nil;
-    }
-}
-
-#endif
 
 - (BOOL)touchesShouldBeSuppressed {
 	return YES;

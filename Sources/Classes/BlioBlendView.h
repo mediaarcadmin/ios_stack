@@ -8,8 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-
-@interface BlioGestureSupressingBlendView : UIView {
+@interface BlioBlendView : UIView {
     
 }
 
