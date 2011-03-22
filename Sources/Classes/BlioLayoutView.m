@@ -980,6 +980,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 self.pageTurningView.twoUp = shouldBeTwoUp;
                 [self.pageTurningView layoutSubviews];
                 [self zoomForNewPageAnimated:NO];
+#if OVERLAY_CODE_AVAILABLE		
+                [self hideOverlay];
+                [self clearOverlayCaches];
+                [self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.1f];
+                [self performSelector:@selector(showOverlay) withObject:nil afterDelay:0.11f];
+#endif
             }
         }
     }
