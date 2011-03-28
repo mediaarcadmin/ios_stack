@@ -102,6 +102,9 @@ static NSString *xamlColorToCSSColor(NSString *color)
             NSUInteger elementCount = 0;
             for(NSString *element in elements) {
                 trimmedElements[elementCount++] = [element stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
+                if(elementCount == 4) {
+                    break;
+                }
             }
             if(elementCount == 1) {
                 [constructionString appendFormat:@"margin:%@px;", trimmedElements[0]];
@@ -119,6 +122,9 @@ static NSString *xamlColorToCSSColor(NSString *color)
             NSUInteger elementCount = 0;
             for(NSString *element in elements) {
                 trimmedElements[elementCount++] = [element stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
+                if(elementCount == 4) {
+                    break;
+                }
             }
             if(elementCount == 1) {
                 [constructionString appendFormat:@"padding:%@px;", trimmedElements[0]];
@@ -136,6 +142,9 @@ static NSString *xamlColorToCSSColor(NSString *color)
             NSUInteger elementCount = 0;
             for(NSString *element in elements) {
                 trimmedElements[elementCount++] = [element stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
+                if(elementCount == 4) {
+                    break;
+                }
             }
             if(elementCount == 1) {
                 [constructionString appendFormat:@"border-width:%@px;", trimmedElements[0]];
