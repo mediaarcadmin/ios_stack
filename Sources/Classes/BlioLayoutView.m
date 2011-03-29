@@ -288,7 +288,6 @@
     if(self.superview) {
 		if (self.textFlow) {
 			EucSelector *aSelector = [[EucSelector alloc] init];
-			aSelector.shouldSniffTouches = YES;
 			aSelector.shouldTrackSingleTapsOnHighights = NO;
 			aSelector.dataSource = self;
 			aSelector.delegate =  self;
@@ -371,7 +370,6 @@
 	self.accessibilityElements = nil;
 	if (self.textFlow) {
 		EucSelector *aSelector = [[EucSelector alloc] init];
-		aSelector.shouldSniffTouches = YES;
 		aSelector.dataSource = self;
 		aSelector.delegate =  self;
 		[aSelector attachToView:self];
