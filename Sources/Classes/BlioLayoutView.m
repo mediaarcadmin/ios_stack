@@ -43,13 +43,10 @@
 @property (nonatomic, assign) BOOL pageTextureIsDark;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) BlioBookmarkRange *temporaryHighlightRange;
-@property (nonatomic, retain) NSTimer *delayedTouchesBeganTimer;
-@property (nonatomic, retain) NSTimer *delayedTouchesEndedTimer;
 @property (nonatomic, retain) NSArray *accessibilityElements;
 @property (nonatomic, retain) UIAccessibilityElement *prevZone;
 @property (nonatomic, retain) UIAccessibilityElement *nextZone;
 @property (nonatomic, retain) UIAccessibilityElement *pageZone;
-@property (nonatomic, assign) BOOL wasSelectionAtTouchStart;
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
 #if OVERLAY_CODE_AVAILABLE	
 @property (nonatomic, retain) NSMutableArray *mediaViews;
@@ -69,8 +66,9 @@
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
 
 - (BOOL)touchesShouldBeSuppressed;
-- (void)handleSingleTapAtPoint:(CGPoint)point;
-- (void)handleDoubleTapAtPoint:(CGPoint)point;
+- (void)registerGesturesForPageTurningView:(EucPageTurningView *)aPageTurningView;
+- (void)handleDoubleTap:(UITapGestureRecognizer *)sender;
+- (void)handleSingleTap:(UITapGestureRecognizer *)sender;
 
 - (NSArray *)hyperlinksForPage:(NSInteger)page;
 - (BlioLayoutHyperlink *)hyperlinkForPage:(NSInteger)page atPoint:(CGPoint)point;
@@ -114,10 +112,8 @@
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
 @synthesize lastBlock;
-@synthesize delayedTouchesBeganTimer, delayedTouchesEndedTimer;
 @synthesize accessibilityElements, prevZone, nextZone, pageZone;
 @synthesize temporaryHighlightRange;
-@synthesize wasSelectionAtTouchStart;
 @synthesize performingAccessibilityZoom;
 #if OVERLAY_CODE_AVAILABLE	
 @synthesize overlay;
@@ -135,12 +131,6 @@
     [pageAlphaMask release], pageAlphaMask = nil;
 	[pageMultiplyColor release], pageMultiplyColor = nil;
 #endif
-	
-    [self.delayedTouchesBeganTimer invalidate];
-    self.delayedTouchesBeganTimer = nil;
-	
-	[self.delayedTouchesEndedTimer invalidate];
-	self.delayedTouchesEndedTimer = nil;
     
     self.pageCropsCache = nil;
     self.hyperlinksCache = nil;
@@ -267,9 +257,11 @@
         } else {
             [aPageTurningView setPageAspectRatio:firstPageCrop.size.width/firstPageCrop.size.height];
         }
-        
+         
+        [self registerGesturesForPageTurningView:aPageTurningView];
         [self addSubview:aPageTurningView];
         self.pageTurningView = aPageTurningView;
+
         [aPageTurningView release];
 
         [aPageTurningView turnToPageAtIndex:self.pageNumber - 1 animated:NO];
@@ -1555,9 +1547,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Touch Handling
 
+#if OVERLAY_CODE_AVAILABLE	
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
      
-#if OVERLAY_CODE_AVAILABLE	
     if (overlay) {
 		for (UIView *overlayView in overlay.subviews) {
 			if ([overlayView pointInside:[self convertPoint:point toView:overlayView] withEvent:event]) {
@@ -1565,7 +1557,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			}
 		}
     }
-#endif
+
 	if ([self pointInside:point withEvent:event]) {
         return self;
     } else {
@@ -1573,250 +1565,151 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
+#endif
+
 - (BOOL)touchesShouldBeSuppressed {
 	return YES;
 }
 
-- (void)delayedTouchesBegan:(NSTimer *)timer {
-    startTouchPoint = CGPointMake(-1, -1);
-
-    NSDictionary *touchesAndEvent = [timer userInfo];
-    [self.pageTurningView touchesBegan:[touchesAndEvent valueForKey:@"touches"] withEvent:[touchesAndEvent valueForKey:@"event"]];
-    self.delayedTouchesBeganTimer = nil;
-	
-	self.lastBlock = nil;
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {   
-	if (([touches count] == 1) 
-        && ([[touches anyObject] tapCount] > 1) 
-        && !self.pageTurningView.animating) {
-		// Double-tap.  (Ignore double-taps if the page is animating)
-		if (self.delayedTouchesBeganTimer != nil) {
-			[self.delayedTouchesBeganTimer invalidate];
-			self.delayedTouchesBeganTimer = nil;
-		} else {
-			if (!CGPointEqualToPoint(startTouchPoint, CGPointMake(-1, -1))) {
-				[self.pageTurningView touchesCancelled:touches withEvent:event];
-			}
-		}
-		
-		startTouchPoint = [[touches anyObject] locationInView:self];
-		
-    } else if ([[event touchesForView:self] count] > 1) {
-        startTouchPoint = CGPointMake(-1, -1);
-        [self.delayedTouchesBeganTimer fire];
-        self.delayedTouchesBeganTimer = nil;
-        [self.pageTurningView touchesBegan:touches withEvent:event];
-    } else {
-        if(self.pageTurningView.animating) {
-            // If there's a page-turn in progress (probably a user-initiated
-            // one 'drifting' due to gravity), pass the touch immediately
-            // so that the user can 'grab' the falling page.
-            startTouchPoint = CGPointMake(-1, -1);
-            [self.delayedTouchesBeganTimer fire];
-            self.delayedTouchesBeganTimer = nil;
-            [self.pageTurningView touchesBegan:touches withEvent:event];
-        } else {
-            [self.delayedTouchesBeganTimer invalidate];
-            self.delayedTouchesBeganTimer = nil;
-            
-            startTouchPoint = [[touches anyObject] locationInView:self];
-            self.wasSelectionAtTouchStart = selector.selectedRange != nil;
-            NSDictionary *touchesAndEvent = [NSDictionary dictionaryWithObjectsAndKeys:touches, @"touches", event, @"event", nil];
-            self.delayedTouchesBeganTimer = [NSTimer scheduledTimerWithTimeInterval:0.31f target:self selector:@selector(delayedTouchesBegan:) userInfo:touchesAndEvent repeats:NO];
-        }
-    }
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    startTouchPoint = CGPointMake(-1, -1);
+- (void)registerGesturesForPageTurningView:(EucPageTurningView *)aPageTurningView;
+{
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+    doubleTap.numberOfTapsRequired = 2;
+    [aPageTurningView addGestureRecognizer:doubleTap];
+        
+    [aPageTurningView.tapGestureRecognizer removeTarget:nil action:nil]; 
+    [aPageTurningView.tapGestureRecognizer addTarget:self action:@selector(handleSingleTap:)];
     
-    [self.delayedTouchesBeganTimer fire];
-    self.delayedTouchesBeganTimer = nil;
+    [aPageTurningView.tapGestureRecognizer requireGestureRecognizerToFail:doubleTap];
 
-    [self.pageTurningView touchesMoved:touches withEvent:event];
+    [doubleTap release];
 }
 
-- (void)delayedTouchesEnded:(NSTimer *)timer {
-    startTouchPoint = CGPointMake(-1, -1);
-	
-    NSDictionary *touchesInfo = [timer userInfo];
-	NSString *link = [touchesInfo valueForKey:@"link"];
-	BlioBookmarkRange *noteBookmark = [touchesInfo valueForKey:@"noteBookmark"];
-	
-	if (noteBookmark != (id)[NSNull null]) {
-        [self.selector setSelectedRange:[self selectorRangeFromBookmarkRange:noteBookmark]];
-        [self.delegate hideToolbars];
-	} else if (link != (id)[NSNull null]) {
-		[self hyperlinkTapped:link];
-	} else {
-		[self handleSingleTapAtPoint:[[[touchesInfo valueForKey:@"touches"] anyObject] locationInView:self]];
-	}
-	
-	self.delayedTouchesEndedTimer = nil;
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	[self.delayedTouchesEndedTimer invalidate];
-    self.delayedTouchesEndedTimer = nil;
-	
-    [self.delayedTouchesBeganTimer invalidate];
-    self.delayedTouchesBeganTimer = nil;
-    
-    BlioLayoutHyperlink *touchedHyperlink = nil;
-	BlioBookmarkRange *touchedNoteBookmark = nil;
-	
-    CGPoint point = [[touches anyObject] locationInView:self];
-    
-    if (!CGPointEqualToPoint(startTouchPoint, CGPointMake(-1, -1))) {
+- (void)handleSingleTap:(UITapGestureRecognizer *)sender {     
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        
+        CGPoint point = [sender locationInView:self];
+        BlioLayoutHyperlink *touchedHyperlink = nil;
+        BlioBookmarkRange *touchedNoteBookmark = nil;
+        
         if (self.pageTurningView.isTwoUp) {
             NSInteger leftPageIndex = [self.pageTurningView leftPageIndex];
             if (leftPageIndex != NSUIntegerMax) {
                 touchedHyperlink = [self hyperlinkForPage:leftPageIndex + 1 atPoint:point];
-				touchedNoteBookmark = [self noteBookmarkForPage:leftPageIndex + 1 atPoint:point];
+                touchedNoteBookmark = [self noteBookmarkForPage:leftPageIndex + 1 atPoint:point];
             }
         }
-        
+            
         if ((nil == touchedHyperlink) && (nil == touchedNoteBookmark)) {
             NSInteger rightPageIndex = [self.pageTurningView rightPageIndex];
             if (rightPageIndex != NSUIntegerMax) {
                 touchedHyperlink = [self hyperlinkForPage:rightPageIndex + 1 atPoint:point];
-				touchedNoteBookmark = [self noteBookmarkForPage:rightPageIndex + 1 atPoint:point];
-            }
-        }
-		
-		if (([touches count] == 1) && ([[touches anyObject] tapCount] == 2)) {
-			// Double-tap			
-			[self handleDoubleTapAtPoint:startTouchPoint];
-			return;
-        } else if (self.selector.tracking || self.selector.selectedRange) {
-            return;
-        }
-		
-		NSDictionary *touchesInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-									 touches, @"touches", 
-									 event, @"event", 
-									 [touchedHyperlink link] ? : (id)[NSNull null], @"link", 
-									 touchedNoteBookmark ? : (id)[NSNull null], @"noteBookmark", 
-									 nil];
-		
-        self.delayedTouchesEndedTimer = [NSTimer scheduledTimerWithTimeInterval:0.3f target:self selector:@selector(delayedTouchesEnded:) userInfo:touchesInfo repeats:NO];
-		
-    } else {
-        [self.pageTurningView touchesEnded:touches withEvent:event];
-    }
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self.delayedTouchesBeganTimer invalidate];
-    self.delayedTouchesBeganTimer = nil;
-    
-    CGPoint point = [[touches anyObject] locationInView:self];
-    
-    if (!CGPointEqualToPoint(point, startTouchPoint)) {
-        [self.pageTurningView touchesCancelled:touches withEvent:event];
-    }
-}
-
-- (void)handleSingleTapAtPoint:(CGPoint)point {
-	BOOL voiceOverRunning = NO;
-	
-	if (UIAccessibilityIsVoiceOverRunning != nil) {
-		if (UIAccessibilityIsVoiceOverRunning()) {
-			voiceOverRunning = YES;
-		}
-	}
-	
-	if (voiceOverRunning) {
-        UIAccessibilityElement *focusedElement = nil;
-        
-        for (UIAccessibilityElement *element in self.accessibilityElements) {
-            if ([element accessibilityElementIsFocused]) {
-                focusedElement = element;
-                break;
+                touchedNoteBookmark = [self noteBookmarkForPage:rightPageIndex + 1 atPoint:point];
             }
         }
         
-        NSUInteger wantPageIndex = NSUIntegerMax;
-        if (self.prevZone && focusedElement == self.prevZone) {
-            if (self.pageTurningView.isTwoUp) {
-                wantPageIndex = self.pageTurningView.leftPageIndex;
-                if(wantPageIndex != NSUIntegerMax) {
-                    if(wantPageIndex >= 2) {
-                        // Subtract 2 so that the focused page after the turn is
-                        // on the right.
-                        wantPageIndex -= 2;
-                    } else if(wantPageIndex > 0) {
-                        --wantPageIndex;
-                    } else {
-                        // Already at index 0, can't turn.
-                        wantPageIndex = NSUIntegerMax;
+        if (touchedNoteBookmark != nil) {
+            [self.selector setSelectedRange:[self selectorRangeFromBookmarkRange:touchedNoteBookmark]];
+            [self.delegate hideToolbars];
+        } else if (touchedHyperlink != nil) {
+            [self hyperlinkTapped:touchedHyperlink.link];
+        } else {
+        
+            BOOL voiceOverRunning = NO;
+            
+            if (UIAccessibilityIsVoiceOverRunning != nil) {
+                if (UIAccessibilityIsVoiceOverRunning()) {
+                    voiceOverRunning = YES;
+                }
+            }
+            
+            if (voiceOverRunning) {
+                UIAccessibilityElement *focusedElement = nil;
+                
+                for (UIAccessibilityElement *element in self.accessibilityElements) {
+                    if ([element accessibilityElementIsFocused]) {
+                        focusedElement = element;
+                        break;
                     }
                 }
-            } else {
-                wantPageIndex = self.pageTurningView.rightPageIndex;
-                if(wantPageIndex != NSUIntegerMax) {
-                    if(wantPageIndex > 0) {
-                        --wantPageIndex;
+                
+                NSUInteger wantPageIndex = NSUIntegerMax;
+                if (self.prevZone && focusedElement == self.prevZone) {
+                    if (self.pageTurningView.isTwoUp) {
+                        wantPageIndex = self.pageTurningView.leftPageIndex;
+                        if(wantPageIndex != NSUIntegerMax) {
+                            if(wantPageIndex >= 2) {
+                                // Subtract 2 so that the focused page after the turn is
+                                // on the right.
+                                wantPageIndex -= 2;
+                            } else if(wantPageIndex > 0) {
+                                --wantPageIndex;
+                            } else {
+                                // Already at index 0, can't turn.
+                                wantPageIndex = NSUIntegerMax;
+                            }
+                        }
                     } else {
-                        // Already at index 0, can't turn.
-                        wantPageIndex = NSUIntegerMax;
+                        wantPageIndex = self.pageTurningView.rightPageIndex;
+                        if(wantPageIndex != NSUIntegerMax) {
+                            if(wantPageIndex > 0) {
+                                --wantPageIndex;
+                            } else {
+                                // Already at index 0, can't turn.
+                                wantPageIndex = NSUIntegerMax;
+                            }
+                        }                
                     }
-                }                
+                } else if (self.nextZone && focusedElement == self.nextZone) {
+                    wantPageIndex = self.pageTurningView.rightPageIndex;
+                    if(wantPageIndex != NSUIntegerMax) {
+                        ++wantPageIndex;
+                    }
+                } 
+                if(wantPageIndex != NSUIntegerMax) {
+                    [self goToPageNumber:wantPageIndex + 1 animated:YES];
+                    return;
+                } else {
+                    [self.delegate toggleToolbars];
+                    return;
+                }
             }
-        } else if (self.nextZone && focusedElement == self.nextZone) {
-            wantPageIndex = self.pageTurningView.rightPageIndex;
-            if(wantPageIndex != NSUIntegerMax) {
-                ++wantPageIndex;
-            }
-        } 
-        if(wantPageIndex != NSUIntegerMax) {
-            [self goToPageNumber:wantPageIndex + 1 animated:YES];
-            return;
-        } else {
-            if(!wasSelectionAtTouchStart) {
+            
+            CGFloat screenWidth = CGRectGetWidth(self.bounds);
+            CGFloat leftHandHotZone = screenWidth * BLIOLAYOUT_LHSHOTZONE;
+            CGFloat rightHandHotZone = screenWidth * BLIOLAYOUT_RHSHOTZONE;
+            
+            if (point.x <= leftHandHotZone) {
+                [self zoomToPreviousBlock];
+                [self.delegate hideToolbars];
+            } else if (point.x >= rightHandHotZone) {
+                [self zoomToNextBlock];
+                [self.delegate hideToolbars];
+            } else {
                 [self.delegate toggleToolbars];
+            }    
+        }
+    }
+    
+}
+
+- (void)handleDoubleTap:(UITapGestureRecognizer *)sender {     
+    if (sender.state == UIGestureRecognizerStateEnded && !self.pageTurningView.animating)     {
+        BOOL performZoom = YES;
+        if (UIAccessibilityIsVoiceOverRunning != nil) {
+            if (UIAccessibilityIsVoiceOverRunning()) {
+                performZoom = NO;
             }
-            return;
         }
-    }
-	
-	CGFloat screenWidth = CGRectGetWidth(self.bounds);
-    CGFloat leftHandHotZone = screenWidth * BLIOLAYOUT_LHSHOTZONE;
-    CGFloat rightHandHotZone = screenWidth * BLIOLAYOUT_RHSHOTZONE;
-    
-    if (point.x <= leftHandHotZone) {
-        [self zoomToPreviousBlock];
-        [self.delegate hideToolbars];
-    } else if (point.x >= rightHandHotZone) {
-        [self zoomToNextBlock];
-        [self.delegate hideToolbars];
-    } else {
-        if(!wasSelectionAtTouchStart) {
-            [self.delegate toggleToolbars];
+        if (performZoom) {
+            [self zoomAtPoint:[sender locationInView:self]];
+            [self.delegate hideToolbars];
+        } else {
+            [self.delegate toggleToolbars]; 
         }
-    }    
-    
-}
-
-- (void)handleDoubleTapAtPoint:(CGPoint)point {
-	BOOL performZoom = YES;
-	if (UIAccessibilityIsVoiceOverRunning != nil) {
-		if (UIAccessibilityIsVoiceOverRunning()) {
-			performZoom = NO;
-		}
-	}
-	if (performZoom) {
-        [self zoomAtPoint:point];
-		[self.delegate hideToolbars];
-	} else {
-        [self.delegate toggleToolbars]; 
     }
 }
 
-#pragma mark -
-#pragma mark Actions
         
 #pragma mark -
 #pragma mark Hyperlinks
@@ -1829,9 +1722,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	return [self touchesShouldBeSuppressed];
 }
 
-- (void)hyperlinkTapped:(NSString *)link {
-    hyperlinkTapped = YES;
-	
+- (void)hyperlinkTapped:(NSString *)link {	
 	if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
 		NSInteger page = [link integerValue];
 		if (page) {
