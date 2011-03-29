@@ -1586,7 +1586,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)handleSingleTap:(UITapGestureRecognizer *)sender {     
-    if (sender.state == UIGestureRecognizerStateEnded) {
+    if (sender.state == UIGestureRecognizerStateEnded && 
+        !self.selector.isTracking) {
         
         CGPoint point = [sender locationInView:self];
         BlioLayoutHyperlink *touchedHyperlink = nil;
@@ -1694,7 +1695,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)handleDoubleTap:(UITapGestureRecognizer *)sender {     
-    if (sender.state == UIGestureRecognizerStateEnded && !self.pageTurningView.animating)     {
+    if (sender.state == UIGestureRecognizerStateEnded && 
+        !self.pageTurningView.animating)     {
         BOOL performZoom = YES;
         if (UIAccessibilityIsVoiceOverRunning != nil) {
             if (UIAccessibilityIsVoiceOverRunning()) {
