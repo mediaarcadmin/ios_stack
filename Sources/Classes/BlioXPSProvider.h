@@ -13,8 +13,6 @@
 #import "BlioDrmSessionManager.h"
 #import "XpsSdk.h"
 
-#define OVERLAY_CODE_AVAILABLE 0
-
 typedef enum {
     kBlioXPSProviderReportingStatusNotRequired = 0,
     kBlioXPSProviderReportingStatusRequired,
@@ -44,9 +42,7 @@ typedef enum {
     NSNumber *bookIsEncrypted;
     BOOL decryptionAvailable;
     BlioXPSProviderReportingStatus reportingStatus;
-#if OVERLAY_CODE_AVAILABLE	
 	NSSet *enhancedContentItems;
-#endif
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
@@ -60,11 +56,9 @@ typedef enum {
 
 @end
 
-#if OVERLAY_CODE_AVAILABLE	
 @interface BlioXPSProtocol : NSURLProtocol {}
 
 + (NSString *)xpsProtocolScheme;
 + (void)registerXPSProtocol;
 			
 @end
-#endif

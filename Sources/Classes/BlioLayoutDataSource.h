@@ -11,13 +11,12 @@
 
 @protocol BlioLayoutDataSource
 
-#if OVERLAY_CODE_AVAILABLE
 @optional
 
 - (NSString *)enhancedContentRootPath;
 - (NSData *)enhancedContentDataAtPath:(NSString *)path;
 - (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path;
-#endif
+- (NSArray *)enhancedContentForPage:(NSInteger)page;
 
 @required
 
@@ -33,9 +32,6 @@
 - (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect;
 - (UIImage *)thumbnailForPage:(NSInteger)page;
 - (NSArray *)hyperlinksForPage:(NSInteger)page;
-#if OVERLAY_CODE_AVAILABLE
-- (NSArray *)enhancedContentForPage:(NSInteger)page;
-#endif
 
 - (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
                                 fromRect:(CGRect)rect

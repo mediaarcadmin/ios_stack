@@ -22,10 +22,8 @@
 #import "BlioLayoutGeometry.h"
 #import "BlioLayoutHyperlink.h"
 #import "BlioAppSettingsConstants.h"
-#if OVERLAY_CODE_AVAILABLE	
 #import "BlioMediaView.h"
 #import "BlioGestureSupressingBlendView.h"
-#endif
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 #define BLIOLAYOUT_LHSHOTZONE 0.25f
@@ -33,9 +31,7 @@
 
 @interface BlioLayoutView()
 
-#if OVERLAY_CODE_AVAILABLE
 @property (nonatomic, retain) UIView *overlay;
-#endif
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
@@ -48,12 +44,10 @@
 @property (nonatomic, retain) UIAccessibilityElement *nextZone;
 @property (nonatomic, retain) UIAccessibilityElement *pageZone;
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
-#if OVERLAY_CODE_AVAILABLE	
 @property (nonatomic, retain) NSMutableArray *mediaViews;
 @property (nonatomic, retain) NSMutableArray *webViews;
 @property (nonatomic, readonly, retain) UIImage *pageAlphaMask;
 @property (nonatomic, readonly, retain) UIColor *pageMultiplyColor;
-#endif
 
 - (CGRect)cropForPage:(NSInteger)page;
 - (CGRect)cropForPage:(NSInteger)page allowEstimate:(BOOL)estimate;
@@ -92,7 +86,6 @@
 - (void)zoomForNewPageAnimatedWithNumberThunk:(NSNumber *)animated;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point;
 - (void)zoomToFitAllBlocksOnPageTurningViewAtPoint:(CGPoint)point translation:(CGPoint *)translationPtr zoomFactor:(CGFloat *)zoomFactorPtr;
-#if OVERLAY_CODE_AVAILABLE	
 - (void)updateOverlay;
 - (void)clearOverlayCaches;
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange;
@@ -101,7 +94,6 @@
 - (void)freezeOverlayContents;
 - (NSArray *)overlayPositionedContextsForPageAtIndex:(NSUInteger)index;
 - (void)updatePositionedOverlayContexts;
-#endif
 
 @end
 
@@ -115,22 +107,18 @@
 @synthesize accessibilityElements, prevZone, nextZone, pageZone;
 @synthesize temporaryHighlightRange;
 @synthesize performingAccessibilityZoom;
-#if OVERLAY_CODE_AVAILABLE	
 @synthesize overlay;
 @synthesize mediaViews;
 @synthesize webViews;
 @synthesize pageAlphaMask;
 @synthesize pageMultiplyColor;
-#endif
 
 - (void)dealloc {
 	
-#if OVERLAY_CODE_AVAILABLE	  
 	self.mediaViews = nil;
 	self.webViews = nil;
     [pageAlphaMask release], pageAlphaMask = nil;
 	[pageMultiplyColor release], pageMultiplyColor = nil;
-#endif
     
     self.pageCropsCache = nil;
     self.hyperlinksCache = nil;
@@ -138,7 +126,6 @@
     self.lastBlock = nil;
 	self.temporaryHighlightRange = nil;
     
-	//[overlay release], overlay = nil;
     self.pageTurningView = nil;
     self.pageTexture = nil;
         
@@ -325,22 +312,18 @@
             [self.selector setSelectedRange:nil];
         }
         
-#if OVERLAY_CODE_AVAILABLE
 		BOOL firstLayout = NO;
 		if (CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
 			firstLayout = YES;
 		}
-#endif		
 		self.pageSize = newSize;
         // Perform this after a delay in order to give time for layoutSubviews 
         // to be called on the pageTurningView before we start the zoom
         // (Ick!).
         [self performSelector:@selector(zoomForNewPageAnimatedWithNumberThunk:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.0f];;
-#if OVERLAY_CODE_AVAILABLE		
 		if (firstLayout) {
 			[self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.0f];
 		}
-#endif
     }
 }
 
@@ -351,10 +334,8 @@
         self.selector = nil;
     }
 	self.temporaryHighlightRange = nil;
-#if OVERLAY_CODE_AVAILABLE
 	[self hideOverlay];
 	[self clearOverlayCaches];
-#endif
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
@@ -369,10 +350,8 @@
 		self.selector = aSelector;
 		[aSelector release];
 	}
-#if OVERLAY_CODE_AVAILABLE	
 	[self updateOverlay];
 	[self showOverlay];
-#endif
 }
 
 - (UIImage *)dimPageImage
@@ -461,9 +440,7 @@
 	self.selector.selectedRange = nil;
 	self.accessibilityElements = nil;
     
-#if OVERLAY_CODE_AVAILABLE	
 	[self updateOverlay];
-#endif
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
@@ -472,10 +449,8 @@
         [self.pageTurningView setNeedsDraw];
         self.pageTexture = aPageTexture;
         self.pageTextureIsDark = isDarkIn;
-#if OVERLAY_CODE_AVAILABLE		
 		[self clearOverlayCaches];
 		[self updateOverlay];
-#endif
     }
 }
 
@@ -703,11 +678,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewWillBeginPageTurn:(EucPageTurningView *)aPageTurningView
 {
-#if OVERLAY_CODE_AVAILABLE	
 	[self freezeOverlayContents];
     [self updatePositionedOverlayContexts];
 	[self hideOverlay];
-#endif
 }
 
 - (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)aPageTurningView
@@ -720,9 +693,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         self.pageNumber = pageIndex + 1;
     }
     
-#if OVERLAY_CODE_AVAILABLE	
 	[self showOverlay];
-#endif
 }
 
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
@@ -784,10 +755,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Selector
 
 - (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
-#if OVERLAY_CODE_AVAILABLE	
 	[self freezeOverlayContents];
     [self updatePositionedOverlayContexts];
-#endif
 	return [self.pageTurningView screenshot];
 }
 
@@ -1094,7 +1063,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return [range autorelease];
 }
 
-#if OVERLAY_CODE_AVAILABLE
 #pragma mark -
 #pragma mark EnhancedContent
 
@@ -1230,7 +1198,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			NSUInteger pageIndex = i;
 			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
 			
-			NSArray *content = [self.dataSource enhancedContentForPage:pageIndex + 1];
+			NSArray *content = nil;
+            
+            if ([(NSObject *)self.dataSource respondsToSelector:@selector(enhancedContentForPage:)]) {
+                content = [self.dataSource enhancedContentForPage:pageIndex + 1];
+            }
 						
 			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
 				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
@@ -1341,7 +1313,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	[pageAlphaMask release], pageAlphaMask = nil;
 	[pageMultiplyColor release], pageMultiplyColor = nil;
 }
-#endif
 
 #pragma mark -
 #pragma mark UIWebViewDelegate
@@ -1546,26 +1517,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 #pragma mark -
 #pragma mark Touch Handling
-
-#if OVERLAY_CODE_AVAILABLE	
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-     
-    if (overlay) {
-		for (UIView *overlayView in overlay.subviews) {
-			if ([overlayView pointInside:[self convertPoint:point toView:overlayView] withEvent:event]) {
-				return overlayView;
-			}
-		}
-    }
-
-	if ([self pointInside:point withEvent:event]) {
-        return self;
-    } else {
-        return nil;
-    }
-}
-
-#endif
 
 - (BOOL)touchesShouldBeSuppressed {
 	return YES;

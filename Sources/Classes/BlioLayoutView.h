@@ -56,13 +56,11 @@
 	UIAccessibilityElement *nextZone;
 	UIAccessibilityElement *pageZone;
     
-#if OVERLAY_CODE_AVAILABLE		
 	NSMutableArray *mediaViews;
 	NSMutableArray *webViews;
 	
 	UIImage *pageAlphaMask;
 	UIColor *pageMultiplyColor;
-#endif
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
