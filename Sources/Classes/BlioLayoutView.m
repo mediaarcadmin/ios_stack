@@ -1557,7 +1557,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         UIView *overlayView = self.overlay;
         UIView *hitTestOverlayView = [overlayView hitTest:[sender locationInView:overlayView] withEvent:nil];
         if(overlayView != hitTestOverlayView) {
-            // Only hide on taps with overlay contents.
+            // Hide on taps with overlay contents, otherwise do nothing
+            // (we don't want to show the toolbars if the user is just interating
+            // with a peice of overlay content.
             [self.delegate hideToolbars];
             return;
         }
