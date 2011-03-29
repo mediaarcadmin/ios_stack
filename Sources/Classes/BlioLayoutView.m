@@ -23,7 +23,8 @@
 #import "BlioLayoutHyperlink.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioMediaView.h"
-#import "BlioGestureSupressingBlendView.h"
+#import "BlioBlendView.h"
+#import "BlioGestureSuppressingView.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 #define BLIOLAYOUT_LHSHOTZONE 0.25f
@@ -31,7 +32,7 @@
 
 @interface BlioLayoutView()
 
-@property (nonatomic, retain) UIView *overlay;
+@property (nonatomic, retain) BlioGestureSuppressingView *overlay;
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
@@ -119,6 +120,7 @@
 	self.webViews = nil;
     [pageAlphaMask release], pageAlphaMask = nil;
 	[pageMultiplyColor release], pageMultiplyColor = nil;
+    [overlay release], overlay = nil;
     
     self.pageCropsCache = nil;
     self.hyperlinksCache = nil;
@@ -946,6 +948,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 self.pageTurningView.twoUp = shouldBeTwoUp;
                 [self.pageTurningView layoutSubviews];
                 [self zoomForNewPageAnimated:NO];
+#if OVERLAY_CODE_AVAILABLE		
+                [self hideOverlay];
+                [self clearOverlayCaches];
+                [self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.1f];
+                [self performSelector:@selector(showOverlay) withObject:nil afterDelay:0.11f];
+#endif
             }
         }
     }
@@ -1167,20 +1175,24 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
 {
 	if (self.pageTurningView && !CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
-		if (!overlay) {
-			overlay = [[UIView alloc] init];
-			overlay.frame = self.pageTurningView.bounds;
-			overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-			overlay.userInteractionEnabled = YES;
-			overlay.backgroundColor = [UIColor clearColor];
-			overlay.multipleTouchEnabled = YES;
+		if (!self.overlay) {
+			self.overlay = [[BlioGestureSuppressingView alloc] init];
+			self.overlay.frame = self.pageTurningView.bounds;
+			self.overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+			self.overlay.backgroundColor = [UIColor clearColor];
+            
+            for (UIGestureRecognizer *recognizer in self.pageTurningView.gestureRecognizers) {
+                if (![recognizer isEqual:self.pageTurningView.tapGestureRecognizer]) {
+                    [self.overlay.suppressingGestureRecognizer requireGestureRecognizerToFail:recognizer];
+                }
+            }
                         
-			[self.pageTurningView addSubview:overlay];
+			[self.pageTurningView addSubview:self.overlay];
 		}
 
 		[self.mediaViews makeObjectsPerformSelector:@selector(pauseMediaPlayer)];
 		
-		for (UIView *view in [overlay subviews]) {
+		for (UIView *view in [self.overlay subviews]) {
 			[view removeFromSuperview];
 		}
 		
@@ -1196,11 +1208,10 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		for (int i = pageRange.location; i < pageRange.location + pageRange.length; i++) {
 			
 			NSUInteger pageIndex = i;
-			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:YES];
-			
-			NSArray *content = nil;
+			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
             
-            if ([(NSObject *)self.dataSource respondsToSelector:@selector(enhancedContentForPage:)]) {
+            NSArray *content = nil;
+			if ([(NSObject *)self.dataSource respondsToSelector:@selector(enhancedContentForPage:)]) {
                 content = [self.dataSource enhancedContentForPage:pageIndex + 1];
             }
 						
@@ -1217,8 +1228,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 blendViewFrame.origin.y = roundf(blendViewFrame.origin.y);
                 blendViewFrame.size.width = roundf(blendViewFrame.size.width);
                 blendViewFrame.size.height = roundf(blendViewFrame.size.height);
-				BlioGestureSupressingBlendView *blendView = [[BlioGestureSupressingBlendView alloc] initWithFrame:blendViewFrame];
-				
+				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
+                
                 CGRect blendViewBounds = blendView.bounds;
                 
                 if(!maskPath) {
@@ -1263,7 +1274,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			
             if(maskPath) {
                 CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
-                alphaMaskLayer.frame = overlay.bounds;
+                alphaMaskLayer.frame = self.overlay.bounds;
                 alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
                                 
                 CALayer *alphaLayer = [CALayer layer];
@@ -1271,13 +1282,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 alphaLayer.contents = (id)self.pageAlphaMask.CGImage;
                 alphaLayer.contentsGravity = kCAGravityResizeAspect;
                 alphaLayer.opaque = NO;
-                alphaLayer.frame = overlay.bounds;
+                alphaLayer.frame = self.overlay.bounds;
                 alphaMaskLayer.path = maskPath;
                 CGPathRelease(maskPath);
 				maskPath = nil;
                 alphaLayer.mask = alphaMaskLayer;
                 
-                [overlay.layer addSublayer:alphaLayer];
+                [self.overlay.layer addSublayer:alphaLayer];
             }
 		}
     }
@@ -1318,7 +1329,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)aWebView {
-	NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
+	//NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
+    NSMutableString *jsCommand = [NSMutableString string];
 	[jsCommand appendString:@"document.documentElement.style.webkitTapHighlightColor = 'rgba(0,0,0,0)';"];
 	[jsCommand appendString:@"document.documentElement.style.webkitTouchCallout = 'none';"];
 	[aWebView stringByEvaluatingJavaScriptFromString:jsCommand];	
