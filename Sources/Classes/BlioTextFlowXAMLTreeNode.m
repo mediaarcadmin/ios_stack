@@ -91,69 +91,99 @@ static NSString *xamlColorToCSSColor(NSString *color)
     // Other attributes are styled by the TextFlowXAML.css resource
     // file.
     if(self.hasAttributes) {
+        NSCharacterSet *whitespaceAndNewlineCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
         NSMutableString *constructionString = [[NSMutableString alloc] init];
         NSString *value;
         if((value = [self attributeWithName:@"Margin"])) {
             // The margin attributes are in order left, top, right, bottom.
             // CSS margins are in order top, right, bottom, left...
             NSArray *elements = [value componentsSeparatedByString:@","];
-            NSUInteger elementCount = [elements count];
+            NSString *trimmedElements[4];
+            NSUInteger elementCount = 0;
+            for(NSString *element in elements) {
+                trimmedElements[elementCount++] = [element stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
+                if(elementCount == 4) {
+                    break;
+                }
+            }
             if(elementCount == 1) {
-                [constructionString appendFormat:@"margin:%@px;", [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"margin:%@px;", trimmedElements[0]];
             } else if(elementCount == 2) {
-                [constructionString appendFormat:@"margin:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"margin:%@px %@px;", trimmedElements[1], trimmedElements[0]];
             } else if(elementCount == 4) {
-                [constructionString appendFormat:@"margin:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"margin:%@px %@px %@px %@px;", trimmedElements[1], trimmedElements[2], trimmedElements[3], trimmedElements[0]];
             }                    
         } 
         if((value = [self attributeWithName:@"Padding"])) {
             // The padding attributes are in order left, top, right, bottom.
             // CSS padding are in order top, right, bottom, left...
             NSArray *elements = [value componentsSeparatedByString:@","];
-            NSUInteger elementCount = [elements count];
+            NSString *trimmedElements[4];
+            NSUInteger elementCount = 0;
+            for(NSString *element in elements) {
+                trimmedElements[elementCount++] = [element stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
+                if(elementCount == 4) {
+                    break;
+                }
+            }
             if(elementCount == 1) {
-                [constructionString appendFormat:@"padding:%@px;", [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"padding:%@px;", trimmedElements[0]];
             } else if(elementCount == 2) {
-                [constructionString appendFormat:@"padding:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"padding:%@px %@px;", trimmedElements[1], trimmedElements[0]];
             } else if(elementCount == 4) {
-                [constructionString appendFormat:@"padding:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"padding:%@px %@px %@px %@px;", trimmedElements[1], trimmedElements[2], trimmedElements[3], trimmedElements[0]];
             }                    
         } 
         if((value = [self attributeWithName:@"BorderThickness"])) {
             // The border attributes are in order left, top, right, bottom.
             // CSS border are in order top, right, bottom, left...
             NSArray *elements = [value componentsSeparatedByString:@","];
-            NSUInteger elementCount = [elements count];
+            NSString *trimmedElements[4];
+            NSUInteger elementCount = 0;
+            for(NSString *element in elements) {
+                trimmedElements[elementCount++] = [element stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
+                if(elementCount == 4) {
+                    break;
+                }
+            }
             if(elementCount == 1) {
-                [constructionString appendFormat:@"border-width:%@px;", [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"border-width:%@px;", trimmedElements[0]];
             } else if(elementCount == 2) {
-                [constructionString appendFormat:@"border-width:%@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"border-width:%@px %@px;", trimmedElements[1], trimmedElements[0]];
             } else if(elementCount == 4) {
-                [constructionString appendFormat:@"border-width:%@px %@px %@px %@px;", [elements objectAtIndex:1], [elements objectAtIndex:2], [elements objectAtIndex:3], [elements objectAtIndex:0]];
+                [constructionString appendFormat:@"border-width:%@px %@px %@px %@px;", trimmedElements[1], trimmedElements[2], trimmedElements[3], trimmedElements[0]];
             }                    
         } 
         if((value = [self attributeWithName:@"BorderBrush"])) {
+            value = [value stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
             [constructionString appendFormat:@"border-color:%@;", xamlColorToCSSColor(value)];
         } 
         if((value = [self attributeWithName:@"FontSize"])) {
+            value = [value stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
             [constructionString appendFormat:@"font-size:%@px;", value];
         } 
         if((value = [self attributeWithName:@"LineHeight"])) {
+            value = [value stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
             [constructionString appendFormat:@"line-height:%@px;", value];
         } 
         if((value = [self attributeWithName:@"TextIndent"])) {
+            value = [value stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
             [constructionString appendFormat:@"text-indent:%@px;", value];
         } 
         if((value = [self attributeWithName:@"Width"])) {
+            value = [value stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
             [constructionString appendFormat:@"width:%@px;", value];
         } 
         if((value = [self attributeWithName:@"Height"])) {
+            value = [value stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
             [constructionString appendFormat:@"height:%@px;", value];
         } 
         if((value = [self attributeWithName:@"Foreground"])) {
+            value = [value stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
             [constructionString appendFormat:@"color:%@;", xamlColorToCSSColor(value)];
         } 
         if((value = [self attributeWithName:@"Background"])) {
+            value = [value stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet];
             [constructionString appendFormat:@"background-color:%@;", xamlColorToCSSColor(value)];
         }                     
         if(constructionString.length) {
