@@ -1,23 +1,27 @@
 //
-//  BlioGestureSupressingContainerView.m
+//  BlioGestureSuppressingView.m
 //  BlioApp
 //
-//  Created by Matt Farrugia on 16/03/2011.
+//  Created by Matt Farrugia on 22/03/2011.
 //  Copyright 2011 BitWink. All rights reserved.
 //
 
-#import "BlioGestureSupressingBlendView.h"
+#import "BlioGestureSuppressingView.h"
 #import <UIKit/UIGestureRecognizerSubclass.h>
-#import <QuartzCore/QuartzCore.h>
 
 @interface BlioSuppressingGestureRecognizer : UIGestureRecognizer {}
 @property (nonatomic, retain) NSArray *allowedGestureRecognizers;
 @end
 
-@implementation BlioGestureSupressingBlendView
+@implementation BlioGestureSuppressingView
 
-+ (Class)layerClass {
-	return [CAReplicatorLayer class];
+@synthesize suppressingGestureRecognizer;
+
+- (void)dealloc
+{
+    [suppressingGestureRecognizer release], suppressingGestureRecognizer = nil;
+    
+    [super dealloc];
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -25,21 +29,12 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        BlioSuppressingGestureRecognizer *supressor = [[[BlioSuppressingGestureRecognizer alloc] initWithTarget:nil action:nil] autorelease];
-        supressor.allowedGestureRecognizers = [NSArray arrayWithObjects:[UITapGestureRecognizer class], nil];
-        [self addGestureRecognizer:supressor];
+        suppressingGestureRecognizer = [[BlioSuppressingGestureRecognizer alloc] initWithTarget:nil action:nil];
+        suppressingGestureRecognizer.allowedGestureRecognizers = [NSArray arrayWithObjects:[UITapGestureRecognizer class], nil];
+        [self addGestureRecognizer:suppressingGestureRecognizer];
         
     }
     return self;
-}
-
-- (void)dealloc
-{
-    for (UIGestureRecognizer *recognizer in self.gestureRecognizers) {
-        [self removeGestureRecognizer:recognizer];
-    }
-    
-    [super dealloc];
 }
 
 @end
@@ -76,8 +71,20 @@
     return YES;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event 
+{
     self.state = UIGestureRecognizerStateRecognized;
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    self.state = UIGestureRecognizerStateEnded;
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    self.state = UIGestureRecognizerStateCancelled;
+}
+
 @end
+
