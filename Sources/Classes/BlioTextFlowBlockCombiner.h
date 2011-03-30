@@ -6,27 +6,15 @@
 //  Copyright 2010 BitWink. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "KNFBTextFlowBlockCombiner.h"
 
 @class BlioTextFlowBlock;
 
-@interface BlioTextFlowBlockCombiner : NSObject {
-    NSArray *blocks;
-    NSMutableArray *combinedBlocks;
-    CGFloat verticalSpacing;
-    CGFloat horizontalSpacing;
-    CGSize minimumBlockSize;
-    BOOL applyMinimumSize;
-}
+@interface BlioTextFlowBlockCombiner : KNFBTextFlowBlockCombiner {}
 
-@property (nonatomic, assign) CGFloat verticalSpacing;
-@property (nonatomic, assign) CGFloat horizontalSpacing;
-
-- (id)initWithTextFlowBlocks:(NSArray *)theBlocks;
+// Wrapper methods
 - (BlioTextFlowBlock *)firstCombinedBlockForBlock:(BlioTextFlowBlock *)block;
 - (BlioTextFlowBlock *)lastCombinedBlockForBlock:(BlioTextFlowBlock *)block;
 - (CGRect)combinedRectForBlock:(BlioTextFlowBlock *)block;
-
-+ (CGRect)rectByCombiningAllBlocks:(NSArray *)theBlocks;
 
 @end

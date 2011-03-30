@@ -924,6 +924,21 @@
 		A3FE55B712074EFA0038DA0C /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
 		A3FE55B812074EFA0038DA0C /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B512074EFA0038DA0C /* eula.html */; };
 		A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B612074EFA0038DA0C /* userdoc.html */; };
+		C9046636134361E100E93027 /* BlioTextFlowCombinedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C9046635134361E000E93027 /* BlioTextFlowCombinedBlock.m */; };
+		C9046637134361E100E93027 /* BlioTextFlowCombinedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C9046635134361E000E93027 /* BlioTextFlowCombinedBlock.m */; };
+		C9046638134361E100E93027 /* BlioTextFlowCombinedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C9046635134361E000E93027 /* BlioTextFlowCombinedBlock.m */; };
+		C90466411343628100E93027 /* BlioTextFlowFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663A1343625F00E93027 /* BlioTextFlowFlowReference.m */; };
+		C90466421343628100E93027 /* BlioTextFlowFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663A1343625F00E93027 /* BlioTextFlowFlowReference.m */; };
+		C90466431343628100E93027 /* BlioTextFlowFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663A1343625F00E93027 /* BlioTextFlowFlowReference.m */; };
+		C90466441343628100E93027 /* BlioTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663C1343626300E93027 /* BlioTextFlowBlock.m */; };
+		C90466451343628100E93027 /* BlioTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663C1343626300E93027 /* BlioTextFlowBlock.m */; };
+		C90466461343628100E93027 /* BlioTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663C1343626300E93027 /* BlioTextFlowBlock.m */; };
+		C90466471343628100E93027 /* BlioTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663E1343626C00E93027 /* BlioTextFlowPageMarker.m */; };
+		C90466481343628100E93027 /* BlioTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663E1343626C00E93027 /* BlioTextFlowPageMarker.m */; };
+		C90466491343628100E93027 /* BlioTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663E1343626C00E93027 /* BlioTextFlowPageMarker.m */; };
+		C904664A1343628100E93027 /* BlioTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90466401343627900E93027 /* BlioTextFlowPageRange.m */; };
+		C904664B1343628100E93027 /* BlioTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90466401343627900E93027 /* BlioTextFlowPageRange.m */; };
+		C904664C1343628100E93027 /* BlioTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90466401343627900E93027 /* BlioTextFlowPageRange.m */; };
 		C90889B61330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
 		C90889B71330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
 		C90889B81330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
@@ -1848,6 +1863,16 @@
 		A3FE55B412074EFA0038DA0C /* credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = credits.html; sourceTree = "<group>"; };
 		A3FE55B512074EFA0038DA0C /* eula.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = eula.html; sourceTree = "<group>"; };
 		A3FE55B612074EFA0038DA0C /* userdoc.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = userdoc.html; sourceTree = "<group>"; };
+		C9046634134361E000E93027 /* BlioTextFlowCombinedBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowCombinedBlock.h; sourceTree = "<group>"; };
+		C9046635134361E000E93027 /* BlioTextFlowCombinedBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowCombinedBlock.m; sourceTree = "<group>"; };
+		C90466391343625E00E93027 /* BlioTextFlowFlowReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowFlowReference.h; sourceTree = "<group>"; };
+		C904663A1343625F00E93027 /* BlioTextFlowFlowReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowFlowReference.m; sourceTree = "<group>"; };
+		C904663B1343626100E93027 /* BlioTextFlowBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowBlock.h; sourceTree = "<group>"; };
+		C904663C1343626300E93027 /* BlioTextFlowBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowBlock.m; sourceTree = "<group>"; };
+		C904663D1343626700E93027 /* BlioTextFlowPageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowPageMarker.h; sourceTree = "<group>"; };
+		C904663E1343626C00E93027 /* BlioTextFlowPageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowPageMarker.m; sourceTree = "<group>"; };
+		C904663F1343627200E93027 /* BlioTextFlowPageRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowPageRange.h; sourceTree = "<group>"; };
+		C90466401343627900E93027 /* BlioTextFlowPageRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowPageRange.m; sourceTree = "<group>"; };
 		C90889B41330F2990066F103 /* BlioBlendView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBlendView.h; sourceTree = "<group>"; };
 		C90889B51330F2990066F103 /* BlioBlendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBlendView.m; sourceTree = "<group>"; };
 		C90D299613434FE4000A5374 /* KNFBTextFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlow.h; sourceTree = "<group>"; };
@@ -2677,8 +2702,6 @@
 				7D94C63311762C4F0067B732 /* BlioParagraphSource.h */,
 				7D94C638117630050067B732 /* BlioTextFlowParagraphSource.h */,
 				7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */,
-				C9F4812A1252465900083923 /* BlioTextFlowBlockCombiner.h */,
-				C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */,
 			);
 			name = TextFlow;
 			sourceTree = "<group>";
@@ -2958,12 +2981,24 @@
 		C90D2BF113435293000A5374 /* Refactored */ = {
 			isa = PBXGroup;
 			children = (
+				C9F4812A1252465900083923 /* BlioTextFlowBlockCombiner.h */,
+				C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */,
+				C9046634134361E000E93027 /* BlioTextFlowCombinedBlock.h */,
+				C9046635134361E000E93027 /* BlioTextFlowCombinedBlock.m */,
 				7DBD0EE9120191F8009CD9DA /* BlioTextFlowXAMLTree.h */,
 				7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */,
 				7DBD0F731201977D009CD9DA /* BlioTextFlowXAMLTreeNode.h */,
 				7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */,
 				C976B33412A6486000D2CC05 /* BlioTOCEntry.h */,
 				C976B33512A6486000D2CC05 /* BlioTOCEntry.m */,
+				C90466391343625E00E93027 /* BlioTextFlowFlowReference.h */,
+				C904663A1343625F00E93027 /* BlioTextFlowFlowReference.m */,
+				C904663B1343626100E93027 /* BlioTextFlowBlock.h */,
+				C904663C1343626300E93027 /* BlioTextFlowBlock.m */,
+				C904663D1343626700E93027 /* BlioTextFlowPageMarker.h */,
+				C904663E1343626C00E93027 /* BlioTextFlowPageMarker.m */,
+				C904663F1343627200E93027 /* BlioTextFlowPageRange.h */,
+				C90466401343627900E93027 /* BlioTextFlowPageRange.m */,
 			);
 			name = Refactored;
 			sourceTree = "<group>";
@@ -4397,6 +4432,11 @@
 				C90D29C913434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */,
 				C90D29CC13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */,
 				C90D29CF13434FE4000A5374 /* KNFBTOCEntry.m in Sources */,
+				C9046636134361E100E93027 /* BlioTextFlowCombinedBlock.m in Sources */,
+				C90466411343628100E93027 /* BlioTextFlowFlowReference.m in Sources */,
+				C90466441343628100E93027 /* BlioTextFlowBlock.m in Sources */,
+				C90466471343628100E93027 /* BlioTextFlowPageMarker.m in Sources */,
+				C904664A1343628100E93027 /* BlioTextFlowPageRange.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4543,6 +4583,11 @@
 				C90D29CB13434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */,
 				C90D29CE13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */,
 				C90D29D113434FE4000A5374 /* KNFBTOCEntry.m in Sources */,
+				C9046638134361E100E93027 /* BlioTextFlowCombinedBlock.m in Sources */,
+				C90466431343628100E93027 /* BlioTextFlowFlowReference.m in Sources */,
+				C90466461343628100E93027 /* BlioTextFlowBlock.m in Sources */,
+				C90466491343628100E93027 /* BlioTextFlowPageMarker.m in Sources */,
+				C904664C1343628100E93027 /* BlioTextFlowPageRange.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4689,6 +4734,11 @@
 				C90D29CA13434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */,
 				C90D29CD13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */,
 				C90D29D013434FE4000A5374 /* KNFBTOCEntry.m in Sources */,
+				C9046637134361E100E93027 /* BlioTextFlowCombinedBlock.m in Sources */,
+				C90466421343628100E93027 /* BlioTextFlowFlowReference.m in Sources */,
+				C90466451343628100E93027 /* BlioTextFlowBlock.m in Sources */,
+				C90466481343628100E93027 /* BlioTextFlowPageMarker.m in Sources */,
+				C904664B1343628100E93027 /* BlioTextFlowPageRange.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
