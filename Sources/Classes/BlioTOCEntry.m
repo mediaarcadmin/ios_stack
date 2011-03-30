@@ -10,12 +10,5 @@
 
 @implementation BlioTOCEntry
 
-@synthesize name, startPage, level;
-
-- (void)dealloc {
-    self.name = nil;
-    [super dealloc];
-}
-
 @end
 

@@ -6,16 +6,9 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <libEucalyptus/EucCSSXMLTreeNode.h>
+#import "KNFBTextFlowXAMLTreeNode.h"
 
-
-@interface BlioTextFlowXAMLTreeNode : EucCSSXMLTreeNode {
-    BOOL _inlineStyleConstructed;
-    NSString *_constructedInlineStyle;
-    BOOL _tagFound;
-    NSString *_tag;
+@interface BlioTextFlowXAMLTreeNode : KNFBTextFlowXAMLTreeNode {
 }
-
-@property (nonatomic, retain, readonly) NSString *tag;
 
 @end

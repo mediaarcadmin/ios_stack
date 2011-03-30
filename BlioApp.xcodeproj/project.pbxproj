@@ -927,9 +927,6 @@
 		C90889B61330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
 		C90889B71330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
 		C90889B81330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
-		C90D29AE13434FE4000A5374 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
-		C90D29AF13434FE4000A5374 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
-		C90D29B013434FE4000A5374 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
 		C90D29B113434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299913434FE4000A5374 /* KNFBTextFlowBlock.m */; };
 		C90D29B213434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299913434FE4000A5374 /* KNFBTextFlowBlock.m */; };
 		C90D29B313434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299913434FE4000A5374 /* KNFBTextFlowBlock.m */; };
@@ -2666,8 +2663,7 @@
 		7DA5664F11529F74000A849D /* TextFlow */ = {
 			isa = PBXGroup;
 			children = (
-				C976B33412A6486000D2CC05 /* BlioTOCEntry.h */,
-				C976B33512A6486000D2CC05 /* BlioTOCEntry.m */,
+				C90D2BF113435293000A5374 /* Refactored */,
 				C9E1FA23110EE4D500999587 /* BlioTextFlow.h */,
 				C9E1FA24110EE4D500999587 /* BlioTextFlow.m */,
 				7DF2A3891152C5F100FC2045 /* BlioTextFlowFlowTree.h */,
@@ -2681,10 +2677,6 @@
 				7D94C63311762C4F0067B732 /* BlioParagraphSource.h */,
 				7D94C638117630050067B732 /* BlioTextFlowParagraphSource.h */,
 				7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */,
-				7DBD0EE9120191F8009CD9DA /* BlioTextFlowXAMLTree.h */,
-				7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */,
-				7DBD0F731201977D009CD9DA /* BlioTextFlowXAMLTreeNode.h */,
-				7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */,
 				C9F4812A1252465900083923 /* BlioTextFlowBlockCombiner.h */,
 				C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */,
 			);
@@ -2961,6 +2953,19 @@
 			);
 			name = TextFlow;
 			path = ../scholastic/Shared/Libraries/Submodules/libKNFBReader/TextFlow;
+			sourceTree = "<group>";
+		};
+		C90D2BF113435293000A5374 /* Refactored */ = {
+			isa = PBXGroup;
+			children = (
+				7DBD0EE9120191F8009CD9DA /* BlioTextFlowXAMLTree.h */,
+				7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */,
+				7DBD0F731201977D009CD9DA /* BlioTextFlowXAMLTreeNode.h */,
+				7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */,
+				C976B33412A6486000D2CC05 /* BlioTOCEntry.h */,
+				C976B33512A6486000D2CC05 /* BlioTOCEntry.m */,
+			);
+			name = Refactored;
 			sourceTree = "<group>";
 		};
 		C921763E1176FF67009AC670 /* BookViewController */ = {
@@ -4381,7 +4386,6 @@
 				C9A9DABB1312B73B009B950F /* BlioMediaView.m in Sources */,
 				C90889B61330F2990066F103 /* BlioBlendView.m in Sources */,
 				C9CEF2E81338C61400FB5BE0 /* BlioGestureSuppressingView.m in Sources */,
-				C90D29AE13434FE4000A5374 /* KNFBTextFlow.m in Sources */,
 				C90D29B113434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */,
 				C90D29B413434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */,
 				C90D29B713434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */,
@@ -4528,7 +4532,6 @@
 				C9A9DABA1312B73B009B950F /* BlioMediaView.m in Sources */,
 				C90889B81330F2990066F103 /* BlioBlendView.m in Sources */,
 				C9CEF2EA1338C61400FB5BE0 /* BlioGestureSuppressingView.m in Sources */,
-				C90D29B013434FE4000A5374 /* KNFBTextFlow.m in Sources */,
 				C90D29B313434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */,
 				C90D29B613434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */,
 				C90D29B913434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */,
@@ -4675,7 +4678,6 @@
 				C9A9DABC1312B73B009B950F /* BlioMediaView.m in Sources */,
 				C90889B71330F2990066F103 /* BlioBlendView.m in Sources */,
 				C9CEF2E91338C61400FB5BE0 /* BlioGestureSuppressingView.m in Sources */,
-				C90D29AF13434FE4000A5374 /* KNFBTextFlow.m in Sources */,
 				C90D29B213434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */,
 				C90D29B513434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */,
 				C90D29B813434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */,

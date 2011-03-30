@@ -6,7 +6,7 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <libEucalyptus/EucCSSXMLTree.h>
+#import "KNFBTextFlowXAMLTree.h"
 
-@interface BlioTextFlowXAMLTree : EucCSSXMLTree {}
+@interface BlioTextFlowXAMLTree : KNFBTextFlowXAMLTree {}
 @end

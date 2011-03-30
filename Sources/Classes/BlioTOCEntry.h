@@ -9,14 +9,10 @@
 #import <UIKit/UIKit.h>
 
 
-@interface BlioTOCEntry: NSObject {
-    NSString *name;
-    NSUInteger startPage;
-    NSUInteger level;
-}
+#import "KNFBTOCEntry.h"
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, assign) NSUInteger startPage;
-@property (nonatomic, assign) NSUInteger level;
+@interface BlioTOCEntry : KNFBTOCEntry {
+    
+}
 
 @end
