@@ -713,7 +713,8 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 }
 
 - (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path {
-    
+    return nil;
+#if 0
     void *directoryPtr;
     [contentsLock lock];
     NSUInteger entries = XPS_GetPackageDir(xpsHandle, &directoryPtr);
@@ -731,6 +732,7 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 	NSURL *tempURL = [NSURL fileURLWithPath:tempPath];
 
 	return tempURL;
+#endif
 }
 
 - (NSString *)enhancedContentRootPath {
