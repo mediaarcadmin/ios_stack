@@ -713,10 +713,21 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 }
 
 - (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path {
+    
+    void *directoryPtr;
+    [contentsLock lock];
+    NSUInteger entries = XPS_GetPackageDir(xpsHandle, &directoryPtr);
+    [contentsLock unlock];
+        //        NSURL 
+        //    NSFileHandle *fileHandle =  
+        return [BlioZipArchive contentsOfCentralDirectory:directoryPtr numberOfEntries:entries];
+    
+    
+    //
 	NSData *videoData = [self dataForComponentAtPath:path];
 	
 	NSString *tempPath = [self.tempDirectory stringByAppendingPathComponent:[path lastPathComponent]];
-	[videoData writeToFile:tempPath atomically:YES];
+	[videoData writeToFile:tempPath atomically:NO];
 	NSURL *tempURL = [NSURL fileURLWithPath:tempPath];
 
 	return tempURL;
@@ -922,6 +933,7 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
     
     return rawData;
 }
+
 -(NSArray*)encryptedEPubPaths {
 	if (!_encryptedEPubPaths) {
 		NSData * epubInfoData = nil;
