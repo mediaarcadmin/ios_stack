@@ -927,6 +927,42 @@
 		C90889B61330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
 		C90889B71330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
 		C90889B81330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
+		C90D29AE13434FE4000A5374 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
+		C90D29AF13434FE4000A5374 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
+		C90D29B013434FE4000A5374 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
+		C90D29B113434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299913434FE4000A5374 /* KNFBTextFlowBlock.m */; };
+		C90D29B213434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299913434FE4000A5374 /* KNFBTextFlowBlock.m */; };
+		C90D29B313434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299913434FE4000A5374 /* KNFBTextFlowBlock.m */; };
+		C90D29B413434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299B13434FE4000A5374 /* KNFBTextFlowBlockCombiner.m */; };
+		C90D29B513434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299B13434FE4000A5374 /* KNFBTextFlowBlockCombiner.m */; };
+		C90D29B613434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299B13434FE4000A5374 /* KNFBTextFlowBlockCombiner.m */; };
+		C90D29B713434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299D13434FE4000A5374 /* KNFBTextFlowCombinedBlock.m */; };
+		C90D29B813434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299D13434FE4000A5374 /* KNFBTextFlowCombinedBlock.m */; };
+		C90D29B913434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299D13434FE4000A5374 /* KNFBTextFlowCombinedBlock.m */; };
+		C90D29BA13434FE4000A5374 /* KNFBTextFlowFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299F13434FE4000A5374 /* KNFBTextFlowFlowReference.m */; };
+		C90D29BB13434FE4000A5374 /* KNFBTextFlowFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299F13434FE4000A5374 /* KNFBTextFlowFlowReference.m */; };
+		C90D29BC13434FE4000A5374 /* KNFBTextFlowFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299F13434FE4000A5374 /* KNFBTextFlowFlowReference.m */; };
+		C90D29BD13434FE4000A5374 /* KNFBTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A113434FE4000A5374 /* KNFBTextFlowPageMarker.m */; };
+		C90D29BE13434FE4000A5374 /* KNFBTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A113434FE4000A5374 /* KNFBTextFlowPageMarker.m */; };
+		C90D29BF13434FE4000A5374 /* KNFBTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A113434FE4000A5374 /* KNFBTextFlowPageMarker.m */; };
+		C90D29C013434FE4000A5374 /* KNFBTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A313434FE4000A5374 /* KNFBTextFlowPageRange.m */; };
+		C90D29C113434FE4000A5374 /* KNFBTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A313434FE4000A5374 /* KNFBTextFlowPageRange.m */; };
+		C90D29C213434FE4000A5374 /* KNFBTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A313434FE4000A5374 /* KNFBTextFlowPageRange.m */; };
+		C90D29C313434FE4000A5374 /* KNFBTextFlowPositionedWord.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A513434FE4000A5374 /* KNFBTextFlowPositionedWord.m */; };
+		C90D29C413434FE4000A5374 /* KNFBTextFlowPositionedWord.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A513434FE4000A5374 /* KNFBTextFlowPositionedWord.m */; };
+		C90D29C513434FE4000A5374 /* KNFBTextFlowPositionedWord.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A513434FE4000A5374 /* KNFBTextFlowPositionedWord.m */; };
+		C90D29C613434FE4000A5374 /* KNFBTextFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A713434FE4000A5374 /* KNFBTextFlowReference.m */; };
+		C90D29C713434FE4000A5374 /* KNFBTextFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A713434FE4000A5374 /* KNFBTextFlowReference.m */; };
+		C90D29C813434FE4000A5374 /* KNFBTextFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A713434FE4000A5374 /* KNFBTextFlowReference.m */; };
+		C90D29C913434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A913434FE4000A5374 /* KNFBTextFlowXAMLTree.m */; };
+		C90D29CA13434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A913434FE4000A5374 /* KNFBTextFlowXAMLTree.m */; };
+		C90D29CB13434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29A913434FE4000A5374 /* KNFBTextFlowXAMLTree.m */; };
+		C90D29CC13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29AB13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m */; };
+		C90D29CD13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29AB13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m */; };
+		C90D29CE13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29AB13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m */; };
+		C90D29CF13434FE4000A5374 /* KNFBTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29AD13434FE4000A5374 /* KNFBTOCEntry.m */; };
+		C90D29D013434FE4000A5374 /* KNFBTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29AD13434FE4000A5374 /* KNFBTOCEntry.m */; };
+		C90D29D113434FE4000A5374 /* KNFBTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D29AD13434FE4000A5374 /* KNFBTOCEntry.m */; };
 		C90DAE8D125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */; };
 		C90DAE8E125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */; };
 		C90DAE8F125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */; };
@@ -1817,6 +1853,30 @@
 		A3FE55B612074EFA0038DA0C /* userdoc.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = userdoc.html; sourceTree = "<group>"; };
 		C90889B41330F2990066F103 /* BlioBlendView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBlendView.h; sourceTree = "<group>"; };
 		C90889B51330F2990066F103 /* BlioBlendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBlendView.m; sourceTree = "<group>"; };
+		C90D299613434FE4000A5374 /* KNFBTextFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlow.h; sourceTree = "<group>"; };
+		C90D299713434FE4000A5374 /* KNFBTextFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlow.m; sourceTree = "<group>"; };
+		C90D299813434FE4000A5374 /* KNFBTextFlowBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowBlock.h; sourceTree = "<group>"; };
+		C90D299913434FE4000A5374 /* KNFBTextFlowBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowBlock.m; sourceTree = "<group>"; };
+		C90D299A13434FE4000A5374 /* KNFBTextFlowBlockCombiner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowBlockCombiner.h; sourceTree = "<group>"; };
+		C90D299B13434FE4000A5374 /* KNFBTextFlowBlockCombiner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowBlockCombiner.m; sourceTree = "<group>"; };
+		C90D299C13434FE4000A5374 /* KNFBTextFlowCombinedBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowCombinedBlock.h; sourceTree = "<group>"; };
+		C90D299D13434FE4000A5374 /* KNFBTextFlowCombinedBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowCombinedBlock.m; sourceTree = "<group>"; };
+		C90D299E13434FE4000A5374 /* KNFBTextFlowFlowReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowFlowReference.h; sourceTree = "<group>"; };
+		C90D299F13434FE4000A5374 /* KNFBTextFlowFlowReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowFlowReference.m; sourceTree = "<group>"; };
+		C90D29A013434FE4000A5374 /* KNFBTextFlowPageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowPageMarker.h; sourceTree = "<group>"; };
+		C90D29A113434FE4000A5374 /* KNFBTextFlowPageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowPageMarker.m; sourceTree = "<group>"; };
+		C90D29A213434FE4000A5374 /* KNFBTextFlowPageRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowPageRange.h; sourceTree = "<group>"; };
+		C90D29A313434FE4000A5374 /* KNFBTextFlowPageRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowPageRange.m; sourceTree = "<group>"; };
+		C90D29A413434FE4000A5374 /* KNFBTextFlowPositionedWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowPositionedWord.h; sourceTree = "<group>"; };
+		C90D29A513434FE4000A5374 /* KNFBTextFlowPositionedWord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowPositionedWord.m; sourceTree = "<group>"; };
+		C90D29A613434FE4000A5374 /* KNFBTextFlowReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowReference.h; sourceTree = "<group>"; };
+		C90D29A713434FE4000A5374 /* KNFBTextFlowReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowReference.m; sourceTree = "<group>"; };
+		C90D29A813434FE4000A5374 /* KNFBTextFlowXAMLTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowXAMLTree.h; sourceTree = "<group>"; };
+		C90D29A913434FE4000A5374 /* KNFBTextFlowXAMLTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowXAMLTree.m; sourceTree = "<group>"; };
+		C90D29AA13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowXAMLTreeNode.h; sourceTree = "<group>"; };
+		C90D29AB13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowXAMLTreeNode.m; sourceTree = "<group>"; };
+		C90D29AC13434FE4000A5374 /* KNFBTOCEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTOCEntry.h; sourceTree = "<group>"; };
+		C90D29AD13434FE4000A5374 /* KNFBTOCEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTOCEntry.m; sourceTree = "<group>"; };
 		C90DAE8B125CB03000D8E663 /* BlioLayoutHyperlink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutHyperlink.h; sourceTree = "<group>"; };
 		C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutHyperlink.m; sourceTree = "<group>"; };
 		C90DAEBB125CB46E00D8E663 /* BlioLayoutPDFDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutPDFDataSource.h; sourceTree = "<group>"; };
@@ -2803,6 +2863,7 @@
 		A37FC20B10EA770500F3DC5A /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				C90D299413434FCC000A5374 /* libKNFBReader */,
 				C944EC0011C1C09F00943402 /* XPS */,
 				A3D9F13911B064530011D544 /* DRM */,
 				C9867652112411060070A03E /* GData.xcodeproj */,
@@ -2860,6 +2921,46 @@
 				A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */,
 			);
 			name = DRM;
+			sourceTree = "<group>";
+		};
+		C90D299413434FCC000A5374 /* libKNFBReader */ = {
+			isa = PBXGroup;
+			children = (
+				C90D299513434FE4000A5374 /* TextFlow */,
+			);
+			name = libKNFBReader;
+			sourceTree = "<group>";
+		};
+		C90D299513434FE4000A5374 /* TextFlow */ = {
+			isa = PBXGroup;
+			children = (
+				C90D299613434FE4000A5374 /* KNFBTextFlow.h */,
+				C90D299713434FE4000A5374 /* KNFBTextFlow.m */,
+				C90D299813434FE4000A5374 /* KNFBTextFlowBlock.h */,
+				C90D299913434FE4000A5374 /* KNFBTextFlowBlock.m */,
+				C90D299A13434FE4000A5374 /* KNFBTextFlowBlockCombiner.h */,
+				C90D299B13434FE4000A5374 /* KNFBTextFlowBlockCombiner.m */,
+				C90D299C13434FE4000A5374 /* KNFBTextFlowCombinedBlock.h */,
+				C90D299D13434FE4000A5374 /* KNFBTextFlowCombinedBlock.m */,
+				C90D299E13434FE4000A5374 /* KNFBTextFlowFlowReference.h */,
+				C90D299F13434FE4000A5374 /* KNFBTextFlowFlowReference.m */,
+				C90D29A013434FE4000A5374 /* KNFBTextFlowPageMarker.h */,
+				C90D29A113434FE4000A5374 /* KNFBTextFlowPageMarker.m */,
+				C90D29A213434FE4000A5374 /* KNFBTextFlowPageRange.h */,
+				C90D29A313434FE4000A5374 /* KNFBTextFlowPageRange.m */,
+				C90D29A413434FE4000A5374 /* KNFBTextFlowPositionedWord.h */,
+				C90D29A513434FE4000A5374 /* KNFBTextFlowPositionedWord.m */,
+				C90D29A613434FE4000A5374 /* KNFBTextFlowReference.h */,
+				C90D29A713434FE4000A5374 /* KNFBTextFlowReference.m */,
+				C90D29A813434FE4000A5374 /* KNFBTextFlowXAMLTree.h */,
+				C90D29A913434FE4000A5374 /* KNFBTextFlowXAMLTree.m */,
+				C90D29AA13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.h */,
+				C90D29AB13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m */,
+				C90D29AC13434FE4000A5374 /* KNFBTOCEntry.h */,
+				C90D29AD13434FE4000A5374 /* KNFBTOCEntry.m */,
+			);
+			name = TextFlow;
+			path = ../scholastic/Shared/Libraries/Submodules/libKNFBReader/TextFlow;
 			sourceTree = "<group>";
 		};
 		C921763E1176FF67009AC670 /* BookViewController */ = {
@@ -4280,6 +4381,18 @@
 				C9A9DABB1312B73B009B950F /* BlioMediaView.m in Sources */,
 				C90889B61330F2990066F103 /* BlioBlendView.m in Sources */,
 				C9CEF2E81338C61400FB5BE0 /* BlioGestureSuppressingView.m in Sources */,
+				C90D29AE13434FE4000A5374 /* KNFBTextFlow.m in Sources */,
+				C90D29B113434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */,
+				C90D29B413434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */,
+				C90D29B713434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */,
+				C90D29BA13434FE4000A5374 /* KNFBTextFlowFlowReference.m in Sources */,
+				C90D29BD13434FE4000A5374 /* KNFBTextFlowPageMarker.m in Sources */,
+				C90D29C013434FE4000A5374 /* KNFBTextFlowPageRange.m in Sources */,
+				C90D29C313434FE4000A5374 /* KNFBTextFlowPositionedWord.m in Sources */,
+				C90D29C613434FE4000A5374 /* KNFBTextFlowReference.m in Sources */,
+				C90D29C913434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */,
+				C90D29CC13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */,
+				C90D29CF13434FE4000A5374 /* KNFBTOCEntry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4415,6 +4528,18 @@
 				C9A9DABA1312B73B009B950F /* BlioMediaView.m in Sources */,
 				C90889B81330F2990066F103 /* BlioBlendView.m in Sources */,
 				C9CEF2EA1338C61400FB5BE0 /* BlioGestureSuppressingView.m in Sources */,
+				C90D29B013434FE4000A5374 /* KNFBTextFlow.m in Sources */,
+				C90D29B313434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */,
+				C90D29B613434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */,
+				C90D29B913434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */,
+				C90D29BC13434FE4000A5374 /* KNFBTextFlowFlowReference.m in Sources */,
+				C90D29BF13434FE4000A5374 /* KNFBTextFlowPageMarker.m in Sources */,
+				C90D29C213434FE4000A5374 /* KNFBTextFlowPageRange.m in Sources */,
+				C90D29C513434FE4000A5374 /* KNFBTextFlowPositionedWord.m in Sources */,
+				C90D29C813434FE4000A5374 /* KNFBTextFlowReference.m in Sources */,
+				C90D29CB13434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */,
+				C90D29CE13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */,
+				C90D29D113434FE4000A5374 /* KNFBTOCEntry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4550,6 +4675,18 @@
 				C9A9DABC1312B73B009B950F /* BlioMediaView.m in Sources */,
 				C90889B71330F2990066F103 /* BlioBlendView.m in Sources */,
 				C9CEF2E91338C61400FB5BE0 /* BlioGestureSuppressingView.m in Sources */,
+				C90D29AF13434FE4000A5374 /* KNFBTextFlow.m in Sources */,
+				C90D29B213434FE4000A5374 /* KNFBTextFlowBlock.m in Sources */,
+				C90D29B513434FE4000A5374 /* KNFBTextFlowBlockCombiner.m in Sources */,
+				C90D29B813434FE4000A5374 /* KNFBTextFlowCombinedBlock.m in Sources */,
+				C90D29BB13434FE4000A5374 /* KNFBTextFlowFlowReference.m in Sources */,
+				C90D29BE13434FE4000A5374 /* KNFBTextFlowPageMarker.m in Sources */,
+				C90D29C113434FE4000A5374 /* KNFBTextFlowPageRange.m in Sources */,
+				C90D29C413434FE4000A5374 /* KNFBTextFlowPositionedWord.m in Sources */,
+				C90D29C713434FE4000A5374 /* KNFBTextFlowReference.m in Sources */,
+				C90D29CA13434FE4000A5374 /* KNFBTextFlowXAMLTree.m in Sources */,
+				C90D29CD13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m in Sources */,
+				C90D29D013434FE4000A5374 /* KNFBTOCEntry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
