@@ -10,6 +10,11 @@
 #import "BlioBookmark.h"
 #import "BlioProcessingManager.h"
 #import "BlioTextFlowReference.h"
+#import "BlioTextFlowBlock.h"
+#import "BlioTextFlowFlowReference.h"
+#import "BlioTextFlowPreParseOperation.h"
+#import "BlioTextFlowPositionedWord.h"
+#import "BlioTOCEntry.h"
 
 @class BlioTextFlowFlowTree, BlioTextFlowXAMLTree;
 

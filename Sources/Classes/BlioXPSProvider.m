@@ -16,6 +16,7 @@
 #import <objc/runtime.h>
 #import <libEucalyptus/THPair.h>
 #import "BlioZipArchive.h"
+#import <expat/expat.h>
 
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
 void BlioXPSProviderDRMRewind(URI_HANDLE h);

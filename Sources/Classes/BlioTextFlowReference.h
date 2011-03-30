@@ -1,14 +1,16 @@
 //
-//  BlioTextFlowBlock.h
+//  BlioTextFlowReference.h
 //  Scholastic
 //
 //  Created by Gordon Christie on 29/03/2011.
 //  Copyright 2011 BitWink. All rights reserved.
 //
 
-#import "KNFBTextFlowBlock.h"
+#import "KNFBTextFlowReference.h"
 
-@interface BlioTextFlowBlock : KNFBTextFlowBlock {}
+
+@interface BlioTextFlowReference : KNFBTextFlowReference {
+}
 
 @end
 

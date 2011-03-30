@@ -11,6 +11,7 @@
 #import "BlioTextFlowParagraph.h"
 #import "BlioTextFlow.h"
 #import "BlioBookmark.h"
+#import "BlioTextFlowPositionedWord.h"
 
 @interface BlioTextFlowParagraphWords ()
 

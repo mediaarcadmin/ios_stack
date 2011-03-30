@@ -10,6 +10,11 @@
 
 @implementation BlioTextFlow
 
+- (id)initWithBookID:(NSManagedObjectID *)aBookID
+{
+    return [super initWithBookID:aBookID];
+}
+
 #pragma mark -
 #pragma mark Wrapper Methods
 
@@ -43,12 +48,19 @@
 
 - (NSArray *)wordsForBookmarkRange:(BlioBookmarkRange *)range
 {
-    
+    return nil;
 }
 
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range
 {
-    
+    return nil;
+}
+
++ (NSArray *)preAvailabilityOperations {
+    BlioTextFlowPreParseOperation *preParseOp = [[BlioTextFlowPreParseOperation alloc] init];
+    NSArray *operations = [NSArray arrayWithObject:preParseOp];
+    [preParseOp release];
+    return operations;
 }
 
 @end

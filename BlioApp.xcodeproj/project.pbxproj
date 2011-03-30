@@ -939,6 +939,12 @@
 		C904664A1343628100E93027 /* BlioTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90466401343627900E93027 /* BlioTextFlowPageRange.m */; };
 		C904664B1343628100E93027 /* BlioTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90466401343627900E93027 /* BlioTextFlowPageRange.m */; };
 		C904664C1343628100E93027 /* BlioTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90466401343627900E93027 /* BlioTextFlowPageRange.m */; };
+		C90469B0134365D600E93027 /* BlioTextFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90469AF134365D600E93027 /* BlioTextFlowReference.m */; };
+		C90469B1134365D600E93027 /* BlioTextFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90469AF134365D600E93027 /* BlioTextFlowReference.m */; };
+		C90469B2134365D600E93027 /* BlioTextFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90469AF134365D600E93027 /* BlioTextFlowReference.m */; };
+		C90469B51343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */ = {isa = PBXBuildFile; fileRef = C90469B41343672D00E93027 /* BlioTextFlowPositionedWord.m */; };
+		C90469B61343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */ = {isa = PBXBuildFile; fileRef = C90469B41343672D00E93027 /* BlioTextFlowPositionedWord.m */; };
+		C90469B71343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */ = {isa = PBXBuildFile; fileRef = C90469B41343672D00E93027 /* BlioTextFlowPositionedWord.m */; };
 		C90889B61330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
 		C90889B71330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
 		C90889B81330F2990066F103 /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
@@ -1057,6 +1063,12 @@
 		C9B61CC71136BAA80012CE7E /* BlioProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC61136BAA80012CE7E /* BlioProcessing.m */; };
 		C9B61FF51137AF840012CE7E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B61FF41137AF840012CE7E /* libz.dylib */; };
 		C9B620D01137BE170012CE7E /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9B620CB1137BE170012CE7E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
+		C9C2C3F3134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */; };
+		C9C2C3F4134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */; };
+		C9C2C3F5134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */; };
+		C9C2C3F613436B8E00548290 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
+		C9C2C3F713436B8E00548290 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
+		C9C2C3F813436B8F00548290 /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C90D299713434FE4000A5374 /* KNFBTextFlow.m */; };
 		C9C37B9C122D278800DD350F /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
 		C9C37C2E122D3F5900DD350F /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		C9C5467610F77EDD00ECE126 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5467510F77EDD00ECE126 /* CoreData.framework */; };
@@ -1873,6 +1885,10 @@
 		C904663E1343626C00E93027 /* BlioTextFlowPageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowPageMarker.m; sourceTree = "<group>"; };
 		C904663F1343627200E93027 /* BlioTextFlowPageRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowPageRange.h; sourceTree = "<group>"; };
 		C90466401343627900E93027 /* BlioTextFlowPageRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowPageRange.m; sourceTree = "<group>"; };
+		C90469AE134365D600E93027 /* BlioTextFlowReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowReference.h; sourceTree = "<group>"; };
+		C90469AF134365D600E93027 /* BlioTextFlowReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowReference.m; sourceTree = "<group>"; };
+		C90469B31343672C00E93027 /* BlioTextFlowPositionedWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowPositionedWord.h; sourceTree = "<group>"; };
+		C90469B41343672D00E93027 /* BlioTextFlowPositionedWord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowPositionedWord.m; sourceTree = "<group>"; };
 		C90889B41330F2990066F103 /* BlioBlendView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBlendView.h; sourceTree = "<group>"; };
 		C90889B51330F2990066F103 /* BlioBlendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBlendView.m; sourceTree = "<group>"; };
 		C90D299613434FE4000A5374 /* KNFBTextFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlow.h; sourceTree = "<group>"; };
@@ -1999,6 +2015,8 @@
 		C9B61FF41137AF840012CE7E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		C9B620CA1137BE170012CE7E /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		C9B620CB1137BE170012CE7E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
+		C9C2C3F1134368FD00548290 /* BlioTextFlowPreParseOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowPreParseOperation.h; sourceTree = "<group>"; };
+		C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowPreParseOperation.m; sourceTree = "<group>"; };
 		C9C37B9A122D278800DD350F /* BlioViewSettingsContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsContentsView.h; sourceTree = "<group>"; };
 		C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsContentsView.m; sourceTree = "<group>"; };
 		C9C37C2C122D3F5900DD350F /* BlioViewSettingsPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsPopover.h; sourceTree = "<group>"; };
@@ -2991,6 +3009,8 @@
 				7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */,
 				C976B33412A6486000D2CC05 /* BlioTOCEntry.h */,
 				C976B33512A6486000D2CC05 /* BlioTOCEntry.m */,
+				C90469AE134365D600E93027 /* BlioTextFlowReference.h */,
+				C90469AF134365D600E93027 /* BlioTextFlowReference.m */,
 				C90466391343625E00E93027 /* BlioTextFlowFlowReference.h */,
 				C904663A1343625F00E93027 /* BlioTextFlowFlowReference.m */,
 				C904663B1343626100E93027 /* BlioTextFlowBlock.h */,
@@ -2999,6 +3019,10 @@
 				C904663E1343626C00E93027 /* BlioTextFlowPageMarker.m */,
 				C904663F1343627200E93027 /* BlioTextFlowPageRange.h */,
 				C90466401343627900E93027 /* BlioTextFlowPageRange.m */,
+				C90469B31343672C00E93027 /* BlioTextFlowPositionedWord.h */,
+				C90469B41343672D00E93027 /* BlioTextFlowPositionedWord.m */,
+				C9C2C3F1134368FD00548290 /* BlioTextFlowPreParseOperation.h */,
+				C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */,
 			);
 			name = Refactored;
 			sourceTree = "<group>";
@@ -4437,6 +4461,10 @@
 				C90466441343628100E93027 /* BlioTextFlowBlock.m in Sources */,
 				C90466471343628100E93027 /* BlioTextFlowPageMarker.m in Sources */,
 				C904664A1343628100E93027 /* BlioTextFlowPageRange.m in Sources */,
+				C90469B0134365D600E93027 /* BlioTextFlowReference.m in Sources */,
+				C90469B51343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */,
+				C9C2C3F3134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */,
+				C9C2C3F613436B8E00548290 /* KNFBTextFlow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4588,6 +4616,10 @@
 				C90466461343628100E93027 /* BlioTextFlowBlock.m in Sources */,
 				C90466491343628100E93027 /* BlioTextFlowPageMarker.m in Sources */,
 				C904664C1343628100E93027 /* BlioTextFlowPageRange.m in Sources */,
+				C90469B2134365D600E93027 /* BlioTextFlowReference.m in Sources */,
+				C90469B71343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */,
+				C9C2C3F5134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */,
+				C9C2C3F813436B8F00548290 /* KNFBTextFlow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4739,6 +4771,10 @@
 				C90466451343628100E93027 /* BlioTextFlowBlock.m in Sources */,
 				C90466481343628100E93027 /* BlioTextFlowPageMarker.m in Sources */,
 				C904664B1343628100E93027 /* BlioTextFlowPageRange.m in Sources */,
+				C90469B1134365D600E93027 /* BlioTextFlowReference.m in Sources */,
+				C90469B61343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */,
+				C9C2C3F4134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */,
+				C9C2C3F713436B8E00548290 /* KNFBTextFlow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

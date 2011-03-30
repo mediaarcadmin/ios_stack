@@ -16,17 +16,17 @@
 
 - (BlioTextFlowBlock *)firstCombinedBlockForBlock:(BlioTextFlowBlock *)block
 {
-    return (BlioTextFlowBlock *)[super firstCombinedBlockForBlock:block];
+    return (BlioTextFlowBlock *)[super firstCombinedBlockForBlock:(KNFBTextFlowBlock *)block];
 }
 
 - (BlioTextFlowBlock *)lastCombinedBlockForBlock:(BlioTextFlowBlock *)block
 {
-    return (BlioTextFlowBlock *)[super lastCombinedBlockForBlock:block];
+    return (BlioTextFlowBlock *)[super lastCombinedBlockForBlock:(KNFBTextFlowBlock *)block];
 }
 
 - (CGRect)combinedRectForBlock:(BlioTextFlowBlock *)block
 {
-    return [super combinedRectForBlock:block];
+    return [super combinedRectForBlock:(KNFBTextFlowBlock *)block];
 }
 
 @end
