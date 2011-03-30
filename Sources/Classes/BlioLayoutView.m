@@ -1545,6 +1545,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
     [aPageTurningView.tapGestureRecognizer requireGestureRecognizerToFail:doubleTap];
 
+    aPageTurningView.tapGestureRecognizer.cancelsTouchesInView = NO;
+    
     [doubleTap release];
 }
 
@@ -1552,6 +1554,16 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if (sender.state == UIGestureRecognizerStateEnded && 
         !self.selector.isTracking) {
         
+        UIView *overlayView = self.overlay;
+        UIView *hitTestOverlayView = [overlayView hitTest:[sender locationInView:overlayView] withEvent:nil];
+        if(overlayView != hitTestOverlayView) {
+            // Hide on taps with overlay contents, otherwise do nothing
+            // (we don't want to show the toolbars if the user is just interating
+            // with a peice of overlay content.
+            [self.delegate hideToolbars];
+            return;
+        }
+            
         CGPoint point = [sender locationInView:self];
         BlioLayoutHyperlink *touchedHyperlink = nil;
         BlioBookmarkRange *touchedNoteBookmark = nil;
