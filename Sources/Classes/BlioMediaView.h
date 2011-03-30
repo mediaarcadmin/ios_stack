@@ -17,7 +17,7 @@ static NSString * const BlioMediaViewWillPlayMovieNotification = @"BlioMediaView
 	UIButton * playButton;
 	UIActivityIndicatorView * activityIndicatorView;
 	BOOL isActive;
-
+    UITapGestureRecognizer *buttonTapGestureRecogniser;
 }
 - (id)initWithFrame:(CGRect)frame contentURL:(NSURL*)url;
 - (void)pauseMediaPlayer;
