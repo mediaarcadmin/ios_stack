@@ -1161,15 +1161,25 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	return positionedContexts;
 }
 
+- (void)updatePositionedOverlayContextsForPageIndex:(NSUInteger)pageIndex
+{
+    NSArray *contexts = [self overlayPositionedContextsForPageAtIndex:pageIndex];
+    if(contexts.count) {
+        [self.pageTurningView overlayPageAtIndex:pageIndex withPositionedRGBABitmapContexts:contexts];
+    }
+}
+
 - (void)updatePositionedOverlayContexts
 {
     EucPageTurningView *aPageTurningView = self.pageTurningView;
-    if(aPageTurningView.leftPageIndex != NSUIntegerMax) {
-        [aPageTurningView overlayPageAtIndex:aPageTurningView.leftPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContextsForPageAtIndex:aPageTurningView.leftPageIndex]];
+    NSUInteger leftPageIndex = aPageTurningView.leftPageIndex;
+    if(leftPageIndex != NSUIntegerMax) {
+        [self updatePositionedOverlayContextsForPageIndex:leftPageIndex];
     } 
-    if(aPageTurningView.rightPageIndex != NSUIntegerMax) {
-        [aPageTurningView overlayPageAtIndex:aPageTurningView.rightPageIndex withPositionedRGBABitmapContexts:[self overlayPositionedContextsForPageAtIndex:aPageTurningView.rightPageIndex]];
-    }
+    NSUInteger rightPageIndex = aPageTurningView.rightPageIndex;
+    if(rightPageIndex != NSUIntegerMax) {
+        [self updatePositionedOverlayContextsForPageIndex:rightPageIndex];
+    } 
 }
 
 - (void)updateOverlayForPagesInRange:(NSRange)pageRange 
