@@ -233,6 +233,15 @@
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
 		aPageTurningView.vibratesOnInvalidTurn = NO;
         
+        BOOL hasEnhancedContent = NO;
+        if ([(NSObject *)self.dataSource respondsToSelector:@selector(hasEnhancedContent)]) {
+            hasEnhancedContent = [self.dataSource hasEnhancedContent];
+        }
+        
+        if (hasEnhancedContent) {
+            aPageTurningView.lightIsStaticWhenPagesPannedOrZoomed = NO;
+        }
+        
         // Must do this here so that teh page aspect ration takes account of the twoUp property
         CGRect myBounds = self.bounds;
         if(myBounds.size.width > myBounds.size.height) {

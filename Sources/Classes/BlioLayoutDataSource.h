@@ -14,7 +14,7 @@
 @protocol BlioLayoutDataSource
 
 @optional
-
+- (BOOL)hasEnhancedContent;
 - (NSString *)enhancedContentRootPath;
 - (NSData *)enhancedContentDataAtPath:(NSString *)path;
 - (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path;
