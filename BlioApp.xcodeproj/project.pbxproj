@@ -252,7 +252,6 @@
 		7DED87DE12EC829F00D162E0 /* xhtml-entities.ent in Resources */ = {isa = PBXBuildFile; fileRef = 7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */; };
 		7DED87DF12EC829F00D162E0 /* xhtml-entities.ent in Resources */ = {isa = PBXBuildFile; fileRef = 7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */; };
 		7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
-		7DF2A3011152ABA600FC2045 /* BlioTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A2FF1152ABA600FC2045 /* BlioTextFlowParagraphWords.m */; };
 		7DF2A38C1152C5F100FC2045 /* BlioTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */; };
 		7DF2A49011536CA100FC2045 /* BlioFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */; };
 		7DF2A58B115381EF00FC2045 /* TextFlowFlow.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DF2A589115381EF00FC2045 /* TextFlowFlow.css */; };
@@ -476,7 +475,6 @@
 		A30E0FEA123EA5B400D31157 /* BlioFlowPaginateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */; };
 		A30E0FEB123EA5B400D31157 /* BlioTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */; };
 		A30E0FEC123EA5B400D31157 /* BlioTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */; };
-		A30E0FED123EA5B400D31157 /* BlioTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A2FF1152ABA600FC2045 /* BlioTextFlowParagraphWords.m */; };
 		A30E0FEE123EA5B400D31157 /* BlioTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */; };
 		A30E0FEF123EA5B400D31157 /* BlioFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */; };
 		A30E0FF0123EA5B400D31157 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DC5077A0116A3F2800CD40B3 /* Reachability.m */; };
@@ -764,7 +762,6 @@
 		A36D35A2120B136700E1A035 /* BlioFlowPaginateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */; };
 		A36D35A3120B136700E1A035 /* BlioTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */; };
 		A36D35A4120B136700E1A035 /* BlioTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */; };
-		A36D35A5120B136700E1A035 /* BlioTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A2FF1152ABA600FC2045 /* BlioTextFlowParagraphWords.m */; };
 		A36D35A6120B136700E1A035 /* BlioTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */; };
 		A36D35A7120B136700E1A035 /* BlioFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */; };
 		A36D35A8120B136700E1A035 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DC5077A0116A3F2800CD40B3 /* Reachability.m */; };
@@ -1034,6 +1031,15 @@
 		C988573A1202ED54006905CF /* navigationBarBlackTranslucentButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */; };
 		C988573B1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */; };
 		C98857E512031B7B006905CF /* BlioTimeOrderedCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C98857E412031B7B006905CF /* BlioTimeOrderedCache.m */; };
+		C98E05EE134382A300E16C1A /* KNFBTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E05ED134382A200E16C1A /* KNFBTextFlowFlowTree.m */; };
+		C98E05EF134382A300E16C1A /* KNFBTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E05ED134382A200E16C1A /* KNFBTextFlowFlowTree.m */; };
+		C98E05F0134382A300E16C1A /* KNFBTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E05ED134382A200E16C1A /* KNFBTextFlowFlowTree.m */; };
+		C98E06CB134474B400E16C1A /* KNFBTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E06CA134474B100E16C1A /* KNFBTextFlowFlow.m */; };
+		C98E06CC134474B400E16C1A /* KNFBTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E06CA134474B100E16C1A /* KNFBTextFlowFlow.m */; };
+		C98E06CD134474B400E16C1A /* KNFBTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E06CA134474B100E16C1A /* KNFBTextFlowFlow.m */; };
+		C98E06D01344776C00E16C1A /* KNFBTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E06CF1344776700E16C1A /* KNFBTextFlowParagraphWords.m */; };
+		C98E06D11344776C00E16C1A /* KNFBTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E06CF1344776700E16C1A /* KNFBTextFlowParagraphWords.m */; };
+		C98E06D21344776C00E16C1A /* KNFBTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = C98E06CF1344776700E16C1A /* KNFBTextFlowParagraphWords.m */; };
 		C990F9C6110065CB00C82CA8 /* BlioContentsTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */; };
 		C99239DD126CCD9200BA364A /* searchBarBorder.png in Resources */ = {isa = PBXBuildFile; fileRef = C95FCB06123A7B7C00859B92 /* searchBarBorder.png */; };
 		C99239DE126CCD9200BA364A /* searchBarBorder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C95FCB07123A7B7C00859B92 /* searchBarBorder@2x.png */; };
@@ -1048,6 +1054,15 @@
 		C9923A14126CCF2D00BA364A /* searchFieldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */; };
 		C9923A15126CCF2D00BA364A /* searchFieldIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */; };
 		C99860DB113FD284009E5263 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = C99860DA113FD284009E5263 /* check.png */; };
+		C9A0022713448767000EEB45 /* KNFBTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0022613448767000EEB45 /* KNFBTextFlowParagraph.m */; };
+		C9A0022813448767000EEB45 /* KNFBTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0022613448767000EEB45 /* KNFBTextFlowParagraph.m */; };
+		C9A0022913448767000EEB45 /* KNFBTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0022613448767000EEB45 /* KNFBTextFlowParagraph.m */; };
+		C9A0022E13448EC7000EEB45 /* KNFBTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0022D13448EC5000EEB45 /* KNFBTextFlowParagraphSource.m */; };
+		C9A0022F13448EC7000EEB45 /* KNFBTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0022D13448EC5000EEB45 /* KNFBTextFlowParagraphSource.m */; };
+		C9A0023013448EC7000EEB45 /* KNFBTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0022D13448EC5000EEB45 /* KNFBTextFlowParagraphSource.m */; };
+		C9A0023613449413000EEB45 /* KNFBFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0023513449413000EEB45 /* KNFBFlowEucBook.m */; };
+		C9A0023713449413000EEB45 /* KNFBFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0023513449413000EEB45 /* KNFBFlowEucBook.m */; };
+		C9A0023813449413000EEB45 /* KNFBFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A0023513449413000EEB45 /* KNFBFlowEucBook.m */; };
 		C9A9B9AE130EC9CA009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		C9A9B9B1130EC9FC009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		C9A9B9B3130ECA28009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
@@ -1059,6 +1074,9 @@
 		C9A9DAEF1312BC22009B950F /* playButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9A9DAEC1312BC22009B950F /* playButton.png */; };
 		C9AC4A8511C7A2BA007B569B /* BlioBookSearchToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AC4A8311C7A2BA007B569B /* BlioBookSearchToolbar.m */; };
 		C9AF20E8114A67C3007D7AFC /* UIDevice+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */; };
+		C9B083081344C40A001963D0 /* BlioTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B083071344C40A001963D0 /* BlioTextFlowParagraphWords.m */; };
+		C9B083091344C40A001963D0 /* BlioTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B083071344C40A001963D0 /* BlioTextFlowParagraphWords.m */; };
+		C9B0830A1344C40A001963D0 /* BlioTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B083071344C40A001963D0 /* BlioTextFlowParagraphWords.m */; };
 		C9B61CC21136BA620012CE7E /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
 		C9B61CC71136BAA80012CE7E /* BlioProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC61136BAA80012CE7E /* BlioProcessing.m */; };
 		C9B61FF51137AF840012CE7E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B61FF41137AF840012CE7E /* libz.dylib */; };
@@ -1610,7 +1628,6 @@
 		7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLightSettingsViewController.m; sourceTree = "<group>"; };
 		7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "xhtml-entities.ent"; sourceTree = "<group>"; };
 		7DF2A2FE1152ABA600FC2045 /* BlioTextFlowParagraphWords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraphWords.h; sourceTree = "<group>"; };
-		7DF2A2FF1152ABA600FC2045 /* BlioTextFlowParagraphWords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraphWords.m; sourceTree = "<group>"; };
 		7DF2A3891152C5F100FC2045 /* BlioTextFlowFlowTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowFlowTree.h; sourceTree = "<group>"; };
 		7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowFlowTree.m; sourceTree = "<group>"; };
 		7DF2A48D11536CA100FC2045 /* BlioFlowEucBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowEucBook.h; sourceTree = "<group>"; };
@@ -1995,11 +2012,24 @@
 		C98857E312031B7B006905CF /* BlioTimeOrderedCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTimeOrderedCache.h; sourceTree = "<group>"; };
 		C98857E412031B7B006905CF /* BlioTimeOrderedCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTimeOrderedCache.m; sourceTree = "<group>"; };
 		C98CCAAB119D8352002E9A8E /* XpsSdk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XpsSdk.h; sourceTree = "<group>"; };
+		C98E05EC134382A200E16C1A /* KNFBTextFlowFlowTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowFlowTree.h; sourceTree = "<group>"; };
+		C98E05ED134382A200E16C1A /* KNFBTextFlowFlowTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowFlowTree.m; sourceTree = "<group>"; };
+		C98E06C9134474AE00E16C1A /* KNFBTextFlowFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowFlow.h; sourceTree = "<group>"; };
+		C98E06CA134474B100E16C1A /* KNFBTextFlowFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowFlow.m; sourceTree = "<group>"; };
+		C98E06CE1344776400E16C1A /* KNFBTextFlowParagraphWords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowParagraphWords.h; sourceTree = "<group>"; };
+		C98E06CF1344776700E16C1A /* KNFBTextFlowParagraphWords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowParagraphWords.m; sourceTree = "<group>"; };
 		C990F9C4110065CB00C82CA8 /* BlioContentsTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioContentsTabViewController.h; sourceTree = "<group>"; };
 		C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioContentsTabViewController.m; sourceTree = "<group>"; };
 		C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchFieldIcon.png; sourceTree = "<group>"; };
 		C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "searchFieldIcon@2x.png"; sourceTree = "<group>"; };
 		C99860DA113FD284009E5263 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
+		C9A0022513448766000EEB45 /* KNFBTextFlowParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowParagraph.h; sourceTree = "<group>"; };
+		C9A0022613448767000EEB45 /* KNFBTextFlowParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowParagraph.m; sourceTree = "<group>"; };
+		C9A0022B13448DD3000EEB45 /* KNFBParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBParagraphSource.h; sourceTree = "<group>"; };
+		C9A0022C13448EC3000EEB45 /* KNFBTextFlowParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowParagraphSource.h; sourceTree = "<group>"; };
+		C9A0022D13448EC5000EEB45 /* KNFBTextFlowParagraphSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowParagraphSource.m; sourceTree = "<group>"; };
+		C9A0023413449413000EEB45 /* KNFBFlowEucBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KNFBFlowEucBook.h; path = ../scholastic/Shared/Libraries/Submodules/libKNFBReader/FlowView/KNFBFlowEucBook.h; sourceTree = "<group>"; };
+		C9A0023513449413000EEB45 /* KNFBFlowEucBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KNFBFlowEucBook.m; path = ../scholastic/Shared/Libraries/Submodules/libKNFBReader/FlowView/KNFBFlowEucBook.m; sourceTree = "<group>"; };
 		C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		C9A9DAB81312B73B009B950F /* BlioMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMediaView.h; sourceTree = "<group>"; };
 		C9A9DAB91312B73B009B950F /* BlioMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMediaView.m; sourceTree = "<group>"; };
@@ -2008,6 +2038,7 @@
 		C9AC4A8311C7A2BA007B569B /* BlioBookSearchToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookSearchToolbar.m; sourceTree = "<group>"; };
 		C9AF20E6114A67C3007D7AFC /* UIDevice+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+BlioAdditions.h"; sourceTree = "<group>"; };
 		C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+BlioAdditions.m"; sourceTree = "<group>"; };
+		C9B083071344C40A001963D0 /* BlioTextFlowParagraphWords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraphWords.m; sourceTree = "<group>"; };
 		C9B61CC01136BA620012CE7E /* BlioProcessingStandardOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioProcessingStandardOperations.h; sourceTree = "<group>"; };
 		C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioProcessingStandardOperations.m; sourceTree = "<group>"; };
 		C9B61CC51136BAA80012CE7E /* BlioProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioProcessing.h; sourceTree = "<group>"; };
@@ -2676,14 +2707,13 @@
 		7D9147C31151494A00BCBB23 /* FlowView */ = {
 			isa = PBXGroup;
 			children = (
+				C9A0023913449534000EEB45 /* Refactored */,
 				7D229FB012F9AA430037D93D /* BlioEPubXPSDataProvider.h */,
 				7D229FB112F9AA430037D93D /* BlioEPubXPSDataProvider.m */,
 				7D79183410F2257C00C4D839 /* BlioFlowView.h */,
 				7D79183510F2257C00C4D839 /* BlioFlowView.m */,
 				7D9147C71151497900BCBB23 /* BlioFlowPaginateOperation.h */,
 				7D9147C81151497900BCBB23 /* BlioFlowPaginateOperation.m */,
-				7DF2A48D11536CA100FC2045 /* BlioFlowEucBook.h */,
-				7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */,
 				7DCD8FB611E3452800BA3255 /* BlioEPubBook.h */,
 				7DA481241247708E0073AB09 /* BlioBUpeBook.h */,
 				7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */,
@@ -2707,19 +2737,6 @@
 			isa = PBXGroup;
 			children = (
 				C90D2BF113435293000A5374 /* Refactored */,
-				C9E1FA23110EE4D500999587 /* BlioTextFlow.h */,
-				C9E1FA24110EE4D500999587 /* BlioTextFlow.m */,
-				7DF2A3891152C5F100FC2045 /* BlioTextFlowFlowTree.h */,
-				7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */,
-				7DA5665211529FD2000A849D /* BlioTextFlowFlow.h */,
-				7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */,
-				7DA5665811529FE2000A849D /* BlioTextFlowParagraph.h */,
-				7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */,
-				7DF2A2FE1152ABA600FC2045 /* BlioTextFlowParagraphWords.h */,
-				7DF2A2FF1152ABA600FC2045 /* BlioTextFlowParagraphWords.m */,
-				7D94C63311762C4F0067B732 /* BlioParagraphSource.h */,
-				7D94C638117630050067B732 /* BlioTextFlowParagraphSource.h */,
-				7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */,
 			);
 			name = TextFlow;
 			sourceTree = "<group>";
@@ -2959,6 +2976,7 @@
 		C90D299413434FCC000A5374 /* libKNFBReader */ = {
 			isa = PBXGroup;
 			children = (
+				C9A0023313449269000EEB45 /* FlowView */,
 				C90D299513434FE4000A5374 /* TextFlow */,
 			);
 			name = libKNFBReader;
@@ -2991,6 +3009,17 @@
 				C90D29AB13434FE4000A5374 /* KNFBTextFlowXAMLTreeNode.m */,
 				C90D29AC13434FE4000A5374 /* KNFBTOCEntry.h */,
 				C90D29AD13434FE4000A5374 /* KNFBTOCEntry.m */,
+				C98E05EC134382A200E16C1A /* KNFBTextFlowFlowTree.h */,
+				C98E05ED134382A200E16C1A /* KNFBTextFlowFlowTree.m */,
+				C98E06C9134474AE00E16C1A /* KNFBTextFlowFlow.h */,
+				C98E06CA134474B100E16C1A /* KNFBTextFlowFlow.m */,
+				C98E06CE1344776400E16C1A /* KNFBTextFlowParagraphWords.h */,
+				C98E06CF1344776700E16C1A /* KNFBTextFlowParagraphWords.m */,
+				C9A0022513448766000EEB45 /* KNFBTextFlowParagraph.h */,
+				C9A0022613448767000EEB45 /* KNFBTextFlowParagraph.m */,
+				C9A0022B13448DD3000EEB45 /* KNFBParagraphSource.h */,
+				C9A0022C13448EC3000EEB45 /* KNFBTextFlowParagraphSource.h */,
+				C9A0022D13448EC5000EEB45 /* KNFBTextFlowParagraphSource.m */,
 			);
 			name = TextFlow;
 			path = ../scholastic/Shared/Libraries/Submodules/libKNFBReader/TextFlow;
@@ -2999,6 +3028,8 @@
 		C90D2BF113435293000A5374 /* Refactored */ = {
 			isa = PBXGroup;
 			children = (
+				C9E1FA23110EE4D500999587 /* BlioTextFlow.h */,
+				C9E1FA24110EE4D500999587 /* BlioTextFlow.m */,
 				C9F4812A1252465900083923 /* BlioTextFlowBlockCombiner.h */,
 				C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */,
 				C9046634134361E000E93027 /* BlioTextFlowCombinedBlock.h */,
@@ -3023,6 +3054,17 @@
 				C90469B41343672D00E93027 /* BlioTextFlowPositionedWord.m */,
 				C9C2C3F1134368FD00548290 /* BlioTextFlowPreParseOperation.h */,
 				C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */,
+				7DF2A3891152C5F100FC2045 /* BlioTextFlowFlowTree.h */,
+				7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */,
+				7DA5665211529FD2000A849D /* BlioTextFlowFlow.h */,
+				7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */,
+				7DF2A2FE1152ABA600FC2045 /* BlioTextFlowParagraphWords.h */,
+				C9B083071344C40A001963D0 /* BlioTextFlowParagraphWords.m */,
+				7DA5665811529FE2000A849D /* BlioTextFlowParagraph.h */,
+				7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */,
+				7D94C63311762C4F0067B732 /* BlioParagraphSource.h */,
+				7D94C638117630050067B732 /* BlioTextFlowParagraphSource.h */,
+				7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */,
 			);
 			name = Refactored;
 			sourceTree = "<group>";
@@ -3172,6 +3214,24 @@
 				C9CEF2E71338C61400FB5BE0 /* BlioGestureSuppressingView.m */,
 			);
 			name = LayoutView;
+			sourceTree = "<group>";
+		};
+		C9A0023313449269000EEB45 /* FlowView */ = {
+			isa = PBXGroup;
+			children = (
+				C9A0023413449413000EEB45 /* KNFBFlowEucBook.h */,
+				C9A0023513449413000EEB45 /* KNFBFlowEucBook.m */,
+			);
+			name = FlowView;
+			sourceTree = "<group>";
+		};
+		C9A0023913449534000EEB45 /* Refactored */ = {
+			isa = PBXGroup;
+			children = (
+				7DF2A48D11536CA100FC2045 /* BlioFlowEucBook.h */,
+				7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */,
+			);
+			name = Refactored;
 			sourceTree = "<group>";
 		};
 		C9B620BD1137BDB10012CE7E /* ThirdParty */ = {
@@ -4366,7 +4426,6 @@
 				7D9147CA1151497900BCBB23 /* BlioFlowPaginateOperation.m in Sources */,
 				7DA5665511529FD2000A849D /* BlioTextFlowFlow.m in Sources */,
 				7DA5665B11529FE2000A849D /* BlioTextFlowParagraph.m in Sources */,
-				7DF2A3011152ABA600FC2045 /* BlioTextFlowParagraphWords.m in Sources */,
 				7DF2A38C1152C5F100FC2045 /* BlioTextFlowFlowTree.m in Sources */,
 				7DF2A49011536CA100FC2045 /* BlioFlowEucBook.m in Sources */,
 				DC5077A1116A3F2800CD40B3 /* Reachability.m in Sources */,
@@ -4465,6 +4524,13 @@
 				C90469B51343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */,
 				C9C2C3F3134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */,
 				C9C2C3F613436B8E00548290 /* KNFBTextFlow.m in Sources */,
+				C98E05EE134382A300E16C1A /* KNFBTextFlowFlowTree.m in Sources */,
+				C98E06CB134474B400E16C1A /* KNFBTextFlowFlow.m in Sources */,
+				C98E06D01344776C00E16C1A /* KNFBTextFlowParagraphWords.m in Sources */,
+				C9A0022713448767000EEB45 /* KNFBTextFlowParagraph.m in Sources */,
+				C9A0022E13448EC7000EEB45 /* KNFBTextFlowParagraphSource.m in Sources */,
+				C9A0023613449413000EEB45 /* KNFBFlowEucBook.m in Sources */,
+				C9B083081344C40A001963D0 /* BlioTextFlowParagraphWords.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4522,7 +4588,6 @@
 				A30E0FEA123EA5B400D31157 /* BlioFlowPaginateOperation.m in Sources */,
 				A30E0FEB123EA5B400D31157 /* BlioTextFlowFlow.m in Sources */,
 				A30E0FEC123EA5B400D31157 /* BlioTextFlowParagraph.m in Sources */,
-				A30E0FED123EA5B400D31157 /* BlioTextFlowParagraphWords.m in Sources */,
 				A30E0FEE123EA5B400D31157 /* BlioTextFlowFlowTree.m in Sources */,
 				A30E0FEF123EA5B400D31157 /* BlioFlowEucBook.m in Sources */,
 				A30E0FF0123EA5B400D31157 /* Reachability.m in Sources */,
@@ -4620,6 +4685,13 @@
 				C90469B71343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */,
 				C9C2C3F5134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */,
 				C9C2C3F813436B8F00548290 /* KNFBTextFlow.m in Sources */,
+				C98E05F0134382A300E16C1A /* KNFBTextFlowFlowTree.m in Sources */,
+				C98E06CD134474B400E16C1A /* KNFBTextFlowFlow.m in Sources */,
+				C98E06D21344776C00E16C1A /* KNFBTextFlowParagraphWords.m in Sources */,
+				C9A0022913448767000EEB45 /* KNFBTextFlowParagraph.m in Sources */,
+				C9A0023013448EC7000EEB45 /* KNFBTextFlowParagraphSource.m in Sources */,
+				C9A0023813449413000EEB45 /* KNFBFlowEucBook.m in Sources */,
+				C9B0830A1344C40A001963D0 /* BlioTextFlowParagraphWords.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4670,7 +4742,6 @@
 				A36D35A2120B136700E1A035 /* BlioFlowPaginateOperation.m in Sources */,
 				A36D35A3120B136700E1A035 /* BlioTextFlowFlow.m in Sources */,
 				A36D35A4120B136700E1A035 /* BlioTextFlowParagraph.m in Sources */,
-				A36D35A5120B136700E1A035 /* BlioTextFlowParagraphWords.m in Sources */,
 				A36D35A6120B136700E1A035 /* BlioTextFlowFlowTree.m in Sources */,
 				A36D35A7120B136700E1A035 /* BlioFlowEucBook.m in Sources */,
 				A36D35A8120B136700E1A035 /* Reachability.m in Sources */,
@@ -4775,6 +4846,13 @@
 				C90469B61343672E00E93027 /* BlioTextFlowPositionedWord.m in Sources */,
 				C9C2C3F4134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */,
 				C9C2C3F713436B8E00548290 /* KNFBTextFlow.m in Sources */,
+				C98E05EF134382A300E16C1A /* KNFBTextFlowFlowTree.m in Sources */,
+				C98E06CC134474B400E16C1A /* KNFBTextFlowFlow.m in Sources */,
+				C98E06D11344776C00E16C1A /* KNFBTextFlowParagraphWords.m in Sources */,
+				C9A0022813448767000EEB45 /* KNFBTextFlowParagraph.m in Sources */,
+				C9A0022F13448EC7000EEB45 /* KNFBTextFlowParagraphSource.m in Sources */,
+				C9A0023713449413000EEB45 /* KNFBFlowEucBook.m in Sources */,
+				C9B083091344C40A001963D0 /* BlioTextFlowParagraphWords.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

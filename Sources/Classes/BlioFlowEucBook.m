@@ -23,26 +23,17 @@
 
 #import <CoreData/CoreData.h>
 
-@interface BlioFlowEucBook ()
-
-@property (nonatomic, assign) NSManagedObjectID *bookID;
-@property (nonatomic, assign) BOOL fakeCover;
-@property (nonatomic, retain) BlioTextFlow *textFlow;
-
-@end
-
 @implementation BlioFlowEucBook
 
-@synthesize bookID;
-@synthesize fakeCover;
-@synthesize textFlow;
+#pragma mark -
+#pragma mark Overriden methods
 
 - (id)initWithBookID:(NSManagedObjectID *)blioBookID
 {
+
     BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
     BlioBook *blioBook = [bookManager bookWithID:blioBookID];
-    if(blioBook && (self = [super init])) {
-        self.bookID = blioBookID;
+    if(blioBook && (self = [super initWithBookID:blioBookID])) {
         self.textFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
         self.fakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:BlioManifestCoverKey];
         
@@ -58,72 +49,12 @@
 
 - (void)dealloc
 {
-    self.textFlow = nil;
     [[BlioBookManager sharedBookManager] checkInTextFlowForBookWithID:self.bookID];
     
     BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     [aBook flushCaches];
-    self.bookID = nil;
-    
-    [navPoints release];
     
     [super dealloc];
-}
-
-- (NSArray *)navPoints
-{
-    if(!navPoints) {
-        NSMutableArray *buildNavPoints = [[NSMutableArray alloc] init];
-       
-        NSArray *tocEntries = self.textFlow.tableOfContents; 
-        if(self.fakeCover) {
-            [buildNavPoints addObject:[EucBookNavPoint navPointWithText:NSLocalizedString(@"Cover", "Name for 'chapter' title for the cover of the book")
-                                                                   uuid:@"textflow:0"
-                                                                  level:0]];
-        }
-        long index = 0;
-        for(BlioTOCEntry *tocEntry in tocEntries) {
-            [buildNavPoints addObject:[EucBookNavPoint navPointWithText:tocEntry.name
-                                                                   uuid:[NSString stringWithFormat:@"textflowTOCIndex:%ld", index]
-                                                                  level:tocEntry.level]];
-            ++index;
-        }
-        navPoints = buildNavPoints;
-    }
-    
-    return navPoints;
-}
-
-- (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
-{
-    if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
-        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowFlow" ofType:@"css"]];
-    } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
-        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowXAML" ofType:@"css"]];
-    } else {
-        NSMutableArray *ret = [[[super baseCSSPathsForDocumentTree:documentTree] mutableCopy] autorelease];
-        [ret addObject:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]];
-        return ret;
-    }
-}
-
-- (NSArray *)userCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
-{
-    if([documentTree isKindOfClass:[BlioTextFlowFlowTree class]]) {
-        return nil;
-    } else if([documentTree isKindOfClass:[BlioTextFlowXAMLTree class]]) {
-        return [NSArray arrayWithObject:[[NSBundle mainBundle] pathForResource:@"TextFlowXAMLOverrides" ofType:@"css"]];
-    } else {
-        return [super userCSSPathsForDocumentTree:documentTree];
-    }
-}
-
-- (BOOL)fullBleedPageForIndexPoint:(EucBookPageIndexPoint *)indexPoint
-{
-    return indexPoint.source == 0 && 
-                (self.fakeCover || 
-                 (indexPoint.block == 0 && indexPoint.word == 0 && indexPoint.element == 0)
-                );
 }
 
 - (NSData *)dataForURL:(NSURL *)url
@@ -145,118 +76,15 @@
     return [super dataForURL:url];
 }
 
-- (id<EucCSSDocumentTree>)documentTreeForURL:(NSURL *)url
+-(EucBookPageIndexPoint *)indexPointForPage:(NSUInteger)page 
 {
-    id<EucCSSDocumentTree> tree = nil;
-    NSString *indexString = [[[url absoluteString] matchPOSIXRegex:@"^textflow:(.*)$"] match:1];
-    if(indexString) {
-        NSUInteger section = [indexString integerValue];
-        if(self.fakeCover) {
-            if(section == 0) {
-                NSData *coverHTMLData = [[NSData alloc] initWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"]];
-                tree = [[[EucCSSXHTMLTree alloc] initWithData:coverHTMLData] autorelease];
-                [coverHTMLData release];
-            } else {
-                --section;
-            }
-        }
-        if(!tree) {
-            tree = [self.textFlow flowTreeForFlowIndex:section];
-            if(!tree) {
-                tree = [self.textFlow xamlTreeForFlowIndex:section];
-            }
-        }
-    }
-    return tree;
-}
-
-- (NSURL *)documentURLForIndexPoint:(EucBookPageIndexPoint *)point
-{
-    return [NSURL URLWithString:[NSString stringWithFormat:@"textflow:%ld", (long)point.source]];
-}
-
-- (float *)indexSourceScaleFactors
-{
-    if(!_indexSourceScaleFactors) {
-        NSUInteger flowCount = textFlow.flowReferences.count + 1;
-        
-        // TODO: make this actually based on section length for accurate pagination progress.
-        
-        /*size_t *sizes = malloc(sectionCount * sizeof(size_t));;
-        size_t total = 0;
-        
-        struct stat statResult;
-        if(stat([[NSBundle mainBundle] pathForResource:@"TextFlowCover" ofType:@"xhtml"].fileSystemRepresentation, &statResult) == 0) {
-            sizes[0]= statResult.st_size;
-            total += sizes[0];
-        }
-        for(NSUInteger i = 0; i < sectionCount - 1; ++i) {
-            sizes[i+1] = [textFlow sizeOfSectionWithIndex:i];
-            total += sizes[i+1];
-        }
-              
-        _indexSourceScaleFactors = malloc(sectionCount * sizeof(float));
-        
-        for(NSUInteger i = 0; i < sectionCount; ++i) {  
-            _indexSourceScaleFactors[i] = (float)sizes[i] / (float)total;
-        }
-        
-        free(sizes);*/
-        
-        _indexSourceScaleFactors = malloc(flowCount * sizeof(float));
-        for(int i = 0; i < flowCount; ++i) {
-            _indexSourceScaleFactors[i] = 1.0f / flowCount;
-        }
-    }
-    
-    return _indexSourceScaleFactors;
-}
-
-- (NSDictionary *)buildIdToIndexPoint
-{
-    NSArray *myNavPoints = self.navPoints;
-    NSMutableDictionary *buildIdToIndexPoint = [[NSMutableDictionary alloc] initWithCapacity:myNavPoints.count];
-    for(THPair *navPoint in myNavPoints) {
-        NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
-        
-        EucBookPageIndexPoint *indexPoint = nil;
-        NSString *identifier = navPoint.second;
-        NSString *tocIndexString = [[identifier matchPOSIXRegex:@"^textflowTOCIndex:([[:digit:]]+)$"] match:1];
-        if(tocIndexString) {
-            BlioTOCEntry *entry = [self.textFlow.tableOfContents objectAtIndex:[tocIndexString integerValue]];
-            NSUInteger layoutPageIndex = entry.startPage;
-            NSUInteger flowReferenceIndex = 0;
-            for(BlioTextFlowFlowReference *flowReference in self.textFlow.flowReferences) {
-                if(flowReference.startPage == layoutPageIndex) {
-                    indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
-                    indexPoint.source = flowReferenceIndex;
-                    break;
-                }
-                ++flowReferenceIndex;
-            }
-            if(!indexPoint) {
-                BlioBookmarkPoint *point = [[[BlioBookmarkPoint alloc] init] autorelease];
-                point.layoutPage = layoutPageIndex + 1;
-                indexPoint = [self bookPageIndexPointFromBookmarkPoint:point];
-            }
-        } else {
-            NSString *indexString = [[identifier matchPOSIXRegex:@"^textflow:([[:digit:]]+)$"] match:1];
-            if(indexString) {
-                indexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
-                indexPoint.source = [indexString integerValue];
-            }
-        }
-        if(indexPoint) {
-            [buildIdToIndexPoint setObject:indexPoint forKey:identifier];
-        }
-        
-        [innerPool drain];
-    }
-    [buildIdToIndexPoint addEntriesFromDictionary:super.buildIdToIndexPoint];
-
-    return [buildIdToIndexPoint autorelease];
+    BlioBookmarkPoint *point = [[[BlioBookmarkPoint alloc] init] autorelease];
+    point.layoutPage = page;
+    return [self bookPageIndexPointFromBookmarkPoint:point];
 }
     
+#pragma mark -
+#pragma mark BlioBUpeBook methods
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {

@@ -6,16 +6,11 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <libEucalyptus/EucCSSDocumentTree.h>
+#import "KNFBTextFlowFlowTree.h"
 
 @class BlioTextFlow, BlioTextFlowParagraph;
 
-@interface BlioTextFlowFlowTree : NSObject <EucCSSDocumentTree> {
-    NSArray *_nodes;
-}
-
-- (id)initWithTextFlow:(BlioTextFlow *)textFlow data:(NSData *)xmlData;
+@interface BlioTextFlowFlowTree : KNFBTextFlowFlowTree {}
 
 - (BlioTextFlowParagraph *)firstParagraph;
 

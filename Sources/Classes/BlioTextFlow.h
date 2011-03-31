@@ -27,8 +27,6 @@ typedef enum BlioTextFlowFlowTreeKind
 
 @interface BlioTextFlow : KNFBTextFlow <BlioProcessingManagerOperationProvider> {}
 
-- (id)initWithBookID:(NSManagedObjectID *)aBookID;
-
 // Wrapper methods
 - (BlioTextFlowFlowTree *)flowTreeForFlowIndex:(NSUInteger)sectionIndex;
 - (BlioTextFlowXAMLTree *)xamlTreeForFlowIndex:(NSUInteger)sectionIndex;
@@ -38,7 +36,6 @@ typedef enum BlioTextFlowFlowTreeKind
 - (BlioTextFlowBlock *)nextBlockForBlock:(BlioTextFlowBlock *)block includingFolioBlocks:(BOOL)includingFolioBlocks onSamePage:(BOOL)onSamePage;
 - (BlioTextFlowBlock *)previousBlockForBlock:(BlioTextFlowBlock *)block includingFolioBlocks:(BOOL)includingFolioBlocks onSamePage:(BOOL)onSamePage;
 
-// Blio methods
 - (NSArray *)wordsForBookmarkRange:(BlioBookmarkRange *)range;
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 

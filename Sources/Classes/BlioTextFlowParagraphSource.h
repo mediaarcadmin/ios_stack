@@ -6,21 +6,9 @@
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
+#import "KNFBTextFlowParagraphSource.h"
 #import "BlioParagraphSource.h"
 
-@class BlioTextFlow, BlioTextFlowFlowTree, BlioFlowEucBook, BlioTextFlowParagraphSource;
-
-@interface BlioTextFlowParagraphSource : NSObject <BlioParagraphSource> {
-    BlioTextFlow *textFlow;
-    
-    NSUInteger currentFlowTreeIndex;
-    BlioTextFlowFlowTree *currentFlowTree;
-    
-    BlioFlowEucBook *xamlEucBook;
-}
-
-- (id)initWithBookID:(NSManagedObjectID *)bookID;
+@interface BlioTextFlowParagraphSource : KNFBTextFlowParagraphSource <BlioParagraphSource> {}
 
 @end
