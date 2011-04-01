@@ -696,6 +696,13 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 	return enhancedContentItems;
 }
 
+- (BOOL)hasEnhancedContent {
+    BOOL hasEnhancedContent = ([self componentExistsAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"OverlayContent.xml"]] ||
+                               [self componentExistsAtPath:[BlioXPSEnhancedContentDir stringByAppendingPathComponent:@"VideoContent.xml"]]);
+    
+    return hasEnhancedContent;
+}
+
 - (NSArray *)enhancedContentForPage:(NSInteger)page {
 		
 	NSMutableArray *array = [NSMutableArray array];
