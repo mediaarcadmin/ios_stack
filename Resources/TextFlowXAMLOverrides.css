@@ -1,4 +1,0 @@
-/* Many (all?) of the books define their own margins around the main 
-   part of a flow document, but we want to use our own, programatically defined,
-   margins and fill the flow content into them. */
-Flow>Section { margin: 0 !important}
