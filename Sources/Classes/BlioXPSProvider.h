@@ -9,9 +9,31 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "BlioLayoutDataSource.h"
-#import "BlioTimeOrderedCache.h"
+#import "KNFBTimeOrderedCache.h"
 #import "BlioDrmSessionManager.h"
 #import "XpsSdk.h"
+
+static NSString * const BlioXPSEncryptedUriMap = KNFBXPSEncryptedUriMap;
+static NSString * const BlioXPSEncryptedPagesDir = KNFBXPSEncryptedPagesDir;
+static NSString * const BlioXPSEncryptedImagesDir = KNFBXPSEncryptedImagesDir;
+static NSString * const BlioXPSEncryptedTextFlowDir = KNFBXPSEncryptedTextFlowDir;
+static NSString * const BlioXPSMetaDataDir = KNFBXPSMetaDataDir;
+static NSString * const BlioXPSCoverImage = KNFBXPSCoverImage;
+static NSString * const BlioXPSFixedDocumentSequenceFile = KNFBXPSFixedDocumentSequenceFile;
+static NSString * const BlioXPSFixedDocumentSequenceExtension = KNFBXPSFixedDocumentSequenceExtension;
+static NSString * const BlioXPSTextFlowSectionsFile = KNFBXPSTextFlowSectionsFile;
+static NSString * const BlioXPSKNFBMetadataFile = KNFBXPSKNFBMetadataFile;
+static NSString * const BlioXPSKNFBRightsFile = KNFBXPSKNFBRightsFile;
+static NSString * const BlioXPSAudiobookDirectory = KNFBXPSAudiobookDirectory;
+static NSString * const BlioXPSAudiobookMetadataFile = KNFBXPSAudiobookMetadataFile;
+static NSString * const BlioXPSAudiobookReferencesFile = KNFBXPSAudiobookReferencesFile;
+static NSString * const BlioXPSKNFBDRMHeaderFile = KNFBXPSKNFBDRMHeaderFile;
+static NSString * const BlioXPSComponentExtensionFPage = KNFBXPSComponentExtensionFPage;
+static NSString * const BlioXPSComponentExtensionRels = KNFBXPSComponentExtensionRels;
+static NSString * const BlioXPSComponentExtensionEncrypted = KNFBXPSComponentExtensionEncrypted;
+
+static NSString * const BlioXPSKNFBEPubInfoFile = KNFBXPSKNFBEPubInfoFile;
+static NSString * const BlioXPSEPubMetaInfContainerFile = KNFBXPSEPubMetaInfContainerFile;
 
 typedef enum {
     kBlioXPSProviderReportingStatusNotRequired = 0,
@@ -38,7 +60,7 @@ typedef enum {
 	NSString *xpsPagesDirectory;
 	NSMutableArray *_encryptedEPubPaths;
 
-    BlioTimeOrderedCache *componentCache;
+    KNFBTimeOrderedCache *componentCache;
     NSNumber *bookIsEncrypted;
     BOOL decryptionAvailable;
     BlioXPSProviderReportingStatus reportingStatus;
@@ -54,11 +76,4 @@ typedef enum {
 - (void)reportReadingIfRequired;
 - (BOOL)decryptionIsAvailable;
 
-@end
-
-@interface BlioXPSProtocol : NSURLProtocol {}
-
-+ (NSString *)xpsProtocolScheme;
-+ (void)registerXPSProtocol;
-			
 @end

@@ -7,37 +7,8 @@
  *
  */
 
-@class THPair;
+#import "KNFBLayoutDataSource.h"
 
-#define OVERLAY_CODE_AVAILABLE 1
-
-@protocol BlioLayoutDataSource
-
-@optional
-- (BOOL)hasEnhancedContent;
-- (NSString *)enhancedContentRootPath;
-- (NSData *)enhancedContentDataAtPath:(NSString *)path;
-- (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path;
-- (NSArray *)enhancedContentForPage:(NSInteger)page;
-
-@required
-
-- (NSInteger)pageCount;
-
-- (CGRect)cropRectForPage:(NSInteger)page;
-- (CGRect)mediaRectForPage:(NSInteger)page;
-
-- (void)openDocumentIfRequired;
-- (void)closeDocumentIfRequired;
-- (void)closeDocument;
-
-- (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect;
-- (UIImage *)thumbnailForPage:(NSInteger)page;
-- (NSArray *)hyperlinksForPage:(NSInteger)page;
-
-- (CGContextRef)RGBABitmapContextForPage:(NSUInteger)page
-                                fromRect:(CGRect)rect
-                                 atSize:(CGSize)size
-                              getBacking:(id *)context;
+@protocol BlioLayoutDataSource <KNFBLayoutDataSource>
 
 @end

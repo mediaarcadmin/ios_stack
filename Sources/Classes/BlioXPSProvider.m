@@ -15,7 +15,7 @@
 #import "zlib.h"
 #import <objc/runtime.h>
 #import <libEucalyptus/THPair.h>
-#import "BlioZipArchive.h"
+#import "KNFBZipArchive.h"
 #import <expat/expat.h>
 
 URI_HANDLE BlioXPSProviderDRMOpen(const char * pszURI, void * data);
@@ -77,7 +77,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @property (nonatomic, assign) RasterImageInfo *imageInfo;
 @property (nonatomic, retain) NSMutableDictionary *xpsData;
 @property (nonatomic, retain) NSMutableArray *uriMap;
-@property (nonatomic, retain) BlioTimeOrderedCache *componentCache;
+@property (nonatomic, retain) KNFBTimeOrderedCache *componentCache;
 @property (nonatomic, assign, readonly) BOOL bookIsEncrypted;
 @property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
 @property (nonatomic, retain) NSString *xpsPagesDirectory;
@@ -227,7 +227,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
         
         self.xpsData = [NSMutableDictionary dictionary];
         
-        BlioTimeOrderedCache *aCache = [[BlioTimeOrderedCache alloc] init];
+        KNFBTimeOrderedCache *aCache = [[KNFBTimeOrderedCache alloc] init];
         aCache.countLimit = 30; // Arbitrary 30 object limit
         aCache.totalCostLimit = 1024*1024; // Arbitrary 1MB limit. This may need wteaked or set on a per-device basis
         self.componentCache = aCache;
@@ -970,7 +970,7 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 	NSUInteger entries = XPS_GetPackageDir(xpsHandle, &directoryPtr);
     [contentsLock unlock];
 	
-	return [BlioZipArchive contentsOfCentralDirectory:directoryPtr numberOfEntries:entries];
+	return [KNFBZipArchive contentsOfCentralDirectory:directoryPtr numberOfEntries:entries];
 }
 
 - (BOOL)componentExistsAtPath:(NSString *)path {
@@ -1434,107 +1434,6 @@ void BlioXPSProviderDRMClose(URI_HANDLE h) {
         }
     }
     return uriMap;
-}
-
-@end
-
-@implementation BlioXPSProtocol
-
-+ (void)registerXPSProtocol {
-	static BOOL inited = NO;
-	if ( ! inited ) {
-		[NSURLProtocol registerClass:[BlioXPSProtocol class]];
-		inited = YES;
-	}
-}
-
-/* our own class method.  Here we return the NSString used to mark
- urls handled by our special protocol. */
-+ (NSString *)xpsProtocolScheme {
-	return @"blioxpsprotocol";
-}
-
-+ (BOOL)canInitWithRequest:(NSURLRequest *)request {
-	NSString *theScheme = [[request URL] scheme];
-	return ([theScheme caseInsensitiveCompare: [BlioXPSProtocol xpsProtocolScheme]] == NSOrderedSame);
-}
-
-/* if canInitWithRequest returns true, then webKit will call your
- canonicalRequestForRequest method so you have an opportunity to modify
- the NSURLRequest before processing the request */
-+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
-    return request;
-}
-
-- (void)startLoading {
-	
-	
-	/* retrieve the current request. */
-    NSURLRequest *request = [self request];
-	NSString *encodedBookID = [[request URL] host];
-	
-	NSManagedObjectID *bookID = nil;
-	
-	if (encodedBookID && ![encodedBookID isEqualToString:@"undefined"]) {
-		CFStringRef bookURIStringRef = CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault, (CFStringRef)encodedBookID, CFSTR(""), kCFStringEncodingUTF8);		
-		NSURL *bookURI = [NSURL URLWithString:(NSString *)bookURIStringRef];
-		CFRelease(bookURIStringRef);
-
-		bookID = [[[BlioBookManager sharedBookManager] persistentStoreCoordinator] managedObjectIDForURIRepresentation:bookURI];
-		
-	}
-	
-	if (!bookID) {
-		return;
-	}
-	
-	BlioXPSProvider *xpsProvider = [[BlioBookManager sharedBookManager] checkOutXPSProviderForBookWithID:bookID];
-	
-	NSString *path = [[request URL] path];
-	NSData *data = [xpsProvider dataForComponentAtPath:path];
-	
-	NSURLResponse *response = 
-	[[NSURLResponse alloc] initWithURL:[request URL] 
-							  MIMEType:nil 
-				 expectedContentLength:-1 
-					  textEncodingName:@"utf-8"];
-	
-	/* get a reference to the client so we can hand off the data */
-    id<NSURLProtocolClient> client = [self client];
-	
-	/* turn off caching for this response data */ 
-	[client URLProtocol:self didReceiveResponse:response
-	 cacheStoragePolicy:NSURLCacheStorageNotAllowed];
-	
-	/* set the data in the response to our data */ 
-	[client URLProtocol:self didLoadData:data];
-	
-	/* notify that we completed loading */
-	[client URLProtocolDidFinishLoading:self];
-	
-	/* we can release our copy */
-	[response release];
-	
-	[[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:bookID];
-	
-}
-
-- (void)stopLoading {
-	// Do nothing
-}
-
-@end
-
-@implementation BlioXPSBitmapReleaseCallback
-
-@synthesize data;
-
-- (void)dealloc {
-    if (self.data) {
-        //NSLog(@"Release: %p", self.data);
-        XPS_ReleaseImageMemory(self.data);
-    }
-    [super dealloc];
 }
 
 @end

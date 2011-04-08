@@ -169,25 +169,25 @@
     return (CGContextRef)[(id)bitmapContext autorelease];
 }
 
-- (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
-    //NSLog(@"drawPage %d inContext %@ inRect: %@ withTransform %@ andBounds %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(rect), NSStringFromCGAffineTransform(transform), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
-    
-    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);    
-    CGContextFillRect(ctx, rect);
-    CGContextClipToRect(ctx, rect);
-    
-    CGContextConcatCTM(ctx, transform);
-    [pdfLock lock];
-    if (nil == pdf) {
-		[pdfLock unlock];
-		return;
-	}
-    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
-    CGPDFPageRetain(aPage);
-    CGContextDrawPDFPage(ctx, aPage);
-    CGPDFPageRelease(aPage);
-    [pdfLock unlock];
-}
+//- (void)drawPage:(NSInteger)page inBounds:(CGRect)bounds withInset:(CGFloat)inset inContext:(CGContextRef)ctx inRect:(CGRect)rect withTransform:(CGAffineTransform)transform observeAspect:(BOOL)aspect {
+//    //NSLog(@"drawPage %d inContext %@ inRect: %@ withTransform %@ andBounds %@", page, NSStringFromCGAffineTransform(CGContextGetCTM(ctx)), NSStringFromCGRect(rect), NSStringFromCGAffineTransform(transform), NSStringFromCGRect(CGContextGetClipBoundingBox(ctx)));
+//    
+//    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);    
+//    CGContextFillRect(ctx, rect);
+//    CGContextClipToRect(ctx, rect);
+//    
+//    CGContextConcatCTM(ctx, transform);
+//    [pdfLock lock];
+//    if (nil == pdf) {
+//		[pdfLock unlock];
+//		return;
+//	}
+//    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, page);
+//    CGPDFPageRetain(aPage);
+//    CGContextDrawPDFPage(ctx, aPage);
+//    CGPDFPageRelease(aPage);
+//    [pdfLock unlock];
+//}
 
 - (void)openDocumentIfRequired {
     [pdfLock lock];

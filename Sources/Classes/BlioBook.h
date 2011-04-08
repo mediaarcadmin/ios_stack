@@ -37,28 +37,8 @@ static NSString * const BlioManifestEntryLocationBundle = @"BlioManifestEntryLoc
 static NSString * const BlioManifestEntryLocationDocumentsDirectory = @"BlioManifestEntryLocationDocumentsDirectory";
 static NSString * const BlioManifestEntryLocationFileSystemOther = @"BlioManifestEntryLocationFileSystemOther";
 
-static NSString * const BlioXPSEncryptedUriMap = @"/Documents/1/Other/KNFB/UriMap.xml";
-static NSString * const BlioXPSEncryptedPagesDir = @"/Documents/1/Other/KNFB/Epages";
-static NSString * const BlioXPSEncryptedImagesDir = @"/Resources";
-static NSString * const BlioXPSEncryptedTextFlowDir = @"/Documents/1/Other/KNFB/Flow";
-static NSString * const BlioXPSEnhancedContentDir = @"/Documents/1/Other/KNFB/EnhancedContent";
 static NSString * const BlioXPSEPubMetaInfContainerFile = @"/META-INF/container.xml";
-static NSString * const BlioXPSMetaDataDir = @"/Documents/1/Metadata";
-static NSString * const BlioXPSCoverImage = @"/Documents/1/Other/KNFB/CoverArt.jpg";
-static NSString * const BlioXPSFixedDocumentSequenceFile = @"/FixedDocumentSequence.fdseq";
-static NSString * const BlioXPSFixedDocumentSequenceExtension = @"FDSEQ";
-static NSString * const BlioXPSTextFlowSectionsFile = @"/Documents/1/Other/KNFB/Flow/Sections.xml";
-static NSString * const BlioXPSKNFBMetadataFile = @"/Documents/1/Other/KNFB/Metadata.xml";
-static NSString * const BlioXPSKNFBRightsFile = @"/Documents/1/Other/KNFB/Rights.xml";
-static NSString * const BlioXPSAudiobookDirectory = @"/Documents/1/Other/KNFB/Audio/";
-static NSString * const BlioXPSAudiobookMetadataFile = @"/Documents/1/Other/KNFB/Audio/Audio.xml";
-static NSString * const BlioXPSAudiobookReferencesFile = @"/Documents/1/Other/KNFB/Audio/References.xml";
-static NSString * const BlioXPSKNFBDRMHeaderFile = @"/Documents/1/Other/KNFB/DrmpHeader.bin";
 static NSString * const BlioXPSKNFBEPubInfoFile = @"/Documents/1/Other/KNFB/EpubInfo.xml";
-
-static NSString * const BlioXPSComponentExtensionFPage = @"fpage";
-static NSString * const BlioXPSComponentExtensionRels = @"rels";
-static NSString * const BlioXPSComponentExtensionEncrypted = @"bin";
 
 static NSString * const BlioManifestAudiobookKey = @"BlioManifestAudiobookKey";
 static NSString * const BlioManifestEPubKey = @"BlioManifestEPubKey";
