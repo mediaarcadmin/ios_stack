@@ -26,6 +26,7 @@
 #import "BlioBlendView.h"
 #import "BlioGestureSuppressingView.h"
 #import "BlioXPSProtocol.h"
+#import "BlioXPSProvider.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 #define BLIOLAYOUT_LHSHOTZONE 0.25f

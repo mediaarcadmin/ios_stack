@@ -6,7 +6,7 @@
 //  Copyright 2010 BitWink. All rights reserved.
 //
 
-@implementation KNFBLayoutHyperlink
+#import "KNFBLayoutHyperlink.h"
 
 @interface BlioLayoutHyperlink : KNFBLayoutHyperlink {}
 

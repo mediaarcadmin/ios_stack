@@ -8,7 +8,6 @@
 
 #import "BlioBook.h"
 #import "BlioBookManager.h"
-#import "BlioXPSProvider.h"
 #import "BlioParagraphSource.h"
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/THStringRenderer.h>

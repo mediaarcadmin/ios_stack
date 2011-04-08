@@ -7,10 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-
-
-#import <Foundation/Foundation.h>
 #import "BlioBookManager.h"
+#import "KNFBDrmBookDecrypter.h"
 
 #define HDS_STORE_FILE  L".\\playready.hds"
 #define MAX_URL_SIZE	1024
@@ -20,7 +18,7 @@ static NSString * const BlioDrmFailureAlertType = @"BlioDrmFailureAlertType";
 
 struct BlioDrmSessionManagerDrmIVars; 
 
-@interface BlioDrmSessionManager : NSObject {
+@interface BlioDrmSessionManager : NSObject <KNFBDrmBookDecrypter> {
 	BOOL drmInitialized;
     NSManagedObjectID *headerBookID;
     NSManagedObjectID *boundBookID;
@@ -33,10 +31,7 @@ struct BlioDrmSessionManagerDrmIVars;
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name;
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name alertAlways:(BOOL)alertFlag;
 - (BOOL)leaveDomain:(NSString*)token;
-- (BOOL)reportReading;
 - (BOOL)getLicense:(NSString*)token;
-- (BOOL)bindToLicense;
-- (BOOL)decryptData:(NSData *)data;
 
 @end
 

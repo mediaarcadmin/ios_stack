@@ -10,8 +10,8 @@
 #import <UIKit/UIKit.h>
 #import "BlioTextFlow.h"
 #import "BlioBookmark.h"
-
-@class BlioXPSProvider;
+#import "BlioXPSProvider.h"
+#import "KNFBXPSConstants.h"
 
 static const CGFloat kBlioCoverListThumbHeight = 76;
 static const CGFloat kBlioCoverListThumbWidth = 53;
@@ -36,9 +36,6 @@ static NSString * const BlioManifestEntryLocationWeb = @"BlioManifestEntryLocati
 static NSString * const BlioManifestEntryLocationBundle = @"BlioManifestEntryLocationBundle";
 static NSString * const BlioManifestEntryLocationDocumentsDirectory = @"BlioManifestEntryLocationDocumentsDirectory";
 static NSString * const BlioManifestEntryLocationFileSystemOther = @"BlioManifestEntryLocationFileSystemOther";
-
-static NSString * const BlioXPSEPubMetaInfContainerFile = @"/META-INF/container.xml";
-static NSString * const BlioXPSKNFBEPubInfoFile = @"/Documents/1/Other/KNFB/EpubInfo.xml";
 
 static NSString * const BlioManifestAudiobookKey = @"BlioManifestAudiobookKey";
 static NSString * const BlioManifestEPubKey = @"BlioManifestEPubKey";
@@ -66,11 +63,34 @@ static NSString * const BlioBookEucalyptusCacheDir = @"libEucalyptusCache";
 static NSString * const BlioBookThumbnailsDir = @"thumbnails";
 static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 
+#define BlioXPSEncryptedUriMap KNFBXPSEncryptedUriMap
+#define BlioXPSEncryptedPagesDir KNFBXPSEncryptedPagesDir
+#define BlioXPSEncryptedImagesDir KNFBXPSEncryptedImagesDir
+#define BlioXPSEncryptedTextFlowDir KNFBXPSEncryptedTextFlowDir
+#define BlioXPSMetaDataDir KNFBXPSMetaDataDir
+#define BlioXPSCoverImage KNFBXPSCoverImage
+#define BlioXPSFixedDocumentSequenceFile KNFBXPSFixedDocumentSequenceFile
+#define BlioXPSFixedDocumentSequenceExtension KNFBXPSFixedDocumentSequenceExtension
+#define BlioXPSTextFlowSectionsFile KNFBXPSTextFlowSectionsFile
+#define BlioXPSKNFBMetadataFile KNFBXPSKNFBMetadataFile
+#define BlioXPSKNFBRightsFile KNFBXPSKNFBRightsFile
+#define BlioXPSAudiobookDirectory KNFBXPSAudiobookDirectory
+#define BlioXPSAudiobookMetadataFile KNFBXPSAudiobookMetadataFile
+#define BlioXPSAudiobookReferencesFile KNFBXPSAudiobookReferencesFile
+#define BlioXPSKNFBDRMHeaderFile KNFBXPSKNFBDRMHeaderFile
+#define BlioXPSComponentExtensionFPage KNFBXPSComponentExtensionFPage
+#define BlioXPSComponentExtensionRels KNFBXPSComponentExtensionRels
+#define BlioXPSComponentExtensionEncrypted KNFBXPSComponentExtensionEncrypted
+
+#define BlioXPSKNFBEPubInfoFile KNFBXPSKNFBEPubInfoFile
+#define BlioXPSEPubMetaInfContainerFile KNFBXPSEPubMetaInfContainerFile
+
 @protocol BlioBookText
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range;
 @end
 
 @class BlioTextFlow;
+@class BlioXPSProvider;
 
 @interface BlioBook : NSManagedObject <BlioBookText> {
     BlioTextFlow *textFlow;
