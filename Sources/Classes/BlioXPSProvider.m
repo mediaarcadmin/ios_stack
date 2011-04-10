@@ -81,6 +81,8 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
 @property (nonatomic, retain) NSString *xpsPagesDirectory;
 @property (nonatomic, retain) NSSet *enhancedContentItems; // Lazily instantiated
+@property (nonatomic, retain) NSMutableDictionary *tempVideoURLs;
+@property (nonatomic, retain) NSString *xpsPath;
 
 - (void)deleteTemporaryDirectoryAtPath:(NSString *)path;
 - (NSData *)decompressWithRawDeflate:(NSData *)data;
@@ -88,6 +90,7 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 - (NSArray *)extractHyperlinks:(NSData *)data;
 - (NSData *)dataFromComponentPartsInArray:(NSArray *)partsArray;
 - (NSArray *)contentsOfXPS;
+- (BOOL)copyRawDataForComponentAtPath:(NSString *)componentPath toFilePath:(NSString *)filePath;
 
 @end
 
@@ -99,6 +102,8 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
 @synthesize drmSessionManager;
 @synthesize xpsPagesDirectory;
 @synthesize enhancedContentItems;
+@synthesize tempVideoURLs;
+@synthesize xpsPath;
 
 + (void)initialize {
     if(self == [BlioXPSProvider class]) {
@@ -142,6 +147,8 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
     self.uriMap = nil;
 	self.xpsPagesDirectory = nil;
 	self.enhancedContentItems = nil;
+    self.tempVideoURLs = nil;
+    self.xpsPath = nil;
 
     if (currentUriString) {
         [currentUriString release];
@@ -188,14 +195,14 @@ NSInteger numericCaseInsensitiveSort(id string1, id string2, void* context);
         }
         
         XPS_Start();
-        NSString *xpsPath = [self.book xpsPath];
-        if (![threadSafeManager fileExistsAtPath:xpsPath]) {
-            NSLog(@"Error creating xpsProvider. File does not exist at path: %@", xpsPath);
+        self.xpsPath = [self.book xpsPath];
+        if (![threadSafeManager fileExistsAtPath:self.xpsPath]) {
+            NSLog(@"Error creating xpsProvider. File does not exist at path: %@", self.xpsPath);
             CFRelease(UUIDString);
             return nil;
         }
                 
-        xpsHandle = XPS_Open([xpsPath UTF8String], [self.tempDirectory UTF8String]);
+        xpsHandle = XPS_Open([self.xpsPath UTF8String], [self.tempDirectory UTF8String]);
         
         decryptionAvailable = NO;
         
@@ -720,26 +727,36 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 }
 
 - (NSURL *)temporaryURLForEnhancedContentVideoAtPath:(NSString *)path {
-    return nil;
-#if 0
-    void *directoryPtr;
-    [contentsLock lock];
-    NSUInteger entries = XPS_GetPackageDir(xpsHandle, &directoryPtr);
-    [contentsLock unlock];
-        //        NSURL 
-        //    NSFileHandle *fileHandle =  
-        return [BlioZipArchive contentsOfCentralDirectory:directoryPtr numberOfEntries:entries];
-    
-    
-    //
-	NSData *videoData = [self dataForComponentAtPath:path];
 	
-	NSString *tempPath = [self.tempDirectory stringByAppendingPathComponent:[path lastPathComponent]];
-	[videoData writeToFile:tempPath atomically:NO];
-	NSURL *tempURL = [NSURL fileURLWithPath:tempPath];
+    if (!tempVideoURLs) {
+        tempVideoURLs = [[NSMutableDictionary alloc] init];
+    }
+    
+    NSURL *tempVideoURL = [tempVideoURLs valueForKey:path];
+    
+    if (!tempVideoURL) {
+        NSString *tempPath = [self.tempDirectory stringByAppendingPathComponent:[path lastPathComponent]];
+	
+        BOOL tempFileAvailableViaRawCopy = [self copyRawDataForComponentAtPath:path toFilePath:tempPath];
+    
+        NSURL *tempURL = nil;
+    
+        if (tempFileAvailableViaRawCopy) {
+            tempURL = [NSURL fileURLWithPath:tempPath];
+        } else {
+            NSData *videoData = [self dataForComponentAtPath:path];
+            if ([videoData writeToFile:tempPath atomically:NO]) {
+                tempURL = [NSURL fileURLWithPath:tempPath];
+            }
+        }
+        
+        if (tempURL) {
+            tempVideoURL = tempURL;
+            [tempVideoURLs setValue:tempURL forKey:path];
+        }
+    }
 
-	return tempURL;
-#endif
+	return tempVideoURL;
 }
 
 - (NSString *)enhancedContentRootPath {
@@ -941,6 +958,73 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
     }
     
     return rawData;
+}
+
+- (BOOL)copyRawDataForComponentAtPath:(NSString *)componentPath toFilePath:(NSString *)filePath {
+
+    void *directoryPtr;
+    [contentsLock lock];
+    NSUInteger entries = XPS_GetPackageDir(xpsHandle, &directoryPtr);
+    [contentsLock unlock];
+    
+    NSUInteger headerOffset = [BlioZipArchive headerOffsetOfFile:componentPath inCentralDirectory:directoryPtr numberOfEntries:entries];
+    
+    if (headerOffset == NSUIntegerMax) {
+        NSLog(@"Could not find headerOffset in zip archive for path: %@", componentPath);
+        return NO;
+    }
+    
+    unsigned long long compressedSize;
+    unsigned long long uncompressedSize;
+    
+    NSData *xpsFile = [[NSData alloc] initWithContentsOfMappedFile:self.xpsPath];
+    NSUInteger headerLength = [BlioZipArchive lengthOfFileHeader:[xpsFile bytes] + headerOffset compressedSize:&compressedSize uncompressedSize:&uncompressedSize];
+    [xpsFile release];
+    
+    if (compressedSize != uncompressedSize) {
+        NSLog(@"Compressed (%llu) and uncompressed (%llu) sizes differ for path: %@", compressedSize, uncompressedSize, componentPath);
+        return NO;
+    }
+    
+    unsigned long long fileOffset = headerOffset + headerLength;
+
+    
+    NSFileHandle *xpsFileHandle = [NSFileHandle fileHandleForReadingAtPath:self.xpsPath];
+    [xpsFileHandle seekToFileOffset:fileOffset];
+    
+    //
+    NSFileManager *threadSafeFileManager = [[NSFileManager alloc] init];
+
+    if (![threadSafeFileManager createFileAtPath:filePath contents:nil attributes:nil]) {
+        [threadSafeFileManager release];
+        NSLog(@"Could not create temp file %@", filePath);
+        return NO;
+    }
+    
+    [threadSafeFileManager release];
+    
+    NSFileHandle *outFile = [NSFileHandle fileHandleForWritingAtPath:filePath];
+    
+    unsigned long long bytesRemaining = compressedSize;
+    const NSUInteger BUFSIZE=98304;
+    
+    do {
+        NSUInteger bytesToRead = MIN(bytesRemaining, BUFSIZE);
+        bytesRemaining -= bytesToRead;
+        fileOffset += bytesToRead;
+        
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSData *rawData = [xpsFileHandle readDataOfLength:bytesToRead];
+        [xpsFileHandle seekToFileOffset:fileOffset];
+        [outFile writeData:rawData];
+        [pool drain];
+	}
+	while (bytesRemaining > 0);
+	
+    [outFile closeFile];
+    
+	return YES;
+    
 }
 
 -(NSArray*)encryptedEPubPaths {

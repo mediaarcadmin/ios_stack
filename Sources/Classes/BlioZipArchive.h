@@ -14,5 +14,7 @@
 }
 
 + (NSArray *)contentsOfCentralDirectory:(void *)directoryPtr numberOfEntries:(NSUInteger)entries;
++ (NSUInteger)headerOffsetOfFile:(NSString *)targetFile inCentralDirectory:(void *)directoryPtr numberOfEntries:(NSUInteger)entries;
++ (NSUInteger)lengthOfFileHeader:(const void *)headerPtr compressedSize:(unsigned long long *)compressed uncompressedSize:(unsigned long long *)uncompressed;
 
 @end

@@ -43,6 +43,8 @@ typedef enum {
     BOOL decryptionAvailable;
     BlioXPSProviderReportingStatus reportingStatus;
 	NSSet *enhancedContentItems;
+    NSMutableDictionary *tempVideoURLs;
+    NSString *xpsPath;
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
