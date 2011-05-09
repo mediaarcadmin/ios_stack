@@ -943,7 +943,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if(object == self.selector &&
        [keyPath isEqualToString:@"tracking"]) {
-        self.pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
+        BOOL tracking = ((EucSelector *)object).isTracking;
+        self.pageTurningView.userInteractionEnabled = !tracking;
     } else if(object == [NSUserDefaults standardUserDefaults]) {
         if([keyPath isEqualToString:kBlioLandscapeTwoPagesDefaultsKey]) {
             BOOL wasTwoUp = self.pageTurningView.twoUp;
