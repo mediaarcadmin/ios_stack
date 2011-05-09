@@ -111,9 +111,9 @@
     return [point autorelease];
 }
 
-- (NSArray *)preprocessedWordStrings
+- (NSArray *)preprocessedWords
 {
-    return [self wordStrings];
+    return [self words];
 }
 
 - (NSArray *)words

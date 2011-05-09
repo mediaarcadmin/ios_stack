@@ -29,7 +29,7 @@
                    key:(uint32_t)key;
 
 - (BlioBookmarkPoint *)wordOffsetToBookmarkPoint:(uint32_t)wordOffset;
-- (NSArray *)preprocessedWordStrings; // for the layout engine.
+- (NSArray *)preprocessedWords; // for the libEucalyptus flow layout engine.
 - (NSArray *)wordStrings;
 - (NSArray *)words;
 

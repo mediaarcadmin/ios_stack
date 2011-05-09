@@ -22,7 +22,7 @@
 
 @implementation BlioTextFlowPositionedWord
 
-@synthesize string, rect, blockID, wordIndex, wordID;
+@synthesize string, rect, blockID, wordIndex, wordID, hyphenated;
 
 - (void)dealloc {
     self.string = nil;
@@ -52,6 +52,12 @@
 
 + (id)wordIDForWordIndex:(NSUInteger)aWordIndex {
     return [NSNumber numberWithUnsignedInteger:aWordIndex];
+}
+
+// Shadows 'hyphenated' - for libEucalyptus flow rendering routines.
+- (BOOL)endsWithConsumableHyphen
+{
+    return hyphenated;
 }
 
 @end
@@ -355,6 +361,7 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
         NSString *textString = nil;
         long rect[4];
         BOOL rectFound = NO;
+        BOOL hyphenated = NO;
         
         for(int i = 0; atts[i]; i+=2) {
             if (strcmp("Text", atts[i]) == 0) {
@@ -366,7 +373,12 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 if (4 == sscanf(atts[i+1], " %ld , %ld , %ld , %ld ", &rect[0], &rect[1], &rect[2], &rect[3])) {
                     rectFound = YES; 
                 }
+            } else if (strcmp("Hyphenated", atts[i]) == 0) {
+                if(strcmp("True", atts[i+1]) == 0) {
+                    hyphenated = YES;
+                }                
             }
+            
         }
                 
         if (textString) {
@@ -380,6 +392,9 @@ static void fragmentXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
                 NSInteger index = [[block words] count];
                 [newWord setWordIndex:index];
                 [newWord setWordID:[NSNumber numberWithInteger:index]];
+                if(hyphenated) {
+                    newWord.hyphenated = YES;
+                }
                 [[block words] addObject:newWord];
                 [newWord release];
             }                

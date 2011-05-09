@@ -22,13 +22,18 @@
     NSIndexPath *blockID;
     NSUInteger wordIndex;
     NSNumber *wordID;
+    BOOL hyphenated;
 }
 
 @property (nonatomic, retain) NSString *string;
 @property (nonatomic) CGRect rect;
+@property (nonatomic) BOOL hyphenated;
 @property (nonatomic, retain) NSIndexPath *blockID;
 @property (nonatomic) NSUInteger wordIndex;
 @property (nonatomic, retain) NSNumber *wordID;
+
+// Shadows 'hyphenated' - for libEucalyptus flow rendering routines.
+@property (nonatomic, readonly) BOOL endsWithConsumableHyphen; 
 
 - (NSComparisonResult)compare:(BlioTextFlowPositionedWord *)rhs;
 + (NSUInteger)wordIndexForWordID:(id)aWordID;
