@@ -1573,7 +1573,7 @@
 		7D81ED2510E90C220016D44A /* paper-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white.png"; sourceTree = "<group>"; };
 		7D8A801D121A99FB00A54E16 /* BlioBeveledView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBeveledView.h; sourceTree = "<group>"; };
 		7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBeveledView.m; sourceTree = "<group>"; };
-		7D9147C71151497900BCBB23 /* BlioFlowAnalyzeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BlioFlowAnalyzeOperation.h; sourceTree = "<group>"; };
+		7D9147C71151497900BCBB23 /* BlioFlowAnalyzeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowAnalyzeOperation.h; sourceTree = "<group>"; };
 		7D9147C81151497900BCBB23 /* BlioFlowAnalyzeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioFlowAnalyzeOperation.m; sourceTree = "<group>"; };
 		7D94C63311762C4F0067B732 /* BlioParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioParagraphSource.h; sourceTree = "<group>"; };
 		7D94C638117630050067B732 /* BlioTextFlowParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraphSource.h; sourceTree = "<group>"; };

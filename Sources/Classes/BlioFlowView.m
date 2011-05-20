@@ -211,7 +211,7 @@
         if(pageCount == EucOTFIndexUndeterminedPageIndex) {
             ret = [(id<EucBook>)_eucBook estimatedPercentageForIndexPoint:_eucBookView.currentPageIndexPoint];
         } else {
-            NSUInteger pageIndex = _eucBookView.currentPageIndex;
+            NSUInteger pageIndex = [_eucBookView pageIndexForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
             ret = (float)pageIndex / (float)pageCount;
         }
     }
@@ -230,7 +230,36 @@
 
 - (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
-    return [_eucBookView presentationNameAndSubTitleForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]].first;
+    NSString *pageStr = nil;
+    NSUInteger pageIndex = [_eucBookView pageIndexForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+    if(pageIndex != EucOTFIndexUndeterminedPageIndex) {
+        pageStr = [self displayPageNumberForBookmarkPoint:bookmarkPoint];
+    }
+    
+    NSString *chapterName = [_eucBookView presentationNameAndSubTitleForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]].first;
+    
+    NSString *pageLabel = nil;
+    
+    if (chapterName) {
+        if (pageStr) {
+            pageLabel = [NSString stringWithFormat:NSLocalizedString(@"Page %@ \u2013 %@",@"Page label with page number and chapter (flow view)"), pageStr, chapterName];
+        } else {
+            pageLabel = [NSString stringWithFormat:@"%@", chapterName];
+        }
+    } else {
+        if (pageStr) {
+            NSUInteger pageCount = _eucBookView.pageCount;
+            if(pageCount != EucOTFIndexUndeterminedPageIndex) {
+                pageLabel = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) (flow view)"), pageStr, pageCount];
+            } else {
+                pageLabel = [NSString stringWithFormat:NSLocalizedString(@"Page %@",@"Page label X (page number, page count unknown) (flow view)"), pageStr];
+            }
+        } else {
+            pageLabel = [[BlioBookManager sharedBookManager] bookWithID:self.bookID].title;
+        }
+    }     
+    
+    return pageLabel;
 }
 
 + (NSArray *)preAvailabilityOperations 
