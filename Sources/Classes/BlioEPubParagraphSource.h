@@ -15,7 +15,6 @@
 @interface BlioEPubParagraphSource : NSObject <BlioParagraphSource> {
     NSManagedObjectID *_bookID;
     BlioEPubBook *_bUpeBook;
-    EucBUpePageLayoutController *_layoutController;
 }
 
 - (id)initWithBookID:(NSManagedObjectID *)bookID;

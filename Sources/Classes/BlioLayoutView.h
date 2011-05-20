@@ -35,10 +35,11 @@
     NSInteger pageCount;
     CGRect firstPageCrop;
     CGSize pageSize;
-       
+
+    BlioBookmarkPoint *currentBookmarkPoint;
+    
     BlioXPSProvider *xpsProvider;
     id<BlioLayoutDataSource> dataSource;
-	id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
     
     NSLock *layoutCacheLock;
     NSLock *hyperlinksCacheLock;
@@ -70,7 +71,6 @@
 @property (nonatomic, retain) EucPageTurningView *pageTurningView;
 
 @property (nonatomic, retain) BlioTextFlow *textFlow;
-@property (nonatomic, readonly) NSInteger pageNumber;
 @property (nonatomic, retain) EucSelector *selector;
 @property (nonatomic, retain) NSMutableDictionary *pageCropsCache;
 @property (nonatomic, retain) NSMutableDictionary *viewTransformsCache;

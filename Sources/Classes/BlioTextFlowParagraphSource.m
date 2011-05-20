@@ -20,6 +20,7 @@
 #import <libEucalyptus/EucCSSIntermediateDocumentNode.h>
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>
 #import <libEucalyptus/EucCSSLayoutRun.h>
+#import <libEucalyptus/EucChapterNameFormatting.h>
 
 #import "levenshtein_distance.h"
 
@@ -677,16 +678,44 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
     return ret;
 }
  
-- (NSUInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (NSArray *)sectionUuids
 {
-    return bookmarkPoint.layoutPage;
+    return self.textFlow.sectionUuids;
 }
 
-- (BlioBookmarkPoint *)bookmarkPointForPageNumber:(NSUInteger)pageNumber
+- (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid
 {
-    BlioBookmarkPoint *point = [[BlioBookmarkPoint alloc] init];
-    point.layoutPage = pageNumber;
-    return [point autorelease];
+    return [self.textFlow tocEntryForSectionUuid:sectionUuid].level;
 }
+
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
+{
+    return [[self.textFlow tocEntryForSectionUuid:sectionUuid].name splitAndFormattedChapterName];
+}
+
+- (BlioBookmarkPoint *)bookmarkPointForSectionUuid:(NSString *)sectionUuid
+{
+    BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+    bookmarkPoint.layoutPage = [self.textFlow tocEntryForSectionUuid:sectionUuid].startPage + 1;
+    return bookmarkPoint;
+}
+
+- (NSString *)sectionUuidForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return [self.textFlow sectionUuidForPageIndex:bookmarkPoint.layoutPage - 1];
+}
+
+- (BlioBookmarkPoint *)estimatedBookmarkPointForPercentage:(float)percentage
+{
+    BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+    bookmarkPoint.layoutPage = roundf((float)self.textFlow.lastPageIndex * percentage) + 1;
+    return bookmarkPoint;
+}
+
+- (float)estimatedPercentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return (float)(bookmarkPoint.layoutPage - 1) / (float)self.textFlow.lastPageIndex;
+}
+
 
 @end

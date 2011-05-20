@@ -27,15 +27,26 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 @property (nonatomic) int32_t currentWordOffset;
 @property (nonatomic, retain) NSArray *textArray;
 
+@property (nonatomic) float speed;
+@property (nonatomic, retain) UIFont *font;
+@property (nonatomic, retain) NSTimer *nextWordTimer;
+@property (nonatomic, retain) UILabel *bigTextLabel;
+@property (nonatomic, retain) UILabel *sampleTextLabel;
+@property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
+
+- (float)speedForYValue:(float)y;
+- (float)calculateFingerXValueFromY:(float)y;
+- (BOOL)fillArrayWithNextBlock;
+- (BOOL)fillArrayWithCurrentBlock;
+
 @end
 
 @implementation BlioSpeedReadView
 
-@synthesize bookID, pageNumber, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer;
+@synthesize bookID, pageNumber, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer, paragraphSource;
 @synthesize delegate;
 
 - (void)dealloc {
-   
     [textArray release]; textArray = nil;
     [sampleTextLabel release]; sampleTextLabel = nil;
     [bigTextLabel release]; bigTextLabel = nil;
@@ -276,10 +287,6 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         ret = [self fillArrayWithNextBlock];
     } 
     
-    if (ret) {
-        self.pageNumber = [self pageNumberForBookmarkPoint:[paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:self.currentWordOffset]];
-    }
-    
     return ret;
 }
 
@@ -515,20 +522,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 }
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    return [self goToPageNumber:[self.contentsDataSource pageNumberForSectionUuid:uuid]
-                       animated:animated];
-}
-
-- (void)goToPageNumber:(NSInteger)aPageNumber animated:(BOOL)animated {
-    return [self goToBookmarkPoint:[paragraphSource bookmarkPointForPageNumber:aPageNumber] animated:animated];
-}
-
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    return [paragraphSource pageNumberForBookmarkPoint:bookmarkPoint];
-}
-
-- (NSInteger)pageCount {
-    return [paragraphSource pageCount];
+    BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointForSectionUuid:uuid];
+    return [self goToBookmarkPoint:bookmarkPoint animated:animated];
 }
 
 - (BlioBookmarkPoint *)currentBookmarkPoint {
@@ -573,23 +568,6 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     }
 }
 
-- (NSString *)pageLabelForPageNumber:(NSInteger)page {
-    NSString *ret = nil;
-    
-    id<EucBookContentsTableViewControllerDataSource> contentsSource = self.contentsDataSource;
-    NSString* section = [contentsSource sectionUuidForPageNumber:page];
-    THPair* chapter = [contentsSource presentationNameAndSubTitleForSectionUuid:section];
-    NSString* pageStr = [contentsSource displayPageNumberForPageNumber:page];
-    
-    if(chapter.first) {
-        ret = [NSString stringWithFormat:@"%@ \u2013 %@", pageStr, chapter.first];
-    } else {
-        ret = pageStr;
-    } 
-    
-    return ret;
-}
-
 - (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
     if(bookmarkPoint) {
@@ -611,6 +589,44 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 }
 
 #pragma mark -
+#pragma mark BlioBook
+
+- (NSString *)currentUuid
+{
+    return [self.paragraphSource sectionUuidForBookmarkPoint:self.currentBookmarkPoint];
+}
+
+- (BOOL)currentPageContainsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return [self.currentBookmarkPoint isEqual:bookmarkPoint];
+}
+
+- (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return [self.paragraphSource presentationNameAndSubTitleForSectionUuid:[self.paragraphSource sectionUuidForBookmarkPoint:bookmarkPoint]].first;
+}
+
+- (NSString *)displayPageNumberForPercentage:(float)percentage
+{
+    return [NSString stringWithFormat:NSLocalizedString(@"%lu%%", @"Percentage through book (used when formatting 'page numbers' in speedread view)"), (long)roundf((float)percentage * 100.0f)];
+}
+
+- (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return [self displayPageNumberForPercentage:[self.paragraphSource estimatedPercentageForBookmarkPoint:bookmarkPoint]];
+}
+
+- (float)percentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return [self.paragraphSource estimatedPercentageForBookmarkPoint:bookmarkPoint];
+}
+
+- (BlioBookmarkPoint *)bookmarkPointForPercentage:(float)percentage
+{
+    return[self.paragraphSource estimatedBookmarkPointForPercentage:percentage];
+}
+
+#pragma mark -
 #pragma mark EucBookContentsTableViewControllerDataSource
 
 - (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
@@ -618,27 +634,28 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     return self;
 }
 
-- (NSArray *)sectionUuids {
-    return paragraphSource.contentsDataSource.sectionUuids;
+- (NSArray *)contentsTableViewControllerSectionUuids:(EucBookContentsTableViewController *)contentsTableViewController {
+    return [self.paragraphSource sectionUuids];
 }
 
-- (NSString *)sectionUuidForPageNumber:(NSUInteger)page {
-    return [paragraphSource.contentsDataSource sectionUuidForPageNumber:page];
-}
-
-- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
-    return [paragraphSource.contentsDataSource presentationNameAndSubTitleForSectionUuid:sectionUuid];
-}
-
-- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid {
-    return [paragraphSource.contentsDataSource pageNumberForSectionUuid:sectionUuid];
-}
-
-- (NSString *)displayPageNumberForPageNumber:(NSUInteger)page
+- (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+                      levelForSectionUuid:(NSString *)sectionUuid
 {
-    float percentage = 100.0f * ((float)(page - 1) / (float)self.pageCount);
-    unsigned long intPercentage = roundf(percentage);
-    return [NSString stringWithFormat:@"%lu%%", intPercentage];
+    return [self.paragraphSource levelForSectionUuid:sectionUuid];
+}
+
+- (THPair *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
+    return [self.paragraphSource presentationNameAndSubTitleForSectionUuid:sectionUuid];
+}
+
+- (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController pageIndexForSectionUuid:(NSString *)sectionUuid {
+    return (NSUInteger)([self.paragraphSource estimatedPercentageForBookmarkPoint:[self.paragraphSource bookmarkPointForSectionUuid:sectionUuid]] * 1000.0f);
+}
+
+- (NSString *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController displayPageNumberForPageIndex:(NSUInteger)page
+{
+    return [self displayPageNumberForPercentage:(float)page / 1000.0f];
 }
 
 @end

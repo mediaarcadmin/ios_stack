@@ -12,7 +12,6 @@
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
-#import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/EucConfiguration.h>
 #import "BlioBookViewControllerProgressPieButton.h"
 #import "BlioFlowView.h"
@@ -76,7 +75,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *searchPopover;
 @property (nonatomic, retain) UIBarButtonItem *contentsButton;
-@property (nonatomic, retain) UIBarButtonItem *addButton;
 @property (nonatomic, retain) UIBarButtonItem *viewSettingsButton;
 @property (nonatomic, retain) UIBarButtonItem *searchButton;
 @property (nonatomic, retain) UIBarButtonItem *backButton;
@@ -85,8 +83,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void)setPageJumpSliderPreview;
-- (void) _updatePageJumpLabelForPage:(NSInteger)page;
-- (void) updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated;
+- (void) _updatePageJumpLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (void) updatePageJumpPanelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
 - (void) togglePageJumpPanel;
 
@@ -121,7 +119,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)animateCoverFade;
 - (void)initialiseControls;
 - (void)initialiseBookView;
-- (void)toggleBookmark:(id)sender;
 @end
 
 @implementation BlioBookViewController
@@ -144,7 +141,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize audioEnabled = _audioEnabled;
 @synthesize managedObjectContext = _managedObjectContext;
 
-@synthesize motionControlsEnabled;
 @synthesize rotationLocked;
 
 @synthesize searchViewController;
@@ -152,7 +148,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize coverView;
 @synthesize historyStack;
 @synthesize thumbPreview;
-@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, addButton, viewSettingsButton, searchButton, backButton;
+@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, viewSettingsButton, searchButton, backButton;
 
 + (void)initialize {
     if(self == [BlioBookViewController class]) {
@@ -657,36 +653,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.contentsButton = item;
     [readingItems addObject:item];
     [item release];
-	
-     /*
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];
-  
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-plus.png"]
-                                            style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:@selector(showAddMenu:)];
-    
-    [item setAccessibilityLabel:NSLocalizedString(@"Add", @"Accessibility label for Book View Controller Add button")];
-    [item setAccessibilityHint:NSLocalizedString(@"Adds bookmark or note.", @"Accessibility label for Book View Controller Add hint")];
-
-    [readingItems addObject:item];
-    [item release];
- */
-	/*
-	item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-add.png"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleBookmark:)];
-    [item setAccessibilityLabel:NSLocalizedString(@"Bookmark", @"Accessibility label for Book View Controller Bookmark button")];
-    [item setAccessibilityHint:NSLocalizedString(@"Adds bookmark for the current page.", @"Accessibility label for Book View Controller Bookmark hint")];
-    self.addButton = item;
-    [readingItems addObject:item];
-    [item release];
-
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];  
-    */
-	
+		
 	item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
@@ -778,9 +745,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     if(_bookView != bookView) {
         if(_bookView) {
-            //if (bookView != nil) [self removeObserver:_bookView forKeyPath:@"audioPlaying"];
-            [_bookView removeObserver:self forKeyPath:@"pageNumber"];
-            [_bookView removeObserver:self forKeyPath:@"pageCount"];        
+            [_bookView removeObserver:self forKeyPath:@"currentBookmarkPoint"];
             if(_bookView.superview) {
                 if ([_bookView wantsTouchesSniffed]) {
                     THEventCapturingWindow *window = (THEventCapturingWindow *)_bookView.window;
@@ -812,28 +777,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 
                 [self.rootView addSubview:_bookView];
                 [self.rootView sendSubviewToBack:_bookView];
-            }
-            
-            // Pretend that we last saved this page number, so that we 
-            // don't save it again until the user switched a page.  This keeps
-            // the saved point stable when the user switches between different
-            // views repeatedly.
-            _lastSavedPageNumber = _bookView.pageNumber;
-            
+            }                        
             [_bookView addObserver:self 
-                        forKeyPath:@"pageNumber" 
-                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
-                           context:nil];
-            
-            [_bookView addObserver:self 
-                        forKeyPath:@"pageCount" 
+                        forKeyPath:@"currentBookmarkPoint" 
                            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
                            context:nil];   
-            
-            /*[self addObserver:_bookView 
-                   forKeyPath:@"audioPlaying" 
-                      options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
-                      context:nil];*/
         }
     }
 }
@@ -845,70 +793,28 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)updatePieButtonForPage:(NSInteger)pageNumber animated:(BOOL)animated {
-    [self.pieButton setProgress:pageNumber/(CGFloat)self.bookView.pageCount];
+- (void)updatePieButtonForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self.pieButton setProgress:[_bookView percentageForBookmarkPoint:bookmarkPoint]];
 }
 
 
 - (void)updatePieButtonAnimated:(BOOL)animated {
-    [self updatePieButtonForPage:self.bookView.pageNumber animated:animated];
+    [self updatePieButtonForBookmarkPoint:self.bookView.currentBookmarkPoint animated:animated];
 }
 
--(void)updateBookmarkButton {
-//	NSLog(@"%@", NSStringFromSelector(_cmd));
-//	BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-//	BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
-	
-	NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
-	NSManagedObject *existingBookmark = nil;
-	
-	for (NSManagedObject *bookmark in bookmarks) {
-		BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[bookmark valueForKey:@"range"]];    
-		
-		NSInteger pageNum;
-		if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
-			pageNum = [self.bookView pageNumberForBookmarkRange:aBookmarkRange];
-		} else {
-			BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
-			pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
-		}
-		
-		NSLog(@"bookmarkPageNum: %i and currentPageNum: %i",pageNum,self.bookView.pageNumber);
-		if (pageNum == self.bookView.pageNumber) {
-			existingBookmark = bookmark;
-			break;
-		}
-	}
-//	NSLog(@"existingBookmark: %@",existingBookmark);
-	if (nil != existingBookmark) {
-		self.addButton.image = [UIImage imageNamed:@"icon-bookmarked.png"];
-	}
-	else {
-		self.addButton.image = [UIImage imageNamed:@"icon-add.png"];
-	}
-}
-
-- (void)updatePageJumpPanelForPage:(NSInteger)pageNumber animated:(BOOL)animated
+- (void)updatePageJumpPanelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
 {
     if (_pageJumpSlider) {
-        _pageJumpSlider.maximumValue = self.bookView.pageCount;
-        _pageJumpSlider.minimumValue = 1;
-        [_pageJumpSlider setValue:pageNumber animated:animated];
+        [_pageJumpSlider setValue:[_bookView percentageForBookmarkPoint:bookmarkPoint] animated:animated];
 		[self setPageJumpSliderPreview];
-				
-        [self _updatePageJumpLabelForPage:pageNumber];
+        [self _updatePageJumpLabelForBookmarkPoint:bookmarkPoint];
     }    
 }
 
 - (void)updatePageJumpPanelAnimated:(BOOL)animated
 {
-    [self updatePageJumpPanelForPage:self.bookView.pageNumber animated:YES];
+    [self updatePageJumpPanelForBookmarkPoint:self.bookView.currentBookmarkPoint animated:YES];
 }
-
-//- (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid {
-//    [self performSelector:@selector(dismissContentsTabView:)];
-//}
-
 
 - (void)loadView 
 {
@@ -1118,7 +1024,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		}        
         [self setNavigationBarButtons];
 		
-		[self updatePageJumpPanelForPage:self.bookView.pageNumber animated:NO];
+		[self updatePageJumpPanelForBookmarkPoint:_bookView.currentBookmarkPoint animated:NO];
         
         if(animated) {
             CATransition *animation = [CATransition animation];
@@ -1187,9 +1093,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[self resignFirstResponder];
 	}	
     if(_viewIsDisappearing) {
-        //        if(_contentsSheet) {
-        //            [self performSelector:@selector(dismissContents)];
-        //        }
         [self.book reportReadingIfRequired];
         
         if(_bookView) {
@@ -1201,23 +1104,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if([_bookView respondsToSelector:@selector(stopAnimation)]) {
                 [_bookView performSelector:@selector(stopAnimation)];
             }
-            
-            //[self removeObserver:_bookView forKeyPath:@"audioPlaying"];
-            
-            if([_bookView isKindOfClass:[BlioSpeedReadView class]]) {
-                // We do this because the current point is usually only saved on a 
-                // page switch, so we want to make sure the current point that the 
-                // user has reached in SpeedRead view is saved..
-                // Usually, the SpeedRead "Page" tracks the layout page that the 
-                // current SpeedRead paragraph starts on.
-                self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
-                _lastSavedPageNumber = self.bookView.pageNumber;
-            } 
-            
+
             // Save the current progress, for UI display purposes.
-            // Subtract 1 from pageNumber and count so that when we are on page 0 we actually get progress of 0
-            float bookProgress = (float)(_bookView.pageNumber - 1) / (float)(_bookView.pageCount - 1);
-            self.book.progress = [NSNumber numberWithFloat:bookProgress];
+            self.book.progress = [NSNumber numberWithFloat:[_bookView percentageForBookmarkPoint:self.book.implicitBookmarkPoint]];
             
             //[self.navigationController setToolbarHidden:YES animated:NO];
 //            [self.navigationController setToolbarHidden:NO animated:NO];
@@ -1355,7 +1244,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.contentsPopover = nil;
     self.searchPopover = nil;
     self.contentsButton = nil;
-    self.addButton = nil;
     self.viewSettingsButton = nil;
     self.searchButton = nil;
 	self.backButton = nil;
@@ -1652,10 +1540,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)setPageJumpSliderPreview {
-	NSInteger page = _pageJumpSlider.value;
-	
-	if ([self.bookView respondsToSelector:@selector(previewThumbnailForPageNumber:)]) {
-		[self setPreviewThumb:[self.bookView previewThumbnailForPageNumber:page]];
+	if ([self.bookView respondsToSelector:@selector(previewThumbnailForBookmarkPoint:)]) {
+        float percentage = _pageJumpSlider.value;
+		[self setPreviewThumb:[self.bookView previewThumbnailForBookmarkPoint:[_bookView bookmarkPointForPercentage:percentage]]];
 	} else {
 		[self setPreviewThumb:nil];
 	}
@@ -1765,9 +1652,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         [slider addTarget:self action:@selector(_pageSliderSlid:) forControlEvents:UIControlEventValueChanged];
         
-        slider.maximumValue = self.bookView.pageCount;
-        slider.minimumValue = 1;
-        [slider setValue:self.bookView.pageNumber];
+        slider.minimumValue = 0.0f;
+        slider.maximumValue = 1.0f;
+        [slider setValue:[_bookView percentageForBookmarkPoint:_bookView.currentBookmarkPoint]];
         [self layoutPageJumpSlider];
         [_pageJumpView addSubview:slider];
 		[self setPageJumpSliderPreview];
@@ -1783,7 +1670,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (!hiding) {
         _pageJumpView.alpha = 0.0;
         _pageJumpView.hidden = NO;
-        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
+        [self _updatePageJumpLabelForBookmarkPoint:self.bookView.currentBookmarkPoint];
     }
     
     [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
@@ -1795,7 +1682,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         _pageJumpView.alpha = 0.0;
         [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -sz.height)];
     } else {
-        [self _updatePageJumpLabelForPage:self.bookView.pageNumber];
+        [self _updatePageJumpLabelForBookmarkPoint:self.bookView.currentBookmarkPoint];
         _pageJumpView.alpha = 1.0;
         [_pageJumpView setTransform:CGAffineTransformIdentity];
     }
@@ -1816,56 +1703,32 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) _pageSliderSlid: (id) sender
 {
     BlioBookSlider* slider = (BlioBookSlider*) sender;
-    NSInteger page = (NSInteger) slider.value;
-    [self _updatePageJumpLabelForPage:page];
+    float percentage = slider.value;
+    
+    BlioBookmarkPoint *newBookmarkPoint = [_bookView bookmarkPointForPercentage:percentage];
+
+    
+    [self _updatePageJumpLabelForBookmarkPoint:newBookmarkPoint];
 
     if (!slider.touchInProgress) {
-        if (page != [self.bookView pageNumber]) {
-            [self.bookView goToPageNumber:page animated:YES];
-        }
+        [self.bookView goToBookmarkPoint:newBookmarkPoint animated:YES];
     }
     
-    [self.pieButton setProgress:_pageJumpSlider.value/_pageJumpSlider.maximumValue];
-    
-    // When we come to set this later, after the page turn,
-    // it's often a pixel out (due to rounding?), so set it here.
-    [_pageJumpSlider setValue:page animated:NO];
+    [self.pieButton setProgress:percentage];
 	[self setPageJumpSliderPreview];
 }
 
-- (void)goToPageNumberAnimated:(NSNumber *)pageNumber {
-	//NSLog(@"BlioBookViewController goToPageNumber: %i",pageNumber);
-    [self.bookView goToPageNumber:[pageNumber integerValue] animated:YES];
-}
-
-- (void)incrementPage {
-    NSInteger currentPage = self.bookView.pageNumber;
-    [self.bookView goToPageNumber:++currentPage animated:NO];
-}
-
-- (void)decrementPage {
-    NSInteger currentPage = self.bookView.pageNumber;
-    [self.bookView goToPageNumber:--currentPage animated:NO];
-}
-
-- (void) _updatePageJumpLabelForPage:(NSInteger)page
+- (void) _updatePageJumpLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
-    _pageJumpLabel.text = [self.bookView pageLabelForPageNumber:page];
-    NSString *pageNumber = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:page];
-    NSString *currentValue = [_pageJumpSlider accessibilityValue];
-    NSString *newValue;
-                              
-    if (pageNumber) {
-        newValue = [NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Accessibility label for Page Jump Slider value format"), pageNumber];
-    } else {
-        newValue = _pageJumpLabel.text;
-    }
+    NSString *newLabel = [self.bookView pageLabelForBookmarkPoint:bookmarkPoint];
+    _pageJumpLabel.text = newLabel;
     
-    if(![currentValue isEqualToString:newValue]) {
-        [_pageJumpSlider setAccessibilityValue:newValue];
+    NSString *currentAccessibilityValue = [_pageJumpSlider accessibilityValue];
+    if(![currentAccessibilityValue isEqualToString:newLabel]) {
+        [_pageJumpSlider setAccessibilityValue:newLabel];
         if(self.toolbarsVisible && !_pageJumpView.isHidden) {
             if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newValue);
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newLabel);
             }
         }
     }
@@ -1883,16 +1746,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark -
 #pragma mark BookController State Methods
 
-- (NSString *)currentPageNumber {
-    UIView<BlioBookView> *bookView = [(BlioBookViewController *)self.navigationController.topViewController bookView];
-    if ([bookView respondsToSelector:@selector(pageNumber)]) {
-        NSInteger currentPage = (NSInteger)[bookView performSelector:@selector(pageNumber)];
-        if ([[bookView contentsDataSource] respondsToSelector:@selector(displayPageNumberForPageNumber:)])
-            return [[bookView contentsDataSource] displayPageNumberForPageNumber:currentPage];
-    }
-    return nil;
-}
-
 - (BlioPageLayout)currentPageLayout {
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
     if([bookViewController.bookView isKindOfClass:[BlioLayoutView class]])
@@ -1909,15 +1762,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     BlioPageLayout currentLayout = self.currentPageLayout;
     if(currentLayout != newLayout) { 
-        if([self.bookView isKindOfClass:[BlioSpeedReadView class]]) {
-            // We do this because the current point is usually only saved on a 
-            // page switch, so we want to make sure the current point that the 
-            // user has reached in SpeedRead view is up to date.
-            // Usually, the SpeedRead "Page" tracks the layout page that the 
-            // current SpeedRead paragraph starts on.
-            self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
-            _lastSavedPageNumber = self.bookView.pageNumber;
-        }
 		if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
             ePubView.delegate = self;
@@ -2107,34 +1951,26 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSParameterAssert([NSThread isMainThread]);
     
-    if ([keyPath isEqual:@"pageNumber"] && coverOpened) {
-//		NSLog(@"self.bookView.pageNumber: %i",self.bookView.pageNumber);
+    if ([keyPath isEqual:@"currentBookmarkPoint"] && coverOpened) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
-        [self updateBookmarkButton];
         		
 		if ( _acapelaAudioManager != nil )
 			[_acapelaAudioManager setPageChanged:YES];  
 		if ( _audioBookManager != nil )
 			[_audioBookManager setPageChanged:YES];
 		
-        if (_lastSavedPageNumber != self.bookView.pageNumber) {
-            self.book.implicitBookmarkPoint = self.bookView.currentBookmarkPoint;
+        BlioBookmarkPoint *newBookmarkPoint = self.bookView.currentBookmarkPoint;
+        if (![self.book.implicitBookmarkPoint isEqual:newBookmarkPoint]) {
+            self.book.implicitBookmarkPoint = newBookmarkPoint;
             
 			if (self.book.managedObjectContext != nil) {
 				NSError *error;
-				if ([[self.book managedObjectContext] save:&error]) {
-					_lastSavedPageNumber = _bookView.pageNumber;     
-				} else {
+				if (![[self.book managedObjectContext] save:&error]) {
 					NSLog(@"[BlioBookViewController observeValueForKeyPath] Save failed with error: %@, %@", error, [error userInfo]);            
 				}				
 			}
         }
-    }
-    
-    if ([keyPath isEqual:@"pageCount"] && coverOpened) {
-        [self updatePageJumpPanelAnimated:YES];
-        [self updatePieButtonAnimated:YES];
     }
 }
 
@@ -2173,17 +2009,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self presentModalViewController:aContentsTabView animated:YES];
         [aContentsTabView release];  
     }
-}
-
-- (void)showAddMenu:(id)sender {
-    [self setToolbarsForModalOverlayActive:YES];
-    
-    UIActionSheet *aActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" text label for Add Bookmark action sheet") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Add Bookmark",@"\"Add Bookmark\" text label for Add Bookmark action sheet"), NSLocalizedString(@"Add Notes",@"\"Add Notes\" text label for Add Bookmark action sheet"), nil]; 
-	aActionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    aActionSheet.delegate = self;
-    UIToolbar *toolbar = self.navigationController.toolbar;
-    [aActionSheet showFromToolbar:toolbar];
-    [aActionSheet release];
 }
 
 - (void)showViewSettings:(id)sender {    
@@ -2311,10 +2136,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[self prepareTextToSpeakWithAudioManager:audioMgr fromBookmarkPoint:nil];
 }
 
-- (BOOL)loadAudioFiles:(NSInteger)layoutPage segmentIndex:(NSInteger)segmentIx {
+- (BOOL)loadAudioFilesForLayoutPageNumber:(NSInteger)layoutPage segmentIndex:(NSInteger)segmentIx {
 	NSMutableArray* segmentInfo;
 	// Subtract 1 for now from page to match Blio layout page. Can't we have them match?
-	if ( !(segmentInfo = [(NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]] objectAtIndex:segmentIx]) )
+	if ( !(segmentInfo = [(NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSNumber numberWithInteger:layoutPage-1]] objectAtIndex:segmentIx]) )
 		return NO;
 	if ( ![_audioBookManager loadWordTimesWithIndex:[[segmentInfo objectAtIndex:kAudioRefIndex] intValue]] )  {
 		NSLog(@"Timing file could not be initialized.");
@@ -2412,22 +2237,22 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	}
 	[_audioBookManager.speakingTimer invalidate];
     _audioBookManager.speakingTimer = nil;
-	NSInteger layoutPage = [self.bookView.currentBookmarkPoint layoutPage];
-	NSLog(@"audioPlayerDidFinishPlaying layoutPage: %d", layoutPage);
+	NSInteger layoutPageNumber = [self.bookView.currentBookmarkPoint layoutPage];
+	NSLog(@"audioPlayerDidFinishPlaying layoutPage: %d", layoutPageNumber);
 
 	// Subtract 1 to match Blio layout page number.  
-	NSMutableArray* pageSegments = (NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSString stringWithFormat:@"%d",layoutPage-1]];
+	NSMutableArray* pageSegments = (NSMutableArray*)[_audioBookManager.pagesDict objectForKey:[NSNumber numberWithInteger:layoutPageNumber-1]];
 	if ([pageSegments count] == 1 ) {
 		// Stopped at the exact end of the page.
 		BOOL loadedFilesAhead = NO;
-		for ( int i=layoutPage+1;i<=[self.bookView pageCount];++i ) {  
-			if ( [self loadAudioFiles:i segmentIndex:0] ) {
+        NSInteger highestPageNumber = _audioBookManager.highestPageIndex + 1;
+		for ( NSInteger i=layoutPageNumber + 1; i<=highestPageNumber; ++i ) {  
+			if ( [self loadAudioFilesForLayoutPageNumber:i segmentIndex:0] ) {
 				loadedFilesAhead = YES;
 				BOOL animatedPageChange = YES;
 				if ([[UIApplication sharedApplication] respondsToSelector:@selector(applicationState)]) {
 					if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) animatedPageChange = NO;
 				}
-				[self.bookView goToPageNumber:i animated:animatedPageChange];
 				break;
 			}
 		}
@@ -2448,7 +2273,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	else {
 		// Stopped in the middle of the page.
 		// Kluge: assume there won't be more than two segments on a page.
-		if ( [self loadAudioFiles:layoutPage segmentIndex:1] ) {
+		if ( [self loadAudioFilesForLayoutPageNumber:layoutPageNumber segmentIndex:1] ) {
 			[self prepareTextToSpeakWithAudioManager:_audioBookManager];
 			[_audioBookManager setSpeakingTimer:[NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(checkHighlightTime:) userInfo:nil repeats:YES]];
 			[_audioBookManager playAudio];
@@ -2606,18 +2431,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		
         if ([self.book hasAudiobook]) {
             if ( _audioBookManager.startedPlaying == NO || _audioBookManager.pageChanged) { 
-                if ( ![self loadAudioFiles:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
+                if ( ![self loadAudioFilesForLayoutPageNumber:[self.bookView.currentBookmarkPoint layoutPage] segmentIndex:0] ) {
                     // No audio files for this page.
                     // Look for next page with files.
                     BOOL loadedFilesAhead = NO;
-                    for ( int i=[self.bookView.currentBookmarkPoint layoutPage]+1;;++i ) {
-                        if ( [self loadAudioFiles:i segmentIndex:0] ) {
+                    NSInteger highestPageNumber = _audioBookManager.highestPageIndex + 1;
+                    for ( NSInteger i=[self.bookView.currentBookmarkPoint layoutPage]+1; i <= highestPageNumber; ++i ) {
+                        if ( [self loadAudioFilesForLayoutPageNumber:i segmentIndex:0] ) {
                             loadedFilesAhead = YES;
 							BOOL animatedPageChange = YES;
 							if ([[UIApplication sharedApplication] respondsToSelector:@selector(applicationState)]) {
 								if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) animatedPageChange = NO;
 							}							
-                            [self.bookView goToPageNumber:i animated:animatedPageChange];
 							startPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
 							startPoint.layoutPage = i;
                             break;
@@ -2722,21 +2547,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
     
 #pragma mark -
-#pragma mark Add ActionSheet Methods
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == kBlioLibraryAddNoteAction) {
-        if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
-            BlioBookmarkRange *range = [self.bookView selectedRange];
-            [self displayNote:nil atRange:range animated:YES];
-        }
-    } else if (buttonIndex == kBlioLibraryAddBookmarkAction) {
-		[self toggleBookmark:actionSheet];
-    } else {
-        // Cancel
-        [self setToolbarsForModalOverlayActive:NO];
-    }
-}
+#pragma mark NotesView Methods
 
 - (void)notesViewCreateNote:(BlioNotesView *)notesView {
     NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
@@ -2855,7 +2666,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.searchPopover presentPopoverFromBarButtonItem:self.searchButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
         [self.searchPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     }
-	[self updateBookmarkButton];
 }
 
 #pragma mark -
@@ -2887,25 +2697,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)goBackInHistory {
     BlioBookmarkPoint *targetPoint = nil;
     BlioBookmarkPoint *savedPoint = nil;
-    NSInteger bookmarkedPage;
 	
     while (((savedPoint = [self popBookmarkPoint])) != nil) {
-        NSInteger currentPage = [self.bookView pageNumber];
-        bookmarkedPage = [self.bookView pageNumberForBookmarkPoint:savedPoint];
-        if (currentPage != bookmarkedPage) {
+        if (![_bookView currentPageContainsBookmarkPoint:savedPoint]) {
             targetPoint = savedPoint;
             break;
         }
     }
     
     if (targetPoint != nil) {
-		if ([self.bookView respondsToSelector:@selector(goToPageNumber:animated:saveToHistory:)]) {
-			[self.bookView goToPageNumber:bookmarkedPage animated:YES saveToHistory:NO];
-		} else {
-			[self.bookView goToBookmarkPoint:targetPoint animated:YES saveToHistory:NO];
-		}
+        [self.bookView goToBookmarkPoint:targetPoint animated:YES saveToHistory:NO];
     }
- 
 }
 
 #pragma mark -
@@ -2933,30 +2735,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)goToContentsBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
-    NSInteger pageNum;
-    if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
-        pageNum = [self.bookView pageNumberForBookmarkRange:bookmarkRange];
-    } else {
-        BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;
-        pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
-    }
+    BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;
     
-    [self updatePageJumpPanelForPage:pageNum animated:animated];
-    [self updatePieButtonForPage:pageNum animated:animated];
-    
-    if ([self.bookView respondsToSelector:@selector(goToBookmarkRange:animated:)]) {
-        [self.bookView goToBookmarkRange:bookmarkRange animated:animated];
-    } else {
-        BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;
-        [self.bookView goToBookmarkPoint:aBookMarkPoint animated:animated];
-    }
+    [self updatePageJumpPanelForBookmarkPoint:aBookMarkPoint animated:animated];
+    [self updatePieButtonForBookmarkPoint:aBookMarkPoint animated:animated];
+    [self.bookView goToBookmarkPoint:aBookMarkPoint animated:animated];
 }
 
 - (void)goToContentsUuid:(NSString *)sectionUuid animated:(BOOL)animated {
-    NSInteger newPageNumber = [[self.bookView contentsDataSource] pageNumberForSectionUuid:sectionUuid];
+ /*   BlioBookmarkPoint *aBookMarkPoint = [_book bookm;
 
     [self updatePageJumpPanelForPage:newPageNumber animated:animated];
     [self updatePieButtonForPage:newPageNumber animated:animated];
+*/
     [_bookView goToUuid:sectionUuid animated:animated];
 }
 
@@ -2975,19 +2766,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		}
 	}
 	[self refreshHighlights];
-}
-
-- (void)deleteBookmark:(NSManagedObject *)bookmark {
-    NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
-    [bookmarks removeObject:bookmark];
-    [[self managedObjectContext] deleteObject:bookmark];
-    
-	if (self.book.managedObjectContext != nil) {
-		NSError *error;
-		if (![[self managedObjectContext] save:&error])
-			NSLog(@"[BlioBookViewController deleteBookmark:] Save failed with error: %@, %@", error, [error userInfo]);
-	}
-	[self updateBookmarkButton];
 }
 
 #pragma mark -
@@ -3163,138 +2941,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 #pragma mark -
 #pragma mark Edit Menu Responder Actions 
--(void)addBookmark {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
-	[self setToolbarsForModalOverlayActive:NO];
-	
-	BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-	BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
-	
-	NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
-	NSManagedObject *existingBookmark = nil;
-	
-	for (NSManagedObject *bookmark in bookmarks) {
-		if ([BlioBookmarkRange bookmark:bookmark isEqualToBookmarkRange:currentBookmarkRange]) {
-			existingBookmark = bookmark;
-			break;
-		}
-	}
-	
-	// Don't allow duplicate bookmarks to be created
-	if (nil != existingBookmark) {
-		return;
-	}
-	// TODO clean this up to consolodate Bookmark range and getCurrentBlockId
-	NSString *bookmarkText = nil;
-	if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-		/*  EucEPubBook *book = (EucEPubBook*)[(BlioEPubView *)self.bookView book];
-		 uint32_t blockId, wordOffset;
-		 [book getCurrentBlockId:&blockId wordOffset:&wordOffset];
-		 bookmarkText = [[book blockWordsForBlockWithId:blockId] componentsJoinedByString:@" "];
-		 */
-	} else if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-		NSInteger pageIndex = self.bookView.pageNumber - 1;
-		bookmarkText = [[self.book textFlow] stringForPageAtIndex:pageIndex];
-	}
-	
-	NSManagedObject *newBookmark = [NSEntityDescription
-									insertNewObjectForEntityForName:@"BlioBookmark"
-									inManagedObjectContext:[self managedObjectContext]];
-	
-	NSManagedObject *newRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
-	[newBookmark setValue:newRange forKey:@"range"];
-	[newBookmark setValue:bookmarkText forKey:@"bookmarkText"];
-	[bookmarks addObject:newBookmark];
-	
-	if (self.book.managedObjectContext != nil) {
-		NSError *error;
-		if (![[self managedObjectContext] save:&error])
-			NSLog(@"[BlioBookViewController actionSheet:clickedButtonAtIndex:] Save failed with error: %@, %@", error, [error userInfo]);
-		else {
-			[self updateBookmarkButton];
-		}
-	}
-}
-
--(void)toggleBookmark:(id)sender {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
-	[self setToolbarsForModalOverlayActive:NO];
-	
-	BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
-	BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
-	
-	NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
-	NSManagedObject *existingBookmark = nil;
-	NSInteger pageNum;
-	// try to find exact match.
-	for (NSManagedObject *bookmark in bookmarks) {
-		if ([BlioBookmarkRange bookmark:bookmark isEqualToBookmarkRange:currentBookmarkRange]) {
-			existingBookmark = bookmark;
-			break;
-		}
-	}
-	// try to find match with equal page numbers.
-	for (NSManagedObject *bookmark in bookmarks) {
-		BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[bookmark valueForKey:@"range"]];    
-		if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
-			pageNum = [self.bookView pageNumberForBookmarkRange:aBookmarkRange];
-		} else {			
-			BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
-			pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
-		}
-		NSLog(@"bookmarkPageNum: %i and currentPageNum: %i",pageNum,self.bookView.pageNumber);		
-		if (pageNum == self.bookView.pageNumber) {
-			existingBookmark = bookmark;
-			break;
-		}
-	}
-
-	// Don't allow duplicate bookmarks to be created
-	if (nil != existingBookmark) {
-		NSLog(@"deleting bookmark...");
-		[self deleteBookmark:existingBookmark];
-		[self updateBookmarkButton];
-		return;
-	}
-	NSLog(@"creating bookmark...");
-	// TODO clean this up to consolodate Bookmark range and getCurrentBlockId
-	NSString *bookmarkText = nil;
-	if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-		/*  EucEPubBook *book = (EucEPubBook*)[(BlioEPubView *)self.bookView book];
-		 uint32_t blockId, wordOffset;
-		 [book getCurrentBlockId:&blockId wordOffset:&wordOffset];
-		 bookmarkText = [[book blockWordsForBlockWithId:blockId] componentsJoinedByString:@" "];
-		 */
-	} else if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-		NSInteger pageIndex = self.bookView.pageNumber - 1;
-		bookmarkText = [[self.book textFlow] stringForPageAtIndex:pageIndex];
-	}
-	NSLog(@"bookmarkText: %@",bookmarkText);
-	
-	NSManagedObject *newBookmark = [NSEntityDescription
-									insertNewObjectForEntityForName:@"BlioBookmark"
-									inManagedObjectContext:[self managedObjectContext]];
-	NSInteger newBookmarkPointPageNum;
-	if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
-		newBookmarkPointPageNum = [self.bookView pageNumberForBookmarkRange:currentBookmarkRange];
-	}
-	else newBookmarkPointPageNum = [self.bookView pageNumberForBookmarkPoint:currentBookmarkRange.startPoint];
-	NSLog(@"newBookmarkPointPageNum: %i and current view pageNumber: %i and bookmarkpoint.layoutpage: %i", newBookmarkPointPageNum,self.bookView.pageNumber,currentBookmarkRange.startPoint.layoutPage);
-	NSManagedObject *newRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
-	[newBookmark setValue:newRange forKey:@"range"];
-	[newBookmark setValue:bookmarkText forKey:@"bookmarkText"];
-	[bookmarks addObject:newBookmark];
-	
-	if (self.book.managedObjectContext != nil) {
-		NSError *error;
-		if (![[self managedObjectContext] save:&error])
-			NSLog(@"[BlioBookViewController actionSheet:clickedButtonAtIndex:] Save failed with error: %@, %@", error, [error userInfo]);
-		else {
-			NSLog(@"bookmark save complete.");
-			[self updateBookmarkButton];
-		}
-	}
-}
 
 - (void)addHighlightWithColor:(UIColor *)color {
     if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
@@ -3426,7 +3072,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[self.bookViewController.thumbPreview showThumb:NO];
     [super endTrackingWithTouch:touch withEvent:event];
 }
-
+/*
 - (void)accessibilityIncrement {
     [self.bookViewController performSelectorOnMainThread:@selector(incrementPage) withObject:nil waitUntilDone:YES];
 }
@@ -3434,7 +3080,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)accessibilityDecrement {
     [self.bookViewController performSelectorOnMainThread:@selector(decrementPage) withObject:nil waitUntilDone:YES];
 }
-
+*/
 @end
 
 @implementation BlioBookSliderPreview

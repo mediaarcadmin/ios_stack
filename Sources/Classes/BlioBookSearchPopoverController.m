@@ -195,8 +195,7 @@
 #pragma mark Results Controller Formatter
 
 - (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    NSInteger pageNum = [self.bookView pageNumberForBookmarkPoint:bookmarkPoint];
-    return [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
+    return [self.bookView displayPageNumberForBookmarkPoint:bookmarkPoint];
 }
 
 #pragma mark -

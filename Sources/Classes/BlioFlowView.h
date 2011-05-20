@@ -26,11 +26,8 @@
     BOOL _suppressHistory;
 	
 	BlioBookmarkPoint *_lastSavedPoint;
-	
-    id<BlioBookViewDelegate> _delegate;
-    
-    NSInteger _pageCount;
-    NSInteger _pageNumber;
+	    
+    BlioBookmarkPoint *_currentBookmarkPoint;
     
     BlioTextFlowFlowTreeKind _textFlowFlowTreeKind;
 }

@@ -10,6 +10,8 @@
 #import "BlioLayoutDataSource.h"
 #import <libEucalyptus/EucBookContentsTableViewController.h>
 
+@class KNFBTOCEntry;
+
 @interface BlioLayoutPDFDataSource : NSObject<BlioLayoutDataSource, EucBookContentsTableViewControllerDataSource> {
     NSData *data;
     NSInteger pageCount;
@@ -24,5 +26,7 @@
 @property (nonatomic, retain, readonly) NSDictionary *namesDictionary;
 
 - (id)initWithPath:(NSString *)aPath;
+- (KNFBTOCEntry *)tocEntryForSectionUuid:(NSString *)sectionUuid;
+- (NSString *)sectionUuidForPageIndex:(NSUInteger)aPageIndex;
 
 @end

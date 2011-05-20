@@ -13,7 +13,7 @@
 
 @implementation BlioAudioBookManager
 
-@synthesize avPlayer, timeIx, timeStarted, pausedAtTime, wordTimes, pageSegmentVals, pageSegments, audioFiles, timeFiles, currDictKey, pagesDict, bookID;
+@synthesize avPlayer, timeIx, timeStarted, pausedAtTime, wordTimes, pageSegmentVals, pageSegments, audioFiles, timeFiles, currDictKey, highestPageIndex, pagesDict, bookID;
 
 - (id)initWithBookID:(NSManagedObjectID*)aBookID {
 	if ( (self = [super init]) ) {
@@ -67,8 +67,6 @@
 	
 	BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
 
-//    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:audioBookPath] 
-//                                                                   error:&err];
     AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:[book manifestDataForKey:BlioManifestAudiobookDataFilesKey pathIndex:index]
                                                                    error:&err];
 	self.avPlayer = player;
@@ -236,7 +234,7 @@
 	}
 	else if ( [elementName isEqualToString:@"Page"] ) {
 		self.pageSegments = [NSMutableArray array];
-		[self setCurrDictKey:[attributeDict objectForKey:@"PageIndex"]];  // TODO: add one to match Blio layout pages
+		[self setCurrDictKey:[NSNumber numberWithInteger:[[attributeDict objectForKey:@"PageIndex"] integerValue]]];
 	}
 	else if ( [elementName isEqualToString:@"AudioSegment"] ) {
 		self.pageSegmentVals = [NSMutableArray arrayWithCapacity:3];
@@ -259,6 +257,9 @@
 	else if ( [elementName isEqualToString:@"Page"] ) {
 		[self.pagesDict setObject:pageSegments forKey:self.currDictKey];
 		self.pageSegments = nil;
+        if([self.currDictKey integerValue] > self.highestPageIndex) {
+            self.highestPageIndex = [self.currDictKey integerValue];
+        }
 	}
 }
 

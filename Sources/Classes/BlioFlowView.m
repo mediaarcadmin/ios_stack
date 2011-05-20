@@ -14,32 +14,33 @@
 #import "BlioParagraphSource.h"
 #import "BlioBUpeBook.h"
 #import "levenshtein_distance.h"
+#import <libEucalyptus/EucBook.h>
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucHighlightRange.h>
 #import <libEucalyptus/EucMenuItem.h>
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucSelectorRange.h>
+#import <libEucalyptus/EucOTFIndex.h>
 #import <libEucalyptus/THPair.h>
 #import "NSArray+BlioAdditions.h"
 
 @interface BlioFlowView ()
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
-@property (nonatomic, assign) NSInteger pageCount;
-@property (nonatomic, assign) NSInteger pageNumber;
+@property (nonatomic, retain) BlioBookmarkPoint *currentBookmarkPoint;
 @property (nonatomic, retain) BlioBookmarkPoint *lastSavedPoint;
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 @end
 
 @implementation BlioFlowView
 
+@dynamic delegate; // Provided by BlioSelectableBookView superclass.
+
 @synthesize bookID = _bookID;
 
 @synthesize paragraphSource = _paragraphSource;
-@synthesize delegate = _delegate;
 
-@synthesize pageCount = _pageCount;
-@synthesize pageNumber = _pageNumber;
+@synthesize currentBookmarkPoint = _currentBookmarkPoint;
 @synthesize lastSavedPoint = _lastSavedPoint;
 
 - (id)initWithFrame:(CGRect)frame
@@ -75,7 +76,7 @@
                 }
                 
                 [_eucBookView addObserver:self forKeyPath:@"pageCount" options:NSKeyValueObservingOptionInitial context:NULL];
-                [_eucBookView addObserver:self forKeyPath:@"pageNumber" options:NSKeyValueObservingOptionInitial context:NULL];
+                [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:NSKeyValueObservingOptionInitial context:NULL];
                 
                 [self addSubview:_eucBookView];
             }
@@ -93,8 +94,7 @@
 
 - (void)dealloc
 {
-    [_eucBookView removeObserver:self forKeyPath:@"pageCount"];
-    [_eucBookView removeObserver:self forKeyPath:@"pageNumber"];
+    [_eucBookView removeObserver:self forKeyPath:@"currentPageIndexPoint"];
     [_eucBookView release];
      
     BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
@@ -116,13 +116,10 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                         change:(NSDictionary *)change context:(void *)context
 {
-    if([keyPath isEqualToString:@"pageNumber"]) {
-        self.pageNumber = _eucBookView.pageNumber;
-    } else { //if([keyPath isEqualToString:@"pageCount"] ) {
-        self.pageCount = _eucBookView.pageCount;
-    }
+    if([keyPath isEqualToString:@"currentPageIndexPoint"]) {
+        self.currentBookmarkPoint = [self bookmarkPointFromBookPageIndexPoint:_eucBookView.currentPageIndexPoint];
+    } 
 }
-
 
 - (BOOL)wantsTouchesSniffed 
 {
@@ -132,6 +129,11 @@
 - (CGRect)firstPageRect
 {
     return _eucBookView.contentRect;
+}
+
+- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
+{
+    return _eucBookView;
 }
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
@@ -144,9 +146,18 @@
     return [_eucBook bookPageIndexPointFromBookmarkPoint:bookmarkPoint];
 }
 
-- (BlioBookmarkPoint *)currentBookmarkPoint
+- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
 {
-    return [self bookmarkPointFromBookPageIndexPoint:[_eucBookView.book currentPageIndexPoint]];
+    [self pushCurrentBookmarkPoint];
+	if (animated) {
+		_suppressHistory = YES;
+	}
+    [_eucBookView goToUuid:uuid animated:animated];
+}
+
+- (NSString *)currentUuid
+{
+    return [_eucBookView previousNavPointUuid];
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
@@ -179,67 +190,47 @@
     [_eucBookView goToIndexPoint:eucIndexPoint animated:animated];
 }
 
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (BlioBookmarkPoint *)bookmarkPointForPercentage:(float)percentage
 {
-    return [_eucBookView pageNumberForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
-}
-
-- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated
-{
-    [self pushCurrentBookmarkPoint];
-	if (animated) {
-		_suppressHistory = YES;
-	}
-    [_eucBookView goToUuid:uuid animated:animated];
-}
-
-- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated saveToHistory:(BOOL)save;
-{
-	if (save) {
-		[self pushCurrentBookmarkPoint];
-		if (animated) {
-			_suppressHistory = YES;
-		}
-	} else {
-		_suppressHistory = YES;
-	}
-    [_eucBookView goToPageNumber:pageNumber animated:animated];
-}
-
-- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
-{
-    [self goToPageNumber:pageNumber animated:animated saveToHistory:YES];
-}
-
-- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
-{
-    return _eucBookView.contentsDataSource;
-}
-
-- (NSString *)pageLabelForPageNumber:(NSInteger)page 
-{
-    NSString *ret = nil;
-    
-    id<EucBookContentsTableViewControllerDataSource> contentsSource = self.contentsDataSource;
-    NSString* section = [contentsSource sectionUuidForPageNumber:page];
-    THPair* chapter = [contentsSource presentationNameAndSubTitleForSectionUuid:section];
-    NSString* pageStr = [contentsSource displayPageNumberForPageNumber:page];
-    
-    if (section && chapter.first) {
-        if (pageStr) {
-            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ \u2013 %@",@"Page label with page number and chapter"), pageStr, chapter.first];
-        } else {
-            ret = [NSString stringWithFormat:@"%@", chapter.first];
-        }
+    EucBookPageIndexPoint *pageIndexPoint = nil;
+    NSUInteger pageCount = _eucBookView.pageCount;
+    if(pageCount != EucOTFIndexUndeterminedPageIndex) {
+        NSUInteger pageIndex = roundf((pageCount - 1) * percentage);
+        pageIndexPoint = [_eucBookView indexPointForPageIndex:pageIndex];
     } else {
-        if (pageStr) {
-            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) in BlioFlowView"), pageStr, (unsigned long)self.pageCount - 1];
+        pageIndexPoint = [(id<EucBook>)_eucBook estimatedIndexPointForPercentage:percentage];
+    }    
+    return [self bookmarkPointFromBookPageIndexPoint:pageIndexPoint];
+}
+
+- (float)percentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    float ret = 0.0f;
+    NSUInteger pageCount = _eucBookView.pageCount;
+    if(pageCount != 0) {
+        if(pageCount == EucOTFIndexUndeterminedPageIndex) {
+            ret = [(id<EucBook>)_eucBook estimatedPercentageForIndexPoint:_eucBookView.currentPageIndexPoint];
         } else {
-            ret = [_eucBookView.book title];
+            NSUInteger pageIndex = _eucBookView.currentPageIndex;
+            ret = (float)pageIndex / (float)pageCount;
         }
-    } // of no section name
-    
+    }
     return ret;
+}
+
+- (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return [_eucBookView displayPageNumberForPageIndex:[_eucBookView pageIndexForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]]];
+}
+
+- (BOOL)currentPageContainsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return [_eucBookView currentPageContainsIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+}
+
+- (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    return [_eucBookView presentationNameAndSubTitleForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]].first;
 }
 
 + (NSArray *)preAvailabilityOperations 
@@ -265,9 +256,7 @@
 	if (save) {
 		[self pushCurrentBookmarkPoint];
 	} else if (bookmarkPoint) {
-		NSInteger currentPage = [self pageNumber];
-        NSInteger bookmarkedPage = [self pageNumberForBookmarkPoint:bookmarkPoint];
-		if (currentPage != bookmarkedPage) {
+		if (![self currentPageContainsBookmarkPoint:bookmarkPoint]) {
 			[self pushCurrentBookmarkPoint];
 		}
 	}	
@@ -290,9 +279,7 @@
     if (save) {
 		[self pushCurrentBookmarkPoint];
 	} else if (blioRange) {
-		NSInteger currentPage = [self pageNumber];
-        NSInteger bookmarkedPage = [self pageNumberForBookmarkPoint:blioRange.startPoint];
-		if (currentPage != bookmarkedPage) {
+		if (![self currentPageContainsBookmarkPoint:blioRange.startPoint]) {
 			[self pushCurrentBookmarkPoint];
 		}
 	}
@@ -348,7 +335,7 @@
 {
     if(UIAccessibilityIsVoiceOverRunning == nil ||
        !UIAccessibilityIsVoiceOverRunning()) {
-        [_delegate hideToolbars];
+        [self.delegate hideToolbars];
     }
 
     _pageViewIsTurning = YES;
@@ -454,7 +441,7 @@
 
 - (void)bookView:(EucBookView *)bookView unhandledTapAtPoint:(CGPoint)point
 {
-    [_delegate toggleToolbars];
+    [self.delegate toggleToolbars];
 }
 
 #pragma mark -
@@ -532,7 +519,7 @@
 
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
 {
-    [_delegate hideToolbars];
+    [self.delegate hideToolbars];
     return [_eucBookView eucSelector:selector willBeginEditingHighlightWithRange:selectedRange];
 }
 

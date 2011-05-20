@@ -14,15 +14,16 @@
 #import <libEucalyptus/EucBUpeBook.h>
 #import <libEucalyptus/EucBUpePageLayoutController.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
+#import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>
 #import <libEucalyptus/EucCSSLayouter.h>
 #import <libEucalyptus/EucCSSLayoutRun.h>
 #import <libEucalyptus/EucCSSIntermediateDocumentNode.h>
+#import <libEucalyptus/EucChapterNameFormatting.h>
 #import <libEucalyptus/THPair.h>
 
 @interface BlioEPubParagraphSource ()
 @property (nonatomic, retain, readonly) EucBUpeBook *bUpeBook;
-@property (nonatomic, retain, readonly) EucBUpePageLayoutController *layoutController;
 @end
 
 
@@ -46,7 +47,6 @@
         [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:_bookID];
     }
     [_bookID release];
-    [_layoutController release];
     
     [super dealloc];
 }
@@ -60,7 +60,7 @@
     indexPoint.word = bookmarkPoint.wordOffset + 1;
     indexPoint.element = bookmarkPoint.elementOffset;
     
-    return [indexPoint autorelease];;
+    return [indexPoint autorelease];
 }
 
 - (BlioBookmarkPoint *)_bookmarkPointFromIndexPoint:(EucBookPageIndexPoint *)indexPoint
@@ -69,7 +69,7 @@
     
     ret.layoutPage = indexPoint.source + 1;
     ret.blockOffset = indexPoint.block;
-    ret.wordOffset = indexPoint.word;
+    ret.wordOffset = indexPoint.word == 0 ? 0 : indexPoint.word - 1;
     ret.elementOffset = indexPoint.element;
     
     return [ret autorelease];    
@@ -86,8 +86,10 @@
     
     EucCSSLayoutRun *newRun = [runExtractor runForNodeWithKey:indexPoint.block];
    
-    *wordOffsetOut = indexPoint.word - 1;
+    *wordOffsetOut = indexPoint.word == 0 ? 0 : indexPoint.word - 1;
+    indexPoint.block = newRun.id;
     indexPoint.word = 0;
+    indexPoint.element = 0;
     
     *paragraphIDOut = [THPair pairWithFirst:newRun second:indexPoint];
 
@@ -149,33 +151,49 @@
     return ret;
 }
 
-- (EucBUpePageLayoutController *)layoutController {
-    if(!_layoutController) {
-        _layoutController = [[EucBUpePageLayoutController alloc] initWithBook:self.bUpeBook
-                                                                     pageSize:CGSizeMake(320, 480)
-                                                                fontPointSize:18.0f];
+- (NSArray *)sectionUuids
+{
+    return [self.bUpeBook.navPoints valueForKey:@"uuid"];
+}
+
+- (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid
+{
+    return [self.bUpeBook navPointWithUuid:sectionUuid].level;
+}
+
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
+{
+    return [[self.bUpeBook navPointWithUuid:sectionUuid].text splitAndFormattedChapterName];
+}
+
+- (BlioBookmarkPoint *)bookmarkPointForSectionUuid:(NSString *)uuid
+{
+    return [self _bookmarkPointFromIndexPoint:[self.bUpeBook indexPointForUuid:uuid]];
+}
+
+- (NSString *)sectionUuidForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    EucBookPageIndexPoint *indexPoint = [self _indexPointFromBookmarkPoint:bookmarkPoint];
+    NSString *bestUuid = nil;
+    {
+        for(EucBookNavPoint *navPoint in self.bUpeBook.navPoints) {
+            EucBookPageIndexPoint *thisIndexPoint = [self.bUpeBook indexPointForUuid:navPoint.uuid];
+            if([thisIndexPoint compare:indexPoint] != NSOrderedDescending) {
+                bestUuid = navPoint.uuid;
+            }
+        }
     }
-    return _layoutController;
+    return bestUuid;
 }
 
-- (NSUInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (BlioBookmarkPoint *)estimatedBookmarkPointForPercentage:(float)percentage
 {
-    return [self.layoutController pageNumberForIndexPoint:[self _indexPointFromBookmarkPoint:bookmarkPoint]];
+    return [self _bookmarkPointFromIndexPoint:[self.bUpeBook estimatedIndexPointForPercentage:percentage]];
 }
 
-- (BlioBookmarkPoint *)bookmarkPointForPageNumber:(NSUInteger)pageNumber
+- (float)estimatedPercentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
-    return [self _bookmarkPointFromIndexPoint:[self.layoutController indexPointForPageNumber:pageNumber]];
-}
-
-- (id<EucBookContentsTableViewControllerDataSource>)contentsDataSource
-{
-    return self.layoutController;
-}
-
-- (NSUInteger)pageCount
-{
-    return [self.layoutController globalPageCount];
+    return [self.bUpeBook estimatedPercentageForIndexPoint:[self _indexPointFromBookmarkPoint:bookmarkPoint]];
 }
 
 @end

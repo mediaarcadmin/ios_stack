@@ -77,7 +77,7 @@ typedef enum {
     BlioContentsTabContentsViewController *aContentsController = [[BlioContentsTabContentsViewController alloc] init];
     aContentsController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     aContentsController.dataSource = aBookView.contentsDataSource;
-    aContentsController.currentSectionUuid = [aBookView.contentsDataSource sectionUuidForPageNumber:aBookView.pageNumber];
+    aContentsController.currentSectionUuid = aBookView.currentUuid;
     aContentsController.contentSizeForViewInPopover = CGSizeMake(320, MINPOPOVERHEIGHT);
     
     BlioContentsTabBookmarksViewController *aBookmarksController = [[BlioContentsTabBookmarksViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -489,21 +489,12 @@ typedef enum {
     NSManagedObject *currentBookmark = [sortedBookmarks objectAtIndex:row];
     BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[currentBookmark valueForKey:@"range"]];    
     
-    NSInteger pageNum;
-    if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
-        pageNum = [self.bookView pageNumberForBookmarkRange:aBookmarkRange];
-    } else {
-        BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
-        pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
-    }
-    NSLog(@"pageNum: %i",pageNum);
-    NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
+    NSString *displayPage = [self.bookView displayPageNumberForBookmarkPoint:aBookmarkRange.startPoint];
     NSLog(@"[self.bookView contentsDataSource]: %@",[self.bookView contentsDataSource]);
 	NSLog(@"displayPage: %@",displayPage);
 	if (displayPage) {
-		mainLabel.text = [NSString stringWithFormat:NSLocalizedString(@"p.%@",@"\"p.%@\" page number format"), displayPage];
+		mainLabel.text = displayPage;
 	}
-	else if (pageNum <= 1) mainLabel.text = NSLocalizedString(@"Cover",@"\"Cover\" text label for cell inside contents tab view");
 	else mainLabel.text = NSLocalizedString(@"Undefined Bookmark",@"\"Undefined Bookmark\" text label for cell inside contents tab view");
     secondLabel.text = [currentBookmark valueForKey:@"bookmarkText"];
 	
@@ -681,18 +672,10 @@ typedef enum {
     NSArray *sortedNotes = [self.book sortedNotes];
     NSManagedObject *currentNote = [sortedNotes objectAtIndex:row];
     BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[currentNote valueForKey:@"range"]];    
-
-    NSInteger pageNum;
-    if ([self.bookView respondsToSelector:@selector(pageNumberForBookmarkRange:)]) {
-        pageNum = [self.bookView pageNumberForBookmarkRange:aBookmarkRange];
-    } else {
-        BlioBookmarkPoint *aBookMarkPoint = aBookmarkRange.startPoint;
-        pageNum = [self.bookView pageNumberForBookmarkPoint:aBookMarkPoint];
-    }
     
-    NSString *displayPage = [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
+    NSString *displayPage = [self.bookView displayPageNumberForBookmarkPoint:aBookmarkRange.startPoint];
         
-    mainLabel.text = [NSString stringWithFormat:NSLocalizedString(@"p.%@",@"\"p.%@\" page number format"), displayPage];
+    mainLabel.text = displayPage;
     secondLabel.text = [currentNote valueForKey:@"noteText"];
 	
 	[cell setAccessibilityTraits:UIAccessibilityTraitButton];

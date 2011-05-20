@@ -27,6 +27,7 @@
 #import "BlioGestureSuppressingView.h"
 #import "BlioXPSProtocol.h"
 #import "BlioXPSProvider.h"
+#import "KNFBTOCEntry.h"
 
 #define PAGEHEIGHTRATIO_FOR_BLOCKCOMBINERVERTICALSPACING (1/30.0f)
 #define BLIOLAYOUT_LHSHOTZONE 0.25f
@@ -35,6 +36,8 @@
 @interface BlioLayoutView()
 
 @property (nonatomic, retain) BlioGestureSuppressingView *overlay;
+@property (nonatomic, retain) BlioBookmarkPoint *currentBookmarkPoint;
+@property (nonatomic, assign) NSInteger pageCount;
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
@@ -57,6 +60,8 @@
 
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)page;
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex offsetOrigin:(BOOL)offset applyZoom:(BOOL)zoom;
+
+- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 
 - (NSArray *)bookmarkRangesForCurrentPage;
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
@@ -102,7 +107,9 @@
 
 @implementation BlioLayoutView
 
-@synthesize bookID, textFlow, pageNumber, pageCount, selector, pageSize;
+@dynamic delegate; // Provided by BlioSelectableBookView superclass.
+
+@synthesize bookID, textFlow, pageNumber, pageCount, currentBookmarkPoint, selector, pageSize;
 @synthesize pageCropsCache, viewTransformsCache, hyperlinksCache;
 @synthesize dataSource;
 @synthesize pageTurningView, pageTexture, pageTextureIsDark;
@@ -118,6 +125,8 @@
 
 - (void)dealloc {
 	
+    self.currentBookmarkPoint = nil;
+    
 	self.mediaViews = nil;
 	self.webViews = nil;
     [pageAlphaMask release], pageAlphaMask = nil;
@@ -145,9 +154,7 @@
         [[BlioBookManager sharedBookManager] checkInXPSProviderForBookWithID:xpsProvider.bookID];
         [xpsProvider release];
     }
-    
-    self.delegate = nil;
-    
+        
     BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     [aBook flushCaches];
     
@@ -402,8 +409,8 @@
     return [self.dataSource thumbnailForPage:index + 1];
 }
 
-- (UIImage*)previewThumbnailForPageNumber:(NSInteger)page {
-	 return [self.dataSource thumbnailForPage:page];
+- (UIImage*)previewThumbnailForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
+	 return [self.dataSource thumbnailForPage:bookmarkPoint.layoutPage];
 }
 
 - (NSString *)pageTurningViewAccessibilityPageDescriptionForPagesAtIndexes:(NSArray *)pageIndexes
@@ -471,20 +478,37 @@
     return YES;
 }
 
-- (BlioBookmarkPoint *)currentBookmarkPoint {
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
-    ret.layoutPage = MAX(self.pageNumber, 1);
-    return [ret autorelease];
-}
-
-- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
-    [self goToPageNumber:[self.contentsDataSource pageNumberForSectionUuid:uuid] animated:animated];
-}
-
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
 	BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
     bookmarkPoint.layoutPage = targetPage;
     [self goToBookmarkPoint:bookmarkPoint animated:animated];
+}
+
+- (KNFBTOCEntry *)tocEntryForUuid:(NSString *)uuid
+{
+    KNFBTOCEntry *tocEntry = nil;
+    if ([self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+        tocEntry = [(BlioLayoutPDFDataSource *)self.dataSource tocEntryForSectionUuid:uuid];
+    } else {
+        tocEntry = [self.textFlow tocEntryForSectionUuid:uuid];
+    }
+    return tocEntry;
+}
+
+- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
+    [self goToPageNumber:[self tocEntryForUuid:uuid].startPage + 1 animated:animated];
+}
+
+- (NSString *)currentUuid
+{
+    BlioBookmarkPoint *bookmarkPoint = self.currentBookmarkPoint;
+    NSString *uuid;
+    if ([self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+		uuid = [(BlioLayoutPDFDataSource *)self.dataSource sectionUuidForPageIndex:bookmarkPoint.layoutPage - 1];
+	} else {
+		uuid = [self.textFlow sectionUuidForPageIndex:bookmarkPoint.layoutPage - 1];;
+	}
+    return uuid;
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
@@ -513,52 +537,73 @@
 			}
 		}
 	}
-	
-}
-
-- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {
-    [self goToBookmarkPoint:bookmarkRange.startPoint animated:animated];
-}
-
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    return bookmarkPoint.layoutPage;
-}
-
-- (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
-    return bookmarkRange.startPoint.layoutPage;
-}
-
-- (NSString *)pageLabelForPageNumber:(NSInteger)page {
-	id myLabelProvider;
-	
-	if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
-		myLabelProvider = self.dataSource;
-	} else {
-		myLabelProvider = self.textFlow;
-	}
-	
-    NSString *ret = nil;
     
-    NSString* section = [myLabelProvider sectionUuidForPageNumber:page];
-    THPair* chapter = [myLabelProvider presentationNameAndSubTitleForSectionUuid:section];
-    NSString* pageStr = [myLabelProvider displayPageNumberForPageNumber:page];
+    self.currentBookmarkPoint = bookmarkPoint;
+}
 
-    if (section && chapter.first) {
+- (BlioBookmarkPoint *)bookmarkPointForPercentage:(float)percentage
+{
+    BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+    NSInteger pageIndex = roundf((self.pageCount - 1) * percentage);
+    bookmarkPoint.layoutPage = pageIndex + 1;
+    return bookmarkPoint;
+}
+
+- (float)percentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    float percentage = (float)(bookmarkPoint.layoutPage - 1) / (float)(self.pageCount - 1);
+    return MIN(percentage, 1.0f);
+}
+
+- (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    NSUInteger pageIndex = bookmarkPoint.layoutPage;
+    if(pageIndex > 0) {
+        pageIndex -= 1;
+    }
+    return [self.contentsDataSource contentsTableViewController:nil displayPageNumberForPageIndex:pageIndex];
+}
+
+- (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{    
+    NSString *pageStr = [self displayPageNumberForBookmarkPoint:bookmarkPoint];
+
+    NSUInteger pageIndex = bookmarkPoint.layoutPage;
+    if(pageIndex > 0) {
+        pageIndex -= 1;
+    }
+    
+    NSString *uuid;
+    if ([self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+		uuid = [(BlioLayoutPDFDataSource *)self.dataSource sectionUuidForPageIndex:pageIndex];
+	} else {
+		uuid = [self.textFlow sectionUuidForPageIndex:pageIndex];
+	}
+    NSString *chapterName = [self.contentsDataSource contentsTableViewController:nil presentationNameAndSubTitleForSectionUuid:uuid].first;
+    
+    NSString *pageLabel = nil;
+
+    if (chapterName) {
         if (pageStr) {
-            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ \u2013 %@",@"Page label with page number and chapter"), pageStr, chapter.first];
+            pageLabel = [NSString stringWithFormat:NSLocalizedString(@"Page %@ \u2013 %@",@"Page label with page number and chapter (layout view)"), pageStr, chapterName];
         } else {
-            ret = [NSString stringWithFormat:@"%@", chapter.first];
+            pageLabel = [NSString stringWithFormat:@"%@", chapterName];
         }
     } else {
         if (pageStr) {
-            ret = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) in BlioFlowView"), pageStr, (unsigned long)self.pageCount];
+            pageLabel = [NSString stringWithFormat:NSLocalizedString(@"Page %@ of %lu",@"Page label X of Y (page number of page count) (layout view)"), pageStr, (unsigned long)self.pageCount];
         } else {
-            ret = [[BlioBookManager sharedBookManager] bookWithID:self.bookID].title;
+            pageLabel = [[BlioBookManager sharedBookManager] bookWithID:self.bookID].title;
         }
-    } // of no section name
+    }     
     
-    return ret;
-	
+    return pageLabel;
+}
+
+- (BOOL)currentPageContainsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    NSInteger pageIndex = bookmarkPoint.layoutPage - 1;
+    return pageIndex == self.pageTurningView.rightPageIndex || pageIndex == self.pageTurningView.leftPageIndex;
 }
 
 #pragma mark -
@@ -726,7 +771,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
 {
-    	
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
 	suppressHistoryAfterTurn = NO;
@@ -742,6 +786,25 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		self.temporaryHighlightRange = nil;
     }
     self.performingAccessibilityZoom = NO;
+    
+    NSUInteger leftPageIndex = aPageTurningView.leftPageIndex;
+    NSUInteger rightPageIndex = aPageTurningView.rightPageIndex;
+    NSInteger currentPageNumber = self.currentBookmarkPoint.layoutPage;
+    if(!currentPageNumber ||
+       (currentPageNumber - 1 != leftPageIndex && currentPageNumber - 1 != rightPageIndex)) {
+        NSInteger newPageNumber = 0;
+        if(leftPageIndex != NSUIntegerMax) {
+            newPageNumber = leftPageIndex + 1;
+        } else if(rightPageIndex != NSUIntegerMax) {
+            newPageNumber = rightPageIndex + 1;
+        }
+        if(newPageNumber != 0) {
+            BlioBookmarkPoint *newBookmarkPoint = [[BlioBookmarkPoint alloc] init];
+            newBookmarkPoint.layoutPage = newPageNumber;
+            self.currentBookmarkPoint = newBookmarkPoint;
+            [newBookmarkPoint release];
+        }
+    }
 }
 
 - (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView 

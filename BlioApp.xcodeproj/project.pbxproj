@@ -223,6 +223,9 @@
 		7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC010132E88F200FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
+		7DE2749A1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
+		7DE2749B1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
+		7DE2749C1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE310381281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
 		7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
 		7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
@@ -1041,9 +1044,6 @@
 		C9B088CA1344CC1C001963D0 /* KNFBTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087E91344CC1C001963D0 /* KNFBTextFlowFlowTree.m */; };
 		C9B088CB1344CC1C001963D0 /* KNFBTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087E91344CC1C001963D0 /* KNFBTextFlowFlowTree.m */; };
 		C9B088CC1344CC1C001963D0 /* KNFBTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087E91344CC1C001963D0 /* KNFBTextFlowFlowTree.m */; };
-		C9B088CD1344CC1C001963D0 /* KNFBTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087EB1344CC1C001963D0 /* KNFBTextFlowPageMarker.m */; };
-		C9B088CE1344CC1C001963D0 /* KNFBTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087EB1344CC1C001963D0 /* KNFBTextFlowPageMarker.m */; };
-		C9B088CF1344CC1C001963D0 /* KNFBTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087EB1344CC1C001963D0 /* KNFBTextFlowPageMarker.m */; };
 		C9B088D01344CC1C001963D0 /* KNFBTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087ED1344CC1C001963D0 /* KNFBTextFlowPageRange.m */; };
 		C9B088D11344CC1C001963D0 /* KNFBTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087ED1344CC1C001963D0 /* KNFBTextFlowPageRange.m */; };
 		C9B088D21344CC1C001963D0 /* KNFBTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087ED1344CC1C001963D0 /* KNFBTextFlowPageRange.m */; };
@@ -1327,13 +1327,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 7D034F8910C2CCBE0085778B;
 			remoteInfo = TransitionTest;
-		};
-		7D381B5610D92E81008D34E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7D9A96D210D7E41100C2E00A;
-			remoteInfo = Paginate;
 		};
 		7D381B6210D92E99008D34E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1624,6 +1617,8 @@
 		7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSelectableBookView.h; sourceTree = "<group>"; };
 		7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSelectableBookView.m; sourceTree = "<group>"; };
 		7DDCC00D132E88C800FE8201 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		7DE274981382DD6000641A54 /* KNFBPageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBPageMarker.h; sourceTree = "<group>"; };
+		7DE274991382DD6A00641A54 /* KNFBPageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBPageMarker.m; sourceTree = "<group>"; };
 		7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
 		7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
 		7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
@@ -2023,8 +2018,6 @@
 		C9B087E71344CC1C001963D0 /* KNFBTextFlowFlowReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowFlowReference.m; sourceTree = "<group>"; };
 		C9B087E81344CC1C001963D0 /* KNFBTextFlowFlowTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowFlowTree.h; sourceTree = "<group>"; };
 		C9B087E91344CC1C001963D0 /* KNFBTextFlowFlowTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowFlowTree.m; sourceTree = "<group>"; };
-		C9B087EA1344CC1C001963D0 /* KNFBTextFlowPageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowPageMarker.h; sourceTree = "<group>"; };
-		C9B087EB1344CC1C001963D0 /* KNFBTextFlowPageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowPageMarker.m; sourceTree = "<group>"; };
 		C9B087EC1344CC1C001963D0 /* KNFBTextFlowPageRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowPageRange.h; sourceTree = "<group>"; };
 		C9B087ED1344CC1C001963D0 /* KNFBTextFlowPageRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBTextFlowPageRange.m; sourceTree = "<group>"; };
 		C9B087EE1344CC1C001963D0 /* KNFBTextFlowParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBTextFlowParagraph.h; sourceTree = "<group>"; };
@@ -2638,7 +2631,6 @@
 				7D68AF501150F39A00430710 /* libcss.a */,
 				7D229E8512F98D0D0037D93D /* libminiunzip.a */,
 				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
-				7D381B5710D92E81008D34E2 /* Paginate.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3041,9 +3033,9 @@
 				7DB9F57C10F345450010DF0B /* BlioBookView.h */,
 				7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */,
 				7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */,
-				C95FCD02123BCEE400859B92 /* BookSearch */,
 				7D8A801D121A99FB00A54E16 /* BlioBeveledView.h */,
 				7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */,
+				C95FCD02123BCEE400859B92 /* BookSearch */,
 				C9678451120AFEE9008669BA /* BlioCoverView.h */,
 				C96785EF120C0AAC008669BA /* BlioCoverView.m */,
 				7D7917F410F21CD400C4D839 /* BlioBookViewController.h */,
@@ -3231,8 +3223,6 @@
 				C9B087E71344CC1C001963D0 /* KNFBTextFlowFlowReference.m */,
 				C9B087E81344CC1C001963D0 /* KNFBTextFlowFlowTree.h */,
 				C9B087E91344CC1C001963D0 /* KNFBTextFlowFlowTree.m */,
-				C9B087EA1344CC1C001963D0 /* KNFBTextFlowPageMarker.h */,
-				C9B087EB1344CC1C001963D0 /* KNFBTextFlowPageMarker.m */,
 				C9B087EC1344CC1C001963D0 /* KNFBTextFlowPageRange.h */,
 				C9B087ED1344CC1C001963D0 /* KNFBTextFlowPageRange.m */,
 				C9B087EE1344CC1C001963D0 /* KNFBTextFlowParagraph.h */,
@@ -3249,6 +3239,8 @@
 				C9B087F91344CC1C001963D0 /* KNFBTextFlowXAMLTree.m */,
 				C9B087FA1344CC1C001963D0 /* KNFBTextFlowXAMLTreeNode.h */,
 				C9B087FB1344CC1C001963D0 /* KNFBTextFlowXAMLTreeNode.m */,
+				7DE274981382DD6000641A54 /* KNFBPageMarker.h */,
+				7DE274991382DD6A00641A54 /* KNFBPageMarker.m */,
 				C9B087FC1344CC1C001963D0 /* KNFBTOCEntry.h */,
 				C9B087FD1344CC1C001963D0 /* KNFBTOCEntry.m */,
 			);
@@ -3642,13 +3634,6 @@
 			fileType = wrapper.application;
 			path = TransitionTest.app;
 			remoteRef = 7D381B5410D92E81008D34E2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7D381B5710D92E81008D34E2 /* Paginate.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = Paginate.app;
-			remoteRef = 7D381B5610D92E81008D34E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */ = {
@@ -4607,7 +4592,6 @@
 				C9B088C41344CC1C001963D0 /* KNFBTextFlowFlow.m in Sources */,
 				C9B088C71344CC1C001963D0 /* KNFBTextFlowFlowReference.m in Sources */,
 				C9B088CA1344CC1C001963D0 /* KNFBTextFlowFlowTree.m in Sources */,
-				C9B088CD1344CC1C001963D0 /* KNFBTextFlowPageMarker.m in Sources */,
 				C9B088D01344CC1C001963D0 /* KNFBTextFlowPageRange.m in Sources */,
 				C9B088D31344CC1C001963D0 /* KNFBTextFlowParagraph.m in Sources */,
 				C9B088D61344CC1C001963D0 /* KNFBTextFlowParagraphSource.m in Sources */,
@@ -4623,6 +4607,7 @@
 				C9EFAF64134E1A2A00ADF905 /* KNFBXPSBitmapReleaseCallback.m in Sources */,
 				C9EFAF6F134E1BF300ADF905 /* BlioXPSProtocol.m in Sources */,
 				C9EFAF75134E2BF300ADF905 /* KNFBLayoutHyperlink.m in Sources */,
+				7DE2749A1382DD6A00641A54 /* KNFBPageMarker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4771,7 +4756,6 @@
 				C9B088C61344CC1C001963D0 /* KNFBTextFlowFlow.m in Sources */,
 				C9B088C91344CC1C001963D0 /* KNFBTextFlowFlowReference.m in Sources */,
 				C9B088CC1344CC1C001963D0 /* KNFBTextFlowFlowTree.m in Sources */,
-				C9B088CF1344CC1C001963D0 /* KNFBTextFlowPageMarker.m in Sources */,
 				C9B088D21344CC1C001963D0 /* KNFBTextFlowPageRange.m in Sources */,
 				C9B088D51344CC1C001963D0 /* KNFBTextFlowParagraph.m in Sources */,
 				C9B088D81344CC1C001963D0 /* KNFBTextFlowParagraphSource.m in Sources */,
@@ -4787,6 +4771,7 @@
 				C9EFAF66134E1A2A00ADF905 /* KNFBXPSBitmapReleaseCallback.m in Sources */,
 				C9EFAF71134E1BF300ADF905 /* BlioXPSProtocol.m in Sources */,
 				C9EFAF77134E2BF300ADF905 /* KNFBLayoutHyperlink.m in Sources */,
+				7DE2749C1382DD6A00641A54 /* KNFBPageMarker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4935,7 +4920,6 @@
 				C9B088C51344CC1C001963D0 /* KNFBTextFlowFlow.m in Sources */,
 				C9B088C81344CC1C001963D0 /* KNFBTextFlowFlowReference.m in Sources */,
 				C9B088CB1344CC1C001963D0 /* KNFBTextFlowFlowTree.m in Sources */,
-				C9B088CE1344CC1C001963D0 /* KNFBTextFlowPageMarker.m in Sources */,
 				C9B088D11344CC1C001963D0 /* KNFBTextFlowPageRange.m in Sources */,
 				C9B088D41344CC1C001963D0 /* KNFBTextFlowParagraph.m in Sources */,
 				C9B088D71344CC1C001963D0 /* KNFBTextFlowParagraphSource.m in Sources */,
@@ -4951,6 +4935,7 @@
 				C9EFAF65134E1A2A00ADF905 /* KNFBXPSBitmapReleaseCallback.m in Sources */,
 				C9EFAF70134E1BF300ADF905 /* BlioXPSProtocol.m in Sources */,
 				C9EFAF76134E2BF300ADF905 /* KNFBLayoutHyperlink.m in Sources */,
+				7DE2749B1382DD6A00641A54 /* KNFBPageMarker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5189,6 +5174,7 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
@@ -5354,6 +5340,7 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
@@ -5375,6 +5362,7 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;

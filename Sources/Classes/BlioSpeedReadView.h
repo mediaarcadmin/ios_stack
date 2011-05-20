@@ -14,13 +14,9 @@
 
 @protocol BlioParagraphSource;
 
-
 @interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {
     NSManagedObjectID *bookId;
-    
-    NSInteger pageNumber;
-    NSInteger pageCount;
-    
+        
     id<BlioParagraphSource> paragraphSource;
     id<BlioBookViewDelegate> delegate;
     id currentParagraphID;
@@ -40,7 +36,6 @@
     float currentFontSize;
     float zooming;
     
-    
     UILabel *bigTextLabel;
 	UILabel *sampleTextLabel;
     
@@ -53,35 +48,6 @@
 	NSTimer *nextWordTimer;
 }
 
-@property (nonatomic, readonly) NSInteger pageCount;
-@property (nonatomic, readonly) NSInteger pageNumber;
-
-- (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
-- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
-
-- (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
-
-@property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
-@property (nonatomic, readonly) CGRect firstPageRect;
-
-- (float)speedForYValue:(float)y;
-- (float)calculateFingerXValueFromY:(float)y;
-- (BOOL)fillArrayWithNextBlock;
-- (BOOL)fillArrayWithCurrentBlock;
-
 - (void)setColor:(BlioPageColor)newColor;
-
-@property (nonatomic) float speed;
-
-@property (nonatomic, retain) UIFont *font;
-
-
-@property (nonatomic, retain) NSTimer *nextWordTimer;
-
-@property (nonatomic, retain) UILabel *bigTextLabel;
-@property (nonatomic, retain) UILabel *sampleTextLabel;
-
-@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
 
 @end

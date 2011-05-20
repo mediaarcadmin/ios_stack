@@ -31,19 +31,14 @@
 
 
 // Public methods:
+
 // Returns an object that should be used only on the thread the call is made from.
 // Remember to lock before this call, and only unlock after calling save if 
 // you're planning to modify the book and other threads might be modifying 
 // it simultaneously!
 - (BlioBook *)bookWithID:(NSManagedObjectID *)aBookID;
 
-
-// Public methods - however, generally, using the accessors in BlioBook for 
-// these if you already have a BlioBook instance is preferrable. However if you wish to retain
-// the returned value then it should be checked out and checked back in to guarantee that a cacheFlush
-// doesn't remove it
-
-// A check-out must be balanced with a check-in.
+// For all methds below, a check-out must be balanced with a check-in.
 
 // Returns a thread-safe object; May be passed between threads.
 - (BlioTextFlow *)checkOutTextFlowForBookWithID:(NSManagedObjectID *)aBookID;

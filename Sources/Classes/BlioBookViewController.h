@@ -8,7 +8,6 @@
 
 #import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
-#import <libEucalyptus/EucBookContentsTableViewController.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import "BlioAcapelaAudioManager.h"
 #import "BlioAudioBookManager.h"
@@ -64,7 +63,7 @@ typedef enum BlioFontSize {
 - (BOOL)fixedViewEnabled;
 @end
 
-@class EucBookContentsTableViewController, BlioBookViewControllerProgressPieButton, BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview;
+@class BlioBookViewControllerProgressPieButton, BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -89,11 +88,8 @@ typedef enum {
     
     UITouch *_touch;
     BOOL _touchMoved;
-            
-    //EucBookContentsTableViewController *_contentsSheet;
     
     BOOL _viewIsDisappearing;
-    NSUInteger _lastSavedPageNumber;
         
     UIBarStyle _returnToNavigationBarStyle;
     UIColor *_returnToNavigationBarTint;
@@ -118,9 +114,7 @@ typedef enum {
 	BOOL _audioEnabled;
     
     id<BlioParagraphSource> _audioParagraphSource;
-    
-    BOOL motionControlsEnabled;
-    
+        
     BlioPageColor _currentPageColor;
     
     UIBarButtonItem* _pageJumpButton;
@@ -152,8 +146,6 @@ typedef enum {
     
     NSMutableArray *historyStack;
 	BlioBookSliderPreview *thumbPreview;
-	
-	BOOL ignoreSave;
 }
 
 // Designated initializers.
@@ -173,8 +165,6 @@ typedef enum {
 @property (nonatomic, assign) BOOL audioPlaying;
 @property (nonatomic, assign) BOOL audioEnabled;
 
-@property (nonatomic, assign) BOOL motionControlsEnabled;
-
 @property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -189,7 +179,9 @@ typedef enum {
 - (void)stopAudio;
 - (void)pauseAudio;
 - (void)toggleAudio:(id)sender;
+/*
 - (void)incrementPage;
 - (void)decrementPage;
+*/
 
 @end

@@ -8,11 +8,10 @@
 
 #import "BlioLayoutPDFDataSource.h"
 #import "BlioLayoutGeometry.h"
-#import <libEucalyptus/THUIDeviceAdditions.h>
-#import <libEucalyptus/THPair.h>
 #import "BlioTOCEntry.h"
-#import <libEucalyptus/THPair.h>
+#import <libEucalyptus/THUIDeviceAdditions.h>
 #import <libEucalyptus/EucChapterNameFormatting.h>
+#import <libEucalyptus/THPair.h>
 #import "NSArray+BlioAdditions.h"
 #import "BlioLayoutHyperlink.h"
 
@@ -642,6 +641,12 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
     return tableOfContents;
 }
 
+- (KNFBTOCEntry *)tocEntryForSectionUuid:(NSString *)sectionUuid
+{
+	NSUInteger sectionIndex = [sectionUuid integerValue];
+    return [self.tableOfContents objectAtIndex:sectionIndex];
+}
+
 - (NSDictionary *)namesDictionary {
 	if (!namesDictionary) {
 		self.namesDictionary = [self parseNames];
@@ -780,12 +785,7 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
 #pragma mark -
 #pragma mark EucBookContentsTableViewControllerDataSource
 
-- (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid {
-	NSUInteger sectionIndex = [sectionUuid integerValue];
-    return [[self.tableOfContents objectAtIndex:sectionIndex] level];
-}
-
-- (NSArray *)sectionUuids {
+- (NSArray *)contentsTableViewControllerSectionUuids:(EucBookContentsTableViewController *)contentsTableViewController {
 	NSUInteger sectionCount = self.tableOfContents.count;
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:sectionCount];
     for(NSUInteger i = 0; i < sectionCount; ++i) {
@@ -794,8 +794,7 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
     return [array autorelease];
 }
 
-- (NSString *)sectionUuidForPageNumber:(NSUInteger)page {
-	NSUInteger pageIndex = page - 1;
+- (NSString *)sectionUuidForPageIndex:(NSUInteger)pageIndex {
     NSUInteger sectionIndex = 0;
     NSUInteger nextSectionIndex = 0;
     for(BlioTOCEntry *section in self.tableOfContents) {
@@ -809,11 +808,13 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
     return [[NSNumber numberWithUnsignedInteger:sectionIndex] stringValue];
 }
 
-- (NSString *)displayPageNumberForPageNumber:(NSUInteger)aPageNumber {
-	return [NSString stringWithFormat:@"%ld", (long)aPageNumber];
+- (NSString *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+            displayPageNumberForPageIndex:(NSUInteger)pageNumber {
+	return [NSString stringWithFormat:@"%ld", (long)pageNumber + 1];
 }
 
-- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
+- (THPair *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
 	NSUInteger sectionIndex = [sectionUuid integerValue];
     NSString *sectionName = [[self.tableOfContents objectAtIndex:sectionIndex] name];
     if (sectionName) {
@@ -822,17 +823,24 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
         NSString *sectionString;
         NSUInteger startPage = [[self.tableOfContents objectAtIndex:sectionIndex] startPage];
         if (startPage < 1) {
-            sectionString = NSLocalizedString(@"Front of Book", @"TOC section string for missing section name without page");
+            sectionString = NSLocalizedString(@"Front of Book", @"PDF TOC section string for missing section name without page");
         } else {
-            sectionString = [NSString stringWithFormat:NSLocalizedString(@"Page %@", @"TOC section string for missing section name with page number"), [self displayPageNumberForPageNumber:startPage]];
+            sectionString = [NSString stringWithFormat:NSLocalizedString(@"Page %@", @"PDF TOC section string for missing section name with page number"), [self contentsTableViewController:contentsTableViewController displayPageNumberForPageIndex:startPage - 1]];
         }
-        return [sectionString splitAndFormattedChapterName];
+        return [THPair pairWithFirst:sectionString second:nil];
     }
 }
 
-- (NSUInteger)pageNumberForSectionUuid:(NSString *)sectionUuid {
+- (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+                  pageIndexForSectionUuid:(NSString *)sectionUuid {
 	NSUInteger sectionIndex = [sectionUuid integerValue];
-    return [[self.tableOfContents objectAtIndex:sectionIndex] startPage] + 1;
+    return [[self.tableOfContents objectAtIndex:sectionIndex] startPage];
+}
+
+- (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+                      levelForSectionUuid:(NSString *)sectionUuid{
+	NSUInteger sectionIndex = [sectionUuid integerValue];
+    return [[self.tableOfContents objectAtIndex:sectionIndex] level];
 }
 
 @end

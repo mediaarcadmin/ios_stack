@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "KNFBTextFlowPageMarker.h"
+#import "KNFBPageMarker.h"
 
-@interface BlioTextFlowPageMarker : KNFBTextFlowPageMarker {
+@interface BlioTextFlowPageMarker : KNFBPageMarker {
 }
 
 @end

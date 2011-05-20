@@ -131,13 +131,9 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
     BlioBookmarkRange *searchBookmarkRange = [[self.resultsController.searchResults objectAtIndex:currentSearchResult] bookmarkRange];
     if ([self.bookView respondsToSelector:@selector(highlightWordsInBookmarkRange:animated:)]) {
         [self.bookView highlightWordsInBookmarkRange:searchBookmarkRange animated:NO];
-    } else if ([self.bookView respondsToSelector:@selector(goToBookmarkRange:animated:)]) {
-        [self.bookView goToBookmarkRange:searchBookmarkRange animated:NO];
     } else if ([self.bookView respondsToSelector:@selector(goToBookmarkPoint:animated:)]) {
         [self.bookView goToBookmarkPoint:searchBookmarkRange.startPoint animated:NO];
     }
-
-
 }
 
 - (void)nextResult {
@@ -518,8 +514,7 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 #pragma mark Results Controller Formatter
 
 - (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    NSInteger pageNum = [self.bookView pageNumberForBookmarkPoint:bookmarkPoint];
-    return [[self.bookView contentsDataSource] displayPageNumberForPageNumber:pageNum];
+    return [self.bookView displayPageNumberForBookmarkPoint:bookmarkPoint];
 }
 
 #pragma mark -

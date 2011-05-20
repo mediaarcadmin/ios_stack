@@ -55,29 +55,29 @@
 
 @required
 
-@property (nonatomic, readonly) NSInteger pageCount;
+@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
+
 @property (nonatomic, readonly) BOOL wantsTouchesSniffed;
-
-// Page numbers start at 1.
-// The EucBookContentsTableViewControllerDataSource protocol defines a way to 
-// map from page numbers to 'display' page number strings.
-@property (nonatomic, readonly) NSInteger pageNumber;
-
-- (NSString *)pageLabelForPageNumber:(NSInteger)pageNumber;
 
 - (id)initWithFrame:(CGRect)frame
              bookID:(NSManagedObjectID *)bookID 
            animated:(BOOL)animated;
 
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated;
-- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+@property (nonatomic, retain, readonly) NSString *currentUuid;
 
-@property (nonatomic, readonly) BlioBookmarkPoint *currentBookmarkPoint;
+@property (nonatomic, retain, readonly) BlioBookmarkPoint *currentBookmarkPoint;
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save;
-
-- (NSInteger)pageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 - (void)pushCurrentBookmarkPoint;
+
+- (BlioBookmarkPoint *)bookmarkPointForPercentage:(float)percentage;
+- (float)percentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+
+- (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+
+- (BOOL)currentPageContainsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 
@@ -96,10 +96,6 @@
 
 // BookMarkRange methods - some of these should be required once flow view is ready
 - (BlioBookmarkRange *)selectedRange;
-- (NSInteger)pageNumberForBookmarkRange:(BlioBookmarkRange *)bookmarkRange;
-
-- (void)goToBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated;
-- (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated saveToHistory:(BOOL)save;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
@@ -113,7 +109,8 @@
 - (BOOL)toolbarShowShouldBeSuppressed; 
 - (BOOL)toolbarHideShouldBeSuppressed; 
 
-- (UIImage*)previewThumbnailForPageNumber:(NSInteger)pageNumber;
+- (UIImage*)previewThumbnailForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+
 - (void)refreshHighlights;
 
 @end

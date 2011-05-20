@@ -9,17 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "BlioProcessing.h"
 
-@class EucBookPaginator;
-
 @interface BlioFlowPaginateOperation : BlioProcessingOperation {
-    BOOL executing;
-    BOOL finished;
-    
-    EucBookPaginator *paginator;
-    NSString *bookTitle;
-    CFAbsoluteTime startTime;
-    
-    BOOL bookCheckedOut;
 }
 
 @end

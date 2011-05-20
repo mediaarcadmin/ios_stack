@@ -8,8 +8,18 @@
 
 #import "KNFBParagraphSource.h"
 
-@class BlioBookmarkPoint;
+@class THPair, BlioBookmarkPoint;
 
 @protocol BlioParagraphSource <KNFBParagraphSource>
+
+- (NSArray *)sectionUuids;
+- (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid;
+- (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid;
+
+- (BlioBookmarkPoint *)bookmarkPointForSectionUuid:(NSString *)sectionUuid;
+- (NSString *)sectionUuidForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+
+- (BlioBookmarkPoint *)estimatedBookmarkPointForPercentage:(float)percentage;
+- (float)estimatedPercentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 @end

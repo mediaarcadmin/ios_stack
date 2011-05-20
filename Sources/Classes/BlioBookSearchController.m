@@ -61,7 +61,7 @@
     self.searchString = string;
     self.hasWrapped = NO;
     
-    if (!startBookmarkPoint) startBookmarkPoint = [self.paragraphSource bookmarkPointForPageNumber:1];
+    if (!startBookmarkPoint) startBookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
     
     NSIndexPath *paragraphID = nil;
     uint32_t wordOffset = 0;
@@ -102,7 +102,7 @@
 - (void)searchReachedEndOfBook {
     [self searchStopped];
     
-    BlioBookmarkPoint *startBookmarkPoint = [self.paragraphSource bookmarkPointForPageNumber:1];
+    BlioBookmarkPoint *startBookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
     
     NSIndexPath *paragraphID = nil;
     uint32_t wordOffset = 0;

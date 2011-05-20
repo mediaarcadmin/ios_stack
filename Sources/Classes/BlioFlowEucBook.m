@@ -18,6 +18,7 @@
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/EucCSSXHTMLTree.h>
+#import <libEucalyptus/EucCSSLayoutRunExtractor.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THRegex.h>
 
@@ -33,15 +34,20 @@
 
     BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
     BlioBook *blioBook = [bookManager bookWithID:blioBookID];
-    if(blioBook && (self = [super initWithBookID:blioBookID])) {
-        self.textFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
-        self.fakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:BlioManifestCoverKey];
+    if(blioBook) {
+        BlioTextFlow *aTextFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
+        BOOL aFakeCover = self.textFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:BlioManifestCoverKey];
+        NSString *aCacheDirectoryPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
         
-        self.title = blioBook.title;
-        self.author = blioBook.author;
-        self.etextNumber = nil;
-        
-        self.cacheDirectoryPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
+        if ((self = [super initWithBookID:blioBookID
+                       cacheDirectoryPath:aCacheDirectoryPath
+                                 textFlow:aTextFlow
+                                fakeCover:aFakeCover])) 
+        {
+            self.title = blioBook.title;
+            self.author = blioBook.author;
+            self.etextNumber = nil;
+        }
     }
     
     return self;
@@ -90,50 +96,71 @@
 {
     BlioBookmarkPoint *ret = nil;
     
-    EucBookPageIndexPoint *eucIndexPoint = [indexPoint copy];
-    
-    // EucIndexPoint words start with word 0 == before the first word,
-    // but Blio thinks that the first word is at 0.  This is a bit lossy,
-    // but there's not much else we can do.
-    if(eucIndexPoint.word == 0) {
-        eucIndexPoint.element = 0;
-    } else {
-        eucIndexPoint.word -= 1;
-    }
-    
-    if(eucIndexPoint.source == 0 && self.fakeCover) {
+    if(indexPoint.source == 0 && self.fakeCover) {
         ret = [[BlioBookmarkPoint alloc] init];
         // This is the cover section.
         ret.layoutPage = 1;
         ret.blockOffset = 0;
         ret.wordOffset = 0;
         ret.elementOffset = 0;
-    } else if(self.fakeCover) {
-        eucIndexPoint.source--;
-    }
-    
-    if(!ret) {
+    } else {
         ret = [[BlioBookmarkPoint alloc] init];
         
-        NSUInteger indexes[2] = { eucIndexPoint.source , [EucCSSIntermediateDocument documentTreeNodeKeyForKey:eucIndexPoint.block]};
+        NSUInteger indexes[2];
+        if (self.fakeCover) {
+            indexes[0] = indexPoint.source - 1;
+        } else {
+            indexes[0] = indexPoint.source;
+        }
+        
+        // Make sure that the 'block' in our index point actually corresponds to a block-level node (i.e. a paragraph)
+        // in the XML, so that our constructd bookmark point is valid.
+        // We do this by using the layout engine to map the index point to its canonical layout point, which always
+        // refers to a valid block ID.
+        EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:[self intermediateDocumentForIndexPoint:indexPoint]];
+        EucCSSLayoutPoint layoutPoint = [extractor layoutPointForNode:[extractor.document nodeForKey:indexPoint.block]];
+        
+        indexes[1] = [EucCSSIntermediateDocument documentTreeNodeKeyForKey:layoutPoint.nodeKey];
+        
         NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
+        
+        // EucIndexPoint words start with word 0 == before the first word,
+        uint32_t schWordOffset;
+        uint32_t schElementOffset;
+        if (layoutPoint.nodeKey == indexPoint.block) {
+            // The layout mapping, above, didn't change anything, so the 
+            // word and element offset is valid.
+            
+            // EucIndexPoint words start with word 0 == before the first word,
+            // Blio starts at word 0 == the first word.
+            schWordOffset =  indexPoint.word > 0 ? indexPoint.word - 1 : 0;
+            schElementOffset = indexPoint.word> 0 ? indexPoint.element : 0;
+        } else {
+            // This mapping will be a little lossy - the original word and element offsets are
+            // no longer valid, and we don't know what they should be.
+            
+            // EucIndexPoint words start with word 0 == before the first word,
+            // Blio starts at word 0 == the first word.
+            schWordOffset =  layoutPoint.word > 0 ? layoutPoint.word - 1 : 0;
+            schElementOffset =  layoutPoint.word > 0 ? layoutPoint.element : 0;
+        }
         
         BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
         id<BlioParagraphSource> paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
-        BlioBookmarkPoint *bookmarkPoint = [paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:eucIndexPoint.word];
+        BlioBookmarkPoint *bookPoint = [paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:schWordOffset];
         [bookManager checkInParagraphSourceForBookWithID:bookID];
+
+        [indexPath release];        
         
-        [indexPath release];
-        
-        if(bookmarkPoint) {
-            ret.layoutPage = bookmarkPoint.layoutPage;
-            ret.blockOffset = bookmarkPoint.blockOffset;
-            ret.wordOffset = bookmarkPoint.wordOffset;
-            ret.elementOffset = eucIndexPoint.element;
+        if (bookPoint) {
+            // The layout mapping, above, didn't change anything, so the 
+            // word and element offset is valid.
+            ret.layoutPage = bookPoint.layoutPage;
+            ret.blockOffset = bookPoint.blockOffset;
+            ret.wordOffset = bookPoint.wordOffset;
+            ret.elementOffset = schElementOffset;
         }
     }
-
-    [eucIndexPoint release];
     
     return [ret autorelease];    
 }
