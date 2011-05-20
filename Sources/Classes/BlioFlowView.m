@@ -7,7 +7,7 @@
 //
 
 #import "BlioFlowView.h"
-#import "BlioFlowPaginateOperation.h"
+#import "BlioFlowAnalyzeOperation.h"
 #import "BlioFlowEucBook.h"
 #import "BlioBookManager.h"
 #import "BlioBookmark.h"
@@ -235,7 +235,7 @@
 
 + (NSArray *)preAvailabilityOperations 
 {
-    BlioFlowPaginateOperation *preParseOp = [[BlioFlowPaginateOperation alloc] init];
+    BlioFlowAnalyzeOperation *preParseOp = [[BlioFlowAnalyzeOperation alloc] init];
     NSArray *operations = [NSArray arrayWithObject:preParseOp];
     [preParseOp release];
     return operations;

@@ -1,12 +1,12 @@
 //
-//  BlioEPubPaginateOperation.m
+//  BlioEPubAnalyzeOperation.m
 //  BlioApp
 //
 //  Created by James Montgomerie on 17/03/2010.
 //  Copyright 2010 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "BlioFlowPaginateOperation.h"
+#import "BlioFlowAnalyzeOperation.h"
 #import "BlioProcessing.h"
 
 #import "BlioBook.h"
@@ -17,7 +17,7 @@
 #import <libEucalyptus/EucBUpeBook.h>
 
 
-@implementation BlioFlowPaginateOperation
+@implementation BlioFlowAnalyzeOperation
 
 - (void)main
 {
@@ -25,7 +25,7 @@
 
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
-			NSLog(@"BlioFlowPaginateOperation: failed dependency found! op: %@",blioOp);
+			NSLog(@"BlioFlowAnalyzeOperation: failed dependency found! op: %@",blioOp);
 			[self cancel];
 			break;
 		}
@@ -35,7 +35,7 @@
 		// no value means this is probably a free XPS; no need to continue, but no need to send a fail signal to dependent operations either.
 		self.operationSuccess = YES;
 		self.percentageComplete = 100;
-		NSLog(@"No TextFlow data available, will end PaginateOperation without cancelling dependencies...");
+		NSLog(@"No TextFlow or ePub available, will end BlioFlowAnalyzeOperation without cancelling dependencies...");
 		[pool drain];
 		return;
 	}

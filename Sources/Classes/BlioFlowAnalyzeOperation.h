@@ -1,5 +1,5 @@
 //
-//  BlioEPubPaginateOperation.h
+//  BlioEPubAnalyzeOperation.h
 //  BlioApp
 //
 //  Created by James Montgomerie on 17/03/2010.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "BlioProcessing.h"
 
-@interface BlioFlowPaginateOperation : BlioProcessingOperation {
+@interface BlioFlowAnalyzeOperation : BlioProcessingOperation {
 }
 
 @end
