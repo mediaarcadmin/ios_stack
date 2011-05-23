@@ -475,7 +475,7 @@
 }
 
 - (BOOL)wantsTouchesSniffed {
-    return YES;
+    return NO;
 }
 
 - (void)goToPageNumber:(NSInteger)targetPage animated:(BOOL)animated {
@@ -1008,7 +1008,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if(object == self.selector &&
        [keyPath isEqualToString:@"tracking"]) {
-        self.pageTurningView.userInteractionEnabled = !((EucSelector *)object).isTracking;
+        BOOL tracking =  ((EucSelector *)object).isTracking;
+        self.pageTurningView.userInteractionEnabled = !tracking;
+        if(tracking) {
+            [self.delegate hideToolbars];
+        }
     } else if(object == [NSUserDefaults standardUserDefaults]) {
         if([keyPath isEqualToString:kBlioLandscapeTwoPagesDefaultsKey]) {
             BOOL wasTwoUp = self.pageTurningView.twoUp;
@@ -1214,7 +1218,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             NSMutableData *bitmapData = [[[NSMutableData alloc] initWithCapacity:totalBytes] autorelease];
             [bitmapData setLength:totalBytes];
             
-            CGContextRef bitmapContext = CGBitmapContextCreate(NULL, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
+            CGContextRef bitmapContext = CGBitmapContextCreate(bitmapData.mutableBytes, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
             CGColorSpaceRelease(colorSpace);
             
             CGContextScaleCTM(bitmapContext, 1, -1);
@@ -1225,7 +1229,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             CGContextScaleCTM(bitmapContext, scale, scale);
             [view.layer renderInContext:bitmapContext];
             
-            THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:(id)bitmapData] autorelease];
+            THPositionedCGContext *positionedContext = [[[THPositionedCGContext alloc] initWithCGContext:bitmapContext origin:origin backing:bitmapData] autorelease];
             [positionedContexts addObject:positionedContext];
         
             CGContextRelease(bitmapContext);
