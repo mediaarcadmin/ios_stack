@@ -40,63 +40,74 @@
 		return;
 	}
 	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
 	if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}		
-#endif
 	
-    NSString *paginationPath = [self.cacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
+    NSString *cachePath = [self.cacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
 
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
     if(self.forceReprocess) {
-        // Best effort - ignore errors.
-        [[NSFileManager defaultManager] removeItemAtPath:paginationPath error:NULL];
+        NSError *error = nil;
+        [fileManager removeItemAtPath:cachePath error:&error];
+        if(error) {
+            NSLog(@"Warning: Could not remove old book metadata at %@ - error %@", cachePath, error);
+        }
     }
     
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    NSError *error = nil;
+    if(![fileManager createDirectoryAtPath:cachePath withIntermediateDirectories:YES attributes:nil error:&error]) {
+        self.percentageComplete = 100;
+        self.operationSuccess = NO;
+        NSLog(@"Warning: Could not create book cache directory at %@ - error %@ - abandoning.", cachePath, error);
+    } else {        
+        CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+            
+        BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
         
-    BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
-    
-    NSString *bookTitle = book.title;
-    
-    NSLog(@"Analysing book %@", bookTitle);
-    
-    EucBUpeBook *eucBook = nil;
-    if([book hasEPub]) {
-        eucBook = [[BlioEPubBook alloc] initWithBookID:self.bookID];
-    } else if([book hasTextFlow]) {
-        eucBook = [[BlioFlowEucBook alloc] initWithBookID:self.bookID];
-    }
-    if(eucBook) {
-        if (![self hasBookManifestValueForKey:BlioManifestCoverKey]) {
-            NSURL *coverURL = eucBook.coverURL;
-            if(coverURL) {
-                NSLog(@"eucBook.coverURL: %@",coverURL);
-                NSData *coverData = [eucBook dataForURL:coverURL];
-                if(coverData) {
-                    [coverData writeToFile:[self.cacheDirectory stringByAppendingPathComponent:BlioManifestCoverKey] atomically:NO];
-                
-                    NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-                    [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
-                    [manifestEntry setValue:BlioManifestCoverKey forKey:BlioManifestEntryPathKey];
-                    [self setBookManifestValue:manifestEntry forKey:BlioManifestCoverKey];
-                    NSMutableDictionary * noteInfo = [NSMutableDictionary dictionaryWithCapacity:1];
-                    [noteInfo setObject:self.bookID forKey:@"bookID"];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingReprocessCoverThumbnailNotification object:self userInfo:noteInfo];
-                } else {
-                    NSLog(@"Couldn't get data for cover in book.");
+        NSString *bookTitle = book.title;
+        
+        NSLog(@"Analysing book %@", bookTitle);
+        
+        EucBUpeBook *eucBook = [[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID];
+        if(eucBook) {
+            [eucBook generateAndCacheUncachedRecachableData];
+            if (![self hasBookManifestValueForKey:BlioManifestCoverKey]) {
+                NSURL *coverURL = eucBook.coverURL;
+                if(coverURL) {
+                    NSLog(@"eucBook.coverURL: %@",coverURL);
+                    NSData *coverData = [eucBook dataForURL:coverURL];
+                    if(coverData) {
+                        [coverData writeToFile:[self.cacheDirectory stringByAppendingPathComponent:BlioManifestCoverKey] atomically:NO];
+                    
+                        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+                        [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+                        [manifestEntry setValue:BlioManifestCoverKey forKey:BlioManifestEntryPathKey];
+                        [self setBookManifestValue:manifestEntry forKey:BlioManifestCoverKey];
+                        NSMutableDictionary * noteInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+                        [noteInfo setObject:self.bookID forKey:@"bookID"];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingReprocessCoverThumbnailNotification object:self userInfo:noteInfo];
+                    } else {
+                        NSLog(@"Couldn't get data for cover in book.");
+                    }
                 }
             }
+            
+            [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
         }
         
-        [eucBook release];
+        NSLog(@"Analysing book %@, took %f seconds", bookTitle, CFAbsoluteTimeGetCurrent() - startTime);
+
+        self.percentageComplete = 100;    
+        self.operationSuccess = YES;    
     }
     
-    NSLog(@"Analysing book %@, took %f seconds", bookTitle, CFAbsoluteTimeGetCurrent() - startTime);
-
-	self.percentageComplete = 100;    
-	self.operationSuccess = YES;    
+    [fileManager release];
+    
+    if([application respondsToSelector:@selector(endBackgroundTask:)]) {
+		if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) [application endBackgroundTask:backgroundTaskIdentifier];	
+	}			
     
     [pool drain];
 }

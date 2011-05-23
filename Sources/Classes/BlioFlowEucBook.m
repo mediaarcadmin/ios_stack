@@ -82,7 +82,7 @@
     return [super dataForURL:url];
 }
 
--(EucBookPageIndexPoint *)indexPointForPage:(NSUInteger)page 
+-(EucBookPageIndexPoint *)indexPointForLayoutPage:(NSUInteger)page 
 {
     BlioBookmarkPoint *point = [[[BlioBookmarkPoint alloc] init] autorelease];
     point.layoutPage = page;
