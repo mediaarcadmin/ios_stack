@@ -35,9 +35,8 @@
                                                      message:message
                                                     delegate:delegate
                                            cancelButtonTitle:cancelButtonTitle
-                                           otherButtonTitles:nil] autorelease];
+                                           otherButtonTitles:otherButtonTitles, nil] autorelease];
     if (otherButtonTitles != nil) {
-		[alert addButtonWithTitle:otherButtonTitles];
 		va_list args;
 		va_start(args, otherButtonTitles);
 		NSString * title = nil;
@@ -73,7 +72,7 @@
                                                      message:message
                                                     delegate:delegate
                                            cancelButtonTitle:cancelButtonTitle
-                                           otherButtonTitles:nil] autorelease];
+                                           otherButtonTitles:otherButtonTitles, nil] autorelease];
     if (otherButtonTitles != nil) {
 		va_list args;
 		va_start(args, otherButtonTitles);
