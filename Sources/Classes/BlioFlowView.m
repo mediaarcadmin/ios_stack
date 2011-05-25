@@ -72,10 +72,10 @@
                 _eucBookView.vibratesOnInvalidTurn = NO;
                 
                 if (!animated) {
-                    [self goToBookmarkPoint:[bookManager bookWithID:bookID].implicitBookmarkPoint animated:NO saveToHistory:NO];
+                    BlioBookmarkPoint *implicitPoint = [bookManager bookWithID:bookID].implicitBookmarkPoint;
+                    [self goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
                 }
                 
-                [_eucBookView addObserver:self forKeyPath:@"pageCount" options:NSKeyValueObservingOptionInitial context:NULL];
                 [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:NSKeyValueObservingOptionInitial context:NULL];
                 
                 [self addSubview:_eucBookView];

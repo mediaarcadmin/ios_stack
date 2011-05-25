@@ -170,14 +170,13 @@
     if(!bookmarkPoint) {
         return nil;   
     } else {
-        if(self.fakeCover) {
-            if(bookmarkPoint.layoutPage <= 1 &&
-               bookmarkPoint.blockOffset == 0 &&
-               bookmarkPoint.wordOffset == 0 &&
-               bookmarkPoint.elementOffset == 0) {
-                return [[[EucBookPageIndexPoint alloc] init] autorelease];
-            }
+        if(bookmarkPoint.layoutPage <= 1 &&
+           bookmarkPoint.blockOffset == 0 &&
+           bookmarkPoint.wordOffset == 0 &&
+           bookmarkPoint.elementOffset == 0) {
+            return [[[EucBookPageIndexPoint alloc] init] autorelease];
         }
+        
         EucBookPageIndexPoint *eucIndexPoint = [[EucBookPageIndexPoint alloc] init];
         
         NSIndexPath *paragraphID = nil;
