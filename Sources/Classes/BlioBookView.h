@@ -94,6 +94,9 @@
 @property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
+// Implement if pageLabelForBookmarkPoint: is expensive for smooth slider operation.
+- (NSString *)pageLabelForPercentage:(float)percenatage;
+
 // BookMarkRange methods - some of these should be required once flow view is ready
 - (BlioBookmarkRange *)selectedRange;
 

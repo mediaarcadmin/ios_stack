@@ -83,6 +83,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void)setPageJumpSliderPreview;
+- (void) _updatePageJumpLabelWithLabel:(NSString *)newLabel;
+- (void) _updatePageJumpLabelForPercentage:(float)percentage;
 - (void) _updatePageJumpLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 - (void) updatePageJumpPanelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
@@ -1704,23 +1706,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     BlioBookSlider* slider = (BlioBookSlider*) sender;
     float percentage = slider.value;
-    
-    BlioBookmarkPoint *newBookmarkPoint = [_bookView bookmarkPointForPercentage:percentage];
-
-    
-    [self _updatePageJumpLabelForBookmarkPoint:newBookmarkPoint];
+        
+    [self _updatePageJumpLabelForPercentage:percentage];
 
     if (!slider.touchInProgress) {
-        [self.bookView goToBookmarkPoint:newBookmarkPoint animated:YES];
+        [self.bookView goToBookmarkPoint:[_bookView bookmarkPointForPercentage:percentage] animated:YES];
     }
     
     [self.pieButton setProgress:percentage];
 	[self setPageJumpSliderPreview];
 }
 
-- (void) _updatePageJumpLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (void) _updatePageJumpLabelWithLabel:(NSString *)newLabel
 {
-    NSString *newLabel = [self.bookView pageLabelForBookmarkPoint:bookmarkPoint];
     _pageJumpLabel.text = newLabel;
     
     NSString *currentAccessibilityValue = [_pageJumpSlider accessibilityValue];
@@ -1732,6 +1730,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }
         }
     }
+}
+
+- (void) _updatePageJumpLabelForPercentage:(float)percentage
+{
+    if([self.bookView respondsToSelector:@selector(pageLabelForPercentage:)]) {
+        [self _updatePageJumpLabelWithLabel:[self.bookView pageLabelForPercentage:percentage]];
+    } else {
+        [self _updatePageJumpLabelForBookmarkPoint:[self.bookView bookmarkPointForPercentage:percentage]];
+    }
+}
+
+- (void) _updatePageJumpLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+{
+    [self _updatePageJumpLabelWithLabel:[self.bookView pageLabelForBookmarkPoint:bookmarkPoint]];
 }
 
 - (UIImage *)dimPageImage

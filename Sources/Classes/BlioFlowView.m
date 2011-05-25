@@ -30,6 +30,10 @@
 @property (nonatomic, retain) BlioBookmarkPoint *currentBookmarkPoint;
 @property (nonatomic, retain) BlioBookmarkPoint *lastSavedPoint;
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint;
+
+- (EucBookPageIndexPoint *)bookPageIndexPointForPercentage:(float)percentage;
+- (NSString *)blioPageLabelForBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint;
+
 @end
 
 @implementation BlioFlowView
@@ -190,7 +194,7 @@
     [_eucBookView goToIndexPoint:eucIndexPoint animated:animated];
 }
 
-- (BlioBookmarkPoint *)bookmarkPointForPercentage:(float)percentage
+- (EucBookPageIndexPoint *)bookPageIndexPointForPercentage:(float)percentage
 {
     EucBookPageIndexPoint *pageIndexPoint = nil;
     NSUInteger pageCount = _eucBookView.pageCount;
@@ -200,7 +204,12 @@
     } else {
         pageIndexPoint = [(id<EucBook>)_eucBook estimatedIndexPointForPercentage:percentage];
     }    
-    return [self bookmarkPointFromBookPageIndexPoint:pageIndexPoint];
+    return pageIndexPoint;
+}
+
+- (BlioBookmarkPoint *)bookmarkPointForPercentage:(float)percentage
+{
+    return [self bookmarkPointFromBookPageIndexPoint:[self bookPageIndexPointForPercentage:percentage]];
 }
 
 - (float)percentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
@@ -228,15 +237,25 @@
     return [_eucBookView currentPageContainsIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
 }
 
+- (NSString *)pageLabelForPercentage:(float)percenatage
+{
+    return [self blioPageLabelForBookPageIndexPoint:[self bookPageIndexPointForPercentage:percenatage]];
+}
+
 - (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
+    return [self blioPageLabelForBookPageIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+}
+
+- (NSString *)blioPageLabelForBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
+{
     NSString *pageStr = nil;
-    NSUInteger pageIndex = [_eucBookView pageIndexForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
+    NSUInteger pageIndex = [_eucBookView pageIndexForIndexPoint:indexPoint];
     if(pageIndex != EucOTFIndexUndeterminedPageIndex) {
-        pageStr = [self displayPageNumberForBookmarkPoint:bookmarkPoint];
+        pageStr = [_eucBookView displayPageNumberForPageIndex:[_eucBookView pageIndexForIndexPoint:indexPoint]];
     }
     
-    NSString *chapterName = [_eucBookView presentationNameAndSubTitleForIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]].first;
+    NSString *chapterName = [_eucBookView presentationNameAndSubTitleForIndexPoint:indexPoint].first;
     
     NSString *pageLabel = nil;
     
