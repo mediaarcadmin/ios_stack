@@ -8,7 +8,7 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
-@interface BlioBookmarkPoint : NSObject {
+@interface BlioBookmarkPoint : NSObject < NSCopying > {
     NSInteger layoutPage;
     uint32_t blockOffset;
     uint32_t wordOffset;

@@ -25,8 +25,6 @@
 #import <CoreData/CoreData.h>
 #import <objc/runtime.h>
 
-static NSString const *BlioFlowEucBookConvertedPointKey = @"BlioFlowEucBookConvertedPointKey";
-
 @implementation BlioFlowEucBook
 
 #pragma mark -
@@ -100,82 +98,67 @@ static NSString const *BlioFlowEucBookConvertedPointKey = @"BlioFlowEucBookConve
     if(!eucIndexPoint) {
         return nil;   
     } else {
-        // Do we have an associated bookmark point from an earlier conversion?
-        BlioBookmarkPoint *bookmarkPoint = objc_getAssociatedObject(eucIndexPoint, BlioFlowEucBookConvertedPointKey);
-           
-        if(!bookmarkPoint) {
-            if(eucIndexPoint.source == 0 && self.fakeCover) {
-                bookmarkPoint = [[BlioBookmarkPoint alloc] init];
-                // This is the cover section.
-                bookmarkPoint.layoutPage = 1;
-                bookmarkPoint.blockOffset = 0;
-                bookmarkPoint.wordOffset = 0;
-                bookmarkPoint.elementOffset = 0;
+        BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+        if(eucIndexPoint.source == 0 && self.fakeCover) {
+            // This is the cover section.
+            bookmarkPoint.layoutPage = 1;
+            bookmarkPoint.blockOffset = 0;
+            bookmarkPoint.wordOffset = 0;
+            bookmarkPoint.elementOffset = 0;
+        } else {
+            NSUInteger indexes[2];
+            if (self.fakeCover) {
+                indexes[0] = eucIndexPoint.source - 1;
             } else {
-                bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
-                
-                NSUInteger indexes[2];
-                if (self.fakeCover) {
-                    indexes[0] = eucIndexPoint.source - 1;
-                } else {
-                    indexes[0] = eucIndexPoint.source;
-                }
-                
-                // Make sure that the 'block' in our index point actually corresponds to a block-level node (i.e. a paragraph)
-                // in the XML, so that our constructd bookmark point is valid.
-                // We do this by using the layout engine to map the index point to its canonical layout point, which always
-                // refers to a valid block ID.
-                EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:[self intermediateDocumentForIndexPoint:eucIndexPoint]];
-                EucCSSLayoutPoint layoutPoint = [extractor layoutPointForNode:[extractor.document nodeForKey:eucIndexPoint.block]];
-                
-                indexes[1] = [EucCSSIntermediateDocument documentTreeNodeKeyForKey:layoutPoint.nodeKey];
-                
-                NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
-                
-                // EucIndexPoint words start with word 0 == before the first word,
-                uint32_t schWordOffset;
-                uint32_t schElementOffset;
-                if (layoutPoint.nodeKey == eucIndexPoint.block) {
-                    // The layout mapping, above, didn't change anything, so the 
-                    // word and element offset is valid.
-                    
-                    // EucIndexPoint words start with word 0 == before the first word,
-                    // Blio starts at word 0 == the first word.
-                    schWordOffset =  eucIndexPoint.word > 0 ? eucIndexPoint.word - 1 : 0;
-                    schElementOffset = eucIndexPoint.word> 0 ? eucIndexPoint.element : 0;
-                } else {
-                    // This mapping will be a little lossy - the original word and element offsets are
-                    // no longer valid, and we don't know what they should be.
-                    
-                    // EucIndexPoint words start with word 0 == before the first word,
-                    // Blio starts at word 0 == the first word.
-                    schWordOffset =  layoutPoint.word > 0 ? layoutPoint.word - 1 : 0;
-                    schElementOffset =  layoutPoint.word > 0 ? layoutPoint.element : 0;
-                }
-                
-                BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
-                id<BlioParagraphSource> paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
-                BlioBookmarkPoint *bookPoint = [paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:schWordOffset];
-                [bookManager checkInParagraphSourceForBookWithID:bookID];
-
-                [indexPath release];        
-                
-                if (bookPoint) {
-                    // The layout mapping, above, didn't change anything, so the 
-                    // word and element offset is valid.
-                    bookmarkPoint.layoutPage = bookPoint.layoutPage;
-                    bookmarkPoint.blockOffset = bookPoint.blockOffset;
-                    bookmarkPoint.wordOffset = bookPoint.wordOffset;
-                    bookmarkPoint.elementOffset = schElementOffset;
-                }
+                indexes[0] = eucIndexPoint.source;
             }
             
-            if(bookmarkPoint) {
-                // Store this conversion for easy lookup later in either direction.
-                objc_setAssociatedObject(eucIndexPoint, BlioFlowEucBookConvertedPointKey, bookmarkPoint, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                EucBookPageIndexPoint *eucIndexPointCopy = [eucIndexPoint copy]; // Copy to avoid a retain cycle.
-                objc_setAssociatedObject(bookmarkPoint, BlioFlowEucBookConvertedPointKey, eucIndexPointCopy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                [eucIndexPointCopy release];
+            // Make sure that the 'block' in our index point actually corresponds to a block-level node (i.e. a paragraph)
+            // in the XML, so that our constructd bookmark point is valid.
+            // We do this by using the layout engine to map the index point to its canonical layout point, which always
+            // refers to a valid block ID.
+            EucCSSLayoutRunExtractor *extractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:[self intermediateDocumentForIndexPoint:eucIndexPoint]];
+            EucCSSLayoutPoint layoutPoint = [extractor layoutPointForNode:[extractor.document nodeForKey:eucIndexPoint.block]];
+            
+            indexes[1] = [EucCSSIntermediateDocument documentTreeNodeKeyForKey:layoutPoint.nodeKey];
+            
+            NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
+            
+            // EucIndexPoint words start with word 0 == before the first word,
+            uint32_t schWordOffset;
+            uint32_t schElementOffset;
+            if (layoutPoint.nodeKey == eucIndexPoint.block) {
+                // The layout mapping, above, didn't change anything, so the 
+                // word and element offset is valid.
+                
+                // EucIndexPoint words start with word 0 == before the first word,
+                // Blio starts at word 0 == the first word.
+                schWordOffset =  eucIndexPoint.word > 0 ? eucIndexPoint.word - 1 : 0;
+                schElementOffset = eucIndexPoint.word> 0 ? eucIndexPoint.element : 0;
+            } else {
+                // This mapping will be a little lossy - the original word and element offsets are
+                // no longer valid, and we don't know what they should be.
+                
+                // EucIndexPoint words start with word 0 == before the first word,
+                // Blio starts at word 0 == the first word.
+                schWordOffset =  layoutPoint.word > 0 ? layoutPoint.word - 1 : 0;
+                schElementOffset =  layoutPoint.word > 0 ? layoutPoint.element : 0;
+            }
+            
+            BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+            id<BlioParagraphSource> paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
+            BlioBookmarkPoint *bookPoint = [paragraphSource bookmarkPointFromParagraphID:indexPath wordOffset:schWordOffset];
+            [bookManager checkInParagraphSourceForBookWithID:bookID];
+
+            [indexPath release];        
+            
+            if (bookPoint) {
+                // The layout mapping, above, didn't change anything, so the 
+                // word and element offset is valid.
+                bookmarkPoint.layoutPage = bookPoint.layoutPage;
+                bookmarkPoint.blockOffset = bookPoint.blockOffset;
+                bookmarkPoint.wordOffset = bookPoint.wordOffset;
+                bookmarkPoint.elementOffset = schElementOffset;
             }
         }
         return bookmarkPoint;
@@ -187,49 +170,36 @@ static NSString const *BlioFlowEucBookConvertedPointKey = @"BlioFlowEucBookConve
     if(!bookmarkPoint) {
         return nil;   
     } else {
-        // Do we have an associated index point from an earlier conversion?
-        EucBookPageIndexPoint *eucIndexPoint = objc_getAssociatedObject(bookmarkPoint, BlioFlowEucBookConvertedPointKey);
-
-        if(!eucIndexPoint) {
-            eucIndexPoint =  [[[EucBookPageIndexPoint alloc] init] autorelease];
-            if(bookmarkPoint.layoutPage <= 1 &&
-               bookmarkPoint.blockOffset == 0 &&
-               bookmarkPoint.wordOffset == 0 &&
-               bookmarkPoint.elementOffset == 0) {
-                // Do nothing - this is the front of the book, so we want an all-zero index point.
-            } else {
-                NSIndexPath *paragraphID = nil;
-                uint32_t wordOffset = 0;
-                    
-                BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
-                id<BlioParagraphSource> paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
-                [paragraphSource bookmarkPoint:bookmarkPoint
-                                 toParagraphID:&paragraphID 
-                                    wordOffset:&wordOffset];
-                [bookManager checkInParagraphSourceForBookWithID:bookID];
-
-                eucIndexPoint.source = [paragraphID indexAtPosition:0];
-                eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
-                eucIndexPoint.word = wordOffset;
-                eucIndexPoint.element = bookmarkPoint.elementOffset;
-
-                if(self.fakeCover) {
-                    eucIndexPoint.source++;
-                }        
+        EucBookPageIndexPoint *eucIndexPoint = [[[EucBookPageIndexPoint alloc] init] autorelease];
+        if(bookmarkPoint.layoutPage <= 1 &&
+           bookmarkPoint.blockOffset == 0 &&
+           bookmarkPoint.wordOffset == 0 &&
+           bookmarkPoint.elementOffset == 0) {
+            // Do nothing - this is the front of the book, so we want an all-zero index point.
+        } else {
+            NSIndexPath *paragraphID = nil;
+            uint32_t wordOffset = 0;
                 
-                // EucIndexPoint words start with word 0 == before the first word,
-                // but Blio thinks that the first word is at 0.  This is a bit lossy,
-                // but there's not much else we can do.    
-                eucIndexPoint.word += 1;
-            }
+            BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
+            id<BlioParagraphSource> paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
+            [paragraphSource bookmarkPoint:bookmarkPoint
+                             toParagraphID:&paragraphID 
+                                wordOffset:&wordOffset];
+            [bookManager checkInParagraphSourceForBookWithID:bookID];
+
+            eucIndexPoint.source = [paragraphID indexAtPosition:0];
+            eucIndexPoint.block = [EucCSSIntermediateDocument keyForDocumentTreeNodeKey:[paragraphID indexAtPosition:1]];
+            eucIndexPoint.word = wordOffset;
+            eucIndexPoint.element = bookmarkPoint.elementOffset;
+
+            if(self.fakeCover) {
+                eucIndexPoint.source++;
+            }        
             
-            if(eucIndexPoint) {
-                // Store this conversion for easy lookup later in either direction.
-                objc_setAssociatedObject(eucIndexPoint, BlioFlowEucBookConvertedPointKey, bookmarkPoint, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                EucBookPageIndexPoint *eucIndexPointCopy = [eucIndexPoint copy]; // Copy to avoid a retain cycle.
-                objc_setAssociatedObject(bookmarkPoint, BlioFlowEucBookConvertedPointKey, eucIndexPointCopy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                [eucIndexPointCopy release];
-            }
+            // EucIndexPoint words start with word 0 == before the first word,
+            // but Blio thinks that the first word is at 0.  This is a bit lossy,
+            // but there's not much else we can do.    
+            eucIndexPoint.word += 1;
         }
         return eucIndexPoint;  
     }

@@ -38,6 +38,11 @@
     return [point autorelease]; 
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    return NSCopyObject(self, 0, zone);
+}
+
 - (NSComparisonResult)compare:(BlioBookmarkPoint *)rhs
 {
     NSInteger comparison = self.layoutPage - rhs.layoutPage;
