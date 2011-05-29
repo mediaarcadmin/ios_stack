@@ -29,6 +29,7 @@
 @interface BlioAppAppDelegate ()
 
 - (void)saveBookSnapshotIfAppropriate;
+- (void)persistApplicationState;
 
 @property (nonatomic, assign) BOOL delayedDidFinishLaunchingLaunchComplete;
 @property (nonatomic, retain) NSMutableArray *delayedURLOpens;
@@ -402,16 +403,6 @@ static void *background_init_thread(void * arg) {
 	}	
 }
 
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-	// Save data if appropriate
-    NSError *error;
-    if (![[self managedObjectContext] save:&error])
-        NSLog(@"[BlioAppAppDelegate applicationWillTerminate] Save failed with error: %@, %@", error, [error userInfo]);
-	[[NSUserDefaults standardUserDefaults] synchronize];
-    [self saveBookSnapshotIfAppropriate];
-}
-
 -(void)loginDismissed:(NSNotification*)note {
 //	NSLog(@"BlioAppAppDelegate loginDismissed: entered.");
 	[BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
@@ -432,15 +423,22 @@ static void *background_init_thread(void * arg) {
 }
 
 #pragma mark -
-#pragma mark UIApplicationDelegate - Background Tasks
+#pragma mark UIApplicationDelegate - Background Tasks and Termination
 
--(void)applicationDidEnterBackground:(UIApplication *)application {
-//	NSLog(@"%@", NSStringFromSelector(_cmd));
+- (void)persistApplicationState {
     NSError *error;
     if (![[self managedObjectContext] save:&error])
-        NSLog(@"[BlioAppAppDelegate applicationDidEnterBackground] Save failed with error: %@, %@", error, [error userInfo]);
-    [self saveBookSnapshotIfAppropriate];
+        NSLog(@"[BlioAppAppDelegate applicationWillTerminate] Save failed with error: %@, %@", error, [error userInfo]);
 	[[NSUserDefaults standardUserDefaults] synchronize];
+    [self saveBookSnapshotIfAppropriate];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+	[self persistApplicationState];
+}
+
+-(void)applicationDidEnterBackground:(UIApplication *)application {
+	[self persistApplicationState];
 }
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 	NSLog(@"%@", NSStringFromSelector(_cmd));	
@@ -459,7 +457,7 @@ static void *background_init_thread(void * arg) {
 	}		
 }
 - (void)applicationWillResignActive:(UIApplication *)application {
-//	NSLog(@"%@", NSStringFromSelector(_cmd));
+	NSLog(@"%@", NSStringFromSelector(_cmd));
 }
 
 #pragma mark -

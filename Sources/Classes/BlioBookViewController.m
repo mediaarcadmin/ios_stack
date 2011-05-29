@@ -782,7 +782,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }                        
             [_bookView addObserver:self 
                         forKeyPath:@"currentBookmarkPoint" 
-                           options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial
+                           options:NSKeyValueObservingOptionNew
                            context:nil];   
         }
     }
