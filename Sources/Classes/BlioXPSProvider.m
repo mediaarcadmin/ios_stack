@@ -42,9 +42,9 @@
     
     BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
     BlioBook *blioBook = [bookManager bookWithID:aBookID];
-    NSString *xpsPath = [blioBook xpsPath];
+    NSString *aXpsPath = [blioBook xpsPath];
     
-    if (xpsPath && (self = [super initWithPath:xpsPath])) {
+    if (aXpsPath && (self = [super initWithPath:aXpsPath])) {
         bookID = [aBookID retain];
     }
     
