@@ -17,6 +17,8 @@
 @interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {
     NSManagedObjectID *bookId;
         
+    BlioBookmarkPoint *currentIndexPoint;
+    
     id<BlioParagraphSource> paragraphSource;
     id<BlioBookViewDelegate> delegate;
     id currentParagraphID;

@@ -22,10 +22,10 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 @interface BlioSpeedReadView ()
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
-@property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, retain) id currentParagraphID;
 @property (nonatomic) int32_t currentWordOffset;
 @property (nonatomic, retain) NSArray *textArray;
+@property (nonatomic, retain) BlioBookmarkPoint *currentBookmarkPoint;
 
 @property (nonatomic) float speed;
 @property (nonatomic, retain) UIFont *font;
@@ -33,6 +33,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 @property (nonatomic, retain) UILabel *bigTextLabel;
 @property (nonatomic, retain) UILabel *sampleTextLabel;
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
+
+- (void)updateCurrentBookmarkPoint;
 
 - (float)speedForYValue:(float)y;
 - (float)calculateFingerXValueFromY:(float)y;
@@ -43,7 +45,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 
 @implementation BlioSpeedReadView
 
-@synthesize bookID, pageNumber, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer, paragraphSource;
+@synthesize bookID, currentBookmarkPoint, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer, paragraphSource;
 @synthesize delegate;
 
 - (void)dealloc {
@@ -171,9 +173,6 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     currentFontSize = fontPointSize;
     bigTextLabel.font = [font fontWithSize:currentFontSize];
     sampleTextLabel.font = [font fontWithSize:currentFontSize];
-    
-    
-    
 }
 
 - (void)setColor:(BlioPageColor)newColor {
@@ -283,6 +282,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     self.textArray = [paragraphSource wordsForParagraphWithID:self.currentParagraphID];
     if (textArray.count) {
         ret = YES;
+        [self updateCurrentBookmarkPoint];
     } else {
         ret = [self fillArrayWithNextBlock];
     } 
@@ -511,7 +511,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     }
 	
 	[bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
-	
+    
     if (nextWordTimer) {
         if (fabs([nextWordTimer timeInterval] - speed) > 0.01) {
             [nextWordTimer invalidate];
@@ -524,17 +524,6 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 - (void)goToUuid:(NSString *)uuid animated:(BOOL)animated {
     BlioBookmarkPoint *bookmarkPoint = [self.paragraphSource bookmarkPointForSectionUuid:uuid];
     return [self goToBookmarkPoint:bookmarkPoint animated:animated];
-}
-
-- (BlioBookmarkPoint *)currentBookmarkPoint {
-    BlioBookmarkPoint *bookmarkPoint = [paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID
-                                                                          wordOffset:self.currentWordOffset];
-    BlioBookmarkPoint *ret = [[BlioBookmarkPoint alloc] init];
-    ret.layoutPage = bookmarkPoint.layoutPage;
-    ret.blockOffset = bookmarkPoint.blockOffset;
-    ret.wordOffset = bookmarkPoint.wordOffset;
-    ret.elementOffset = bookmarkPoint.elementOffset;
-    return [ret autorelease];
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
@@ -556,6 +545,11 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     
     [self fillArrayWithCurrentBlock];
     [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
+    [self updateCurrentBookmarkPoint];
+}
+
+- (void)updateCurrentBookmarkPoint {
+    self.currentBookmarkPoint = [paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:self.currentWordOffset];
 }
 
 #pragma mark -
