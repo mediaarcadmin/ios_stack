@@ -1963,7 +1963,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSParameterAssert([NSThread isMainThread]);
     
-    if ([keyPath isEqual:@"currentBookmarkPoint"] && coverOpened) {
+    if ([keyPath isEqual:@"currentBookmarkPoint"]) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
         		
