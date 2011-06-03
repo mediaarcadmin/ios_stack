@@ -1980,7 +1980,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 				NSError *error;
 				if (![[self.book managedObjectContext] save:&error]) {
 					NSLog(@"[BlioBookViewController observeValueForKeyPath] Save failed with error: %@, %@", error, [error userInfo]);            
-				}				
+				} /*else {
+                    NSLog(@"Saved bookmark point [%ld, %ld, %ld, %ld] - page %@",
+                          (long)newBookmarkPoint.layoutPage, 
+                          (long)newBookmarkPoint.blockOffset,
+                          (long)newBookmarkPoint.wordOffset,
+                          (long)newBookmarkPoint.elementOffset,
+                          [_bookView displayPageNumberForBookmarkPoint:newBookmarkPoint]);
+                }*/
 			}
         }
     }

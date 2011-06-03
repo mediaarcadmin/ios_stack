@@ -98,12 +98,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         }
         
         NSArray *bookmarkPageBlocks = [textFlow blocksForPageAtIndex:bookmarkPageIndex includingFolioBlocks:YES];
-        NSArray *words;
-        if(bookmarkPageBlocks.count > bookmarkPoint.blockOffset) {
-            words = ((BlioTextFlowBlock *)[bookmarkPageBlocks objectAtIndex:bookmarkPoint.blockOffset]).wordStrings;
-        } else {
-            words = [NSArray array];
-        }
+        NSArray *words = nil;
         NSInteger middleWordOffset = bookmarkPoint.wordOffset;
         
         {
@@ -123,7 +118,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                         for(NSInteger i = 0; i < needMore; ++i) {
                             [newWords addObject:kNoWordPlaceholder];
                         }
-                        words = [words arrayByAddingObjectsFromArray:newWords];
+                        words = words ? [words arrayByAddingObjectsFromArray:newWords] : [[newWords retain] autorelease];
                         [newWords release];
                     } else {
                         pageBlocks = [textFlow blocksForPageAtIndex:tryPageOffset includingFolioBlocks:YES];
@@ -131,7 +126,8 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 } else {
                     BlioTextFlowBlock *block = [pageBlocks objectAtIndex:tryBlockOffset];
                     if(!block.folio) {
-                        words = [words arrayByAddingObjectsFromArray:block.wordStrings];
+                        NSArray *blockWordStrings = block.wordStrings;
+                        words = words ? [words arrayByAddingObjectsFromArray:blockWordStrings] : blockWordStrings;
                     }
                 }
             }
@@ -153,7 +149,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                         for(NSInteger i = 0; i < needMore; ++i) {
                             [newWords addObject:kNoWordPlaceholder];
                         }
-                        words = [newWords arrayByAddingObjectsFromArray:words];
+                        words = words ? [newWords arrayByAddingObjectsFromArray:words] : [[newWords retain] autorelease];
                         [newWords release];
                         middleWordOffset += needMore;
                     } else {
@@ -163,9 +159,9 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
                 } else {
                     BlioTextFlowBlock *block = [pageBlocks objectAtIndex:tryBlockOffset];
                     if(!block.folio) {
-                        NSArray *newWords = block.wordStrings;
-                        words = [newWords arrayByAddingObjectsFromArray:words];
-                        middleWordOffset += newWords.count;
+                        NSArray *blockWordStrings = block.wordStrings;
+                        words = words ? [blockWordStrings arrayByAddingObjectsFromArray:words] : blockWordStrings;
+                        middleWordOffset += blockWordStrings.count;
                     }
                 }
             }
