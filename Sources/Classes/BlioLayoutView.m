@@ -127,6 +127,10 @@
 	
     self.currentBookmarkPoint = nil;
     
+    [self.webViews makeObjectsPerformSelector:@selector(stopLoading)];
+    [self.webViews makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
+    [self.mediaViews makeObjectsPerformSelector:@selector(stopMediaPlayer)];
+    
 	self.mediaViews = nil;
 	self.webViews = nil;
     [pageAlphaMask release], pageAlphaMask = nil;
@@ -1276,7 +1280,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			[self.pageTurningView addSubview:self.overlay];
 		}
 
-		[self.mediaViews makeObjectsPerformSelector:@selector(pauseMediaPlayer)];
+        [self.webViews makeObjectsPerformSelector:@selector(stopLoading)];
+        [self.webViews makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
+		[self.mediaViews makeObjectsPerformSelector:@selector(stopMediaPlayer)];
 		
 		for (UIView *view in [self.overlay subviews]) {
 			[view removeFromSuperview];

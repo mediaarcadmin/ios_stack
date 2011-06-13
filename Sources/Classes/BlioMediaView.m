@@ -127,6 +127,16 @@
 	isActive = NO;
 }
 
+-(void)stopMediaPlayer {
+	if (moviePlayerController.playbackState != MPMoviePlaybackStateStopped) {
+		[CATransaction begin];
+		[CATransaction disableActions];
+		[moviePlayerController stop];
+		[CATransaction commit];
+	}
+	isActive = NO;
+}
+
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.moviePlayerController = nil;
