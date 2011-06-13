@@ -1971,23 +1971,25 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		if ( _audioBookManager != nil )
 			[_audioBookManager setPageChanged:YES];
 		
-        BlioBookmarkPoint *newBookmarkPoint = self.bookView.currentBookmarkPoint;
-        if (![self.book.implicitBookmarkPoint isEqual:newBookmarkPoint]) {
-            self.book.implicitBookmarkPoint = newBookmarkPoint;
-            
-			if (self.book.managedObjectContext != nil) {
-				NSError *error;
-				if (![[self.book managedObjectContext] save:&error]) {
-					NSLog(@"[BlioBookViewController observeValueForKeyPath] Save failed with error: %@, %@", error, [error userInfo]);            
-				} /*else {
-                    NSLog(@"Saved bookmark point [%ld, %ld, %ld, %ld] - page %@",
-                          (long)newBookmarkPoint.layoutPage, 
-                          (long)newBookmarkPoint.blockOffset,
-                          (long)newBookmarkPoint.wordOffset,
-                          (long)newBookmarkPoint.elementOffset,
-                          [_bookView displayPageNumberForBookmarkPoint:newBookmarkPoint]);
-                }*/
-			}
+        if(coverOpened) {
+            BlioBookmarkPoint *newBookmarkPoint = self.bookView.currentBookmarkPoint;
+            if (![self.book.implicitBookmarkPoint isEqual:newBookmarkPoint]) {
+                self.book.implicitBookmarkPoint = newBookmarkPoint;
+                
+                if (self.book.managedObjectContext != nil) {
+                    NSError *error;
+                    if (![[self.book managedObjectContext] save:&error]) {
+                        NSLog(@"[BlioBookViewController observeValueForKeyPath] Save failed with error: %@, %@", error, [error userInfo]);            
+                    } /*else {
+                        NSLog(@"Saved bookmark point [%ld, %ld, %ld, %ld] - page %@",
+                              (long)newBookmarkPoint.layoutPage, 
+                              (long)newBookmarkPoint.blockOffset,
+                              (long)newBookmarkPoint.wordOffset,
+                              (long)newBookmarkPoint.elementOffset,
+                              [_bookView displayPageNumberForBookmarkPoint:newBookmarkPoint]);
+                    }*/
+                }
+            }
         }
     }
 }

@@ -104,8 +104,8 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         {
             NSArray *pageBlocks = bookmarkPageBlocks;
             
-            NSInteger tryPageOffset = bookmarkPageIndex;
-            NSInteger tryBlockOffset = bookmarkPoint.blockOffset;
+            NSInteger tryPageOffset = bookmarkPageIndex - 1; // We'll increment it before use, below.
+            NSInteger tryBlockOffset = bookmarkPoint.blockOffset - 1; // We'll increment it before use, below.
                 
             while(middleWordOffset + MATCHING_WINDOW_SIZE / 2 + 1 > words.count) {
                 ++tryBlockOffset;
@@ -174,7 +174,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
         }
         
         /*
-        NSLog(@"Searching for:");
+        NSLog(@"Searching for (BookmarkPoint -> ID):");
         for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
             NSLog(@"\t%@", lookForStrings[i]);
         }
@@ -545,7 +545,7 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
             }
             
             /*
-            NSLog(@"Searching for:");
+            NSLog(@"Searching for (ID -> Bookmark Point):");
             for(NSInteger i = 0; i < MATCHING_WINDOW_SIZE; ++i) {
                 NSLog(@"\t%@", lookForStrings[i]);
             }
