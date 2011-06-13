@@ -489,14 +489,23 @@
 //	NSLog(@"%@", NSStringFromSelector(_cmd));
 	BlioBook * book = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:sourceSpecificID];
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = NO;
+	vaultBinding.logXMLInOut = YES;
 //	BookVault_RequestDownloadWithToken* downloadRequest = [[BookVault_RequestDownloadWithToken new] autorelease];
-	BookVault_RequestDownloadWithTokenEx* downloadRequest = [[BookVault_RequestDownloadWithTokenEx new] autorelease];
+//	BookVault_RequestDownloadWithTokenEx* downloadRequest = [[BookVault_RequestDownloadWithTokenEx new] autorelease];
+	BookVault_RequestClientDownloadWithTokenEx* downloadRequest = [[BookVault_RequestClientDownloadWithTokenEx new] autorelease];
 	downloadRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
 	downloadRequest.isbn = [book valueForKey:@"isbn"];
 	downloadRequest.productType = [book valueForKey:@"productType"];
+    
+    NSString * platform = @"iPhone";
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) platform = @"iPad";
+    NSString* version = (NSString*)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; // @"CFBundleVersion" for build number
+
+//	downloadRequest.clientInfo = @"<ClientInfo><Platform Id=\"iPhone\" Version=\"#.#\"/><Device Id=\"XXX\" ScreenWidth=\"####\" ScreenHeight=\"####\"/><BookVault SourceVersion=\"#.#\" PreferredFormat=\"XXX\"/><OEM Id=\"XXXX\"/></ClientInfo>";
+	downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Platform Id=\"%@\" Version=\"%@\"/></ClientInfo>",platform,version];    
 //	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenUsingParameters:downloadRequest];
-	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenExUsingParameters:downloadRequest];
+//	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenExUsingParameters:downloadRequest];
+	BookVaultSoapResponse* response = [vaultBinding RequestClientDownloadWithTokenExUsingParameters:downloadRequest];
 	[vaultBinding release];
 	NSArray *responseBodyParts = response.bodyParts;
 	for(id bodyPart in responseBodyParts) {
@@ -550,11 +559,39 @@
 				NSLog(@"DownloadRequest error: %@",[bodyPart RequestDownloadWithTokenExResult].Message);
 				if ([[bodyPart RequestDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
 					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
-					title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
-												 message:[bodyPart RequestDownloadWithTokenExResult].Message
-												delegate:nil 
-									   cancelButtonTitle:nil
-									   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];				
+                                                          title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
+                                                        message:[bodyPart RequestDownloadWithTokenExResult].Message
+                                                       delegate:nil 
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];				
+				}
+				else {
+					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
+														  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
+														message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"The server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
+													   delegate:nil 
+											  cancelButtonTitle:nil
+											  otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
+				}
+				return nil;
+			}
+		}
+		else if ([bodyPart isKindOfClass:[BookVault_RequestClientDownloadWithTokenExResponse class]]) {
+			if ( [[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue] == 100 ) { 
+				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
+				NSString* url = [bodyPart RequestClientDownloadWithTokenExResult].Url;
+				//			NSLog(@"Book download url is %@",url);
+				return [NSURL URLWithString:url];
+			}
+			else {
+				NSLog(@"DownloadRequest error: %@",[bodyPart RequestClientDownloadWithTokenExResult].Message);
+				if ([[bodyPart RequestClientDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
+					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
+                                                          title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
+                                                        message:[bodyPart RequestClientDownloadWithTokenExResult].Message
+                                                       delegate:nil 
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];				
 				}
 				else {
 					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType

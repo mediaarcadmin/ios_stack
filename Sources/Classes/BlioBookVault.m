@@ -2846,6 +2846,244 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 	}
 }
 @end
+@implementation BookVault_RequestClientDownloadWithTokenEx
+- (id)init
+{
+	if((self = [super init])) {
+		token = 0;
+		isbn = 0;
+		productType = 0;
+        clientInfo = 0;
+	}
+	
+	return self;
+}
+- (void)dealloc
+{
+	if(token != nil) [token release];
+	if(isbn != nil) [isbn release];
+	if(productType != nil) [productType release];
+	if(clientInfo != nil) [clientInfo release];
+	
+	[super dealloc];
+}
+- (NSString *)nsPrefix
+{
+	return @"BookVault";
+}
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
+{
+	//xmlNodePtr root = xmlDocGetRootElement(doc);
+	
+	//xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+	
+	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
+	// Originally
+	//xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"BookVault:RequestDownloadWithToken");
+	xmlSetNsProp(node, nil, (const xmlChar*)"xmlns", (const xmlChar*)"BlioBookVault");
+	
+	[self addAttributesToNode:node];
+	
+	[self addElementsToNode:node];
+	
+	return node;
+}
+- (void)addAttributesToNode:(xmlNodePtr)node
+{
+	
+}
+- (void)addElementsToNode:(xmlNodePtr)node
+{
+	
+	if(self.token != 0) {
+		xmlAddChild(node, [self.token xmlNodeForDoc:node->doc elementName:@"token"]);
+	}
+	if(self.isbn != 0) {
+		xmlAddChild(node, [self.isbn xmlNodeForDoc:node->doc elementName:@"isbn"]);
+	}
+	if(self.productType != 0) {
+		xmlAddChild(node, [self.productType xmlNodeForDoc:node->doc elementName:@"productType"]);
+	}
+	if(self.clientInfo != 0) {
+		xmlAddChild(node, [self.clientInfo xmlNodeForDoc:node->doc elementName:@"clientInfo"]);
+	}
+}
+/* elements */
+@synthesize token;
+@synthesize isbn;
+@synthesize productType;
+@synthesize clientInfo;
+/* attributes */
+- (NSDictionary *)attributes
+{
+	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+	
+	return attributes;
+}
++ (BookVault_RequestClientDownloadWithTokenEx *)deserializeNode:(xmlNodePtr)cur
+{
+	BookVault_RequestClientDownloadWithTokenEx *newObject = [[BookVault_RequestClientDownloadWithTokenEx new] autorelease];
+	
+	[newObject deserializeAttributesFromNode:cur];
+	[newObject deserializeElementsFromNode:cur];
+	
+	return newObject;
+}
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur
+{
+}
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur
+{
+	
+	
+	for( cur = cur->children ; cur != NULL ; cur = cur->next ) {
+		if(cur->type == XML_ELEMENT_NODE) {
+			xmlChar *elementText = xmlNodeListGetString(cur->doc, cur->children, 1);
+			NSString *elementString = nil;
+			
+			if(elementText != NULL) {
+				elementString = [NSString stringWithCString:(char*)elementText encoding:NSUTF8StringEncoding];
+				[elementString self]; // avoid compiler warning for unused var
+				xmlFree(elementText);
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "token")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSString  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.token = newChild;
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "isbn")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSString  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.isbn = newChild;
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "productType")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSNumber  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.productType = newChild;
+			}
+            if(xmlStrEqual(cur->name, (const xmlChar *) "clientInfo")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSString  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.clientInfo = newChild;
+			}
+
+		}
+	}
+}
+@end
+
 @implementation BookVault_RequestDownloadResult
 - (id)init
 {
@@ -3270,6 +3508,123 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 				id newChild = [elementClass deserializeNode:cur];
 				
 				self.RequestDownloadWithTokenExResult = newChild;
+			}
+		}
+	}
+}
+@end
+@implementation BookVault_RequestClientDownloadWithTokenExResponse
+- (id)init
+{
+	if((self = [super init])) {
+		RequestClientDownloadWithTokenExResult = 0;
+	}
+	
+	return self;
+}
+- (void)dealloc
+{
+	if(RequestClientDownloadWithTokenExResult != nil) [RequestClientDownloadWithTokenExResult release];
+	
+	[super dealloc];
+}
+- (NSString *)nsPrefix
+{
+	return @"BookVault";
+}
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
+{
+	xmlNodePtr root = xmlDocGetRootElement(doc);
+	
+	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+	
+	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
+	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"BookVault:RequestClientDownloadWithTokenExResponse");
+	
+	[self addAttributesToNode:node];
+	
+	[self addElementsToNode:node];
+	
+	return node;
+}
+- (void)addAttributesToNode:(xmlNodePtr)node
+{
+	
+}
+- (void)addElementsToNode:(xmlNodePtr)node
+{
+	
+	if(self.RequestClientDownloadWithTokenExResult != 0) {
+		xmlAddChild(node, [self.RequestClientDownloadWithTokenExResult xmlNodeForDoc:node->doc elementName:@"RequestClientDownloadWithTokenExResult"]);
+	}
+}
+/* elements */
+@synthesize RequestClientDownloadWithTokenExResult;
+/* attributes */
+- (NSDictionary *)attributes
+{
+	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+	
+	return attributes;
+}
++ (BookVault_RequestClientDownloadWithTokenExResponse *)deserializeNode:(xmlNodePtr)cur
+{
+	BookVault_RequestClientDownloadWithTokenExResponse *newObject = [[BookVault_RequestClientDownloadWithTokenExResponse new] autorelease];
+	
+	[newObject deserializeAttributesFromNode:cur];
+	[newObject deserializeElementsFromNode:cur];
+	
+	return newObject;
+}
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur
+{
+}
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur
+{
+	
+	
+	for( cur = cur->children ; cur != NULL ; cur = cur->next ) {
+		if(cur->type == XML_ELEMENT_NODE) {
+			xmlChar *elementText = xmlNodeListGetString(cur->doc, cur->children, 1);
+			NSString *elementString = nil;
+			
+			if(elementText != NULL) {
+				elementString = [NSString stringWithCString:(char*)elementText encoding:NSUTF8StringEncoding];
+				[elementString self]; // avoid compiler warning for unused var
+				xmlFree(elementText);
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "RequestClientDownloadWithTokenExResult")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [BookVault_RequestDownloadResult class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.RequestClientDownloadWithTokenExResult = newChild;
 			}
 		}
 	}
@@ -4303,17 +4658,23 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 																																			parameters:aParameters
 											   ] autorelease]];
 }
-- (BookVaultSoapResponse *)RequestDownloadWithTokenExUsingParameters:(BookVault_RequestDownloadWithTokenEx *)aParameters 
-{
-	return [self performSynchronousOperation:[[(BookVaultSoap_RequestDownloadWithTokenEx*)[BookVaultSoap_RequestDownloadWithTokenEx alloc] initWithBinding:self delegate:self
-																																			parameters:aParameters
-											   ] autorelease]];
-}
 - (void)RequestDownloadWithTokenAsyncUsingParameters:(BookVault_RequestDownloadWithToken *)aParameters  delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate
 {
 	[self performAsynchronousOperation: [[(BookVaultSoap_RequestDownloadWithToken*)[BookVaultSoap_RequestDownloadWithToken alloc] initWithBinding:self delegate:responseDelegate
 																							 parameters:aParameters
 																							 ] autorelease]];
+}
+- (BookVaultSoapResponse *)RequestDownloadWithTokenExUsingParameters:(BookVault_RequestDownloadWithTokenEx *)aParameters 
+{
+	return [self performSynchronousOperation:[[(BookVaultSoap_RequestDownloadWithTokenEx*)[BookVaultSoap_RequestDownloadWithTokenEx alloc] initWithBinding:self delegate:self
+                                                                                                                                                parameters:aParameters
+											   ] autorelease]];
+}
+- (BookVaultSoapResponse *)RequestClientDownloadWithTokenExUsingParameters:(BookVault_RequestClientDownloadWithTokenEx *)aParameters 
+{
+	return [self performSynchronousOperation:[[(BookVaultSoap_RequestClientDownloadWithTokenEx*)[BookVaultSoap_RequestClientDownloadWithTokenEx alloc] initWithBinding:self delegate:self
+                                                                                                                                                parameters:aParameters
+											   ] autorelease]];
 }
 - (BookVaultSoapResponse *)RequestDownloadUsingParameters:(BookVault_RequestDownload *)aParameters 
 {
@@ -5021,6 +5382,102 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 							if(cur->type == XML_ELEMENT_NODE) {
 								if(xmlStrEqual(bodyNode->name, (const xmlChar *) "RequestDownloadWithTokenExResponse")) {
 									BookVault_RequestDownloadWithTokenExResponse *bodyObject = [BookVault_RequestDownloadWithTokenExResponse deserializeNode:bodyNode];
+									//NSAssert1(bodyObject != nil, @"Errors while parsing body %s", bodyNode->name);
+									if (bodyObject != nil) [responseBodyParts addObject:bodyObject];
+								}
+								else if (xmlStrEqual(bodyNode->ns->prefix, (const xmlChar *) "soap") && 
+										 xmlStrEqual(bodyNode->name, (const xmlChar *) "Fault")) {
+									SOAPFault *bodyObject = [SOAPFault deserializeNode:bodyNode];
+									//NSAssert1(bodyObject != nil, @"Errors while parsing body %s", bodyNode->name);
+									if (bodyObject != nil) [responseBodyParts addObject:bodyObject];
+								}
+							}
+						}
+						
+						response.bodyParts = responseBodyParts;
+					}
+				}
+			}
+			
+			xmlFreeDoc(doc);
+		}
+		
+		xmlCleanupParser();
+		[delegate operation:self completedWithResponse:response];
+	}
+}
+@end
+@implementation BookVaultSoap_RequestClientDownloadWithTokenEx
+@synthesize parameters;
+- (id)initWithBinding:(BookVaultSoap *)aBinding delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate
+		   parameters:(BookVault_RequestClientDownloadWithTokenEx *)aParameters
+{
+	if((self = [super initWithBinding:aBinding delegate:responseDelegate])) {
+		self.parameters = aParameters;
+	}
+	
+	return self;
+}
+- (void)dealloc
+{
+	if(parameters != nil) [parameters release];
+	
+	[super dealloc];
+}
+- (void)main
+{
+	[response autorelease];
+	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeRequestClientDownloadWithTokenEx;
+	
+	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
+	
+	NSMutableDictionary *headerElements = nil;
+	headerElements = [NSMutableDictionary dictionary];
+	
+	NSMutableDictionary *bodyElements = nil;
+	bodyElements = [NSMutableDictionary dictionary];
+	if(parameters != nil) [bodyElements setObject:parameters forKey:@"RequestClientDownloadWithTokenEx"];
+	
+	NSString *operationXMLString = [envelope serializedFormUsingHeaderElements:headerElements bodyElements:bodyElements];
+	if (binding.logXMLInOut) {
+		NSLog(@"operationXMLString: %@",operationXMLString);
+	}
+	[binding sendHTTPCallUsingBody:operationXMLString soapAction:@"BlioBookVault/RequestClientDownloadWithTokenEx" forOperation:self];
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	if (responseData != nil && delegate != nil)
+	{
+		xmlDocPtr doc;
+		xmlNodePtr cur;
+		
+		if (binding.logXMLInOut) {
+			NSLog(@"RequestClientDownloadWithTokenEx ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
+		}
+		
+		doc = xmlParseMemory([responseData bytes], [responseData length]);
+		
+		if (doc == NULL) {
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
+			
+			response.error = [NSError errorWithDomain:@"BookVaultSoapResponseXML" code:1 userInfo:userInfo];
+			[delegate operation:self completedWithResponse:response];
+		} else {
+			cur = xmlDocGetRootElement(doc);
+			cur = cur->children;
+			
+			for( ; cur != NULL ; cur = cur->next) {
+				if(cur->type == XML_ELEMENT_NODE) {
+					
+					if(xmlStrEqual(cur->name, (const xmlChar *) "Body")) {
+						NSMutableArray *responseBodyParts = [NSMutableArray array];
+						
+						xmlNodePtr bodyNode;
+						for(bodyNode=cur->children ; bodyNode != NULL ; bodyNode = bodyNode->next) {
+							if(cur->type == XML_ELEMENT_NODE) {
+								if(xmlStrEqual(bodyNode->name, (const xmlChar *) "RequestClientDownloadWithTokenExResponse")) {
+									BookVault_RequestClientDownloadWithTokenExResponse *bodyObject = [BookVault_RequestClientDownloadWithTokenExResponse deserializeNode:bodyNode];
 									//NSAssert1(bodyObject != nil, @"Errors while parsing body %s", bodyNode->name);
 									if (bodyObject != nil) [responseBodyParts addObject:bodyObject];
 								}

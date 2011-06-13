@@ -24,14 +24,14 @@ static const NSInteger kBlioStoreBuyBooksTag = 5;
 
 
 @interface BlioStoreWebsiteViewController : UIViewController {
-	UIButton* launchButton;
-	UIButton* createAccountButton;
+	//UIButton* launchButton;
+	//UIButton* createAccountButton;
 	UILabel * explanationLabel;
 	BlioStoreWebsitePhoneContentView * phoneContentView;
 }
 @property (nonatomic, retain) UILabel * explanationLabel;
 @property (nonatomic, retain) BlioStoreWebsitePhoneContentView * phoneContentView;
--(void)updateLogin;
+//-(void)updateLogin;
 -(void)updateExplanation;
 - (void)launchWebsite:(id)sender;
 @end
