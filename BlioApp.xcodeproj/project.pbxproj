@@ -512,7 +512,6 @@
 		A30E101F123EA5B400D31157 /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
 		A30E1020123EA5B400D31157 /* BlioBeveledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */; };
 		A30E1021123EA5B400D31157 /* BlioDrmSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3729AF41225A18800E68C25 /* BlioDrmSessionManager.m */; };
-		A30E1023123EA5B400D31157 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
 		A30E1024123EA5B400D31157 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
 		A30E1025123EA5B400D31157 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		A30E1026123EA5B400D31157 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
@@ -542,7 +541,6 @@
 		A30E103F123EA5B400D31157 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA1BD681222FD080022D410 /* StoreKit.framework */; };
 		A3169289111488C9005AAE5E /* BlioAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3169288111488C9005AAE5E /* BlioAudioManager.m */; };
 		A31E82EE120B3FD800CB6657 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
-		A31E837B120B522F00CB6657 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
 		A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
@@ -957,7 +955,6 @@
 		C93ECB27134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB19134B6215003B99FD /* TextFlowXAMLOverrides.css */; };
 		C93ECB28134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB19134B6215003B99FD /* TextFlowXAMLOverrides.css */; };
 		C9406B3111C64A580072CE23 /* BlioBookSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9406B2F11C64A580072CE23 /* BlioBookSearchViewController.m */; };
-		C944EC0211C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */; };
 		C94D27B310DBCE3700F30AFE /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
 		C95FC84B123A3D1100859B92 /* BlioBookSearchPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FC84A123A3D1100859B92 /* BlioBookSearchPopoverController.m */; };
 		C95FCD00123BCED600859B92 /* BlioBookSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCCFF123BCED600859B92 /* BlioBookSearchResultsTableViewController.m */; };
@@ -1931,7 +1928,6 @@
 		C93ECB19134B6215003B99FD /* TextFlowXAMLOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = TextFlowXAMLOverrides.css; sourceTree = "<group>"; };
 		C9406B2F11C64A580072CE23 /* BlioBookSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookSearchViewController.m; sourceTree = "<group>"; };
 		C9406B3011C64A580072CE23 /* BlioBookSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookSearchViewController.h; sourceTree = "<group>"; };
-		C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libXpsSDKipad.a; path = Libraries/XPS/libXpsSDKipad.a; sourceTree = "<group>"; };
 		C94D27B110DBCE3700F30AFE /* BlioLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLayoutView.h; sourceTree = "<group>"; };
 		C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLayoutView.m; sourceTree = "<group>"; };
 		C94D27B510DBCF4C00F30AFE /* PDFs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PDFs; sourceTree = "<group>"; };
@@ -1991,6 +1987,7 @@
 		C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioContentsTabViewController.m; sourceTree = "<group>"; };
 		C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchFieldIcon.png; sourceTree = "<group>"; };
 		C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "searchFieldIcon@2x.png"; sourceTree = "<group>"; };
+		C99832A113A64F8000FCE431 /* BlioXPSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioXPSConstants.h; sourceTree = "<group>"; };
 		C99860DA113FD284009E5263 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		C9A9DAB81312B73B009B950F /* BlioMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMediaView.h; sourceTree = "<group>"; };
@@ -2237,7 +2234,6 @@
 				7DAA30C411512B1C006634CC /* libiconv.dylib in Frameworks */,
 				A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */,
 				DC5320DF11C09EF40042D3EA /* AudioToolbox.framework in Frameworks */,
-				C944EC0211C1C0CA00943402 /* libXpsSDKipad.a in Frameworks */,
 				DC41ACEF11F0DA4800D13308 /* libMobilityStaticFat.a in Frameworks */,
 				DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */,
 				A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */,
@@ -2256,7 +2252,6 @@
 			files = (
 				7DDCC010132E88F200FE8201 /* libxml2.dylib in Frameworks */,
 				7D66200A132E7F2100242F63 /* libstdc++.dylib in Frameworks */,
-				A30E1023123EA5B400D31157 /* libXpsSDKipad.a in Frameworks */,
 				A30E1024123EA5B400D31157 /* libEucalyptus.a in Frameworks */,
 				A30E1025123EA5B400D31157 /* libEucalyptusBase.a in Frameworks */,
 				A30E1026123EA5B400D31157 /* libhyphenate.a in Frameworks */,
@@ -2298,7 +2293,6 @@
 			files = (
 				7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */,
 				7D662008132E7E9B00242F63 /* libstdc++.dylib in Frameworks */,
-				A31E837B120B522F00CB6657 /* libXpsSDKipad.a in Frameworks */,
 				A36D35D9120B136700E1A035 /* libEucalyptus.a in Frameworks */,
 				A36D35DA120B136700E1A035 /* libEucalyptusBase.a in Frameworks */,
 				A36D35DB120B136700E1A035 /* libhyphenate.a in Frameworks */,
@@ -2924,7 +2918,6 @@
 			isa = PBXGroup;
 			children = (
 				C9B087691344CC1C001963D0 /* libKNFBReader */,
-				C944EC0011C1C09F00943402 /* XPS */,
 				A3D9F13911B064530011D544 /* DRM */,
 				C9867652112411060070A03E /* GData.xcodeproj */,
 				7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */,
@@ -3072,14 +3065,6 @@
 			name = "libKNFBReader Resources";
 			path = "libKNFBReader/libKNFBReader Resources";
 			sourceTree = SOURCE_ROOT;
-		};
-		C944EC0011C1C09F00943402 /* XPS */ = {
-			isa = PBXGroup;
-			children = (
-				C944EC0111C1C0CA00943402 /* libXpsSDKipad.a */,
-			);
-			name = XPS;
-			sourceTree = "<group>";
 		};
 		C95FCD02123BCEE400859B92 /* BookSearch */ = {
 			isa = PBXGroup;
@@ -3308,6 +3293,7 @@
 				C9EFAF6E134E1BF300ADF905 /* BlioXPSProtocol.m */,
 				C9DA72B711E60C9400F584A1 /* BlioXPSProvider.h */,
 				C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */,
+				C99832A113A64F8000FCE431 /* BlioXPSConstants.h */,
 			);
 			name = Refactored;
 			sourceTree = "<group>";

@@ -14,6 +14,7 @@
 @interface BlioXPSProvider : KNFBXPSProvider <BlioLayoutDataSource> {
     NSManagedObjectID *bookID;
 	BlioDrmSessionManager* drmSessionManager;
+    NSSet *enhancedContentItems;
 }
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
