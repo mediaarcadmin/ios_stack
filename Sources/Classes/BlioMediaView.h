@@ -21,6 +21,7 @@ static NSString * const BlioMediaViewWillPlayMovieNotification = @"BlioMediaView
 }
 - (id)initWithFrame:(CGRect)frame contentURL:(NSURL*)url;
 - (void)pauseMediaPlayer;
+- (void)stopMediaPlayer;
    
 @property (nonatomic, retain) MPMoviePlayerController * moviePlayerController;
 @property (nonatomic, retain) UIImageView * thumbnailView;
