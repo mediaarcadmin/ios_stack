@@ -1071,7 +1071,7 @@
 			NSString * featureVersion = [attributeDict objectForKey:@"Version"];
 			NSString * isRequired = [attributeDict objectForKey:@"IsRequired"];
 			if (featureName && featureVersion && isRequired) {
-				if ([isRequired isEqualToString:@"true"]) {
+				if ([[isRequired lowercaseString] isEqualToString:@"true"]) {
 					NSNumber * featureCompatibilityVersion = [self.featureCompatibilityDictionary objectForKey:featureName];
 					if (featureCompatibilityVersion) NSLog(@"Required feature: %@ found. App compatibility version: %f, book version required: %f",featureName,[featureCompatibilityVersion floatValue],[featureVersion floatValue]);
 					else NSLog(@"Required feature: %@ found. App is not compatible with this feature, book version required: %f",featureName,[featureVersion floatValue]);
