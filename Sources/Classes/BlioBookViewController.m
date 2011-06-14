@@ -1052,6 +1052,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                     [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
                 
             }
+        
+        if([self.bookView respondsToSelector:@selector(toolbarsWillShow)]) {
+            [self.bookView toolbarsWillShow];
+        }
+        
         if(!animated) {
             [self.navigationController setNavigationBarHidden:YES animated:YES];
             [self.navigationController setNavigationBarHidden:NO animated:YES];
@@ -1061,6 +1066,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         [self.navigationController.toolbar setHidden:NO];
         [self.navigationController setToolbarHidden:NO animated:NO];
+        
             if(!animated) {
                 CGRect frame = self.navigationController.toolbar.frame;
                 frame.origin.y += frame.size.height;
@@ -1374,6 +1380,22 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             break;
         default:
             [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
+            break;
+    }
+    
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateNoneVisible:
+        case kBlioLibraryToolbarsStateStatusBarVisible:
+        case kBlioLibraryToolbarsStatePauseButtonVisible:
+            if([self.bookView respondsToSelector:@selector(toolbarsWillHide)]) {
+                [self.bookView toolbarsWillHide];
+            }
+            break;
+        case kBlioLibraryToolbarsStateToolbarsVisible:
+        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
+            if([self.bookView respondsToSelector:@selector(toolbarsWillShow)]) {
+                [self.bookView toolbarsWillShow];
+            }
             break;
     }
     
@@ -1752,6 +1774,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return bookView.dimPageImage;
     }
     return nil;
+}
+
+- (void)incrementPage
+{
+    [self.bookView incrementPage];
+}
+
+- (void)decrementPage
+{
+    [self.bookView decrementPage];
 }
 
 #pragma mark -
@@ -3092,7 +3124,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	[self.bookViewController.thumbPreview showThumb:NO];
     [super endTrackingWithTouch:touch withEvent:event];
 }
-/*
+
 - (void)accessibilityIncrement {
     [self.bookViewController performSelectorOnMainThread:@selector(incrementPage) withObject:nil waitUntilDone:YES];
 }
@@ -3100,7 +3132,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)accessibilityDecrement {
     [self.bookViewController performSelectorOnMainThread:@selector(decrementPage) withObject:nil waitUntilDone:YES];
 }
-*/
+
 @end
 
 @implementation BlioBookSliderPreview

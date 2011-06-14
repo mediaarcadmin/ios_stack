@@ -389,6 +389,15 @@
     return ret;
 }
 
+- (void)toolbarsWillShow {
+    self.pageTurningView.suppressAccessibilityScreenChangedNotificationOnPageTurn = YES;
+}
+
+- (void)toolbarsWillHide
+{
+    self.pageTurningView.suppressAccessibilityScreenChangedNotificationOnPageTurn = NO;
+}
+
 #pragma mark -
 #pragma mark EucPageTurningViewBitmapDataSource
 
@@ -2799,6 +2808,51 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)zoomForNewPageAnimatedWithNumberThunk:(NSNumber *)number
 {
     [self zoomForNewPageAnimated:[number boolValue]];
+}
+
+- (void)decrementPage
+{
+    NSUInteger wantPageIndex = NSUIntegerMax;
+    if (self.pageTurningView.isTwoUp) {
+        wantPageIndex = self.pageTurningView.leftPageIndex;
+        if(wantPageIndex != NSUIntegerMax) {
+            if(wantPageIndex >= 2) {
+                // Subtract 2 so that the focused page after the turn is
+                // on the right.
+                wantPageIndex -= 2;
+            } else if(wantPageIndex > 0) {
+                --wantPageIndex;
+            } else {
+                // Already at index 0, can't turn.
+                wantPageIndex = NSUIntegerMax;
+            }
+        }
+    } else {
+        wantPageIndex = self.pageTurningView.rightPageIndex;
+        if(wantPageIndex != NSUIntegerMax) {
+            if(wantPageIndex > 0) {
+                --wantPageIndex;
+            } else {
+                // Already at index 0, can't turn.
+                wantPageIndex = NSUIntegerMax;
+            }
+        }                
+    }
+    if(wantPageIndex != NSUIntegerMax) {
+        [self goToPageNumber:wantPageIndex + 1 animated:YES];
+    }
+}
+
+- (void)incrementPage
+{
+    NSUInteger wantPageIndex = self.pageTurningView.rightPageIndex;
+    if(wantPageIndex != NSUIntegerMax) {
+        ++wantPageIndex;
+    }
+    if(wantPageIndex != NSUIntegerMax && 
+       wantPageIndex < self.pageCount) {
+        [self goToPageNumber:wantPageIndex + 1 animated:YES];
+    }
 }
 
 @end 

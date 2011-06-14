@@ -71,6 +71,9 @@
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save;
 - (void)pushCurrentBookmarkPoint;
 
+- (void)incrementPage;
+- (void)decrementPage;
+
 - (BlioBookmarkPoint *)bookmarkPointForPercentage:(float)percentage;
 - (float)percentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
@@ -111,6 +114,9 @@
 
 - (BOOL)toolbarShowShouldBeSuppressed; 
 - (BOOL)toolbarHideShouldBeSuppressed; 
+
+- (void)toolbarsWillShow;
+- (void)toolbarsWillHide;
 
 - (UIImage*)previewThumbnailForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
