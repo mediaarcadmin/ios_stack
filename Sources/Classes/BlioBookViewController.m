@@ -686,38 +686,34 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [readingItems addObject:item];
         [item release];  
         
-        UIImage *audioImage = nil;
+        UIImage *audioItemImage;
+        NSString *audioItemAccessibilityHint;
         if (enabled) {
-            audioImage = [UIImage imageNamed:@"icon-play.png"];
-            item = [[UIBarButtonItem alloc] initWithImage:audioImage
-                                                    style:UIBarButtonItemStylePlain
-                                                   target:self 
-                                                   action:@selector(toggleAudio:)];
-            [item setAccessibilityLabel:NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button")];
-            [item setAccessibilityHint:NSLocalizedString(@"Starts audio.", @"Accessibility label for Book View Controller Play hint")];
-            
-            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-                [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitStartsMediaSession];
-            } else {
-                [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound];
-            }
+            audioItemImage = [UIImage imageNamed:@"icon-play.png"];
+            audioItemAccessibilityHint = NSLocalizedString(@"Starts audiobook.  While audio is playing, double tap again to stop.", @"Accessibility label for Book View Controller Play hint");
         } else {
-            audioImage = [UIImage imageNamed:@"icon-noTTS.png"];
-            item = [[UIBarButtonItem alloc] initWithImage:audioImage
-                                                    style:UIBarButtonItemStylePlain
-                                                   target:nil 
-                                                   action:nil];
-            [item setEnabled:NO];
-            [item setAccessibilityLabel:NSLocalizedString(@"Audio is not available for this book", @"Accessibility label for Book View Controller Audio unavailable button")];
-            if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-                [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitStartsMediaSession| UIAccessibilityTraitNotEnabled];
-            } else {
-                [item setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound | UIAccessibilityTraitNotEnabled];
-            }
+            audioItemImage = [UIImage imageNamed:@"icon-noTTS.png"];
+            audioItemAccessibilityHint = NSLocalizedString(@"Audiobook playback is not available for this book. Select and double tap the book page instead to read with VoiceOver.", @"Accessibility label for Book View Controller Audio unavailable button hint");
         }
-
-    [readingItems addObject:item];
-    [item release];
+        item = [[UIBarButtonItem alloc] initWithImage:audioItemImage
+                                                style:UIBarButtonItemStylePlain
+                                               target:nil 
+                                               action:nil];
+        item.accessibilityLabel = NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button");
+        item.enabled = enabled;
+        item.accessibilityHint = audioItemAccessibilityHint;
+        
+        UIAccessibilityTraits audioButtonAccessibiltyTraits = UIAccessibilityTraitButton | UIAccessibilityTraitPlaysSound;
+        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
+            audioButtonAccessibiltyTraits |= UIAccessibilityTraitStartsMediaSession;
+        }
+        if(!enabled) {
+            audioButtonAccessibiltyTraits |= UIAccessibilityTraitNotEnabled;
+        }
+        item.accessibilityTraits = audioButtonAccessibiltyTraits;
+        
+        [readingItems addObject:item];
+        [item release];
     }
     
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -738,7 +734,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [readingItems addObject:item];
     [item release];
     
-    return [NSArray arrayWithArray:readingItems];
+    return readingItems;
 }
 
 - (void)setBookView:(UIView<BlioBookView> *)bookView
