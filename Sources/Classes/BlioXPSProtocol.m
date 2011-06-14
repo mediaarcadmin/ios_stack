@@ -68,15 +68,14 @@
 	NSURLResponse *response = 
 	[[NSURLResponse alloc] initWithURL:[request URL] 
 							  MIMEType:nil 
-				 expectedContentLength:-1 
-					  textEncodingName:@"utf-8"];
+				 expectedContentLength:[data length] 
+					  textEncodingName:nil];
 	
 	/* get a reference to the client so we can hand off the data */
     id<NSURLProtocolClient> client = [self client];
 	
-	/* turn off caching for this response data */ 
 	[client URLProtocol:self didReceiveResponse:response
-	 cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+	 cacheStoragePolicy:NSURLCacheStorageAllowed];
 	
 	/* set the data in the response to our data */ 
 	[client URLProtocol:self didLoadData:data];
