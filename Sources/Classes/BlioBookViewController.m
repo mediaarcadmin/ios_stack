@@ -807,7 +807,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     if (_pageJumpSlider) {
         [_pageJumpSlider setValue:[_bookView percentageForBookmarkPoint:bookmarkPoint] animated:animated];
-		[self setPageJumpSliderPreview];
+		if (_pageJumpSlider.touchInProgress) {
+            [self setPageJumpSliderPreview];
+        }
         [self _updatePageJumpLabelForBookmarkPoint:bookmarkPoint];
     }    
 }
@@ -3074,6 +3076,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	BOOL shouldBeginTracking = [super beginTrackingWithTouch:touch withEvent:event];
 
 	if (shouldBeginTracking) {
+        [self.bookViewController setPageJumpSliderPreview];
 		[self.bookViewController.thumbPreview showThumb:YES];
 	} else {
 		touchInProgress = NO;
