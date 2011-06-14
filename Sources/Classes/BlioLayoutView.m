@@ -632,6 +632,8 @@
 
 - (void)createLayoutCacheForPage:(NSInteger)page {
     // N.B. please ensure this is only called with a [layoutCacheLock lock] acquired
+    
+    
     if (nil == self.pageCropsCache) {
         self.pageCropsCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
     }
@@ -639,9 +641,18 @@
         self.viewTransformsCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
     }
     
-    CGRect cropRect = [self.dataSource cropRectForPage:page];
-    if (!CGRectEqualToRect(cropRect, CGRectZero)) {
-        [self.pageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:page]];
+    // Grab the next 50 pages in one go to stop this interfering with the main thread on each turn
+    int j = page + 50;
+    for (int i = page; i < j; i++) {
+        if (i <= [self pageCount]) {
+            NSValue *pageCropValue = [self.pageCropsCache objectForKey:[NSNumber numberWithInt:i]];
+            if (nil == pageCropValue) {
+                CGRect cropRect = [self.dataSource cropRectForPage:i];
+                if (!CGRectEqualToRect(cropRect, CGRectZero)) {
+                    [self.pageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:i]];
+                }
+            }
+        }
     }
 }
 
@@ -771,6 +782,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         }
     }
 	pageViewIsTurning = YES;
+
 }
 
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
@@ -778,6 +790,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
 	suppressHistoryAfterTurn = NO;
+    
 	
     if(self.temporaryHighlightRange) {
 		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
@@ -789,11 +802,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				
 		self.temporaryHighlightRange = nil;
     }
+    
     self.performingAccessibilityZoom = NO;
     
     NSUInteger leftPageIndex = aPageTurningView.leftPageIndex;
     NSUInteger rightPageIndex = aPageTurningView.rightPageIndex;
     NSInteger currentPageNumber = self.currentBookmarkPoint.layoutPage;
+    
     if(!currentPageNumber ||
        (currentPageNumber - 1 != leftPageIndex && currentPageNumber - 1 != rightPageIndex)) {
         NSInteger newPageNumber = 0;
@@ -803,9 +818,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             newPageNumber = rightPageIndex + 1;
         }
         if(newPageNumber != 0) {
+
             BlioBookmarkPoint *newBookmarkPoint = [[BlioBookmarkPoint alloc] init];
             newBookmarkPoint.layoutPage = newPageNumber;
+
             self.currentBookmarkPoint = newBookmarkPoint;
+
             [newBookmarkPoint release];
         }
     }
@@ -1347,7 +1365,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					
 					[self.webViews addObject:webView];
  								
-					NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
+                    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30] autorelease];
 					
 					[webView loadRequest:request];
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
@@ -1421,7 +1439,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)aWebView {
-	//NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
     NSMutableString *jsCommand = [NSMutableString string];
 	[jsCommand appendString:@"document.documentElement.style.webkitTapHighlightColor = 'rgba(0,0,0,0)';"];
 	[jsCommand appendString:@"document.documentElement.style.webkitTouchCallout = 'none';"];
