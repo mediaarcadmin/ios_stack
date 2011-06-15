@@ -46,7 +46,7 @@
 }
 
 - (void)genThumb {
-	thumbnailView.image = [moviePlayerController thumbnailImageAtTime:4 timeOption:MPMovieTimeOptionNearestKeyFrame];
+	thumbnailView.image = [moviePlayerController thumbnailImageAtTime:0.1f timeOption:MPMovieTimeOptionNearestKeyFrame];
 }
 
 /*
@@ -81,7 +81,7 @@
 			break;
 		case MPMoviePlaybackStatePaused:
 			if ((moviePlayerController.duration - moviePlayerController.currentPlaybackTime) < 0.1) {
-				thumbnailView.image = [moviePlayerController thumbnailImageAtTime:4 timeOption:MPMovieTimeOptionNearestKeyFrame];
+				thumbnailView.image = [moviePlayerController thumbnailImageAtTime:0.1f timeOption:MPMovieTimeOptionNearestKeyFrame];
 				moviePlayerController.currentPlaybackTime = 0;
 				thumbnailView.hidden = NO;
 				playButton.hidden = NO;
@@ -118,10 +118,13 @@
 }
 
 -(void)pauseMediaPlayer {
-	if (moviePlayerController.playbackState != MPMoviePlaybackStatePaused) {
+	if ((moviePlayerController.playbackState != MPMoviePlaybackStatePaused) && (moviePlayerController.playbackState != MPMoviePlaybackStateStopped)) {
 		[CATransaction begin];
 		[CATransaction disableActions];
-		[moviePlayerController pause];
+        [moviePlayerController pause];
+        thumbnailView.image = [moviePlayerController thumbnailImageAtTime:moviePlayerController.currentPlaybackTime timeOption:MPMovieTimeOptionExact];
+        thumbnailView.hidden = NO;
+        playButton.hidden = NO;
 		[CATransaction commit];
 	}
 	isActive = NO;
