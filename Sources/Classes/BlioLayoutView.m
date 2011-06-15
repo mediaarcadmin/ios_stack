@@ -1215,13 +1215,18 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	}
 				 
 	for (UIView *view in overlayViews) {
-		
-		CGRect viewFrame = [view.layer convertRect:view.layer.frame toLayer:overlay.layer];
+		CGRect contentsFrame = view.layer.bounds;
+        
+		CGRect viewFrame = [view convertRect:contentsFrame toView:overlay];
+        viewFrame.origin.x -= view.frame.origin.x;
+        viewFrame.origin.y -= view.frame.origin.y;
+        viewFrame.size.width += view.frame.origin.x;
+        viewFrame.size.height += view.frame.origin.y;
 		
 		CGSize size = viewFrame.size;
 		size.width *= scale;
 		size.height *= scale;
-		
+        		
         BOOL onCorrectPage = NO;
 		CGAffineTransform pageTransform;
 		if(pageIndex == self.pageTurningView.leftPageIndex && CGRectContainsRect(self.pageTurningView.unzoomedLeftPageFrame, viewFrame)) {
@@ -1234,6 +1239,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		
         if(onCorrectPage) {
             CGPoint origin = CGPointMake(viewFrame.origin.x - pageTransform.tx, viewFrame.origin.y - pageTransform.ty);
+            
             origin.x = roundf(origin.x * scale);
             origin.y = roundf(origin.y * scale);
 
@@ -1250,6 +1256,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             CGContextRef bitmapContext = CGBitmapContextCreate(bitmapData.mutableBytes, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
             CGColorSpaceRelease(colorSpace);
             
+            CGContextTranslateCTM(bitmapContext, view.frame.origin.x, -view.frame.origin.y);
             CGContextScaleCTM(bitmapContext, 1, -1);
             CGContextTranslateCTM(bitmapContext, 0, -height);
             
@@ -1328,6 +1335,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			
 			NSUInteger pageIndex = i;
 			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
+            CGRect cropRect = [self cropForPage:pageIndex + 1 allowEstimate:NO];
             
             NSArray *content = nil;
 			if ([(NSObject *)self.dataSource respondsToSelector:@selector(enhancedContentForPage:)]) {
@@ -1336,20 +1344,29 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 						
 			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
 				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
+                CGRect clippedDisplayRegion = CGRectIntersection(cropRect, displayRegion);
+                
 				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
 				NSString *controlType = [dict valueForKey:@"controlType"];
 				CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
 				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
 				
 								
-                CGRect blendViewFrame = CGRectApplyAffineTransform(displayRegion, pageTransform);
-                blendViewFrame.origin.x = roundf(blendViewFrame.origin.x);
-                blendViewFrame.origin.y = roundf(blendViewFrame.origin.y);
-                blendViewFrame.size.width = roundf(blendViewFrame.size.width);
-                blendViewFrame.size.height = roundf(blendViewFrame.size.height);
-				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
+                CGRect blendViewFrame = CGRectIntegral(CGRectApplyAffineTransform(clippedDisplayRegion, pageTransform));
+                CGRect contentsFrame = CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform));
                 
-                CGRect blendViewBounds = blendView.bounds;
+				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
+                blendView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:0 alpha:0.5f];
+
+                blendView.layer.masksToBounds = YES;
+                
+                contentsFrame.origin = CGPointMake(CGRectGetMinX(contentsFrame) - CGRectGetMinX(blendViewFrame), CGRectGetMinY(contentsFrame) - CGRectGetMinY(blendViewFrame));
+                if (CGRectGetMaxY(contentsFrame) > CGRectGetHeight(blendViewFrame)) {
+                    contentsFrame.size.height -= (CGRectGetMaxY(contentsFrame) - CGRectGetHeight(blendViewFrame));
+                }
+                if (CGRectGetMaxX(contentsFrame) > CGRectGetWidth(blendViewFrame)) {
+                    contentsFrame.size.width -= (CGRectGetMaxX(contentsFrame) - CGRectGetWidth(blendViewFrame));
+                }
                 
                 if(!maskPath) {
                     maskPath = CGPathCreateMutable();
@@ -1366,7 +1383,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
                     
-					UIWebView *webView = [[[UIWebView alloc] initWithFrame:blendViewBounds] autorelease];
+					UIWebView *webView = [[[UIWebView alloc] initWithFrame:contentsFrame] autorelease];
+                    webView.backgroundColor = [UIColor whiteColor];
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
 					
@@ -1380,7 +1398,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
 					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
-					BlioMediaView * mediaView = [[[BlioMediaView alloc] initWithFrame:blendViewBounds contentURL:videoURL] autorelease];
+					BlioMediaView * mediaView = [[[BlioMediaView alloc] initWithFrame:contentsFrame contentURL:videoURL] autorelease];
+
 					[blendView addSubview:mediaView];
 					[self.mediaViews addObject:mediaView];
 				}
