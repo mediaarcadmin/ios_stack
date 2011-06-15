@@ -1352,8 +1352,19 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
 				
 								
-                CGRect blendViewFrame = CGRectIntegral(CGRectApplyAffineTransform(clippedDisplayRegion, pageTransform));
-                CGRect contentsFrame = CGRectIntegral(CGRectApplyAffineTransform(displayRegion, pageTransform));
+                // N.B. Cannot just use CGRectIntegral because of rounding down to -1 possibility in origin
+                
+                CGRect blendViewFrame = CGRectApplyAffineTransform(clippedDisplayRegion, pageTransform);
+                blendViewFrame.origin.x    = roundf(blendViewFrame.origin.x);
+                blendViewFrame.origin.y    = roundf(blendViewFrame.origin.y);
+                blendViewFrame.size.width  = roundf(blendViewFrame.size.width);
+                blendViewFrame.size.height = roundf(blendViewFrame.size.height);
+
+                CGRect contentsFrame = CGRectApplyAffineTransform(displayRegion, pageTransform);
+                contentsFrame.origin.x    = roundf(contentsFrame.origin.x);
+                contentsFrame.origin.y    = roundf(contentsFrame.origin.y);
+                contentsFrame.size.width  = roundf(contentsFrame.size.width);
+                contentsFrame.size.height = roundf(contentsFrame.size.height);
                 
 				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
                 blendView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:0 alpha:0.5f];
