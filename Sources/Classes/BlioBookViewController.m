@@ -691,10 +691,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         NSString *audioItemAccessibilityHint;
         if (enabled) {
             audioItemImage = [UIImage imageNamed:@"icon-play.png"];
-            audioItemAccessibilityHint = NSLocalizedString(@"Starts audiobook.  While audio is playing, double tap again to stop.", @"Accessibility label for Book View Controller Play hint");
+            audioItemAccessibilityHint = NSLocalizedString(@"Starts audio playback.  While audio is playing, double tap again to stop.", @"Accessibility label for Book View Controller Play hint");
         } else {
             audioItemImage = [UIImage imageNamed:@"icon-noTTS.png"];
-            audioItemAccessibilityHint = NSLocalizedString(@"Audiobook playback is not available for this book. Select and double tap the book page instead to read with VoiceOver.", @"Accessibility label for Book View Controller Audio unavailable button hint");
+            audioItemAccessibilityHint = NSLocalizedString(@"Select and double tap the book page instead to read with VoiceOver.", @"Accessibility label for Book View Controller Audio unavailable button hint");
         }
         item = [[UIBarButtonItem alloc] initWithImage:audioItemImage
                                                 style:UIBarButtonItemStylePlain
