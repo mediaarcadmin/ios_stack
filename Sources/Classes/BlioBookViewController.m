@@ -130,6 +130,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize book = _book;
 @synthesize bookView = _bookView;
 @synthesize pieButton = _pieButton;
+@synthesize pauseMask = _pauseMask;
 @synthesize pauseButton = _pauseButton;
 
 @synthesize returnToNavigationBarStyle = _returnToNavigationBarStyle;
@@ -697,8 +698,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         item = [[UIBarButtonItem alloc] initWithImage:audioItemImage
                                                 style:UIBarButtonItemStylePlain
-                                               target:nil 
-                                               action:nil];
+                                               target:self 
+                                               action:@selector(toggleAudio:)];
         item.accessibilityLabel = NSLocalizedString(@"Play", @"Accessibility label for Book View Controller Play button");
         item.enabled = enabled;
         item.accessibilityHint = audioItemAccessibilityHint;
@@ -852,6 +853,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.rootView sendSubviewToBack:_bookView];
     }    
     
+    UIView *aPauseMask = [[UIView alloc] initWithFrame:self.rootView.bounds];
+    aPauseMask.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.rootView addSubview:aPauseMask];
+    self.pauseMask = aPauseMask;
+    aPauseMask.alpha = 0;
+    [aPauseMask release];
+    
     UIButton *aPauseButton = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *pauseImage = [UIImage imageNamed:@"button-tts-pause.png"];
     [aPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
@@ -862,8 +870,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aPauseButton setShowsTouchWhenHighlighted:YES];
     [aPauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
     [aPauseButton setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
-    [aPauseButton setAlpha:0];
-    [self.rootView addSubview:aPauseButton];
+    [aPauseMask addSubview:aPauseButton];
     self.pauseButton = aPauseButton;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -1240,6 +1247,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.book = nil;    
     
     self.pieButton = nil;
+    self.pauseMask = nil;
     self.pauseButton = nil;
     self.managedObjectContext = nil;
     self.delegate = nil;
@@ -1308,10 +1316,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		// Immediately toggle the pause button if required, without animation, before returning
 		switch (toolbarState) {
 			case kBlioLibraryToolbarsStatePauseButtonVisible:
-				self.pauseButton.alpha = 1;
+				self.pauseMask.alpha = 1;
 				break;
 			default:
-				self.pauseButton.alpha = 0;
+				self.pauseMask.alpha = 0;
 				break;
 		}
 		return;
@@ -1427,10 +1435,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     // Set the pause button settings we do want to animate
     switch (toolbarState) {
         case kBlioLibraryToolbarsStatePauseButtonVisible:
-            self.pauseButton.alpha = 1;
+            self.pauseMask.alpha = 1;
             break;
         default:
-            self.pauseButton.alpha = 0;
+            self.pauseMask.alpha = 0;
             break;
     }
     

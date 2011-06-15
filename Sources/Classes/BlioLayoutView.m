@@ -344,7 +344,7 @@
         // Perform this after a delay in order to give time for layoutSubviews 
         // to be called on the pageTurningView before we start the zoom
         // (Ick!).
-        [self performSelector:@selector(zoomForNewPageAnimatedWithNumberThunk:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.0f];;
+        [self performSelector:@selector(zoomForNewPageAnimatedWithNumberThunk:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.0f];
 		if (firstLayout) {
 			[self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.0f];
 		}
