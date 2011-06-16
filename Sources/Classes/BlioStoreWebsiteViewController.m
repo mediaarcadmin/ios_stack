@@ -55,9 +55,9 @@
 
 - (id)init {
     if ((self = [super init])) {
-        self.title = NSLocalizedString(@"Buy Books",@"\"Buy Books\" view controller title");
+        self.title = NSLocalizedString(@"How to Buy",@"\"How to Buy\" view controller title");
         
-        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Buy Books",@"\"Buy Books\" bar button title") image:[UIImage imageNamed:@"icon-cart.png"] tag:kBlioStoreBuyBooksTag];
+        UITabBarItem* theItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"How to Buy",@"\"How to Buy\" bar button title") image:[UIImage imageNamed:@"icon-cart.png"] tag:kBlioStoreBuyBooksTag];
         self.tabBarItem = theItem;
         [theItem release];
     }
@@ -135,6 +135,7 @@
 		[self updateExplanation];
 		[self.phoneContentView addSubview:self.explanationLabel];
 		
+    /* Remove unused buttons.
 		// blioreader.com button.
 		yPlacement += kTweenMargin + 5*kLabelHeight;
 		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -156,9 +157,8 @@
 //		[gradientLayer release];
 //		launchButton.backgroundColor = [UIColor clearColor];
 		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
-//		[self.phoneContentView addSubview:launchButton]; // NOTE: quick hack to remove launch button from view due to resubmission requirements.
-		// TODO: re-enable launch button after things are worked out with Apple.
-		
+//		[self.phoneContentView addSubview:launchButton]; 
+     
 		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		CGRect createAccountButtonFrame = launchButton.frame;
 		createAccountButtonFrame.origin.y = launchButton.frame.origin.y + launchButton.frame.size.height + kTweenMargin;
@@ -167,6 +167,7 @@
 		createAccountButton.backgroundColor = [UIColor clearColor];
 		[createAccountButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
 //		[self.phoneContentView addSubview:createAccountButton];
+*/
 	}
 	else {
 		self.view.backgroundColor = [UIColor whiteColor]; // the default background color of grouped tableview on iPad
@@ -206,6 +207,7 @@
 		explanationLabel.numberOfLines = 320;
 		explanationLabel.textAlignment = UITextAlignmentCenter;
 		[self updateExplanation];
+/* Remove unused buttons.
 		// blioreader.com button.
 		launchButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		launchButton.frame = CGRectMake(355,350,298,50);
@@ -219,8 +221,7 @@
 		launchButton.titleLabel.adjustsFontSizeToFitWidth = YES;
 		launchButton.titleLabel.font = [UIFont systemFontOfSize:16.0f];
 		[launchButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
-		//		[contentView addSubview:launchButton];  // NOTE: quick hack to remove launch button from view due to resubmission requirements.
-		// TODO: re-enable launch button after things are worked out with Apple.
+		//		[contentView addSubview:launchButton];  
 
 		createAccountButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		CGRect createAccountButtonFrame = launchButton.frame;
@@ -229,12 +230,14 @@
 		createAccountButton.backgroundColor = [UIColor clearColor];
 		[createAccountButton setBackgroundImage:[[UIImage imageNamed:@"button-buybooks.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:14] forState:UIControlStateNormal];
 //		[contentView addSubview:createAccountButton];
-		
+*/		
 	}
-	[createAccountButton setTitle:NSLocalizedString(@"Create Account",@"\"Create Account\" text label for cell in Store Website View Controller") forState:UIControlStateNormal];
-	[createAccountButton addTarget:self action:@selector(openModalCreateAccount:) forControlEvents:UIControlEventTouchUpInside];
-	[self updateLogin];
+//	[createAccountButton setTitle:NSLocalizedString(@"Create Account",@"\"Create Account\" text label for cell in Store Website View Controller") forState:UIControlStateNormal];
+//	[createAccountButton addTarget:self action:@selector(openModalCreateAccount:) forControlEvents:UIControlEventTouchUpInside];
+//	[self updateLogin];
+
 }
+/*
 -(void)updateLogin {	
 	if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		[launchButton addTarget:self action:@selector(launchWebsite:) forControlEvents:UIControlEventTouchUpInside];
@@ -248,6 +251,7 @@
 		createAccountButton.hidden = NO;
 	}
 }
+*/
 -(void)updateExplanation {
 	if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
 		NSString * labelTitle = NSLocalizedStringWithDefaultValue(@"BUY_BOOKS_EXPLANATION",nil,[NSBundle mainBundle],@"In the Blio bookstore, you can browse today's hot titles as well as full-color cookbooks, travel guides, children's books, and textbooks from over a hundred top publishers.",@"Explanation text for how to buy books through the website/mobile Safari.");

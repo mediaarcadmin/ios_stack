@@ -31,6 +31,7 @@ static NSString * const BlioBookVaultResponseTypeVaultContentsWithTokenEx = @"Va
 static NSString * const BlioBookVaultResponseTypeVaultContents = @"VaultContentsResponse";
 static NSString * const BlioBookVaultResponseTypeRequestDownloadWithToken = @"RequestDownloadWithTokenResponse";
 static NSString * const BlioBookVaultResponseTypeRequestDownloadWithTokenEx = @"RequestDownloadWithTokenExResponse";
+static NSString * const BlioBookVaultResponseTypeRequestClientDownloadWithTokenEx = @"RequestClientDownloadWithTokenExResponse";
 static NSString * const BlioBookVaultResponseTypeRequestDownload = @"RequestDownloadResponse";
 static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 
@@ -374,13 +375,37 @@ static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 /* attributes */
 - (NSDictionary *)attributes;
 @end
+@interface BookVault_RequestClientDownloadWithTokenEx : NSObject {
+	
+	/* elements */
+	NSString * token;
+	NSString * isbn;
+	NSNumber * productType;
+	NSString * clientInfo;
+	/* attributes */
+}
+- (NSString *)nsPrefix;
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName;
+- (void)addAttributesToNode:(xmlNodePtr)node;
+- (void)addElementsToNode:(xmlNodePtr)node;
++ (BookVault_RequestClientDownloadWithTokenEx *)deserializeNode:(xmlNodePtr)cur;
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur;
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur;
+/* elements */
+@property (retain) NSString * token;
+@property (retain) NSString * isbn;
+@property (retain) NSNumber * productType;
+@property (retain) NSString * clientInfo;
+/* attributes */
+- (NSDictionary *)attributes;
+@end
 @interface BookVault_RequestDownloadResult : NSObject {
 	
-/* elements */
+    /* elements */
 	NSNumber * ReturnCode;
 	NSString * Message;
 	NSString * Url;
-/* attributes */
+    /* attributes */
 }
 - (NSString *)nsPrefix;
 - (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName;
@@ -429,6 +454,24 @@ static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 - (void)deserializeElementsFromNode:(xmlNodePtr)cur;
 /* elements */
 @property (retain) BookVault_RequestDownloadResult * RequestDownloadWithTokenExResult;
+/* attributes */
+- (NSDictionary *)attributes;
+@end
+@interface BookVault_RequestClientDownloadWithTokenExResponse : NSObject {
+	
+	/* elements */
+	BookVault_RequestDownloadResult * RequestClientDownloadWithTokenExResult;
+	/* attributes */
+}
+- (NSString *)nsPrefix;
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName;
+- (void)addAttributesToNode:(xmlNodePtr)node;
+- (void)addElementsToNode:(xmlNodePtr)node;
++ (BookVault_RequestClientDownloadWithTokenExResponse *)deserializeNode:(xmlNodePtr)cur;
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur;
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur;
+/* elements */
+@property (retain) BookVault_RequestDownloadResult * RequestClientDownloadWithTokenExResult;
 /* attributes */
 - (NSDictionary *)attributes;
 @end
@@ -582,6 +625,7 @@ static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 - (void)VaultContentsAsyncUsingParameters:(BookVault_VaultContents *)aParameters  delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate;
 - (BookVaultSoapResponse *)RequestDownloadWithTokenUsingParameters:(BookVault_RequestDownloadWithToken *)aParameters ;
 - (BookVaultSoapResponse *)RequestDownloadWithTokenExUsingParameters:(BookVault_RequestDownloadWithTokenEx *)aParameters ;
+- (BookVaultSoapResponse *)RequestClientDownloadWithTokenExUsingParameters:(BookVault_RequestClientDownloadWithTokenEx *)aParameters ;
 - (void)RequestDownloadWithTokenAsyncUsingParameters:(BookVault_RequestDownloadWithToken *)aParameters  delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate;
 - (BookVaultSoapResponse *)RequestDownloadUsingParameters:(BookVault_RequestDownload *)aParameters ;
 - (void)RequestDownloadAsyncUsingParameters:(BookVault_RequestDownload *)aParameters  delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate;
@@ -646,6 +690,14 @@ static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 @property (retain) BookVault_RequestDownloadWithTokenEx * parameters;
 - (id)initWithBinding:(BookVaultSoap *)aBinding delegate:(id<BookVaultSoapResponseDelegate>)aDelegate
 		   parameters:(BookVault_RequestDownloadWithTokenEx *)aParameters
+;
+@end
+@interface BookVaultSoap_RequestClientDownloadWithTokenEx : BookVaultSoapOperation {
+	BookVault_RequestClientDownloadWithTokenEx * parameters;
+}
+@property (retain) BookVault_RequestClientDownloadWithTokenEx * parameters;
+- (id)initWithBinding:(BookVaultSoap *)aBinding delegate:(id<BookVaultSoapResponseDelegate>)aDelegate
+		   parameters:(BookVault_RequestClientDownloadWithTokenEx *)aParameters
 ;
 @end
 

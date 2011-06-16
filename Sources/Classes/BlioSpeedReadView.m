@@ -583,7 +583,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 }
 
 #pragma mark -
-#pragma mark BlioBook
+#pragma mark BlioBookView
 
 - (NSString *)currentUuid
 {
@@ -617,7 +617,21 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 
 - (BlioBookmarkPoint *)bookmarkPointForPercentage:(float)percentage
 {
-    return[self.paragraphSource estimatedBookmarkPointForPercentage:percentage];
+    return [self.paragraphSource estimatedBookmarkPointForPercentage:percentage];
+}
+
+- (void)decrementPage
+{
+    float percentage = [self percentageForBookmarkPoint:self.currentBookmarkPoint];
+    BlioBookmarkPoint *newBookmarkPoint = [self bookmarkPointForPercentage:MIN(1.0f, percentage + 1.0f)];
+    [self goToBookmarkPoint:newBookmarkPoint animated:YES];
+}
+
+- (void)incrementPage
+{
+    float percentage = [self percentageForBookmarkPoint:self.currentBookmarkPoint];
+    BlioBookmarkPoint *newBookmarkPoint = [self bookmarkPointForPercentage:MAX(0.0f, percentage - 1.0f)];
+    [self goToBookmarkPoint:newBookmarkPoint animated:YES];
 }
 
 #pragma mark -

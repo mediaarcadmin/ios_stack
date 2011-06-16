@@ -84,6 +84,7 @@ typedef enum {
     BookViewControllerUIFadeState _fadeState;
     
     UIToolbar *_toolbar;
+    UIView *_pauseMask;
     UIButton *_pauseButton;
     
     UITouch *_touch;
@@ -166,6 +167,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL audioEnabled;
 
 @property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
+@property (nonatomic, retain) UIView *pauseMask;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
@@ -179,9 +181,8 @@ typedef enum {
 - (void)stopAudio;
 - (void)pauseAudio;
 - (void)toggleAudio:(id)sender;
-/*
+
 - (void)incrementPage;
 - (void)decrementPage;
-*/
 
 @end

@@ -31,6 +31,8 @@
     NSUInteger currentCharacterOffset;
     NSArray *currentParagraphWords;
     
+    BlioBookmarkPoint *startBookmarkPoint;
+    
     BOOL hasWrapped;
 	BOOL searching;    
     

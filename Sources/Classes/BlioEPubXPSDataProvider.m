@@ -63,7 +63,28 @@
 - (NSData *)dataForComponentAtPath:(NSString *)path
 {
     NSString *xpsPath = [self.ePubRootInXPS stringByAppendingPathComponent:path];
-    return [self.xpsProvider dataForComponentAtPath:xpsPath];
+    NSData *ret = [self.xpsProvider dataForComponentAtPath:xpsPath];
+    
+#if 0
+    NSFileManager *manager = [[NSFileManager alloc] init];
+    
+    NSString *tempOutputXPSPath = [@"/tmp" stringByAppendingPathComponent:[NSString stringWithFormat:@"0x%p", self]];
+    NSString *pathInXPS = [path stringByDeletingLastPathComponent];
+    NSString *tempOutputInnerDir;
+    if(pathInXPS.length) {
+        tempOutputInnerDir = [tempOutputXPSPath stringByAppendingPathComponent:pathInXPS];
+    } else {
+        tempOutputInnerDir = tempOutputXPSPath;
+    }
+    [manager createDirectoryAtPath:tempOutputInnerDir withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    NSString *fullTempOutputPath = [tempOutputInnerDir stringByAppendingPathComponent:[path lastPathComponent]];
+    [ret writeToFile:fullTempOutputPath atomically:NO];
+    
+    [manager release];
+#endif
+    
+    return ret;
 }
 
 @end

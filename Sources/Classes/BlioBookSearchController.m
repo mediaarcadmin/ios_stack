@@ -16,6 +16,7 @@
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 @property (nonatomic, getter=isSearching) BOOL searching;
 @property (nonatomic, retain) NSString *searchString;
+@property (nonatomic, retain) BlioBookmarkPoint *startBookmarkPoint;
 @property (nonatomic, retain) id startParagraphID;
 @property (nonatomic, assign) NSUInteger startElementOffset;
 @property (nonatomic, retain) id currentParagraphID;
@@ -27,7 +28,7 @@
 
 @implementation BlioBookSearchController
 
-@synthesize bookID, paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startParagraphID, startElementOffset, currentParagraphID, currentCharacterOffset, currentParagraphWords, hasWrapped;
+@synthesize bookID, paragraphSource, delegate, searchString, searching, searchOptions, maxPrefixAndMatchLength, maxSuffixLength, startBookmarkPoint, startParagraphID, startElementOffset, currentParagraphID, currentCharacterOffset, currentParagraphWords, hasWrapped;
 
 - (void)dealloc {
     [self cancel];
@@ -37,6 +38,7 @@
     }
     self.delegate = nil;
     self.searchString = nil;
+    self.startBookmarkPoint = nil;
     self.startParagraphID = nil;
     self.currentParagraphID = nil;
     self.currentParagraphWords = nil;
@@ -54,18 +56,23 @@
     return self;
 }
 
-- (BOOL)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)startBookmarkPoint {
+- (BOOL)findString:(NSString *)string fromBookmarkPoint:(BlioBookmarkPoint *)myStartBookmarkPoint {
     if ([string rangeOfCharacterFromSet:[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet]].location == NSNotFound) {
         return NO;
     }
     self.searchString = string;
     self.hasWrapped = NO;
     
-    if (!startBookmarkPoint) startBookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+    if (!myStartBookmarkPoint) { 
+        myStartBookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+        myStartBookmarkPoint.layoutPage = 1;
+    }
+    
+    self.startBookmarkPoint = myStartBookmarkPoint;
     
     NSIndexPath *paragraphID = nil;
     uint32_t wordOffset = 0;
-    [self.paragraphSource bookmarkPoint:startBookmarkPoint toParagraphID:&paragraphID wordOffset:&wordOffset];
+    [self.paragraphSource bookmarkPoint:myStartBookmarkPoint toParagraphID:&paragraphID wordOffset:&wordOffset];
     
     self.currentParagraphID = paragraphID;
     self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
@@ -102,11 +109,12 @@
 - (void)searchReachedEndOfBook {
     [self searchStopped];
     
-    BlioBookmarkPoint *startBookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+    BlioBookmarkPoint *startofBookBookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+    startofBookBookmarkPoint.layoutPage = 1;
     
     NSIndexPath *paragraphID = nil;
     uint32_t wordOffset = 0;
-    [self.paragraphSource bookmarkPoint:startBookmarkPoint toParagraphID:&paragraphID wordOffset:&wordOffset];
+    [self.paragraphSource bookmarkPoint:startofBookBookmarkPoint toParagraphID:&paragraphID wordOffset:&wordOffset];
     
     self.currentParagraphID = paragraphID;
     self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
@@ -129,9 +137,8 @@
     
     // TODO - confirm that paragraphIDs observe the comparison correctly
     if (self.hasWrapped) {
-        if (([self.currentParagraphID compare:self.startParagraphID] == NSOrderedSame) &&
-            (self.currentCharacterOffset >= self.startElementOffset)) {
-        
+        BlioBookmarkPoint *currentBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:0];
+        if ([startBookmarkPoint compare:currentBookmarkPoint] == NSOrderedAscending) {
                 [self searchCompleted];
                 return;
             }
@@ -231,17 +238,18 @@
             self.currentParagraphWords = [self.paragraphSource wordsForParagraphWithID:self.currentParagraphID];
             self.currentCharacterOffset = 0;
             
-            // TODO - confirm that paragraphIDs observe the comparison correctly
-            if (self.hasWrapped && ([self.currentParagraphID compare:self.startParagraphID] == NSOrderedDescending)) {
-                [self searchCompleted];
-                return;
-            } else {
-            
-                //BlioBookmarkPoint *debugBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:0];
-                //NSLog(@"Page %d paragraph %d has %d words", [debugBookmarkPoint layoutPage], [debugBookmarkPoint blockOffset], [self.currentParagraphWords count]);
-                // Need to always allow at least a 0.01f delay before finding teh next occureence otherwise the UI freezes
-                [self performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:searchInterval + 0.01f];
+            if (self.hasWrapped) {
+                BlioBookmarkPoint *currentBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:0];
+                if ([startBookmarkPoint compare:currentBookmarkPoint] == NSOrderedAscending) {
+                    [self searchCompleted];
+                    return;
+                } 
             }
+        
+            //BlioBookmarkPoint *debugBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:0];
+            //NSLog(@"Page %d paragraph %d has %d words", [debugBookmarkPoint layoutPage], [debugBookmarkPoint blockOffset], [self.currentParagraphWords count]);
+            // Allow a runloop cycle before finding the next occureence so that the UI doesn't freeze.
+            [self performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:0];
         }
     }
 }

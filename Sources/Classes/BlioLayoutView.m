@@ -127,6 +127,10 @@
 	
     self.currentBookmarkPoint = nil;
     
+    [self.webViews makeObjectsPerformSelector:@selector(stopLoading)];
+    [self.webViews makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
+    [self.mediaViews makeObjectsPerformSelector:@selector(stopMediaPlayer)];
+    
 	self.mediaViews = nil;
 	self.webViews = nil;
     [pageAlphaMask release], pageAlphaMask = nil;
@@ -340,7 +344,7 @@
         // Perform this after a delay in order to give time for layoutSubviews 
         // to be called on the pageTurningView before we start the zoom
         // (Ick!).
-        [self performSelector:@selector(zoomForNewPageAnimatedWithNumberThunk:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.0f];;
+        [self performSelector:@selector(zoomForNewPageAnimatedWithNumberThunk:) withObject:[NSNumber numberWithBool:NO] afterDelay:0.0f];
 		if (firstLayout) {
 			[self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.0f];
 		}
@@ -383,6 +387,15 @@
     ret = myPageTurningView.screenshot;
     myPageTurningView.dimQuotient = 0.0f;
     return ret;
+}
+
+- (void)toolbarsWillShow {
+    self.pageTurningView.suppressAccessibilityScreenChangedNotificationOnPageTurn = YES;
+}
+
+- (void)toolbarsWillHide
+{
+    self.pageTurningView.suppressAccessibilityScreenChangedNotificationOnPageTurn = NO;
 }
 
 #pragma mark -
@@ -628,6 +641,8 @@
 
 - (void)createLayoutCacheForPage:(NSInteger)page {
     // N.B. please ensure this is only called with a [layoutCacheLock lock] acquired
+    
+    
     if (nil == self.pageCropsCache) {
         self.pageCropsCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
     }
@@ -635,9 +650,18 @@
         self.viewTransformsCache = [NSMutableDictionary dictionaryWithCapacity:pageCount];
     }
     
-    CGRect cropRect = [self.dataSource cropRectForPage:page];
-    if (!CGRectEqualToRect(cropRect, CGRectZero)) {
-        [self.pageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:page]];
+    // Grab the next 50 pages in one go to stop this interfering with the main thread on each turn
+    int j = page + 50;
+    for (int i = page; i < j; i++) {
+        if (i <= [self pageCount]) {
+            NSValue *pageCropValue = [self.pageCropsCache objectForKey:[NSNumber numberWithInt:i]];
+            if (nil == pageCropValue) {
+                CGRect cropRect = [self.dataSource cropRectForPage:i];
+                if (!CGRectEqualToRect(cropRect, CGRectZero)) {
+                    [self.pageCropsCache setObject:[NSValue valueWithCGRect:cropRect] forKey:[NSNumber numberWithInt:i]];
+                }
+            }
+        }
     }
 }
 
@@ -767,6 +791,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         }
     }
 	pageViewIsTurning = YES;
+
 }
 
 - (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
@@ -774,6 +799,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
 	suppressHistoryAfterTurn = NO;
+    
 	
     if(self.temporaryHighlightRange) {
 		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
@@ -785,11 +811,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				
 		self.temporaryHighlightRange = nil;
     }
+    
     self.performingAccessibilityZoom = NO;
     
     NSUInteger leftPageIndex = aPageTurningView.leftPageIndex;
     NSUInteger rightPageIndex = aPageTurningView.rightPageIndex;
     NSInteger currentPageNumber = self.currentBookmarkPoint.layoutPage;
+    
     if(!currentPageNumber ||
        (currentPageNumber - 1 != leftPageIndex && currentPageNumber - 1 != rightPageIndex)) {
         NSInteger newPageNumber = 0;
@@ -799,9 +827,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             newPageNumber = rightPageIndex + 1;
         }
         if(newPageNumber != 0) {
+
             BlioBookmarkPoint *newBookmarkPoint = [[BlioBookmarkPoint alloc] init];
             newBookmarkPoint.layoutPage = newPageNumber;
+
             self.currentBookmarkPoint = newBookmarkPoint;
+
             [newBookmarkPoint release];
         }
     }
@@ -1184,13 +1215,18 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	}
 				 
 	for (UIView *view in overlayViews) {
-		
-		CGRect viewFrame = [view.layer convertRect:view.layer.frame toLayer:overlay.layer];
+		CGRect contentsFrame = view.layer.bounds;
+        
+		CGRect viewFrame = [view convertRect:contentsFrame toView:overlay];
+        viewFrame.origin.x -= view.frame.origin.x;
+        viewFrame.origin.y -= view.frame.origin.y;
+        viewFrame.size.width += view.frame.origin.x;
+        viewFrame.size.height += view.frame.origin.y;
 		
 		CGSize size = viewFrame.size;
 		size.width *= scale;
 		size.height *= scale;
-		
+        		
         BOOL onCorrectPage = NO;
 		CGAffineTransform pageTransform;
 		if(pageIndex == self.pageTurningView.leftPageIndex && CGRectContainsRect(self.pageTurningView.unzoomedLeftPageFrame, viewFrame)) {
@@ -1203,6 +1239,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		
         if(onCorrectPage) {
             CGPoint origin = CGPointMake(viewFrame.origin.x - pageTransform.tx, viewFrame.origin.y - pageTransform.ty);
+            
             origin.x = roundf(origin.x * scale);
             origin.y = roundf(origin.y * scale);
 
@@ -1219,6 +1256,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             CGContextRef bitmapContext = CGBitmapContextCreate(bitmapData.mutableBytes, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast);        
             CGColorSpaceRelease(colorSpace);
             
+            CGContextTranslateCTM(bitmapContext, view.frame.origin.x, -view.frame.origin.y);
             CGContextScaleCTM(bitmapContext, 1, -1);
             CGContextTranslateCTM(bitmapContext, 0, -height);
             
@@ -1276,7 +1314,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			[self.pageTurningView addSubview:self.overlay];
 		}
 
-		[self.mediaViews makeObjectsPerformSelector:@selector(pauseMediaPlayer)];
+        [self.webViews makeObjectsPerformSelector:@selector(stopLoading)];
+        [self.webViews makeObjectsPerformSelector:@selector(setDelegate:) withObject:nil];
+		[self.mediaViews makeObjectsPerformSelector:@selector(stopMediaPlayer)];
 		
 		for (UIView *view in [self.overlay subviews]) {
 			[view removeFromSuperview];
@@ -1295,6 +1335,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			
 			NSUInteger pageIndex = i;
 			CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
+            CGRect cropRect = [self cropForPage:pageIndex + 1 allowEstimate:NO];
             
             NSArray *content = nil;
 			if ([(NSObject *)self.dataSource respondsToSelector:@selector(enhancedContentForPage:)]) {
@@ -1303,20 +1344,40 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 						
 			for (NSDictionary *dict in [content reverseObjectEnumerator]) {
 				CGRect displayRegion = [[dict valueForKey:@"displayRegion"] CGRectValue];
+                CGRect clippedDisplayRegion = CGRectIntersection(cropRect, displayRegion);
+                
 				NSString *navigateUri = [dict valueForKey:@"navigateUri"];
 				NSString *controlType = [dict valueForKey:@"controlType"];
 				CFStringRef bookURIStringRef = (CFStringRef)[[self.bookID URIRepresentation] absoluteString];
 				CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, bookURIStringRef, NULL, CFSTR(":/"), kCFStringEncodingUTF8);
 				
 								
-                CGRect blendViewFrame = CGRectApplyAffineTransform(displayRegion, pageTransform);
-                blendViewFrame.origin.x = roundf(blendViewFrame.origin.x);
-                blendViewFrame.origin.y = roundf(blendViewFrame.origin.y);
-                blendViewFrame.size.width = roundf(blendViewFrame.size.width);
-                blendViewFrame.size.height = roundf(blendViewFrame.size.height);
-				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
+                // N.B. Cannot just use CGRectIntegral because of rounding down to -1 possibility in origin
                 
-                CGRect blendViewBounds = blendView.bounds;
+                CGRect blendViewFrame = CGRectApplyAffineTransform(clippedDisplayRegion, pageTransform);
+                blendViewFrame.origin.x    = roundf(blendViewFrame.origin.x);
+                blendViewFrame.origin.y    = roundf(blendViewFrame.origin.y);
+                blendViewFrame.size.width  = roundf(blendViewFrame.size.width);
+                blendViewFrame.size.height = roundf(blendViewFrame.size.height);
+
+                CGRect contentsFrame = CGRectApplyAffineTransform(displayRegion, pageTransform);
+                contentsFrame.origin.x    = roundf(contentsFrame.origin.x);
+                contentsFrame.origin.y    = roundf(contentsFrame.origin.y);
+                contentsFrame.size.width  = roundf(contentsFrame.size.width);
+                contentsFrame.size.height = roundf(contentsFrame.size.height);
+                
+				BlioBlendView *blendView = [[BlioBlendView alloc] initWithFrame:blendViewFrame];
+                blendView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:0 alpha:0.5f];
+
+                blendView.layer.masksToBounds = YES;
+                
+                contentsFrame.origin = CGPointMake(CGRectGetMinX(contentsFrame) - CGRectGetMinX(blendViewFrame), CGRectGetMinY(contentsFrame) - CGRectGetMinY(blendViewFrame));
+                if (CGRectGetMaxY(contentsFrame) > CGRectGetHeight(blendViewFrame)) {
+                    contentsFrame.size.height -= (CGRectGetMaxY(contentsFrame) - CGRectGetHeight(blendViewFrame));
+                }
+                if (CGRectGetMaxX(contentsFrame) > CGRectGetWidth(blendViewFrame)) {
+                    contentsFrame.size.width -= (CGRectGetMaxX(contentsFrame) - CGRectGetWidth(blendViewFrame));
+                }
                 
                 if(!maskPath) {
                     maskPath = CGPathCreateMutable();
@@ -1333,7 +1394,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					NSString *rootPath = [[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri];
 					NSURL *rootXPSURL = [[[NSURL alloc] initWithScheme:@"blioxpsprotocol" host:(NSString *)encodedString path:rootPath] autorelease];
                     
-					UIWebView *webView = [[[UIWebView alloc] initWithFrame:blendViewBounds] autorelease];
+					UIWebView *webView = [[[UIWebView alloc] initWithFrame:contentsFrame] autorelease];
+                    webView.backgroundColor = [UIColor whiteColor];
 					webView.delegate = self;
 					webView.scalesPageToFit = NO;
 					
@@ -1341,13 +1403,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 					
 					[self.webViews addObject:webView];
  								
-					NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL] autorelease];
+                    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:rootXPSURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30] autorelease];
 					
 					[webView loadRequest:request];
 				} else if ([controlType isEqualToString:@"iOSCompatibleVideoContent"]) {
 					
 					NSURL *videoURL = [self.dataSource temporaryURLForEnhancedContentVideoAtPath:[[self.dataSource enhancedContentRootPath] stringByAppendingPathComponent:navigateUri]];
-					BlioMediaView * mediaView = [[[BlioMediaView alloc] initWithFrame:blendViewBounds contentURL:videoURL] autorelease];
+					BlioMediaView * mediaView = [[[BlioMediaView alloc] initWithFrame:contentsFrame contentURL:videoURL] autorelease];
+
 					[blendView addSubview:mediaView];
 					[self.mediaViews addObject:mediaView];
 				}
@@ -1415,7 +1478,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)aWebView {
-	//NSMutableString *jsCommand = [NSMutableString stringWithString:@"document.addEventListener('touchmove', function(event) { event.preventDefault();}, false);"];
     NSMutableString *jsCommand = [NSMutableString string];
 	[jsCommand appendString:@"document.documentElement.style.webkitTapHighlightColor = 'rgba(0,0,0,0)';"];
 	[jsCommand appendString:@"document.documentElement.style.webkitTouchCallout = 'none';"];
@@ -2793,6 +2855,51 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (void)zoomForNewPageAnimatedWithNumberThunk:(NSNumber *)number
 {
     [self zoomForNewPageAnimated:[number boolValue]];
+}
+
+- (void)decrementPage
+{
+    NSUInteger wantPageIndex = NSUIntegerMax;
+    if (self.pageTurningView.isTwoUp) {
+        wantPageIndex = self.pageTurningView.leftPageIndex;
+        if(wantPageIndex != NSUIntegerMax) {
+            if(wantPageIndex >= 2) {
+                // Subtract 2 so that the focused page after the turn is
+                // on the right.
+                wantPageIndex -= 2;
+            } else if(wantPageIndex > 0) {
+                --wantPageIndex;
+            } else {
+                // Already at index 0, can't turn.
+                wantPageIndex = NSUIntegerMax;
+            }
+        }
+    } else {
+        wantPageIndex = self.pageTurningView.rightPageIndex;
+        if(wantPageIndex != NSUIntegerMax) {
+            if(wantPageIndex > 0) {
+                --wantPageIndex;
+            } else {
+                // Already at index 0, can't turn.
+                wantPageIndex = NSUIntegerMax;
+            }
+        }                
+    }
+    if(wantPageIndex != NSUIntegerMax) {
+        [self goToPageNumber:wantPageIndex + 1 animated:YES];
+    }
+}
+
+- (void)incrementPage
+{
+    NSUInteger wantPageIndex = self.pageTurningView.rightPageIndex;
+    if(wantPageIndex != NSUIntegerMax) {
+        ++wantPageIndex;
+    }
+    if(wantPageIndex != NSUIntegerMax && 
+       wantPageIndex < self.pageCount) {
+        [self goToPageNumber:wantPageIndex + 1 animated:YES];
+    }
 }
 
 @end 

@@ -650,4 +650,24 @@
     }
 }
 
+- (void)toolbarsWillHide
+{
+    [_eucBookView toolbarsWillHide];
+}
+
+- (void)toolbarsWillShow
+{
+    [_eucBookView toolbarsWillShow];
+}
+
+- (void)decrementPage
+{
+    [_eucBookView turnToPreviousPage];
+}
+
+- (void)incrementPage
+{
+    [_eucBookView turnToNextPage];
+}
+
 @end
