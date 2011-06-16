@@ -468,8 +468,10 @@
         if(!xpsUnzipHandle) {
             NSLog(@"ERROR: Could not open XPS file, %@; cannot import!",importableBook.fileName);
         } else {
-            NSLog(@"Checking for XPS DRM: %@, %@", importableBook.fileName, BlioXPSKNFBDRMHeaderFile);
-            if(unzLocateFile(xpsUnzipHandle, [BlioXPSKNFBDRMHeaderFile UTF8String], 1) != UNZ_END_OF_LIST_OF_FILE) {
+            NSString * localDRMPath = BlioXPSKNFBDRMHeaderFile;
+            if ([[localDRMPath substringToIndex:1] isEqualToString:@"/"]) localDRMPath = [localDRMPath substringFromIndex:1];
+            NSLog(@"Checking for XPS DRM: %@, %@", importableBook.fileName, localDRMPath);
+            if(unzLocateFile(xpsUnzipHandle, [localDRMPath UTF8String], 1) != UNZ_END_OF_LIST_OF_FILE) {
                 NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",importableBook.fileName);
                 importableBook.isDRM = YES;
                 toReturn = importableBook;
