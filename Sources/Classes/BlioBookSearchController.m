@@ -249,7 +249,7 @@
             //BlioBookmarkPoint *debugBookmarkPoint = [self.paragraphSource bookmarkPointFromParagraphID:self.currentParagraphID wordOffset:0];
             //NSLog(@"Page %d paragraph %d has %d words", [debugBookmarkPoint layoutPage], [debugBookmarkPoint blockOffset], [self.currentParagraphWords count]);
             // Allow a runloop cycle before finding the next occureence so that the UI doesn't freeze.
-            [self performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:searchInterval + 0];
+            [self performSelector:@selector(findNextOccurrence) withObject:nil afterDelay:0];
         }
     }
 }
