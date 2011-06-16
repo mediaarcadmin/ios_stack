@@ -61,6 +61,15 @@
     [super dealloc];
 }
 
+- (BOOL)isEqual:(id)rhs
+{
+    if([rhs isKindOfClass:[BlioEPubParagraphID class]]) {
+        return [self.indexPoint isEqual:((BlioEPubParagraphID *)rhs).indexPoint];
+    } else {
+        return NO;
+    }
+}
+
 @end
 
 
