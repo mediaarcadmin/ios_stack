@@ -235,21 +235,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 } 
  
 - (void)initialiseControls {
-	if ([[self.book valueForKey:@"productType"] intValue] == BlioProductTypePreview) {
-		UIButton * buyNowButton = [UIButton buyButton];
-		[buyNowButton setTitle:NSLocalizedString(@"BUY NOW",@"\"BUY NOW\" button label") forState:UIControlStateNormal];
-		CGSize textSize = [buyNowButton.titleLabel.text sizeWithFont:buyNowButton.titleLabel.font];
-		CGFloat buttonHeight = 30;
-		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-			buttonHeight = 24;
-		}
-		
-		buyNowButton.bounds = CGRectMake(0, 0, textSize.width + 30, buttonHeight);
-		[buyNowButton setAccessibilityHint:NSLocalizedString(@"Opens the book details page within the Blio web store.",@"\"BUY NOW\" button accessibility hint")];
-		[buyNowButton addTarget:self action:@selector(buyBook:) forControlEvents:UIControlEventTouchUpInside];
-		self.navigationItem.titleView = buyNowButton;
-	}
-	else {
+//	if ([[self.book valueForKey:@"productType"] intValue] == BlioProductTypePreview) {
+//		UIButton * buyNowButton = [UIButton buyButton];
+//		[buyNowButton setTitle:NSLocalizedString(@"BUY NOW",@"\"BUY NOW\" button label") forState:UIControlStateNormal];
+//		CGSize textSize = [buyNowButton.titleLabel.text sizeWithFont:buyNowButton.titleLabel.font];
+//		CGFloat buttonHeight = 30;
+//		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+//			buttonHeight = 24;
+//		}
+//		
+//		buyNowButton.bounds = CGRectMake(0, 0, textSize.width + 30, buttonHeight);
+//		[buyNowButton setAccessibilityHint:NSLocalizedString(@"Opens the book details page within the Blio web store.",@"\"BUY NOW\" button accessibility hint")];
+//		[buyNowButton addTarget:self action:@selector(buyBook:) forControlEvents:UIControlEventTouchUpInside];
+//		self.navigationItem.titleView = buyNowButton;
+//	}
+//	else {
 		EucBookTitleView *titleView = [[EucBookTitleView alloc] init];
 		CGRect frame = titleView.frame;
 		frame.size.width = [[UIScreen mainScreen] bounds].size.width;
@@ -257,7 +257,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		titleView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
 		self.navigationItem.titleView = titleView;
 		[titleView release];
-    }
+//    }
     _firstAppearance = YES;
     
     self.audioPlaying = NO;
