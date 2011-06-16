@@ -20,12 +20,54 @@
 #import <libEucalyptus/EucCSSLayoutRun.h>
 #import <libEucalyptus/EucCSSIntermediateDocumentNode.h>
 #import <libEucalyptus/EucChapterNameFormatting.h>
-#import <libEucalyptus/THPair.h>
+
+@interface BlioEPubParagraphID : NSObject {
+    EucCSSLayoutRun *_run;
+    EucBookPageIndexPoint *_indexPoint;
+    EucCSSLayoutRunExtractor *_runExtractor;
+}
+
+@property (nonatomic, retain, readonly) EucCSSLayoutRun *run;
+@property (nonatomic, retain, readonly) EucBookPageIndexPoint *indexPoint;
+@property (nonatomic, retain, readonly) EucCSSLayoutRunExtractor *runExtractor;
+
+@end
+
+@implementation BlioEPubParagraphID 
+
+@synthesize run = _run;
+@synthesize indexPoint = _indexPoint;
+@synthesize runExtractor = _runExtractor;
+
+- (id)initWithRun:(EucCSSLayoutRun *)run
+       indexPoint:(EucBookPageIndexPoint *)indexPoint
+     runExtractor:(EucCSSLayoutRunExtractor *)runExtractor
+{
+    if((self = [super init])) {
+        _run = [run retain];
+        _indexPoint = [indexPoint retain];
+        _runExtractor = [runExtractor retain];
+    }
+    
+    return self;
+}
+
+- (void)dealloc
+{
+    [_run release];
+    [_indexPoint release];
+    [_runExtractor release];
+
+    [super dealloc];
+}
+
+@end
+
+
 
 @interface BlioEPubParagraphSource ()
 @property (nonatomic, retain, readonly) EucBUpeBook *bUpeBook;
 @end
-
 
 @implementation BlioEPubParagraphSource
 
@@ -55,7 +97,8 @@
 {
     EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
     
-    indexPoint.source = bookmarkPoint.layoutPage - 1;
+    NSInteger layoutPage = bookmarkPoint.layoutPage;
+    indexPoint.source = MAX(1, layoutPage) - 1;
     indexPoint.block = bookmarkPoint.blockOffset;
     indexPoint.word = bookmarkPoint.wordOffset + 1;
     indexPoint.element = bookmarkPoint.elementOffset;
@@ -91,43 +134,40 @@
     indexPoint.word = 0;
     indexPoint.element = 0;
     
-    *paragraphIDOut = [THPair pairWithFirst:newRun second:indexPoint];
+    *paragraphIDOut = [[[BlioEPubParagraphID alloc] initWithRun:newRun indexPoint:indexPoint runExtractor:runExtractor] autorelease];
 
     [runExtractor release];    
 }
 
 - (BlioBookmarkPoint *)bookmarkPointFromParagraphID:(id)paragraphID wordOffset:(uint32_t)wordOffset
 {
-    BlioBookmarkPoint *ret = [self _bookmarkPointFromIndexPoint:(EucBookPageIndexPoint *)((THPair *)paragraphID).second];
+    BlioBookmarkPoint *ret = [self _bookmarkPointFromIndexPoint:((BlioEPubParagraphID *)paragraphID).indexPoint];
     ret.wordOffset = wordOffset;
     return ret;
 }
 
 - (NSArray *)wordsForParagraphWithID:(id)paragraphID
 {
-    return paragraphID ? [(EucCSSLayoutRun *)((THPair *)paragraphID).first words] : nil;
+    return paragraphID ? [((BlioEPubParagraphID *)paragraphID).run words] : nil;
 }
 
 - (id)nextParagraphIdForParagraphWithID:(id)paragraphID
 {
-    EucCSSLayoutRun *run = (EucCSSLayoutRun *)((THPair *)paragraphID).first;
-    EucBookPageIndexPoint *indexPoint = (EucBookPageIndexPoint *)((THPair *)paragraphID).second;
-
-    EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:run.startNode.document];
+    EucCSSLayoutRun *run = ((BlioEPubParagraphID *)paragraphID).run;
+    EucBookPageIndexPoint *indexPoint = ((BlioEPubParagraphID *)paragraphID).indexPoint;
+    EucCSSLayoutRunExtractor *runExtractor = ((BlioEPubParagraphID *)paragraphID).runExtractor;
     
     EucCSSLayoutRun *newRun = [runExtractor nextRunForRun:run];
     
-    [runExtractor release];
-
-    THPair *ret = nil;
+    BlioEPubParagraphID *ret = nil;
     if(newRun) {
         EucBookPageIndexPoint *newIndexPoint = [indexPoint copy];
         newIndexPoint.block = newRun.id;
         newIndexPoint.word = 0;
         newIndexPoint.element = 0;
         
-        ret = [THPair pairWithFirst:newRun second:newIndexPoint];
-        [newIndexPoint autorelease];        
+        ret = [[[BlioEPubParagraphID alloc] initWithRun:newRun indexPoint:newIndexPoint runExtractor:runExtractor] autorelease];
+        [newIndexPoint release];        
     } else {
         EucBookPageIndexPoint *nextSourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
         nextSourceIndexPoint.source = indexPoint.source + 1;
@@ -137,7 +177,7 @@
             newRun = [runExtractor runForNodeWithKey:0];
             if(newRun) {
                 nextSourceIndexPoint.block = newRun.id;
-                ret = [THPair pairWithFirst:newRun second:nextSourceIndexPoint];
+                ret = [[[BlioEPubParagraphID alloc] initWithRun:newRun indexPoint:nextSourceIndexPoint runExtractor:runExtractor] autorelease];
             } else {
                 // Maybe this source was empty - try the next one.
                 nextSourceIndexPoint.source = indexPoint.source + 1;
