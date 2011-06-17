@@ -66,9 +66,7 @@
             
         BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
         
-        NSString *bookTitle = book.title;
-        
-        NSLog(@"Analysing book %@", bookTitle);
+        NSLog(@"Analysing book %@", book.title);
         
         EucBUpeBook *eucBook = [[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID];
         if(eucBook) {
@@ -97,7 +95,7 @@
             [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:self.bookID];
         }
         
-        NSLog(@"Analysing book %@, took %f seconds", bookTitle, CFAbsoluteTimeGetCurrent() - startTime);
+        NSLog(@"Analysing book %@, took %f seconds", book.title, CFAbsoluteTimeGetCurrent() - startTime);
 
         self.percentageComplete = 100;    
         self.operationSuccess = YES;    
