@@ -1416,7 +1416,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 				}
  
 				[overlay addSubview:blendView];
-
+                [blendView release];
 				
 				CFRelease(encodedString);
 			}
