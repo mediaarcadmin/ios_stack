@@ -11,11 +11,15 @@
 #import "BlioBookManager.h"
 #import "BlioBook.h"
 
+#import "NSString+BlioAdditions.h"
+#import <objc/runtime.h>
+
 @interface BlioEPubXPSDataProvider ()
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
 @property (nonatomic, retain) BlioXPSProvider *xpsProvider;
 @property (nonatomic, copy) NSString *ePubRootInXPS;
+@property (nonatomic, copy) NSString *title;
 
 @end
 
@@ -25,6 +29,7 @@
 @synthesize bookID;
 @synthesize xpsProvider;
 @synthesize ePubRootInXPS;
+@synthesize title;
 
 - (id)initWithWithBookID:(NSManagedObjectID *)aBookID
 {
@@ -40,6 +45,8 @@
             self.xpsProvider = [manager checkOutXPSProviderForBookWithID:aBookID];
         }
         
+        self.title = book.title;
+        
         if(!self.xpsProvider) {
             [self release];
             self = nil;
@@ -50,6 +57,7 @@
 
 - (void)dealloc
 {
+    self.title = nil;
     self.ePubRootInXPS = nil;
     if(self.xpsProvider) {
         self.xpsProvider = nil;
@@ -66,9 +74,21 @@
     NSData *ret = [self.xpsProvider dataForComponentAtPath:xpsPath];
     
 #if 0
+    
+#if TARGET_IPHONE_SIMULATOR
+    
+    // For debugging purposes, write out the decoded files to /tmp.
+    // The above #if stop this compiling  in checked in code (should be #if 0!)
+    // and on device builds ever.
+    
     NSFileManager *manager = [[NSFileManager alloc] init];
     
-    NSString *tempOutputXPSPath = [@"/tmp" stringByAppendingPathComponent:[NSString stringWithFormat:@"0x%p", self]];
+    NSString *tempOutputXPSPath = (NSString *)objc_getAssociatedObject(self, @"BlioEPubXPSDataProviderTmpPath");
+    if(!tempOutputXPSPath) {
+        tempOutputXPSPath = [@"/tmp" stringByAppendingPathComponent:[NSString uniqueStringWithBaseString:self.title]];
+        objc_setAssociatedObject(self, @"BlioEPubXPSDataProviderTmpPath", tempOutputXPSPath, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    
     NSString *pathInXPS = [path stringByDeletingLastPathComponent];
     NSString *tempOutputInnerDir;
     if(pathInXPS.length) {
@@ -82,6 +102,9 @@
     [ret writeToFile:fullTempOutputPath atomically:NO];
     
     [manager release];
+    
+#endif // TARGET_IPHONE_SIMULATOR
+    
 #endif
     
     return ret;

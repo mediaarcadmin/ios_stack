@@ -17,6 +17,7 @@
     BlioXPSProvider *xpsProvider;
     
     NSString *ePubRootInXPS;
+    NSString *title; // For debugging purposes.
 }
 
 - (id)initWithWithBookID:(NSManagedObjectID *)aBookID;
