@@ -694,7 +694,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             audioItemAccessibilityHint = NSLocalizedString(@"Starts audio playback.  While audio is playing, double tap again to stop.", @"Accessibility label for Book View Controller Play hint");
         } else {
             audioItemImage = [UIImage imageNamed:@"icon-noTTS.png"];
-            audioItemAccessibilityHint = NSLocalizedString(@"Select and double tap the book page instead to read with VoiceOver.", @"Accessibility label for Book View Controller Audio unavailable button hint");
+            audioItemAccessibilityHint = NSLocalizedString(@"Select and double tap the book page to read with VoiceOver.", @"Accessibility label for Book View Controller Audio unavailable button hint");
         }
         item = [[UIBarButtonItem alloc] initWithImage:audioItemImage
                                                 style:UIBarButtonItemStylePlain
@@ -2240,7 +2240,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
-	NSLog(@"%@%i", NSStringFromSelector(_cmd),finishedSpeaking);
+	//NSLog(@"%@%i", NSStringFromSelector(_cmd),finishedSpeaking);
 	if (finishedSpeaking) {
 		// Reached end of block.  Start on the next.
 		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager]; 
@@ -2251,7 +2251,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)speechSynthesizer:(AcapelaSpeech*)sender willSpeakWord:(NSRange)characterRange 
 				 ofString:(NSString*)string 
 {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+	//NSLog(@"%@", NSStringFromSelector(_cmd));
     if(characterRange.location + characterRange.length <= string.length) {
         NSUInteger wordOffset = [_acapelaAudioManager wordOffsetForCharacterRange:characterRange];
         
