@@ -73,7 +73,7 @@
     NSString *xpsPath = [self.ePubRootInXPS stringByAppendingPathComponent:path];
     NSData *ret = [self.xpsProvider dataForComponentAtPath:xpsPath];
     
-#if 1
+#if 0
     
 #if TARGET_IPHONE_SIMULATOR
     
