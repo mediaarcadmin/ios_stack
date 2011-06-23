@@ -7,13 +7,13 @@
 //
 
 #import "BlioStoreTabViewController.h"
-#import "BlioStoreFeaturedController.h"
-#import "BlioStoreCategoriesController.h"
-#import "BlioStoreSearchController.h"
+//#import "BlioStoreFeaturedController.h"
+//#import "BlioStoreCategoriesController.h"
+//#import "BlioStoreSearchController.h"
 #import "BlioStoreArchiveViewController.h"
 #import "BlioStoreWebsiteViewController.h"
-#import "BlioStoreFreeBooksViewController.h"
-#import "BlioStoreBookViewController.h"
+//#import "BlioStoreFreeBooksViewController.h"
+//#import "BlioStoreBookViewController.h"
 #import "BlioGetBooksImportViewController.h"
 
 #import "BlioSplitViewController.h"
@@ -52,6 +52,7 @@
         self.delegate = self;
         
         UIBarButtonItem *aDoneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") style:UIBarButtonItemStyleBordered target:self action:@selector(dismissTabView:)];        
+/*  
         
 //        BlioStoreFeaturedController* vc1 = [[BlioStoreFeaturedController alloc] init];
 //        UINavigationController* nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
@@ -112,7 +113,7 @@
 #endif		
 		
 		[vc1 release];
-		
+*/		
 		
 //        BlioStoreCategoriesController* vc2 = [[BlioStoreCategoriesController alloc] init];
 //		[vc2 setManagedObjectContext:self.managedObjectContext];
@@ -174,7 +175,7 @@
         NSArray* controllers = [NSArray arrayWithObjects:nc5, nc4, wrappedImportViewController, nil];
         self.viewControllers = controllers;
         
-        [nc1 release];
+//        [nc1 release];
 //        [nc2 release];
 //        [nc3 release];
         [nc4 release];
