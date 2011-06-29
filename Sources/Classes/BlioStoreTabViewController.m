@@ -51,10 +51,10 @@
         [storeArchiveViewController.navigationItem setRightBarButtonItem:aDoneButton];
         [storeArchiveViewController release];
                 
-        BlioStoreWebsiteViewController* storeWebsiteViewController = [[BlioStoreWebsiteViewController alloc] init];
-        UINavigationController* wrappedStoreWebsiteViewController = [[UINavigationController alloc] initWithRootViewController:storeWebsiteViewController];
-        [storeWebsiteViewController.navigationItem setRightBarButtonItem:aDoneButton];
-        [storeWebsiteViewController release];
+//        BlioStoreWebsiteViewController* storeWebsiteViewController = [[BlioStoreWebsiteViewController alloc] init];
+//        UINavigationController* wrappedStoreWebsiteViewController = [[UINavigationController alloc] initWithRootViewController:storeWebsiteViewController];
+//        [storeWebsiteViewController.navigationItem setRightBarButtonItem:aDoneButton];
+//        [storeWebsiteViewController release];
 
 		BlioGetBooksImportViewController* importViewController = [[BlioGetBooksImportViewController alloc] init];
 		importViewController.processingDelegate = self.processingDelegate;
@@ -62,10 +62,10 @@
         [importViewController.navigationItem setRightBarButtonItem:aDoneButton];
         [importViewController release];
 				
-        NSArray* controllers = [NSArray arrayWithObjects:wrappedStoreWebsiteViewController, wrappedStoreArchiveViewController, wrappedImportViewController, nil];
+        NSArray* controllers = [NSArray arrayWithObjects: wrappedStoreArchiveViewController, wrappedImportViewController, nil];
         self.viewControllers = controllers;
         
-        [wrappedStoreWebsiteViewController release];
+//        [wrappedStoreWebsiteViewController release];
         [wrappedStoreArchiveViewController release];
         [wrappedImportViewController release];
         [aDoneButton release];

@@ -111,7 +111,7 @@
 															 initWithFetchRequest:request
 															 managedObjectContext:moc
 															 sectionNameKeyPath:nil
-															 cacheName:nil];
+															 cacheName:@"BlioArchivedBooks"];
     [request release];
     
     [aFetchedResultsController setDelegate:self];
@@ -162,7 +162,8 @@
 		}
 		else {
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
+            if (viewHasAppearedBefore) [self requestLogin];
+            else [self performSelector:@selector(requestLogin) withObject:nil afterDelay:0.5f];
 		}		
 	}
 	else {
@@ -172,8 +173,12 @@
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles:nil];		
 	}
+    viewHasAppearedBefore = YES;
 }
 
+-(void)requestLogin {
+    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
