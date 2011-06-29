@@ -15,8 +15,6 @@
 #pragma mark -
 #pragma mark Initialization
 
-
-
 - (id)init
 {
 	self = [super init];
@@ -24,9 +22,12 @@
 	{
 		self.title = NSLocalizedString(@"About",@"\"About\" view controller title.");
 		// Get the marketing version from Info.plist.
-		NSString* version = (NSString*)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; // @"CFBundleVersion" for build number
-		//NSString* versionText = [NSString stringWithFormat:@"<center><p style=font-family:arial;font-size:50px;>Blio</center></p><center><p style=font-family:arial;font-size:35px;><i>Beta version %@</i></p></center><p>",version];  
-		NSString* versionText = [NSString stringWithFormat:@"<html><body style=\"margin:20px 30px;\"><center><p style=font-family:arial;font-size:40px;><strong>Blio</strong> | <i>Version %@</i></p><hr></center>",version];
+        NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+		NSString* version = (NSString*)[infoDict objectForKey:@"CFBundleShortVersionString"]; 
+        NSString* buildnum = (NSString*)[infoDict objectForKey:@"CFBundleVersion"];
+		//NSString* versionText = [NSString stringWithFormat:@"<html><body style=\"margin:20px 30px;\"><center><p style=font-family:arial;font-size:40px;><strong>Blio</strong> | <i>Version %@</i></p><hr></center>",version]; 
+		NSString* versionText = [NSString stringWithFormat:@"<html><body style=\"margin:20px 30px;\"><center><p style=font-family:arial;font-size:40px;><strong>Blio</strong><br style=font-family:arial;font-size:30px;><i>Version</i> %@ (%@)<hr></center>",version,buildnum];
+        
 		NSString* creditsText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/credits.html"] encoding:NSUTF8StringEncoding error:NULL];
 		NSString *resourcePath = [[[[NSBundle mainBundle] resourcePath]
 								   stringByReplacingOccurrencesOfString:@"/" withString:@"//"]
