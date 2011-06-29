@@ -27,18 +27,20 @@
 @implementation BlioBook
 
 // Dynamic properties (map to core data attributes)
-@dynamic title;
+@dynamic audiobook;
 @dynamic author;
-@dynamic progress;
-@dynamic processingState;
-@dynamic sourceID;
-@dynamic sourceSpecificID;
+@dynamic expirationDate;
 @dynamic layoutPageEquivalentCount;
 @dynamic libraryPosition;
-@dynamic audiobook;
+@dynamic progress;
+@dynamic processingState;
+@dynamic reflowRight;
+@dynamic sourceID;
+@dynamic sourceSpecificID;
+@dynamic title;
+@dynamic transactionType;
 @dynamic ttsRight;
 @dynamic ttsCapable;
-@dynamic reflowRight;
 
 - (void)dealloc {    
     [self flushCaches];

@@ -66,11 +66,11 @@
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
-	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID ISBN:nil productType:BlioProductTypeFull placeholderOnly:placeholderOnly];
+	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID ISBN:nil productType:BlioProductTypeFull transactionType:BlioTransactionTypeNotSpecified expirationDate:nil placeholderOnly:placeholderOnly];
 }
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID ISBN:(NSString*)anISBN productType:(BlioProductType)aProductType placeholderOnly:(BOOL)placeholderOnly {    
+			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID ISBN:(NSString*)anISBN productType:(BlioProductType)aProductType transactionType:(BlioTransactionType)aTransactionType expirationDate:(NSDate *)anExpirationDate placeholderOnly:(BOOL)placeholderOnly {    
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
     if (nil != moc) {
         
@@ -132,6 +132,8 @@
         [aBook setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
         [aBook setValue:sourceSpecificID forKey:@"sourceSpecificID"];
         [aBook setValue:[NSNumber numberWithInt:aProductType] forKey:@"productType"];
+        [aBook setValue:[NSNumber numberWithInt:aTransactionType] forKey:@"transactionType"];
+        [aBook setValue:anExpirationDate forKey:@"expirationDate"];
         if (anISBN) [aBook setValue:anISBN forKey:@"isbn"];
 		
 		if (sourceID == BlioBookSourceOnlineStore) {
