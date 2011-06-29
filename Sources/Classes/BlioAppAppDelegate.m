@@ -539,7 +539,10 @@ static void *background_init_thread(void * arg) {
     if (managedObjectModel != nil) {
         return managedObjectModel;
     }
-    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+//    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain]; 
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Blio" ofType:@"momd"];
+    NSURL *momURL = [NSURL fileURLWithPath:path];
+    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
     return managedObjectModel;
 }
 
@@ -558,10 +561,19 @@ static void *background_init_thread(void * arg) {
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSURL *storeUrl = [NSURL fileURLWithPath: [basePath stringByAppendingPathComponent: @"Blio.sqlite"]];
 	
+    // for automatic lightweight migration
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+
+    
 	NSError *error;
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error]) {
+    if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
         // Handle error
+        
+        NSLog(@"ERROR: persistent store was not added to Coordinator! Description: %@",[error localizedDescription]);
+        
         // Delete the current store and start again
         // TODO - this is just a demo convenience - you would not want to do this in real deployment
         NSError *fileError;

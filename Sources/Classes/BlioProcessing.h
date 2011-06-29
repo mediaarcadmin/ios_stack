@@ -29,6 +29,17 @@ typedef enum {
 	BlioProductTypePreview = 2
 } BlioProductType;
 
+typedef enum {
+	BlioTransactionTypeNotSpecified = 0,    // for books that do not come from the Store (e.g. imported)
+	BlioTransactionTypeSale = 1,            // Sale is the typical transaction
+	BlioTransactionTypePromotion = 2,       // Promotion books often come with device or are automatically added to a new account
+	BlioTransactionTypeTest = 3,            // Test books should theoretically never be seen (?)
+	BlioTransactionTypeLend = 4,            // borrowed books that have expiration date
+	BlioTransactionTypeFree = 5,            // free books from the store
+	BlioTransactionTypePreorder = 6,        // pre-order books are conceptually placeholders until the book is released (and subsequently purchased)
+	BlioTransactionTypeSaleFromPreorder = 7 // equivalent to Sale books but were originally pre-orders
+} BlioTransactionType;
+
 static NSString * const BlioProcessingOperationStartNotification = @"BlioProcessingOperationStartNotification";
 static NSString * const BlioProcessingOperationProgressNotification = @"BlioProcessingOperationProgressNotification";
 static NSString * const BlioProcessingOperationCompleteNotification = @"BlioProcessingOperationCompleteNotification";
@@ -82,7 +93,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
-			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID ISBN:(NSString*)anISBN productType:(BlioProductType)aProductType  placeholderOnly:(BOOL)placeholderOnly;
+			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID ISBN:(NSString*)anISBN productType:(BlioProductType)aProductType transactionType:(BlioTransactionType)aTransactionType expirationDate:(NSDate*)anExpirationDate placeholderOnly:(BOOL)placeholderOnly;
 -(void) enqueueBook:(BlioBook*)aBook;
 -(void) enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue;
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
