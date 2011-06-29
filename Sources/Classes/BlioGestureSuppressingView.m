@@ -30,7 +30,9 @@
     if (self) {
         // Initialization code
         suppressingGestureRecognizer = [[BlioSuppressingGestureRecognizer alloc] initWithTarget:nil action:nil];
-        suppressingGestureRecognizer.allowedGestureRecognizers = [NSArray arrayWithObjects:[UITapGestureRecognizer class], nil];
+        suppressingGestureRecognizer.allowedGestureRecognizers = [NSArray arrayWithObjects:@"UITapGestureRecognizer",
+                                                                  @"THTouchGestureRecognizer",
+                                                                  nil];
         [self addGestureRecognizer:suppressingGestureRecognizer];
         
     }
@@ -56,8 +58,8 @@
         
         BOOL match = NO;
         
-        for (Class recognizerClass in self.allowedGestureRecognizers) {
-            if ([preventedGestureRecognizer isKindOfClass:recognizerClass]) {
+        for (NSString *recognizerClass in self.allowedGestureRecognizers) {
+            if ([preventedGestureRecognizer isKindOfClass:NSClassFromString(recognizerClass)]) {
                 match = YES;
                 break;
             }

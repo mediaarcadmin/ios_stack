@@ -1051,11 +1051,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIApplication *application = [UIApplication sharedApplication];
         //if(self.toolbarsVisibleAfterAppearance) {
             if([application isStatusBarHidden]) {
-				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
-                    [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-				else
-                    [(id)application setStatusBarHidden:NO animated:YES]; // typecast as id to mask deprecation warnings.
-                
+                [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
             }
         
         if([self.bookView respondsToSelector:@selector(toolbarsWillShow)]) {
@@ -1152,10 +1148,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                       animated:YES];
             }                        
             if(_returnToStatusBarHidden != application.isStatusBarHidden){
-				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
-                    [application setStatusBarHidden:_returnToStatusBarHidden withAnimation:UIStatusBarAnimationFade];
-				else 
-                    [(id)application setStatusBarHidden:_returnToStatusBarHidden animated:YES]; // typecast as id to mask deprecation warnings.							
+                [application setStatusBarHidden:_returnToStatusBarHidden withAnimation:UIStatusBarAnimationFade];
             }           
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleDefault;
@@ -1284,18 +1277,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     _fadeState = BookViewControlleUIFadeStateNone;
 }
-
-
-- (void)_fadeWillStart
-{
-    if(_fadeState == BookViewControlleUIFadeStateFadingOut) {
-		if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
-            [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-		else
-            [(id)[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
-    } 
-}
-
+ 
 - (void)showToolbars
 {
     if (![self toolbarsVisible]) {
@@ -1309,7 +1291,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)delayedToggleToolbars:(NSNumber *)toolbarStateNumber
 {
-	
     BlioLibraryToolbarsState toolbarState = [toolbarStateNumber integerValue];
  
     if(_fadeState != BookViewControlleUIFadeStateNone) {
@@ -1342,10 +1323,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateStatusBarVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
-			if ([[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
-                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-			else 
-                [(id)[UIApplication sharedApplication] setStatusBarHidden:NO animated:NO]; // typecast as id to mask deprecation warnings.							
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
 				[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
 			} else {
@@ -1378,17 +1356,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [UIView beginAnimations:@"ToolbarsFade" context:nil];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(_fadeDidEnd)];
-    
-    // Set the status bar settings we do want to animate
-    switch (toolbarState) {
-        case kBlioLibraryToolbarsStateStatusBarVisible:
-        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
-            break;
-        default:
-            [UIView setAnimationWillStartSelector:@selector(_fadeWillStart)];
-            break;
-    }
-    
+        
     switch (toolbarState) {
         case kBlioLibraryToolbarsStateNoneVisible:
         case kBlioLibraryToolbarsStateStatusBarVisible:
@@ -1443,6 +1411,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     [UIView commitAnimations];   
+    
+    // Set the status bar settings we do want to animate
+    switch (toolbarState) {
+        case kBlioLibraryToolbarsStateStatusBarVisible:
+        case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
+            break;
+        default:
+            [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+            break;
+    }
+    
+    _toolbarState = toolbarState;
         
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
@@ -2037,10 +2017,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)setToolbarsForModalOverlayActive:(BOOL)active {
     if (active) {
-        [self hideToolbarsAndStatusBar:NO];
-        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        _beforeModalOverlayToolbarState = _toolbarState;
+        [self toggleToolbars:kBlioLibraryToolbarsStateStatusBarVisible];
     } else {
-        [self showToolbars];
+        [self toggleToolbars:_beforeModalOverlayToolbarState];
     }
 }
 

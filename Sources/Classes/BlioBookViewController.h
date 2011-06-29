@@ -126,6 +126,9 @@ typedef enum {
     NSManagedObjectContext *_managedObjectContext;
     BOOL rotationLocked;
     
+    NSUInteger _toolbarState;
+    NSUInteger _beforeModalOverlayToolbarState;
+    
     BlioBookSearchViewController *searchViewController;
     id <BlioCoverViewDelegate> delegate;
     BlioCoverView *coverView;
