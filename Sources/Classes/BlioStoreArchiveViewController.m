@@ -163,7 +163,7 @@
 		else {
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
             if (viewHasAppearedBefore) [self requestLogin];
-            else [self performSelector:@selector(requestLogin) withObject:nil afterDelay:0.5f];
+            else [self performSelector:@selector(requestLogin) withObject:nil afterDelay:1.0f];
 		}		
 	}
 	else {
