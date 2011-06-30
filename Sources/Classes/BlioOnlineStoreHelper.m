@@ -58,7 +58,6 @@
 		contentCafeDelegate.delegate = self;
 		downloadNewBooks = YES;
 		forceLoginDisplayUponFailure = NO;
-		
 #ifdef TEST_MODE
 		self.storeURL = @"http://mobile.theretailerplace.net/";
 #else	
@@ -262,8 +261,9 @@
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
 			}
-			else if ([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull) {
-
+			else if (([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull)
+                     || ([[preExistingBook valueForKey:@"transactionType"] intValue] == BlioTransactionTypeLend && ([bookOwnershipInfo.ProductTypeId intValue] == BlioTransactionTypeSale || [bookOwnershipInfo.ProductTypeId intValue] == BlioTransactionTypeSaleFromPreorder || [bookOwnershipInfo.ProductTypeId intValue] == BlioTransactionTypePromotion || [bookOwnershipInfo.ProductTypeId intValue] == BlioTransactionTypeFree))) {
+                
 				[[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
@@ -316,15 +316,36 @@
 				}
 				else downloadNewBooks = NO;
 				BlioProductType aProductType = BlioProductTypeFull;
+                BlioTransactionType aTransactionType = BlioTransactionTypeNotSpecified;
+                NSDate * anExpirationDate = nil;
 				if (_BookOwnershipInfoArray) {
 					for (BookVault_BookOwnershipInfo * bookOwnershipInfo in _BookOwnershipInfoArray) {
 						if ([[productItem ISBN] isEqualToString:bookOwnershipInfo.ISBN]) {
-							aProductType = [bookOwnershipInfo.ProductTypeId intValue];
+							if (bookOwnershipInfo.ProductTypeId) aProductType = [bookOwnershipInfo.ProductTypeId intValue];
+							if (bookOwnershipInfo.TransactionType) {
+                                if ([bookOwnershipInfo.TransactionType isEqualToString:@"SAL"]) aTransactionType = BlioTransactionTypeSale;
+                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"PRO"]) aTransactionType = BlioTransactionTypePromotion;
+                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"TST"]) aTransactionType = BlioTransactionTypeTest;
+                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"LND"]) aTransactionType = BlioTransactionTypeLend;
+                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"FRE"]) aTransactionType = BlioTransactionTypeFree;
+                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"PRE"]) aTransactionType = BlioTransactionTypePreorder;
+                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"PSL"]) aTransactionType = BlioTransactionTypeSaleFromPreorder;
+                            }
+                            NSLog(@"bookOwnershipInfo.ExpirationDate: %@",bookOwnershipInfo.ExpirationDate);
+                            if (bookOwnershipInfo.ExpirationDate) {
+                                NSString *dateFormat = @"yyyy-MM-dd'T'HH:mm:ss";
+                                NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+                                [formatter setDateFormat: dateFormat];
+                                anExpirationDate = [formatter dateFromString:bookOwnershipInfo.ExpirationDate];
+                            }                
+
 							break;
 						}
 					}
 				}
 				NSLog(@"aProductType: %i",aProductType);
+				NSLog(@"aTransactionType: %i",aTransactionType);
+				NSLog(@"anExpirationDate: %@",anExpirationDate);
 				[[BlioStoreManager sharedInstance].processingDelegate enqueueBookWithTitle:title 
 																				   authors:authors   
 																				 coverPath:coverURL
@@ -337,7 +358,9 @@
 																		  sourceSpecificID:[productItem BTKey]
 																					  ISBN:[productItem ISBN]
 																			   productType:aProductType
-																		   placeholderOnly:(!downloadNewBooks)
+                                                                           transactionType:aTransactionType 
+                                                                            expirationDate:anExpirationDate
+                                                                           placeholderOnly:(!downloadNewBooks)
 				 ];
 			}
 			else {
@@ -500,9 +523,17 @@
     NSString * platform = @"iPhone";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) platform = @"iPad";
     NSString* version = (NSString*)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; // @"CFBundleVersion" for build number
-
-//	downloadRequest.clientInfo = @"<ClientInfo><Platform Id=\"iPhone\" Version=\"#.#\"/><Device Id=\"XXX\" ScreenWidth=\"####\" ScreenHeight=\"####\"/><BookVault SourceVersion=\"#.#\" PreferredFormat=\"XXX\"/><OEM Id=\"XXXX\"/></ClientInfo>";
+    NSString * model = [[UIDevice currentDevice] model];
+    NSString * OSType = [[UIDevice currentDevice] systemName];
+    NSString * OSVersion = [[UIDevice currentDevice] systemVersion];
+    NSInteger screenWidth = [[UIScreen mainScreen] bounds].size.width;
+    NSInteger screenHeight = [[UIScreen mainScreen] bounds].size.height;
+    NSString * preferredFormat = @"XPS-EPUB"; // temporary value; is not currently honored.
+    
 	downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Platform Id=\"%@\" Version=\"%@\"/></ClientInfo>",platform,version];    
+	downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Partner Id=\"Apple\"/><Platform Id=\"%@\" Version=\"%@\"/><Device Model=\"%@\" OsType=\"%@\" OsVersion = \"%@\" ScreenWidth=\"%i\" ScreenHeight=\"%i\"/><BookInfo PreferredFormat=\"%@\"/></ClientInfo>",platform,version,model,OSType,OSVersion,screenWidth,screenHeight,preferredFormat];
+    NSLog(@"%@",downloadRequest.clientInfo);
+    
 //	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenUsingParameters:downloadRequest];
 //	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenExUsingParameters:downloadRequest];
 	BookVaultSoapResponse* response = [vaultBinding RequestClientDownloadWithTokenExUsingParameters:downloadRequest];

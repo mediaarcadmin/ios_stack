@@ -98,15 +98,17 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 }
 
 // Core data attribute-backed dynamic properties
-@property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *author;
-@property (nonatomic, retain) NSNumber *progress;
-@property (nonatomic, retain) NSNumber *processingState;
-@property (nonatomic, retain) NSNumber *sourceID;
-@property (nonatomic, retain) NSString *sourceSpecificID;
+@property (nonatomic, retain) NSDate *expirationDate;
 @property (nonatomic, retain) NSNumber *layoutPageEquivalentCount;
 @property (nonatomic, retain) NSNumber *libraryPosition;
+@property (nonatomic, retain) NSNumber *progress;
+@property (nonatomic, retain) NSNumber *processingState;
 @property (nonatomic, retain) NSNumber *reflowRight;
+@property (nonatomic, retain) NSNumber *sourceID;
+@property (nonatomic, retain) NSString *sourceSpecificID;
+@property (nonatomic, retain) NSString *title;
+@property (nonatomic, retain) NSNumber *transactionType;
 
 // the following two attributes are used to quickly calculate the number of TTS-compatible books
 @property (nonatomic, retain) NSNumber *audiobook;

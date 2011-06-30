@@ -373,11 +373,20 @@ static void *background_init_thread(void * arg) {
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 			}
 			else {
+                if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLoginOccurred"]) {
+                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Your Account",@"\"Your Account\" alert message title") 
+                                                 message:NSLocalizedStringWithDefaultValue(@"LOGIN_GUIDANCE_ALERT",nil,[NSBundle mainBundle],@"To log in to your Blio account, go to your Archive.",@"Alert message shown to end-user upon launch when a user has never logged in.")
+                                                delegate:self 
+                                       cancelButtonTitle:nil
+                                       otherButtonTitles:NSLocalizedString(@"Cancel",@"\"Cancel\" button title"),NSLocalizedString(@"Go",@"\"Go\" button title"),nil];	
+                }
+                /*
 				if ([BlioStoreManager sharedInstance].didOpenWebStore) {
 					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 					[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 				}				
 				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+                */
 			}
 		}
 		else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
@@ -395,12 +404,18 @@ static void *background_init_thread(void * arg) {
     }
     self.delayedURLOpens = nil;
 	
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) {
+    /*
+	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLaunchLoginScreenShown"]) {
 		[BlioStoreManager sharedInstance].initialLoginCheckFinished = NO;
-		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"];
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FirstLaunchLoginScreenShown"];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
-	}	
+//		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
+        
+        // Welcome Screen has been temporarily changed to a login screen to meet Apple's requirements.
+        
+		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+	}
+    */
 }
 
 -(void)loginDismissed:(NSNotification*)note {
@@ -539,7 +554,10 @@ static void *background_init_thread(void * arg) {
     if (managedObjectModel != nil) {
         return managedObjectModel;
     }
-    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+//    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain]; 
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Blio" ofType:@"momd"];
+    NSURL *momURL = [NSURL fileURLWithPath:path];
+    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
     return managedObjectModel;
 }
 
@@ -558,10 +576,19 @@ static void *background_init_thread(void * arg) {
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSURL *storeUrl = [NSURL fileURLWithPath: [basePath stringByAppendingPathComponent: @"Blio.sqlite"]];
 	
+    // for automatic lightweight migration
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+
+    
 	NSError *error;
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error]) {
+    if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
         // Handle error
+        
+        NSLog(@"ERROR: persistent store was not added to Coordinator! Description: %@",[error localizedDescription]);
+        
         // Delete the current store and start again
         // TODO - this is just a demo convenience - you would not want to do this in real deployment
         NSError *fileError;
@@ -639,6 +666,18 @@ static void *background_init_thread(void * arg) {
             [defaults synchronize];
         }
     }
+}
+
+#pragma mark - 
+#pragma mark UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+	if (buttonIndex == 0) {
+
+	}
+	else if (buttonIndex == 1) {
+        [self.libraryController showStore:alertView];
+	}
 }
 
 @end

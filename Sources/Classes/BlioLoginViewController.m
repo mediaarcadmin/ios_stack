@@ -269,7 +269,8 @@
 	
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 2;
+//	return 2; // temporarily disabling "Create Account" to meet Apple's requirements.
+    return 1;
 }
 	
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

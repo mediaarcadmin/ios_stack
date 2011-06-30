@@ -27,6 +27,7 @@ static const NSInteger kBlioStoreMyVaultTag = 3;
 	NSString * noBooksText;
 	NSString * loadingBooksText;
 	NSInteger userNum;
+    BOOL viewHasAppearedBefore;
 }
 @property (nonatomic, assign) id <BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) NSFetchedResultsController* fetchedResultsController;
@@ -37,4 +38,5 @@ static const NSInteger kBlioStoreMyVaultTag = 3;
 
 -(void)calculateMaxLayoutPageEquivalentCount;
 -(void)fetchResults;
+-(void)requestLogin;
 @end
