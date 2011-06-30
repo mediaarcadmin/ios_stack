@@ -395,11 +395,16 @@ static void *background_init_thread(void * arg) {
     }
     self.delayedURLOpens = nil;
 	
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) {
+    
+	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLaunchLoginScreenShown"]) {
 		[BlioStoreManager sharedInstance].initialLoginCheckFinished = NO;
-		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"];
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FirstLaunchLoginScreenShown"];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
+//		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
+        
+        // Welcome Screen has been temporarily changed to a login screen to meet Apple's requirements.
+        
+		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 	}	
 }
 
