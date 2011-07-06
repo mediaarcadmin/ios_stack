@@ -799,7 +799,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 }
 
-- (void)pageTurningViewDidEndAnimation:(EucPageTurningView *)aPageTurningView
+- (void)pageTurningViewDidEndAnimating:(EucPageTurningView *)aPageTurningView
 {
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
