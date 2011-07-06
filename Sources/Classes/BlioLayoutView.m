@@ -239,9 +239,9 @@
     }
     
     if(newSuperview && !self.pageTurningView) {
-        EucPageTurningView *aPageTurningView = [[EucPageTurningView alloc] initWithFrame:self.bounds];
+        EucIndexBasedPageTurningView *aPageTurningView = [[EucIndexBasedPageTurningView alloc] initWithFrame:self.bounds];
         aPageTurningView.delegate = self;
-        aPageTurningView.bitmapDataSource = self;
+        aPageTurningView.indexBasedDataSource = self;
         aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
 		aPageTurningView.vibratesOnInvalidTurn = NO;
@@ -300,9 +300,9 @@
 			[aSelector release]; 
 		}
     } else {
-        EucPageTurningView *aPageTurningView = self.pageTurningView;
+        EucIndexBasedPageTurningView *aPageTurningView = self.pageTurningView;
         if(aPageTurningView) {
-            aPageTurningView.bitmapDataSource = nil;
+            aPageTurningView.dataSource = nil;
             aPageTurningView.delegate = nil;
             [aPageTurningView removeFromSuperview];
             self.pageTurningView = nil;
@@ -399,7 +399,7 @@
 }
 
 #pragma mark -
-#pragma mark EucPageTurningViewBitmapDataSource
+#pragma mark EucIndexBasedPageTurningViewDataSource
 
 - (CGRect)pageTurningView:(EucPageTurningView *)aPageTurningView contentRectForPageAtIndex:(NSUInteger)index {
     return [self cropForPage:index + 1];
@@ -772,7 +772,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)aPageTurningView
 {
-	NSUInteger pageIndex = aPageTurningView.focusedPageIndex;
+	NSUInteger pageIndex = ((EucIndexBasedPageTurningView *)aPageTurningView).focusedPageIndex;
     if(self.pageNumber != pageIndex + 1) {
 		if (!suppressHistoryAfterTurn) {
 			[self pushCurrentBookmarkPoint];
@@ -799,17 +799,18 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 }
 
-- (void)pageTurningViewDidEndAnimating:(EucPageTurningView *)aPageTurningView
+- (void)pageTurningViewDidEndAnimating:(EucPageTurningView *)aPageTurningViewIn
 {
+    EucIndexBasedPageTurningView *aPageTurningView = (EucIndexBasedPageTurningView *)aPageTurningViewIn;
+
     self.selector.selectionDisabled = NO;
     pageViewIsTurning = NO;
 	suppressHistoryAfterTurn = NO;
-    
-	
+    	
     if(self.temporaryHighlightRange) {
 		NSInteger targetIndex = self.temporaryHighlightRange.startPoint.layoutPage - 1;
 		
-        if((self.pageTurningView.leftPageIndex == targetIndex) || (self.pageTurningView.rightPageIndex == targetIndex)) {
+        if((aPageTurningView.leftPageIndex == targetIndex) || (aPageTurningView.rightPageIndex == targetIndex)) {
             EucSelectorRange *range = [self selectorRangeFromBookmarkRange:self.temporaryHighlightRange];
 			[self.selector temporarilyHighlightSelectorRange:range animated:YES];
         }
@@ -1290,7 +1291,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)updatePositionedOverlayContexts
 {
-    EucPageTurningView *aPageTurningView = self.pageTurningView;
+    EucIndexBasedPageTurningView *aPageTurningView = self.pageTurningView;
     NSUInteger leftPageIndex = aPageTurningView.leftPageIndex;
     if(leftPageIndex != NSUIntegerMax) {
         [self updatePositionedOverlayContextsForPageIndex:leftPageIndex];

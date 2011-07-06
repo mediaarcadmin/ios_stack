@@ -14,15 +14,14 @@
 #import <libEucalyptus/EucSelector.h>
 #import "BlioLayoutDataSource.h"
 #import "BlioXPSProvider.h"
-#import <libEucalyptus/EucPageTurningView.h>
-#import <libEucalyptus/EucPageTurningViewIndexBasedAdaptor.h>
+#import <libEucalyptus/EucIndexBasedPageTurningView.h>
 #import <libEucalyptus/THAccessibilityElement.h>
 
 @class BlioGestureSuppressingView;
 
-@interface BlioLayoutView : BlioSelectableBookView <THAccessibilityElementDelegate, EucPageTurningViewDelegate, EucPageTurningViewIndexBasedAdaptorDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate> {
+@interface BlioLayoutView : BlioSelectableBookView <THAccessibilityElementDelegate, EucPageTurningViewDelegate, EucIndexBasedPageTurningViewDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate> {
     NSManagedObjectID *bookID;
-    EucPageTurningView *pageTurningView;
+    EucIndexBasedPageTurningView *pageTurningView;
     UIImage *pageTexture;
     BOOL pageTextureIsDark;
     
@@ -69,7 +68,7 @@
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
-@property (nonatomic, retain) EucPageTurningView *pageTurningView;
+@property (nonatomic, retain) EucIndexBasedPageTurningView *pageTurningView;
 
 @property (nonatomic, retain) BlioTextFlow *textFlow;
 @property (nonatomic, retain) EucSelector *selector;
