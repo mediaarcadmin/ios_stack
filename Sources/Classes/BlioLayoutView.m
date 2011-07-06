@@ -465,6 +465,11 @@
     return description;
 }
 
+- (NSUInteger)pageTurningViewPageCount:(EucPageTurningView *)pageTurningView
+{
+    return self.pageCount;
+}
+
 #pragma mark -
 #pragma mark Visual Properties
 
@@ -721,7 +726,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     
 	BOOL isOnRight = YES;
 	if (self.pageTurningView.isTwoUp) {
-		BOOL rightIsEven = !self.pageTurningView.oddPagesOnRight;
+		BOOL rightIsEven = YES;
 		BOOL indexIsEven = (pageIndex % 2 == 0);
 		if (rightIsEven != indexIsEven) {
 			isOnRight = NO;

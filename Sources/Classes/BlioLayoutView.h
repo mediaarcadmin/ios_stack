@@ -15,11 +15,12 @@
 #import "BlioLayoutDataSource.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucPageTurningView.h>
+#import <libEucalyptus/EucPageTurningViewIndexBasedAdaptor.h>
 #import <libEucalyptus/THAccessibilityElement.h>
 
 @class BlioGestureSuppressingView;
 
-@interface BlioLayoutView : BlioSelectableBookView <THAccessibilityElementDelegate, EucPageTurningViewDelegate, EucPageTurningViewBitmapDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate> {
+@interface BlioLayoutView : BlioSelectableBookView <THAccessibilityElementDelegate, EucPageTurningViewDelegate, EucPageTurningViewIndexBasedAdaptorDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate> {
     NSManagedObjectID *bookID;
     EucPageTurningView *pageTurningView;
     UIImage *pageTexture;
