@@ -81,7 +81,8 @@
                 }
                 
                 [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:NSKeyValueObservingOptionInitial context:NULL];
-                
+                [_eucBookView addObserver:self forKeyPath:@"selector.trackingStage" options:0 context:NULL];
+
                 [self addSubview:_eucBookView];
             }
 			
@@ -98,6 +99,7 @@
 
 - (void)dealloc
 {
+    [_eucBookView removeObserver:self forKeyPath:@"selector.trackingStage"];
     [_eucBookView removeObserver:self forKeyPath:@"currentPageIndexPoint"];
     [_eucBookView release];
      
@@ -122,7 +124,11 @@
 {
     if([keyPath isEqualToString:@"currentPageIndexPoint"]) {
         self.currentBookmarkPoint = [self bookmarkPointFromBookPageIndexPoint:_eucBookView.currentPageIndexPoint];
-    } 
+    } else if([keyPath isEqualToString:@"selector.trackingStage"]) {
+        if(_eucBookView.selector.trackingStage == EucSelectorTrackingStageFirstSelection) {
+            [self.delegate hideToolbars];
+        }
+    }
 }
 
 - (BOOL)wantsTouchesSniffed 
@@ -487,9 +493,18 @@
     return !handled;
 }
 
-- (void)bookView:(EucBookView *)bookView unhandledTapAtPoint:(CGPoint)point
+- (void)toggleToolbarsIfNoSelection
 {
-    [self.delegate toggleToolbars];
+    if(!self.selector.selectedRange) {
+        [self.delegate toggleToolbars];
+    }
+}
+
+- (void)bookView:(EucBookView *)bookView unhandledTapAtPoint:(CGPoint)point{
+    if(!self.selector.selectedRange) {
+        // Wait until the next event look cycle in case this is a click that causes something to be selected.
+        [self performSelector:@selector(toggleToolbarsIfNoSelection) withObject:nil afterDelay:0];
+    } 
 }
 
 #pragma mark -

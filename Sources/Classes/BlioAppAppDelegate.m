@@ -374,7 +374,7 @@ static void *background_init_thread(void * arg) {
 			}
 			else {
                 if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLoginOccurred"]) {
-                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention...\" alert message title") 
+                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Your Account",@"\"Your Account\" alert message title") 
                                                  message:NSLocalizedStringWithDefaultValue(@"LOGIN_GUIDANCE_ALERT",nil,[NSBundle mainBundle],@"To log in to your Blio account, go to your Archive.",@"Alert message shown to end-user upon launch when a user has never logged in.")
                                                 delegate:self 
                                        cancelButtonTitle:nil
