@@ -337,7 +337,11 @@
 						pthread_mutex_unlock( &scanningMutex );
 						[NSThread exit];
 					}
-					if (importableBook && !importableBook.isDRM && [[NSFileManager defaultManager] fileExistsAtPath:importableBook.filePath]) {
+#ifdef TEST_MODE
+				if (importableBook && [[NSFileManager defaultManager] fileExistsAtPath:importableBook.filePath]) {
+#else			
+				if (importableBook && !importableBook.isDRM && [[NSFileManager defaultManager] fileExistsAtPath:importableBook.filePath]) {
+#endif				
 						NSLog(@"adding importableBook: %@ to array...",importableBook.fileName);
 						[self.importableBooks addObject:importableBook];
 						[[NSNotificationCenter defaultCenter] postNotificationName:BlioFileSharingScanUpdate object:self];
@@ -414,11 +418,19 @@
         if(!ePubUnzipHandle) {
             NSLog(@"ERROR: Could not open ePub file, %@; cannot import!",importableBook.fileName);
         } else {
+#ifdef TEST_MODE
             if(unzLocateFile(ePubUnzipHandle, "META-INF/rights.xml", 1) != UNZ_END_OF_LIST_OF_FILE || unzLocateFile(ePubUnzipHandle, "META-INF/encryption.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
-                NSLog(@"Rights/encryption file exists for ePub file, %@; cannot import!", importableBook.fileName);
+                NSLog(@"Rights/encryption file exists for ePub file, %@; will import anyways in test mode...", importableBook.fileName);
                 importableBook.isDRM = YES;
                 toReturn = importableBook;
-            } else {
+            }{
+#else			
+				if(unzLocateFile(ePubUnzipHandle, "META-INF/rights.xml", 1) != UNZ_END_OF_LIST_OF_FILE || unzLocateFile(ePubUnzipHandle, "META-INF/encryption.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
+					NSLog(@"Rights/encryption file exists for ePub file, %@; cannot import!", importableBook.fileName);
+					importableBook.isDRM = YES;
+					toReturn = importableBook;
+				} else {
+#endif				
                 NSString *containerPath = @"META-INF/container.xml";
                 NSData *containerXML = [self copyDataForFile:containerPath inUnzFile:ePubUnzipHandle];
                 if(!containerXML) {
@@ -471,11 +483,20 @@
             NSString * localDRMPath = BlioXPSKNFBDRMHeaderFile;
             if ([[localDRMPath substringToIndex:1] isEqualToString:@"/"]) localDRMPath = [localDRMPath substringFromIndex:1];
             NSLog(@"Checking for XPS DRM: %@, %@", importableBook.fileName, localDRMPath);
+			
+#ifdef TEST_MODE
             if(unzLocateFile(xpsUnzipHandle, [localDRMPath UTF8String], 1) != UNZ_END_OF_LIST_OF_FILE) {
                 NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",importableBook.fileName);
                 importableBook.isDRM = YES;
                 toReturn = importableBook;
-            } else {
+            } {
+#else			
+				if(unzLocateFile(xpsUnzipHandle, [localDRMPath UTF8String], 1) != UNZ_END_OF_LIST_OF_FILE) {
+					NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",importableBook.fileName);
+					importableBook.isDRM = YES;
+					toReturn = importableBook;
+				} else {
+#endif							
                 NSData *KNFBMetadataXML = [self copyDataForFile:BlioXPSKNFBMetadataFile inUnzFile:xpsUnzipHandle];
                 if(KNFBMetadataXML) {
                     NSXMLParser *KNFBMetaDataParser = [[NSXMLParser alloc] initWithData:KNFBMetadataXML];
@@ -582,7 +603,11 @@
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	BlioImportableBook * importableBook = [BlioImportManager importableBookFromFilePath:aFilePath];
 	
+	
 	if (importableBook.isDRM) {
+#ifdef TEST_MODE
+		NSLog(@"Importable Book is DRMed but still processing in test mode...");
+#else			
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Book Protected",@"\"Book Protected\" alert message title")
 									 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"IMPORTABLE_BOOK_HAS_DRM",nil,[NSBundle mainBundle],@"The file %@ will not be imported because it is copy-protected.",@"Alert message informing the end-user that importing of book from another application will not occur because DRM was found."),importableBook.fileName]
 									delegate:nil 
@@ -594,7 +619,9 @@
 		}
 		else NSLog(@"Successfully deleted DRM-ed file %@ in the Documents/Inbox Directory.", importableBook.fileName);		
 		return;
+#endif
 	}
+	
 	[self performSelectorOnMainThread:@selector(importBook:) withObject:importableBook waitUntilDone:NO];
 	[pool drain];
 }

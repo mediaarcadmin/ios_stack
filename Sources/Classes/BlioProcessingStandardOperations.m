@@ -196,8 +196,13 @@
 		[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:BlioManifestEntryPathKey];
 		[self setBookManifestValue:manifestEntry forKey:BlioManifestDrmHeaderKey];
 	}
-	
-	if ([[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceOnlineStore && [[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceLocalBundleDRM) {
+	BOOL isValidSource = NO;
+#ifdef TEST_MODE
+    isValidSource = ([[self getBookValueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore || [[self getBookValueForKey:@"sourceID"] intValue] == BlioBookSourceLocalBundleDRM || [[self getBookValueForKey:@"sourceID"] intValue] == BlioBookSourceFileSharing);
+#else
+    isValidSource = ([[self getBookValueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore || [[self getBookValueForKey:@"sourceID"] intValue] == BlioBookSourceLocalBundleDRM);
+#endif
+	if (!isValidSource) {
 		NSLog(@"ERROR: Title (%@) is not an online store title!",[self getBookValueForKey:@"title"]);
 		NSLog(@"xpsFilename: %@", [self getBookManifestPathForKey:BlioManifestXPSKey]);
 		// TODO: remove the following two lines for final version (we're bypassing for now since Three Little Pigs doesn't need a license)
@@ -219,7 +224,7 @@
 		[self cancel];
 	}
 
-	if ([[self getBookValueForKey:@"userNum"] intValue] != [[BlioStoreManager sharedInstance] currentUserNum] && [[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceLocalBundleDRM) {  
+	if ([[self getBookValueForKey:@"userNum"] intValue] != [[BlioStoreManager sharedInstance] currentUserNum] && [[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceLocalBundleDRM && [[self getBookValueForKey:@"sourceID"] intValue] != BlioBookSourceFileSharing) {  
 		NSLog(@"Book userNum and currentUserNum do not match! Cancelling BlioProcessingLicenseAcquisitionOperation...");
 		NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
 		[userInfo setObject:self.bookID forKey:@"bookID"];
