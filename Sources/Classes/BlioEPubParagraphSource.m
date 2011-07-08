@@ -225,12 +225,24 @@
     EucBookPageIndexPoint *indexPoint = [self _indexPointFromBookmarkPoint:bookmarkPoint];
     NSString *bestUuid = nil;
     {
-        for(EucBookNavPoint *navPoint in self.bUpeBook.navPoints) {
-            EucBookPageIndexPoint *thisIndexPoint = [self.bUpeBook indexPointForUuid:navPoint.uuid];
-            if([thisIndexPoint compare:indexPoint] != NSOrderedDescending) {
-                bestUuid = navPoint.uuid;
+        EucBookNavPoint *bestNavPoint = nil;
+        
+        EucBookPageIndexPoint *currentIndexPoint = indexPoint;
+        EucBookPageIndexPoint *newIndexPoint = nil;
+        
+        EucBUpeBook *book = self.bUpeBook;
+        
+        for(EucBookNavPoint *navPoint in book.navPoints) {
+            EucBookPageIndexPoint *prospectiveNewIndexPoint = [book indexPointForUuid:navPoint.uuid];
+            if([currentIndexPoint compare:prospectiveNewIndexPoint] == NSOrderedDescending) {
+                if(!newIndexPoint || [prospectiveNewIndexPoint compare:newIndexPoint] == NSOrderedDescending) {
+                    newIndexPoint = prospectiveNewIndexPoint;
+                    bestNavPoint = navPoint;
+                }
             }
         }
+        
+        bestUuid = bestNavPoint.uuid;
     }
     return bestUuid;
 }
