@@ -48,6 +48,10 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
+            argument = "fdsfdsfdsfdsfdsfdsfdsfds"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-THShouldLog"
             isEnabled = "YES">
          </CommandLineArgument>
@@ -61,6 +65,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "YES"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "ffds"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
