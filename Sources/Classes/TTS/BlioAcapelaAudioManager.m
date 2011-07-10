@@ -165,8 +165,9 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
     }
 
     CFIndex stringLength = CFAttributedStringGetLength(stringWithWordOffsets);
-    // Remove the trailing space we just added in the last iteration of the loop.
-    if(stringLength) {
+    // Remove the trailing space we just added in the last iteration of the loop,
+    // Unless the stirng would be, by doing so, completly empty.
+    if(stringLength > 1) {
         CFAttributedStringReplaceString(stringWithWordOffsets, CFRangeMake(stringLength - 1, 1), CFSTR(""));
     }
 
