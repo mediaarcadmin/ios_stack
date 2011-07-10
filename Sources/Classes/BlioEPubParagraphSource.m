@@ -178,22 +178,24 @@
         ret = [[[BlioEPubParagraphID alloc] initWithRun:newRun indexPoint:newIndexPoint runExtractor:runExtractor] autorelease];
         [newIndexPoint release];        
     } else {
+        EucBUpeBook *myBUpeBook = self.bUpeBook;
         EucBookPageIndexPoint *nextSourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
-        nextSourceIndexPoint.source = indexPoint.source + 1;
-        EucCSSIntermediateDocument *intermediateDocument = [self.bUpeBook intermediateDocumentForIndexPoint:nextSourceIndexPoint];
-        while(!ret && intermediateDocument) {
-            EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:intermediateDocument];
-            newRun = [runExtractor runForNodeWithKey:0];
-            if(newRun) {
-                nextSourceIndexPoint.block = newRun.id;
-                ret = [[[BlioEPubParagraphID alloc] initWithRun:newRun indexPoint:nextSourceIndexPoint runExtractor:runExtractor] autorelease];
-            } else {
-                // Maybe this source was empty - try the next one.
-                nextSourceIndexPoint.source = indexPoint.source + 1;
-                intermediateDocument = [self.bUpeBook intermediateDocumentForIndexPoint:nextSourceIndexPoint];
-            }
-            [runExtractor release]; 
-        }
+        nextSourceIndexPoint.source = indexPoint.source;
+        
+        do {
+            ++nextSourceIndexPoint.source;
+            EucCSSIntermediateDocument *intermediateDocument = [myBUpeBook intermediateDocumentForIndexPoint:nextSourceIndexPoint];
+            if(intermediateDocument) {
+                EucCSSLayoutRunExtractor *newDocumentRunExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:intermediateDocument];
+                newRun = [newDocumentRunExtractor runForNodeWithKey:0];
+                if(newRun) {
+                    nextSourceIndexPoint.block = newRun.id;
+                    ret = [[[BlioEPubParagraphID alloc] initWithRun:newRun indexPoint:nextSourceIndexPoint runExtractor:newDocumentRunExtractor] autorelease];
+                }
+                [newDocumentRunExtractor release]; 
+            }            
+        } while(!ret && nextSourceIndexPoint.source < myBUpeBook.sourceCount);
+        
         [nextSourceIndexPoint release];
     }
     
