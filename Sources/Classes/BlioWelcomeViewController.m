@@ -90,48 +90,49 @@
 			welcomeTextView.text = NSLocalizedStringWithDefaultValue(@"WELCOME_TEXT",nil,[NSBundle mainBundle],@"With Blio, books are more than just words: there's style, presentation, and a world of color. Now you can read books with the same layout, fonts, and full-color images that you enjoy in the print version of your favorite titles.",@"Welcome message on welcome view controller.");
 			[self addSubview:welcomeTextView];
 			[welcomeTextView release];
-		}
-
-		firstTimeUserTitleView = [[UILabel alloc] initWithFrame:CGRectZero];
-		firstTimeUserTitleView.lineBreakMode = UILineBreakModeWordWrap;
-		firstTimeUserTitleView.numberOfLines = 0;
-		firstTimeUserTitleView.text = NSLocalizedString(@"First time?",@"\"First time?\" first time user title for welcome view controller.");
-		[self addSubview:firstTimeUserTitleView];
-		[firstTimeUserTitleView release];
-		[firstTimeUserTitleView setAccessibilityHint:NSLocalizedString(@"Section header for first time Blio users.", @"Accessibility hint for \"First Time?\" section header on welcome screen.")];
-
-		firstTimeUserTextView = [[UILabel alloc] initWithFrame:CGRectZero];
-		firstTimeUserTextView.lineBreakMode = UILineBreakModeWordWrap;
-		firstTimeUserTextView.numberOfLines = 0;
-		firstTimeUserTextView.text = NSLocalizedStringWithDefaultValue(@"FIRST_TIME_USER_TEXT",nil,[NSBundle mainBundle],@"We invite you to explore the free books in your library. You may also create an account for the Blio bookstore where you'll find the latest titles from over a hundred top publishers.",@"First time user message on welcome view controller.");
-		[self addSubview:firstTimeUserTextView];
-		[firstTimeUserTextView release];
-		
-		firstTimeUserButton = [UIButton lightButton];
-		[firstTimeUserButton setTitle:NSLocalizedString(@"Create Account",@"\"Create Account\" button title") forState:UIControlStateNormal];
-		[self addSubview:firstTimeUserButton];
-		[firstTimeUserButton setAccessibilityHint:NSLocalizedString(@"Reveals the Create Account screen.", @"Accessibility hint for \"Create Account\" welcome screen button.")];
-
-		
+		}    
 		existingUserTitleView = [[UILabel alloc] initWithFrame:CGRectZero];
 		existingUserTitleView.lineBreakMode = UILineBreakModeWordWrap;
 		existingUserTitleView.numberOfLines = 0;
-		existingUserTitleView.text = NSLocalizedString(@"Already have an account?",@"\"Already have an account?\" existing user title for welcome view controller.");
+		existingUserTitleView.text = NSLocalizedString(@"Log In",@"\"Log In\" existing user title for welcome view controller.");
 		[self addSubview:existingUserTitleView];
 		[existingUserTitleView release];
 		[existingUserTitleView setAccessibilityHint:NSLocalizedString(@"Section header for existing Blio users.", @"Accessibility hint for \"Already have an account?\" section header on welcome screen.")];
-
+        
 		existingUserTextView = [[UILabel alloc] initWithFrame:CGRectZero];
 		existingUserTextView.lineBreakMode = UILineBreakModeWordWrap;
 		existingUserTextView.numberOfLines = 0;
-		existingUserTextView.text = NSLocalizedStringWithDefaultValue(@"EXISTING_USER_TEXT",nil,[NSBundle mainBundle],@"Log in to retrieve the books you've already bought. Now you have a new place to enjoy Blio!",@"Existing user message on welcome view controller.");
+		existingUserTextView.text = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list.\n\nIf you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+		//existingUserTextView.text = NSLocalizedStringWithDefaultValue(nil@"EXISTING_USER_TEXT",nil,[NSBundle mainBundle],@"Log in to your Blio.com account to sync your reading //list.\n\n If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 		[self addSubview:existingUserTextView];
 		[existingUserTextView release];
-
+        
 		existingUserButton = [UIButton lightButton];
 		[existingUserButton setTitle:NSLocalizedString(@"Log in",@"\"Log in\" button title") forState:UIControlStateNormal];
 		[self addSubview:existingUserButton];
 		[existingUserButton setAccessibilityHint:NSLocalizedString(@"Reveals the Login screen.", @"Accessibility hint for \"Login\" welcome screen button.")];
+
+        
+		firstTimeUserTitleView = [[UILabel alloc] initWithFrame:CGRectZero];
+		firstTimeUserTitleView.lineBreakMode = UILineBreakModeWordWrap;
+		firstTimeUserTitleView.numberOfLines = 0;
+		firstTimeUserTitleView.text = NSLocalizedString(@"Explore",@"\"Explore\" first time user title for welcome view controller.");
+		[self addSubview:firstTimeUserTitleView];
+		[firstTimeUserTitleView release];
+		[firstTimeUserTitleView setAccessibilityHint:NSLocalizedString(@"Section header for first time Blio users.", @"Accessibility hint for \"Explore\" section header on welcome screen.")];
+
+		firstTimeUserTextView = [[UILabel alloc] initWithFrame:CGRectZero];
+		firstTimeUserTextView.lineBreakMode = UILineBreakModeWordWrap;
+		firstTimeUserTextView.numberOfLines = 0;
+		firstTimeUserTextView.text = NSLocalizedString(@"We invite you to explore the sample books in your library, or import free titles.",@"First time user message on welcome view controller.");
+		//firstTimeUserTextView.text = NSLocalizedStringWithDefaultValue(@"FIRST_TIME_USER_TEXT",nil,[NSBundle mainBundle],@"We invite you to explore the sample books in your library, or import //free titles.",@"First time user message on welcome view controller.");
+		[self addSubview:firstTimeUserTextView];
+		[firstTimeUserTextView release];
+		
+		firstTimeUserButton = [UIButton lightButton];
+		[firstTimeUserButton setTitle:NSLocalizedString(@"Continue to Library",@"\"Continue to Library\" button title") forState:UIControlStateNormal];
+		[self addSubview:firstTimeUserButton];
+		[firstTimeUserButton setAccessibilityHint:NSLocalizedString(@"Reveals the Continue to Library screen.", @"Accessibility hint for \"Continue to Library\" welcome screen button.")];
     }
     return self;
 }
@@ -150,6 +151,8 @@
 }
 
 -(void)layoutSubviews {
+    
+     
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		contentMargin = 40;
 		firstTimeUserTitleView.text = [firstTimeUserTitleView.text capitalizedString];
@@ -162,60 +165,61 @@
 		welcomeTextView.font = [UIFont systemFontOfSize:20.0f];
 		welcomeTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(logoView.frame) + contentMargin/2, self.frame.size.width - contentMargin*2, 115);
 		titleViewSize = [firstTimeUserTitleView.text sizeWithFont:[UIFont boldSystemFontOfSize:18.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,60) lineBreakMode:UILineBreakModeWordWrap];
-		firstTimeUserTitleView.font = [UIFont boldSystemFontOfSize:18.0f];
-		firstTimeUserTitleView.frame = CGRectMake(contentMargin, 290, (self.frame.size.width - contentMargin*3)/2, titleViewSize.height);
-		textViewSize = [firstTimeUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,200) lineBreakMode:UILineBreakModeWordWrap];
-		firstTimeUserTextView.font = [UIFont systemFontOfSize:16.0f];
-		firstTimeUserTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(firstTimeUserTitleView.frame), (self.frame.size.width - contentMargin*3)/2, textViewSize.height);
-		if (CGRectGetMaxY(firstTimeUserTextView.frame) > buttonY) buttonY = CGRectGetMaxY(firstTimeUserTextView.frame);
-	
-		titleViewSize = [existingUserTitleView.text sizeWithFont:[UIFont boldSystemFontOfSize:18.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,60) lineBreakMode:UILineBreakModeWordWrap];
-		existingUserTitleView.font = [UIFont boldSystemFontOfSize:18.0f];
-		existingUserTitleView.frame = CGRectMake((self.frame.size.width+contentMargin)/2, 290, (self.frame.size.width - contentMargin*3)/2, titleViewSize.height);
+        existingUserTitleView.font = [UIFont boldSystemFontOfSize:18.0f];
+		existingUserTitleView.frame = CGRectMake(contentMargin, 290, (self.frame.size.width - contentMargin*3)/2, titleViewSize.height);
 		textViewSize = [existingUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,200) lineBreakMode:UILineBreakModeWordWrap];
 		existingUserTextView.font = [UIFont systemFontOfSize:16.0f];
-		existingUserTextView.frame = CGRectMake((self.frame.size.width+contentMargin)/2, CGRectGetMaxY(existingUserTitleView.frame), (self.frame.size.width - contentMargin*3)/2, textViewSize.height);
+		existingUserTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(existingUserTitleView.frame), (self.frame.size.width - contentMargin*3)/2, textViewSize.height);
 		if (CGRectGetMaxY(existingUserTextView.frame) > buttonY) buttonY = CGRectGetMaxY(existingUserTextView.frame);
+	
+		titleViewSize = [firstTimeUserTitleView.text sizeWithFont:[UIFont boldSystemFontOfSize:18.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,60) lineBreakMode:UILineBreakModeWordWrap];
+		firstTimeUserTitleView.font = [UIFont boldSystemFontOfSize:18.0f];
+		firstTimeUserTitleView.frame = CGRectMake((self.frame.size.width+contentMargin)/2, 290, (self.frame.size.width - contentMargin*3)/2, titleViewSize.height);
+		textViewSize = [firstTimeUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,200) lineBreakMode:UILineBreakModeWordWrap];
+		firstTimeUserTextView.font = [UIFont systemFontOfSize:16.0f];
+		firstTimeUserTextView.frame = CGRectMake((self.frame.size.width+contentMargin)/2, CGRectGetMaxY(firstTimeUserTitleView.frame), (self.frame.size.width - contentMargin*3)/2, textViewSize.height);
+		if (CGRectGetMaxY(firstTimeUserTextView.frame) > buttonY) buttonY = CGRectGetMaxY(firstTimeUserTextView.frame);
 	
 	buttonY = buttonY + kTweenMargin;
 	
-	firstTimeUserButton	.frame = CGRectMake(contentMargin,buttonY,(self.frame.size.width - contentMargin*3)/2,kStdButtonHeight);
-	existingUserButton.frame = CGRectMake((self.frame.size.width+contentMargin)/2,buttonY,(self.frame.size.width - contentMargin*3)/2,kStdButtonHeight);
+	existingUserButton	.frame = CGRectMake(contentMargin,buttonY,(self.frame.size.width - contentMargin*3)/2,kStdButtonHeight);
+	firstTimeUserButton.frame = CGRectMake((self.frame.size.width+contentMargin)/2,buttonY,(self.frame.size.width - contentMargin*3)/2,kStdButtonHeight);
 	}
 	else {
 		firstTimeUserTitleView.textColor = [UIColor colorWithRed:43.0f/255.0f green:196.0f/255.0f blue:230.0f/255.0f alpha:1];
 		existingUserTitleView.textColor = [UIColor colorWithRed:43.0f/255.0f green:196.0f/255.0f blue:230.0f/255.0f alpha:1];
 
 		UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation]; 
+        
 		if(UIInterfaceOrientationIsLandscape(orientation)) {
 			contentMargin = 10;
 			CGSize titleViewSize;
 			CGSize textViewSize;
 			CGFloat buttonY = 0;
 
-			titleViewSize = [firstTimeUserTitleView.text sizeWithFont:[UIFont systemFontOfSize:30.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,150) lineBreakMode:UILineBreakModeWordWrap];
-			firstTimeUserTitleView.font = [UIFont systemFontOfSize:30.0f];
-			firstTimeUserTitleView.frame = CGRectMake(contentMargin, contentMargin, (self.frame.size.width - contentMargin*3)/2, titleViewSize.height);
-			textViewSize = [firstTimeUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,200) lineBreakMode:UILineBreakModeWordWrap];
-			firstTimeUserTextView.font = [UIFont systemFontOfSize:16.0f];
-			firstTimeUserTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(firstTimeUserTitleView.frame), (self.frame.size.width - contentMargin*3)/2, textViewSize.height);
-			if (CGRectGetMaxY(firstTimeUserTextView.frame) > buttonY) buttonY = CGRectGetMaxY(firstTimeUserTextView.frame);
-			
-			
-			existingUserTitleView.numberOfLines = 0;
-			existingUserTitleView.adjustsFontSizeToFitWidth = NO;
 			titleViewSize = [existingUserTitleView.text sizeWithFont:[UIFont systemFontOfSize:30.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,150) lineBreakMode:UILineBreakModeWordWrap];
 			existingUserTitleView.font = [UIFont systemFontOfSize:30.0f];
-			existingUserTitleView.frame = CGRectMake((self.frame.size.width+contentMargin)/2, contentMargin, (self.frame.size.width - contentMargin*3)/2, titleViewSize.height);
+			existingUserTitleView.frame = CGRectMake(contentMargin, contentMargin, (self.frame.size.width - contentMargin*3)/2, titleViewSize.height);
 			textViewSize = [existingUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,200) lineBreakMode:UILineBreakModeWordWrap];
 			existingUserTextView.font = [UIFont systemFontOfSize:16.0f];
-			existingUserTextView.frame = CGRectMake((self.frame.size.width+contentMargin)/2, CGRectGetMaxY(existingUserTitleView.frame), (self.frame.size.width - contentMargin*3)/2, textViewSize.height);
+			existingUserTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(existingUserTitleView.frame), (self.frame.size.width - contentMargin*3)/2, textViewSize.height);
 			if (CGRectGetMaxY(existingUserTextView.frame) > buttonY) buttonY = CGRectGetMaxY(existingUserTextView.frame);
+			
+			
+			firstTimeUserTitleView.numberOfLines = 0;
+			firstTimeUserTitleView.adjustsFontSizeToFitWidth = NO;
+			titleViewSize = [firstTimeUserTitleView.text sizeWithFont:[UIFont systemFontOfSize:30.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,150) lineBreakMode:UILineBreakModeWordWrap];
+			firstTimeUserTitleView.font = [UIFont systemFontOfSize:30.0f];
+			firstTimeUserTitleView.frame = CGRectMake((self.frame.size.width+contentMargin)/2, contentMargin, (self.frame.size.width - contentMargin*3)/2, titleViewSize.height);
+			textViewSize = [firstTimeUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*3)/2,200) lineBreakMode:UILineBreakModeWordWrap];
+			firstTimeUserTextView.font = [UIFont systemFontOfSize:16.0f];
+			firstTimeUserTextView.frame = CGRectMake((self.frame.size.width+contentMargin)/2, CGRectGetMaxY(firstTimeUserTitleView.frame), (self.frame.size.width - contentMargin*3)/2, textViewSize.height);
+			if (CGRectGetMaxY(firstTimeUserTextView.frame) > buttonY) buttonY = CGRectGetMaxY(firstTimeUserTextView.frame);
 			
 			buttonY = buttonY + kTweenMargin;
 			
-			firstTimeUserButton.frame = CGRectMake(contentMargin,buttonY,(self.frame.size.width - contentMargin*3)/2,kStdButtonHeight);
-			existingUserButton.frame = CGRectMake((self.frame.size.width+contentMargin)/2,buttonY,(self.frame.size.width - contentMargin*3)/2,kStdButtonHeight);		
+			existingUserButton.frame = CGRectMake(contentMargin,buttonY,(self.frame.size.width - contentMargin*3)/2,kStdButtonHeight);
+			firstTimeUserButton.frame = CGRectMake((self.frame.size.width+contentMargin)/2,buttonY,(self.frame.size.width - contentMargin*3)/2,kStdButtonHeight);		
 		}
 		else {
 			contentMargin = 20;
@@ -223,25 +227,25 @@
 			CGSize textViewSize;
 			CGFloat buttonTextWidth;
 
-			titleViewSize = [firstTimeUserTitleView.text sizeWithFont:[UIFont systemFontOfSize:24.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),75) lineBreakMode:UILineBreakModeWordWrap];
-			firstTimeUserTitleView.font = [UIFont systemFontOfSize:24.0f];
-			firstTimeUserTitleView.frame = CGRectMake(contentMargin, contentMargin, (self.frame.size.width - contentMargin*2), titleViewSize.height);
-			textViewSize = [firstTimeUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),200) lineBreakMode:UILineBreakModeWordWrap];
-			firstTimeUserTextView.font = [UIFont systemFontOfSize:16.0f];
-			firstTimeUserTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(firstTimeUserTitleView.frame), (self.frame.size.width - contentMargin*2), textViewSize.height);
-			buttonTextWidth = [[firstTimeUserButton titleForState:UIControlStateNormal] sizeWithFont:firstTimeUserButton.titleLabel.font constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),kStdButtonHeight) lineBreakMode:UILineBreakModeTailTruncation].width;
-			firstTimeUserButton.frame = CGRectMake((self.frame.size.width - (buttonTextWidth+100))/2,CGRectGetMaxY(firstTimeUserTextView.frame) + kTweenMargin,buttonTextWidth+100,kStdButtonHeight);
-
-			existingUserTitleView.numberOfLines = 1;
-			existingUserTitleView.adjustsFontSizeToFitWidth = YES;			
-			titleViewSize = [existingUserTitleView.text sizeWithFont:[UIFont systemFontOfSize:24.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),24) lineBreakMode:UILineBreakModeTailTruncation];
+			titleViewSize = [existingUserTitleView.text sizeWithFont:[UIFont systemFontOfSize:24.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),75) lineBreakMode:UILineBreakModeWordWrap];
 			existingUserTitleView.font = [UIFont systemFontOfSize:24.0f];
-			existingUserTitleView.frame = CGRectMake(contentMargin,CGRectGetMaxY(firstTimeUserButton.frame) + contentMargin, (self.frame.size.width - contentMargin*2), titleViewSize.height);
+			existingUserTitleView.frame = CGRectMake(contentMargin, contentMargin, (self.frame.size.width - contentMargin*2), titleViewSize.height);
 			textViewSize = [existingUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),200) lineBreakMode:UILineBreakModeWordWrap];
 			existingUserTextView.font = [UIFont systemFontOfSize:16.0f];
-			existingUserTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(existingUserTitleView.frame), (self.frame.size.width - contentMargin*2), textViewSize.height);						
+			existingUserTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(existingUserTitleView.frame), (self.frame.size.width - contentMargin*2), textViewSize.height);
 			buttonTextWidth = [[existingUserButton titleForState:UIControlStateNormal] sizeWithFont:existingUserButton.titleLabel.font constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),kStdButtonHeight) lineBreakMode:UILineBreakModeTailTruncation].width;
-			existingUserButton.frame = CGRectMake((self.frame.size.width - (buttonTextWidth+100))/2,CGRectGetMaxY(existingUserTextView.frame) + kTweenMargin,buttonTextWidth+100,kStdButtonHeight);					
+			existingUserButton.frame = CGRectMake((self.frame.size.width - (buttonTextWidth+100))/2,CGRectGetMaxY(existingUserTextView.frame) + kTweenMargin,buttonTextWidth+100,kStdButtonHeight);
+
+			firstTimeUserTitleView.numberOfLines = 1;
+			firstTimeUserTitleView.adjustsFontSizeToFitWidth = YES;			
+			titleViewSize = [firstTimeUserTitleView.text sizeWithFont:[UIFont systemFontOfSize:24.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),24) lineBreakMode:UILineBreakModeTailTruncation];
+			firstTimeUserTitleView.font = [UIFont systemFontOfSize:24.0f];
+			firstTimeUserTitleView.frame = CGRectMake(contentMargin,CGRectGetMaxY(/*firstTimeUserButton*/existingUserButton.frame) + contentMargin, (self.frame.size.width - contentMargin*2), titleViewSize.height);
+			textViewSize = [firstTimeUserTextView.text sizeWithFont:[UIFont systemFontOfSize:16.0f] constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),200) lineBreakMode:UILineBreakModeWordWrap];
+			firstTimeUserTextView.font = [UIFont systemFontOfSize:16.0f];
+			firstTimeUserTextView.frame = CGRectMake(contentMargin, CGRectGetMaxY(firstTimeUserTitleView.frame), (self.frame.size.width - contentMargin*2), textViewSize.height);						
+			buttonTextWidth = [[firstTimeUserButton titleForState:UIControlStateNormal] sizeWithFont:firstTimeUserButton.titleLabel.font constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),kStdButtonHeight) lineBreakMode:UILineBreakModeTailTruncation].width;
+			firstTimeUserButton.frame = CGRectMake((self.frame.size.width - (buttonTextWidth+100))/2,CGRectGetMaxY(firstTimeUserTextView.frame) + kTweenMargin,buttonTextWidth+100,kStdButtonHeight);
 		}
 	}
 }
@@ -276,6 +280,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+/*
 	UIBarButtonItem * continueBarButton = [[UIBarButtonItem alloc] 
 											   initWithTitle:NSLocalizedString(@"Continue",@"\"Continue\" bar button") 
 											   style:UIBarButtonItemStyleDone 
@@ -285,7 +290,7 @@
 	self.navigationItem.rightBarButtonItem = continueBarButton;
 	[continueBarButton release];
 	[continueBarButton setAccessibilityHint:NSLocalizedString(@"Dismisses welcome screen to reveal the book library.", @"Accessibility hint for \"Continue\" bar button in the welcome screen.")];
-
+*/
 	[self.welcomeView.firstTimeUserButton addTarget:self action:@selector(firstTimeUserButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 	[self.welcomeView.existingUserButton addTarget:self action:@selector(existingUserButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -325,8 +330,12 @@
 	[[BlioStoreManager sharedInstance] dismissLoginView];
 }
 -(void)firstTimeUserButtonPressed:(id)sender {
+	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
+	[[BlioStoreManager sharedInstance] dismissLoginView];
+/*
 	BlioCreateAccountViewController * createAccountViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
 	[self.navigationController pushViewController:createAccountViewController animated:YES];
+ */
 }
 -(void)existingUserButtonPressed:(id)sender {
 	BlioLoginViewController * loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];

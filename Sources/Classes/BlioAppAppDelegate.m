@@ -373,20 +373,19 @@ static void *background_init_thread(void * arg) {
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 			}
 			else {
+                /* Log in screen done up temporarily for 2.4 and Apple foolishness
                 if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLoginOccurred"]) {
                     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Your Account",@"\"Your Account\" alert message title") 
                                                  message:NSLocalizedStringWithDefaultValue(@"LOGIN_GUIDANCE_ALERT",nil,[NSBundle mainBundle],@"To log in to your Blio account, go to your Archive.",@"Alert message shown to end-user upon launch when a user has never logged in.")
                                                 delegate:self 
                                        cancelButtonTitle:nil
                                        otherButtonTitles:NSLocalizedString(@"Cancel",@"\"Cancel\" button title"),NSLocalizedString(@"Go",@"\"Go\" button title"),nil];	
-                }
-                /*
-				if ([BlioStoreManager sharedInstance].didOpenWebStore) {
+                }*/
+                if ([BlioStoreManager sharedInstance].didOpenWebStore) {
 					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 					[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 				}				
 				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-                */
 			}
 		}
 		else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
@@ -404,6 +403,11 @@ static void *background_init_thread(void * arg) {
     }
     self.delayedURLOpens = nil;
 	
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) { 
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
+         [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
+    }
+        
     /*
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLaunchLoginScreenShown"]) {
 		[BlioStoreManager sharedInstance].initialLoginCheckFinished = NO;
@@ -415,7 +419,7 @@ static void *background_init_thread(void * arg) {
         
 		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 	}
-    */
+    */ 
 }
 
 -(void)loginDismissed:(NSNotification*)note {

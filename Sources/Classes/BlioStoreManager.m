@@ -301,8 +301,10 @@
 
 	if (loginResult == BlioLoginResultSuccess) {
         
+        /* was needed for 2.4 acceptance
         [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FirstLoginOccurred"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+         */
 
 		// TODO: "DeviceRegistered" key should be refactored with multiple stores in mind.
 //		NSLog(@"[storeHelper deviceRegistered]: %i",[storeHelper deviceRegistered]);
