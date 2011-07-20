@@ -101,12 +101,15 @@
     
     
 }
+-(void)dealloc {
+    [super dealloc];
+}
 @end
 
 
 @implementation BlioLoginViewController
 
-@synthesize sourceID, emailField, passwordField, activityIndicatorView, loginHeaderView, loginFooterView;
+@synthesize sourceID, emailField, passwordField, activityIndicatorView, loginHeaderView, loginFooterView,copyrightLabel;
 
 - (id)initWithSourceID:(BlioBookSourceID)bookSourceID
 {
@@ -115,38 +118,6 @@
 	{
 		self.sourceID = bookSourceID;
 		self.title = NSLocalizedString(@"Log in",@"\"Log in\" view controller title");
-		self.tableView.backgroundColor = [UIColor whiteColor];
-		UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		aButton.showsTouchWhenHighlighted = NO;
-		[aButton setTitle:NSLocalizedString(@"Forgot Password?",@"\"Forgot Password?\" button label") forState:UIControlStateNormal];
-		[aButton setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateHighlighted];		
-		[aButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
-		[aButton.titleLabel setShadowOffset:CGSizeMake(0.0f, -1.0f)];
-		[aButton setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
-		[aButton setTitleColor:[UIColor colorWithRed:0.0f/255.0f green:50.0f/255.0f blue:100.0f/255.0f alpha:1] forState:UIControlStateNormal];
-		[[aButton layer] setCornerRadius:4.0f];
-		[[aButton layer] setMasksToBounds:YES];
-		[[aButton layer] setBorderWidth:0.0f];		
-		[[aButton layer] setBorderColor:[[UIColor colorWithRed:100.0f/255.0f green:100.0f/255.0f blue:100.0f/255.0f alpha:1] CGColor]];
-//		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButton.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateNormal];
-//		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButtonPressed.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateHighlighted];
-		[aButton setBackgroundColor:[UIColor clearColor]];
-//		[aButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
-		[aButton addTarget:self action:@selector(forgotPassword:) forControlEvents:UIControlEventTouchUpInside];
-//		aButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
-		aButton.titleLabel.font = [UIFont systemFontOfSize:14];
-		CGFloat leftMargin = kCellTopOffset;
-		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-			leftMargin = kCellLeftOffsetPad;
-		}
-		aButton.frame = CGRectMake(leftMargin, 20,150, 30);
-		[aButton setAccessibilityLabel:NSLocalizedString(@"Forgot Password?", @"Accessibility label for Forgot Password button.")];
-		[aButton setAccessibilityHint:	NSLocalizedString(@"Sends your password to your email address.", @"Accessibility hint for Forgot Password button.")];
-		self.loginFooterView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-		[self.loginFooterView addSubview:aButton];
-        CGRect screenRect = [[UIScreen mainScreen] bounds];
-        self.loginHeaderView = [[[BlioLoginHeaderView alloc] initWithFrame:CGRectMake(0, 0, screenRect.size.width, 160)] autorelease];
-        self.loginHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	}
 	
 	return self;
@@ -166,23 +137,48 @@
     return label;
 }
 
-- (void)loadView {
-
-
-
-	
+- (void)loadView {	
 	[super loadView];
 	
-	self.tableView.frame = [[UIScreen mainScreen] applicationFrame];
+	self.tableView.frame = [[UIScreen mainScreen] bounds];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	self.tableView.scrollEnabled = YES;
 	self.tableView.autoresizesSubviews = YES;
 	
-//	self.navigationItem.titleView = [[[UILabel alloc] initWithFrame:CGRectMake(0.0f,4.0f,320.0f,36.0f)] autorelease];
-//	[(UILabel*)self.navigationItem.titleView setText:NSLocalizedString(@"Log in to Blio",@"\"Log in to Blio\" view controller header")];
-//	[(UILabel*)self.navigationItem.titleView setBackgroundColor:[UIColor clearColor]];
-//	[(UILabel*)self.navigationItem.titleView setTextColor:[UIColor whiteColor]];
-//	[(UILabel*)self.navigationItem.titleView setTextAlignment:UITextAlignmentCenter];
-//	[(UILabel*)self.navigationItem.titleView setFont:[UIFont boldSystemFontOfSize:18.0f]];
+    self.tableView.backgroundColor = [UIColor whiteColor];
+    
+    UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    aButton.showsTouchWhenHighlighted = NO;
+    [aButton setTitle:NSLocalizedString(@"Forgot Password?",@"\"Forgot Password?\" button label") forState:UIControlStateNormal];
+    [aButton setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateHighlighted];		
+    [aButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateNormal];
+    [aButton.titleLabel setShadowOffset:CGSizeMake(0.0f, -1.0f)];
+    [aButton setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
+    [aButton setTitleColor:[UIColor colorWithRed:0.0f/255.0f green:50.0f/255.0f blue:100.0f/255.0f alpha:1] forState:UIControlStateNormal];
+    [[aButton layer] setCornerRadius:4.0f];
+    [[aButton layer] setMasksToBounds:YES];
+    [[aButton layer] setBorderWidth:0.0f];		
+    [[aButton layer] setBorderColor:[[UIColor colorWithRed:100.0f/255.0f green:100.0f/255.0f blue:100.0f/255.0f alpha:1] CGColor]];
+    //		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButton.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateNormal];
+    //		[aButton setBackgroundImage:[[UIImage imageNamed:@"greyButtonPressed.png"] stretchableImageWithLeftCapWidth:3 topCapHeight:0] forState:UIControlStateHighlighted];
+    [aButton setBackgroundColor:[UIColor clearColor]];
+    //		[aButton setBackgroundImage:[UIImage imageNamed:@"button-background-graygradient.png"] forState:UIControlStateNormal];
+    [aButton addTarget:self action:@selector(forgotPassword:) forControlEvents:UIControlEventTouchUpInside];
+    //		aButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
+    aButton.titleLabel.font = [UIFont systemFontOfSize:14];
+    CGFloat leftMargin = kCellTopOffset;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        leftMargin = kCellLeftOffsetPad;
+    }
+    aButton.frame = CGRectMake(leftMargin, 20,150, 30);
+    [aButton setAccessibilityLabel:NSLocalizedString(@"Forgot Password?", @"Accessibility label for Forgot Password button.")];
+    [aButton setAccessibilityHint:	NSLocalizedString(@"Sends your password to your email address.", @"Accessibility hint for Forgot Password button.")];
+
+    self.loginFooterView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+    [self.loginFooterView addSubview:aButton];
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    self.loginHeaderView = [[[BlioLoginHeaderView alloc] initWithFrame:CGRectMake(0, 0, screenRect.size.width, 160)] autorelease];
+    self.loginHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
  	
 	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
 											  initWithTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" bar button") 
@@ -200,10 +196,22 @@
 	CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
 	CGFloat activityIndicatorDiameter = 50.0f;
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
+    NSLog(@"self.view.bounds.size.height: %f",self.view.bounds.size.height);
+    self.copyrightLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height - 40, self.view.bounds.size.width - 20, 40)] autorelease];
+    copyrightLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    copyrightLabel.textAlignment = UITextAlignmentRight;
+    copyrightLabel.text = NSLocalizedString(@"©2011 | Blio.com", @"Accessibility label for copyright statement.");
+    copyrightLabel.font = [UIFont boldSystemFontOfSize:12.0];
+    copyrightLabel.textColor = [UIColor colorWithRed:76.0f/255.0f green:76.0f/255.0f blue:76.0f/255.0f alpha:1.0f];
+    copyrightLabel.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:copyrightLabel];
 }
 -(void)viewDidUnload {
 	[activityIndicatorView removeFromSuperview];
 	self.activityIndicatorView = nil;
+    self.copyrightLabel = nil;
+    self.loginFooterView = nil;
+    self.loginHeaderView = nil;
 }
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
@@ -334,9 +342,11 @@
 - (void)dealloc {
 	self.emailField = nil;
 	self.passwordField = nil;
-	self.loginFooterView = nil;
 	if (self.activityIndicatorView) [self.activityIndicatorView removeFromSuperview];
 	self.activityIndicatorView = nil;
+	self.loginFooterView = nil;
+    self.loginHeaderView = nil;
+    self.copyrightLabel = nil;
 	[super dealloc];
 }
 	

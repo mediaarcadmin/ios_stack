@@ -26,6 +26,7 @@
 	BlioBookSourceID sourceID;
     BlioLoginHeaderView * loginHeaderView;
 	UIView * loginFooterView;
+    UILabel * copyrightLabel;
 }
 
 @property (nonatomic,retain) UITextField* emailField;
@@ -34,6 +35,7 @@
 @property (nonatomic,assign) BlioBookSourceID sourceID;
 @property (nonatomic,retain) UIView * loginHeaderView;
 @property (nonatomic,retain) UIView * loginFooterView;
+@property (nonatomic,retain) UILabel * copyrightLabel;
 
 
 -(id)initWithSourceID:(BlioBookSourceID)bookSourceID;
