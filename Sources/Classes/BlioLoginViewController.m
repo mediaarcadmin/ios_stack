@@ -14,9 +14,96 @@
 #import "BlioCreateAccountViewController.h"
 #import <QuartzCore/CALayer.h>
 
+@implementation BlioLoginHeaderView
+
+- (id)initWithFrame:(CGRect)frame {
+    if ((self = [super initWithFrame:frame])) {
+        self.backgroundColor = [UIColor clearColor];
+
+        UIGraphicsBeginImageContext(CGSizeMake(100, 100));
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
+        
+        // Mask off the outside of the icon like the device does.
+        CGContextMoveToPoint(context, 0, 0);
+        CGContextAddArcToPoint(context, 0, 0, 50, 0, 15);
+        CGContextAddArcToPoint(context, 100, 0, 100, 50, 15);
+        CGContextAddArcToPoint(context, 100, 100, 50, 100, 15);
+        CGContextAddArcToPoint(context, 0, 100, 0, 50, 15);
+        CGContextAddArcToPoint(context, 0, 0, 50, 0, 15);
+        CGContextClosePath(context);
+        CGContextClip(context);
+        [logoImage drawInRect:CGRectMake(-7, -7, 114, 114)];
+        
+        logoView = [[UIImageView alloc] initWithImage:UIGraphicsGetImageFromCurrentImageContext()];
+        UIGraphicsEndImageContext();
+        
+        [self addSubview:logoView];
+        [logoView release];
+
+		loginHeaderLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+		loginHeaderLabel.lineBreakMode = UILineBreakModeWordWrap;
+		loginHeaderLabel.numberOfLines = 0;
+        loginHeaderLabel.backgroundColor = [UIColor clearColor];
+		loginHeaderLabel.text = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list.\n\nIf you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+		[self addSubview:loginHeaderLabel];
+		[loginHeaderLabel release];
+
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            
+        }
+    }
+    return self;
+}
+-(BOOL)isAccessibilityElement {
+	return NO;	
+}
+- (NSInteger)accessibilityElementCount {
+	return [self.subviews count];
+}
+- (id)accessibilityElementAtIndex:(NSInteger)index {    
+    return [self.subviews objectAtIndex:index];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element {
+    return [self.subviews indexOfObject:element];
+}
+
+-(void)layoutSubviews {
+    
+    contentMargin = 10;
+
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation]; 
+
+    CGFloat logoOffset = 0;
+    if(UIInterfaceOrientationIsLandscape(orientation) && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+//        logoView.hidden = YES;
+        logoView.alpha = 0;
+    }
+    else {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) logoView.frame = CGRectMake(0, 0, 100, 100);
+        logoView.frame = CGRectMake(0, 0, 80, 80);
+        logoView.center = CGPointMake(self.bounds.size.width/2, logoView.bounds.size.height/2 + contentMargin);
+//        logoView.hidden = NO;
+        logoView.alpha = 1;
+        logoOffset = CGRectGetMaxY(logoView.frame);
+	}
+    
+    UIFont * loginHeaderLabelFont = [UIFont systemFontOfSize:16.0f];
+
+    CGSize loginHeaderLabelSize = [loginHeaderLabel.text sizeWithFont:loginHeaderLabelFont constrainedToSize:CGSizeMake((self.frame.size.width - contentMargin*2),300) lineBreakMode:UILineBreakModeWordWrap];
+    loginHeaderLabel.font = loginHeaderLabelFont;
+    loginHeaderLabel.frame = CGRectMake(contentMargin, logoOffset + contentMargin, (self.frame.size.width - contentMargin*2), loginHeaderLabelSize.height);
+
+    
+    
+}
+@end
+
+
 @implementation BlioLoginViewController
 
-@synthesize sourceID, emailField, passwordField, activityIndicatorView, loginFooterView;
+@synthesize sourceID, emailField, passwordField, activityIndicatorView, loginHeaderView, loginFooterView;
 
 - (id)initWithSourceID:(BlioBookSourceID)bookSourceID
 {
@@ -25,7 +112,7 @@
 	{
 		self.sourceID = bookSourceID;
 		self.title = NSLocalizedString(@"Log in",@"\"Log in\" view controller title");
-		
+		self.tableView.backgroundColor = [UIColor whiteColor];
 		UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		aButton.showsTouchWhenHighlighted = NO;
 		[aButton setTitle:NSLocalizedString(@"Forgot Password?",@"\"Forgot Password?\" button label") forState:UIControlStateNormal];
@@ -54,7 +141,9 @@
 		[aButton setAccessibilityHint:	NSLocalizedString(@"Sends your password to your email address.", @"Accessibility hint for Forgot Password button.")];
 		self.loginFooterView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
 		[self.loginFooterView addSubview:aButton];
-
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        self.loginHeaderView = [[[BlioLoginHeaderView alloc] initWithFrame:CGRectMake(0, 0, screenRect.size.width, 160)] autorelease];
+        self.loginHeaderView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	}
 	
 	return self;
@@ -278,6 +367,22 @@
 	if (section == 0) return 2;
 	else return 1;
 }
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+		return self.loginHeaderView;
+	}
+	return nil;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+//	return self.loginHeaderView.bounds.size.height;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return 195;
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation]; 
+    if(UIInterfaceOrientationIsLandscape(orientation)) return 90;
+    return 210;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
 	if (section == 0) {
 		return self.loginFooterView;

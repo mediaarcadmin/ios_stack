@@ -12,11 +12,19 @@
 #import "DigitalLockerGateway.h"
 #import "BlioRoundedRectActivityView.h"
 
+@interface BlioLoginHeaderView : UIView {
+	UIImageView * logoView;
+	UILabel * loginHeaderLabel;
+    CGFloat contentMargin;
+}
+@end
+
 @interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate,BlioLoginResultReceiver> {
 	UITextField* emailField;
 	UITextField* passwordField;
 	BlioRoundedRectActivityView * activityIndicatorView;
 	BlioBookSourceID sourceID;
+    BlioLoginHeaderView * loginHeaderView;
 	UIView * loginFooterView;
 }
 
@@ -24,6 +32,7 @@
 @property (nonatomic,retain) UITextField* passwordField;
 @property (nonatomic,retain) BlioRoundedRectActivityView* activityIndicatorView;
 @property (nonatomic,assign) BlioBookSourceID sourceID;
+@property (nonatomic,retain) UIView * loginHeaderView;
 @property (nonatomic,retain) UIView * loginFooterView;
 
 
