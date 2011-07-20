@@ -81,7 +81,10 @@
         logoView.alpha = 0;
     }
     else {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) logoView.frame = CGRectMake(0, 0, 100, 100);
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            logoView.frame = CGRectMake(0, 0, 100, 100);
+            contentMargin = 30;
+        }
         logoView.frame = CGRectMake(0, 0, 80, 80);
         logoView.center = CGPointMake(self.bounds.size.width/2, logoView.bounds.size.height/2 + contentMargin);
 //        logoView.hidden = NO;
@@ -376,7 +379,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
 //	return self.loginHeaderView.bounds.size.height;
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return 195;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return 225;
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation]; 
     if(UIInterfaceOrientationIsLandscape(orientation)) return 90;
