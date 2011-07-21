@@ -1572,8 +1572,17 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			NSArray *highlightRects = [self rectsFromBlocksAtPageIndex:pageIndex inBookmarkRange:highlightRange];
             NSArray *coalescedRects = [EucSelector coalescedLineRectsForElementRects:highlightRects];
             
+            CGFloat scale = 1;
+            
+            if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+                scale = [[UIScreen mainScreen] scale];
+            }
+            
+            CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
+            
             for (NSValue *rectValue in coalescedRects) {
-                THPair *highlightPair = [[THPair alloc] initWithFirst:(id)rectValue second:(id)[highlightRange.color colorWithAlphaComponent:0.3f]];
+                CGRect scaledRect = CGRectApplyAffineTransform([rectValue CGRectValue], scaleTransform);
+                THPair *highlightPair = [[THPair alloc] initWithFirst:(id)[NSValue valueWithCGRect:scaledRect] second:(id)[highlightRange.color colorWithAlphaComponent:0.3f]];
                 [allHighlights addObject:highlightPair];
                 [highlightPair release];
             }
