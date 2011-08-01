@@ -18421,6 +18421,14 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	
 	return self;
 }
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+	if (binding.logXMLInOut) {
+		NSLog(@"ResponseError:\n%@\n%@", error,[error userInfo]);
+	}
+	response.error = error;
+	[delegate operation:self completedWithResponse:response];
+}
 -(void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
 	if ([challenge previousFailureCount] == 0) {
@@ -18480,14 +18488,6 @@ NSString * ContentCafe_ContentType_stringFromEnum(ContentCafe_ContentType enumVa
 	} else {
 		[responseData appendData:data];
 	}
-}
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-	if (binding.logXMLInOut) {
-		NSLog(@"ResponseError:\n%@\n%@", error,[error userInfo]);
-	}
-	response.error = error;
-	[delegate operation:self completedWithResponse:response];
 }
 - (void)dealloc
 {
@@ -19541,6 +19541,14 @@ static ContentCafeSoap_envelope *ContentCafeSoapSharedEnvelopeInstance = nil;
 	
 	return self;
 }
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+	if (binding.logXMLInOut) {
+		NSLog(@"ResponseError:\n%@", error);
+	}
+	response.error = error;
+	[delegate operation:self completedWithResponse:response];
+}
 -(void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
 	if ([challenge previousFailureCount] == 0) {
@@ -19599,14 +19607,6 @@ static ContentCafeSoap_envelope *ContentCafeSoapSharedEnvelopeInstance = nil;
 	} else {
 		[responseData appendData:data];
 	}
-}
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-	if (binding.logXMLInOut) {
-		NSLog(@"ResponseError:\n%@", error);
-	}
-	response.error = error;
-	[delegate operation:self completedWithResponse:response];
 }
 - (void)dealloc
 {
