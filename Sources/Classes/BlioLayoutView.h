@@ -24,6 +24,7 @@
     EucIndexBasedPageTurningView *pageTurningView;
     UIImage *pageTexture;
     BOOL pageTextureIsDark;
+    BOOL twoUpLandscape;
     
     BlioTextFlow *textFlow;
     

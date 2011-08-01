@@ -685,4 +685,15 @@
     [_eucBookView turnToNextPage];
 }
 
+- (BOOL)twoUpLandscape
+{
+    return _eucBookView.twoUpLandscape;
+}
+
+- (void)setTwoUpLandscape:(BOOL)twoUpLandscape;
+{
+    _eucBookView.twoUpLandscape = twoUpLandscape;
+}
+
+
 @end

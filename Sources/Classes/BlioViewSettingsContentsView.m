@@ -71,19 +71,19 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
     BOOL showTapZoomsToBlock = NO;
     BOOL showLandscapePage = NO;
     
-    if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowFontSizeSettings)]) {
+    if ([self.viewSettingsDelegate respondsToSelector:@selector(shouldShowFontSizeSettings)]) {
         showFontSize = [self.viewSettingsDelegate shouldShowFontSizeSettings];
     }
     
-    if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowPageColorSettings)]) {
+    if ([self.viewSettingsDelegate respondsToSelector:@selector(shouldShowPageColorSettings)]) {
         showPageColor = [self.viewSettingsDelegate shouldShowPageColorSettings];
     }
 
-	if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowTapZoomsToBlockSettings)]) {
+	if ([self.viewSettingsDelegate respondsToSelector:@selector(shouldShowTapZoomsToBlockSettings)]) {
         showTapZoomsToBlock = [self.viewSettingsDelegate shouldShowTapZoomsToBlockSettings];
     }
-	if ([(NSObject *)self.viewSettingsDelegate respondsToSelector:@selector(shouldShowLandscapePageSettings)]) {
-        showLandscapePage = [self.viewSettingsDelegate shouldShowTapZoomsToBlockSettings];
+	if ([self.viewSettingsDelegate respondsToSelector:@selector(shouldShowLandscapePageSettings)]) {
+        showLandscapePage = [self.viewSettingsDelegate shouldShowLandscapePageSettings];
     }
 	
     if (showFontSize) {

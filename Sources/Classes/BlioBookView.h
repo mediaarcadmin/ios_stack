@@ -97,6 +97,8 @@
 @property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
+@property (nonatomic, assign) BOOL twoUpLandscape;
+
 // Implement if pageLabelForBookmarkPoint: is expensive for smooth slider operation.
 - (NSString *)pageLabelForPercentage:(float)percenatage;
 

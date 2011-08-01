@@ -122,6 +122,7 @@
 @synthesize webViews;
 @synthesize pageAlphaMask;
 @synthesize pageMultiplyColor;
+@synthesize twoUpLandscape;
 
 - (void)dealloc {
 	
@@ -257,7 +258,7 @@
         
         // Must do this here so that teh page aspect ration takes account of the twoUp property
         CGRect myBounds = self.bounds;
-        if(myBounds.size.width > myBounds.size.height) {
+        if(myBounds.size.width > myBounds.size.height && self.twoUpLandscape) {
             aPageTurningView.twoUp = YES;
         } else {
             aPageTurningView.twoUp = NO;
@@ -276,13 +277,7 @@
         [aPageTurningView release];
 
         [aPageTurningView turnToPageAtIndex:self.pageNumber - 1 animated:NO];
-		[aPageTurningView waitForAllPageImagesToBeAvailable];
-        
-        [[NSUserDefaults standardUserDefaults] addObserver:self
-                                                forKeyPath:kBlioLandscapeTwoPagesDefaultsKey
-                                                   options:0
-                                                   context:NULL];
-        
+		[aPageTurningView waitForAllPageImagesToBeAvailable];        
     }
 }
 
@@ -306,15 +301,13 @@
             aPageTurningView.delegate = nil;
             [aPageTurningView removeFromSuperview];
             self.pageTurningView = nil;
-            [[NSUserDefaults standardUserDefaults] removeObserver:self
-                                                       forKeyPath:kBlioLandscapeTwoPagesDefaultsKey];
         }
     }
 }
 
 - (void)layoutSubviews {
     CGRect myBounds = self.bounds;
-    if([[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] && 
+    if(self.twoUpLandscape && 
        myBounds.size.width > myBounds.size.height) {
         self.pageTurningView.twoUp = YES;        
         // The first page is page 0 as far as the page turning view is concerned,
@@ -1056,25 +1049,27 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         if(tracking) {
             [self.delegate hideToolbars];
         }
-    } else if(object == [NSUserDefaults standardUserDefaults]) {
-        if([keyPath isEqualToString:kBlioLandscapeTwoPagesDefaultsKey]) {
-            BOOL wasTwoUp = self.pageTurningView.twoUp;
-            BOOL shouldBeTwoUp = NO;
-            CGRect myBounds = self.bounds;
-            if([[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] && 
-               myBounds.size.width > myBounds.size.height) {
-                shouldBeTwoUp = YES;        
-            }
-            if(shouldBeTwoUp != wasTwoUp) {
-                self.pageTurningView.twoUp = shouldBeTwoUp;
-                [self.pageTurningView layoutSubviews];
-                [self zoomForNewPageAnimated:NO];
-                [self hideOverlay];
-                [self clearOverlayCaches];
-                [self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.1f];
-                [self performSelector:@selector(showOverlay) withObject:nil afterDelay:0.11f];
-            }
-        }
+    }
+}
+
+- (void)setTwoUpLandscape:(BOOL)newTwoUpLandscape {
+    twoUpLandscape = newTwoUpLandscape;
+    
+    BOOL wasTwoUp = self.pageTurningView.twoUp;
+    BOOL shouldBeTwoUp = NO;
+    CGRect myBounds = self.bounds;
+    if(newTwoUpLandscape && 
+       myBounds.size.width > myBounds.size.height) {
+        shouldBeTwoUp = YES;        
+    }
+    if(shouldBeTwoUp != wasTwoUp) {
+        self.pageTurningView.twoUp = shouldBeTwoUp;
+        [self.pageTurningView layoutSubviews];
+        [self zoomForNewPageAnimated:NO];
+        [self hideOverlay];
+        [self clearOverlayCaches];
+        [self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.1f];
+        [self performSelector:@selector(showOverlay) withObject:nil afterDelay:0.11f];
     }
 }
 

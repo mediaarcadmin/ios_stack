@@ -360,6 +360,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
+        self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
+    }
     
     bookReady = YES;
     
@@ -1826,7 +1829,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
-        
+        if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
+            self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
+        }
+
         // Reset the search resultsi
         self.searchViewController = nil;
         self.searchPopover = nil;
@@ -1853,11 +1859,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 - (BOOL)shouldShowLandscapePageSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-        return YES;
-    } else {
-        return NO;
-    }
+    CGSize size = self.bookView.bounds.size;
+    return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUpLandscape:)];
 }
 
 - (BlioFontSize)currentFontSize {
@@ -1963,10 +1966,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioTapZoomsDefaultsKey];	
 }
 - (void)changeLandscapePage:(UIControl*)sender {
-	if ( ((UISegmentedControl*)sender).selectedSegmentIndex == 1 )
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioLandscapeTwoPagesDefaultsKey];
-	else
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioLandscapeTwoPagesDefaultsKey];	
+    BOOL shouldBeTwoUp = ((UISegmentedControl*)sender).selectedSegmentIndex == 1;
+    [[NSUserDefaults standardUserDefaults] setBool:shouldBeTwoUp forKey:kBlioLandscapeTwoPagesDefaultsKey];
+    
+    if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
+        self.bookView.twoUpLandscape = shouldBeTwoUp;
+    }
 }
 - (void)changeLockRotation {
     [self setRotationLocked:![self isRotationLocked]];
