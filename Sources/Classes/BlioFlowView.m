@@ -64,7 +64,7 @@
 
             if([_eucBook isKindOfClass:[BlioFlowEucBook class]]) {
                 BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:bookID];
-                _textFlowFlowTreeKind = textFlow.flowTreeKind;
+                _textFlowFlowTreeKind = (BlioTextFlowFlowTreeKind)(textFlow.flowTreeKind);
                 [bookManager checkInTextFlowForBookWithID:bookID];
             }            
             
