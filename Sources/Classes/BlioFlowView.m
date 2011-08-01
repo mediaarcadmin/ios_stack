@@ -526,11 +526,11 @@
     
     indexPoint.source = [_eucBookView.book currentPageIndexPoint].source;
     
-    indexPoint.block = [range.startBlockId unsignedIntValue];
+    indexPoint.block = [((THPair *)range.startBlockId).second unsignedIntValue];
     indexPoint.word = [range.startElementId unsignedIntValue];
     BlioBookmarkPoint *startPoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
     
-    indexPoint.block = [range.endBlockId unsignedIntValue];
+    indexPoint.block = [((THPair *)range.endBlockId).second unsignedIntValue];
     indexPoint.word = [range.endElementId unsignedIntValue];
     BlioBookmarkPoint *endPoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
     
