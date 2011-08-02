@@ -34,6 +34,7 @@ struct BlioDrmSessionManagerDrmIVars {
 
 @property (nonatomic, retain) NSManagedObjectID *headerBookID;
 @property (nonatomic, retain) NSManagedObjectID *boundBookID;
+@property (nonatomic, retain) NSString* serverResponse;
 
 - (void)initialize;
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
@@ -43,7 +44,7 @@ struct BlioDrmSessionManagerDrmIVars {
 @implementation BlioDrmSessionManager
 
 @synthesize drmInitialized;
-@synthesize headerBookID, boundBookID;
+@synthesize headerBookID, boundBookID, serverResponse;
 
 
 -(void) dealloc {
@@ -231,6 +232,14 @@ ErrorExit:
 								  otherButtonTitles:@"OK", nil];
 		return YES;
 	}
+	else if (result==DRM_E_XMLNOTFOUND) {
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+                                     message:[self getTagValue:self.serverResponse xmlTag:@"Message"]
+                                    delegate:nil 
+                           cancelButtonTitle:nil
+                           otherButtonTitles:@"OK", nil];
+		return YES;
+	}
 	
 	return NO;
 }
@@ -411,7 +420,7 @@ ErrorExit:
 #else
 	[self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionJoinDomain];
 #endif
-	//NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
+	NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
 	@synchronized (self) {
 		ChkDR( Drm_JoinDomain_ProcessResponse( drmIVars->drmAppContext,
 											  pbResponse,
@@ -423,18 +432,18 @@ ErrorExit:
 ErrorExit:
 	if ( pbChallenge )
 		Oem_MemFree(pbChallenge);
-	// These are "standard success values."
+    pbResponse[cbResponse] = '\0';
+    self.serverResponse = [NSString stringWithCString:(const char*)pbResponse encoding:NSUTF8StringEncoding];
+   // These are "standard success values."
 	if ( dr == DRM_SUCCESS || dr == DRM_S_FALSE || dr == DRM_S_MORE_DATA  ) {
 		[[BlioStoreManager sharedInstance] setDeviceRegisteredSettingOnly:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore];
 		// Retrieve the service ID and account ID and store them in the form required by PlayReady.  
 		// They're needed if we want to leave the domain later.
-		pbResponse[cbResponse] = '\0';
-		NSString* responseStr = [NSString stringWithCString:(const char*)pbResponse encoding:NSUTF8StringEncoding];
 		NSString* sid = @"{";
-		sid = [[sid stringByAppendingString:[self getTagValue:responseStr xmlTag:@"serviceid"]] stringByAppendingString:@"}"];
+		sid = [[sid stringByAppendingString:[self getTagValue:self.serverResponse xmlTag:@"serviceid"]] stringByAppendingString:@"}"];
 		//		[[NSUserDefaults standardUserDefaults] setObject:sid forKey:kBlioServiceIDDefaultsKey];
 		NSString* aid = @"{";
-		aid = [[aid stringByAppendingString:[self getTagValue:responseStr xmlTag:@"accountid"]] stringByAppendingString:@"}"];
+		aid = [[aid stringByAppendingString:[self getTagValue:self.serverResponse xmlTag:@"accountid"]] stringByAppendingString:@"}"];
 		//		[[NSUserDefaults standardUserDefaults] setObject:aid forKey:kBlioAccountIDDefaultsKey];
 		[[BlioStoreManager sharedInstance] saveRegistrationAccountID:aid serviceID:sid];
 		return YES;
@@ -588,7 +597,7 @@ ErrorExit:
 	//[self getServerResponse:[NSString stringWithCString:(const char*)rgchURL encoding:NSASCIIStringEncoding] challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 	[self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionAcquireLicense];
 #endif
-	//NSLog(@"DRM license response: %@",[[[NSString alloc] initWithBytes:pbResponse length:cbResponse encoding:NSASCIIStringEncoding] autorelease]);
+	NSLog(@"DRM license response: %@",[[[NSString alloc] initWithBytes:pbResponse length:cbResponse encoding:NSASCIIStringEncoding] autorelease]);
 	@synchronized (self) {
 		ChkDR( Drm_LicenseAcq_ProcessResponse( drmIVars->drmAppContext,
 											  NULL,
