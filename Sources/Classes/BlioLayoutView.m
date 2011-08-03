@@ -411,7 +411,7 @@
 }
 
 - (UIImage *)pageTurningView:(EucIndexBasedPageTurningView *)aPageTurningView 
-   fastUIImageForPageAtIndex:(NSUInteger)index {
+   fastThumbnailUIImageForPageAtIndex:(NSUInteger)index {
     return [self.dataSource thumbnailForPage:index + 1];
 }
 
