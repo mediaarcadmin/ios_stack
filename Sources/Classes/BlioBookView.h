@@ -90,6 +90,7 @@
 @property (nonatomic, assign) CGFloat fontPointSize;
 @property (nonatomic, readonly) UIImage *dimPageImage;
 
+
 // Page texture-related properties are readony because
 // - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 // should be used to set them atomically.
@@ -99,6 +100,7 @@
 
 @property (nonatomic, assign) BOOL twoUpLandscape;
 
+- (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;
 // Implement if pageLabelForBookmarkPoint: is expensive for smooth slider operation.
 - (NSString *)pageLabelForPercentage:(float)percenatage;
 

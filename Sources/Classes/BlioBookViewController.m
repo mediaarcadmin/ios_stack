@@ -2655,6 +2655,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self setToolbarsForModalOverlayActive:NO];
 }
 
+- (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookPoint {
+    return [self.bookView displayPageNumberForBookmarkPoint:bookPoint];
+}
+
 #pragma mark -
 #pragma mark Rotation Handling
 

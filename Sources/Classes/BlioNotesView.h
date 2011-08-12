@@ -19,6 +19,8 @@
 - (void)notesViewCreateNote:(BlioNotesView *)notesView;
 - (void)notesViewUpdateNote:(BlioNotesView *)notesView;
 - (void)notesViewDismissed;
+- (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookPoint;
+
 @end
 
 
@@ -36,7 +38,6 @@
 
 @property (nonatomic, retain) UITextView *textView;
 @property (nonatomic, retain) UILabel *toolbarLabel;
-@property (nonatomic, retain) NSString *page;
 @property (nonatomic, assign) id<BlioNotesViewDelegate> delegate;
 @property (nonatomic, retain) NSManagedObject *note;
 @property (nonatomic, retain) BlioBookmarkRange *range;

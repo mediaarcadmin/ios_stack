@@ -63,6 +63,8 @@
 
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
 
+- (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;
+
 - (NSArray *)bookmarkRangesForCurrentPage;
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
@@ -566,24 +568,43 @@
     return MIN(percentage, 1.0f);
 }
 
+- (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex
+{
+    NSString *displayPageNumber = nil;    
+    
+    if ([self.dataSource respondsToSelector:@selector(displayPageNumberForPage:)]) {
+        displayPageNumber = [self.dataSource displayPageNumberForPage:pageIndex + 1];
+    }
+    
+    return displayPageNumber;
+    
+}
+
 - (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
     NSUInteger pageIndex = bookmarkPoint.layoutPage;
     if(pageIndex > 0) {
         pageIndex -= 1;
     }
-    return [self.contentsDataSource contentsTableViewController:nil displayPageNumberForPageIndex:pageIndex];
+    
+    NSString *pageStr = [self displayPageNumberForPageAtIndex:pageIndex];
+    
+    if (!pageStr) {
+        pageStr = [self.contentsDataSource contentsTableViewController:nil displayPageNumberForPageIndex:pageIndex];
+    }
+    
+    return pageStr;
 }
 
 - (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {    
-    NSString *pageStr = [self displayPageNumberForBookmarkPoint:bookmarkPoint];
-
+    NSString *pageStr = [self displayPageNumberForBookmarkPoint:bookmarkPoint];  
+    
     NSUInteger pageIndex = bookmarkPoint.layoutPage;
     if(pageIndex > 0) {
         pageIndex -= 1;
     }
-    
+        
     NSString *uuid;
     if ([self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
 		uuid = [(BlioLayoutPDFDataSource *)self.dataSource sectionUuidForPageIndex:pageIndex];
