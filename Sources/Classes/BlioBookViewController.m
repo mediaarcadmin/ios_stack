@@ -1198,7 +1198,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)didReceiveMemoryWarning 
 {
-    [self.book reportReadingIfRequired];
     [self.book flushCaches];
 	// Disabled this super call because was removing our BookView before it was added to a superview
 	// TODO: Investigate why this was happening
@@ -1207,7 +1206,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
 	[self stopAudio];
-    [self.book reportReadingIfRequired];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
@@ -2653,6 +2651,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)notesViewDismissed {
     [self setToolbarsForModalOverlayActive:NO];
+}
+
+- (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookPoint {
+    return [self.bookView displayPageNumberForBookmarkPoint:bookPoint];
 }
 
 #pragma mark -
