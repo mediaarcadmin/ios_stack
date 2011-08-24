@@ -589,7 +589,7 @@
     
     NSString *pageStr = [self displayPageNumberForPageAtIndex:pageIndex];
     
-    if (!pageStr) {
+    if (![pageStr length]) {
         pageStr = [self.contentsDataSource contentsTableViewController:nil displayPageNumberForPageIndex:pageIndex];
     }
     
@@ -597,13 +597,13 @@
 }
 
 - (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
-{    
-    NSString *pageStr = [self displayPageNumberForBookmarkPoint:bookmarkPoint];  
-    
+{        
     NSUInteger pageIndex = bookmarkPoint.layoutPage;
     if(pageIndex > 0) {
         pageIndex -= 1;
     }
+    
+    NSString *pageStr = [self displayPageNumberForPageAtIndex:pageIndex];
         
     NSString *uuid;
     if ([self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
@@ -616,7 +616,7 @@
     NSString *pageLabel = nil;
 
     if (chapterName) {
-        if (pageStr) {
+        if ([pageStr length]) {
             pageLabel = [NSString stringWithFormat:NSLocalizedString(@"Page %@ \u2013 %@",@"Page label with page number and chapter (layout view)"), pageStr, chapterName];
         } else {
             pageLabel = [NSString stringWithFormat:@"%@", chapterName];
