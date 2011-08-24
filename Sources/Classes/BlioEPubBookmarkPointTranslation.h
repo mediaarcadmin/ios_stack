@@ -1,5 +1,5 @@
 //
-//  BlioBUpeBook.h
+//  BlioEPubBookmarkPointTranslation.h
 //  BlioApp
 //
 //  Created by James Montgomerie on 20/09/2010.
@@ -9,7 +9,7 @@
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import "BlioBookmark.h"
 
-@protocol BlioBUpeBook <NSObject>
+@protocol BlioEPubBookmarkPointTranslation <NSObject>
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 - (EucBookPageIndexPoint *)bookPageIndexPointFromBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;

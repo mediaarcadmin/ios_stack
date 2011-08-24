@@ -9,7 +9,7 @@
 #import "BlioBook.h"
 #import "BlioBookManager.h"
 #import "BlioParagraphSource.h"
-#import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/THStringRenderer.h>
 #import <pthread.h>
 

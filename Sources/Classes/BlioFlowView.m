@@ -12,10 +12,10 @@
 #import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import "BlioParagraphSource.h"
-#import "BlioBUpeBook.h"
+#import "BlioEPubBook.h"
 #import "levenshtein_distance.h"
 #import <libEucalyptus/EucBook.h>
-#import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucHighlightRange.h>
 #import <libEucalyptus/EucMenuItem.h>
@@ -68,7 +68,7 @@
                 [bookManager checkInTextFlowForBookWithID:bookID];
             }            
             
-            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:(EucBUpeBook *)_eucBook])) {
+            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:(EucEPubBook *)_eucBook])) {
                 _eucBookView.delegate = self;
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;
@@ -462,7 +462,7 @@
                 BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
                 bookmarkPoint.layoutPage = reference.pageIndex + 1;
 
-                NSDictionary *idToIndexPoint = [(EucBUpeBook *)_eucBook idToIndexPoint];
+                NSDictionary *idToIndexPoint = [(EucEPubBook *)_eucBook idToIndexPoint];
                 
                 NSArray *longKeys = [idToIndexPoint allKeys];
                 NSMutableArray *shortKeys = [NSMutableArray arrayWithCapacity:[longKeys count]];

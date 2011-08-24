@@ -12,7 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <QuartzCore/CALayer.h>
 #import <QuartzCore/CATransaction.h>
-#import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/THPair.h>
 #import "BlioBook.h"
 #import "BlioParagraphSource.h"

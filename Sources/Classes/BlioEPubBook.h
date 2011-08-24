@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucEPubBook.h>
 
-#import "BlioBUpeBook.h"
+#import "BlioEPubBookmarkPointTranslation.h"
 
-@interface BlioEPubBook : EucBUpeBook <BlioBUpeBook> {}
+@interface BlioEPubBook : EucEPubBook <BlioEPubBookmarkPointTranslation> {}
 
 @property (nonatomic, retain) NSManagedObjectID *blioBookID;
 
