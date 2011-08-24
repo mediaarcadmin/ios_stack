@@ -225,6 +225,8 @@
 		7DCA224912F8905E0016C0B9 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA224612F890460016C0B9 /* MobileCoreServices.framework */; };
 		7DCD8E5511E32EFF00BA3255 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
 		7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
+		7DD09563140542D500A7131B /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8C1405223100958F1A /* libEucalyptusEPubIOSUI.a */; };
+		7DD09564140542D500A7131B /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8A1405223100958F1A /* libEucalyptusModel.a */; };
 		7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */; };
 		7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
@@ -757,7 +759,6 @@
 		A31CC7DD13FEA07E0010BFC5 /* badge-preview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC63DB1612DF8F2E00D8C750 /* badge-preview@2x.png */; };
 		A31CC7DE13FEA07E0010BFC5 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
 		A31CC7DF13FEA07E0010BFC5 /* userdoc-ipad.html in Resources */ = {isa = PBXBuildFile; fileRef = A3951A2712E9E87D0023EE10 /* userdoc-ipad.html */; };
-		A31CC7E013FEA07E0010BFC5 /* xhtml-entities.ent in Resources */ = {isa = PBXBuildFile; fileRef = 7DED87DC12EC829F00D162E0 /* xhtml-entities.ent */; };
 		A31CC7E113FEA07E0010BFC5 /* sfhf-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7D07620112EEC96A008EF96D /* sfhf-license.html */; };
 		A31CC7E213FEA07E0010BFC5 /* minizip-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7DB56E8413097EB900814B75 /* minizip-license.html */; };
 		A31CC7E313FEA07E0010BFC5 /* playButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9A9DAEC1312BC22009B950F /* playButton.png */; };
@@ -919,10 +920,10 @@
 		A31CC88013FEA07E0010BFC5 /* KNFBXPSPageNumbersParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C969513F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m */; };
 		A31CC88213FEA07E0010BFC5 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		A31CC88313FEA07E0010BFC5 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
-		A31CC88413FEA07E0010BFC5 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
+		A31CC88413FEA07E0010BFC5 /* libEucalyptusIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */; };
 		A31CC88513FEA07E0010BFC5 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		A31CC88613FEA07E0010BFC5 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
-		A31CC88713FEA07E0010BFC5 /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
+		A31CC88713FEA07E0010BFC5 /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusEPub.a */; };
 		A31CC88813FEA07E0010BFC5 /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
 		A31CC88913FEA07E0010BFC5 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
 		A31CC88A13FEA07E0010BFC5 /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
@@ -950,7 +951,6 @@
 		A31CC8A013FEA07E0010BFC5 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA224612F890460016C0B9 /* MobileCoreServices.framework */; };
 		A31CC8A113FEA07E0010BFC5 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EFAF4C134DF4B800ADF905 /* libXpsSDKipad.a */; };
-		A31CC8AA13FEA28F0010BFC5 /* SamsClubApp-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */; };
 		A31E82EE120B3FD800CB6657 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
 		A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
@@ -1731,7 +1731,7 @@
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 7D9AA9C9114A8F6A0055C381;
-			remoteInfo = libEucalyptusBUpe;
+			remoteInfo = libEucalyptusEPub;
 		};
 		7D68AF491150F39A00430710 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2631,18 +2631,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A31CC88413FEA07E0010BFC5 /* libEucalyptusIOSUI.a in Frameworks */,
+				7DD09564140542D500A7131B /* libEucalyptusModel.a in Frameworks */,
+				7DD09563140542D500A7131B /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				A31CC88713FEA07E0010BFC5 /* libEucalyptusEPub.a in Frameworks */,
+				A31CC88813FEA07E0010BFC5 /* libEucalyptusCSS.a in Frameworks */,
+				A31CC88513FEA07E0010BFC5 /* libEucalyptusBase.a in Frameworks */,
+				A31CC88C13FEA07E0010BFC5 /* libcss.a in Frameworks */,
+				A31CC88B13FEA07E0010BFC5 /* libparserutils.a in Frameworks */,
+				A31CC88A13FEA07E0010BFC5 /* libwapcaplet.a in Frameworks */,
+				A31CC88613FEA07E0010BFC5 /* libhyphenate.a in Frameworks */,
+				A31CC88913FEA07E0010BFC5 /* libexpat.a in Frameworks */,
+				A31CC88D13FEA07E0010BFC5 /* libminiunzip.a in Frameworks */,
 				A31CC88213FEA07E0010BFC5 /* libxml2.dylib in Frameworks */,
 				A31CC88313FEA07E0010BFC5 /* libstdc++.dylib in Frameworks */,
-				A31CC88413FEA07E0010BFC5 /* libEucalyptus.a in Frameworks */,
-				A31CC88513FEA07E0010BFC5 /* libEucalyptusBase.a in Frameworks */,
-				A31CC88613FEA07E0010BFC5 /* libhyphenate.a in Frameworks */,
-				A31CC88713FEA07E0010BFC5 /* libEucalyptusBUpe.a in Frameworks */,
-				A31CC88813FEA07E0010BFC5 /* libEucalyptusCSS.a in Frameworks */,
-				A31CC88913FEA07E0010BFC5 /* libexpat.a in Frameworks */,
-				A31CC88A13FEA07E0010BFC5 /* libwapcaplet.a in Frameworks */,
-				A31CC88B13FEA07E0010BFC5 /* libparserutils.a in Frameworks */,
-				A31CC88C13FEA07E0010BFC5 /* libcss.a in Frameworks */,
-				A31CC88D13FEA07E0010BFC5 /* libminiunzip.a in Frameworks */,
 				A31CC88E13FEA07E0010BFC5 /* Foundation.framework in Frameworks */,
 				A31CC88F13FEA07E0010BFC5 /* UIKit.framework in Frameworks */,
 				A31CC89013FEA07E0010BFC5 /* CoreGraphics.framework in Frameworks */,
@@ -2796,6 +2798,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8D1107310486CEB800E47090 /* BlioApp-Info.plist */,
 				A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */,
 				A3CF83A612E4B85E0069FA16 /* XPS-Demo */,
 				A3CF839712E4B7E00069FA16 /* XPS-Starters */,
@@ -2955,7 +2958,6 @@
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				7DE7B5E21104B4FD0021F382 /* Lighting.xib */,
 				C9867DE51127164F0070A03E /* BlioStoreBookView.xib */,
-				8D1107310486CEB800E47090 /* BlioApp-Info.plist */,
 				C9E5DC11117C741600950BA0 /* Localizable.strings */,
 				DCABAC8013B4CC9700BE0FE3 /* Blio.xcdatamodeld */,
 				DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */,
@@ -4758,7 +4760,6 @@
 				A31CC7DD13FEA07E0010BFC5 /* badge-preview@2x.png in Resources */,
 				A31CC7DE13FEA07E0010BFC5 /* XPS-Starters in Resources */,
 				A31CC7DF13FEA07E0010BFC5 /* userdoc-ipad.html in Resources */,
-				A31CC7E013FEA07E0010BFC5 /* xhtml-entities.ent in Resources */,
 				A31CC7E113FEA07E0010BFC5 /* sfhf-license.html in Resources */,
 				A31CC7E213FEA07E0010BFC5 /* minizip-license.html in Resources */,
 				A31CC7E313FEA07E0010BFC5 /* playButton.png in Resources */,
@@ -4770,7 +4771,6 @@
 				A31CC7E913FEA07E0010BFC5 /* TextFlowFlow.css in Resources */,
 				A31CC7EA13FEA07E0010BFC5 /* TextFlowXAML.css in Resources */,
 				A31CC7EB13FEA07E0010BFC5 /* TextFlowXAMLOverrides.css in Resources */,
-				A31CC8AA13FEA28F0010BFC5 /* SamsClubApp-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
