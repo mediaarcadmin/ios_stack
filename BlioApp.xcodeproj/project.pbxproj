@@ -35,8 +35,6 @@
 		7D07620212EEC96A008EF96D /* sfhf-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7D07620112EEC96A008EF96D /* sfhf-license.html */; };
 		7D07620312EEC96A008EF96D /* sfhf-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7D07620112EEC96A008EF96D /* sfhf-license.html */; };
 		7D07620412EEC96A008EF96D /* sfhf-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7D07620112EEC96A008EF96D /* sfhf-license.html */; };
-		7D0D4BC41213F6E2000AAC82 /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */; };
-		7D0D4BC51213F6E2000AAC82 /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */; };
 		7D131D231295628300BCA583 /* icon-title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D191295628300BCA583 /* icon-title@2x.png */; };
 		7D131D241295628300BCA583 /* icon-title.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1A1295628300BCA583 /* icon-title.png */; };
 		7D131D251295628300BCA583 /* icon-list@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1B1295628300BCA583 /* icon-list@2x.png */; };
@@ -97,8 +95,6 @@
 		7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
 		7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
-		7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
-		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		7D4A012811DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */; };
 		7D4A012911DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */; };
 		7D4A012A11DBA36900DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C011DBA36800DDA5B7 /* iPodLikeSliderKnob-Small.png */; };
@@ -264,8 +260,6 @@
 		A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A30E0EFF123EA5B400D31157 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
-		A30E0F00123EA5B400D31157 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
-		A30E0F03123EA5B400D31157 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		A30E0F05123EA5B400D31157 /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
 		A30E0F06123EA5B400D31157 /* row-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649910E0E413005E0E2B /* row-dark.png */; };
 		A30E0F07123EA5B400D31157 /* row-light.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649A10E0E413005E0E2B /* row-light.png */; };
@@ -417,7 +411,6 @@
 		A30E0FA3123EA5B400D31157 /* userdoc.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B612074EFA0038DA0C /* userdoc.html */; };
 		A30E0FA5123EA5B400D31157 /* booktexture-nocover.png in Resources */ = {isa = PBXBuildFile; fileRef = C9CEBD751211959B0040CEFF /* booktexture-nocover.png */; };
 		A30E0FA6123EA5B400D31157 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */; };
-		A30E0FA7123EA5B400D31157 /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */; };
 		A30E0FA8123EA5B400D31157 /* button-delete-red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FC122289C60022D410 /* button-delete-red@2x.png */; };
 		A30E0FA9123EA5B400D31157 /* button-tts-pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FF122289D20022D410 /* button-tts-pause@2x.png */; };
 		A30E0FAA123EA5B400D31157 /* downloadButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B903122289EF0022D410 /* downloadButton@2x.png */; };
@@ -542,8 +535,6 @@
 		A31CC70413FEA07E0010BFC5 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A31CC70513FEA07E0010BFC5 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A31CC70613FEA07E0010BFC5 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
-		A31CC70713FEA07E0010BFC5 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
-		A31CC70813FEA07E0010BFC5 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		A31CC70913FEA07E0010BFC5 /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
 		A31CC70A13FEA07E0010BFC5 /* row-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649910E0E413005E0E2B /* row-dark.png */; };
 		A31CC70B13FEA07E0010BFC5 /* row-light.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649A10E0E413005E0E2B /* row-light.png */; };
@@ -695,7 +686,6 @@
 		A31CC79D13FEA07E0010BFC5 /* userdoc.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B612074EFA0038DA0C /* userdoc.html */; };
 		A31CC79E13FEA07E0010BFC5 /* booktexture-nocover.png in Resources */ = {isa = PBXBuildFile; fileRef = C9CEBD751211959B0040CEFF /* booktexture-nocover.png */; };
 		A31CC79F13FEA07E0010BFC5 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */; };
-		A31CC7A013FEA07E0010BFC5 /* EPubOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */; };
 		A31CC7A113FEA07E0010BFC5 /* button-delete-red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FC122289C60022D410 /* button-delete-red@2x.png */; };
 		A31CC7A213FEA07E0010BFC5 /* button-tts-pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FF122289D20022D410 /* button-tts-pause@2x.png */; };
 		A31CC7A313FEA07E0010BFC5 /* downloadButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B903122289EF0022D410 /* downloadButton@2x.png */; };
@@ -963,8 +953,6 @@
 		A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A36D34C4120B136700E1A035 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
 		A36D34C6120B136700E1A035 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
-		A36D34C7120B136700E1A035 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
-		A36D34CA120B136700E1A035 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		A36D34CE120B136700E1A035 /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
 		A36D34CF120B136700E1A035 /* row-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649910E0E413005E0E2B /* row-dark.png */; };
 		A36D34D0120B136700E1A035 /* row-light.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649A10E0E413005E0E2B /* row-light.png */; };
@@ -1782,6 +1770,13 @@
 			remoteGlobalIDString = 7D46E1C813FD52130021763E;
 			remoteInfo = CSSTest;
 		};
+		7DF30E0414069525005EE550 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D3AC23914054DBA007F91AD;
+			remoteInfo = PageLayoutTest;
+		};
 		A30E0EF7123EA5B400D31157 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
@@ -1838,7 +1833,6 @@
 		5590D316111C8E7D00CE0C4F /* roundedcorners.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = roundedcorners.png; sourceTree = "<group>"; };
 		7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libEucalyptus.xcodeproj; path = libEucalyptus/libEucalyptus.xcodeproj; sourceTree = "<group>"; };
 		7D07620112EEC96A008EF96D /* sfhf-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "sfhf-license.html"; sourceTree = "<group>"; };
-		7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubOverrides.css; sourceTree = "<group>"; };
 		7D131D191295628300BCA583 /* icon-title@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-title@2x.png"; sourceTree = "<group>"; };
 		7D131D1A1295628300BCA583 /* icon-title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-title.png"; sourceTree = "<group>"; };
 		7D131D1B1295628300BCA583 /* icon-list@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-list@2x.png"; sourceTree = "<group>"; };
@@ -1862,8 +1856,6 @@
 		7D381B9410D92F14008D34E2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		7D381B9610D92F14008D34E2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
-		7D381CDF10D93023008D34E2 /* EPubDefault.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = EPubDefault.css; sourceTree = "<group>"; };
-		7D381D0510D93039008D34E2 /* HyphenationPatterns */ = {isa = PBXFileReference; lastKnownFileType = folder; path = HyphenationPatterns; sourceTree = "<group>"; };
 		7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderBlueLeftCap.png; sourceTree = "<group>"; };
 		7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderBlueLeftCap@2x.png"; sourceTree = "<group>"; };
 		7D4A00C011DBA36800DDA5B7 /* iPodLikeSliderKnob-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small.png"; sourceTree = "<group>"; };
@@ -3009,6 +3001,7 @@
 				7D229E8512F98D0D0037D93D /* libminiunzip.a */,
 				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
 				7DDE9E8E1405223100958F1A /* CSSTest */,
+				7DF30E0514069525005EE550 /* PageLayoutTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3017,11 +3010,8 @@
 			isa = PBXGroup;
 			children = (
 				7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */,
-				7D381D0510D93039008D34E2 /* HyphenationPatterns */,
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
-				7D381CDF10D93023008D34E2 /* EPubDefault.css */,
-				7D0D4BC31213F6E2000AAC82 /* EPubOverrides.css */,
 				7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */,
 				7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */,
 				7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */,
@@ -4049,6 +4039,13 @@
 			remoteRef = 7DDE9E8D1405223100958F1A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		7DF30E0514069525005EE550 /* PageLayoutTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = PageLayoutTest;
+			remoteRef = 7DF30E0414069525005EE550 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -4059,8 +4056,6 @@
 				28AD73600D9D9599002E5188 /* MainNavControllerAndLibraryView.xib in Resources */,
 				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
 				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
-				7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */,
-				7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */,
 				C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */,
 				C977649B10E0E413005E0E2B /* row-dark.png in Resources */,
 				C977649C10E0E413005E0E2B /* row-light.png in Resources */,
@@ -4214,7 +4209,6 @@
 				A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */,
 				C9CEBD761211959B0040CEFF /* booktexture-nocover.png in Resources */,
 				DC2ABE411213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */,
-				7D0D4BC41213F6E2000AAC82 /* EPubOverrides.css in Resources */,
 				DCA1B8FD122289C60022D410 /* button-delete-red@2x.png in Resources */,
 				DCA1B900122289D20022D410 /* button-tts-pause@2x.png in Resources */,
 				DCA1B905122289EF0022D410 /* downloadButton@2x.png in Resources */,
@@ -4303,8 +4297,6 @@
 				A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */,
 				A30E0EFF123EA5B400D31157 /* BookEdge.pvrtc in Resources */,
-				A30E0F00123EA5B400D31157 /* EPubDefault.css in Resources */,
-				A30E0F03123EA5B400D31157 /* HyphenationPatterns in Resources */,
 				A30E0F05123EA5B400D31157 /* booktextureandshadow.png in Resources */,
 				A30E0F06123EA5B400D31157 /* row-dark.png in Resources */,
 				A30E0F07123EA5B400D31157 /* row-light.png in Resources */,
@@ -4456,7 +4448,6 @@
 				A30E0FA3123EA5B400D31157 /* userdoc.html in Resources */,
 				A30E0FA5123EA5B400D31157 /* booktexture-nocover.png in Resources */,
 				A30E0FA6123EA5B400D31157 /* BlioFeatureCompatibility.plist in Resources */,
-				A30E0FA7123EA5B400D31157 /* EPubOverrides.css in Resources */,
 				A30E0FA8123EA5B400D31157 /* button-delete-red@2x.png in Resources */,
 				A30E0FA9123EA5B400D31157 /* button-tts-pause@2x.png in Resources */,
 				A30E0FAA123EA5B400D31157 /* downloadButton@2x.png in Resources */,
@@ -4543,8 +4534,6 @@
 				A31CC70413FEA07E0010BFC5 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A31CC70513FEA07E0010BFC5 /* RootViewController.xib in Resources */,
 				A31CC70613FEA07E0010BFC5 /* BookEdge.pvrtc in Resources */,
-				A31CC70713FEA07E0010BFC5 /* EPubDefault.css in Resources */,
-				A31CC70813FEA07E0010BFC5 /* HyphenationPatterns in Resources */,
 				A31CC70913FEA07E0010BFC5 /* booktextureandshadow.png in Resources */,
 				A31CC70A13FEA07E0010BFC5 /* row-dark.png in Resources */,
 				A31CC70B13FEA07E0010BFC5 /* row-light.png in Resources */,
@@ -4696,7 +4685,6 @@
 				A31CC79D13FEA07E0010BFC5 /* userdoc.html in Resources */,
 				A31CC79E13FEA07E0010BFC5 /* booktexture-nocover.png in Resources */,
 				A31CC79F13FEA07E0010BFC5 /* BlioFeatureCompatibility.plist in Resources */,
-				A31CC7A013FEA07E0010BFC5 /* EPubOverrides.css in Resources */,
 				A31CC7A113FEA07E0010BFC5 /* button-delete-red@2x.png in Resources */,
 				A31CC7A213FEA07E0010BFC5 /* button-tts-pause@2x.png in Resources */,
 				A31CC7A313FEA07E0010BFC5 /* downloadButton@2x.png in Resources */,
@@ -4784,8 +4772,6 @@
 				A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A36D34C4120B136700E1A035 /* RootViewController.xib in Resources */,
 				A36D34C6120B136700E1A035 /* BookEdge.pvrtc in Resources */,
-				A36D34C7120B136700E1A035 /* EPubDefault.css in Resources */,
-				A36D34CA120B136700E1A035 /* HyphenationPatterns in Resources */,
 				A36D34CE120B136700E1A035 /* booktextureandshadow.png in Resources */,
 				A36D34CF120B136700E1A035 /* row-dark.png in Resources */,
 				A36D34D0120B136700E1A035 /* row-light.png in Resources */,
@@ -4937,7 +4923,6 @@
 				A36D3570120B136700E1A035 /* userdoc.html in Resources */,
 				C9CEBD781211959B0040CEFF /* booktexture-nocover.png in Resources */,
 				DC2ABE421213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */,
-				7D0D4BC51213F6E2000AAC82 /* EPubOverrides.css in Resources */,
 				DCA1B8FE122289C60022D410 /* button-delete-red@2x.png in Resources */,
 				DCA1B901122289D20022D410 /* button-tts-pause@2x.png in Resources */,
 				DCA1B907122289EF0022D410 /* downloadButton@2x.png in Resources */,

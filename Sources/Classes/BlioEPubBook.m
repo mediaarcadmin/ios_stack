@@ -63,10 +63,10 @@
     [super dealloc];
 }
 
-- (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)userAgentCSSDatasForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
-    NSMutableArray *ret = [[[super baseCSSPathsForDocumentTree:documentTree] mutableCopy] autorelease];
-    [ret addObject:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]];
+    NSMutableArray *ret = [[[super userAgentCSSDatasForDocumentTree:documentTree] mutableCopy] autorelease];
+    [ret addObject:[NSData dataWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]]];
     return ret;
 }
 
