@@ -224,6 +224,7 @@
 		if (animated) {
 			self.pageNumber = 1;
 		} else {
+            self.currentBookmarkPoint = aBook.implicitBookmarkPoint;
 			NSInteger page = MAX(MIN(aBook.implicitBookmarkPoint.layoutPage, self.pageCount), 1);
 			self.pageNumber = page;
 		}

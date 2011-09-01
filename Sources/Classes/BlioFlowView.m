@@ -80,7 +80,8 @@
                     [self goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
                 }
                 
-                [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:NSKeyValueObservingOptionInitial context:NULL];
+                [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:0 context:NULL];
+                [_eucBookView addObserver:self forKeyPath:@"currentPageIndex" options:0 context:NULL];
                 [_eucBookView addObserver:self forKeyPath:@"selector.trackingStage" options:0 context:NULL];
 
                 [self addSubview:_eucBookView];
@@ -100,6 +101,7 @@
 - (void)dealloc
 {
     [_eucBookView removeObserver:self forKeyPath:@"selector.trackingStage"];
+    [_eucBookView removeObserver:self forKeyPath:@"currentPageIndex"];
     [_eucBookView removeObserver:self forKeyPath:@"currentPageIndexPoint"];
     [_eucBookView release];
      
@@ -122,7 +124,8 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                         change:(NSDictionary *)change context:(void *)context
 {
-    if([keyPath isEqualToString:@"currentPageIndexPoint"]) {
+    if([keyPath isEqualToString:@"currentPageIndex"] || 
+       [keyPath isEqualToString:@"currentPageIndexPoint"]) {
         self.currentBookmarkPoint = [self bookmarkPointFromBookPageIndexPoint:_eucBookView.currentPageIndexPoint];
     } else if([keyPath isEqualToString:@"selector.trackingStage"]) {
         if(_eucBookView.selector.trackingStage == EucSelectorTrackingStageFirstSelection) {
