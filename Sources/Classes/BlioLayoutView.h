@@ -22,8 +22,6 @@
 @interface BlioLayoutView : BlioSelectableBookView <THAccessibilityElementDelegate, EucPageTurningViewDelegate, EucIndexBasedPageTurningViewDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate> {
     NSManagedObjectID *bookID;
     EucIndexBasedPageTurningView *pageTurningView;
-    UIImage *pageTexture;
-    BOOL pageTextureIsDark;
     BOOL twoUpLandscape;
     
     BlioTextFlow *textFlow;

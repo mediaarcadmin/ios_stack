@@ -608,16 +608,6 @@
     _eucBookView.fontPointSize = fontPointSize;
 }
 
-- (UIImage *)pageTexture
-{
-    return _eucBookView.pageTexture;
-}
-
-- (BOOL)pageTextureIsDark
-{
-    return _eucBookView.pageTextureIsDark;
-}
-
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
     return [_eucBookView setPageTexture:pageTexture isDark:isDark];
