@@ -72,7 +72,7 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-@interface BlioBookViewController : UIViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate> {
+@interface BlioBookViewController : UIViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate, UIPopoverControllerDelegate> {
     BOOL _firstAppearance;
     
     UIView *_rootView;
@@ -147,6 +147,8 @@ typedef enum {
     UIBarButtonItem* searchButton;
 	UIBarButtonItem* backButton;
     BOOL shouldDisplaySearchAfterRotation;
+    
+    UIPopoverController *wordToolPopoverController;
     
     NSMutableArray *historyStack;
 	BlioBookSliderPreview *thumbPreview;

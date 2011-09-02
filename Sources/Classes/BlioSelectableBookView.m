@@ -54,7 +54,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     return ret;
 }
 
-- (NSArray *)webToolsMenuItems {    
+- (NSArray *)wordToolsMenuItems {    
     EucMenuItem *dictionaryItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Dictionary", "\"Dictionary\" option in popup menu")
                                                                action:@selector(dictionary:)] autorelease];
     
@@ -82,8 +82,8 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     EucMenuItem *colorItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Color", "\"Color\" option in popup menu")
                                                           action:@selector(showColorMenu:)] autorelease];
    
-    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
-                                                                 action:@selector(showWebTools:)] autorelease];
+    EucMenuItem *showWordToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
+                                                                 action:@selector(showWordTools:)] autorelease];
 
     EucMenuItem *removeItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Remove", "\"Remove Highlight\" option in popup menu")
                                                            action:@selector(removeHighlight:)] autorelease];
@@ -96,15 +96,15 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 			color = NO;
 	if (copy) {
 		if (color)
-			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWebToolsItem, colorItem, nil];
+			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWordToolsItem, colorItem, nil];
 		else 
-			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWebToolsItem, nil];
+			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWordToolsItem, nil];
 	}
     else {
 		if (color)
-			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWebToolsItem, colorItem, nil];
+			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWordToolsItem, colorItem, nil];
 		else
-			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWebToolsItem, nil];
+			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWordToolsItem, nil];
 	}
     
     return ret;
@@ -117,14 +117,14 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
                                                             action:@selector(addNote:)] autorelease];
     EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu")
                                                          action:@selector(copy:)] autorelease];
-    EucMenuItem *showWebToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
-                                                                 action:@selector(showWebTools:)] autorelease];
+    EucMenuItem *showWordToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
+                                                                 action:@selector(showWordTools:)] autorelease];
     
     NSArray *ret;
     if (copy)
-        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWebToolsItem, nil];
+        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWordToolsItem, nil];
     else
-        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, showWebToolsItem, nil];
+        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, showWordToolsItem, nil];
     
     return ret;
 }
@@ -258,44 +258,35 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     }    
 }
 
-- (void)showWebTools:(id)sender {
-    [self.selector changeActiveMenuItemsTo:[self webToolsMenuItems]];
+- (void)showWordTools:(id)sender {
+    [self.selector changeActiveMenuItemsTo:[self wordToolsMenuItems]];
 }
 
 
 - (void)dictionary:(id)sender {
-    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
-        [self.delegate openWebToolWithRange:webToolRange  toolType:dictionaryTool];
-        [self.selector setSelectedRange:nil];
-    }
+    BlioBookmarkRange *wordToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+    [self.delegate openWordToolWithRange:wordToolRange atRect:self.selector.selectedRangeRect toolType:dictionaryTool];
+    [self.selector setSelectedRange:nil];
 }
 
 /*
  - (void)thesaurus:(id)sender {
- BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
- if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
- [self.delegate openWebToolWithRange:webToolRange toolType:thesaurusTool];
- 
+ BlioBookmarkRange *wordToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+ [self.delegate openWordToolWithRange:wordToolRange atRect:self.selector.selectedRangeRect toolType:thesaurusTool];
  [self.selector setSelectedRange:nil];
- }
  }
  */
 
 - (void)encyclopedia:(id)sender {
-    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
-        [self.delegate openWebToolWithRange:webToolRange toolType:encyclopediaTool];
-        [self.selector setSelectedRange:nil];
-    }
+    BlioBookmarkRange *wordToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+    [self.delegate openWordToolWithRange:wordToolRange atRect:self.selector.selectedRangeRect toolType:encyclopediaTool];
+    [self.selector setSelectedRange:nil];
 }
 
 - (void)search:(id)sender {
-    BlioBookmarkRange *webToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
-    if ([self.delegate respondsToSelector:@selector(openWebToolWithRange:toolType:)]) {
-        [self.delegate openWebToolWithRange:webToolRange toolType:searchTool];
-        [self.selector setSelectedRange:nil];
-    }
+    BlioBookmarkRange *wordToolRange = [self bookmarkRangeFromSelectorRange:[self.selector selectedRange]];
+    [self.delegate openWordToolWithRange:wordToolRange atRect:self.selector.selectedRangeRect toolType:searchTool];
+    [self.selector setSelectedRange:nil];
 }
 
 #pragma mark -

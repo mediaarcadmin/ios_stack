@@ -81,6 +81,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) NSMutableArray *historyStack;
 @property (nonatomic, retain) BlioBookSliderPreview *thumbPreview;
 
+@property (nonatomic, retain) UIPopoverController *wordToolPopoverController;
+
+
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void)setPageJumpSliderPreview;
 - (void) _updatePageJumpLabelWithLabel:(NSString *)newLabel;
@@ -152,6 +155,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize historyStack;
 @synthesize thumbPreview;
 @synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, viewSettingsButton, searchButton, backButton;
+
+@synthesize wordToolPopoverController;
 
 + (void)initialize {
     if(self == [BlioBookViewController class]) {
@@ -2692,6 +2697,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         shouldDisplaySearchAfterRotation = YES;
     }
     
+    [self.wordToolPopoverController dismissPopoverAnimated:NO];
+    self.wordToolPopoverController = nil;
+    
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.contentsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.viewSettingsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
@@ -2902,62 +2910,62 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		default: 
 			break;
 	}
-}
-
-- (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type { 
-	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Not Found",@"\"Internet Connection Not Found\" alert message title")
-									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_WEBTOOL",nil,[NSBundle mainBundle],@"An internet connection is required to perform this function.",@"Alert message when the user tries to download a book without an Internet connection.")
-									delegate:nil 
-						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
-						   otherButtonTitles:nil];		
-		return;
-	}
-	
-	NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
+}       
+       
+- (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWordToolsType)type { 
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Not Found",@"\"Internet Connection Not Found\" alert message title")
+                                     message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_WEBTOOL",nil,[NSBundle mainBundle],@"An internet connection is required to perform this function.",@"Alert message when the user tries to download a book without an Internet connection.")
+                                    delegate:nil 
+                           cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
+                           otherButtonTitles:nil];		
+        return;
+    }
+    
+    NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
     NSString *encodedParam = [[[wordStrings componentsJoinedByString:@" "] 
-							   stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
-							  stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];	
-	NSString *queryString = nil;
-	NSString *titleString = nil;
-	switch (type) {
-		case dictionaryTool:
-			// TODO: get from preference
-			queryString = [NSString stringWithFormat: @"http://dictionary.reference.com/browse/%@", encodedParam];
-			titleString = [NSString stringWithString:NSLocalizedString(@"Dictionary",@"\"Dictionary\" web tool title")];
-			break;
-		case encyclopediaTool:
-			switch ((BlioEncyclopediaOption)[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastEncyclopediaDefaultsKey]) {
-				case wikipediaOption:
-					queryString = [NSString stringWithFormat:@"http://en.wikipedia.org/wiki/%@", encodedParam];
-					break;
-				case britannicaOption:
-					queryString = [NSString stringWithFormat: @"http://www.britannica.com/bps/search?query=%@", encodedParam];
-					break;
-				default:
-					break;
-			}  
-			titleString = [NSString stringWithString:NSLocalizedString(@"Encyclopedia",@"\"Encyclopedia\" web tool title")];
-			break;			
-		case searchTool:
-			switch ((BlioSearchEngineOption)[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastSearchEngineDefaultsKey]) {
-				case googleOption:
-					queryString = [NSString stringWithFormat: @"http://www.google.com/search?hl=en&source=hp&q=%@", encodedParam];
-					break;
-				case yahooOption:
-					queryString = [NSString stringWithFormat: @"http://search.yahoo.com/search?p=%@", encodedParam];
-					break;
-				case bingOption:
-					queryString = [NSString stringWithFormat: @"http://www.bing.com/search?q=%@", encodedParam];
-					break;
-				default:
-					break;
-			}  
-			titleString = [NSString stringWithString:NSLocalizedString(@"Web Search",@"\"Web Search\" web tool title")];
-			break;
-		default:
-			break;
-	}
+                               stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
+                              stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];	
+    NSString *queryString = nil;
+    NSString *titleString = nil;
+    switch (type) {
+        case dictionaryTool:
+            // TODO: get from preference
+            queryString = [NSString stringWithFormat: @"http://dictionary.reference.com/browse/%@", encodedParam];
+            titleString = [NSString stringWithString:NSLocalizedString(@"Dictionary",@"\"Dictionary\" web tool title")];
+            break;
+        case encyclopediaTool:
+            switch ((BlioEncyclopediaOption)[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastEncyclopediaDefaultsKey]) {
+                case wikipediaOption:
+                    queryString = [NSString stringWithFormat:@"http://en.wikipedia.org/wiki/%@", encodedParam];
+                    break;
+                case britannicaOption:
+                    queryString = [NSString stringWithFormat: @"http://www.britannica.com/bps/search?query=%@", encodedParam];
+                    break;
+                default:
+                    break;
+            }  
+            titleString = [NSString stringWithString:NSLocalizedString(@"Encyclopedia",@"\"Encyclopedia\" web tool title")];
+            break;			
+        case searchTool:
+            switch ((BlioSearchEngineOption)[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastSearchEngineDefaultsKey]) {
+                case googleOption:
+                    queryString = [NSString stringWithFormat: @"http://www.google.com/search?hl=en&source=hp&q=%@", encodedParam];
+                    break;
+                case yahooOption:
+                    queryString = [NSString stringWithFormat: @"http://search.yahoo.com/search?p=%@", encodedParam];
+                    break;
+                case bingOption:
+                    queryString = [NSString stringWithFormat: @"http://www.bing.com/search?q=%@", encodedParam];
+                    break;
+                default:
+                    break;
+            }  
+            titleString = [NSString stringWithString:NSLocalizedString(@"Web Search",@"\"Web Search\" web tool title")];
+            break;
+        default:
+            break;
+    }
     NSURL *url = [NSURL URLWithString:queryString];
     if (nil != url) {
         BlioWebToolsViewController *aWebToolController = [[BlioWebToolsViewController alloc] initWithURL:url];
@@ -2965,25 +2973,63 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         aWebToolController.topViewController.navigationItem.rightBarButtonItem = rightItem; 
         [rightItem release];
         aWebToolController.topViewController.navigationItem.title = titleString;
-		
-		//NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", nil]; // until there's icons...
-		NSArray *buttonNames = [NSArray arrayWithObjects:[UIImage imageNamed:@"back-black.png"], [UIImage imageNamed:@"forward-black.png"], nil]; // until there's icons...
-		UISegmentedControl* segmentedControl = [[UISegmentedControl alloc] initWithItems:buttonNames];
-		segmentedControl.momentary = YES;
-		segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-		segmentedControl.frame = CGRectMake(0, 0, 70, 30);
-		[segmentedControl addTarget:self action:@selector(webNavigate:) forControlEvents:UIControlEventValueChanged];
-		[segmentedControl setEnabled:NO forSegmentAtIndex:0];
-		[segmentedControl setEnabled:NO forSegmentAtIndex:1];
-		UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
-		[segmentedControl release];
-		aWebToolController.topViewController.navigationItem.leftBarButtonItem = segmentBarItem;
-		[segmentBarItem release];
-		
+        
+        //NSArray *buttonNames = [NSArray arrayWithObjects:@"B", @"F", nil]; // until there's icons...
+        NSArray *buttonNames = [NSArray arrayWithObjects:[UIImage imageNamed:@"back-black.png"], [UIImage imageNamed:@"forward-black.png"], nil]; // until there's icons...
+        UISegmentedControl* segmentedControl = [[UISegmentedControl alloc] initWithItems:buttonNames];
+        segmentedControl.momentary = YES;
+        segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        segmentedControl.frame = CGRectMake(0, 0, 70, 30);
+        [segmentedControl addTarget:self action:@selector(webNavigate:) forControlEvents:UIControlEventValueChanged];
+        [segmentedControl setEnabled:NO forSegmentAtIndex:0];
+        [segmentedControl setEnabled:NO forSegmentAtIndex:1];
+        UIBarButtonItem *segmentBarItem = [[UIBarButtonItem alloc] initWithCustomView:segmentedControl];
+        [segmentedControl release];
+        aWebToolController.topViewController.navigationItem.leftBarButtonItem = segmentBarItem;
+        [segmentBarItem release];
+        
         aWebToolController.navigationBar.tintColor = _returnToNavigationBarTint;
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         [self presentModalViewController:aWebToolController animated:YES];
         [aWebToolController release];
+    }
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    if(popoverController == self.wordToolPopoverController) {
+        self.wordToolPopoverController = nil;
+    }
+}
+
+- (void)openWordToolWithRange:(BlioBookmarkRange *)range atRect:(CGRect)rect toolType:(BlioWordToolsType)type { 
+    Class uiReferenceLibraryViewControllerClass; 
+    if(type == dictionaryTool && (uiReferenceLibraryViewControllerClass = NSClassFromString(@"UIReferenceLibraryViewController"))) { 
+        NSString *words = [[[self.book wordStringsForBookmarkRange:range] componentsJoinedByString:@" "] stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+        
+        // performSelector so that we'll still compile without the 5.0 SDK.
+        UIViewController *libraryViewController = [[uiReferenceLibraryViewControllerClass alloc] performSelector:@selector(initWithTerm:) withObject:words];
+        
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            // Would be great to size this to an appropriate size for the actual content of
+            // the library view, but there's no way to get that.
+            libraryViewController.view.frame = CGRectMake(0, 0, 320, 320);
+            libraryViewController.contentSizeForViewInPopover = CGSizeMake(320, 320);
+            UIPopoverController *dictionaryPopover = [[UIPopoverController alloc] initWithContentViewController:libraryViewController];
+            [dictionaryPopover presentPopoverFromRect:rect
+                                               inView:self.bookView
+                             permittedArrowDirections:UIPopoverArrowDirectionAny
+                                             animated:YES];
+            dictionaryPopover.delegate = self;
+            self.wordToolPopoverController = dictionaryPopover;
+            [dictionaryPopover release];
+        } else {
+            [[self navigationController] presentModalViewController:libraryViewController animated:YES];
+        }
+    
+        [libraryViewController release];
+    } else { 
+        [self openWebToolWithRange:range toolType:type];
     }
 }
 

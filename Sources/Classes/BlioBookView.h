@@ -26,7 +26,7 @@
 
 - (void)copyWithRange:(BlioBookmarkRange *)range;
 
-- (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type;
+- (void)openWordToolWithRange:(BlioBookmarkRange *)range atRect:(CGRect)rect toolType:(BlioWordToolsType)type;
 
 - (void)showToolbars;
 - (void)hideToolbars;
