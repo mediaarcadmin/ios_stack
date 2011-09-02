@@ -36,8 +36,9 @@
       displayScale = "1.00"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       debugDocumentVersioning = "YES"
+      enablesOpenGLESFrameCapture = "YES"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
@@ -63,6 +64,14 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-EucAlwaysPaginate"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "YES"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-THStringRendererDontCacheWidths"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
