@@ -18,7 +18,6 @@ static NSString * const BlioProcessingWillDeleteBookNotification = @"BlioProcess
 
 @interface BlioProcessingManager : NSObject <BlioProcessingDelegate> {
     NSOperationQueue *preAvailabilityQueue;
-    NSOperationQueue *postAvailabilityQueue;
 }
 
 @end

@@ -20,28 +20,24 @@
 
 @synthesize alreadyCompletedOperations;
 
-- (id) init {
-	if((self = [super init])) {
-	}
-	return self;
-}
-
 - (void)addDependency:(NSOperation *)operation {
 	[super addDependency:operation];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:operation];
 }
+
 - (void)removeDependency:(NSOperation *)operation {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationProgressNotification object:operation];
 	[super removeDependency:operation];
 }
+
 - (void)onProcessingProgressNotification:(NSNotification*)note {
-//	NSLog(@"%@ called for %@", NSStringFromSelector(_cmd),self.sourceSpecificID);
+    //NSLog(@"%@ called for %@", NSStringFromSelector(_cmd),self.sourceSpecificID);
 	[self calculateProgress];
 }
 - (void)calculateProgress {
-	//	NSLog(@"alreadyCompletedOperations: %u",alreadyCompletedOperations);
+	//NSLog(@"alreadyCompletedOperations: %u",alreadyCompletedOperations);
 	float collectiveProgress = 0.0f;
-//	NSLog(@"self.dependencies: %@",self.dependencies);
+    //NSLog(@"self.dependencies: %@",self.dependencies);
 	for (NSOperation* op in self.dependencies) {
 		if ([op isKindOfClass:[BlioProcessingOperation class]]) {
 			collectiveProgress = collectiveProgress + ((BlioProcessingOperation*)op).percentageComplete;
@@ -53,7 +49,8 @@
 		}
 	}
 	float newPercentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
-//	NSLog(@"%@ progress for %@: %f",[[self class] description],self.sourceSpecificID,newPercentageComplete);
+    
+    //NSLog(@"%@ progress for %@: %f",[[self class] description],self.sourceSpecificID,newPercentageComplete);
 	self.percentageComplete = newPercentageComplete;
 }
 
@@ -352,14 +349,19 @@
 - (void)finish {
     self.connection = nil;
     
-    [self willChangeValueForKey:@"isExecuting"];
-    [self willChangeValueForKey:@"isFinished"];
-    
-    executing = NO;
-    finished = YES;
-    
-    [self didChangeValueForKey:@"isExecuting"];
-    [self didChangeValueForKey:@"isFinished"];
+    BOOL wasUnfinished = !finished;
+    if(wasUnfinished) {
+        [self willChangeValueForKey:@"isFinished"];
+        finished = YES;
+    }
+    if(executing) {
+        [self willChangeValueForKey:@"isExecuting"];
+        executing = NO;
+        [self didChangeValueForKey:@"isExecuting"];
+    }
+    if(wasUnfinished) {
+        [self didChangeValueForKey:@"isFinished"];
+    }
 }
 
 - (void)start {
@@ -379,10 +381,12 @@
 	}
 	
     if ([self isCancelled]) {
-        [self willChangeValueForKey:@"isFinished"];
-		NSLog(@"BlioProcessingDownloadOperation cancelled, will prematurely abort start");
-        finished = YES;
-        [self didChangeValueForKey:@"isFinished"];
+        NSLog(@"BlioProcessingDownloadOperation cancelled, will prematurely abort start");
+        if(!finished) {
+            [self willChangeValueForKey:@"isFinished"];
+            finished = YES;
+            [self didChangeValueForKey:@"isFinished"];
+        }
         return;
     }
 
@@ -437,15 +441,6 @@
 	
     NSString *temporaryPath = [self temporaryPath];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	/*
-    NSString *cachedPath = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
-	// see if there is no need to downlaod (asset is already present at cachedPath
-	if ([fileManager fileExistsAtPath:cachedPath]) {
-		[self downloadDidFinishSuccessfully:NO];
-		[self finish];
-		return;
-	}
-	*/
 	
 	if (resume == NO || forceReprocess == YES) {
 		// if not resuming, delete whatever is in place

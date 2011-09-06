@@ -19,7 +19,6 @@
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
-@property (nonatomic, retain) NSOperationQueue *postAvailabilityQueue;
 
 - (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
 - (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
@@ -28,28 +27,22 @@
 
 @implementation BlioProcessingManager
 
-@synthesize preAvailabilityQueue, postAvailabilityQueue;
+@synthesize preAvailabilityQueue;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.preAvailabilityQueue cancelAllOperations];
-    [self.postAvailabilityQueue cancelAllOperations];
     self.preAvailabilityQueue = nil;
-    self.postAvailabilityQueue = nil;
     [super dealloc];
 }
 
-- (id)init{
+- (id)init {
     if ((self = [super init])) {
         NSOperationQueue *aPreAvailabilityQueue = [[NSOperationQueue alloc] init];
 		[aPreAvailabilityQueue setMaxConcurrentOperationCount:3];
         self.preAvailabilityQueue = aPreAvailabilityQueue;
         [aPreAvailabilityQueue release];
         
-        NSOperationQueue *aPostAvailabilityQueue = [[NSOperationQueue alloc] init];
-        self.postAvailabilityQueue = aPostAvailabilityQueue;
-        [aPostAvailabilityQueue release];
-		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onReprocessCoverThumbnailNotification:) name:BlioProcessingReprocessCoverThumbnailNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingTokenRequiredNotification:) name:BlioProcessingLicenseAcquisitionTokenRequiredNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingTokenRequiredNotification:) name:BlioProcessingDownloadPaidBookTokenRequiredNotification object:nil];
