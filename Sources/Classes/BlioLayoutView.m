@@ -1322,18 +1322,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
 	if (self.pageTurningView && !CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
 		if (!self.overlay) {
-			self.overlay = [[BlioGestureSuppressingView alloc] init];
-			self.overlay.frame = self.pageTurningView.bounds;
-			self.overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-			self.overlay.backgroundColor = [UIColor clearColor];
-            
+            BlioGestureSuppressingView *gestureSuppressingView = [[BlioGestureSuppressingView alloc] init];
+			gestureSuppressingView.frame = self.pageTurningView.bounds;
+			gestureSuppressingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+			gestureSuppressingView.backgroundColor = [UIColor clearColor];
             for (UIGestureRecognizer *recognizer in self.pageTurningView.gestureRecognizers) {
                 if (![recognizer isEqual:self.pageTurningView.tapGestureRecognizer]) {
-                    [self.overlay.suppressingGestureRecognizer requireGestureRecognizerToFail:recognizer];
+                    [gestureSuppressingView.suppressingGestureRecognizer requireGestureRecognizerToFail:recognizer];
                 }
             }
-                        
-			[self.pageTurningView addSubview:self.overlay];
+            
+            self.overlay = gestureSuppressingView;
+			[self.pageTurningView addSubview:gestureSuppressingView];
+            
+            [gestureSuppressingView release];
 		}
 
         [self.webViews makeObjectsPerformSelector:@selector(stopLoading)];
