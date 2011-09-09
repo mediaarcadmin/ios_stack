@@ -95,8 +95,6 @@
 		7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
 		7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
-		7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
-		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
 		7D39D40613EABDF50029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
 		7D39D40713EABDFF0029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
 		7D39D40813EABE030029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
@@ -153,6 +151,9 @@
 		7D4A015A11DBA36900DDA5B7 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F011DBA36800DDA5B7 /* SelectionEnd.png */; };
 		7D4A015B11DBA36900DDA5B7 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F111DBA36800DDA5B7 /* SelectionKnob.png */; };
 		7D4A015C11DBA36900DDA5B7 /* SelectionKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */; };
+		7D4CA2341417814100117F3A /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
+		7D4CA2351417826200117F3A /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
+		7D4CA236141783B400117F3A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
 		7D4CE4751100C64C0061BDF2 /* BlioBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */; };
 		7D662008132E7E9B00242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
 		7D662009132E7F1600242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
@@ -711,10 +712,6 @@
 		A31CC7BB13FEA07E0010BFC5 /* icon-add.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A4E7126F7F8E00A131B7 /* icon-add.png */; };
 		A31CC7BC13FEA07E0010BFC5 /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
 		A31CC7BD13FEA07E0010BFC5 /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
-		A31CC7BE13FEA07E0010BFC5 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
-		A31CC7BF13FEA07E0010BFC5 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
-		A31CC7C013FEA07E0010BFC5 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
-		A31CC7C113FEA07E0010BFC5 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
 		A31CC7C213FEA07E0010BFC5 /* icon-title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D191295628300BCA583 /* icon-title@2x.png */; };
 		A31CC7C313FEA07E0010BFC5 /* icon-title.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1A1295628300BCA583 /* icon-title.png */; };
 		A31CC7C413FEA07E0010BFC5 /* icon-list@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1B1295628300BCA583 /* icon-list@2x.png */; };
@@ -2631,8 +2628,12 @@
 				A31CC88613FEA07E0010BFC5 /* libhyphenate.a in Frameworks */,
 				A31CC88913FEA07E0010BFC5 /* libexpat.a in Frameworks */,
 				A31CC88D13FEA07E0010BFC5 /* libminiunzip.a in Frameworks */,
+				A31CC89B13FEA07E0010BFC5 /* libBabTTSFat.a in Frameworks */,
+				A31CC89A13FEA07E0010BFC5 /* libMobilityStaticFat.a in Frameworks */,
 				A31CC88213FEA07E0010BFC5 /* libxml2.dylib in Frameworks */,
+				A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */,
 				A31CC88313FEA07E0010BFC5 /* libstdc++.dylib in Frameworks */,
+				A31CC89D13FEA07E0010BFC5 /* libPlayReadyPK.a in Frameworks */,
 				A31CC88E13FEA07E0010BFC5 /* Foundation.framework in Frameworks */,
 				A31CC88F13FEA07E0010BFC5 /* UIKit.framework in Frameworks */,
 				A31CC89013FEA07E0010BFC5 /* CoreGraphics.framework in Frameworks */,
@@ -2645,15 +2646,12 @@
 				A31CC89713FEA07E0010BFC5 /* libiconv.dylib in Frameworks */,
 				A31CC89813FEA07E0010BFC5 /* AVFoundation.framework in Frameworks */,
 				A31CC89913FEA07E0010BFC5 /* AudioToolbox.framework in Frameworks */,
-				A31CC89A13FEA07E0010BFC5 /* libMobilityStaticFat.a in Frameworks */,
-				A31CC89B13FEA07E0010BFC5 /* libBabTTSFat.a in Frameworks */,
 				A31CC89C13FEA07E0010BFC5 /* Security.framework in Frameworks */,
-				A31CC89D13FEA07E0010BFC5 /* libPlayReadyPK.a in Frameworks */,
 				A31CC89E13FEA07E0010BFC5 /* StoreKit.framework in Frameworks */,
 				A31CC89F13FEA07E0010BFC5 /* Accelerate.framework in Frameworks */,
 				A31CC8A013FEA07E0010BFC5 /* MobileCoreServices.framework in Frameworks */,
 				A31CC8A113FEA07E0010BFC5 /* MediaPlayer.framework in Frameworks */,
-				A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */,
+				7D4CA236141783B400117F3A /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4048,6 +4046,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
+				A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */,
+				A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */,
+				553D5B17126F6B6B00A1CE83 /* speedreaderBackgroundImages in Resources */,
+				A3FE55B712074EFA0038DA0C /* credits.html in Resources */,
 				28AD73600D9D9599002E5188 /* MainNavControllerAndLibraryView.xib in Resources */,
 				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
 				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
@@ -4107,7 +4110,6 @@
 				DCC45AD311B458A400CBD491 /* voiceSamples in Resources */,
 				C9D280B311AD0FCE00857CFB /* icon-noTTS.png in Resources */,
 				C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */,
-				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */,
 				DCCE466A11B9AE22002D7E01 /* icon-freebooks.png in Resources */,
 				DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
@@ -4199,7 +4201,6 @@
 				DC18E086120517010077DF01 /* library-pausebutton@2x.png in Resources */,
 				DC18E08A120517170077DF01 /* library-resumebutton@2x.png in Resources */,
 				DC18E092120517C20077DF01 /* library-progress-background@2x.png in Resources */,
-				A3FE55B712074EFA0038DA0C /* credits.html in Resources */,
 				A3FE55B812074EFA0038DA0C /* eula.html in Resources */,
 				A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */,
 				C9CEBD761211959B0040CEFF /* booktexture-nocover.png in Resources */,
@@ -4227,7 +4228,6 @@
 				DCD4A294126F470F00A131B7 /* greyButton@2x.png in Resources */,
 				DCD4A295126F470F00A131B7 /* greyButtonPressed.png in Resources */,
 				DCD4A296126F470F00A131B7 /* greyButtonPressed@2x.png in Resources */,
-				553D5B17126F6B6B00A1CE83 /* speedreaderBackgroundImages in Resources */,
 				DCD4A4EC126F7F8E00A131B7 /* icon-add@2x.png in Resources */,
 				DCD4A4ED126F7F8E00A131B7 /* icon-bookmarked@2x.png in Resources */,
 				DCD4A4EE126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
@@ -4261,8 +4261,6 @@
 				A393060712BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1912DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1A12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
-				A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */,
-				A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */,
 				A3951A2812E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620312EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8713097EB900814B75 /* minizip-license.html in Resources */,
@@ -4284,6 +4282,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */,
 				A30E0EFB123EA5B400D31157 /* credits.html in Resources */,
 				A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */,
@@ -4497,7 +4496,6 @@
 				A393060D12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1B12DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1C12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
-				A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3951A2912E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620412EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8613097EB900814B75 /* minizip-license.html in Resources */,
@@ -4703,10 +4701,6 @@
 				A31CC7BB13FEA07E0010BFC5 /* icon-add.png in Resources */,
 				A31CC7BC13FEA07E0010BFC5 /* icon-import.png in Resources */,
 				A31CC7BD13FEA07E0010BFC5 /* icon-import@2x.png in Resources */,
-				A31CC7BE13FEA07E0010BFC5 /* LinuxLibertine-Bold.otf in Resources */,
-				A31CC7BF13FEA07E0010BFC5 /* LinuxLibertine-BoldItalic.otf in Resources */,
-				A31CC7C013FEA07E0010BFC5 /* LinuxLibertine-Italic.otf in Resources */,
-				A31CC7C113FEA07E0010BFC5 /* LinuxLibertine.otf in Resources */,
 				A31CC7C213FEA07E0010BFC5 /* icon-title@2x.png in Resources */,
 				A31CC7C313FEA07E0010BFC5 /* icon-title.png in Resources */,
 				A31CC7C413FEA07E0010BFC5 /* icon-list@2x.png in Resources */,
@@ -4748,6 +4742,7 @@
 				A31CC7E913FEA07E0010BFC5 /* TextFlowFlow.css in Resources */,
 				A31CC7EA13FEA07E0010BFC5 /* TextFlowXAML.css in Resources */,
 				A31CC7EB13FEA07E0010BFC5 /* TextFlowXAMLOverrides.css in Resources */,
+				7D4CA2341417814100117F3A /* THFonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4756,6 +4751,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3CF83B012E4B96B0069FA16 /* Acapela For iPhone LF USEnglish Heather in Resources */,
+				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */,
 				A31E82EE120B3FD800CB6657 /* credits.html in Resources */,
 				A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */,
@@ -4830,6 +4826,7 @@
 				A36D351B120B136700E1A035 /* icon-cart@2x.png in Resources */,
 				A36D351C120B136700E1A035 /* icon-contents@2x.png in Resources */,
 				A36D351D120B136700E1A035 /* icon-eye@2x.png in Resources */,
+				7D4CA2351417826200117F3A /* icon-import@2x.png in Resources */,
 				A36D351E120B136700E1A035 /* icon-layout@2x.png in Resources */,
 				A36D351F120B136700E1A035 /* icon-lock@2x.png in Resources */,
 				A36D3520120B136700E1A035 /* icon-page@2x.png in Resources */,
@@ -4968,7 +4965,6 @@
 				A393060A12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1712DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1812DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
-				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3951A2A12E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620212EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8513097EB900814B75 /* minizip-license.html in Resources */,
