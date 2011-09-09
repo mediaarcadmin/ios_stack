@@ -245,7 +245,7 @@
         titleString = [NSString stringWithFormat:@"%@\u2026", [titleString substringToIndex:maxTitleLength]];
     }
     
-    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"LinuxLibertine"];
+    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"LinLibertineO"];
 
     CGSize fullSize = [[UIScreen mainScreen] bounds].size;
     CGFloat pointSize = roundf(fullSize.height / 8.0f);

@@ -95,6 +95,11 @@
 		7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
 		7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
+		7D381CFB10D93023008D34E2 /* EPubDefault.css in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDF10D93023008D34E2 /* EPubDefault.css */; };
+		7D381D0610D93039008D34E2 /* HyphenationPatterns in Resources */ = {isa = PBXBuildFile; fileRef = 7D381D0510D93039008D34E2 /* HyphenationPatterns */; };
+		7D39D40613EABDF50029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
+		7D39D40713EABDFF0029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
+		7D39D40813EABE030029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
 		7D4A012811DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */; };
 		7D4A012911DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */; };
 		7D4A012A11DBA36900DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C011DBA36800DDA5B7 /* iPodLikeSliderKnob-Small.png */; };
@@ -165,6 +170,9 @@
 		7D6D9FFB124E9DEE005FD8CE /* BlioBookSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCCFF123BCED600859B92 /* BlioBookSearchResultsTableViewController.m */; };
 		7D6D9FFC124E9DEE005FD8CE /* BlioBookSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCD0D123BDB1300859B92 /* BlioBookSearchResult.m */; };
 		7D6D9FFE124E9E1A005FD8CE /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
+		7D71550B13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
+		7D71550C13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
+		7D71550D13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
 		7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		7D79183610F2257C00C4D839 /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
 		7D79CF7D117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79CF7C117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m */; };
@@ -236,18 +244,6 @@
 		7DE2749A1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE2749B1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE2749C1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
-		7DE310381281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
-		7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
-		7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
-		7DE3103B1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
-		7DE3103C1281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
-		7DE3103D1281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
-		7DE3103E1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
-		7DE3103F1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
-		7DE310401281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
-		7DE310411281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
-		7DE310421281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
-		7DE310431281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
 		7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
@@ -1856,6 +1852,7 @@
 		7D381B9410D92F14008D34E2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		7D381B9610D92F14008D34E2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
+		7D39D40413EABD2E0029EDCB /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderBlueLeftCap.png; sourceTree = "<group>"; };
 		7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderBlueLeftCap@2x.png"; sourceTree = "<group>"; };
 		7D4A00C011DBA36800DDA5B7 /* iPodLikeSliderKnob-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small.png"; sourceTree = "<group>"; };
@@ -1912,6 +1909,7 @@
 		7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmark.h; sourceTree = "<group>"; };
 		7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmark.m; sourceTree = "<group>"; };
 		7D662007132E7E9B00242F63 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
+		7D71550A13E99F2700A593A9 /* THFonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = THFonts; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
 		7D79183410F2257C00C4D839 /* BlioFlowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowView.h; sourceTree = "<group>"; };
@@ -1971,10 +1969,6 @@
 		7DDCC00D132E88C800FE8201 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		7DE274981382DD6000641A54 /* KNFBPageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBPageMarker.h; sourceTree = "<group>"; };
 		7DE274991382DD6A00641A54 /* KNFBPageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBPageMarker.m; sourceTree = "<group>"; };
-		7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
-		7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
-		7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
-		7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DE7B5E21104B4FD0021F382 /* Lighting.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Lighting.xib; sourceTree = "<group>"; };
 		7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLightSettingsViewController.h; sourceTree = "<group>"; };
 		7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLightSettingsViewController.m; sourceTree = "<group>"; };
@@ -2574,6 +2568,7 @@
 				7D2711AE124931D40087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224712F890460016C0B9 /* MobileCoreServices.framework in Frameworks */,
 				C9A9B9AE130EC9CA009B950F /* MediaPlayer.framework in Frameworks */,
+				7D39D40813EABE030029EDCB /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2616,6 +2611,7 @@
 				7D2711B0124931E40087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224912F8905E0016C0B9 /* MobileCoreServices.framework in Frameworks */,
 				C9A9B9B3130ECA28009B950F /* MediaPlayer.framework in Frameworks */,
+				7D39D40613EABDF50029EDCB /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2700,6 +2696,7 @@
 				7D2711AF124931DA0087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224812F890530016C0B9 /* MobileCoreServices.framework in Frameworks */,
 				C9A9B9B1130EC9FC009B950F /* MediaPlayer.framework in Frameworks */,
+				7D39D40713EABDFF0029EDCB /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2976,6 +2973,7 @@
 				A32D885911FE04DA00D2AE17 /* Security.framework */,
 				7DCA224612F890460016C0B9 /* MobileCoreServices.framework */,
 				C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */,
+				7D39D40413EABD2E0029EDCB /* CoreText.framework */,
 				7D662007132E7E9B00242F63 /* libstdc++.dylib */,
 				C9B61FF41137AF840012CE7E /* libz.dylib */,
 				7DAA30C311512B1C006634CC /* libiconv.dylib */,
@@ -3010,12 +3008,9 @@
 			isa = PBXGroup;
 			children = (
 				7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */,
+				7D71550A13E99F2700A593A9 /* THFonts */,
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
-				7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */,
-				7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */,
-				7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */,
-				7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */,
 			);
 			name = "libEucalyptus Resources";
 			path = libEucalyptus/Resources;
@@ -4238,10 +4233,6 @@
 				DCD4A4EE126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4EF126F7F8E00A131B7 /* icon-add.png in Resources */,
 				A3CA7B221275F92900775EF4 /* icon-back.png in Resources */,
-				7DE3103C1281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
-				7DE3103D1281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
-				7DE3103E1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
-				7DE3103F1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 				7D131D2D1295628300BCA583 /* icon-title@2x.png in Resources */,
 				7D131D2E1295628300BCA583 /* icon-title.png in Resources */,
 				7D131D2F1295628300BCA583 /* icon-list@2x.png in Resources */,
@@ -4285,6 +4276,7 @@
 				C93ECB23134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB26134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
 				7DFA426D13A925BB0059C9B0 /* icon-back@2x.png in Resources */,
+				7D71550B13E99F2700A593A9 /* THFonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4477,10 +4469,6 @@
 				DCD4A4EB126F7F8E00A131B7 /* icon-add.png in Resources */,
 				C9E04BA61271946600A307C4 /* icon-import.png in Resources */,
 				A3849B7F12E7E1FD0040B0EA /* icon-import@2x.png in Resources */,
-				7DE310401281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
-				7DE310411281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
-				7DE310421281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
-				7DE310431281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 				7D131D371295628300BCA583 /* icon-title@2x.png in Resources */,
 				7D131D381295628300BCA583 /* icon-title.png in Resources */,
 				7D131D391295628300BCA583 /* icon-list@2x.png in Resources */,
@@ -4522,6 +4510,7 @@
 				C93ECB22134B6215003B99FD /* TextFlowFlow.css in Resources */,
 				C93ECB25134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB28134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
+				7D71550D13E99F2700A593A9 /* THFonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4951,10 +4940,6 @@
 				DCD4A4F2126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4F3126F7F8E00A131B7 /* icon-add.png in Resources */,
 				C9E04BA51271946400A307C4 /* icon-import.png in Resources */,
-				7DE310381281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
-				7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
-				7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
-				7DE3103B1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 				7D131D231295628300BCA583 /* icon-title@2x.png in Resources */,
 				7D131D241295628300BCA583 /* icon-title.png in Resources */,
 				7D131D251295628300BCA583 /* icon-list@2x.png in Resources */,
@@ -4996,6 +4981,7 @@
 				C93ECB21134B6215003B99FD /* TextFlowFlow.css in Resources */,
 				C93ECB24134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB27134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
+				7D71550C13E99F2700A593A9 /* THFonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
