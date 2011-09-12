@@ -108,7 +108,15 @@
 }
 
 - (void)dismissTabView:(id)sender {
-    [self.parentViewController dismissModalViewControllerAnimated:YES];
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
+    if([self respondsToSelector:@selector(presentingViewController)]) {
+        [self.presentingViewController dismissModalViewControllerAnimated:YES];
+    } else {
+#endif
+        [self.parentViewController dismissModalViewControllerAnimated:YES];
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
+    }
+#endif
 }
 
 /*  
