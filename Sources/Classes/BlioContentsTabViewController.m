@@ -21,7 +21,14 @@ typedef enum {
     kBlioContentsTabViewTabNotes = 1 
 } BlioContentsTabViewTab;
 
-@interface BlioContentsTabContentsViewController : EucBookContentsTableViewController
+@interface BlioContentsTabContentsViewController : EucBookContentsTableViewController <EucBookContentsTableViewControllerDataSource> {
+    id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
+    UIView<BlioBookView> *bookView;
+}
+
+@property (nonatomic, assign) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
+@property (nonatomic, retain) UIView<BlioBookView> *bookView;
+
 @end
 
 
@@ -76,7 +83,7 @@ typedef enum {
 	// TODO: do not instantiate TOC view if isTOCActive is false to conserve memory
     BlioContentsTabContentsViewController *aContentsController = [[BlioContentsTabContentsViewController alloc] init];
     aContentsController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    aContentsController.dataSource = aBookView.contentsDataSource;
+    aContentsController.contentsDataSource = aBookView.contentsDataSource; // N.B. this needs to be set before the dataSource
     aContentsController.currentSectionUuid = aBookView.currentUuid;
     aContentsController.contentSizeForViewInPopover = CGSizeMake(320, MINPOPOVERHEIGHT);
     
@@ -91,6 +98,10 @@ typedef enum {
 	if ((self = [super initWithRootViewController:aRootVC])) {
         self.bookView = aBookView;
         self.book = aBook;
+        
+        [aContentsController setBookView:aBookView]; // Needed to get display page number, needs to be set before the datasource
+        [aContentsController setDataSource:aContentsController];
+        
         self.contentsController = aContentsController;
         if (isTOCActive) [self pushViewController:self.contentsController animated:NO];
         [self.contentsController setDelegate:self];
@@ -323,6 +334,14 @@ typedef enum {
 
 @implementation BlioContentsTabContentsViewController
 
+@synthesize contentsDataSource;
+@synthesize bookView;
+
+- (void)dealloc {
+    [bookView release], bookView = nil;
+    [super dealloc];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
         
@@ -351,6 +370,52 @@ typedef enum {
     } else {
         return YES;
     }
+}
+
+#pragma mark - EucBookContentsTableViewControllerDataSource
+
+- (NSArray *)contentsTableViewControllerSectionUuids:(EucBookContentsTableViewController *)contentsTableViewController {
+    
+    return [self.contentsDataSource contentsTableViewControllerSectionUuids:contentsTableViewController];
+}
+
+- (THPair *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
+    
+    return [self.contentsDataSource contentsTableViewController:contentsTableViewController
+                      presentationNameAndSubTitleForSectionUuid:sectionUuid];
+}
+
+- (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+                  pageIndexForSectionUuid:(NSString *)sectionUuid {
+    
+    return [self.contentsDataSource contentsTableViewController:contentsTableViewController
+                                        pageIndexForSectionUuid:sectionUuid];
+}
+
+// A "display number" i.e. cover -> nil, 2 -> @"1" etc;
+// Could also do things like convert to roman numerals when appropriate.
+- (NSString *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+            displayPageNumberForPageIndex:(NSUInteger)pageNumber {
+    
+    if ([self.bookView respondsToSelector:@selector(displayPageNumberForPageAtIndex:)]) {
+        return [self.bookView displayPageNumberForPageAtIndex:pageNumber];
+    } else {
+        return [self.contentsDataSource contentsTableViewController:contentsTableViewController
+                                    displayPageNumberForPageIndex:pageNumber];
+    }
+}
+
+- (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+                      levelForSectionUuid:(NSString *)sectionUuid {
+    
+    if ([self.contentsDataSource respondsToSelector:@selector(contentsTableViewController:levelForSectionUuid:)]) {
+        return [self.contentsDataSource contentsTableViewController:contentsTableViewController
+                                            levelForSectionUuid:sectionUuid];
+    } else {
+        return 0;
+    }
+    
 }
 
 @end

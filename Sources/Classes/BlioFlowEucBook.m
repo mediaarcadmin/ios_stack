@@ -91,7 +91,7 @@
 }
     
 #pragma mark -
-#pragma mark BlioBUpeBook methods
+#pragma mark BlioEPubBook methods
 
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)eucIndexPoint
 {

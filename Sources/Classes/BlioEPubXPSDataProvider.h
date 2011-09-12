@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import <libEucalyptus/EucBUpeDataProvider.h>
+#import <libEucalyptus/EucEPubDataProvider.h>
 
 @class BlioXPSProvider;
 
-@interface BlioEPubXPSDataProvider : NSObject <EucBUpeDataProvider> {
+@interface BlioEPubXPSDataProvider : NSObject <EucEPubDataProvider> {
     NSManagedObjectID *bookID;
     BlioXPSProvider *xpsProvider;
     

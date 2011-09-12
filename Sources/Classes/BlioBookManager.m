@@ -9,7 +9,7 @@
 #import "BlioBookManager.h"
 #import "BlioBook.h"
 #import "BlioTextFlow.h"
-#import "BlioBUpeBook.h"
+#import "BlioEPubBook.h"
 #import "BlioEPubBook.h"
 #import "BlioFlowEucBook.h"
 #import "BlioParagraphSource.h"
@@ -197,21 +197,21 @@ static pthread_key_t sManagedObjectContextKey;
 }
 
 
-- (EucBUpeBook *)checkOutEucBookForBookWithID:(NSManagedObjectID *)aBookID
+- (EucEPubBook *)checkOutEucBookForBookWithID:(NSManagedObjectID *)aBookID
 {
-    EucBUpeBook *ret = nil;
+    EucEPubBook *ret = nil;
     
     [self.persistentStoreCoordinator lock];
     
     NSMutableDictionary *myCachedEucBooks = self.cachedEucBooks;
     @synchronized(myCachedEucBooks) {
-        EucBUpeBook *previouslyCachedEucBook = [cachedEucBooks objectForKey:aBookID];
+        EucEPubBook *previouslyCachedEucBook = [cachedEucBooks objectForKey:aBookID];
         if(previouslyCachedEucBook) {
             //NSLog(@"Returning cached EucBook for book with ID %@", aBookID);
             [self.cachedEucBookCheckoutCounts addObject:aBookID];
             ret = previouslyCachedEucBook;
         } else {
-            EucBUpeBook *eucBook = nil;
+            EucEPubBook *eucBook = nil;
             BlioBook *book = [self bookWithID:aBookID];
             if([book hasEPub]) {
                 eucBook = [[BlioEPubBook alloc] initWithBookID:aBookID];

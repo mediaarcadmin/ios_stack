@@ -124,7 +124,7 @@
 		firstTimeUserTextView = [[UILabel alloc] initWithFrame:CGRectZero];
 		firstTimeUserTextView.lineBreakMode = UILineBreakModeWordWrap;
 		firstTimeUserTextView.numberOfLines = 0;
-		firstTimeUserTextView.text = NSLocalizedString(@"We invite you to explore the sample books in your library, or import free titles.",@"First time user message on welcome view controller.");
+		firstTimeUserTextView.text = NSLocalizedString(@"We invite you to try the sample books in your library.  You can also import free titles via iTunes.",@"First time user message on welcome view controller.");
 		//firstTimeUserTextView.text = NSLocalizedStringWithDefaultValue(@"FIRST_TIME_USER_TEXT",nil,[NSBundle mainBundle],@"We invite you to explore the sample books in your library, or import //free titles.",@"First time user message on welcome view controller.");
 		[self addSubview:firstTimeUserTextView];
 		[firstTimeUserTextView release];

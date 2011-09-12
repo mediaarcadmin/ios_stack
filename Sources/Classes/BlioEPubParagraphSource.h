@@ -10,11 +10,11 @@
 #import <CoreData/CoreData.h>
 #import "BlioParagraphSource.h"
 
-@class BlioEPubBook, EucBUpePageLayoutController;
+@class BlioEPubBook, EucEPubPageLayoutController;
 
 @interface BlioEPubParagraphSource : NSObject <BlioParagraphSource> {
     NSManagedObjectID *_bookID;
-    BlioEPubBook *_bUpeBook;
+    BlioEPubBook *_ePubBook;
 }
 
 - (id)initWithBookID:(NSManagedObjectID *)bookID;

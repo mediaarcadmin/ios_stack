@@ -35,13 +35,12 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
 
 @implementation BlioNotesView
 
-@synthesize page, textView, delegate, note, range, toolbarLabel, showInView, noteSaved;
+@synthesize textView, delegate, note, range, toolbarLabel, showInView, noteSaved;
 
 - (void)dealloc {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
-    self.page = nil;
     self.textView = nil;
     self.toolbarLabel = nil;
     self.delegate = nil;
@@ -61,7 +60,6 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     if ((self = [super initWithFrame:CGRectZero])) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        self.page = [[NSNumber numberWithInteger:[[aRange startPoint] layoutPage]] stringValue];
         self.note = aNote;
 		self.noteSaved = NO;
         self.range = aRange;
@@ -167,10 +165,22 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     [dateFormat setDateStyle:NSDateFormatterShortStyle];
     NSString *dateString = [dateFormat stringFromDate:date];  
     [dateFormat release];
-    if (nil != self.page)
-		toolbarLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Page %@, %@",@"\"Page %@, %@\" toolbar label for Notes View"), self.page, dateString];
-    else
-        toolbarLabel.text = [NSString stringWithFormat:@"%@", self.page, dateString];
+    
+    BlioBookmarkPoint *notePoint = [self.range startPoint];
+    NSString *displayPage = nil;
+    
+    if (notePoint) {
+        if ([self.delegate respondsToSelector:@selector(displayPageNumberForBookmarkPoint:)]) {
+            displayPage = [self.delegate displayPageNumberForBookmarkPoint:notePoint];
+        }
+    }
+    
+    if (displayPage) {
+		self.toolbarLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Page %@, %@", @"Display page and date toolbar label for Notes View"), displayPage, dateString];
+    } else {
+        self.toolbarLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%@", @"Unknown page + date toolbar label for Notes View"), dateString];
+    }
+    
     toolbarLabel.adjustsFontSizeToFitWidth = YES;
     //toolbarLabel.font = [UIFont boldSystemFontOfSize:14.0f];
     toolbarLabel.font = [UIFont fontWithName:@"Marker Felt" size:18.0f];

@@ -11,8 +11,8 @@
 #import "BlioEPubBook.h"
 #import "BlioBookManager.h"
 
-#import <libEucalyptus/EucBUpeBook.h>
-#import <libEucalyptus/EucBUpePageLayoutController.h>
+#import <libEucalyptus/EucEPubBook.h>
+#import <libEucalyptus/EucEPubPageLayoutController.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>
@@ -75,26 +75,26 @@
 
 
 @interface BlioEPubParagraphSource ()
-@property (nonatomic, retain, readonly) EucBUpeBook *bUpeBook;
+@property (nonatomic, retain, readonly) EucEPubBook *ePubBook;
 @end
 
 @implementation BlioEPubParagraphSource
 
-@synthesize bUpeBook = _bUpeBook;
+@synthesize ePubBook = _ePubBook;
 
 - (id)initWithBookID:(NSManagedObjectID *)bookID;
 {
     if((self = [super init])) {
         _bookID = [bookID retain];
-        _bUpeBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID] retain];
+        _ePubBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID] retain];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    if(_bUpeBook) {
-        [_bUpeBook release];
+    if(_ePubBook) {
+        [_ePubBook release];
         [[BlioBookManager sharedBookManager] checkInEucBookForBookWithID:_bookID];
     }
     [_bookID release];
@@ -132,7 +132,7 @@
 {
     EucBookPageIndexPoint *indexPoint = [self _indexPointFromBookmarkPoint:bookmarkPoint];
     
-    EucCSSIntermediateDocument *intermediateDocument = [self.bUpeBook intermediateDocumentForIndexPoint:indexPoint];
+    EucCSSIntermediateDocument *intermediateDocument = [self.ePubBook intermediateDocumentForIndexPoint:indexPoint];
     
     EucCSSLayoutRunExtractor *runExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:intermediateDocument];
     
@@ -178,13 +178,13 @@
         ret = [[[BlioEPubParagraphID alloc] initWithRun:newRun indexPoint:newIndexPoint runExtractor:runExtractor] autorelease];
         [newIndexPoint release];        
     } else {
-        EucBUpeBook *myBUpeBook = self.bUpeBook;
+        EucEPubBook *myEPubBook = self.ePubBook;
         EucBookPageIndexPoint *nextSourceIndexPoint = [[EucBookPageIndexPoint alloc] init];
         nextSourceIndexPoint.source = indexPoint.source;
         
         do {
             ++nextSourceIndexPoint.source;
-            EucCSSIntermediateDocument *intermediateDocument = [myBUpeBook intermediateDocumentForIndexPoint:nextSourceIndexPoint];
+            EucCSSIntermediateDocument *intermediateDocument = [myEPubBook intermediateDocumentForIndexPoint:nextSourceIndexPoint];
             if(intermediateDocument) {
                 EucCSSLayoutRunExtractor *newDocumentRunExtractor = [[EucCSSLayoutRunExtractor alloc] initWithDocument:intermediateDocument];
                 newRun = [newDocumentRunExtractor runForNodeWithKey:0];
@@ -194,7 +194,7 @@
                 }
                 [newDocumentRunExtractor release]; 
             }            
-        } while(!ret && nextSourceIndexPoint.source < myBUpeBook.sourceCount);
+        } while(!ret && nextSourceIndexPoint.source < myEPubBook.sourceCount);
         
         [nextSourceIndexPoint release];
     }
@@ -204,22 +204,22 @@
 
 - (NSArray *)sectionUuids
 {
-    return [self.bUpeBook.navPoints valueForKey:@"uuid"];
+    return [self.ePubBook.navPoints valueForKey:@"uuid"];
 }
 
 - (NSUInteger)levelForSectionUuid:(NSString *)sectionUuid
 {
-    return [self.bUpeBook navPointWithUuid:sectionUuid].level;
+    return [self.ePubBook navPointWithUuid:sectionUuid].level;
 }
 
 - (THPair *)presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid
 {
-    return [[self.bUpeBook navPointWithUuid:sectionUuid].text splitAndFormattedChapterName];
+    return [[self.ePubBook navPointWithUuid:sectionUuid].text splitAndFormattedChapterName];
 }
 
 - (BlioBookmarkPoint *)bookmarkPointForSectionUuid:(NSString *)uuid
 {
-    return [self _bookmarkPointFromIndexPoint:[self.bUpeBook indexPointForUuid:uuid]];
+    return [self _bookmarkPointFromIndexPoint:[self.ePubBook indexPointForUuid:uuid]];
 }
 
 - (NSString *)sectionUuidForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
@@ -232,7 +232,7 @@
         EucBookPageIndexPoint *currentIndexPoint = indexPoint;
         EucBookPageIndexPoint *newIndexPoint = nil;
         
-        EucBUpeBook *book = self.bUpeBook;
+        EucEPubBook *book = self.ePubBook;
         
         for(EucBookNavPoint *navPoint in book.navPoints) {
             EucBookPageIndexPoint *prospectiveNewIndexPoint = [book indexPointForUuid:navPoint.uuid];
@@ -251,12 +251,12 @@
 
 - (BlioBookmarkPoint *)estimatedBookmarkPointForPercentage:(float)percentage
 {
-    return [self _bookmarkPointFromIndexPoint:[self.bUpeBook estimatedIndexPointForPercentage:percentage]];
+    return [self _bookmarkPointFromIndexPoint:[self.ePubBook estimatedIndexPointForPercentage:percentage]];
 }
 
 - (float)estimatedPercentageForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
-    return [self.bUpeBook estimatedPercentageForIndexPoint:[self _indexPointFromBookmarkPoint:bookmarkPoint]];
+    return [self.ePubBook estimatedPercentageForIndexPoint:[self _indexPointFromBookmarkPoint:bookmarkPoint]];
 }
 
 @end

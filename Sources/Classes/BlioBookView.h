@@ -26,7 +26,7 @@
 
 - (void)copyWithRange:(BlioBookmarkRange *)range;
 
-- (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type;
+- (void)openWordToolWithRange:(BlioBookmarkRange *)range atRect:(CGRect)rect toolType:(BlioWordToolsType)type;
 
 - (void)showToolbars;
 - (void)hideToolbars;
@@ -90,13 +90,11 @@
 @property (nonatomic, assign) CGFloat fontPointSize;
 @property (nonatomic, readonly) UIImage *dimPageImage;
 
-// Page texture-related properties are readony because
-// - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
-// should be used to set them atomically.
-@property (nonatomic, retain, readonly) UIImage *pageTexture;
-@property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
+@property (nonatomic, assign) BOOL twoUpLandscape;
+
+- (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;
 // Implement if pageLabelForBookmarkPoint: is expensive for smooth slider operation.
 - (NSString *)pageLabelForPercentage:(float)percenatage;
 

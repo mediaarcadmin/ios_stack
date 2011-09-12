@@ -10,9 +10,9 @@
 #import "BlioEPubBook.h"
 #import "BlioBookManager.h"
 
-#import <libEucalyptus/EucBUpeDataProvider.h>
-#import <libEucalyptus/EucBUpeFilesystemDataProvider.h>
-#import <libEucalyptus/EucBUpeZipDataProvider.h>
+#import <libEucalyptus/EucEPubDataProvider.h>
+#import <libEucalyptus/EucEPubFilesystemDataProvider.h>
+#import <libEucalyptus/EucEPubZipDataProvider.h>
 
 #import "BlioEPubXPSDataProvider.h"
 
@@ -23,7 +23,7 @@
 - (id)initWithBookID:(NSManagedObjectID *)aBookID
 {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
-    id<EucBUpeDataProvider> dataProvider = nil;
+    id<EucEPubDataProvider> dataProvider = nil;
     if([book hasEPub]) {
         if([[book manifestLocationForKey:BlioManifestEPubKey] isEqual:BlioManifestEntryLocationXPS]) {
             dataProvider = [[BlioEPubXPSDataProvider alloc] initWithWithBookID:aBookID];
@@ -35,9 +35,9 @@
                     if(directory) {
                         // This is an ePub imported by v2.1, which unzipped the package
                         // into the filesystem after download.
-                        dataProvider = [[EucBUpeFilesystemDataProvider alloc] initWithBasePath:ePubPath];
+                        dataProvider = [[EucEPubFilesystemDataProvider alloc] initWithBasePath:ePubPath];
                     } else {
-                        dataProvider = [[EucBUpeZipDataProvider alloc] initWithZipFileAtPath:ePubPath];
+                        dataProvider = [[EucEPubZipDataProvider alloc] initWithZipFileAtPath:ePubPath];
                     }
                 }
             } 
@@ -63,10 +63,10 @@
     [super dealloc];
 }
 
-- (NSArray *)baseCSSPathsForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+- (NSArray *)userAgentCSSDatasForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
-    NSMutableArray *ret = [[[super baseCSSPathsForDocumentTree:documentTree] mutableCopy] autorelease];
-    [ret addObject:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]];
+    NSMutableArray *ret = [[[super userAgentCSSDatasForDocumentTree:documentTree] mutableCopy] autorelease];
+    [ret addObject:[NSData dataWithContentsOfMappedFile:[[NSBundle mainBundle] pathForResource:@"ePubBaseOverrides" ofType:@"css"]]];
     return ret;
 }
 

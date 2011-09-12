@@ -5,6 +5,8 @@
 #import <CFNetwork/CFNetwork.h>
 #endif
 
+#import <Foundation/NSURLConnection.h>
+
 #ifdef TEST_MODE
 static NSString* const testBookvaultUrl = @"http://prl.kreader.net/Bookvault.asmx";
 #else
@@ -4758,6 +4760,14 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 	
 	return self;
 }
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+	if (binding.logXMLInOut) {
+		NSLog(@"ResponseError:\n%@", error);
+	}
+	response.error = error;
+	[delegate operation:self completedWithResponse:response];
+}
 -(void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
 	if ([challenge previousFailureCount] == 0) {
@@ -4816,14 +4826,6 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 	} else {
 		[responseData appendData:data];
 	}
-}
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-	if (binding.logXMLInOut) {
-		NSLog(@"ResponseError:\n%@", error);
-	}
-	response.error = error;
-	[delegate operation:self completedWithResponse:response];
 }
 - (void)dealloc
 {
@@ -5969,6 +5971,14 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	
 	return self;
 }
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+	if (binding.logXMLInOut) {
+		NSLog(@"ResponseError:\n%@", error);
+	}
+	response.error = error;
+	[delegate operation:self completedWithResponse:response];
+}
 -(void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
 	if ([challenge previousFailureCount] == 0) {
@@ -6027,14 +6037,6 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	} else {
 		[responseData appendData:data];
 	}
-}
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-	if (binding.logXMLInOut) {
-		NSLog(@"ResponseError:\n%@", error);
-	}
-	response.error = error;
-	[delegate operation:self completedWithResponse:response];
 }
 - (void)dealloc
 {

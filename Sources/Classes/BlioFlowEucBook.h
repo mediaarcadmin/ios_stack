@@ -7,8 +7,8 @@
 //
 
 #import "KNFBFlowEucBook.h"
-#import "BlioBUpeBook.h"
+#import "BlioEPubBookmarkPointTranslation.h"
 
-@interface BlioFlowEucBook : KNFBFlowEucBook <BlioBUpeBook> {}
+@interface BlioFlowEucBook : KNFBFlowEucBook <BlioEPubBookmarkPointTranslation> {}
 
 @end

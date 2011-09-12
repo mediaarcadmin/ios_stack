@@ -12,10 +12,10 @@
 #import "BlioBookManager.h"
 #import "BlioBookmark.h"
 #import "BlioParagraphSource.h"
-#import "BlioBUpeBook.h"
+#import "BlioEPubBook.h"
 #import "levenshtein_distance.h"
 #import <libEucalyptus/EucBook.h>
-#import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucHighlightRange.h>
 #import <libEucalyptus/EucMenuItem.h>
@@ -64,11 +64,11 @@
 
             if([_eucBook isKindOfClass:[BlioFlowEucBook class]]) {
                 BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:bookID];
-                _textFlowFlowTreeKind = textFlow.flowTreeKind;
+                _textFlowFlowTreeKind = (BlioTextFlowFlowTreeKind)(textFlow.flowTreeKind);
                 [bookManager checkInTextFlowForBookWithID:bookID];
             }            
             
-            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:(EucBUpeBook *)_eucBook])) {
+            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:(EucEPubBook *)_eucBook])) {
                 _eucBookView.delegate = self;
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;
@@ -80,7 +80,8 @@
                     [self goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
                 }
                 
-                [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:NSKeyValueObservingOptionInitial context:NULL];
+                [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:0 context:NULL];
+                [_eucBookView addObserver:self forKeyPath:@"currentPageIndex" options:0 context:NULL];
                 [_eucBookView addObserver:self forKeyPath:@"selector.trackingStage" options:0 context:NULL];
 
                 [self addSubview:_eucBookView];
@@ -100,6 +101,7 @@
 - (void)dealloc
 {
     [_eucBookView removeObserver:self forKeyPath:@"selector.trackingStage"];
+    [_eucBookView removeObserver:self forKeyPath:@"currentPageIndex"];
     [_eucBookView removeObserver:self forKeyPath:@"currentPageIndexPoint"];
     [_eucBookView release];
      
@@ -122,7 +124,8 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                         change:(NSDictionary *)change context:(void *)context
 {
-    if([keyPath isEqualToString:@"currentPageIndexPoint"]) {
+    if([keyPath isEqualToString:@"currentPageIndex"] || 
+       [keyPath isEqualToString:@"currentPageIndexPoint"]) {
         self.currentBookmarkPoint = [self bookmarkPointFromBookPageIndexPoint:_eucBookView.currentPageIndexPoint];
     } else if([keyPath isEqualToString:@"selector.trackingStage"]) {
         if(_eucBookView.selector.trackingStage == EucSelectorTrackingStageFirstSelection) {
@@ -462,7 +465,7 @@
                 BlioBookmarkPoint *bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
                 bookmarkPoint.layoutPage = reference.pageIndex + 1;
 
-                NSDictionary *idToIndexPoint = [(EucBUpeBook *)_eucBook idToIndexPoint];
+                NSDictionary *idToIndexPoint = [(EucEPubBook *)_eucBook idToIndexPoint];
                 
                 NSArray *longKeys = [idToIndexPoint allKeys];
                 NSMutableArray *shortKeys = [NSMutableArray arrayWithCapacity:[longKeys count]];
@@ -526,11 +529,11 @@
     
     indexPoint.source = [_eucBookView.book currentPageIndexPoint].source;
     
-    indexPoint.block = [range.startBlockId unsignedIntValue];
+    indexPoint.block = [((THPair *)range.startBlockId).second unsignedIntValue];
     indexPoint.word = [range.startElementId unsignedIntValue];
     BlioBookmarkPoint *startPoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
     
-    indexPoint.block = [range.endBlockId unsignedIntValue];
+    indexPoint.block = [((THPair *)range.endBlockId).second unsignedIntValue];
     indexPoint.word = [range.endElementId unsignedIntValue];
     BlioBookmarkPoint *endPoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
     
@@ -605,16 +608,6 @@
     _eucBookView.fontPointSize = fontPointSize;
 }
 
-- (UIImage *)pageTexture
-{
-    return _eucBookView.pageTexture;
-}
-
-- (BOOL)pageTextureIsDark
-{
-    return _eucBookView.pageTextureIsDark;
-}
-
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
 {
     return [_eucBookView setPageTexture:pageTexture isDark:isDark];
@@ -684,5 +677,16 @@
 {
     [_eucBookView turnToNextPage];
 }
+
+- (BOOL)twoUpLandscape
+{
+    return _eucBookView.twoUpLandscape;
+}
+
+- (void)setTwoUpLandscape:(BOOL)twoUpLandscape;
+{
+    _eucBookView.twoUpLandscape = twoUpLandscape;
+}
+
 
 @end

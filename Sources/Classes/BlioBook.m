@@ -9,7 +9,7 @@
 #import "BlioBook.h"
 #import "BlioBookManager.h"
 #import "BlioParagraphSource.h"
-#import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/THStringRenderer.h>
 #import <pthread.h>
 
@@ -170,7 +170,10 @@
     return [[self valueForKey:@"ttsCapable"] boolValue];
 }
 - (BOOL)reflowEnabled {
-    return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
+    return ([[self valueForKey:@"reflowRight"] boolValue] && 
+            ([self hasEPub] || 
+             ([self hasTextFlow] && 
+              [[self textFlow] conversionQuality] == KNFBTextFlowConversionQualityHigh)));
 }
 -(BOOL)fixedViewEnabled {
 	return ([self hasPdf] || ([self hasXps] && ![self hasEmbeddedEPub]));
@@ -245,7 +248,7 @@
         titleString = [NSString stringWithFormat:@"%@\u2026", [titleString substringToIndex:maxTitleLength]];
     }
     
-    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"LinuxLibertine"];
+    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"LinLibertineO"];
 
     CGSize fullSize = [[UIScreen mainScreen] bounds].size;
     CGFloat pointSize = roundf(fullSize.height / 8.0f);

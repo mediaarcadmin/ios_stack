@@ -13,14 +13,14 @@
 #import "BlioSelectableBookView.h"
 #import "BlioTextFlow.h"
 
-@protocol BlioBUpeBook;
-@class EucBUpeBook;
+@protocol BlioEPubBookmarkPointTranslation;
+@class EucEPubBook;
 
 @interface BlioFlowView : BlioSelectableBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
     NSManagedObjectID *_bookID;
     
     EucBookView *_eucBookView;
-    EucBUpeBook<BlioBUpeBook> *_eucBook;
+    EucEPubBook<BlioEPubBookmarkPointTranslation> *_eucBook;
     id<BlioParagraphSource> _paragraphSource;
     BOOL _pageViewIsTurning;
     BOOL _suppressHistory;

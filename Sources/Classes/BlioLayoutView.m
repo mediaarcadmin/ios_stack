@@ -41,8 +41,6 @@
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
-@property (nonatomic, retain) UIImage *pageTexture;
-@property (nonatomic, assign) BOOL pageTextureIsDark;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) BlioBookmarkRange *temporaryHighlightRange;
 @property (nonatomic, retain) NSArray *accessibilityElements;
@@ -62,6 +60,8 @@
 - (CGAffineTransform)pageTurningViewTransformForPageAtIndex:(NSInteger)pageIndex offsetOrigin:(BOOL)offset applyZoom:(BOOL)zoom;
 
 - (void)goToPageNumber:(NSInteger)pageNumber animated:(BOOL)animated;
+
+- (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;
 
 - (NSArray *)bookmarkRangesForCurrentPage;
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
@@ -112,7 +112,7 @@
 @synthesize bookID, textFlow, pageNumber, pageCount, currentBookmarkPoint, selector, pageSize;
 @synthesize pageCropsCache, viewTransformsCache, hyperlinksCache;
 @synthesize dataSource;
-@synthesize pageTurningView, pageTexture, pageTextureIsDark;
+@synthesize pageTurningView;
 @synthesize lastBlock;
 @synthesize accessibilityElements, prevZone, nextZone, pageZone;
 @synthesize temporaryHighlightRange;
@@ -122,6 +122,7 @@
 @synthesize webViews;
 @synthesize pageAlphaMask;
 @synthesize pageMultiplyColor;
+@synthesize twoUpLandscape;
 
 - (void)dealloc {
 	
@@ -144,7 +145,6 @@
 	self.temporaryHighlightRange = nil;
     
     self.pageTurningView = nil;
-    self.pageTexture = nil;
         
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
@@ -221,6 +221,7 @@
 		if (animated) {
 			self.pageNumber = 1;
 		} else {
+            self.currentBookmarkPoint = aBook.implicitBookmarkPoint;
 			NSInteger page = MAX(MIN(aBook.implicitBookmarkPoint.layoutPage, self.pageCount), 1);
 			self.pageNumber = page;
 		}
@@ -257,7 +258,7 @@
         
         // Must do this here so that teh page aspect ration takes account of the twoUp property
         CGRect myBounds = self.bounds;
-        if(myBounds.size.width > myBounds.size.height) {
+        if(myBounds.size.width > myBounds.size.height && self.twoUpLandscape) {
             aPageTurningView.twoUp = YES;
         } else {
             aPageTurningView.twoUp = NO;
@@ -276,13 +277,7 @@
         [aPageTurningView release];
 
         [aPageTurningView turnToPageAtIndex:self.pageNumber - 1 animated:NO];
-		[aPageTurningView waitForAllPageImagesToBeAvailable];
-        
-        [[NSUserDefaults standardUserDefaults] addObserver:self
-                                                forKeyPath:kBlioLandscapeTwoPagesDefaultsKey
-                                                   options:0
-                                                   context:NULL];
-        
+		[aPageTurningView waitForAllPageImagesToBeAvailable];        
     }
 }
 
@@ -306,15 +301,13 @@
             aPageTurningView.delegate = nil;
             [aPageTurningView removeFromSuperview];
             self.pageTurningView = nil;
-            [[NSUserDefaults standardUserDefaults] removeObserver:self
-                                                       forKeyPath:kBlioLandscapeTwoPagesDefaultsKey];
         }
     }
 }
 
 - (void)layoutSubviews {
     CGRect myBounds = self.bounds;
-    if([[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] && 
+    if(self.twoUpLandscape && 
        myBounds.size.width > myBounds.size.height) {
         self.pageTurningView.twoUp = YES;        
         // The first page is page 0 as far as the page turning view is concerned,
@@ -418,7 +411,7 @@
 }
 
 - (UIImage *)pageTurningView:(EucIndexBasedPageTurningView *)aPageTurningView 
-   fastUIImageForPageAtIndex:(NSUInteger)index {
+   fastThumbnailUIImageForPageAtIndex:(NSUInteger)index {
     return [self.dataSource thumbnailForPage:index + 1];
 }
 
@@ -482,14 +475,10 @@
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
-    if(self.pageTexture != aPageTexture || self.pageTextureIsDark != isDarkIn) {
-        [self.pageTurningView setPageTexture:aPageTexture isDark:isDarkIn];
-        [self.pageTurningView setNeedsDraw];
-        self.pageTexture = aPageTexture;
-        self.pageTextureIsDark = isDarkIn;
-		[self clearOverlayCaches];
-		[self updateOverlay];
-    }
+    [self.pageTurningView setPageTexture:aPageTexture isDark:isDarkIn];
+    [self.pageTurningView setNeedsDraw];
+    [self clearOverlayCaches];
+    [self updateOverlay];
 }
 
 - (BOOL)wantsTouchesSniffed {
@@ -573,24 +562,43 @@
     return MIN(percentage, 1.0f);
 }
 
+- (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex
+{
+    NSString *displayPageNumber = nil;    
+    
+    if ([self.dataSource respondsToSelector:@selector(displayPageNumberForPage:)]) {
+        displayPageNumber = [self.dataSource displayPageNumberForPage:pageIndex + 1];
+    }
+    
+    return displayPageNumber;
+    
+}
+
 - (NSString *)displayPageNumberForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
     NSUInteger pageIndex = bookmarkPoint.layoutPage;
     if(pageIndex > 0) {
         pageIndex -= 1;
     }
-    return [self.contentsDataSource contentsTableViewController:nil displayPageNumberForPageIndex:pageIndex];
+    
+    NSString *pageStr = [self displayPageNumberForPageAtIndex:pageIndex];
+    
+    if (![pageStr length]) {
+        pageStr = [self.contentsDataSource contentsTableViewController:nil displayPageNumberForPageIndex:pageIndex];
+    }
+    
+    return pageStr;
 }
 
 - (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
-{    
-    NSString *pageStr = [self displayPageNumberForBookmarkPoint:bookmarkPoint];
-
+{        
     NSUInteger pageIndex = bookmarkPoint.layoutPage;
     if(pageIndex > 0) {
         pageIndex -= 1;
     }
     
+    NSString *pageStr = [self displayPageNumberForPageAtIndex:pageIndex];
+        
     NSString *uuid;
     if ([self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
 		uuid = [(BlioLayoutPDFDataSource *)self.dataSource sectionUuidForPageIndex:pageIndex];
@@ -602,7 +610,7 @@
     NSString *pageLabel = nil;
 
     if (chapterName) {
-        if (pageStr) {
+        if ([pageStr length]) {
             pageLabel = [NSString stringWithFormat:NSLocalizedString(@"Page %@ \u2013 %@",@"Page label with page number and chapter (layout view)"), pageStr, chapterName];
         } else {
             pageLabel = [NSString stringWithFormat:@"%@", chapterName];
@@ -1056,25 +1064,27 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         if(tracking) {
             [self.delegate hideToolbars];
         }
-    } else if(object == [NSUserDefaults standardUserDefaults]) {
-        if([keyPath isEqualToString:kBlioLandscapeTwoPagesDefaultsKey]) {
-            BOOL wasTwoUp = self.pageTurningView.twoUp;
-            BOOL shouldBeTwoUp = NO;
-            CGRect myBounds = self.bounds;
-            if([[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] && 
-               myBounds.size.width > myBounds.size.height) {
-                shouldBeTwoUp = YES;        
-            }
-            if(shouldBeTwoUp != wasTwoUp) {
-                self.pageTurningView.twoUp = shouldBeTwoUp;
-                [self.pageTurningView layoutSubviews];
-                [self zoomForNewPageAnimated:NO];
-                [self hideOverlay];
-                [self clearOverlayCaches];
-                [self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.1f];
-                [self performSelector:@selector(showOverlay) withObject:nil afterDelay:0.11f];
-            }
-        }
+    }
+}
+
+- (void)setTwoUpLandscape:(BOOL)newTwoUpLandscape {
+    twoUpLandscape = newTwoUpLandscape;
+    
+    BOOL wasTwoUp = self.pageTurningView.twoUp;
+    BOOL shouldBeTwoUp = NO;
+    CGRect myBounds = self.bounds;
+    if(newTwoUpLandscape && 
+       myBounds.size.width > myBounds.size.height) {
+        shouldBeTwoUp = YES;        
+    }
+    if(shouldBeTwoUp != wasTwoUp) {
+        self.pageTurningView.twoUp = shouldBeTwoUp;
+        [self.pageTurningView layoutSubviews];
+        [self zoomForNewPageAnimated:NO];
+        [self hideOverlay];
+        [self clearOverlayCaches];
+        [self performSelector:@selector(updateOverlay) withObject:nil afterDelay:0.1f];
+        [self performSelector:@selector(showOverlay) withObject:nil afterDelay:0.11f];
     }
 }
 
@@ -1312,18 +1322,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
 	if (self.pageTurningView && !CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
 		if (!self.overlay) {
-			self.overlay = [[BlioGestureSuppressingView alloc] init];
-			self.overlay.frame = self.pageTurningView.bounds;
-			self.overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-			self.overlay.backgroundColor = [UIColor clearColor];
-            
+            BlioGestureSuppressingView *gestureSuppressingView = [[BlioGestureSuppressingView alloc] init];
+			gestureSuppressingView.frame = self.pageTurningView.bounds;
+			gestureSuppressingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+			gestureSuppressingView.backgroundColor = [UIColor clearColor];
             for (UIGestureRecognizer *recognizer in self.pageTurningView.gestureRecognizers) {
                 if (![recognizer isEqual:self.pageTurningView.tapGestureRecognizer]) {
-                    [self.overlay.suppressingGestureRecognizer requireGestureRecognizerToFail:recognizer];
+                    [gestureSuppressingView.suppressingGestureRecognizer requireGestureRecognizerToFail:recognizer];
                 }
             }
-                        
-			[self.pageTurningView addSubview:self.overlay];
+            
+            self.overlay = gestureSuppressingView;
+			[self.pageTurningView addSubview:gestureSuppressingView];
+            
+            [gestureSuppressingView release];
 		}
 
         [self.webViews makeObjectsPerformSelector:@selector(stopLoading)];

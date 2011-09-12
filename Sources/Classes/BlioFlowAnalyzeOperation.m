@@ -14,7 +14,7 @@
 #import "BlioFlowEucBook.h"
 #import "BlioEPubBook.h"
 
-#import <libEucalyptus/EucBUpeBook.h>
+#import <libEucalyptus/EucEPubBook.h>
 
 
 @implementation BlioFlowAnalyzeOperation
@@ -68,7 +68,7 @@
         
         NSLog(@"Analysing book %@", book.title);
         
-        EucBUpeBook *eucBook = [[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID];
+        EucEPubBook *eucBook = [[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:self.bookID];
         if(eucBook) {
             [eucBook generateAndCacheUncachedRecachableData];
             if (![self hasBookManifestValueForKey:BlioManifestCoverKey]) {
