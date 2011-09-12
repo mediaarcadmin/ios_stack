@@ -170,7 +170,10 @@
     return [[self valueForKey:@"ttsCapable"] boolValue];
 }
 - (BOOL)reflowEnabled {
-    return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
+    return ([[self valueForKey:@"reflowRight"] boolValue] && 
+            ([self hasEPub] || 
+             ([self hasTextFlow] && 
+              [[self textFlow] conversionQuality] == KNFBTextFlowConversionQualityHigh)));
 }
 -(BOOL)fixedViewEnabled {
 	return ([self hasPdf] || ([self hasXps] && ![self hasEmbeddedEPub]));
