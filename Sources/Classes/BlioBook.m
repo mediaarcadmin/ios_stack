@@ -357,7 +357,11 @@
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
-        aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage scale:scaleFactor orientation:UIImageOrientationUp];
+        if(scaleFactor != 1.0f) {
+            aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage scale:scaleFactor orientation:UIImageOrientationUp];
+        } else {
+            aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage];
+        }
         return aCoverImage;
     } else {
         return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
@@ -410,7 +414,11 @@
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
-        aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage scale:scaleFactor orientation:UIImageOrientationUp];
+        if(scaleFactor != 1.0f) {
+            aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage scale:scaleFactor orientation:UIImageOrientationUp];
+        } else {
+            aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage];
+        }
         return aCoverImage;
     } else {
         return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
