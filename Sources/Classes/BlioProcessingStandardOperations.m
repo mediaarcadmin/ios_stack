@@ -1381,6 +1381,15 @@
 #pragma mark -
 @implementation BlioProcessingGenerateCoverThumbsOperation
 
+@synthesize maintainAspectRatio;
+
+- (id)init {
+    if ((self = [super init])) {
+        maintainAspectRatio = YES;
+    }
+    return self;
+}
+
 - (CGAffineTransform)transformForOrientation:(CGSize)newSize orientation:(UIImageOrientation)orientation {
     CGAffineTransform transform = CGAffineTransformIdentity;
     
@@ -1495,7 +1504,7 @@
         return;
     }
     UIImage *cover = [UIImage imageWithData:imageData];
-    
+
     if (nil == cover) {
         NSLog(@"Failed to create generate cover thumbs because cover image was not an image.");
         [pool drain];
@@ -1516,33 +1525,54 @@
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}	
 #endif
-	
+	    
 	NSString * pixelSpecificKey = nil;
 	NSString * pixelSpecificFilename = nil;
+	CGFloat maxThumbWidth = 0;
+	CGFloat maxThumbHeight = 0;
+	NSInteger scaledMaxThumbWidth = 0;
+	NSInteger scaledMaxThumbHeight = 0;
 	CGFloat targetThumbWidth = 0;
 	CGFloat targetThumbHeight = 0;
 	NSInteger scaledTargetThumbWidth = 0;
 	NSInteger scaledTargetThumbHeight = 0;
 
-	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
-	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+	maxThumbWidth = kBlioCoverGridThumbWidthPhone;
+	maxThumbHeight = kBlioCoverGridThumbHeightPhone;
 
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-		targetThumbWidth = kBlioCoverGridThumbWidthPad;
-		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+		maxThumbWidth = kBlioCoverGridThumbWidthPad;
+		maxThumbHeight = kBlioCoverGridThumbHeightPad;
 	}
     
     CGFloat scaleFactor = 1;
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
         scaleFactor = [[UIScreen mainScreen] scale];
     }	
-	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
-	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
+    scaledMaxThumbWidth = round(maxThumbWidth * scaleFactor);
+	scaledMaxThumbHeight = round(maxThumbHeight * scaleFactor);
 	
-	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
+	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledMaxThumbWidth,scaledMaxThumbHeight];
 	pixelSpecificFilename = [NSString stringWithFormat:@"%@.png",pixelSpecificKey];
-	
+
+	targetThumbWidth = maxThumbWidth;
+	targetThumbHeight = maxThumbHeight;
+    
+    if (maintainAspectRatio) {
+        CGFloat maxToCoverWidthRatio = maxThumbWidth/cover.size.width;
+        if ((cover.size.height * maxToCoverWidthRatio) < maxThumbHeight) {
+            targetThumbHeight = cover.size.height * maxToCoverWidthRatio;
+        }
+        else {
+            CGFloat maxToCoverHeightRatio = maxThumbHeight/cover.size.height;
+            targetThumbWidth = cover.size.width * maxToCoverHeightRatio;
+        }
+    }
+    
+    scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+    
     UIImage *gridThumb = [self newThumbFromImage:cover forSize:CGSizeMake(scaledTargetThumbWidth, scaledTargetThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
     NSString *gridThumbDir = [self.cacheDirectory stringByAppendingPathComponent:BlioBookThumbnailsDir];
@@ -1566,15 +1596,32 @@
     }
     
 
-	targetThumbWidth = kBlioCoverListThumbWidth;
-	targetThumbHeight = kBlioCoverListThumbHeight;
+	maxThumbWidth = kBlioCoverListThumbWidth;
+	maxThumbHeight = kBlioCoverListThumbHeight;
 
-	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
-	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	scaledMaxThumbWidth = round(maxThumbWidth * scaleFactor);
+	scaledMaxThumbHeight = round(maxThumbHeight * scaleFactor);
 	
-	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
+	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledMaxThumbWidth,scaledMaxThumbHeight];
 	pixelSpecificFilename = [NSString stringWithFormat:@"%@.png",pixelSpecificKey];
 	
+    targetThumbWidth = maxThumbWidth;
+	targetThumbHeight = maxThumbHeight;
+    
+    if (maintainAspectRatio) {
+        CGFloat maxToCoverWidthRatio = maxThumbWidth/cover.size.width;
+        if ((cover.size.height * maxToCoverWidthRatio) < maxThumbHeight) {
+            targetThumbHeight = cover.size.height * maxToCoverWidthRatio;
+        }
+        else {
+            CGFloat maxToCoverHeightRatio = maxThumbHeight/cover.size.height;
+            targetThumbWidth = cover.size.width * maxToCoverHeightRatio;
+        }
+    }
+    
+    scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+
     UIImage *listThumb = [self newThumbFromImage:cover forSize:CGSizeMake(scaledTargetThumbWidth, scaledTargetThumbHeight)];
     NSData *listData = UIImagePNGRepresentation(listThumb);
 	NSString *listThumbDir = [self.cacheDirectory stringByAppendingPathComponent:BlioBookThumbnailsDir];

@@ -324,7 +324,9 @@
 }
 
 -(NSInteger) heightOfGrid {
-	return currBorderSize+((currCellSize.height+currBorderSize)*[self rowCount]);
+    CGFloat topBottomBorder = minimumBorderSize;
+    if (currBorderSize > topBottomBorder) topBottomBorder = currBorderSize;
+	return topBottomBorder+((currCellSize.height+currBorderSize)*[self rowCount]);
 }
 
 -(void) updateSize{

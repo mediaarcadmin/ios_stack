@@ -111,7 +111,7 @@
 															 initWithFetchRequest:request
 															 managedObjectContext:moc
 															 sectionNameKeyPath:nil
-															 cacheName:@"BlioArchivedBooks"];
+															 cacheName:nil];
     [request release];
     
     [aFetchedResultsController setDelegate:self];

@@ -1134,6 +1134,12 @@
 		DC84EDF81261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
 		DC84EDF91261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
 		DC84EDFA1261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
+		DC8A54471412E25D0009341B /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
+		DC8A54481412E25D0009341B /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
+		DC8A54491412E25D0009341B /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
+		DC8A544A1412E25D0009341B /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
+		DC8A544B1412E25D0009341B /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
+		DC8A544C1412E25D0009341B /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
 		DC8BB2471277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */; };
 		DC8BB2481277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */; };
 		DC8BB2491277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */; };
@@ -2015,6 +2021,8 @@
 		DC795B2D11E7E21B000DA04D /* button-buybooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-buybooks.png"; sourceTree = "<group>"; };
 		DC84EDF61261267400BC6514 /* BlioImportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioImportManager.h; sourceTree = "<group>"; };
 		DC84EDF71261267400BC6514 /* BlioImportManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioImportManager.m; sourceTree = "<group>"; };
+		DC8A54451412E25D0009341B /* book-overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "book-overlay@2x.png"; sourceTree = "<group>"; };
+		DC8A54461412E25D0009341B /* book-overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "book-overlay.png"; sourceTree = "<group>"; };
 		DC8BB2451277316A0044580E /* BlioArchiveSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioArchiveSettingsViewController.h; sourceTree = "<group>"; };
 		DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioArchiveSettingsViewController.m; sourceTree = "<group>"; };
 		DC8CADA3124877DA00C1EED9 /* table-headerbar-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table-headerbar-background.png"; sourceTree = "<group>"; };
@@ -2397,6 +2405,8 @@
 				C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */,
 				C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */,
 				DCA65A3911503A4D006534F4 /* SearchCellDivider.png */,
+				DC8A54451412E25D0009341B /* book-overlay@2x.png */,
+				DC8A54461412E25D0009341B /* book-overlay.png */,
 				555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */,
 				C977636C10E056E2005E0E2B /* booktextureandshadow.png */,
 				55822F1910F2891B008614FD /* icon-contents.png */,
@@ -3738,6 +3748,8 @@
 				C93ECB23134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB26134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
 				7DFA426D13A925BB0059C9B0 /* icon-back@2x.png in Resources */,
+				DC8A54471412E25D0009341B /* book-overlay@2x.png in Resources */,
+				DC8A544A1412E25D0009341B /* book-overlay.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3979,6 +3991,8 @@
 				C93ECB22134B6215003B99FD /* TextFlowFlow.css in Resources */,
 				C93ECB25134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB28134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
+				DC8A54491412E25D0009341B /* book-overlay@2x.png in Resources */,
+				DC8A544C1412E25D0009341B /* book-overlay.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4220,6 +4234,8 @@
 				C93ECB21134B6215003B99FD /* TextFlowFlow.css in Resources */,
 				C93ECB24134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB27134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
+				DC8A54481412E25D0009341B /* book-overlay@2x.png in Resources */,
+				DC8A544B1412E25D0009341B /* book-overlay.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
