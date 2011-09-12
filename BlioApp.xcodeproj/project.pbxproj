@@ -89,7 +89,7 @@
 		7D2711AE124931D40087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7D2711AF124931DA0087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7D2711B0124931E40087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		7D381B5C10D92E86008D34E2 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
+		7D381B5C10D92E86008D34E2 /* libEucalyptusIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */; };
 		7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
 		7D381B5F10D92E86008D34E2 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
 		7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
@@ -199,7 +199,7 @@
 		7DA97C1112B273CC00F1FF75 /* paper-white~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */; };
 		7DA97C1212B273CC00F1FF75 /* paper-white~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */; };
 		7DA97C1312B273CC00F1FF75 /* paper-white~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */; };
-		7DAA2FF011512A8D006634CC /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
+		7DAA2FF011512A8D006634CC /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusEPub.a */; };
 		7DAA2FF111512A8D006634CC /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
 		7DAA2FF211512A8D006634CC /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
 		7DAA2FF311512A8D006634CC /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4E1150F39A00430710 /* libparserutils.a */; };
@@ -234,6 +234,14 @@
 		7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC010132E88F200FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
+		7DE15F6E141E76E100D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		7DE15F6F141E76E100D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
+		7DE15F70141E76F200D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		7DE15F71141E76F200D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
+		7DE15F72141E770500D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		7DE15F73141E770500D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
+		7DE15F74141E770E00D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		7DE15F75141E770E00D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
 		7DE2749A1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE2749B1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE2749C1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
@@ -492,10 +500,10 @@
 		A30E101F123EA5B400D31157 /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
 		A30E1020123EA5B400D31157 /* BlioBeveledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */; };
 		A30E1021123EA5B400D31157 /* BlioDrmSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3729AF41225A18800E68C25 /* BlioDrmSessionManager.m */; };
-		A30E1024123EA5B400D31157 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
+		A30E1024123EA5B400D31157 /* libEucalyptusIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */; };
 		A30E1025123EA5B400D31157 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		A30E1026123EA5B400D31157 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
-		A30E1027123EA5B400D31157 /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
+		A30E1027123EA5B400D31157 /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusEPub.a */; };
 		A30E1028123EA5B400D31157 /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
 		A30E1029123EA5B400D31157 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
 		A30E102A123EA5B400D31157 /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
@@ -895,10 +903,10 @@
 		A31CC88013FEA07E0010BFC5 /* KNFBXPSPageNumbersParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C969513F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m */; };
 		A31CC88213FEA07E0010BFC5 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		A31CC88313FEA07E0010BFC5 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
-		A31CC88413FEA07E0010BFC5 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
+		A31CC88413FEA07E0010BFC5 /* libEucalyptusIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */; };
 		A31CC88513FEA07E0010BFC5 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		A31CC88613FEA07E0010BFC5 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
-		A31CC88713FEA07E0010BFC5 /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
+		A31CC88713FEA07E0010BFC5 /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusEPub.a */; };
 		A31CC88813FEA07E0010BFC5 /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
 		A31CC88913FEA07E0010BFC5 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
 		A31CC88A13FEA07E0010BFC5 /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
@@ -1162,10 +1170,10 @@
 		A36D35D5120B136700E1A035 /* BlioEULATextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */; };
 		A36D35D6120B136700E1A035 /* BlioHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */; };
 		A36D35D7120B136700E1A035 /* BlioVersionController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */; };
-		A36D35D9120B136700E1A035 /* libEucalyptus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptus.a */; };
+		A36D35D9120B136700E1A035 /* libEucalyptusIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */; };
 		A36D35DA120B136700E1A035 /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		A36D35DB120B136700E1A035 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
-		A36D35DC120B136700E1A035 /* libEucalyptusBUpe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */; };
+		A36D35DC120B136700E1A035 /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusEPub.a */; };
 		A36D35DD120B136700E1A035 /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
 		A36D35DE120B136700E1A035 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
 		A36D35DF120B136700E1A035 /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
@@ -1741,6 +1749,34 @@
 			proxyType = 2;
 			remoteGlobalIDString = 7D19025211494BE800375803;
 			remoteInfo = libcss;
+		};
+		7DE15F65141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D5FC0431403D61B009D2229;
+			remoteInfo = libEucalyptusModel;
+		};
+		7DE15F67141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D8D910F1403D2E800632892;
+			remoteInfo = libEucalyptusEPubIOSUI;
+		};
+		7DE15F69141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D46E1C813FD52130021763E;
+			remoteInfo = CSSTest;
+		};
+		7DE15F6B141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D3AC23914054DBA007F91AD;
+			remoteInfo = PageLayoutTest;
 		};
 		A30E0EF7123EA5B400D31157 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2504,8 +2540,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D381B5C10D92E86008D34E2 /* libEucalyptus.a in Frameworks */,
-				7DAA2FF011512A8D006634CC /* libEucalyptusBUpe.a in Frameworks */,
+				7D381B5C10D92E86008D34E2 /* libEucalyptusIOSUI.a in Frameworks */,
+				7DAA2FF011512A8D006634CC /* libEucalyptusEPub.a in Frameworks */,
+				7DE15F6E141E76E100D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				7DE15F6F141E76E100D37CA2 /* libEucalyptusModel.a in Frameworks */,
 				7DAA2FF111512A8D006634CC /* libEucalyptusCSS.a in Frameworks */,
 				7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */,
 				7DAA2FF411512A8D006634CC /* libcss.a in Frameworks */,
@@ -2545,8 +2583,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A30E1024123EA5B400D31157 /* libEucalyptus.a in Frameworks */,
-				A30E1027123EA5B400D31157 /* libEucalyptusBUpe.a in Frameworks */,
+				A30E1024123EA5B400D31157 /* libEucalyptusIOSUI.a in Frameworks */,
+				7DE15F73141E770500D37CA2 /* libEucalyptusModel.a in Frameworks */,
+				7DE15F72141E770500D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				A30E1027123EA5B400D31157 /* libEucalyptusEPub.a in Frameworks */,
 				A30E1028123EA5B400D31157 /* libEucalyptusCSS.a in Frameworks */,
 				A30E1025123EA5B400D31157 /* libEucalyptusBase.a in Frameworks */,
 				A30E102C123EA5B400D31157 /* libcss.a in Frameworks */,
@@ -2586,8 +2626,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A31CC88413FEA07E0010BFC5 /* libEucalyptus.a in Frameworks */,
-				A31CC88713FEA07E0010BFC5 /* libEucalyptusBUpe.a in Frameworks */,
+				A31CC88413FEA07E0010BFC5 /* libEucalyptusIOSUI.a in Frameworks */,
+				7DE15F75141E770E00D37CA2 /* libEucalyptusModel.a in Frameworks */,
+				7DE15F74141E770E00D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				A31CC88713FEA07E0010BFC5 /* libEucalyptusEPub.a in Frameworks */,
 				A31CC88813FEA07E0010BFC5 /* libEucalyptusCSS.a in Frameworks */,
 				A31CC88513FEA07E0010BFC5 /* libEucalyptusBase.a in Frameworks */,
 				A31CC88C13FEA07E0010BFC5 /* libcss.a in Frameworks */,
@@ -2627,8 +2669,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A36D35D9120B136700E1A035 /* libEucalyptus.a in Frameworks */,
-				A36D35DC120B136700E1A035 /* libEucalyptusBUpe.a in Frameworks */,
+				A36D35D9120B136700E1A035 /* libEucalyptusIOSUI.a in Frameworks */,
+				7DE15F71141E76F200D37CA2 /* libEucalyptusModel.a in Frameworks */,
+				7DE15F70141E76F200D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				A36D35DC120B136700E1A035 /* libEucalyptusEPub.a in Frameworks */,
 				A36D35DD120B136700E1A035 /* libEucalyptusCSS.a in Frameworks */,
 				A36D35DA120B136700E1A035 /* libEucalyptusBase.a in Frameworks */,
 				A36D35E1120B136700E1A035 /* libcss.a in Frameworks */,
@@ -2951,10 +2995,12 @@
 		7D381B4110D92E81008D34E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7D381B4B10D92E81008D34E2 /* libEucalyptus.a */,
-				7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */,
-				7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */,
+				7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */,
+				7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */,
+				7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */,
+				7D68AF481150F39A00430710 /* libEucalyptusEPub.a */,
 				7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */,
+				7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */,
 				7D381B5110D92E81008D34E2 /* libexpat.a */,
 				7D381B4D10D92E81008D34E2 /* libhyphenate.a */,
 				7D68AF4C1150F39A00430710 /* libwapcaplet.a */,
@@ -2962,6 +3008,8 @@
 				7D68AF501150F39A00430710 /* libcss.a */,
 				7D229E8512F98D0D0037D93D /* libminiunzip.a */,
 				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
+				7DE15F6A141E76CD00D37CA2 /* CSSTest */,
+				7DE15F6C141E76CD00D37CA2 /* PageLayoutTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3905,10 +3953,10 @@
 			remoteRef = 7D229E8412F98D0D0037D93D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7D381B4B10D92E81008D34E2 /* libEucalyptus.a */ = {
+		7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libEucalyptus.a;
+			path = libEucalyptusIOSUI.a;
 			remoteRef = 7D381B4A10D92E81008D34E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3940,10 +3988,10 @@
 			remoteRef = 7D3F504911EF3DDA0065A5F7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7D68AF481150F39A00430710 /* libEucalyptusBUpe.a */ = {
+		7D68AF481150F39A00430710 /* libEucalyptusEPub.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libEucalyptusBUpe.a;
+			path = libEucalyptusEPub.a;
 			remoteRef = 7D68AF471150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3973,6 +4021,34 @@
 			fileType = archive.ar;
 			path = libcss.a;
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libEucalyptusModel.a;
+			remoteRef = 7DE15F65141E76CD00D37CA2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libEucalyptusEPubIOSUI.a;
+			remoteRef = 7DE15F67141E76CD00D37CA2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7DE15F6A141E76CD00D37CA2 /* CSSTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = CSSTest;
+			remoteRef = 7DE15F69141E76CD00D37CA2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7DE15F6C141E76CD00D37CA2 /* PageLayoutTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = PageLayoutTest;
+			remoteRef = 7DE15F6B141E76CD00D37CA2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
