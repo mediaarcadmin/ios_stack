@@ -170,7 +170,10 @@
     return [[self valueForKey:@"ttsCapable"] boolValue];
 }
 - (BOOL)reflowEnabled {
-    return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
+    return ([[self valueForKey:@"reflowRight"] boolValue] && 
+            ([self hasEPub] || 
+             ([self hasTextFlow] && 
+              [[self textFlow] conversionQuality] == KNFBTextFlowConversionQualityHigh)));
 }
 -(BOOL)fixedViewEnabled {
 	return ([self hasPdf] || ([self hasXps] && ![self hasEmbeddedEPub]));
@@ -354,6 +357,7 @@
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
+        aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage scale:scaleFactor orientation:UIImageOrientationUp];
         return aCoverImage;
     } else {
         return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
@@ -406,6 +410,7 @@
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
+        aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage scale:scaleFactor orientation:UIImageOrientationUp];
         return aCoverImage;
     } else {
         return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];

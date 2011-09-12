@@ -30,8 +30,8 @@ typedef enum {
 static const CGFloat kBlioLibraryToolbarHeight = 44;
 
 static const CGFloat kBlioLibraryListRowHeight = 76;
-static const CGFloat kBlioLibraryListBookHeight = 76;
 static const CGFloat kBlioLibraryListBookWidth = 53;
+static const CGFloat kBlioLibraryListBookHeight = 76;
 static const CGFloat kBlioLibraryListBookMargin = 6;
 static const CGFloat kBlioLibraryListAccessoryMargin = 20;
 static const CGFloat kBlioLibraryListContentWidth = 220;
@@ -39,12 +39,12 @@ static const CGFloat kBlioLibraryListButtonWidth = 33;
 static const CGFloat kBlioLibraryListButtonHeight = 33;
 
 static const CGFloat kBlioLibraryGridRowHeight = 140;
-static const CGFloat kBlioLibraryGridBookWidthPhone = 106;
-static const CGFloat kBlioLibraryGridBookHeightPhone = 140;
+static const CGFloat kBlioLibraryGridBookWidthPhone = 84;
+static const CGFloat kBlioLibraryGridBookHeightPhone = 118;
 static const CGFloat kBlioLibraryGridBookWidthPad = 140;
 static const CGFloat kBlioLibraryGridBookHeightPad = 210;
 static const CGFloat kBlioLibraryGridProgressViewWidth = 60;
-static const CGFloat kBlioLibraryGridBookSpacing = 0;
+static const CGFloat kBlioLibraryGridBookSpacing = 11;
 static const CGFloat kBlioLibraryGridBookSpacingPad = 40;
 
 static const CGFloat kBlioLibraryLayoutButtonWidth = 78;
