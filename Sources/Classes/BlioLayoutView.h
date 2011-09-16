@@ -21,7 +21,9 @@
 @interface BlioLayoutView : BlioSelectableBookView <EucPageTurningViewDelegate, EucIndexBasedPageTurningViewDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate> {
     NSManagedObjectID *bookID;
     EucIndexBasedPageTurningView *pageTurningView;
+    
     BOOL twoUpLandscape;
+    BOOL shouldTapZoom;
     
     BlioTextFlow *textFlow;
     

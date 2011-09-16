@@ -368,6 +368,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
         self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
     }
+    if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
+        self.bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
+    }
     
     bookReady = YES;
     
@@ -1835,6 +1838,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
             self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
         }
+        if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
+            self.bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
+        }
 
         // Reset the search resultsi
         self.searchViewController = nil;
@@ -1860,9 +1866,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (BOOL)shouldShowTapZoomsToBlockSettings {
     if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
         return YES;
-    } else {
-        return NO;
     }
+    if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
+        if(&UIAccessibilityTraitCausesPageTurn != NULL &&
+           [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
+            if(UIAccessibilityIsVoiceOverRunning()) {
+                return YES;
+            }
+        }
+#endif
+    }
+    return NO;
 }
 - (BOOL)shouldShowLandscapePageSettings {
     CGSize size = self.bookView.bounds.size;
@@ -1965,16 +1980,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
 - (void)changeTapZooms:(UIControl*)sender {
-	//	if ( ((UISwitch*)sender).on )
-	if ( ((UISegmentedControl*)sender).selectedSegmentIndex == 1 )
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTapZoomsDefaultsKey];
-	else
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioTapZoomsDefaultsKey];	
+    BOOL shouldTapZoom = ((UISegmentedControl*)sender).selectedSegmentIndex == 1;
+    [[NSUserDefaults standardUserDefaults] setBool:shouldTapZoom forKey:kBlioTapZoomsDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
+        self.bookView.shouldTapZoom = shouldTapZoom;
+    }
 }
 - (void)changeLandscapePage:(UIControl*)sender {
     BOOL shouldBeTwoUp = ((UISegmentedControl*)sender).selectedSegmentIndex == 1;
     [[NSUserDefaults standardUserDefaults] setBool:shouldBeTwoUp forKey:kBlioLandscapeTwoPagesDefaultsKey];
-    
     if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
         self.bookView.twoUpLandscape = shouldBeTwoUp;
     }

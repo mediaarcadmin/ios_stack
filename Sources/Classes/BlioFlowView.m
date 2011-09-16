@@ -688,5 +688,14 @@
     _eucBookView.twoUpLandscape = twoUpLandscape;
 }
 
+- (BOOL)shouldTapZoom
+{
+    return !_eucBookView.useContinuousReadingAccessibility;
+}
+
+- (void)setShouldTapZoom:(BOOL)shouldTapZoom
+{
+    _eucBookView.useContinuousReadingAccessibility = !shouldTapZoom;
+}
 
 @end

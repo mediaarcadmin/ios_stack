@@ -93,6 +93,7 @@
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
 @property (nonatomic, assign) BOOL twoUpLandscape;
+@property (nonatomic, assign) BOOL shouldTapZoom;
 
 - (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;
 // Implement if pageLabelForBookmarkPoint: is expensive for smooth slider operation.

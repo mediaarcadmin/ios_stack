@@ -128,6 +128,7 @@
 @synthesize pageAlphaMask;
 @synthesize pageMultiplyColor;
 @synthesize twoUpLandscape;
+@synthesize shouldTapZoom;
 
 - (void)dealloc {
 	
@@ -1977,7 +1978,21 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Accessibility
 
-#pragma mark Pre-iOS 5
+- (BOOL)useTextFlowBlockBasedAccessibility
+{
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
+    if(&UIAccessibilityTraitCausesPageTurn != NULL &&
+       [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
+        return self.shouldTapZoom;
+    } else {
+        return NO;
+    }
+#else
+    return YES;
+#endif
+}
+
+#pragma mark TextFlow Block Based Accessibilty
 
 - (NSArray *)textBlockAccessibilityElements {
     NSMutableArray *elements = [NSMutableArray array];
@@ -2100,58 +2115,45 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 
-#pragma mark All OSes
+#pragma mark All Accessibilty
 
 - (NSInteger)accessibilityElementCount
 {
     [self accessibilityEnsureZoomedOut];
-#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
-    if(&UIAccessibilityTraitCausesPageTurn != NULL &&
-       [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
-        return 1;
-    } else {
+    
+    if(self.useTextFlowBlockBasedAccessibility) {
         return [[self accessibilityElements] count];
+    } else {
+        return 1;
     }
-#else
-    return [[self accessibilityElements] count];
-#endif
 }
 
 - (id)accessibilityElementAtIndex:(NSInteger)index
 {
     [self accessibilityEnsureZoomedOut];
-#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
-    if(&UIAccessibilityTraitCausesPageTurn != NULL &&
-       [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
+    
+    if(self.useTextFlowBlockBasedAccessibility) {
+        return [[self accessibilityElements] objectAtIndex:index];
+    } else {
         if(index == 0) {
             return self.pageTurningView;
         } else {
             return nil;
         }
-    } else {
-        return [[self accessibilityElements] objectAtIndex:index];
     }
-#else
-    return [[self accessibilityElements] objectAtIndex:index];
-#endif
 }
 
 - (NSInteger)indexOfAccessibilityElement:(id)element
 {
-#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
-    if(&UIAccessibilityTraitCausesPageTurn != NULL &&
-       [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
-        if(element == self.pageTurningView) {
+    if(self.useTextFlowBlockBasedAccessibility) {
+        return [[self accessibilityElements] indexOfObject:element];
+    } else {
+        if(element == self.pageTurningView) {  
             return 0;
         } else {
             return NSNotFound;
         }
-    } else {
-        return [[self accessibilityElements] indexOfObject:element];
     }
-#else
-    return [[self accessibilityElements] indexOfObject:element];
-#endif
 }
 
 - (void)accessibilityEnsureZoomedOut
@@ -2188,7 +2190,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return [self.pageTurningView accessibilityScroll:direction];
 }
 
-#pragma mark Post-iOS 5, use EucPageTurningView
+#pragma mark [iOS 5 and up] line-by-line, continuous reading accessibility
 
 - (NSArray *)accessibiltyLinesForPageAtIndex:(NSUInteger)pageIndex {
     [self accessibilityEnsureZoomedOut];
@@ -2367,7 +2369,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)zoomToPreviousBlock {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+	if (self.shouldTapZoom) {
 		blockRecursionDepth = 0;
 		[self zoomToNextBlockReversed:YES];
 	} else {
@@ -2385,7 +2387,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)zoomToNextBlock {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+	if (self.shouldTapZoom) {
 		blockRecursionDepth = 0;
 		[self zoomToNextBlockReversed:NO];
 	} else {
@@ -2666,7 +2668,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     BlioTextFlowBlock *targetBlock = nil;
 	CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
 	
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+    if (!self.shouldTapZoom) {
 		
 		// Page Zoom
 		

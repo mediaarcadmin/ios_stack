@@ -7,6 +7,7 @@
 //
 
 #import "BlioViewSettingsContentsView.h"
+#import <libEucalyptus/EucPageTurningView.h>
 #import <libEucalyptus/THUIImageAdditions.h>
 #import "BlioUIImageAdditions.h"
 #import "BlioAppSettingsConstants.h"
@@ -287,18 +288,32 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
 		//////// TAP ZOOMS TO BLOCK
 		
+        BOOL voiceOverIsRelevant = NO;
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
+        if(&UIAccessibilityTraitCausesPageTurn != NULL &&
+           [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
+            if(UIAccessibilityIsVoiceOverRunning()) {
+                voiceOverIsRelevant = YES;
+            }
+        }
+#endif
+        
 		UILabel *aTabZoomsToBlockLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aTabZoomsToBlockLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         aTabZoomsToBlockLabel.textColor = [UIColor whiteColor];
         aTabZoomsToBlockLabel.backgroundColor = [UIColor clearColor];
-        aTabZoomsToBlockLabel.text = NSLocalizedString(@"Tap Advance",@"Settings Label for Tap Advance Segmented Control.");
+        if(voiceOverIsRelevant) {
+            aTabZoomsToBlockLabel.text = NSLocalizedString(@"Navigate",@"Settings Label for \"Tap Advance\" Segmented Control when VoiceOver is running (for VoiceOver users, the setting is not related to tapping, but to how VoiceOver selects text).");
+        } else {
+            aTabZoomsToBlockLabel.text = NSLocalizedString(@"Tap Advance",@"Settings Label for \"Tap Advance\" Segmented Control.");
+        }
         [self addSubview:aTabZoomsToBlockLabel];
         self.tapZoomsToBlockLabel = aTabZoomsToBlockLabel;
         [aTabZoomsToBlockLabel release];
 		
 		NSArray *tapAdvanceTitles = [NSArray arrayWithObjects:
-                                    NSLocalizedString(@"By Page",@"\"By Page\" segment label (for Tap Advance SegmentedControl)"),
-                                    NSLocalizedString(@"By Block",@"\"By Block\" segment label (for Tap Advance SegmentedControl)"),
+                                    NSLocalizedString(@"By Page",@"\"By Page\" segment label (for \"Tap Advance\" SegmentedControl)"),
+                                    NSLocalizedString(@"By Block",@"\"By Block\" segment label (for \"Tap Advance\" SegmentedControl)"),
                                     nil];
 		
 		BlioAccessibilitySegmentedControl *aTapZoomsToBlockSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
@@ -309,10 +324,11 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             aTapZoomsToBlockSegment.tintColor = kBlioViewSettingsPopverBlueButton;
         }
         
-		// these lines don't seem to have effect because segmented control is not image-driven...
-        [[aTapZoomsToBlockSegment imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Advance By Page", @"Accessibility label for View Settings Advance By Page button")];
-        [[aTapZoomsToBlockSegment imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Advance By Block", @"Accessibility label for View Settings Advance By Block button")];
-        
+        if(voiceOverIsRelevant) {
+            [aTapZoomsToBlockSegment setAccessibilityHint:NSLocalizedString(@"In this mode, two finger swipe down to begin reading from the current position. Pages will turn automatically. Tap the page to stop reading, or to read individual lines.", @"Accessibility hint for View Settings \"By Page\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:0];
+            [aTapZoomsToBlockSegment setAccessibilityHint:NSLocalizedString(@"In this mode, tap the page to read blocks of text.  Two finger swipe down to read the current page.  Pages will not turn automatically.", @"Accessibility hing for View Settings  \"By Block\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:1];
+        }
+    
         [self addSubview:aTapZoomsToBlockSegment];
         self.tapZoomsToBlockSegment = aTapZoomsToBlockSegment;
         [aTapZoomsToBlockSegment release];
