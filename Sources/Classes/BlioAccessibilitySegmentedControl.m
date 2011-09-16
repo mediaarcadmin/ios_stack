@@ -15,9 +15,12 @@
     if ( accessibleSegments != nil ) {
         [accessibleSegments release];
         accessibleSegments = nil;
+        [segmentAccessibilityHints release];
+        segmentAccessibilityHints = nil;
     }
     [super dealloc];
 }
+
 
 - (void)invalidateAccessibilitySegments {
     if (accessibleSegments != nil) {
@@ -25,8 +28,20 @@
         accessibleSegments = nil;
     }
     
-    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    if(self.window) {
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    }
 }
+
+- (void)setAccessibilityHint:(NSString *)accessibilityHint forSegmentIndex:(NSUInteger)segmentIndex
+{
+    if(!segmentAccessibilityHints) {
+        segmentAccessibilityHints = [[NSMutableDictionary alloc] init];
+    }
+    [segmentAccessibilityHints setObject:accessibilityHint forKey:[NSNumber numberWithUnsignedInteger:segmentIndex]];
+    [self invalidateAccessibilitySegments];
+}
+
 - (void)setEnabled:(BOOL)enabled {
 	[super setEnabled:enabled];
 	if (accessibleSegments) {
@@ -78,8 +93,7 @@
         if ( accessibleSegments != nil ) [accessibleSegments release];
         accessibleSegments = [[NSMutableArray alloc] init];
         
-        NSInteger i;
-        for (i = 0; i < numSegments; i++) {
+        for (NSUInteger i = 0; i < numSegments; i++) {
             UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             id segmentItem = (id)[self imageForSegmentAtIndex:i] ? : (id)[self titleForSegmentAtIndex:i];
             if (nil != segmentItem) {
@@ -88,7 +102,14 @@
                 if ((nil == label) && [segmentItem isKindOfClass:[NSString class]]) 
                     label = (NSString *)segmentItem;
                 [element setAccessibilityLabel:label];
-                [element setAccessibilityHint:[segmentItem accessibilityHint]];
+                
+                NSString *hint = [segmentItem accessibilityHint];
+                if(!hint) {
+                    hint = [segmentAccessibilityHints objectForKey:[NSNumber numberWithUnsignedInteger:i]];
+                }
+                if(hint) {
+                    [element setAccessibilityHint:hint];
+                }
                 CGRect segmentFrame = CGRectMake(i * segmentWidth, 0, segmentWidth, segmentHeight);
                 [element setAccessibilityFrame:[self.window convertRect:segmentFrame fromView:self]];
                 UIAccessibilityTraits traits = UIAccessibilityTraitButton;
