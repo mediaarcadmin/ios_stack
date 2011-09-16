@@ -734,7 +734,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                            target:self 
                                            action:@selector(showViewSettings:)];
     
-    [item setAccessibilityLabel:NSLocalizedString(@"Visual Settings", @"Accessibility label for Book View Controller Visual Settings button")];
+    [item setAccessibilityLabel:NSLocalizedString(@"Reading Settings", @"Accessibility label for Book View Controller Reading Settings button")];
     self.viewSettingsButton = item;
     [readingItems addObject:item];
     [item release];

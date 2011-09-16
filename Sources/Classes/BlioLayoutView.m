@@ -2038,7 +2038,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 frame = [self convertRect:frame toView:self.window];
 
                 nextPageTapZone.accessibilityFrame = frame;
-                nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
+                nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for Next Page tap zone");            
 
                 self.nextZone = nextPageTapZone;
                 
@@ -2063,7 +2063,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 frame = [self convertRect:frame toView:self.window];
 
                 previousPageTapZone.accessibilityFrame = frame;
-                previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+                previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for Previous Page tap zone");
                 
                 self.prevZone = previousPageTapZone;
                 
