@@ -15,11 +15,10 @@
 #import "BlioLayoutDataSource.h"
 #import "BlioXPSProvider.h"
 #import <libEucalyptus/EucIndexBasedPageTurningView.h>
-#import <libEucalyptus/THAccessibilityElement.h>
 
 @class BlioGestureSuppressingView;
 
-@interface BlioLayoutView : BlioSelectableBookView <THAccessibilityElementDelegate, EucPageTurningViewDelegate, EucIndexBasedPageTurningViewDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate> {
+@interface BlioLayoutView : BlioSelectableBookView <EucPageTurningViewDelegate, EucIndexBasedPageTurningViewDataSource, BlioBookView, EucSelectorDataSource, EucSelectorDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate> {
     NSManagedObjectID *bookID;
     EucIndexBasedPageTurningView *pageTurningView;
     BOOL twoUpLandscape;
@@ -53,10 +52,12 @@
     
     BOOL performingAccessibilityZoom;
 	
-	NSMutableArray *accessibilityElements;
+	NSArray *accessibilityElements;
 	UIAccessibilityElement *prevZone;
 	UIAccessibilityElement *nextZone;
 	UIAccessibilityElement *pageZone;
+    
+    NSMutableArray *accessibilityLinesCache;
     
 	NSMutableArray *mediaViews;
 	NSMutableArray *webViews;
