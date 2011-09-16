@@ -2104,6 +2104,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (NSInteger)accessibilityElementCount
 {
+    [self accessibilityEnsureZoomedOut];
 #if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
     if(&UIAccessibilityTraitCausesPageTurn != NULL &&
        [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
@@ -2118,6 +2119,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (id)accessibilityElementAtIndex:(NSInteger)index
 {
+    [self accessibilityEnsureZoomedOut];
 #if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
     if(&UIAccessibilityTraitCausesPageTurn != NULL &&
        [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
@@ -2189,6 +2191,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark Post-iOS 5, use EucPageTurningView
 
 - (NSArray *)accessibiltyLinesForPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
     NSMutableArray *ret = nil;
 
     if(!self.accessibiltyLinesCache) {
@@ -2255,6 +2259,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (NSInteger)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView accessibilityLineNumberForInternalPoint:(CGPoint)point forPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
     NSArray *lines = [self accessibiltyLinesForPageAtIndex:pageIndex];
 
     NSInteger bestLineIndex = NSNotFound;
@@ -2288,17 +2294,23 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (NSString *)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView accessibilityContentForLineNumber:(NSInteger)lineNumber forPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
     THPair *pageLine = [[self accessibiltyLinesForPageAtIndex:pageIndex] objectAtIndex:lineNumber];
     return [[pageLine.second valueForKey:@"string"] componentsJoinedByString:@" "];
 }
 
 - (CGRect)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView accessibilityInternalFrameForLineNumber:(NSInteger)lineNumber forPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
     THPair *pageLine = [[self accessibiltyLinesForPageAtIndex:pageIndex] objectAtIndex:lineNumber];
     CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
     return CGRectApplyAffineTransform([pageLine.first CGRectValue], pageTransform);
 }
 
 - (NSInteger)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView accessibilityLineCountForPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
     return [self accessibiltyLinesForPageAtIndex:pageIndex].count;
 }
 
