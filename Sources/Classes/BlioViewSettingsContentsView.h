@@ -22,7 +22,6 @@
     BlioAccessibilitySegmentedControl *pageColorSegment;
     BlioAccessibilitySegmentedControl *tapZoomsToBlockSegment;
     BlioAccessibilitySegmentedControl *landscapePageSegment;
-//	UISwitch * tapZoomsToBlockSwitch;
     BlioAccessibilitySegmentedControl *lockButtonSegment;
     UIButton *doneButton;
     UIImage *tapTurnOnImage;
@@ -41,7 +40,6 @@
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *pageColorSegment;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *tapZoomsToBlockSegment;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *landscapePageSegment;
-//@property (nonatomic, retain) UISwitch * tapZoomsToBlockSwitch;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *lockButtonSegment;
 @property (nonatomic, retain) UIButton *doneButton;
 @property (nonatomic, assign) id<BlioViewSettingsDelegate> viewSettingsDelegate;
