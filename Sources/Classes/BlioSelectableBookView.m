@@ -14,6 +14,10 @@
 
 static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 
+@interface BlioSelectableBookView ()
+@property (nonatomic, readonly) BOOL shouldPutDictionaryInRootMenu;
+@end
+
 @implementation BlioSelectableBookView
 
 @synthesize delegate;
@@ -31,8 +35,16 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
 #pragma mark -
 #pragma mark Selector Menu Setup. 
 
+- (BOOL)shouldPutDictionaryInRootMenu {
+    if(NSClassFromString(@"UIReferenceLibraryViewController")) {
+        if(self.bounds.size.width > 320) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (NSArray *)colorMenuItems {     
-	
     EucMenuItem *orangeItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorOrange:)] autorelease];
     orangeItem.accessibilityLabel = NSLocalizedString(@"Orange", "Accessibility label for orange item in highlight color menu");
     orangeItem.color = [UIColor orangeColor]; 
@@ -48,84 +60,83 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
     EucMenuItem *greenItem = [[[EucMenuItem alloc] initWithTitle:@"●" action:@selector(highlightColorGreen:)] autorelease];
     greenItem.accessibilityLabel = NSLocalizedString(@"Green", "Accessibility label for yellow item in highlight color menu");
     greenItem.color = [UIColor greenColor];
-    
-    NSArray *ret = [NSArray arrayWithObjects:orangeItem, blueItem, redItem, greenItem, nil];
-    
-    return ret;
+
+    return [NSArray arrayWithObjects:orangeItem, blueItem, redItem, greenItem, nil];
 }
 
 - (NSArray *)wordToolsMenuItems {    
-    EucMenuItem *dictionaryItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Dictionary", "\"Dictionary\" option in popup menu")
-                                                               action:@selector(dictionary:)] autorelease];
+    NSMutableArray *ret = [NSMutableArray array];
+
+    // Put this in here even if it's also in the root menu, for consistency 
+    // (i.e. we won't confuse and annoy people who muscle-memory tap 
+    // "Reference")
+    //if(!self.shouldPutDictionaryInRootMenu) {
+        [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Dictionary", "\"Dictionary\" option in popup menu")
+                                                    action:@selector(dictionary:)] autorelease]];
+    //}
     
-    //EucMenuItem *thesaurusItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Thesaurus", "\"Thesaurus\" option in popup menu")
-    //                                                          action:@selector(thesaurus:)] autorelease];
+    //[ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Thesaurus", "\"Thesaurus\" option in popup menu")
+    //                                            action:@selector(thesaurus:)] autorelease]];
     
-    EucMenuItem *wikipediaItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Encyclopedia", "\"Encyclopedia\" option in popup menu")
-                                                              action:@selector(encyclopedia:)] autorelease];
-    
-    EucMenuItem *searchItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Search", "\"Search\" option in popup menu")
-                                                           action:@selector(search:)] autorelease];
-    
-    NSArray *ret = [NSArray arrayWithObjects:dictionaryItem/*, thesaurusItem*/, wikipediaItem, searchItem, nil];
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Encyclopedia", "\"Encyclopedia\" option in popup menu")
+                                                action:@selector(encyclopedia:)] autorelease]];
+        
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Search", "\"Search\" option in popup menu")
+                                                action:@selector(search:)] autorelease]];
     
     return ret;
 }
 	
 - (NSArray *)highlightMenuItemsIncludingTextCpyItem:(BOOL)copy {
-    EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu")                                                    
-                                                            action:@selector(addNote:)] autorelease];
+    NSMutableArray *ret = [NSMutableArray array];
+        
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Remove", "\"Remove Highlight\" option in popup menu")
+                                                action:@selector(removeHighlight:)] autorelease]];
 
-    EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu")
-                                                         action:@selector(copy:)] autorelease];
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu")                                                    
+                                                action:@selector(addNote:)] autorelease]];
     
-    EucMenuItem *colorItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Color", "\"Color\" option in popup menu")
-                                                          action:@selector(showColorMenu:)] autorelease];
-   
-    EucMenuItem *showWordToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
-                                                                 action:@selector(showWordTools:)] autorelease];
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Color", "\"Color\" option in popup menu")
+                                                action:@selector(showColorMenu:)] autorelease]];
 
-    EucMenuItem *removeItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Remove", "\"Remove Highlight\" option in popup menu")
-                                                           action:@selector(removeHighlight:)] autorelease];
+    if(copy) {
+        [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu")
+                                                    action:@selector(copy:)] autorelease]];
+    }
     
-    NSArray *ret;
+    if(self.shouldPutDictionaryInRootMenu) {
+        [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Dictionary", "\"Dictionary\" option in popup menu")
+                                                    action:@selector(dictionary:)] autorelease]];
+    }
 
-	BOOL color = YES;
-	if ([self.delegate respondsToSelector:@selector(hasNoteOverlappingSelectedRange)])  
-		if ([self.delegate hasNoteOverlappingSelectedRange]) 
-			color = NO;
-	if (copy) {
-		if (color)
-			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWordToolsItem, colorItem, nil];
-		else 
-			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, copyItem, showWordToolsItem, nil];
-	}
-    else {
-		if (color)
-			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWordToolsItem, colorItem, nil];
-		else
-			ret = [NSArray arrayWithObjects:removeItem, addNoteItem, showWordToolsItem, nil];
-	}
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
+                                                action:@selector(showWordTools:)] autorelease]];
     
     return ret;
 }
 
 - (NSArray *)rootMenuItemsIncludingTextCpyItem:(BOOL)copy {
-    EucMenuItem *highlightItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Highlight\" option in popup menu")                                                              
-                                                              action:@selector(highlight:)] autorelease];
-    EucMenuItem *addNoteItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu")                                                    
-                                                            action:@selector(addNote:)] autorelease];
-    EucMenuItem *copyItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu")
-                                                         action:@selector(copy:)] autorelease];
-    EucMenuItem *showWordToolsItem = [[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
-                                                                 action:@selector(showWordTools:)] autorelease];
+    NSMutableArray *ret = [NSMutableArray array];
     
-    NSArray *ret;
-    if (copy)
-        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, copyItem, showWordToolsItem, nil];
-    else
-        ret = [NSArray arrayWithObjects:highlightItem, addNoteItem, showWordToolsItem, nil];
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Highlight", "\"Highlight\" option in popup menu")                                                              
+                                                action:@selector(highlight:)] autorelease]];
     
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Note", "\"Note\" option in popup menu")                                                    
+                                                action:@selector(addNote:)] autorelease]];
+    
+    if(copy) {
+        [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", "\"Copy\" option in popup menu")
+                                                    action:@selector(copy:)] autorelease]];
+    }
+    
+    if(self.shouldPutDictionaryInRootMenu) {
+        [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Dictionary", "\"Dictionary\" option in popup menu")
+                                                                                action:@selector(dictionary:)] autorelease]];
+    }
+    
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
+                                                action:@selector(showWordTools:)] autorelease]];
+
     return ret;
 }
 
