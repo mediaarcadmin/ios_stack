@@ -30,6 +30,7 @@
 #import "Reachability.h"
 #import "BlioStoreManager.h"
 #import "UIButton+BlioAdditions.h"
+#import "BlioPurchaseVoicesViewController.h"
 
 static const CGFloat kBlioBookSliderPreviewWidthPad = 180;
 static const CGFloat kBlioBookSliderPreviewHeightPad = 180;
@@ -2534,10 +2535,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			}
 			else {
 				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"No Voices Available",@"\"No Voices Available\" alert message title")
-											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"Please go to your voice settings to download a Text-To-Speech voice.",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
-											delegate:nil 
-								   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview") 
-									otherButtonTitles:nil];
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You do not have any Text-To-Speech voices installed. Would you like to download a TTS voice?",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+											delegate:self 
+								   cancelButtonTitle:NSLocalizedString(@"Not Yet",@"\"Not Yet\" label for button used to cancel/dismiss alertview") 
+									otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"),nil];
 			}
         }
         else {
@@ -2555,7 +2556,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }    
     [self updatePauseButton];
 }
-
+-(void)dismissVoicesView:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
+}
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[self.rootView viewWithTag:ACTIVITY_INDICATOR];
 	[activityIndicator stopAnimating];
@@ -2608,6 +2611,31 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
     }
 }
+
+#pragma mark - 
+#pragma mark UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+	if (buttonIndex == 0) {
+        
+	}
+	else if (buttonIndex == 1) {
+        BlioPurchaseVoicesViewController * purchaseVoicesViewController = [[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        purchaseVoicesViewController.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] 
+                                                  initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
+                                                  style:UIBarButtonItemStyleDone 
+                                                  target:self
+                                                  action:@selector(dismissVoicesView:)]
+                                                 autorelease];		
+
+        UINavigationController * purchaseVoicesNavigationController = [[UINavigationController alloc] initWithRootViewController:purchaseVoicesViewController];
+        [purchaseVoicesViewController release];
+        [self presentModalViewController:purchaseVoicesNavigationController animated:YES];
+//        [self.navigationController pushViewController:purchaseVoicesViewController animated:YES];
+        [purchaseVoicesNavigationController release];
+	}
+}
+
     
 #pragma mark -
 #pragma mark NotesView Methods
