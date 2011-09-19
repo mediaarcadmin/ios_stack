@@ -87,7 +87,9 @@
 	[[UIApplication sharedApplication] openURL:url];	
 }
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
-	currentUsername = [user retain];
+	if (currentUsername) [currentUsername release];
+	if (currentPassword) [currentPassword release];
+    currentUsername = [user retain];
 	currentPassword = [password retain];
 //	NSLog(@"self.userNum: %i",self.userNum);
 	if (!self.userNum > 0) {

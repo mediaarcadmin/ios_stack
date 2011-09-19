@@ -1501,7 +1501,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
     self.textureView.frame = CGRectInset(self.imageView.frame, -9.0f * (self.imageView.bounds.size.width/130.0f), -12.0f * (self.imageView.bounds.size.height/183.0f));
     self.textureView.center = self.imageView.center;
-	if (newBook.hasCoverImage && !hasAppropriateCoverThumb && [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+	if (newBook.hasCoverImage && !hasAppropriateCoverThumb && ([[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete || [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly)) {
 		NSLog(@"Does not have appropriate cover thumb for book: %@, reprocessing cover thumbnails...",[newBook title]);
 		[self.delegate reprocessCoverThumbnailsForBook:newBook];
 	}

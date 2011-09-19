@@ -308,7 +308,7 @@
 
 		// TODO: "DeviceRegistered" key should be refactored with multiple stores in mind.
 //		NSLog(@"[storeHelper deviceRegistered]: %i",[storeHelper deviceRegistered]);
-		if ([storeHelper deviceRegistered] == BlioDeviceRegisteredStatusUndefined) {
+		if ([storeHelper deviceRegistered] == BlioDeviceRegisteredStatusUndefined || [storeHelper deviceRegistered] == BlioDeviceRegisteredStatusUnregistered) {
 			
 			[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
 //			BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
