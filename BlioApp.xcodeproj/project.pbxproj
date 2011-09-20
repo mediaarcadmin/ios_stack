@@ -935,6 +935,14 @@
 		A31CC8A113FEA07E0010BFC5 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EFAF4C134DF4B800ADF905 /* libXpsSDKipad.a */; };
 		A31E82EE120B3FD800CB6657 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
+		A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75E1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E7601427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7611427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7621427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7631427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
 		A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
 		A32EEDA513B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A32EEDA413B37CFA001D6170 /* BlioStoreTabViewController.m */; };
@@ -1991,6 +1999,9 @@
 		A3169288111488C9005AAE5E /* BlioAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioManager.m; sourceTree = "<group>"; };
 		A31CC8A713FEA07E0010BFC5 /* SamsClubApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamsClubApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SamsClubApp-Info.plist"; sourceTree = "<group>"; };
+		A323E7591427A64F0043E78E /* BlioVOTipsSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVOTipsSettingsController.h; sourceTree = "<group>"; };
+		A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioVOTipsSettingsController.m; sourceTree = "<group>"; };
+		A323E75F1427A6D10043E78E /* voiceover-tips.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-tips.html"; sourceTree = "<group>"; };
 		A32D885911FE04DA00D2AE17 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		A32D88DD11FE240300D2AE17 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPlayReadyPK.a; path = Libraries/DRM/libPlayReadyPK.a; sourceTree = "<group>"; };
@@ -2795,6 +2806,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A323E75F1427A6D10043E78E /* voiceover-tips.html */,
 				8D1107310486CEB800E47090 /* BlioApp-Info.plist */,
 				A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */,
 				A3CF83A612E4B85E0069FA16 /* XPS-Demo */,
@@ -3711,6 +3723,8 @@
 				DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */,
 				A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */,
 				A371FDCC113AF77200E1A51C /* BlioWebToolSettingsController.h */,
+				A323E7591427A64F0043E78E /* BlioVOTipsSettingsController.h */,
+				A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */,
 			);
 			name = "App Settings Screens";
 			sourceTree = "<group>";
@@ -4289,6 +4303,7 @@
 				DC8A54471412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544A1412E25D0009341B /* book-overlay.png in Resources */,
 				7D71550B13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7601427A6D10043E78E /* voiceover-tips.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4525,6 +4540,7 @@
 				DC8A54491412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544C1412E25D0009341B /* book-overlay.png in Resources */,
 				7D71550D13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7621427A6D10043E78E /* voiceover-tips.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4761,6 +4777,7 @@
 				7D4CA2341417814100117F3A /* THFonts in Resources */,
 				DCBF27E4141E6FE000FF050A /* book-overlay@2x.png in Resources */,
 				DCBF27E5141E6FE600FF050A /* book-overlay.png in Resources */,
+				A323E7631427A6D10043E78E /* voiceover-tips.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4998,6 +5015,7 @@
 				DC8A54481412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544B1412E25D0009341B /* book-overlay.png in Resources */,
 				7D71550C13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7611427A6D10043E78E /* voiceover-tips.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5157,6 +5175,7 @@
 				A32EEDA513B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969113F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969613F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5312,6 +5331,7 @@
 				A32EEDA713B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969313F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969813F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5467,6 +5487,7 @@
 				A31CC87E13FEA07E0010BFC5 /* BlioStoreTabViewController.m in Sources */,
 				A31CC87F13FEA07E0010BFC5 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				A31CC88013FEA07E0010BFC5 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75E1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5622,6 +5643,7 @@
 				A32EEDA613B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969213F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969713F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5751,6 +5773,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -5783,6 +5806,7 @@
 				);
 				PRODUCT_NAME = Blio;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "2EB4883C-CAB1-4956-9964-74E1B4C92B05";
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -5817,6 +5841,7 @@
 				PRODUCT_NAME = Blio;
 				PROVISIONING_PROFILE = "40E97D09-A302-4526-902E-170EFF4CECE2";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "10E1D86B-9D15-47F9-87C2-F38A3C91AC78";
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6009,6 +6034,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6040,6 +6066,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6071,6 +6098,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

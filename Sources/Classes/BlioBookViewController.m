@@ -2535,9 +2535,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			}
 			else {
 				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"No Voices Available",@"\"No Voices Available\" alert message title")
-											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You do not have any Text-To-Speech voices installed. Would you like to download a TTS voice?",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You do not have any voices installed. Would you like to purchase a voice?",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
 											delegate:self 
-								   cancelButtonTitle:NSLocalizedString(@"Not Yet",@"\"Not Yet\" label for button used to cancel/dismiss alertview") 
+								   cancelButtonTitle:NSLocalizedString(@"No",@"\"No\" label for button used to cancel/dismiss alertview") 
 									otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"),nil];
 			}
         }
