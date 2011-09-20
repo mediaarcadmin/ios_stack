@@ -443,8 +443,9 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         
         UIScreen *mainScreen = [UIScreen mainScreen];
         if([mainScreen respondsToSelector:@selector(setBrightness:)]) {
-            mainScreen.wantsSoftwareDimming = YES;
-            CGFloat currentBrightness = [UIScreen mainScreen].brightness;
+            // Weird valueForKey stuff to allow compilation with iOS SDK 4.3
+            [mainScreen setValue:[NSNumber numberWithBool:YES] forKey:@"wantsSoftwareDimming"];
+            CGFloat currentBrightness = [[mainScreen valueForKey:@"brightness"] floatValue];
             
             UISlider *slider = [[UISlider alloc] initWithFrame:CGRectZero];
             
@@ -470,7 +471,9 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
             self.screenBrightnessSlider = slider;
             [slider release];
             
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessDidChange:) name:UIScreenBrightnessDidChangeNotification object:[UIScreen mainScreen]];
+#endif
         }
         
         [self displayPageAttributes];
@@ -598,12 +601,15 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 
 - (void)screenBrightnessSliderSlid:(UISlider *)slider
 {
-    [[UIScreen mainScreen] setBrightness:slider.value];
+    // Weird valueForKey stuff to allow compilation with iOS SDK 4.3
+    [[UIScreen mainScreen] setValue:[NSNumber numberWithFloat:slider.value] forKey:@"brightness"];
 }
 
 - (void)screenBrightnessDidChange:(NSNotification *)notification
 {
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
     [self.screenBrightnessSlider setValue:[[notification object] brightness]];
+#endif
 }
 
 @end
