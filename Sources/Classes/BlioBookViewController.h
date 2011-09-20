@@ -53,6 +53,7 @@ typedef enum BlioFontSize {
 - (BOOL)shouldShowPageColorSettings;
 - (BOOL)shouldShowTapZoomsToBlockSettings;
 - (BOOL)shouldShowLandscapePageSettings;
+- (BOOL)shouldShowDoneButtonInPageSettings;
 - (void)dismissViewSettings:(id)sender;
 - (BOOL)isRotationLocked;
 - (void)changeLockRotation;
@@ -138,7 +139,7 @@ typedef enum {
     BOOL firstPageReady;
     BOOL coverOpened;
     
-    UIActionSheet *viewSettingsSheet;
+    BlioViewSettingsSheet *viewSettingsSheet;
     BlioModalPopoverController *viewSettingsPopover;
     BlioModalPopoverController *contentsPopover;
     BlioModalPopoverController *searchPopover;

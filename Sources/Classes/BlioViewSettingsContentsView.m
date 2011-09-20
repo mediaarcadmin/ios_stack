@@ -8,19 +8,22 @@
 
 #import "BlioViewSettingsContentsView.h"
 #import <libEucalyptus/EucPageTurningView.h>
-#import <libEucalyptus/THUIImageAdditions.h>
 #import "BlioUIImageAdditions.h"
 #import "BlioAppSettingsConstants.h"
 
 #define kBlioViewSettingsGreenButton [UIColor colorWithRed:0.053 green:0.613 blue:0.000 alpha:1.000]//[UIColor colorWithRed:0.302 green:0.613 blue:0.289 alpha:1.000]
 #define kBlioViewSettingsPopverBlueButton [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000]
 
-static const CGFloat kBlioViewSettingsRowSpacing = 14;
-static const CGFloat kBlioViewSettingsYInset = 22;
-static const CGFloat kBlioViewSettingsXInset = 20;
+static const CGFloat kBlioViewSettingsRowSpacingIPad = 14;
+static const CGFloat kBlioViewSettingsXInsetIPad = 20;
+static const CGFloat kBlioViewSettingsYInsetIPad = 22;
+
+static const CGFloat kBlioViewSettingsRowSpacingIPhone = 8;
+static const CGFloat kBlioViewSettingsXInsetIPhone = 8;
+static const CGFloat kBlioViewSettingsYInsetIPhone= 5;
+
 static const CGFloat kBlioViewSettingsSegmentButtonHeight = 36;
 static const CGFloat kBlioViewSettingsLabelWidth = 93;
-static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 
 @interface BlioViewSettingsContentsView()
 
@@ -213,12 +216,14 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         
         // Sizes and offsets for the font size buttons chosen to look 'right' visually
         // rather than being completly accurate to the book view technically.
+        CGSize size = CGSizeMake(20, 23);
+        CGFloat baseline = 19;
         NSArray *fontSizeTitles = [NSArray arrayWithObjects:
-                                   [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 10.0f) color:white],
-                                   [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 11.0f) color:white],
-                                   [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 12.0f) color:white],
-                                   [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 13.0f) color:white],
-                                   [UIImage imageWithString:letter font:defaultFont size:CGSizeMake(20.0f, 14.0f) color:white],
+                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:10.5] size:size baseline:baseline color:white],
+                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:13] size:size baseline:baseline color:white],
+                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:15] size:size baseline:baseline color:white],
+                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:19] size:size baseline:baseline color:white],
+                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:23] size:size baseline:baseline color:white],
                                    nil];
         
         BlioAccessibilitySegmentedControl *aFontSizeSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:fontSizeTitles];    
@@ -228,11 +233,6 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
         } else {
             aFontSizeSegmentedControl.tintColor = kBlioViewSettingsPopverBlueButton;
         }
-        
-        [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 2) forSegmentAtIndex:0];
-        [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
-        [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, 0) forSegmentAtIndex:2];
-        [aFontSizeSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:3];
         
         [[aFontSizeSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Smallest font size", @"Accessibility label for View Settings Smallest Font Size button")];
         [[aFontSizeSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Smaller font size", @"Accessibility label for View Settings Smaller Font Size button")];
@@ -409,7 +409,9 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
             
             
             [self.lockButtonSegment addTarget:self action:@selector(changeLockRotation:) forControlEvents:UIControlEventValueChanged];  
-            
+        }
+        
+        if([newDelegate shouldShowDoneButtonInPageSettings]) {
             UIButton *aDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
             aDoneButton.showsTouchWhenHighlighted = NO;
             [aDoneButton setTitle:NSLocalizedString(@"Done",@"\"Done\" bar button") forState:UIControlStateNormal];
@@ -431,46 +433,62 @@ static const CGFloat kBlioViewSettingsDoneButtonHeight = 44;
 	return self;
 }
 
+
+
 - (CGFloat)contentsHeight {
+    CGFloat height;
+    CGFloat yInset, rowSpacing, buttonHeight;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-		UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-		if (UIInterfaceOrientationIsLandscape(interfaceOrientation))
-			return kBlioViewSettingsYInset * 0.5 + kBlioViewSettingsRowSpacing * 5 + kBlioViewSettingsSegmentButtonHeight * 5 + kBlioViewSettingsDoneButtonHeight;
-		else 
-            return kBlioViewSettingsYInset * 1 + kBlioViewSettingsRowSpacing * 5 + kBlioViewSettingsSegmentButtonHeight * 5 + kBlioViewSettingsDoneButtonHeight;
+        yInset = kBlioViewSettingsYInsetIPhone;
+        rowSpacing = kBlioViewSettingsRowSpacingIPhone;
+        
+        [self.pageLayoutSegment sizeToFit];
+        buttonHeight = self.pageLayoutSegment.frame.size.height;
     } else {
-        return kBlioViewSettingsYInset * 2 + kBlioViewSettingsRowSpacing * 4 + kBlioViewSettingsSegmentButtonHeight * 5;
+        yInset = kBlioViewSettingsYInsetIPad;
+        rowSpacing = kBlioViewSettingsRowSpacingIPad;
+        buttonHeight = kBlioViewSettingsSegmentButtonHeight;
     }
+    height =  yInset * 2 + rowSpacing * 4 + buttonHeight * 5;
+    if(self.doneButton) {
+        height += rowSpacing + buttonHeight;
+    }
+    return height;
 }
 
 - (void)layoutSubviews {
-    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    CGFloat yInset;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-        yInset = kBlioViewSettingsYInset * 0.5;
+    CGFloat xInset, yInset, buttonHeight, rowSpacing;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        xInset = kBlioViewSettingsXInsetIPhone;
+        yInset = kBlioViewSettingsYInsetIPhone;
+        rowSpacing = kBlioViewSettingsRowSpacingIPhone;
+        [self.pageLayoutSegment sizeToFit];
+        buttonHeight = self.pageLayoutSegment.frame.size.height;
     } else {
-        yInset = kBlioViewSettingsYInset;
+        xInset = kBlioViewSettingsXInsetIPad;
+        yInset = kBlioViewSettingsYInsetIPad;
+        buttonHeight = kBlioViewSettingsSegmentButtonHeight;
+        rowSpacing = kBlioViewSettingsRowSpacingIPad;
     }
     
-    [self.pageLayoutSegment setFrame:CGRectMake(kBlioViewSettingsXInset, yInset, CGRectGetWidth(self.bounds) - 2*kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-    [self.pageLayoutSegment setFrame:CGRectMake(kBlioViewSettingsXInset, kBlioViewSettingsYInset, CGRectGetWidth(self.bounds) - 2*kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-    [self.fontSizeLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageLayoutSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
-    [self.fontSizeSegment setFrame:CGRectMake(CGRectGetMaxX([self.fontSizeLabel frame]), CGRectGetMinY([self.fontSizeLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.fontSizeLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-    [self.pageColorLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.fontSizeSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
-    [self.pageColorSegment setFrame:CGRectMake(CGRectGetMaxX([self.pageColorLabel frame]), CGRectGetMinY([self.pageColorLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.pageColorLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-    [self.tapZoomsToBlockLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.pageColorSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
-    [self.tapZoomsToBlockSegment setFrame:CGRectMake(CGRectGetMaxX([self.tapZoomsToBlockLabel frame]), CGRectGetMinY([self.tapZoomsToBlockLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-	[self.landscapePageLabel setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.tapZoomsToBlockSegment frame]) + kBlioViewSettingsRowSpacing, kBlioViewSettingsLabelWidth, kBlioViewSettingsSegmentButtonHeight)];
+    [self.pageLayoutSegment setFrame:CGRectMake(xInset, yInset, CGRectGetWidth(self.bounds) - 2*xInset, buttonHeight)];
+    [self.fontSizeLabel setFrame:CGRectMake(xInset, CGRectGetMaxY([self.pageLayoutSegment frame]) + rowSpacing, kBlioViewSettingsLabelWidth, buttonHeight)];
+    [self.fontSizeSegment setFrame:CGRectMake(CGRectGetMaxX([self.fontSizeLabel frame]), CGRectGetMinY([self.fontSizeLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.fontSizeLabel frame]) - xInset, buttonHeight)];
+    [self.pageColorLabel setFrame:CGRectMake(xInset, CGRectGetMaxY([self.fontSizeSegment frame]) + rowSpacing, kBlioViewSettingsLabelWidth, buttonHeight)];
+    [self.pageColorSegment setFrame:CGRectMake(CGRectGetMaxX([self.pageColorLabel frame]), CGRectGetMinY([self.pageColorLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.pageColorLabel frame]) - xInset, buttonHeight)];
+    [self.tapZoomsToBlockLabel setFrame:CGRectMake(xInset, CGRectGetMaxY([self.pageColorSegment frame]) + rowSpacing, kBlioViewSettingsLabelWidth, buttonHeight)];
+    [self.tapZoomsToBlockSegment setFrame:CGRectMake(CGRectGetMaxX([self.tapZoomsToBlockLabel frame]), CGRectGetMinY([self.tapZoomsToBlockLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - xInset, buttonHeight)];
+	[self.landscapePageLabel setFrame:CGRectMake(xInset, CGRectGetMaxY([self.tapZoomsToBlockSegment frame]) + rowSpacing, kBlioViewSettingsLabelWidth, buttonHeight)];
 	/*UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-		[self.landscapePageSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageLabel frame]), CGRectGetMinY([self.landscapePageLabel frame]), CGRectGetWidth([self.tapZoomsToBlockSegment frame])/2 + kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-//		[self.lockButtonSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageSegment frame]) + kBlioViewSettingsXInset, CGRectGetMaxY([self.tapZoomsToBlockLabel frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - CGRectGetMaxX([self.landscapePageSegment frame]), kBlioViewSettingsSegmentButtonHeight)];
-		[self.doneButton setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.landscapePageSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset, kBlioViewSettingsDoneButtonHeight)];		
+		[self.landscapePageSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageLabel frame]), CGRectGetMinY([self.landscapePageLabel frame]), CGRectGetWidth([self.tapZoomsToBlockSegment frame])/2 + xInset, buttonHeight)];
+//		[self.lockButtonSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageSegment frame]) + xInset, CGRectGetMaxY([self.tapZoomsToBlockLabel frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * xInset - CGRectGetMaxX([self.landscapePageSegment frame]), buttonHeight)];
+		[self.doneButton setFrame:CGRectMake(xInset, CGRectGetMaxY([self.landscapePageSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * xInset, kBlioViewSettingsDoneButtonHeight)];		
 	}
 	else*/ {
-		[self.landscapePageSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageLabel frame]), CGRectGetMinY([self.landscapePageLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.landscapePageLabel frame]) - kBlioViewSettingsXInset, kBlioViewSettingsSegmentButtonHeight)];
-//		[self.lockButtonSegment setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.landscapePageLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset - kBlioViewSettingsRowSpacing)/2.0f, kBlioViewSettingsSegmentButtonHeight)];
-		[self.doneButton setFrame:CGRectMake(kBlioViewSettingsXInset, CGRectGetMaxY([self.landscapePageSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * kBlioViewSettingsXInset, kBlioViewSettingsDoneButtonHeight)];
+		[self.landscapePageSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageLabel frame]), CGRectGetMinY([self.landscapePageLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.landscapePageLabel frame]) - xInset, buttonHeight)];
+//		[self.lockButtonSegment setFrame:CGRectMake(xInset, CGRectGetMaxY([self.landscapePageLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * xInset - kBlioViewSettingsRowSpacing)/2.0f, buttonHeight)];
+		[self.doneButton setFrame:CGRectMake(xInset, CGRectGetMaxY([self.landscapePageSegment frame]) + rowSpacing, CGRectGetWidth(self.bounds) - 2 * xInset, buttonHeight)];
 	}
     [super layoutSubviews];
 }

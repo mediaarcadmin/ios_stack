@@ -44,7 +44,7 @@
 @property (nonatomic, retain) UIButton *doneButton;
 @property (nonatomic, assign) id<BlioViewSettingsDelegate> viewSettingsDelegate;
 
-- (id)initWithDelegate:(id)newDelegate;
+- (id)initWithDelegate:(id<BlioViewSettingsDelegate>)newDelegate;
 - (CGFloat)contentsHeight;
 
 @end

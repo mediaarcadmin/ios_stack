@@ -25,6 +25,7 @@
 #import "BlioBookManager.h"
 #import "BlioBeveledView.h"
 #import "BlioViewSettingsPopover.h"
+#import "BlioViewSettingsContentsView.h"
 #import "BlioModalPopoverController.h"
 #import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
@@ -71,7 +72,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) UIView *rootView;
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
-@property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
+@property (nonatomic, retain) BlioViewSettingsSheet *viewSettingsSheet;
 @property (nonatomic, retain) BlioModalPopoverController *viewSettingsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *searchPopover;
@@ -1885,6 +1886,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUpLandscape:)];
 }
 
+- (BOOL)shouldShowDoneButtonInPageSettings
+{
+    // There's no way to escape from the fake popover without a done button using accessability;
+    return UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad && 
+        &UIAccessibilityIsVoiceOverRunning != NULL && 
+        UIAccessibilityIsVoiceOverRunning();
+}
+
 - (BlioFontSize)currentFontSize {
     BlioFontSize fontSize = kBlioFontSizeMedium;
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
@@ -2079,31 +2088,26 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         if (![self.viewSettingsPopover isPopoverVisible]) {
             BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
-            [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
             self.viewSettingsPopover = aSettingsPopover;
+            [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
             [aSettingsPopover release];
         }
     } else {
-        if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-            // Hide toolbars so the view settings don't overlap them
-            [self setToolbarsForModalOverlayActive:YES];
+        if (!self.viewSettingsSheet) {
+            BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
+            self.viewSettingsSheet = aSettingsSheet;
+            [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
+            [aSettingsSheet release];
         }
-        BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
-        [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
-        self.viewSettingsSheet = aSettingsSheet;
-        [aSettingsSheet release];
     }
-    
 }
 
 - (void)dismissViewSettings:(id)sender {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.viewSettingsPopover = nil;
     } else {
-        [self.viewSettingsSheet dismissWithClickedButtonIndex:0 animated:YES];
         self.viewSettingsSheet = nil;
     }
-    [self setToolbarsForModalOverlayActive:NO];
 }
 - (void)buyBook:(id)sender {
 	[[BlioStoreManager sharedInstance] buyBookWithSourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
@@ -2745,6 +2749,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.contentsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.viewSettingsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    
+    if(self.viewSettingsSheet) {
+        [self.viewSettingsSheet dismissAnimated:NO];
+    }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {

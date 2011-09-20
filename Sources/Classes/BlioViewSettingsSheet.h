@@ -8,12 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
-@class BlioViewSettingsContentsView;
+@protocol BlioViewSettingsDelegate;
+@class BlioViewSettingsContentsView, EucMenuView;
 
-@interface BlioViewSettingsSheet : UIActionSheet {
+@interface BlioViewSettingsSheet : NSObject {
+    id<BlioViewSettingsDelegate> delegate;
     BlioViewSettingsContentsView *contentsView;
+    EucMenuView *menuView;
+    UIButton *buttonMask;
 }
 
-- (id)initWithDelegate:(id)newDelegate;
+@property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;
+
+- (id)initWithDelegate:(id<BlioViewSettingsDelegate>)delegate;
+- (void)showFromToolbar:(UIToolbar *)toolbar;
+- (void)dismiss;
+- (void)dismissAnimated:(BOOL)animated;
 
 @end
