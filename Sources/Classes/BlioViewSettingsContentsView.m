@@ -19,8 +19,8 @@ static const CGFloat kBlioViewSettingsXInsetIPad = 20;
 static const CGFloat kBlioViewSettingsYInsetIPad = 22;
 
 static const CGFloat kBlioViewSettingsRowSpacingIPhone = 8;
-static const CGFloat kBlioViewSettingsXInsetIPhone = 8;
-static const CGFloat kBlioViewSettingsYInsetIPhone= 5;
+static const CGFloat kBlioViewSettingsXInsetIPhone = 9;
+static const CGFloat kBlioViewSettingsYInsetIPhone= 6;
 
 static const CGFloat kBlioViewSettingsSegmentButtonHeight = 36;
 static const CGFloat kBlioViewSettingsLabelWidth = 93;
@@ -31,6 +31,11 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 @property (nonatomic, retain) UIImage *tapTurnOffImage;
 @property (nonatomic, retain) UIImage *lockRotationImage;
 @property (nonatomic, retain) UIImage *unlockRotationImage;
+
+- (void)dismiss:(id)sender;
+- (void)screenBrightnessDidChange:(NSNotification *)notification;
+- (void)screenBrightnessSliderSlid:(UISlider *)slider;
+
 @end
 
 @implementation BlioViewSettingsContentsView
@@ -46,10 +51,12 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 @synthesize landscapePageSegment;
 @synthesize lockButtonSegment;
 @synthesize doneButton;
+@synthesize screenBrightnessSlider;
 @synthesize tapTurnOnImage, tapTurnOffImage, lockRotationImage, unlockRotationImage;
 @synthesize viewSettingsDelegate;
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.fontSizeLabel = nil;
     self.pageColorLabel = nil;
 	self.tapZoomsToBlockLabel = nil;
@@ -157,12 +164,12 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 						 layoutImage,
 						 speedImage,
 						 nil];
-		}
-		else 
+		} else { 
 			segmentImages = [NSArray arrayWithObjects:
                                   plainImage,
                                   layoutImage,
                                   nil];
+        }
         
         BlioAccessibilitySegmentedControl *aLayoutSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
         aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
@@ -171,6 +178,12 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         } else {
             aLayoutSegmentedControl.tintColor = kBlioViewSettingsPopverBlueButton;
         }
+        
+        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:0];
+        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:1];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:2];
+        }        
         
         [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Flowed layout", @"Accessibility label for View Settings Flowed Layout button")];
         [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityHint:NSLocalizedString(@"Switches to the flowed text view.", @"Accessibility hint for View Settings Flowed Layout button")];
@@ -423,9 +436,41 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
             [aDoneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
             [aDoneButton setBackgroundImage:[[UIImage imageNamed:@"done-button-up.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateNormal];
             [aDoneButton setBackgroundImage:[[UIImage imageNamed:@"done-button-down.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateHighlighted];
-            [aDoneButton addTarget:self action:@selector(dismissSheet:) forControlEvents:UIControlEventTouchUpInside];
+            [aDoneButton addTarget:self action:@selector(dismiss:) forControlEvents:UIControlEventTouchUpInside];
             [self addSubview:aDoneButton];
             self.doneButton = aDoneButton;
+        }
+        
+        UIScreen *mainScreen = [UIScreen mainScreen];
+        if([mainScreen respondsToSelector:@selector(setBrightness:)]) {
+            mainScreen.wantsSoftwareDimming = YES;
+            CGFloat currentBrightness = [UIScreen mainScreen].brightness;
+            
+            UISlider *slider = [[UISlider alloc] initWithFrame:CGRectZero];
+            
+            UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
+            leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:0];
+            [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
+            
+            UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
+            rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:rightCapImage.size.width - 1 topCapHeight:0];
+            [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
+            
+            UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob.png"];
+            [slider setThumbImage:thumbImage forState:UIControlStateNormal];
+            [slider setThumbImage:thumbImage forState:UIControlStateHighlighted];            
+            
+            slider.minimumValueImage = [UIImage imageNamed:@"brightness-sun-dim.png"];
+            slider.maximumValueImage = [UIImage imageNamed:@"brightness-sun-bright.png"];
+            
+            [slider addTarget:self action:@selector(screenBrightnessSliderSlid:) forControlEvents:UIControlEventValueChanged];
+            slider.value = currentBrightness;
+            
+            [self addSubview:slider];
+            self.screenBrightnessSlider = slider;
+            [slider release];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessDidChange:) name:UIScreenBrightnessDidChangeNotification object:[UIScreen mainScreen]];
         }
         
         [self displayPageAttributes];
@@ -437,66 +482,92 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 
 - (CGFloat)contentsHeight {
     CGFloat height;
-    CGFloat yInset, rowSpacing, buttonHeight;
+    CGFloat yInset, rowSpacing, rowHeight;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         yInset = kBlioViewSettingsYInsetIPhone;
         rowSpacing = kBlioViewSettingsRowSpacingIPhone;
         
         [self.pageLayoutSegment sizeToFit];
-        buttonHeight = self.pageLayoutSegment.frame.size.height;
+        rowHeight = self.pageLayoutSegment.frame.size.height;
     } else {
         yInset = kBlioViewSettingsYInsetIPad;
         rowSpacing = kBlioViewSettingsRowSpacingIPad;
-        buttonHeight = kBlioViewSettingsSegmentButtonHeight;
+        rowHeight = kBlioViewSettingsSegmentButtonHeight;
     }
-    height =  yInset * 2 + rowSpacing * 4 + buttonHeight * 5;
+    height =  yInset * 2 + rowSpacing * 4 + rowHeight * 5;
+    
+    if(self.screenBrightnessSlider) {
+        height += rowSpacing + rowHeight;
+    }
+    
     if(self.doneButton) {
-        height += rowSpacing + buttonHeight;
+        height += rowSpacing + rowHeight;
     }
+    
     return height;
 }
 
 - (void)layoutSubviews {
-    CGFloat xInset, yInset, buttonHeight, rowSpacing;
+    CGFloat xInset, yInset, rowHeight, rowSpacing;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         xInset = kBlioViewSettingsXInsetIPhone;
         yInset = kBlioViewSettingsYInsetIPhone;
         rowSpacing = kBlioViewSettingsRowSpacingIPhone;
         [self.pageLayoutSegment sizeToFit];
-        buttonHeight = self.pageLayoutSegment.frame.size.height;
+        rowHeight = self.pageLayoutSegment.frame.size.height;
     } else {
         xInset = kBlioViewSettingsXInsetIPad;
         yInset = kBlioViewSettingsYInsetIPad;
-        buttonHeight = kBlioViewSettingsSegmentButtonHeight;
+        rowHeight = kBlioViewSettingsSegmentButtonHeight;
         rowSpacing = kBlioViewSettingsRowSpacingIPad;
     }
     
-    [self.pageLayoutSegment setFrame:CGRectMake(xInset, yInset, CGRectGetWidth(self.bounds) - 2*xInset, buttonHeight)];
-    [self.fontSizeLabel setFrame:CGRectMake(xInset, CGRectGetMaxY([self.pageLayoutSegment frame]) + rowSpacing, kBlioViewSettingsLabelWidth, buttonHeight)];
-    [self.fontSizeSegment setFrame:CGRectMake(CGRectGetMaxX([self.fontSizeLabel frame]), CGRectGetMinY([self.fontSizeLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.fontSizeLabel frame]) - xInset, buttonHeight)];
-    [self.pageColorLabel setFrame:CGRectMake(xInset, CGRectGetMaxY([self.fontSizeSegment frame]) + rowSpacing, kBlioViewSettingsLabelWidth, buttonHeight)];
-    [self.pageColorSegment setFrame:CGRectMake(CGRectGetMaxX([self.pageColorLabel frame]), CGRectGetMinY([self.pageColorLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.pageColorLabel frame]) - xInset, buttonHeight)];
-    [self.tapZoomsToBlockLabel setFrame:CGRectMake(xInset, CGRectGetMaxY([self.pageColorSegment frame]) + rowSpacing, kBlioViewSettingsLabelWidth, buttonHeight)];
-    [self.tapZoomsToBlockSegment setFrame:CGRectMake(CGRectGetMaxX([self.tapZoomsToBlockLabel frame]), CGRectGetMinY([self.tapZoomsToBlockLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.tapZoomsToBlockLabel frame]) - xInset, buttonHeight)];
-	[self.landscapePageLabel setFrame:CGRectMake(xInset, CGRectGetMaxY([self.tapZoomsToBlockSegment frame]) + rowSpacing, kBlioViewSettingsLabelWidth, buttonHeight)];
-	/*UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-		[self.landscapePageSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageLabel frame]), CGRectGetMinY([self.landscapePageLabel frame]), CGRectGetWidth([self.tapZoomsToBlockSegment frame])/2 + xInset, buttonHeight)];
-//		[self.lockButtonSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageSegment frame]) + xInset, CGRectGetMaxY([self.tapZoomsToBlockLabel frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * xInset - CGRectGetMaxX([self.landscapePageSegment frame]), buttonHeight)];
-		[self.doneButton setFrame:CGRectMake(xInset, CGRectGetMaxY([self.landscapePageSegment frame]) + kBlioViewSettingsRowSpacing, CGRectGetWidth(self.bounds) - 2 * xInset, kBlioViewSettingsDoneButtonHeight)];		
-	}
-	else*/ {
-		[self.landscapePageSegment setFrame:CGRectMake(CGRectGetMaxX([self.landscapePageLabel frame]), CGRectGetMinY([self.landscapePageLabel frame]), CGRectGetWidth(self.bounds) - CGRectGetMaxX([self.landscapePageLabel frame]) - xInset, buttonHeight)];
+    CGFloat innerWidth = CGRectGetWidth(self.bounds) - 2 * xInset;
+    
+    CGFloat labelWidth = kBlioViewSettingsLabelWidth;
+    
+    CGFloat segmentX = labelWidth + xInset;
+    CGFloat segmentWidth = innerWidth - segmentX + xInset;
+    
+    CGFloat rowStride = rowSpacing + rowHeight;
+    CGFloat currentY = yInset;
+
+    [self.pageLayoutSegment setFrame:CGRectMake(xInset, currentY, innerWidth, rowHeight)];
+    currentY += rowStride;
+    
+    [self.fontSizeLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.fontSizeSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    currentY += rowStride;
+    
+    [self.pageColorLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.pageColorSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    currentY += rowStride;
+
+    [self.tapZoomsToBlockLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.tapZoomsToBlockSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    currentY += rowStride;
+
+    [self.landscapePageLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.landscapePageSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    currentY += rowStride;
+
 //		[self.lockButtonSegment setFrame:CGRectMake(xInset, CGRectGetMaxY([self.landscapePageLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * xInset - kBlioViewSettingsRowSpacing)/2.0f, buttonHeight)];
-		[self.doneButton setFrame:CGRectMake(xInset, CGRectGetMaxY([self.landscapePageSegment frame]) + rowSpacing, CGRectGetWidth(self.bounds) - 2 * xInset, buttonHeight)];
-	}
+        
+    if(self.screenBrightnessSlider) {
+        [self.screenBrightnessSlider setFrame:CGRectMake(xInset + 8, currentY, innerWidth - 14,  rowHeight)];
+        currentY += rowStride;
+    }
+    
+    if(self.doneButton) {
+        [self.doneButton setFrame:CGRectMake(xInset, currentY, innerWidth,  rowHeight)];
+    }
+    
     [super layoutSubviews];
 }
 
 - (void)changePageLayout:(id)sender {
     [self.viewSettingsDelegate changePageLayout:sender];
     [self displayPageAttributes];
-    
 }
 
 
@@ -519,13 +590,20 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         [[sender imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Lock Rotation", @"Accessibility label for View Settings Lock Rotation button")];
         [[sender imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
     }
-    
-    
 }
 
-
-- (void)dismissSheet:(id)sender {
+- (void)dismiss:(id)sender {
     [self.viewSettingsDelegate dismissViewSettings:self];
+}
+
+- (void)screenBrightnessSliderSlid:(UISlider *)slider
+{
+    [[UIScreen mainScreen] setBrightness:slider.value];
+}
+
+- (void)screenBrightnessDidChange:(NSNotification *)notification
+{
+    [self.screenBrightnessSlider setValue:[[notification object] brightness]];
 }
 
 @end

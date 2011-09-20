@@ -24,6 +24,8 @@
     BlioAccessibilitySegmentedControl *landscapePageSegment;
     BlioAccessibilitySegmentedControl *lockButtonSegment;
     UIButton *doneButton;
+    UISlider *screenBrightnessSlider;
+    
     UIImage *tapTurnOnImage;
     UIImage *tapTurnOffImage;
     UIImage *lockRotationImage;
@@ -42,6 +44,7 @@
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *landscapePageSegment;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *lockButtonSegment;
 @property (nonatomic, retain) UIButton *doneButton;
+@property (nonatomic, retain) UISlider *screenBrightnessSlider;
 @property (nonatomic, assign) id<BlioViewSettingsDelegate> viewSettingsDelegate;
 
 - (id)initWithDelegate:(id<BlioViewSettingsDelegate>)newDelegate;

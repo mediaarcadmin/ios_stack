@@ -63,9 +63,9 @@
     [aContentsView release];
     
     if(toolbar.bounds.size.width <= 320) {
-        [newMenuView positionAndResizeForAttachingToRect:CGRectMake(279, 16, 0, 0) fromView:toolbar];
+        [newMenuView positionAndResizeForAttachingToRect:CGRectMake(279, 15, 1, 1) fromView:toolbar];
     } else {
-        [newMenuView positionAndResizeForAttachingToRect:CGRectMake(408, 14, 0, 0) fromView:toolbar];
+        [newMenuView positionAndResizeForAttachingToRect:CGRectMake(408, 13, 1, 1) fromView:toolbar];
     }
     
     self.menuView = newMenuView;
