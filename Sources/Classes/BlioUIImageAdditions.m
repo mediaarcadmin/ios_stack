@@ -36,6 +36,39 @@
     return [self blioImageWithString:string font:font size:size color:color];
 }
 
+
+- (UIImage *)blioImageByRotatingTo:(UIImageOrientation)orientation
+{        
+    CGSize size = self.size;
+    CGSize rotatedSize;
+    CGFloat rotation;
+    if (orientation == UIImageOrientationRight) {
+        rotatedSize = CGSizeMake(size.height, size.width);
+        rotation = M_PI_2;
+    } else if (orientation == UIImageOrientationLeft) {
+        rotatedSize = CGSizeMake(size.height, size.width);
+        rotation = -M_PI_2;
+    } else if (orientation == UIImageOrientationDown) {
+        rotatedSize = size;
+        rotation = M_PI;
+    } else {
+        rotatedSize = size;
+        rotation = 0;
+    }
+    
+    UIGraphicsBeginImageContextWithOptions(rotatedSize, NO, self.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    CGContextTranslateCTM(context, rotatedSize.width/2, rotatedSize.height/2);
+    CGContextRotateCTM(context, rotation);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextDrawImage(context, CGRectMake(-self.size.width / 2, -self.size.height / 2, self.size.width, self.size.height), [self CGImage]);
+    
+    UIImage *ret = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return ret;
+}
+
 + (UIImage *)imageWithIcon:(UIImage *)image string:(NSString *)string font:(UIFont *)font color:(UIColor *)color textInset:(UIEdgeInsets)inset {
     UIImage *textImage = [UIImage blioImageWithString:string font:font color:color];
     CGRect textRect = CGRectIntegral(CGRectMake(image.size.width + inset.left, 0, textImage.size.width + inset.right, textImage.size.height + (inset.top - inset.bottom)));

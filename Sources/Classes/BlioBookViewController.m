@@ -1886,6 +1886,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUpLandscape:)];
 }
 
+- (BOOL)shouldPresentBrightnessSliderVerticallyInPageSettings {
+    if(UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        CGSize size = self.bookView.bounds.size;
+        return size.width > size.height;
+    }
+    return NO;
+}
+
 - (BOOL)shouldShowDoneButtonInPageSettings
 {
     // There's no way to escape from the fake popover without a done button using accessability;

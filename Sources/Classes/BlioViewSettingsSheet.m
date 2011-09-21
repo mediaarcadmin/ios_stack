@@ -92,13 +92,19 @@
     [invisibleDismissButton addSubview:newMenuView];
     
     BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsContentsView alloc] initWithDelegate:self.delegate];
-    aContentsView.frame = CGRectMake(0, 0, 289, aContentsView.contentsHeight);
     newMenuView.containedView = aContentsView;
     [aContentsView release];
     
+    CGFloat desiredContentsHeight = aContentsView.contentsHeight;
     if(toolbar.bounds.size.width <= 320) {
+        aContentsView.frame = CGRectMake(0, 0, 289, desiredContentsHeight);
         [newMenuView positionAndResizeForAttachingToRect:CGRectMake(279, 15, 1, 1) fromView:toolbar];
     } else {
+        if(aContentsView.screenBrightnessSlider) {
+            aContentsView.frame = CGRectMake(0, 0, 319, desiredContentsHeight);
+        } else {
+            aContentsView.frame = CGRectMake(0, 0, 289, desiredContentsHeight);
+        }
         [newMenuView positionAndResizeForAttachingToRect:CGRectMake(408, 13, 1, 1) fromView:toolbar];
     }
     
