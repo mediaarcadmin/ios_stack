@@ -44,10 +44,10 @@
     CGFloat rotation;
     if (orientation == UIImageOrientationRight) {
         rotatedSize = CGSizeMake(size.height, size.width);
-        rotation = M_PI_2;
+        rotation = -M_PI_2;
     } else if (orientation == UIImageOrientationLeft) {
         rotatedSize = CGSizeMake(size.height, size.width);
-        rotation = -M_PI_2;
+        rotation = M_PI_2;
     } else if (orientation == UIImageOrientationDown) {
         rotatedSize = size;
         rotation = M_PI;
