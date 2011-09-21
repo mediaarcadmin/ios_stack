@@ -13,24 +13,26 @@
 @protocol BlioViewSettingsDelegate;
 
 @interface BlioViewSettingsContentsView : UIView {
+    id<BlioViewSettingsDelegate> viewSettingsDelegate;
+
     UILabel *fontSizeLabel;
     UILabel *pageColorLabel;
 	UILabel *tapZoomsToBlockLabel;
 	UILabel *landscapePageLabel;
+    
     BlioAccessibilitySegmentedControl *pageLayoutSegment;
     BlioAccessibilitySegmentedControl *fontSizeSegment;
     BlioAccessibilitySegmentedControl *pageColorSegment;
     BlioAccessibilitySegmentedControl *tapZoomsToBlockSegment;
     BlioAccessibilitySegmentedControl *landscapePageSegment;
     BlioAccessibilitySegmentedControl *lockButtonSegment;
-    UIButton *doneButton;
+    
     UISlider *screenBrightnessSlider;
     
-    UIImage *tapTurnOnImage;
-    UIImage *tapTurnOffImage;
+    UIButton *doneButton;
+    
     UIImage *lockRotationImage;
     UIImage *unlockRotationImage;   
-    id<BlioViewSettingsDelegate> viewSettingsDelegate;
 }
 
 @property (nonatomic, retain) UILabel *fontSizeLabel;

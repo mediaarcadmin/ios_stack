@@ -15,7 +15,7 @@
     id<BlioViewSettingsDelegate> delegate;
     BlioViewSettingsContentsView *contentsView;
     EucMenuView *menuView;
-    UIButton *buttonMask;
+    UIControl *screenMask;
 }
 
 @property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;

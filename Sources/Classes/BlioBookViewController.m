@@ -2104,11 +2104,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)dismissViewSettings:(id)sender {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.viewSettingsPopover dismissPopoverAnimated:YES];
+    } else {
+        [self.viewSettingsSheet dismissAnimated:YES];
+    }
+}
+
+- (void)viewSettingsDidDismiss:(id)sender {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.viewSettingsPopover = nil;
     } else {
         self.viewSettingsSheet = nil;
     }
 }
+
 - (void)buyBook:(id)sender {
 	[[BlioStoreManager sharedInstance] buyBookWithSourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 }

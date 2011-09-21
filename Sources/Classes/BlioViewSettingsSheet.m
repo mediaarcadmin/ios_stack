@@ -10,24 +10,58 @@
 #import "BlioViewSettingsContentsView.h"
 #import <libEucalyptus/EucMenuView.h>
 
+@interface BlioViewSettingsSheetMask : UIControl {}
+
+@property (nonatomic, assign) BlioViewSettingsSheet *settingsSheet;
+
+@end
+
+@implementation BlioViewSettingsSheetMask
+
+@synthesize settingsSheet;
+
+- (id)init
+{
+    if((self = [super init])) {
+        self.isAccessibilityElement = NO;
+    }
+    return self;
+}
+
+- (BOOL)accessibilityPerformEscape
+{
+    // New API in iOS 5, this never seems to be called.  Not sure why.
+    [self.settingsSheet dismissAnimated:YES];
+    return YES;
+}
+
+- (BOOL)accessibilityViewIsModal
+{
+    return YES;
+}
+
+@end
+
 @interface BlioViewSettingsSheet()
 
 @property (nonatomic, retain) BlioViewSettingsContentsView *contentsView;
 @property (nonatomic, retain) EucMenuView *menuView;
-@property (nonatomic, retain) UIButton *buttonMask;
+@property (nonatomic, retain) UIControl *screenMask;
+
+- (void)dismiss;
 
 @end
 
 @implementation BlioViewSettingsSheet
 
-@synthesize delegate, contentsView, menuView, buttonMask;
+@synthesize delegate, contentsView, menuView, screenMask;
 
 - (void)dealloc {
     // Just in case...
     [self.menuView removeFromSuperview];
     self.menuView = nil;
-    [self.buttonMask removeFromSuperview];
-    self.buttonMask = nil;
+    [self.screenMask removeFromSuperview];
+    self.screenMask = nil;
     
     self.contentsView = nil;
     [super dealloc];
@@ -47,13 +81,13 @@
 {
     UIWindow *window = toolbar.window;
     
-    UIButton *invisibleDismissButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    BlioViewSettingsSheetMask *invisibleDismissButton = [[BlioViewSettingsSheetMask alloc] init];
     invisibleDismissButton.frame = window.bounds;
-    invisibleDismissButton.isAccessibilityElement = NO;
     [invisibleDismissButton addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
     [window addSubview:invisibleDismissButton];
-    self.buttonMask = invisibleDismissButton;
-    
+    self.screenMask = invisibleDismissButton;
+    [invisibleDismissButton release];
+        
     EucMenuView *newMenuView = [[EucMenuView alloc] init];
     [invisibleDismissButton addSubview:newMenuView];
     
@@ -71,6 +105,8 @@
     self.menuView = newMenuView;
     
     [newMenuView release];
+    
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 - (void)dismissAnimated:(BOOL)animated
@@ -80,15 +116,17 @@
         [animation setType:kCATransitionFade];
         [animation setDuration:0.3f];
         [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        [[self.buttonMask.superview layer] addAnimation:animation forKey:@"ViewSettingsFade"];
+        [[self.screenMask.superview layer] addAnimation:animation forKey:@"ViewSettingsFade"];
     }
     
     [self.menuView removeFromSuperview];
     self.menuView = nil;
-    [self.buttonMask removeFromSuperview];
-    self.buttonMask = nil;
+    [self.screenMask removeFromSuperview];
+    self.screenMask = nil;
     
-    [self.delegate dismissViewSettings:self];
+    [self.delegate viewSettingsDidDismiss:self];
+    
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 - (void)dismiss

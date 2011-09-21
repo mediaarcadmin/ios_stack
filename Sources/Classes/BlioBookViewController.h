@@ -55,6 +55,7 @@ typedef enum BlioFontSize {
 - (BOOL)shouldShowLandscapePageSettings;
 - (BOOL)shouldShowDoneButtonInPageSettings;
 - (void)dismissViewSettings:(id)sender;
+- (void)viewSettingsDidDismiss:(id)sender;
 - (BOOL)isRotationLocked;
 - (void)changeLockRotation;
 - (BlioPageLayout)currentPageLayout;

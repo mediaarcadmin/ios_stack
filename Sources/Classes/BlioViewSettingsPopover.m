@@ -49,7 +49,7 @@
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-    [self.viewSettingsDelegate dismissViewSettings:self];
+    [self.viewSettingsDelegate viewSettingsDidDismiss:self];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
