@@ -5728,8 +5728,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_DISPLAY_NAME_SUFFIX = "ᵝ";
-				BUNDLE_ID_SUFFIX = .beta;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -5762,8 +5760,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_DISPLAY_NAME_SUFFIX = "ᵝ";
-				BUNDLE_ID_SUFFIX = .beta;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -6013,7 +6009,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "906AF447-5F1C-4A13-9A64-ABA631581901";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
@@ -6024,8 +6020,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_DISPLAY_NAME_SUFFIX = "ᵝ";
-				BUNDLE_ID_SUFFIX = .beta;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -6171,7 +6165,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
@@ -6198,7 +6192,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
