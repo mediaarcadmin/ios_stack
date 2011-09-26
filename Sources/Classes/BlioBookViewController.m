@@ -12,7 +12,6 @@
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
-#import <libEucalyptus/EucConfiguration.h>
 #import "BlioBookViewControllerProgressPieButton.h"
 #import "BlioBookView.h"
 #import "BlioFlowView.h"
@@ -369,6 +368,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setFontSize:)]) {
+        self.bookView.fontSize = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeDefaultsKey];
+    }
     if([self.bookView respondsToSelector:@selector(setJustification:)]) {
         self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
     }
@@ -761,6 +763,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     if(_bookView != bookView) {
         if(_bookView) {
+            [_bookView removeObserver:self forKeyPath:@"fontSize"];
             [_bookView removeObserver:self forKeyPath:@"currentBookmarkPoint"];
             if(_bookView.superview) {
                 if ([_bookView wantsTouchesSniffed]) {
@@ -796,6 +799,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }                        
             [_bookView addObserver:self 
                         forKeyPath:@"currentBookmarkPoint" 
+                           options:NSKeyValueObservingOptionNew
+                           context:nil];   
+            [_bookView addObserver:self 
+                        forKeyPath:@"fontSize" 
                            options:NSKeyValueObservingOptionNew
                            context:nil];   
         }
@@ -1839,6 +1846,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+        if([self.bookView respondsToSelector:@selector(setFontSize:)]) {
+            self.bookView.fontSize = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeDefaultsKey];
+        }
         if([self.bookView respondsToSelector:@selector(setJustification:)]) {
             self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
         }
@@ -1849,7 +1859,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             self.bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
         }
 
-        // Reset the search resultsi
+        // Reset the search results
         self.searchViewController = nil;
         self.searchPopover = nil;
         
@@ -1863,11 +1873,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)shouldShowFontSizeSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-        return NO;
-    } else {
-        return YES;
-    }
+    return [self.bookView respondsToSelector:@selector(setFontSize:)];
 }
 
 - (BOOL)shouldShowPageColorSettings {        
@@ -1912,25 +1918,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BlioFontSize)currentFontSize {
-    BlioFontSize fontSize = -1;
-    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-    id<BlioBookView> bookView = bookViewController.bookView;
-    
-    if([bookView respondsToSelector:(@selector(fontPointSize))]) {
-        CGFloat actualFontSize = bookView.fontPointSize;
-        CGFloat bestDifference = CGFLOAT_MAX;
-        BlioFontSize bestFontSize = kBlioFontSizeMedium;
-        NSArray *eucFontSizeNumbers = [EucConfiguration objectForKey:EucConfigurationFontSizesKey];
-        for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
-            CGFloat thisDifference = fabsf(((NSNumber *)[eucFontSizeNumbers objectAtIndex:i]).floatValue - actualFontSize);
-            if(thisDifference < bestDifference) {
-                bestDifference = thisDifference;
-                bestFontSize = i;
-            }
-        }
-        fontSize = bestFontSize;
-    } 
-    return fontSize;
+    return self.bookView.fontSize;
 }
 
 - (BOOL)reflowEnabled {
@@ -1940,14 +1928,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 	return [self.book fixedViewEnabled];
 }
 - (void)changeFontSize:(BlioFontSize)newSize {
-    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-    id<BlioBookView> bookView = bookViewController.bookView;
-    if([bookView respondsToSelector:(@selector(setFontPointSize:))]) {        
-        if([self currentFontSize] != newSize) {
-            bookView.fontPointSize = ((NSNumber *)[[EucConfiguration objectForKey:EucConfigurationFontSizesKey] objectAtIndex:newSize]).integerValue;
-            [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
-        }
-    }
+    self.bookView.fontSize = newSize;
+    // Will set the default when we get the KVO callback.
+    // [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
 }
 
 - (void)setCurrentPageColor:(BlioPageColor)newColor
@@ -2035,14 +2018,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];
 }
 
-
 #pragma mark -
 #pragma mark KVO Callback
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSParameterAssert([NSThread isMainThread]);
     
-    if ([keyPath isEqual:@"currentBookmarkPoint"]) {
+    if ([keyPath isEqualToString:@"currentBookmarkPoint"]) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
         		
@@ -2071,6 +2053,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 }
             }
         }
+    } else if ([keyPath isEqualToString:@"fontSize"] &&
+               object == self.bookView) {
+        [[NSUserDefaults standardUserDefaults] setInteger:self.bookView.fontSize forKey:kBlioLastFontSizeDefaultsKey];
     }
 }
 

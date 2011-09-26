@@ -10,6 +10,8 @@
 #import "BlioBookmark.h"
 #import "BlioWebToolsViewController.h"
 
+@protocol BlioBookView, BlioBookViewDelegate;
+
 typedef enum BlioPageColor {
     kBlioPageColorWhite = 0,
     kBlioPageColorBlack = 1,
@@ -119,7 +121,7 @@ typedef enum BlioFontSize {
 
 @optional
 @property (nonatomic, assign) BlioJustification justification;
-@property (nonatomic, assign) CGFloat fontPointSize;
+@property (nonatomic, assign) BlioFontSize fontSize;
 @property (nonatomic, readonly) UIImage *dimPageImage;
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
