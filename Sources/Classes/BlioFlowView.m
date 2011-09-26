@@ -678,6 +678,37 @@
     [_eucBookView turnToNextPage];
 }
 
+- (BlioJustification)justification
+{
+    switch(_eucBookView.justification) {
+        default:
+        case EucJustificationOriginal:
+            return kBlioJustificationOriginal;
+        case EucJustificationOverrideToLeft:
+            return kBlioJustificationLeft;
+        case EucJustificationOverrideToFull:
+            return kBlioJustificationFull;
+    }
+}
+
+- (void)setJustification:(BlioJustification)justification;
+{
+    EucJustification eucJustification;
+    switch(justification) {
+        default:
+        case kBlioJustificationOriginal:
+            eucJustification = EucJustificationOriginal;
+            break;
+        case kBlioJustificationLeft:
+            eucJustification = EucJustificationOverrideToLeft;
+            break;
+        case kBlioJustificationFull:
+            eucJustification = EucJustificationOverrideToFull;
+            break;
+    }
+    _eucBookView.justification = eucJustification;
+}
+
 - (BOOL)twoUpLandscape
 {
     return _eucBookView.twoUpLandscape;

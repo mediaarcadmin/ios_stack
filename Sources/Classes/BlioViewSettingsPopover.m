@@ -53,6 +53,7 @@
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [((BlioViewSettingsContentsView *)self.contentsView) refreshSettings];
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     // Need to hide and show nav bar to workaround bug when rotating which hides the nav bar
     [(UINavigationController *)self.contentViewController setNavigationBarHidden:YES];

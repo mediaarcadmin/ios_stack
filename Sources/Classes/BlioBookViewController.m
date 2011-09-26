@@ -14,6 +14,7 @@
 #import <libEucalyptus/EucBookTitleView.h>
 #import <libEucalyptus/EucConfiguration.h>
 #import "BlioBookViewControllerProgressPieButton.h"
+#import "BlioBookView.h"
 #import "BlioFlowView.h"
 #import "BlioLayoutView.h"
 #import "BlioSpeedReadView.h"
@@ -45,6 +46,7 @@ static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
+static NSString * const kBlioLastJustificationDefaultsKey = @"lastJustification";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
 static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
 static NSString * const kBlioBookViewControllerCoverPopAnimation = @"BlioBookViewControllerCoverPopAnimation";
@@ -367,6 +369,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setJustification:)]) {
+        self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
+    }
     if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
         self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
     }
@@ -1796,10 +1801,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return kBlioPageLayoutPlainText;
 }
 
-- (void)changePageLayout:(id)sender {
-    
-    BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
-    
+- (void)changePageLayout:(BlioPageLayout)newLayout {
     BlioPageLayout currentLayout = self.currentPageLayout;
     if(currentLayout != newLayout) { 
 		if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
@@ -1837,6 +1839,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+        if([self.bookView respondsToSelector:@selector(setJustification:)]) {
+            self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
+        }
         if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
             self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
         }
@@ -1851,6 +1856,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
     }
+}
+
+- (BOOL)shouldShowJustificationSettings {
+    return [self.bookView respondsToSelector:@selector(setJustification:)];
 }
 
 - (BOOL)shouldShowFontSizeSettings {
@@ -1881,7 +1890,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     return NO;
 }
-- (BOOL)shouldShowLandscapePageSettings {
+- (BOOL)shouldShowTwoUpLandscapePageSettings {
     CGSize size = self.bookView.bounds.size;
     return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUpLandscape:)];
 }
@@ -1903,7 +1912,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BlioFontSize)currentFontSize {
-    BlioFontSize fontSize = kBlioFontSizeMedium;
+    BlioFontSize fontSize = -1;
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
     id<BlioBookView> bookView = bookViewController.bookView;
     
@@ -1930,8 +1939,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 -(BOOL)fixedViewEnabled {
 	return [self.book fixedViewEnabled];
 }
-- (void)changeFontSize:(id)sender {
-    BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
+- (void)changeFontSize:(BlioFontSize)newSize {
     BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
     id<BlioBookView> bookView = bookViewController.bookView;
     if([bookView respondsToSelector:(@selector(setFontPointSize:))]) {        
@@ -1993,25 +2001,36 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     _currentPageColor = newColor;
 }
 
-- (void)changePageColor:(id)sender {
-    self.currentPageColor = (BlioPageColor)[sender selectedSegmentIndex];
-    [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
+- (void)changeJustification:(BlioJustification)newJustification {
+    [[NSUserDefaults standardUserDefaults] setInteger:newJustification forKey:kBlioLastJustificationDefaultsKey];
+    self.bookView.justification = newJustification;
 }
-- (void)changeTapZooms:(UIControl*)sender {
-    BOOL shouldTapZoom = ((UISegmentedControl*)sender).selectedSegmentIndex == 1;
-    [[NSUserDefaults standardUserDefaults] setBool:shouldTapZoom forKey:kBlioTapZoomsDefaultsKey];
-    if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
-        self.bookView.shouldTapZoom = shouldTapZoom;
+- (BlioJustification)currentJustification
+{
+    if([self.bookView respondsToSelector:@selector(justification)]) {
+        return self.bookView.justification;
+    } else {
+        return -1;
     }
 }
-- (void)changeLandscapePage:(UIControl*)sender {
-    BOOL shouldBeTwoUp = ((UISegmentedControl*)sender).selectedSegmentIndex == 1;
+
+- (void)changePageColor:(BlioPageColor)newPageColor {
+    self.currentPageColor = newPageColor;
+    [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
+}
+- (void)changeTapZooms:(BOOL)newTapZooms {
+    [[NSUserDefaults standardUserDefaults] setBool:newTapZooms forKey:kBlioTapZoomsDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
+        self.bookView.shouldTapZoom = newTapZooms;
+    }
+}
+- (void)changeTwoUpLandscapePage:(BOOL)shouldBeTwoUp {
     [[NSUserDefaults standardUserDefaults] setBool:shouldBeTwoUp forKey:kBlioLandscapeTwoPagesDefaultsKey];
     if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
         self.bookView.twoUpLandscape = shouldBeTwoUp;
     }
 }
-- (void)changeLockRotation {
+- (void)toggleRotationLock {
     [self setRotationLocked:![self isRotationLocked]];
     [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];
 }
