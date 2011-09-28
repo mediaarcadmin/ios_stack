@@ -21,46 +21,35 @@
 #import "BlioBookSearchViewController.h"
 #import "BlioCoverView.h"
 
-typedef enum BlioPageColor {
-    kBlioPageColorWhite = 0,
-    kBlioPageColorBlack = 1,
-    kBlioPageColorNeutral = 2,
-} BlioPageColor;
-
-typedef enum BlioPageLayout {
-    kBlioPageLayoutPlainText = 0,
-    kBlioPageLayoutPageLayout = 1,
-    kBlioPageLayoutSpeedRead = 2,
-} BlioPageLayout;
-
-typedef enum BlioTapTurn {
-    kBlioTapTurnOff = 0,
-    kBlioTapTurnOn = 1,
-} BlioTapTurn;
-
-typedef enum BlioFontSize {
-    kBlioFontSizeVerySmall = 0,
-    kBlioFontSizeSmall = 1,
-    kBlioFontSizeMedium = 2,
-    kBlioFontSizeLarge = 3,
-    kBlioFontSizeVeryLarge = 4,
-} BlioFontSize;
-
 @protocol BlioViewSettingsDelegate <NSObject>
 @required
-- (void)changePageLayout:(id)sender;
 - (BOOL)shouldShowFontSizeSettings;
+- (BOOL)shouldShowJustificationSettings;
 - (BOOL)shouldShowPageColorSettings;
 - (BOOL)shouldShowTapZoomsToBlockSettings;
-- (BOOL)shouldShowLandscapePageSettings;
-- (void)dismissViewSettings:(id)sender;
-- (BOOL)isRotationLocked;
-- (void)changeLockRotation;
+- (BOOL)shouldShowTwoUpLandscapePageSettings;
+
+- (BOOL)shouldPresentBrightnessSliderVerticallyInPageSettings;
+- (BOOL)shouldShowDoneButtonInPageSettings;
+
+- (void)changePageLayout:(BlioPageLayout)newLayout;
+- (void)changeFontSize:(BlioFontSize)newSize;
+- (void)changeJustification:(BlioJustification)sender;
+- (void)changePageColor:(BlioPageColor)sender;
+- (void)changeTapZooms:(BOOL)newTabZooms;
+- (void)changeTwoUpLandscapePage:(BOOL)shouldBeTwoUp;
+- (void)toggleRotationLock;
+
+- (BOOL)reflowEnabled;
+- (BOOL)fixedViewEnabled;
+- (BlioJustification)currentJustification;
 - (BlioPageLayout)currentPageLayout;
 - (BlioPageColor)currentPageColor;
 - (BlioFontSize)currentFontSize;
-- (BOOL)reflowEnabled;
-- (BOOL)fixedViewEnabled;
+- (BOOL)isRotationLocked;
+
+- (void)dismissViewSettings:(id)sender;
+- (void)viewSettingsDidDismiss:(id)sender;
 @end
 
 @class BlioBookViewControllerProgressPieButton, BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview;
@@ -138,7 +127,7 @@ typedef enum {
     BOOL firstPageReady;
     BOOL coverOpened;
     
-    UIActionSheet *viewSettingsSheet;
+    BlioViewSettingsSheet *viewSettingsSheet;
     BlioModalPopoverController *viewSettingsPopover;
     BlioModalPopoverController *contentsPopover;
     BlioModalPopoverController *searchPopover;

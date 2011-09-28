@@ -14,6 +14,7 @@
 #import "BlioParagraphSource.h"
 #import "BlioEPubBook.h"
 #import "levenshtein_distance.h"
+#import <libEucalyptus/EucConfiguration.h>
 #import <libEucalyptus/EucBook.h>
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
@@ -46,6 +47,16 @@
 
 @synthesize currentBookmarkPoint = _currentBookmarkPoint;
 @synthesize lastSavedPoint = _lastSavedPoint;
+
++ (NSSet *)keyPathsForValuesAffectingFontSize 
+{
+    return [NSSet setWithObject:@"eucBookView.fontPointSize"];
+}
+
++ (BOOL)automaticallyNotifiesObserversOfFontSize
+{
+    return NO;
+}
 
 - (id)initWithFrame:(CGRect)frame
              bookID:(NSManagedObjectID *)bookID 
@@ -597,15 +608,26 @@
 #pragma mark -
 #pragma mark Visual Properties
 
-- (CGFloat)fontPointSize
+- (BlioFontSize)fontSize
 {
-    return _eucBookView.fontPointSize;
+    CGFloat actualFontSize = _eucBookView.fontPointSize;
+    CGFloat bestDifference = CGFLOAT_MAX;
+    BlioFontSize bestFontSize = kBlioFontSizeMedium;
+    NSArray *eucFontSizeNumbers = [EucConfiguration objectForKey:EucConfigurationFontSizesKey];
+    for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
+        CGFloat thisDifference = fabsf(((NSNumber *)[eucFontSizeNumbers objectAtIndex:i]).floatValue - actualFontSize);
+        if(thisDifference < bestDifference) {
+            bestDifference = thisDifference;
+            bestFontSize = i;
+        }
+    }
+   return bestFontSize;
 }
 
-- (void)setFontPointSize:(CGFloat)fontPointSize
+- (void)setFontSize:(BlioFontSize)newSize
 {
 	[_eucBookView highlightWordAtIndexPoint:nil animated:YES];
-    _eucBookView.fontPointSize = fontPointSize;
+    _eucBookView.fontPointSize = ((NSNumber *)[[EucConfiguration objectForKey:EucConfigurationFontSizesKey] objectAtIndex:newSize]).integerValue;
 }
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
@@ -676,6 +698,37 @@
 - (void)incrementPage
 {
     [_eucBookView turnToNextPage];
+}
+
+- (BlioJustification)justification
+{
+    switch(_eucBookView.justification) {
+        default:
+        case EucJustificationOriginal:
+            return kBlioJustificationOriginal;
+        case EucJustificationOverrideToLeft:
+            return kBlioJustificationLeft;
+        case EucJustificationOverrideToFull:
+            return kBlioJustificationFull;
+    }
+}
+
+- (void)setJustification:(BlioJustification)justification;
+{
+    EucJustification eucJustification;
+    switch(justification) {
+        default:
+        case kBlioJustificationOriginal:
+            eucJustification = EucJustificationOriginal;
+            break;
+        case kBlioJustificationLeft:
+            eucJustification = EucJustificationOverrideToLeft;
+            break;
+        case kBlioJustificationFull:
+            eucJustification = EucJustificationOverrideToFull;
+            break;
+    }
+    _eucBookView.justification = eucJustification;
 }
 
 - (BOOL)twoUpLandscape

@@ -158,6 +158,22 @@
 		7D662008132E7E9B00242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
 		7D662009132E7F1600242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
 		7D66200A132E7F2100242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
+		7D69C35414293D6500136CFB /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		7D69C35514293D6500136CFB /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		7D69C35614293D6500136CFB /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		7D69C35714293D6500136CFB /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		7D69C35814293D6500136CFB /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		7D69C35914293D6500136CFB /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		7D69C35A14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		7D69C35B14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		7D69C35C14293D6500136CFB /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		7D69C35D14293D6500136CFB /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		7D69C35E14293D6500136CFB /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		7D69C35F14293D6500136CFB /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		7D69C36014293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
+		7D69C36114293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
+		7D69C36214293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
+		7D69C36314293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
 		7D6D9FF1124E9DC5005FD8CE /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
 		7D6D9FF2124E9DC5005FD8CE /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		7D6D9FF3124E9DC5005FD8CE /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
@@ -932,6 +948,14 @@
 		A31CC8A113FEA07E0010BFC5 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EFAF4C134DF4B800ADF905 /* libXpsSDKipad.a */; };
 		A31E82EE120B3FD800CB6657 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
+		A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75E1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E7601427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7611427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7621427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7631427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
 		A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
 		A32EEDA513B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A32EEDA413B37CFA001D6170 /* BlioStoreTabViewController.m */; };
@@ -1906,6 +1930,10 @@
 		7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmark.h; sourceTree = "<group>"; };
 		7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmark.m; sourceTree = "<group>"; };
 		7D662007132E7E9B00242F63 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
+		7D69C35014293D6500136CFB /* brightness-sun-bright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-bright.png"; sourceTree = "<group>"; };
+		7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-bright@2x.png"; sourceTree = "<group>"; };
+		7D69C35214293D6500136CFB /* brightness-sun-dim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-dim.png"; sourceTree = "<group>"; };
+		7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-dim@2x.png"; sourceTree = "<group>"; };
 		7D71550A13E99F2700A593A9 /* THFonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = THFonts; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
@@ -1983,6 +2011,9 @@
 		A3169288111488C9005AAE5E /* BlioAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioManager.m; sourceTree = "<group>"; };
 		A31CC8A713FEA07E0010BFC5 /* SamsClubApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamsClubApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SamsClubApp-Info.plist"; sourceTree = "<group>"; };
+		A323E7591427A64F0043E78E /* BlioVOTipsSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVOTipsSettingsController.h; sourceTree = "<group>"; };
+		A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioVOTipsSettingsController.m; sourceTree = "<group>"; };
+		A323E75F1427A6D10043E78E /* voiceover-tips.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-tips.html"; sourceTree = "<group>"; };
 		A32D885911FE04DA00D2AE17 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		A32D88DD11FE240300D2AE17 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPlayReadyPK.a; path = Libraries/DRM/libPlayReadyPK.a; sourceTree = "<group>"; };
@@ -2783,6 +2814,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A323E75F1427A6D10043E78E /* voiceover-tips.html */,
 				8D1107310486CEB800E47090 /* BlioApp-Info.plist */,
 				A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */,
 				A3CF83A612E4B85E0069FA16 /* XPS-Demo */,
@@ -2886,6 +2918,10 @@
 				C985466610E22BCC002305A2 /* icon-speedread.png */,
 				C985466710E22BCD002305A2 /* icon-page.png */,
 				C985466810E22BCD002305A2 /* icon-layout.png */,
+				7D69C35014293D6500136CFB /* brightness-sun-bright.png */,
+				7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */,
+				7D69C35214293D6500136CFB /* brightness-sun-dim.png */,
+				7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */,
 				C977649910E0E413005E0E2B /* row-dark.png */,
 				C977649A10E0E413005E0E2B /* row-light.png */,
 				C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */,
@@ -3695,6 +3731,8 @@
 				A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */,
 				A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */,
 				A371FDCC113AF77200E1A51C /* BlioWebToolSettingsController.h */,
+				A323E7591427A64F0043E78E /* BlioVOTipsSettingsController.h */,
+				A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */,
 			);
 			name = "App Settings Screens";
 			sourceTree = "<group>";
@@ -4273,6 +4311,11 @@
 				DC8A54471412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544A1412E25D0009341B /* book-overlay.png in Resources */,
 				7D71550B13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7601427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D69C35414293D6500136CFB /* brightness-sun-bright.png in Resources */,
+				7D69C35814293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D69C35C14293D6500136CFB /* brightness-sun-dim.png in Resources */,
+				7D69C36014293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4509,6 +4552,11 @@
 				DC8A54491412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544C1412E25D0009341B /* book-overlay.png in Resources */,
 				7D71550D13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7621427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D69C35614293D6500136CFB /* brightness-sun-bright.png in Resources */,
+				7D69C35A14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D69C35E14293D6500136CFB /* brightness-sun-dim.png in Resources */,
+				7D69C36214293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4745,6 +4793,11 @@
 				7D4CA2341417814100117F3A /* THFonts in Resources */,
 				DCBF27E4141E6FE000FF050A /* book-overlay@2x.png in Resources */,
 				DCBF27E5141E6FE600FF050A /* book-overlay.png in Resources */,
+				A323E7631427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D69C35714293D6500136CFB /* brightness-sun-bright.png in Resources */,
+				7D69C35B14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D69C35F14293D6500136CFB /* brightness-sun-dim.png in Resources */,
+				7D69C36314293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4982,6 +5035,11 @@
 				DC8A54481412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544B1412E25D0009341B /* book-overlay.png in Resources */,
 				7D71550C13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7611427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D69C35514293D6500136CFB /* brightness-sun-bright.png in Resources */,
+				7D69C35914293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D69C35D14293D6500136CFB /* brightness-sun-dim.png in Resources */,
+				7D69C36114293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5139,6 +5197,7 @@
 				A32EEDA513B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969113F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969613F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5292,6 +5351,7 @@
 				A32EEDA713B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969313F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969813F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5445,6 +5505,7 @@
 				A31CC87E13FEA07E0010BFC5 /* BlioStoreTabViewController.m in Sources */,
 				A31CC87F13FEA07E0010BFC5 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				A31CC88013FEA07E0010BFC5 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75E1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5598,6 +5659,7 @@
 				A32EEDA613B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969213F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969713F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5727,6 +5789,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -5759,6 +5822,7 @@
 				);
 				PRODUCT_NAME = Blio;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -5793,6 +5857,7 @@
 				PRODUCT_NAME = Blio;
 				PROVISIONING_PROFILE = "40E97D09-A302-4526-902E-170EFF4CECE2";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "10E1D86B-9D15-47F9-87C2-F38A3C91AC78";
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -5985,6 +6050,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6016,6 +6082,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6047,6 +6114,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
+				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

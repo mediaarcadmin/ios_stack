@@ -14,6 +14,7 @@
 #import "BlioStoreManager.h"
 #import "BlioEULATextController.h"
 #import "BlioVersionController.h"
+#import "BlioVOTipsSettingsController.h"
 
 @implementation BlioAppSettingsController
 
@@ -85,9 +86,9 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (section == 0 || section == 3) 
-		return 2;
-	return 1;
+	if (section == 1) 
+		return 1;
+	return 2;
 }
 /*
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -146,7 +147,16 @@
 			}
 			break;
 		case 2:
-			[cell.textLabel setText:NSLocalizedString(@"Help",@"\"Help\" text label for App Settings cell")];
+			switch ([indexPath row])
+            {
+                case 0:
+                    [cell.textLabel setText:NSLocalizedString(@"VoiceOver Tips",@"\"VoiceOver Tips\" text label for App Settings cell")];
+                    break;
+                case 1:
+                    [cell.textLabel setText:NSLocalizedString(@"Help",@"\"Help\" text label for App Settings cell")];
+                default:
+                    break;
+        }
 			break;
 		case 3:
 			switch ([indexPath row])
@@ -179,6 +189,8 @@
 	BlioVersionController *versionController;
 	BlioMyAccountViewController *myAccountController;
 	BlioEULATextController *eulaController;
+    BlioVOTipsSettingsController *votipsController;
+    
 	switch ( [indexPath section] ) {
 		case 0:
 			switch (indexPath.row)
@@ -188,11 +200,6 @@
 					[self.navigationController pushViewController:audioController animated:YES];
 					[audioController release];
 					break;
-//				case 1:
-//					readingnavController = [[BlioReadingNavigationSettingsController alloc] init];
-//					[self.navigationController pushViewController:readingnavController animated:YES];
-//					[readingnavController release];
-//					break;
 				case 1:
 					webToolController = [[BlioWebToolSettingsController alloc] init];
 					[self.navigationController pushViewController:webToolController animated:YES];
@@ -213,10 +220,20 @@
 			}
 			break;
 		case 2:
-			helpController = [[BlioHelpSettingsController alloc] init];
-			[self.navigationController pushViewController:helpController animated:YES];
-			[helpController release];
-			break;
+            switch (indexPath.row)
+            {
+                case 0:
+                    votipsController = [[BlioVOTipsSettingsController alloc] init];
+                    [self.navigationController pushViewController:votipsController animated:YES];
+                    [votipsController release];
+                    break;
+                case 1:
+                    helpController = [[BlioHelpSettingsController alloc] init];
+                    [self.navigationController pushViewController:helpController animated:YES];
+                    [helpController release];
+                    break;
+            }
+            break;
 		case 3:
 			switch (indexPath.row)
 			{

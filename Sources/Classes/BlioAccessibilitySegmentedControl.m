@@ -17,6 +17,8 @@
         accessibleSegments = nil;
         [segmentAccessibilityHints release];
         segmentAccessibilityHints = nil;
+        [segmentAccessibilityTraits release];
+        segmentAccessibilityTraits = nil;
     }
     [super dealloc];
 }
@@ -42,13 +44,45 @@
     [self invalidateAccessibilitySegments];
 }
 
+- (NSString *)accessibilityHintForSegmentIndex:(NSUInteger)segmentIndex
+{
+    NSString *hint = [[self imageForSegmentAtIndex:segmentIndex] accessibilityHint];
+    if(!hint) {
+        hint = [segmentAccessibilityHints objectForKey:[NSNumber numberWithUnsignedInteger:segmentIndex]];
+    }
+    return hint;
+}
+
+- (void)setAccessibilityTraits:(UIAccessibilityTraits)accessibilityTraits forSegmentIndex:(NSUInteger)segmentIndex
+{
+    if(!segmentAccessibilityTraits) {
+        segmentAccessibilityTraits = [[NSMutableDictionary alloc] init];
+    }
+    accessibilityTraits &= ~UIAccessibilityTraitSelected;
+    [segmentAccessibilityTraits setObject:[NSNumber numberWithUnsignedLongLong:accessibilityTraits] 
+                                   forKey:[NSNumber numberWithUnsignedInteger:segmentIndex]];
+    [self invalidateAccessibilitySegments];
+}
+
+- (UIAccessibilityTraits)accessibilityTraitsForSegmentIndex:(NSUInteger)segmentIndex
+{
+    UIAccessibilityTraits traits;
+    NSNumber *traitsValue = [segmentAccessibilityTraits objectForKey:[NSNumber numberWithUnsignedInteger:segmentIndex]];
+    if(traitsValue) {
+        traits = [traitsValue unsignedLongLongValue];
+    } else {
+        traits = UIAccessibilityTraitButton;
+    }
+    if(self.selectedSegmentIndex == segmentIndex) {
+        traits |= UIAccessibilityTraitSelected;
+    }
+    return traits;
+}
+
+
 - (void)setEnabled:(BOOL)enabled {
 	[super setEnabled:enabled];
-	if (accessibleSegments) {
-		for (UIAccessibilityElement * element in accessibleSegments) {
-			[element setIsAccessibilityElement:enabled];
-		}
-	}
+    [self invalidateAccessibilitySegments];
 }
 - (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)segment animated:(BOOL)animated {
     [super insertSegmentWithTitle:title atIndex:segment animated:animated];
@@ -97,26 +131,23 @@
             UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             id segmentItem = (id)[self imageForSegmentAtIndex:i] ? : (id)[self titleForSegmentAtIndex:i];
             if (nil != segmentItem) {
-                [element setIsAccessibilityElement:self.enabled];
+                CGRect segmentFrame = CGRectMake(i * segmentWidth, 0, segmentWidth, segmentHeight);
+                [element setAccessibilityFrame:[self.window convertRect:segmentFrame fromView:self]];
+
                 NSString *label = [segmentItem accessibilityLabel];
                 if ((nil == label) && [segmentItem isKindOfClass:[NSString class]]) 
                     label = (NSString *)segmentItem;
-                [element setAccessibilityLabel:label];
                 
-                NSString *hint = [segmentItem accessibilityHint];
-                if(!hint) {
-                    hint = [segmentAccessibilityHints objectForKey:[NSNumber numberWithUnsignedInteger:i]];
+                element.accessibilityLabel = label;
+                element.accessibilityTraits = [self accessibilityTraitsForSegmentIndex:i];
+                element.accessibilityHint= [self accessibilityHintForSegmentIndex:i];
+
+                if(!self.enabled || ![self isEnabledForSegmentAtIndex:i]) {
+                    element.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
                 }
-                if(hint) {
-                    [element setAccessibilityHint:hint];
-                }
-                CGRect segmentFrame = CGRectMake(i * segmentWidth, 0, segmentWidth, segmentHeight);
-                [element setAccessibilityFrame:[self.window convertRect:segmentFrame fromView:self]];
-                UIAccessibilityTraits traits = UIAccessibilityTraitButton;
-                if (i == [super selectedSegmentIndex]) traits |= UIAccessibilityTraitSelected;
-                [element setAccessibilityTraits:traits];
+                
+                [accessibleSegments addObject:element];
             }
-            [accessibleSegments addObject:element];
             [element release];
         }
     }

@@ -12,8 +12,8 @@
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
-#import <libEucalyptus/EucConfiguration.h>
 #import "BlioBookViewControllerProgressPieButton.h"
+#import "BlioBookView.h"
 #import "BlioFlowView.h"
 #import "BlioLayoutView.h"
 #import "BlioSpeedReadView.h"
@@ -25,6 +25,7 @@
 #import "BlioBookManager.h"
 #import "BlioBeveledView.h"
 #import "BlioViewSettingsPopover.h"
+#import "BlioViewSettingsContentsView.h"
 #import "BlioModalPopoverController.h"
 #import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
@@ -44,6 +45,7 @@ static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
+static NSString * const kBlioLastJustificationDefaultsKey = @"lastJustification";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
 static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
 static NSString * const kBlioBookViewControllerCoverPopAnimation = @"BlioBookViewControllerCoverPopAnimation";
@@ -71,7 +73,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) UIView *rootView;
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
-@property (nonatomic, retain) UIActionSheet *viewSettingsSheet;
+@property (nonatomic, retain) BlioViewSettingsSheet *viewSettingsSheet;
 @property (nonatomic, retain) BlioModalPopoverController *viewSettingsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *searchPopover;
@@ -366,6 +368,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setFontSize:)]) {
+        self.bookView.fontSize = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeDefaultsKey];
+    }
+    if([self.bookView respondsToSelector:@selector(setJustification:)]) {
+        self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
+    }
     if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
         self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
     }
@@ -755,6 +763,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     if(_bookView != bookView) {
         if(_bookView) {
+            [_bookView removeObserver:self forKeyPath:@"fontSize"];
             [_bookView removeObserver:self forKeyPath:@"currentBookmarkPoint"];
             if(_bookView.superview) {
                 if ([_bookView wantsTouchesSniffed]) {
@@ -790,6 +799,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }                        
             [_bookView addObserver:self 
                         forKeyPath:@"currentBookmarkPoint" 
+                           options:NSKeyValueObservingOptionNew
+                           context:nil];   
+            [_bookView addObserver:self 
+                        forKeyPath:@"fontSize" 
                            options:NSKeyValueObservingOptionNew
                            context:nil];   
         }
@@ -1795,10 +1808,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return kBlioPageLayoutPlainText;
 }
 
-- (void)changePageLayout:(id)sender {
-    
-    BlioPageLayout newLayout = (BlioPageLayout)[sender selectedSegmentIndex];
-    
+- (void)changePageLayout:(BlioPageLayout)newLayout {
     BlioPageLayout currentLayout = self.currentPageLayout;
     if(currentLayout != newLayout) { 
 		if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
@@ -1836,6 +1846,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+        if([self.bookView respondsToSelector:@selector(setFontSize:)]) {
+            self.bookView.fontSize = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeDefaultsKey];
+        }
+        if([self.bookView respondsToSelector:@selector(setJustification:)]) {
+            self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
+        }
         if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
             self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
         }
@@ -1843,7 +1859,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             self.bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
         }
 
-        // Reset the search resultsi
+        // Reset the search results
         self.searchViewController = nil;
         self.searchPopover = nil;
         
@@ -1852,12 +1868,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
+- (BOOL)shouldShowJustificationSettings {
+    return [self.bookView respondsToSelector:@selector(setJustification:)];
+}
+
 - (BOOL)shouldShowFontSizeSettings {
-    if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
-        return NO;
-    } else {
-        return YES;
-    }
+    return [self.bookView respondsToSelector:@selector(setFontSize:)];
 }
 
 - (BOOL)shouldShowPageColorSettings {        
@@ -1880,31 +1896,29 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     return NO;
 }
-- (BOOL)shouldShowLandscapePageSettings {
+- (BOOL)shouldShowTwoUpLandscapePageSettings {
     CGSize size = self.bookView.bounds.size;
     return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUpLandscape:)];
 }
 
+- (BOOL)shouldPresentBrightnessSliderVerticallyInPageSettings {
+    if(UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        CGSize size = self.bookView.bounds.size;
+        return size.width > size.height;
+    }
+    return NO;
+}
+
+- (BOOL)shouldShowDoneButtonInPageSettings
+{
+    // There's no way to escape from the fake popover without a done button using accessability;
+    return UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad && 
+        &UIAccessibilityIsVoiceOverRunning != NULL && 
+        UIAccessibilityIsVoiceOverRunning();
+}
+
 - (BlioFontSize)currentFontSize {
-    BlioFontSize fontSize = kBlioFontSizeMedium;
-    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-    id<BlioBookView> bookView = bookViewController.bookView;
-    
-    if([bookView respondsToSelector:(@selector(fontPointSize))]) {
-        CGFloat actualFontSize = bookView.fontPointSize;
-        CGFloat bestDifference = CGFLOAT_MAX;
-        BlioFontSize bestFontSize = kBlioFontSizeMedium;
-        NSArray *eucFontSizeNumbers = [EucConfiguration objectForKey:EucConfigurationFontSizesKey];
-        for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
-            CGFloat thisDifference = fabsf(((NSNumber *)[eucFontSizeNumbers objectAtIndex:i]).floatValue - actualFontSize);
-            if(thisDifference < bestDifference) {
-                bestDifference = thisDifference;
-                bestFontSize = i;
-            }
-        }
-        fontSize = bestFontSize;
-    } 
-    return fontSize;
+    return self.bookView.fontSize;
 }
 
 - (BOOL)reflowEnabled {
@@ -1913,16 +1927,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 -(BOOL)fixedViewEnabled {
 	return [self.book fixedViewEnabled];
 }
-- (void)changeFontSize:(id)sender {
-    BlioFontSize newSize = (BlioFontSize)[sender selectedSegmentIndex];
-    BlioBookViewController *bookViewController = (BlioBookViewController *)self.navigationController.topViewController;
-    id<BlioBookView> bookView = bookViewController.bookView;
-    if([bookView respondsToSelector:(@selector(setFontPointSize:))]) {        
-        if([self currentFontSize] != newSize) {
-            bookView.fontPointSize = ((NSNumber *)[[EucConfiguration objectForKey:EucConfigurationFontSizesKey] objectAtIndex:newSize]).integerValue;
-            [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
-        }
-    }
+- (void)changeFontSize:(BlioFontSize)newSize {
+    self.bookView.fontSize = newSize;
+    // Will set the default when we get the KVO callback.
+    // [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
 }
 
 - (void)setCurrentPageColor:(BlioPageColor)newColor
@@ -1976,29 +1984,39 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     _currentPageColor = newColor;
 }
 
-- (void)changePageColor:(id)sender {
-    self.currentPageColor = (BlioPageColor)[sender selectedSegmentIndex];
-    [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
+- (void)changeJustification:(BlioJustification)newJustification {
+    [[NSUserDefaults standardUserDefaults] setInteger:newJustification forKey:kBlioLastJustificationDefaultsKey];
+    self.bookView.justification = newJustification;
 }
-- (void)changeTapZooms:(UIControl*)sender {
-    BOOL shouldTapZoom = ((UISegmentedControl*)sender).selectedSegmentIndex == 1;
-    [[NSUserDefaults standardUserDefaults] setBool:shouldTapZoom forKey:kBlioTapZoomsDefaultsKey];
-    if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
-        self.bookView.shouldTapZoom = shouldTapZoom;
+- (BlioJustification)currentJustification
+{
+    if([self.bookView respondsToSelector:@selector(justification)]) {
+        return self.bookView.justification;
+    } else {
+        return -1;
     }
 }
-- (void)changeLandscapePage:(UIControl*)sender {
-    BOOL shouldBeTwoUp = ((UISegmentedControl*)sender).selectedSegmentIndex == 1;
+
+- (void)changePageColor:(BlioPageColor)newPageColor {
+    self.currentPageColor = newPageColor;
+    [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
+}
+- (void)changeTapZooms:(BOOL)newTapZooms {
+    [[NSUserDefaults standardUserDefaults] setBool:newTapZooms forKey:kBlioTapZoomsDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
+        self.bookView.shouldTapZoom = newTapZooms;
+    }
+}
+- (void)changeTwoUpLandscapePage:(BOOL)shouldBeTwoUp {
     [[NSUserDefaults standardUserDefaults] setBool:shouldBeTwoUp forKey:kBlioLandscapeTwoPagesDefaultsKey];
     if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
         self.bookView.twoUpLandscape = shouldBeTwoUp;
     }
 }
-- (void)changeLockRotation {
+- (void)toggleRotationLock {
     [self setRotationLocked:![self isRotationLocked]];
     [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];
 }
-
 
 #pragma mark -
 #pragma mark KVO Callback
@@ -2006,7 +2024,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSParameterAssert([NSThread isMainThread]);
     
-    if ([keyPath isEqual:@"currentBookmarkPoint"]) {
+    if ([keyPath isEqualToString:@"currentBookmarkPoint"]) {
         [self updatePageJumpPanelAnimated:YES];
         [self updatePieButtonAnimated:YES];
         		
@@ -2035,6 +2053,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 }
             }
         }
+    } else if ([keyPath isEqualToString:@"fontSize"] &&
+               object == self.bookView) {
+        [[NSUserDefaults standardUserDefaults] setInteger:self.bookView.fontSize forKey:kBlioLastFontSizeDefaultsKey];
     }
 }
 
@@ -2079,32 +2100,36 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         if (![self.viewSettingsPopover isPopoverVisible]) {
             BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
-            [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
             self.viewSettingsPopover = aSettingsPopover;
+            [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
             [aSettingsPopover release];
         }
     } else {
-        if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-            // Hide toolbars so the view settings don't overlap them
-            [self setToolbarsForModalOverlayActive:YES];
+        if (!self.viewSettingsSheet) {
+            BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
+            self.viewSettingsSheet = aSettingsSheet;
+            [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
+            [aSettingsSheet release];
         }
-        BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
-        [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
-        self.viewSettingsSheet = aSettingsSheet;
-        [aSettingsSheet release];
     }
-    
 }
 
 - (void)dismissViewSettings:(id)sender {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.viewSettingsPopover dismissPopoverAnimated:YES];
+    } else {
+        [self.viewSettingsSheet dismissAnimated:YES];
+    }
+}
+
+- (void)viewSettingsDidDismiss:(id)sender {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.viewSettingsPopover = nil;
     } else {
-        [self.viewSettingsSheet dismissWithClickedButtonIndex:0 animated:YES];
         self.viewSettingsSheet = nil;
     }
-    [self setToolbarsForModalOverlayActive:NO];
 }
+
 - (void)buyBook:(id)sender {
 	[[BlioStoreManager sharedInstance] buyBookWithSourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 }
@@ -2535,9 +2560,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			}
 			else {
 				[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"No Voices Available",@"\"No Voices Available\" alert message title")
-											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You do not have any Text-To-Speech voices installed. Would you like to download a TTS voice?",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
+											 message:NSLocalizedStringWithDefaultValue(@"TTS_CANNOT_BE_HEARD_WITHOUT_AVAILABLE_VOICES",nil,[NSBundle mainBundle],@"You do not have any voices installed. Would you like to purchase a voice?",@"Alert message shown to end-user when the end-user attempts to hear a book read aloud by the TTS engine without any voices downloaded.")
 											delegate:self 
-								   cancelButtonTitle:NSLocalizedString(@"Not Yet",@"\"Not Yet\" label for button used to cancel/dismiss alertview") 
+								   cancelButtonTitle:NSLocalizedString(@"No",@"\"No\" label for button used to cancel/dismiss alertview") 
 									otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"),nil];
 			}
         }
@@ -2745,6 +2770,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.contentsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.viewSettingsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    
+    if(self.viewSettingsSheet) {
+        [self.viewSettingsSheet dismissAnimated:NO];
+    }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
