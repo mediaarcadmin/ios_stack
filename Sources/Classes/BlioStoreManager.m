@@ -228,7 +228,7 @@
 }
 
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID {
-	NSLog(@"saveRegistrationAccountID: %@, serviceID: %@",accountID,serviceID);
+//	NSLog(@"saveRegistrationAccountID: %@, serviceID: %@",accountID,serviceID);
 	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
 	if (!usersDictionary) {
 		NSLog(@"WARNING: registration credentials attempted to be saved without existing usersDictionary!");
@@ -267,7 +267,7 @@
 	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginHostname];
 }
 -(void)storeHelper:(BlioStoreHelper*)storeHelper receivedLoginResult:(NSInteger)loginResult {
-	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
+//	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
 	initialLoginCheckFinished = YES;
 	if (loginResult == BlioLoginResultInvalidPassword) {
 		[[BlioStoreManager sharedInstance] clearPasswordForSourceID:storeHelper.sourceID];

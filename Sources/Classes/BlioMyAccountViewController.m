@@ -8,12 +8,13 @@
 
 #import "BlioMyAccountViewController.h"
 #import "BlioStoreManager.h"
-#import "BlioPaidBooksSettingsController.h"
-#import "BlioArchiveSettingsViewController.h"
+#import "BlioAppSettingsConstants.h"
+#import "BlioDrmManager.h"
+#import "BlioAlertManager.h"
 
 @implementation BlioMyAccountViewController
 
-@synthesize subControllers;
+@synthesize activityIndicator, registrationOn, drmSessionManager;
 
 #pragma mark -
 #pragma mark Initialization
@@ -21,25 +22,15 @@
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		self.title = NSLocalizedString(@"My Account",@"\"My Account\" view controller title.");
-		UIBarButtonItem * aButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Logout",@"\"Logout\" bar button text label within My Account.") style:UIBarButtonItemStyleBordered target:self action:@selector(logoutButtonPressed:)];
-		self.navigationItem.rightBarButtonItem = aButton;
-		[aButton release];
+        // TICKET 507: remove Logout button
+//		UIBarButtonItem * aButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Logout",@"\"Logout\" bar button text label within My Account.") style:UIBarButtonItemStyleBordered target:self action:@selector(logoutButtonPressed:)];
+//		self.navigationItem.rightBarButtonItem = aButton;
+//		[aButton release];
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
-		self.subControllers = [NSArray arrayWithObjects:[[[BlioPaidBooksSettingsController alloc] init] autorelease],[[[BlioArchiveSettingsViewController alloc] init] autorelease],nil];
     }
     return self;
-}
--(void)logoutButtonPressed:(id)sender {
-	[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
-	[self.navigationController popViewControllerAnimated:YES];	
-}
--(void)loginDismissed:(NSNotification*)note {
-	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-		[self.tableView reloadData];
-	}
 }
 
 
@@ -86,138 +77,176 @@
 	return YES;
 }
 
+#pragma mark Event handlers
+
+-(void)logoutButtonPressed:(id)sender {
+	[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+	[self.navigationController popViewControllerAnimated:YES];	
+}
+-(void)loginDismissed:(NSNotification*)note {
+	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+		[self.tableView reloadData];
+	}
+}
+
+- (void)changeRegistration:(UIControl*)sender {
+	//self.registrationOn = !self.registrationOn;
+	
+	sender.enabled = NO;
+	
+	BOOL changeSuccess = NO;
+	if ( [(UISwitch*)sender isOn] ) {
+		[activityIndicator startAnimating];  // thread issue...
+		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore];
+		[activityIndicator stopAnimating];
+		if (!changeSuccess) {
+			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [(UISwitch*)sender setOn:YES];
+			else [(UISwitch*)sender setOn:NO];
+		}
+		sender.enabled = YES;
+	}
+	else {
+		registrationSwitch = (UISwitch*)sender;
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title") 
+									 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
+									delegate:self
+						   cancelButtonTitle:nil
+						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
+		
+	}
+    //	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)changeDownloadNewBooks:(UIControl*)sender {
+	if ( [(UISwitch*)sender isOn] ) {
+		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kBlioDownloadNewBooksDefaultsKey];
+	}
+	else {
+		[[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];		 
+	}
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 
 #pragma mark -
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return [subControllers count];
-}
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
-	UITableViewController * tableVC = (UITableViewController*)[subControllers objectAtIndex:section];
-    return [tableVC tableView:tableView numberOfRowsInSection:0];
-}
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	UITableViewController * tableVC = (UITableViewController*)[subControllers objectAtIndex:indexPath.section];
-	if (tableVC) {
-		NSIndexPath * newIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
-		return [tableVC tableView:tableView cellForRowAtIndexPath:newIndexPath];
-	}
-	return nil;
-}
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	UITableViewController * tableVC = (UITableViewController*)[subControllers objectAtIndex:section];
-	return tableVC.title;
-}
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	UITableViewController * tableVC = (UITableViewController*)[subControllers objectAtIndex:section];
-	return [tableVC tableView:tableView titleForFooterInSection:0];
-}
-/*
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    // Return the number of sections.
     return 2;
 }
-
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     return 1;
 }
-
-// Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+    if (indexPath.section == 0) {
+        static NSString *ListCellIdentifier = @"UITableViewCellRegistrationIdentifier";
+        UITableViewCell *cell;
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+        if (cell == nil) {
+            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+            cell.textLabel.text = NSLocalizedString(@"Registration","\"Registration\" cell label");
+            UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(cell.contentView.bounds.size.width - 80.0f - 35.0f, 9.0f, 80.0f, 28.0f)];
+            switchView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+            [switchView setTag:997];
+            [cell addSubview:switchView];
+            if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered ) {
+                [switchView setOn:YES animated:NO];
+                self.registrationOn = YES;
+            }
+            else {
+                [switchView setOn:NO animated:NO];
+                self.registrationOn = NO;
+            }
+            [switchView addTarget:self action:@selector(changeRegistration:) forControlEvents:UIControlEventValueChanged];
+            [switchView release];
+        }
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
     }
-    
-	cell.textLabel.textAlignment = UITextAlignmentLeft;
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	
-	switch ( [indexPath section] ) {
+    else if (indexPath.section == 1) {
+        static NSString *AutoDownloadCellIdentifier = @"UITableViewCellAutoDownloadIdentifier";
+        UITableViewCell *cell;
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:AutoDownloadCellIdentifier];
+        if (cell == nil) {
+            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:AutoDownloadCellIdentifier] autorelease];
+            cell.textLabel.text = NSLocalizedString(@"Auto-Download","\"Auto-Download\" cell label");
+            UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(cell.contentView.bounds.size.width - 80.0f - 35.0f, 9.0f, 80.0f, 28.0f)];
+            switchView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+            [switchView setTag:997];
+            [cell addSubview:switchView];
+            if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
+                [switchView setOn:YES animated:NO];
+            }
+            else {
+                [switchView setOn:NO animated:NO];
+            }
+            [switchView addTarget:self action:@selector(changeDownloadNewBooks:) forControlEvents:UIControlEventValueChanged];
+            [switchView release];
+        }
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
+    }
+	return nil;
+}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	NSString *title = nil;
+    return title;
+}
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+	NSString *title = nil;
+	switch (section)
+	{
 		case 0:
-			[cell.textLabel setText:@"Device Registration"];
+		{
+			title = NSLocalizedString(@"You may register up to five devices for reading books purchased from the Blio bookstore.",@"\"Registration text\" table header in Paid Books Settings View");
 			break;
-		case 1:
-			[cell.textLabel setText:@"Archive Settings"];
-			break;
-		default:
-			break;
+		}
+        case 1:
+        {
+            title = NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Blio can automatically download new book purchases.  When Auto-Download is off, you can manually download titles from the Archive tab in the Get Books section.",@"Explanatory message that appears at the bottom of the Auto-Download table section within Archive Settings View.");
+            break;
+        }
 	}
-	
-    return cell;
+    return title;
 }
-*/
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 
 #pragma mark -
 #pragma mark Table view delegate
-/*
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	BlioPaidBooksSettingsController * paidBooksController = nil;
-	BlioArchiveSettingsViewController * archiveSettingsViewController = nil;
-	switch ( [indexPath section] ) {
-		case 0:
-			paidBooksController = [[BlioPaidBooksSettingsController alloc] init];
-			[self.navigationController pushViewController:paidBooksController animated:YES];
-			[paidBooksController release];
-			break;
-		case 1:
-			archiveSettingsViewController = [[BlioArchiveSettingsViewController alloc] init];
-			[self.navigationController pushViewController:archiveSettingsViewController animated:YES];
-			[archiveSettingsViewController release];
-			break;
-		default:
-			break;
+
+#pragma mark -
+#pragma mark UIAlertViewDelegate
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == 0) {
+		[registrationSwitch setOn:YES];
 	}
+	else if (buttonIndex == 1) {
+		BOOL changeSuccess = NO;
+		[activityIndicator startAnimating];  // thread issue...
+		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
+		[activityIndicator stopAnimating];
+		if (!changeSuccess) {
+			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [registrationSwitch setOn:YES];
+			else [registrationSwitch setOn:NO];
+		}
+		else {
+            [registrationSwitch setOn:NO];
+            
+            // TICKET 507: automatically logout when de-registering device.
+            [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+            [self.navigationController popViewControllerAnimated:YES];	
+        }
+	}
+	registrationSwitch.enabled = YES;	
 }
-*/
+
 #pragma mark -
 #pragma mark Memory management
 
@@ -235,7 +264,8 @@
 
 
 - (void)dealloc {
-	self.subControllers = nil;
+	self.activityIndicator = nil;
+	self.drmSessionManager = nil;
     [super dealloc];
 }
 

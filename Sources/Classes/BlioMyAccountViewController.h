@@ -7,10 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BlioDrmSessionManager.h"
 
 @interface BlioMyAccountViewController : UITableViewController {
-	NSArray * subControllers;
+    UIActivityIndicatorView *activityIndicator;
+	BOOL registrationOn;
+	BlioDrmSessionManager* drmSessionManager;
+    UISwitch * registrationSwitch;
 }
-@property (nonatomic, retain) NSArray * subControllers;
+@property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, assign) BOOL registrationOn;
+@property (nonatomic, retain) BlioDrmSessionManager* drmSessionManager;
 @end
