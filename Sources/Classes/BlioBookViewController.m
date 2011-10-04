@@ -163,8 +163,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 + (void)initialize {
     if(self == [BlioBookViewController class]) {
-        NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:kBlioPageLayoutPageLayout]
-                                                                forKey:kBlioLastLayoutDefaultsKey];
+        NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     [NSNumber numberWithInteger:kBlioPageLayoutPageLayout], kBlioLastLayoutDefaultsKey,
+                                     [NSNumber numberWithInteger:kBlioFontSizeMedium], kBlioLastFontSizeDefaultsKey,
+                                     nil];
         [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
     }
 } 	
