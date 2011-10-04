@@ -1756,7 +1756,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     NSString *currentAccessibilityValue = [_pageJumpSlider accessibilityValue];
     if(![currentAccessibilityValue isEqualToString:newLabel]) {
         [_pageJumpSlider setAccessibilityValue:newLabel];
-        if(self.toolbarsVisible && !_pageJumpView.isHidden) {
+        if(self.toolbarsVisible && !_pageJumpView.isHidden && 
+           !self.viewSettingsPopover && !self.viewSettingsSheet) {
             if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
                 UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newLabel);
             }
