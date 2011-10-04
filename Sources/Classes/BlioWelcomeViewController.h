@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioProcessing.h"
+#import "BlioStoreManager.h"
 
 @interface BlioWelcomeTitleView : UIView {
 	UILabel * welcomeToLabel;
@@ -33,11 +34,13 @@
 
 @end
 
-@interface BlioWelcomeViewController : UIViewController {
+@interface BlioWelcomeViewController : UIViewController <BlioLoginResultReceiver> {
 	BlioWelcomeView * welcomeView;
 	BlioBookSourceID sourceID;
 }
 @property(nonatomic,readonly) BlioWelcomeView * welcomeView;
 @property(nonatomic,assign) BlioBookSourceID sourceID;
+
+- (id)initWithSourceID:(BlioBookSourceID)aSourceID;
 
 @end

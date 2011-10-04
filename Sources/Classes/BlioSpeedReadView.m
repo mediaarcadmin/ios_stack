@@ -328,8 +328,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         
         float loc = [[[touches allObjects] objectAtIndex:0] locationInView:self].y;
         float fingerImageYValue = loc-46;        
-        UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
-        if (UIDeviceOrientationIsLandscape(i)){
+        UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsPortrait(i)){
             xOffset = 147;
             yOffset = -80;
         }
@@ -384,8 +384,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         int oldSpeed = speed;
         float loc = [[[touches allObjects] objectAtIndex:0] locationInView:self].y;
         float fingerImageYValue = loc-46;        
-        UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
-        if (UIDeviceOrientationIsLandscape(i)){
+        UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsLandscape(i)){
             xOffset = 147;
             yOffset = -80;
         }
@@ -472,8 +472,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 - (float)speedForYValue:(float)y {
     
     
-    UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
-    if (UIDeviceOrientationIsPortrait(i)) {
+    UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UIInterfaceOrientationIsPortrait(i)) {
         if (y > 400) {
             return ((480-y)/80)*-1;
         }

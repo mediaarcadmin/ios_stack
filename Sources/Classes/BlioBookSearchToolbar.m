@@ -121,7 +121,7 @@
         
         UIView <BlioBookSearchBar> *aSearchBar;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            aSearchBar = [[UISearchBar alloc] init]; 
+            aSearchBar = (UIView <BlioBookSearchBar>*)[[UISearchBar alloc] init]; 
         } else {
             aSearchBar = [[BlioBookSearchCustomSearchBar alloc] init];
         }

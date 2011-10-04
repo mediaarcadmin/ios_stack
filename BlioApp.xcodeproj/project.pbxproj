@@ -1506,7 +1506,6 @@
 		C9F4812D1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
 		C9F4812E1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
 		C9F484BC1254913500083923 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
-		C9F484BD1254913600083923 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
 		C9F748591140100100680E93 /* shadow-bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F748581140100100680E93 /* shadow-bottom.png */; };
 		C9F749431140261700680E93 /* shadow-right.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749401140261700680E93 /* shadow-right.png */; };
 		C9F749441140261700680E93 /* shadow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749411140261700680E93 /* shadow-left.png */; };
@@ -5142,7 +5141,6 @@
 				DCC9B4ED1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */,
 				DCC9B5B2125535A800B17FBB /* CCInAppPurchaseService.m in Sources */,
 				DCC9B64D1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */,
-				C9F484BD1254913600083923 /* NSArray+BlioAdditions.m in Sources */,
 				DCF6E1FD125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */,
 				DC84EDF81261267400BC6514 /* BlioImportManager.m in Sources */,
 				7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */,

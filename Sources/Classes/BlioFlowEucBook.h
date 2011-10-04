@@ -11,4 +11,6 @@
 
 @interface BlioFlowEucBook : KNFBFlowEucBook <BlioEPubBookmarkPointTranslation> {}
 
+- (id)initWithBookID:(NSManagedObjectID *)blioBookID;
+
 @end

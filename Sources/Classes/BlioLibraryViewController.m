@@ -2329,7 +2329,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize numberOfBooksInLibrary, imageView;
 
 - (id)initWithFrame:(CGRect)frame {
-    if ((self == [super initWithFrame:frame])) {
+    if ((self = [super initWithFrame:frame])) {
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
         
         UIImageView *aImageView = [[UIImageView alloc] initWithFrame:self.frame];

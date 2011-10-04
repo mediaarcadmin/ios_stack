@@ -86,7 +86,7 @@
 {
     if((self = [super init])) {
         _bookID = [bookID retain];
-        _ePubBook = [[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID] retain];
+        _ePubBook = (BlioEPubBook *)[[[BlioBookManager sharedBookManager] checkOutEucBookForBookWithID:bookID] retain];
     }
     return self;
 }
