@@ -6048,7 +6048,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6080,7 +6079,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6112,7 +6110,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
