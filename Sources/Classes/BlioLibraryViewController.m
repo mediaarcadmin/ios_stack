@@ -18,6 +18,7 @@
 #import "BlioStoreArchiveViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
@@ -1597,8 +1598,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         CGPoint progressBackgroundCenter = progressBackgroundView.center;
 		progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
 		progressView.frame = CGRectMake(0, 0, kBlioLibraryGridProgressViewWidth, 10);
-        if([progressBackgroundView respondsToSelector:@selector(contentScaleFactor)] &&
-           progressBackgroundView.contentScaleFactor == 2.0f) {
+        if([[UIDevice currentDevice] compareSystemVersion:@"5.0"] == NSOrderedAscending) {
+            // Metrics changed in iOS5!?
             progressView.center = progressBackgroundCenter;
         } else {
             progressView.center = CGPointMake(progressBackgroundCenter.x, progressBackgroundCenter.y - 0.5f);
