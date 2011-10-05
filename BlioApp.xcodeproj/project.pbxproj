@@ -5787,7 +5787,6 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -5820,7 +5819,6 @@
 				);
 				PRODUCT_NAME = Blio;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -5855,7 +5853,6 @@
 				PRODUCT_NAME = Blio;
 				PROVISIONING_PROFILE = "40E97D09-A302-4526-902E-170EFF4CECE2";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "10E1D86B-9D15-47F9-87C2-F38A3C91AC78";
-				SDKROOT = iphoneos4.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
