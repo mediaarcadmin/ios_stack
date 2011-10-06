@@ -1555,6 +1555,9 @@
 		DC63DB1B12DF8F2E00D8C750 /* badge-preview.png in Resources */ = {isa = PBXBuildFile; fileRef = DC63DB1512DF8F2E00D8C750 /* badge-preview.png */; };
 		DC63DB1C12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC63DB1612DF8F2E00D8C750 /* badge-preview@2x.png */; };
 		DC795B2F11E7E21B000DA04D /* button-buybooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DC795B2D11E7E21B000DA04D /* button-buybooks.png */; };
+		DC824D96143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */; };
+		DC824D97143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */; };
+		DC824D98143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */; };
 		DC84EDF81261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
 		DC84EDF91261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
 		DC84EDFA1261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
@@ -2482,6 +2485,8 @@
 		DC63DB1512DF8F2E00D8C750 /* badge-preview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-preview.png"; sourceTree = "<group>"; };
 		DC63DB1612DF8F2E00D8C750 /* badge-preview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-preview@2x.png"; sourceTree = "<group>"; };
 		DC795B2D11E7E21B000DA04D /* button-buybooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-buybooks.png"; sourceTree = "<group>"; };
+		DC824D94143E0A7D006AC7F3 /* BlioVoiceOverTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVoiceOverTextController.h; sourceTree = "<group>"; };
+		DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioVoiceOverTextController.m; sourceTree = "<group>"; };
 		DC84EDF61261267400BC6514 /* BlioImportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioImportManager.h; sourceTree = "<group>"; };
 		DC84EDF71261267400BC6514 /* BlioImportManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioImportManager.m; sourceTree = "<group>"; };
 		DC8A54451412E25D0009341B /* book-overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "book-overlay@2x.png"; sourceTree = "<group>"; };
@@ -3724,6 +3729,8 @@
 				DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */,
 				A3FE55AA12074EBD0038DA0C /* BlioEULATextController.h */,
 				A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */,
+				DC824D94143E0A7D006AC7F3 /* BlioVoiceOverTextController.h */,
+				DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */,
 				A3FE55AC12074EBD0038DA0C /* BlioHelpSettingsController.h */,
 				A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */,
 				A3FE55AE12074EBD0038DA0C /* BlioVersionController.h */,
@@ -5196,6 +5203,7 @@
 				7D1C969113F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969613F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
 				A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
+				DC824D96143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5350,6 +5358,7 @@
 				7D1C969313F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969813F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
 				A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
+				DC824D98143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5658,6 +5667,7 @@
 				7D1C969213F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969713F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
 				A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
+				DC824D97143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

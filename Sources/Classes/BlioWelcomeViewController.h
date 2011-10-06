@@ -10,6 +10,10 @@
 #import "BlioProcessing.h"
 #import "BlioStoreManager.h"
 
+static const CGFloat kBlioWelcomeCellMargin = 10.0f;
+
+@class BlioWelcomeTableViewCell;
+
 @interface BlioWelcomeTitleView : UIView {
 	UILabel * welcomeToLabel;
 	UILabel * blioLabel;
@@ -35,11 +39,23 @@
 @end
 
 @interface BlioWelcomeViewController : UIViewController <BlioLoginResultReceiver> {
-	BlioWelcomeView * welcomeView;
 	BlioBookSourceID sourceID;
+    UIImageView * logoView;
+    BlioWelcomeTitleView * welcomeTitleView;
+    UILabel * welcomeTextView;
+    UIView * cellContainerView;
+    BlioWelcomeTableViewCell * cell1;
+    BlioWelcomeTableViewCell * cell2;
+    BlioWelcomeTableViewCell * cell3;
 }
-@property(nonatomic,readonly) BlioWelcomeView * welcomeView;
 @property(nonatomic,assign) BlioBookSourceID sourceID;
+@property(nonatomic,retain) UIImageView * logoView;
+@property(nonatomic,retain) BlioWelcomeTitleView * welcomeTitleView;
+@property(nonatomic,retain) UILabel * welcomeTextView;
+@property(nonatomic,retain) UIView * cellContainerView;
+@property(nonatomic,retain) BlioWelcomeTableViewCell * cell1;
+@property(nonatomic,retain) BlioWelcomeTableViewCell * cell2;
+@property(nonatomic,retain) BlioWelcomeTableViewCell * cell3;
 
 - (id)initWithSourceID:(BlioBookSourceID)aSourceID;
 
