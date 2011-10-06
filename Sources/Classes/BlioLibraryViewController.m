@@ -18,6 +18,7 @@
 #import "BlioStoreArchiveViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
@@ -1494,7 +1495,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     if (layout == kBlioLibraryLayoutList) {
         self.imageView.frame = CGRectMake(round((self.bounds.size.width - newImage.size.width)/2), round((self.bounds.size.height - newImage.size.height)/2), newImage.size.width, newImage.size.height);        
     } else {
-        self.imageView.frame = CGRectMake((self.bounds.size.width - newImage.size.width)/2, self.bounds.size.height - newImage.size.height, newImage.size.width, newImage.size.height);
+        self.imageView.frame = CGRectMake(round((self.bounds.size.width - newImage.size.width)/2), self.bounds.size.height - newImage.size.height, newImage.size.width, newImage.size.height);
     }
 //    CGFloat maxToCoverWidthRatio = self.bounds.size.width/newImage.size.width;
 //    CGFloat maxToCoverHeightRatio = self.bounds.size.height/newImage.size.height;
@@ -1582,7 +1583,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.bookView = aBookView;
 		
 		progressBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"library-progress-background.png"]];
-		progressBackgroundView.center = CGPointMake(floor(self.frame.size.width/2), floor(bookHeight*0.85f));
+		progressBackgroundView.center = CGPointMake(ceilf(self.frame.size.width/2), floor(bookHeight*0.85f));
 		progressBackgroundView.hidden = YES;
 		[self.contentView addSubview:progressBackgroundView];
 		
@@ -1594,9 +1595,15 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		stateLabel.font = [UIFont boldSystemFontOfSize:12.0];
 		[progressBackgroundView addSubview:stateLabel];
 		
+        CGPoint progressBackgroundCenter = progressBackgroundView.center;
 		progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
 		progressView.frame = CGRectMake(0, 0, kBlioLibraryGridProgressViewWidth, 10);
-        progressView.center = progressBackgroundView.center;
+        if([[UIDevice currentDevice] compareSystemVersion:@"5.0"] == NSOrderedAscending) {
+            // Metrics changed in iOS5!?
+            progressView.center = progressBackgroundCenter;
+        } else {
+            progressView.center = CGPointMake(progressBackgroundCenter.x, progressBackgroundCenter.y - 0.5f);
+        }
 		progressView.hidden = YES;
 		[self.contentView addSubview:progressView];
 		
@@ -1762,10 +1769,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
     // reposition book overlay widgets based upon size of book thumbnail
     CGPoint imageViewCenter = [self convertPoint:self.bookView.imageView.center fromView:self.bookView];
+    imageViewCenter.x = ceilf(imageViewCenter.x) - 0.5;
+    imageViewCenter.y = floorf(imageViewCenter.y) + 0.5;
     self.pauseButton.center = imageViewCenter;
     self.resumeButton.center = imageViewCenter;
     CGRect imageViewFrame = [self convertRect:self.bookView.imageView.frame fromView:self.bookView];
-    self.deleteButton.center = CGPointMake(2 + imageViewFrame.origin.x, 2 + imageViewFrame.origin.y);
+    self.deleteButton.center = CGPointMake(floorf(2 + imageViewFrame.origin.x) - 0.5f, floorf(2 + imageViewFrame.origin.y) + 0.5f);
     self.previewBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 48, 48);
 
     [self setNeedsLayout];
