@@ -1290,6 +1290,10 @@
 		A3E5AF1D12B2FD44008F48C6 /* forward-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */; };
 		A3E6419912397C0400D2B85A /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
 		A3E6419A12397C0400D2B85A /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
+		A3F24EB1143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
+		A3F24EB2143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
+		A3F24EB3143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
+		A3F24EB4143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
 		A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
 		A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
 		A3FE55B112074EBD0038DA0C /* BlioEULATextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */; };
@@ -2249,6 +2253,7 @@
 		A3E6419712397C0400D2B85A /* icon-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back.png"; sourceTree = "<group>"; };
 		A3E6419812397C0400D2B85A /* icon-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back@2x.png"; sourceTree = "<group>"; };
 		A3EC8A21122857E100D27D8C /* bigdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigdefs.h; path = DRM/bigdefs.h; sourceTree = "<group>"; };
+		A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-quickstart.html"; sourceTree = "<group>"; };
 		A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLoginViewController.h; sourceTree = "<group>"; };
 		A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLoginViewController.m; sourceTree = "<group>"; };
 		A3F9387D116BD63500E53BD3 /* CellTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CellTextField.h; sourceTree = "<group>"; };
@@ -2818,6 +2823,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */,
 				A323E75F1427A6D10043E78E /* voiceover-tips.html */,
 				8D1107310486CEB800E47090 /* BlioApp-Info.plist */,
 				A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */,
@@ -4322,6 +4328,7 @@
 				7D69C35814293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
 				7D69C35C14293D6500136CFB /* brightness-sun-dim.png in Resources */,
 				7D69C36014293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
+				A3F24EB1143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4563,6 +4570,7 @@
 				7D69C35A14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
 				7D69C35E14293D6500136CFB /* brightness-sun-dim.png in Resources */,
 				7D69C36214293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
+				A3F24EB3143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4804,6 +4812,7 @@
 				7D69C35B14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
 				7D69C35F14293D6500136CFB /* brightness-sun-dim.png in Resources */,
 				7D69C36314293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
+				A3F24EB4143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5046,6 +5055,7 @@
 				7D69C35914293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
 				7D69C35D14293D6500136CFB /* brightness-sun-dim.png in Resources */,
 				7D69C36114293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
+				A3F24EB2143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

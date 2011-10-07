@@ -461,8 +461,8 @@
 
 
     self.cell3 = [[[BlioWelcomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"] autorelease];
-    cell3.titleLabel.text = NSLocalizedString(@"VoiceOver Quick Start",@"\"VoiceOver Quick Start\" section header title for welcome view controller.");
-    cell3.descriptionText = NSLocalizedString(@"Arnie, you can change the text here. Quid est nomen tibi Romanum?",@"VoiceOver Quick Start message on welcome view controller.");
+    cell3.titleLabel.text = NSLocalizedString(@"Using VoiceOver?",@"\"VoiceOver\" section header title for welcome view controller.");
+    cell3.descriptionText = NSLocalizedString(@"We want you to be able to read books as easily as anyone else.  Here's where to start.",@"VoiceOver message on welcome view controller.");
     cell3.frame = CGRectMake(kBlioWelcomeCellMargin, kBlioWelcomeCellMargin, self.cellContainerView.frame.size.width - (kBlioWelcomeCellMargin*2), self.cellContainerView.frame.size.height/3.0f);
     [self.cellContainerView addSubview:cell3];
     cell3.delegate = self;
