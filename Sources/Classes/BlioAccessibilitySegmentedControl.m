@@ -29,9 +29,14 @@ static const NSString * const sBlioAccessibilitySegmentedControlObserverContext 
 }
 
 - (void)dealloc {
-    [self removeObserver:self 
-              forKeyPath:@"selectedSegmentIndex" 
-                 context:sBlioAccessibilitySegmentedControlObserverContext];
+    if([self respondsToSelector:@selector(removeObserver:forKeyPath:context:)]) {
+        [self removeObserver:self 
+                  forKeyPath:@"selectedSegmentIndex" 
+                     context:sBlioAccessibilitySegmentedControlObserverContext];
+    } else {
+        [self removeObserver:self 
+                  forKeyPath:@"selectedSegmentIndex"];
+    }
     
     if ( accessibleSegments != nil ) {
         [accessibleSegments release];
