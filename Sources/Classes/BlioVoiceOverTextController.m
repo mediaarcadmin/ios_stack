@@ -7,6 +7,8 @@
 //
 
 #import "BlioVoiceOverTextController.h"
+#import "BlioPurchaseVoicesViewController.h"
+#import "BlioVOTipsSettingsController.h"
 
 @implementation BlioVoiceOverTextController
 
@@ -24,7 +26,7 @@
 		[textView loadHTMLString:quickstartText baseURL:nil];
 		[textView setScalesPageToFit:YES];
 		self.view = textView;
-		//textView.delegate = self;
+		textView.delegate = self;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 550);
 		}				
@@ -55,6 +57,34 @@
     [super dealloc];
 }
 
+#pragma mark -
+#pragma mark UIWebViewDelegate
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if ([[request.URL absoluteString] rangeOfString:@"blioapp://"].location != NSNotFound) {
+        // command to Obj-C side
+        NSArray *urlArray = [[request.URL absoluteString] componentsSeparatedByString:@"//"];
+        if ([urlArray count] < 2) return NO;
+        NSString * selectorString = [urlArray objectAtIndex:1];
+        SEL providedSelector = NSSelectorFromString(selectorString);
+        if ([self respondsToSelector:providedSelector]) [self performSelector:providedSelector];
+        return NO;
+    }
+    return YES;
+}
+
+#pragma mark -
+#pragma mark possible commands from web view
+
+-(void)presentDownloadVoices {
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    BlioPurchaseVoicesViewController * vc = [[[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+-(void)presentDetailedHelp {
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    BlioVOTipsSettingsController * vc = [[[BlioVOTipsSettingsController alloc] init] autorelease];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 @end
 

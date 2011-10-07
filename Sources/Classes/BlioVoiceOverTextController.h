@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BlioVoiceOverTextController : UIViewController {
+@interface BlioVoiceOverTextController : UIViewController <UIWebViewDelegate> {
 UIWebView *textView;
 }
 @end
