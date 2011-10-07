@@ -11,6 +11,7 @@
 static const NSString * const sBlioAccessibilitySegmentedControlObserverContext = @"BlioAccessibilitySegmentedControlObserverContext";
 
 @interface BlioAccessibilitySegmentedControl () 
+- (NSString *)accessibilityLabelForSegmentIndex:(NSUInteger)i;
 - (void)invalidateAccessibilitySegments;
 @end
 
@@ -49,7 +50,20 @@ static const NSString * const sBlioAccessibilitySegmentedControlObserverContext 
     if (context == sBlioAccessibilitySegmentedControlObserverContext) {
         if (object == self) {
             if ([keyPath isEqualToString:@"selectedSegmentIndex"]) {
+                NSString *announcement = nil;
+                NSInteger selectedSegmentIndex = self.selectedSegmentIndex;
+                if(selectedSegmentIndex != UISegmentedControlNoSegment &&
+                   self.numberOfSegments > 1) { // self.numberOfSegments > 1 so that we don't announce if we're just faking a single button.
+                    UIAccessibilityElement *currentElement = [self accessibilityElementAtIndex:selectedSegmentIndex];
+                    if([currentElement accessibilityElementIsFocused]) {
+                        announcement = [NSString stringWithFormat:NSLocalizedString(@"Selected: \"%@\", button", @"Acessibility announcement when a segmented control changes its selection: argument = title of button"),
+                                        currentElement.accessibilityLabel];
+                    }
+                } 
                 [self invalidateAccessibilitySegments];
+                if(announcement) {
+                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, announcement);
+                }
             }
         }
     } else {
@@ -112,7 +126,18 @@ static const NSString * const sBlioAccessibilitySegmentedControlObserverContext 
     return traits;
 }
 
-
+- (NSString *)accessibilityLabelForSegmentIndex:(NSUInteger)i
+{
+    NSString *label = nil;
+    id segmentItem = (id)[self imageForSegmentAtIndex:i] ? : (id)[self titleForSegmentAtIndex:i];
+    if (nil != segmentItem) {
+        label = [segmentItem accessibilityLabel];
+        if ((nil == label) && [segmentItem isKindOfClass:[NSString class]]) 
+            label = (NSString *)segmentItem;
+    }
+    return label;
+}
+                                           
 - (void)setEnabled:(BOOL)enabled {
 	[super setEnabled:enabled];
     [self invalidateAccessibilitySegments];
@@ -167,11 +192,7 @@ static const NSString * const sBlioAccessibilitySegmentedControlObserverContext 
                 CGRect segmentFrame = CGRectMake(i * segmentWidth, 0, segmentWidth, segmentHeight);
                 [element setAccessibilityFrame:[self.window convertRect:segmentFrame fromView:self]];
 
-                NSString *label = [segmentItem accessibilityLabel];
-                if ((nil == label) && [segmentItem isKindOfClass:[NSString class]]) 
-                    label = (NSString *)segmentItem;
-                
-                element.accessibilityLabel = label;
+                element.accessibilityLabel = [self accessibilityLabelForSegmentIndex:i];
                 element.accessibilityTraits = [self accessibilityTraitsForSegmentIndex:i];
                 element.accessibilityHint= [self accessibilityHintForSegmentIndex:i];
 
