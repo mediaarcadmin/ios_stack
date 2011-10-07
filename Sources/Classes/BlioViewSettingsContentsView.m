@@ -469,7 +469,7 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             
-            BlioAccessibilitySegmentedControl *aLockButtonSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] init];
+            BlioAccessibilitySegmentedControl *aLockButtonSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:nil];
             aLockButtonSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
             aLockButtonSegmentedControl.tintColor = tintColor;
             aLockButtonSegmentedControl.momentary = YES;
