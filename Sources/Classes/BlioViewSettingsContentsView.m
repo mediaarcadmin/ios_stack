@@ -410,7 +410,7 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         aTabZoomsToBlockLabel.textColor = whiteColor;
         aTabZoomsToBlockLabel.backgroundColor = clearColor;
         if(voiceOverIsRelevant) {
-            aTabZoomsToBlockLabel.text = NSLocalizedString(@"Navigate",@"Settings Label for \"Tap Advance\" Segmented Control when VoiceOver is running (for VoiceOver users, the setting is not related to tapping, but to how VoiceOver selects text).");
+            aTabZoomsToBlockLabel.text = NSLocalizedString(@"Read Mode",@"Settings Label for \"Tap Advance\" Segmented Control when VoiceOver is running (for VoiceOver users, the setting is not related to tapping, but to how VoiceOver reads text).");
         } else {
             aTabZoomsToBlockLabel.text = NSLocalizedString(@"Tap Advance",@"Settings Label for \"Tap Advance\" Segmented Control.");
         }
@@ -418,10 +418,17 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         self.tapZoomsToBlockLabel = aTabZoomsToBlockLabel;
         [aTabZoomsToBlockLabel release];
 		
-		NSArray *tapAdvanceTitles = [NSArray arrayWithObjects:
-                                    NSLocalizedString(@"By Page",@"\"By Page\" segment label (for \"Tap Advance\" SegmentedControl)"),
-                                    NSLocalizedString(@"By Block",@"\"By Block\" segment label (for \"Tap Advance\" SegmentedControl)"),
-                                    nil];
+		NSArray *tapAdvanceTitles;
+        if(voiceOverIsRelevant) 
+            tapAdvanceTitles = [NSArray arrayWithObjects:
+                                NSLocalizedString(@"Continuous",@"\"Continuous\" segment label (for \"Read Mode\" SegmentedControl)"),
+                                NSLocalizedString(@"By Block",@"\"By Block\" segment label (for \"Read Mode\" SegmentedControl)"),
+                                nil];
+        else
+            tapAdvanceTitles = [NSArray arrayWithObjects:
+                                NSLocalizedString(@"By Page",@"\"By Page\" segment label (for \"Tap Advance\" SegmentedControl)"),
+                                NSLocalizedString(@"By Block",@"\"By Block\" segment label (for \"Tap Advance\" SegmentedControl)"),
+                                nil];
 		
 		BlioAccessibilitySegmentedControl *aTapZoomsToBlockSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
         aTapZoomsToBlockSegment.segmentedControlStyle = UISegmentedControlStyleBar;
