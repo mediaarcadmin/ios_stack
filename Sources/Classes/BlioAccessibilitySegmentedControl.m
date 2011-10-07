@@ -8,10 +8,30 @@
 
 #import "BlioAccessibilitySegmentedControl.h"
 
+static const NSString * const sBlioAccessibilitySegmentedControlObserverContext = @"BlioAccessibilitySegmentedControlObserverContext";
+
+@interface BlioAccessibilitySegmentedControl () 
+- (void)invalidateAccessibilitySegments;
+@end
 
 @implementation BlioAccessibilitySegmentedControl
 
+- (id)initWithItems:(NSArray *)items
+{
+    if((self = [super initWithItems:items])) {
+        [self addObserver:self 
+               forKeyPath:@"selectedSegmentIndex" 
+                  options:0 
+                  context:sBlioAccessibilitySegmentedControlObserverContext];
+    }
+    return self;
+}
+
 - (void)dealloc {
+    [self removeObserver:self 
+              forKeyPath:@"selectedSegmentIndex" 
+                 context:sBlioAccessibilitySegmentedControlObserverContext];
+    
     if ( accessibleSegments != nil ) {
         [accessibleSegments release];
         accessibleSegments = nil;
@@ -20,9 +40,22 @@
         [segmentAccessibilityTraits release];
         segmentAccessibilityTraits = nil;
     }
+    
     [super dealloc];
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == sBlioAccessibilitySegmentedControlObserverContext) {
+        if (object == self) {
+            if ([keyPath isEqualToString:@"selectedSegmentIndex"]) {
+                [self invalidateAccessibilitySegments];
+            }
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
 
 - (void)invalidateAccessibilitySegments {
     if (accessibleSegments != nil) {
