@@ -1,15 +1,22 @@
 //
+//  BlioVoiceOverTextController.m
+//  BlioApp
+//
+//  Created by Don Shin on 10/6/11.
+//  Copyright (c) 2011 CrossComm, Inc. All rights reserved.
+//
+
+#import "BlioVoiceOverTextController.h"
+
+@implementation BlioVoiceOverTextController
+
+//
 //  BlioEULATextController.m
 //  BlioApp
 //
 //  Created by Arnold Chien on 7/30/10.
 //  Copyright 2010 Kurzweil Technologies Inc. All rights reserved.
 //
-
-#import "BlioEULATextController.h"
-
-
-@implementation BlioEULATextController
 
 
 #pragma mark -
@@ -28,7 +35,7 @@
 		self.view = textView;
 		//textView.delegate = self;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-			self.contentSizeForViewInPopover = CGSizeMake(600, 700);
+			self.contentSizeForViewInPopover = CGSizeMake(320, 550);
 		}				
 	}
 	return self;
