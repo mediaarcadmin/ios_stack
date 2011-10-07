@@ -10,15 +10,6 @@
 
 @implementation BlioVoiceOverTextController
 
-//
-//  BlioEULATextController.m
-//  BlioApp
-//
-//  Created by Arnold Chien on 7/30/10.
-//  Copyright 2010 Kurzweil Technologies Inc. All rights reserved.
-//
-
-
 #pragma mark -
 #pragma mark Initialization
 
@@ -27,10 +18,10 @@
 	self = [super init];
 	if (self)
 	{
-		self.title = NSLocalizedString(@"Terms of Use",@"\"Terms of Use\" view controller title.");
-		NSString* eulaText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/eula.html"] encoding:NSUTF8StringEncoding error:NULL];
+		self.title = NSLocalizedString(@"VoiceOver Quick Start",@"\"VoiceOver Quick Start\" view controller title.");
+		NSString* quickstartText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/voiceover-quickstart.html"] encoding:NSUTF8StringEncoding error:NULL];
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-		[textView loadHTMLString:eulaText baseURL:nil];
+		[textView loadHTMLString:quickstartText baseURL:nil];
 		[textView setScalesPageToFit:YES];
 		self.view = textView;
 		//textView.delegate = self;

@@ -18,7 +18,6 @@ static const CGFloat kBlioWelcomeCellMargin = 10.0f;
 	UILabel * welcomeToLabel;
 	UILabel * blioLabel;
 }
-
 @end;
 
 @interface BlioWelcomeView : UIView {

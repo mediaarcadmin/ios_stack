@@ -411,26 +411,23 @@
         CGContextClip(context);
         [logoImage drawInRect:CGRectMake(-7, -7, 114, 114)];
         
-        logoView = [[UIImageView alloc] initWithImage:UIGraphicsGetImageFromCurrentImageContext()];
+        self.logoView = [[[UIImageView alloc] initWithImage:UIGraphicsGetImageFromCurrentImageContext()] autorelease];
 //        logoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 
         UIGraphicsEndImageContext();
         
         [self.view addSubview:logoView];
-        [logoView release];
         
-        welcomeTitleView = [[BlioWelcomeTitleView alloc] initWithFrame:CGRectZero];
+        self.welcomeTitleView = [[[BlioWelcomeTitleView alloc] initWithFrame:CGRectZero] autorelease];
 //        welcomeTitleView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         [self.view addSubview:welcomeTitleView];
-        [welcomeTitleView release];
         
-        welcomeTextView = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.welcomeTextView = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
         welcomeTextView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         welcomeTextView.lineBreakMode = UILineBreakModeWordWrap;
         welcomeTextView.numberOfLines = 0;
         welcomeTextView.text = NSLocalizedStringWithDefaultValue(@"WELCOME_TEXT",nil,[NSBundle mainBundle],@"With Blio, books are more than just words: there's style, presentation, and a world of color. Now you can read books with the same layout, fonts, and full-color images that you enjoy in the print version of your favorite titles.",@"Welcome message on welcome view controller.");
         [self.view addSubview:welcomeTextView];
-        [welcomeTextView release];
         
         logoView.frame = CGRectMake(138, contentMargin/2, 100, 100);
         welcomeTitleView.frame = CGRectMake(260, contentMargin/2, 160, 100);
@@ -464,8 +461,8 @@
 
 
     self.cell3 = [[[BlioWelcomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"] autorelease];
-    cell3.titleLabel.text = NSLocalizedString(@"VoiceOver Quick Start",@"\"VoiceOver Quick Start\" section header title for welcome view controller.");
-    cell3.descriptionText = NSLocalizedString(@"Arnie, you can change the text here. Quid est nomen tibi Romanum?",@"VoiceOver Quick Start message on welcome view controller.");
+    cell3.titleLabel.text = NSLocalizedString(@"Using VoiceOver?",@"\"VoiceOver\" section header title for welcome view controller.");
+    cell3.descriptionText = NSLocalizedString(@"We want you to be able to read books as easily as anyone else.  Here's where to start.",@"VoiceOver message on welcome view controller.");
     cell3.frame = CGRectMake(kBlioWelcomeCellMargin, kBlioWelcomeCellMargin, self.cellContainerView.frame.size.width - (kBlioWelcomeCellMargin*2), self.cellContainerView.frame.size.height/3.0f);
     [self.cellContainerView addSubview:cell3];
     cell3.delegate = self;

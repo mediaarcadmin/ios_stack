@@ -14,7 +14,7 @@
 #import "BlioStoreManager.h"
 #import "BlioEULATextController.h"
 #import "BlioVersionController.h"
-#import "BlioVOTipsSettingsController.h"
+#import "BlioVoiceOverHelpSettingsController.h"
 
 @implementation BlioAppSettingsController
 
@@ -23,7 +23,7 @@
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		self.title = NSLocalizedString(@"Settings",@"\"Settings\" view controller title");
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
+			self.contentSizeForViewInPopover = CGSizeMake(320, 900);
 		}
     }
     return self;
@@ -150,7 +150,7 @@
 			switch ([indexPath row])
             {
                 case 0:
-                    [cell.textLabel setText:NSLocalizedString(@"VoiceOver Tips",@"\"VoiceOver Tips\" text label for App Settings cell")];
+                    [cell.textLabel setText:NSLocalizedString(@"VoiceOver",@"\"VoiceOver\" text label for App Settings cell")];
                     break;
                 case 1:
                     [cell.textLabel setText:NSLocalizedString(@"Help",@"\"Help\" text label for App Settings cell")];
@@ -189,7 +189,7 @@
 	BlioVersionController *versionController;
 	BlioMyAccountViewController *myAccountController;
 	BlioEULATextController *eulaController;
-    BlioVOTipsSettingsController *votipsController;
+    BlioVoiceOverHelpSettingsController *voController;
     
 	switch ( [indexPath section] ) {
 		case 0:
@@ -223,9 +223,9 @@
             switch (indexPath.row)
             {
                 case 0:
-                    votipsController = [[BlioVOTipsSettingsController alloc] init];
-                    [self.navigationController pushViewController:votipsController animated:YES];
-                    [votipsController release];
+                    voController = [[BlioVoiceOverHelpSettingsController alloc] init];
+                    [self.navigationController pushViewController:voController animated:YES];
+                    [voController release];
                     break;
                 case 1:
                     helpController = [[BlioHelpSettingsController alloc] init];
