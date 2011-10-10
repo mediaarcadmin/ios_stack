@@ -23,7 +23,7 @@
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		self.title = NSLocalizedString(@"Settings",@"\"Settings\" view controller title");
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-			self.contentSizeForViewInPopover = CGSizeMake(320, 900);
+			self.contentSizeForViewInPopover = CGSizeMake(320, 440);
 		}
     }
     return self;
@@ -64,6 +64,7 @@
 	[self.tableView reloadData];
 	
 	CGFloat viewHeight = self.tableView.contentSize.height;
+    NSLog(@"viewHeight: %f",viewHeight);
 	if (viewHeight > 600) viewHeight = 600;
 	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);
 	

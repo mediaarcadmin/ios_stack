@@ -111,6 +111,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	NSMutableArray * sortLibraryItems;
 	UIColor * tintColor;
 	UIPopoverController * settingsPopoverController;
+    BOOL hasShownAppSettings;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;

@@ -1232,7 +1232,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     BlioAppSettingsController *appSettingsController = [[BlioAppSettingsController alloc] init];
 	[appSettingsController.tableView reloadData];
 	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:appSettingsController];
-    settingsController.delegate = self;
+
 	[appSettingsController release];
     
 
@@ -1243,7 +1243,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 		else {
 			self.settingsPopoverController = [[[NSClassFromString(@"UIPopoverController") alloc] initWithContentViewController:settingsController] autorelease];
-//			self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 600);
+			self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 440);
 			self.settingsPopoverController.delegate = self;
 			[self.settingsPopoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 		}
@@ -1251,6 +1251,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	else {
 		[self presentModalViewController:settingsController animated:YES];
 	}		
+    settingsController.delegate = self;
     [settingsController release];    
 }
 #pragma mark - UINavigationControllerDelegate
@@ -1260,10 +1261,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	CGSize viewSize = viewController.contentSizeForViewInPopover;
 	if ([viewController.view isKindOfClass:[UIScrollView class]]) {
 		[((UITableViewController*)viewController).tableView reloadData];
-//		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
+		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
 		viewSize.height = [(UIScrollView*)viewController.view contentSize].height;
 		if (viewSize.height > 600) viewSize.height = 600;
 	}
+    // small hack - in order to get consistent behavior between iOS4 & 5 popover sizes for the initial display of the BlioAppSettingsController
+    if ([viewController isKindOfClass:[BlioAppSettingsController class]] && !hasShownAppSettings) {
+        hasShownAppSettings = YES;
+        if (viewSize.height < 440) viewSize.height = 440;
+    }
+    NSLog(@"setting popover to size: %f, %f",viewSize.width,viewSize.height);
 	self.settingsPopoverController.popoverContentSize = viewSize;
 }
 
@@ -1272,6 +1279,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	// N.B. - from Apple's documentation: The popover controller does not call this method in response to programmatic calls to the dismissPopoverAnimated: method.
 	self.settingsPopoverController = nil;
+    hasShownAppSettings = NO;
 }
 
 
