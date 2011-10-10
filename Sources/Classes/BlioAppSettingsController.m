@@ -18,6 +18,7 @@
 
 @implementation BlioAppSettingsController
 
+@synthesize didDeregister;
 
 - (BlioAppSettingsController*)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
@@ -69,7 +70,13 @@
 	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);
 	
 }
-
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (didDeregister) {
+        didDeregister = NO;
+        [self attemptLogin];
+    }
+}
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
@@ -211,12 +218,12 @@
 		case 1:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 				myAccountController = [[BlioMyAccountViewController alloc] init];
+                myAccountController.delegate = self;
 				[self.navigationController pushViewController:myAccountController animated:YES];
 				[myAccountController release];
 			}
 			else {
-				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
+                [self attemptLogin];
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			}
 			break;
@@ -254,11 +261,14 @@
 			break;
 	}
 }
+-(void)attemptLogin {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
+}
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
-
 
 @end
 

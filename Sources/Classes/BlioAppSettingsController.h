@@ -10,7 +10,9 @@
 
 
 @interface BlioAppSettingsController : UITableViewController {
-
+    BOOL didDeregister;
 }
+@property (nonatomic, assign) BOOL didDeregister;
+-(void)attemptLogin;
 
 @end

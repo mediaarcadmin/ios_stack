@@ -14,7 +14,7 @@
 
 @implementation BlioMyAccountViewController
 
-@synthesize activityIndicator, registrationOn, drmSessionManager;
+@synthesize activityIndicator, registrationOn, drmSessionManager,delegate;
 
 #pragma mark -
 #pragma mark Initialization
@@ -242,6 +242,7 @@
             // TICKET 507: automatically logout when de-registering device.
             [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
             [self.navigationController popViewControllerAnimated:YES];	
+            if ([delegate respondsToSelector:@selector(setDidDeregister:)]) [delegate setDidDeregister:YES];
         }
 	}
 	registrationSwitch.enabled = YES;	
