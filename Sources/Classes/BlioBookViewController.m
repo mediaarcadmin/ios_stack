@@ -65,7 +65,7 @@ typedef enum {
     kBlioLibraryToolbarsStatePauseButtonVisible,
 } BlioLibraryToolbarsState;
 
-static const CGFloat kBlioFontSizesArray[] = { 14, 16, 19, 24, 32, 40 };
+static const CGFloat kBlioFontSizesArray[] = { 14, 16, 19, 24, 32, 41 };
 static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f, 95.0f, 120.0f };
 
 static NSString * const kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"paper-black.png", @"paper-neutral.png" };
