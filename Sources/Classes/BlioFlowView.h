@@ -19,6 +19,8 @@
 @interface BlioFlowView : BlioSelectableBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
     NSManagedObjectID *_bookID;
     
+    NSArray *_fontSizes;
+    
     EucBookView *_eucBookView;
     EucEPubBook<BlioEPubBookmarkPointTranslation> *_eucBook;
     id<BlioParagraphSource> _paragraphSource;

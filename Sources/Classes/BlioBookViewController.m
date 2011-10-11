@@ -44,7 +44,7 @@ static const CGFloat kBlioBookSliderPreviewShadowRadius = 20;
 static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
-static NSString * const kBlioLastFontSizeDefaultsKey = @"lastFontSize";
+static NSString * const kBlioLastFontSizeIndexDefaultsKey = @"lastFontSize";
 static NSString * const kBlioLastJustificationDefaultsKey = @"lastJustification";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
 static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
@@ -65,7 +65,10 @@ typedef enum {
     kBlioLibraryToolbarsStatePauseButtonVisible,
 } BlioLibraryToolbarsState;
 
-static NSString *kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"paper-black.png", @"paper-neutral.png" };
+static const CGFloat kBlioFontSizesArray[] = { 14, 16, 19, 24, 32, 40 };
+static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f, 95.0f, 120.0f };
+
+static NSString * const kBlioFontPageTextureNamesArray[] = { @"paper-white.png", @"paper-black.png", @"paper-neutral.png" };
 static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @interface BlioBookViewController ()
@@ -165,7 +168,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if(self == [BlioBookViewController class]) {
         NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
                                      [NSNumber numberWithInteger:kBlioPageLayoutPageLayout], kBlioLastLayoutDefaultsKey,
-                                     [NSNumber numberWithInteger:kBlioFontSizeMedium], kBlioLastFontSizeDefaultsKey,
+                                     [NSNumber numberWithInteger:2], kBlioLastFontSizeIndexDefaultsKey,
                                      nil];
         [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
     }
@@ -334,9 +337,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         case kBlioPageLayoutSpeedRead: {
             if ([self.book hasEPub] || [self.book hasTextFlow]) {
                 BlioSpeedReadView *aBookView = [[BlioSpeedReadView alloc] initWithFrame:self.view.bounds 
+                                                                               delegate:self
                                                                                  bookID:self.book.objectID
                                                                                animated:YES];
-                aBookView.delegate = self;
                 self.bookView = aBookView; 
                 [aBookView release];
 				for (UIBarButtonItem* item in self.toolbarItems)
@@ -348,9 +351,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         case kBlioPageLayoutPageLayout: {
             if ([self.book hasPdf] || [self.book hasXps]) {
                 BlioLayoutView *aBookView = [[BlioLayoutView alloc] initWithFrame:self.view.bounds 
+                                                                         delegate:self
                                                                            bookID:self.book.objectID
                                                                          animated:YES];
-                aBookView.delegate = self;
                 self.bookView = aBookView;
                 [aBookView release];
             }
@@ -359,9 +362,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         default: {
             if ([self.book hasEPub] || [self.book hasTextFlow]) {
                 BlioFlowView *aBookView = [[BlioFlowView alloc] initWithFrame:self.view.bounds 
+                                                                     delegate:self
                                                                        bookID:self.book.objectID
                                                                      animated:YES];
-                aBookView.delegate = self;
                 self.bookView = aBookView;
                 [aBookView release];
             }
@@ -370,8 +373,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
-    if([self.bookView respondsToSelector:@selector(setFontSize:)]) {
-        self.bookView.fontSize = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
+        NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
+        self.bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
     }
     if([self.bookView respondsToSelector:@selector(setJustification:)]) {
         self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
@@ -1815,8 +1819,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     BlioPageLayout currentLayout = self.currentPageLayout;
     if(currentLayout != newLayout) { 
 		if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
-            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
-            ePubView.delegate = self;
+            BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.rootView.bounds delegate:self bookID:self.book.objectID animated:NO];
             self.bookView = ePubView;
             [ePubView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];
@@ -1827,8 +1830,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 						[item setEnabled:YES];
 				
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
-            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
-            layoutView.delegate = self;
+            BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.rootView.bounds delegate:self bookID:self.book.objectID animated:NO];
             self.bookView = layoutView;            
             [layoutView release];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; 
@@ -1838,8 +1840,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 					if (item.action==@selector(toggleAudio:))
 						[item setEnabled:YES];
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
-            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.rootView.bounds bookID:self.book.objectID animated:NO];
-            speedReadView.delegate = self;
+            BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.rootView.bounds delegate:self bookID:self.book.objectID animated:NO];
             self.bookView = speedReadView;     
             [speedReadView release];
 			for (UIBarButtonItem* item in self.toolbarItems)
@@ -1849,8 +1850,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
-        if([self.bookView respondsToSelector:@selector(setFontSize:)]) {
-            self.bookView.fontSize = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeDefaultsKey];
+        if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
+            NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
+            self.bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
         }
         if([self.bookView respondsToSelector:@selector(setJustification:)]) {
             self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
@@ -1876,7 +1878,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)shouldShowFontSizeSettings {
-    return [self.bookView respondsToSelector:@selector(setFontSize:)];
+    return [self.bookView respondsToSelector:@selector(setFontSizeIndex:)];
 }
 
 - (BOOL)shouldShowPageColorSettings {        
@@ -1920,8 +1922,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIAccessibilityIsVoiceOverRunning();
 }
 
-- (BlioFontSize)currentFontSize {
-    return self.bookView.fontSize;
+- (NSUInteger)currentFontSizeIndex {
+    return self.bookView.fontSizeIndex;
 }
 
 - (BOOL)reflowEnabled {
@@ -1930,10 +1932,34 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 -(BOOL)fixedViewEnabled {
 	return [self.book fixedViewEnabled];
 }
-- (void)changeFontSize:(BlioFontSize)newSize {
-    self.bookView.fontSize = newSize;
+- (void)changeFontSizeIndex:(NSUInteger)newSize {
+    self.bookView.fontSizeIndex = newSize;
     // Will set the default when we get the KVO callback.
-    // [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeDefaultsKey];
+    // [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeIndexDefaultsKey];
+}
+
+- (NSUInteger)fontSizeCount
+{
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? 5 : 6;
+}
+
+- (NSArray *)fontSizesForBlioBookView:(id<BlioBookView>)bookView
+{
+    // 5 font sizes on iPhone, 6 on iPad.
+    NSUInteger fontSizeCount = [self fontSizeCount];
+    NSMutableArray *fontSizes = [[NSMutableArray alloc] initWithCapacity:fontSizeCount];
+    if([bookView isKindOfClass:[BlioSpeedReadView class]]) {
+        for(size_t i = 0; i < fontSizeCount; ++i) {
+            NSParameterAssert(fontSizeCount <= sizeof(kBlioSpeedReadFontPointSizeArray) / sizeof(CGFloat));
+            [fontSizes addObject:[NSNumber numberWithFloat:kBlioSpeedReadFontPointSizeArray[i]]];
+        }
+    } else {
+        for(size_t i = 0; i < fontSizeCount; ++i) {
+            NSParameterAssert(fontSizeCount <= sizeof(kBlioFontSizesArray) / sizeof(CGFloat));
+            [fontSizes addObject:[NSNumber numberWithFloat:kBlioFontSizesArray[i]]];
+        }
+    }
+    return [fontSizes autorelease];
 }
 
 - (void)setCurrentPageColor:(BlioPageColor)newColor
@@ -2056,9 +2082,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 }
             }
         }
-    } else if ([keyPath isEqualToString:@"fontSize"] &&
+    } else if ([keyPath isEqualToString:@"fontSizeIndex"] &&
                object == self.bookView) {
-        [[NSUserDefaults standardUserDefaults] setInteger:self.bookView.fontSize forKey:kBlioLastFontSizeDefaultsKey];
+        [[NSUserDefaults standardUserDefaults] setInteger:self.bookView.fontSizeIndex forKey:kBlioLastFontSizeIndexDefaultsKey];
     }
 }
 

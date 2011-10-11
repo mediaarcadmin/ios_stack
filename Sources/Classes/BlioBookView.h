@@ -35,14 +35,6 @@ typedef enum BlioTapTurn {
     kBlioTapTurnOn = 1,
 } BlioTapTurn;
 
-typedef enum BlioFontSize {
-    kBlioFontSizeVerySmall = 0,
-    kBlioFontSizeSmall = 1,
-    kBlioFontSizeMedium = 2,
-    kBlioFontSizeLarge = 3,
-    kBlioFontSizeVeryLarge = 4,
-} BlioFontSize;
-
 #pragma mark -
 @protocol BlioBookViewDelegate <NSObject>
 
@@ -69,6 +61,8 @@ typedef enum BlioFontSize {
 - (BOOL)audioPlaying;
 - (void)cancelPendingToolbarShow;
 
+- (NSArray *)fontSizesForBlioBookView:(id<BlioBookView>)bookView;
+
 @property (nonatomic, readonly) BOOL audioPlaying;
 
 - (CGRect)nonToolbarRect;
@@ -88,11 +82,12 @@ typedef enum BlioFontSize {
 
 @required
 
-@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
+@property (nonatomic, assign, readonly) id<BlioBookViewDelegate> delegate;
 
 @property (nonatomic, readonly) BOOL wantsTouchesSniffed;
 
 - (id)initWithFrame:(CGRect)frame
+           delegate:(id<BlioBookViewDelegate>)delegate
              bookID:(NSManagedObjectID *)bookID 
            animated:(BOOL)animated;
 
@@ -121,7 +116,7 @@ typedef enum BlioFontSize {
 
 @optional
 @property (nonatomic, assign) BlioJustification justification;
-@property (nonatomic, assign) BlioFontSize fontSize;
+@property (nonatomic, assign) NSUInteger fontSizeIndex;
 @property (nonatomic, readonly) UIImage *dimPageImage;
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;

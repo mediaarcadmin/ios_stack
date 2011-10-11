@@ -29,7 +29,7 @@
     
     BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsContentsView alloc] initWithDelegate:newDelegate];
     UIViewController *contentController = [[UIViewController alloc] init];
-    contentController.contentSizeForViewInPopover = CGSizeMake(320, [aContentsView contentsHeight]);
+    contentController.contentSizeForViewInPopover = CGSizeMake(360, [aContentsView contentsHeight]);
     contentController.view = aContentsView;
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
     contentController.navigationItem.title = NSLocalizedString(@"Reading Settings", "Title for Reading Settings Popover");

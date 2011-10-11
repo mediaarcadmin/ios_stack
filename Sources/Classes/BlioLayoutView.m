@@ -187,7 +187,7 @@
 #pragma mark -
 #pragma mark BlioBookView
 
-- (id)initWithFrame:(CGRect)frame bookID:(NSManagedObjectID *)aBookID animated:(BOOL)animated {
+- (id)initWithFrame:(CGRect)frame delegate:(id<BlioBookViewDelegate>)aDelegate bookID:(NSManagedObjectID *)aBookID animated:(BOOL)animated {
     
     BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
     
@@ -198,6 +198,7 @@
     }
     
     if((self = [super initWithFrame:frame])) {
+        self.delegate = aDelegate;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;        
         self.opaque = YES;
         self.multipleTouchEnabled = YES;

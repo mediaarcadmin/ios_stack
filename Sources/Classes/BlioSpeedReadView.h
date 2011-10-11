@@ -16,7 +16,8 @@
 
 @interface BlioSpeedReadView : UIView <BlioBookView, EucBookContentsTableViewControllerDataSource> {
     NSManagedObjectID *bookId;
-        
+    
+    NSArray *fontSizes;
     BlioBookmarkPoint *currentIndexPoint;
     
     id<BlioParagraphSource> paragraphSource;
