@@ -769,7 +769,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
     if(_bookView != bookView) {
         if(_bookView) {
-            [_bookView removeObserver:self forKeyPath:@"fontSize"];
+            [_bookView removeObserver:self forKeyPath:@"fontSizeIndex"];
             [_bookView removeObserver:self forKeyPath:@"currentBookmarkPoint"];
             if(_bookView.superview) {
                 if ([_bookView wantsTouchesSniffed]) {
@@ -808,7 +808,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                            options:NSKeyValueObservingOptionNew
                            context:nil];   
             [_bookView addObserver:self 
-                        forKeyPath:@"fontSize" 
+                        forKeyPath:@"fontSizeIndex" 
                            options:NSKeyValueObservingOptionNew
                            context:nil];   
         }

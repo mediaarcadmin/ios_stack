@@ -420,9 +420,9 @@
     zooming = NO;
 	
     if ([[[event allTouches] allObjects] count] == 2) {
-        [self willChangeValueForKey:@"fontSize"];
+        [self willChangeValueForKey:@"fontSizeIndex"];
         currentFontSize = sampleTextLabel.font.pointSize;
-        [self didChangeValueForKey:@"fontSize"];
+        [self didChangeValueForKey:@"fontSizeIndex"];
 
         bigTextLabel.font = [font fontWithSize:currentFontSize];
         
