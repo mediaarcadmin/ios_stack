@@ -108,6 +108,7 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @property (nonatomic, retain) NSNumber *sourceID;
 @property (nonatomic, retain) NSString *sourceSpecificID;
 @property (nonatomic, retain) NSString *title;
+@property (nonatomic, retain) NSString *titleSortable;
 @property (nonatomic, retain) NSNumber *transactionType;
 
 // the following two attributes are used to quickly calculate the number of TTS-compatible books

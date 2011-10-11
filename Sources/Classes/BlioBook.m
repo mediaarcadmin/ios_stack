@@ -38,6 +38,7 @@
 @dynamic sourceID;
 @dynamic sourceSpecificID;
 @dynamic title;
+@dynamic titleSortable;
 @dynamic transactionType;
 @dynamic ttsRight;
 @dynamic ttsCapable;

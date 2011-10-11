@@ -45,9 +45,12 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @property (nonatomic, retain) BlioLogoView *logoView;
 @property (nonatomic, retain) BlioLibraryBookView *selectedLibraryBookView;
 @property (nonatomic, retain) BlioBookViewController *openBookViewController;
+@property (nonatomic, retain) NSArray * tableData;
 
 - (void)bookSelected:(BlioLibraryBookView *)bookView;
 - (IBAction)changeLibraryLayout:(id)sender;
+-(NSMutableArray *)partitionObjects:(NSArray *)array collationStringSelector:(SEL)selector;
+-(NSInteger)tableView:(UITableView *)tableView realRowNumberForIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -68,6 +71,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize showArchiveCell;
 @synthesize tintColor;
 @synthesize settingsPopoverController;
+@synthesize tableData;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -91,6 +95,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.libraryVaultButton = nil;
 	self.tintColor = nil;
 	self.settingsPopoverController = nil;
+    self.tableData = nil;
 
     [super dealloc];
 }
@@ -576,7 +581,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[expressionDescription release];
 }
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
-	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (librarySortType != kBlioLibrarySortTypePersonalized) {
+        cell.book = [[self.tableData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    }
+	else cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.showsReorderControl = YES;	
 }
 -(void) configureGridCell:(BlioLibraryGridViewCell*)cell atIndex:(NSInteger)index {
@@ -585,7 +593,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.accessibilityElements = nil;
 }
-
+-(NSIndexPath*)adjustedIndexPathForRealIndexPath:(NSIndexPath*)indexPath {
+    BlioBook * book = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSInteger adjustedSectionIndex = [[UILocalizedIndexedCollation currentCollation] sectionForObject:book collationStringSelector:collationStringSelector];
+    return [NSIndexPath indexPathForRow:[[self.tableData objectAtIndex:adjustedSectionIndex] indexOfObject:book] inSection:adjustedSectionIndex];
+}
 - (void)moveBookInManagedObjectContextFromPosition:(NSInteger)fromPosition toPosition:(NSInteger)toPosition shouldSave:(BOOL)savePreference {
 	if (fromPosition == toPosition) {
 		NSLog(@"moveBookInManagedObjectContextFromPosition fromPosition == toPosition. returning prematurely...");
@@ -676,9 +688,52 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     if (error) 
         NSLog(@"Error loading from persistent store: %@, %@", error, [error userInfo]);
 	else {
-		[self.tableView reloadData];
+        collationStringSelector = @selector(titleSortable);
+        if (librarySortType == kBlioLibrarySortTypeAuthor) collationStringSelector = @selector(author);
+        self.tableData = [self partitionObjects:[self.fetchedResultsController fetchedObjects] collationStringSelector:collationStringSelector];
+        /*
+         // debugging NSLogs for sections and member books
+        for (int s = 0; s < [self.tableData count]; s++) {
+            NSLog(@"sectionName: %@",[[[UILocalizedIndexedCollation currentCollation] sectionTitles] objectAtIndex:s]);
+            NSArray * sectionArray = [self.tableData objectAtIndex:s];
+            for (BlioBook * book in sectionArray) {
+                NSLog(@"book sortableTitle: %@",[book titleSortable]);
+                
+            }
+        }
+         */
+        [self.tableView reloadData];
 		[self.gridView reloadData];	
 	}
+}
+-(NSMutableArray *)partitionObjects:(NSArray *)array collationStringSelector:(SEL)selector {
+    UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
+    
+    NSInteger sectionCount = [[collation sectionTitles] count];
+    NSMutableArray *unsortedSections = [NSMutableArray arrayWithCapacity:sectionCount];
+    
+    //create an array to hold the data for each section
+    for(int i = 0; i < sectionCount; i++)
+    {
+        [unsortedSections addObject:[NSMutableArray array]];
+    }
+    
+    //put each object into a section
+    for (id object in array)
+    {
+        NSInteger index = [collation sectionForObject:object collationStringSelector:selector];
+        [[unsortedSections objectAtIndex:index] addObject:object];
+    }
+    
+    NSMutableArray *sections = [NSMutableArray arrayWithCapacity:sectionCount];
+    
+    //sort each section
+    for (NSMutableArray *section in unsortedSections)
+    {
+        [sections addObject:[[[collation sortedArrayFromArray:section collationStringSelector:selector] mutableCopy] autorelease]];
+    }
+    
+    return sections;
 }
 #pragma mark -
 #pragma mark MRGridViewDataSource methods
@@ -718,7 +773,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	return [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] title];
 }
 -(BOOL) gridView:(MRGridView*)gridView canMoveCellAtIndex: (NSInteger)index {
-	if (librarySortType != kBlioLibrarySortTypePersonalized) return NO;
+//	if (librarySortType != kBlioLibrarySortTypePersonalized) return NO; // grid view is only personalized order, so we can always move cells around.
 	return YES;
 }
 -(void) gridView:(MRGridView*)gridView moveCellAtIndex: (NSInteger)fromIndex toIndex: (NSInteger)toIndex {
@@ -827,15 +882,27 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	return kBlioLibraryListRowHeight;
 }
 
+-(NSInteger)tableView:(UITableView *)tableView realRowNumberForIndexPath:(NSIndexPath *)indexPath
+{
+	NSInteger retInt = 0;
+	if (!indexPath.section)
+	{
+		return indexPath.row;
+	}
+	for (int i=0; i < indexPath.section;i++)
+	{
+		retInt += [tableView numberOfRowsInSection:i];
+	}
+    
+	return retInt + indexPath.row;
+}
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	//	NSLog(@"willDisplayCell");
-	if ([indexPath row] % 2) {
-		cell.backgroundColor = [UIColor whiteColor];
-	}
-	else {                        
-		cell.backgroundColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
-	}
+	UIColor * lightColor = [UIColor whiteColor];
+    UIColor * darkColor = [UIColor colorWithRed:(226.0/255) green:(225.0/255) blue:(231.0/255) alpha:1];
+    NSInteger rowNumber = [indexPath row];
+    if (librarySortType != kBlioLibrarySortTypePersonalized) rowNumber = [self tableView:tableView realRowNumberForIndexPath:indexPath];
+    cell.backgroundColor = (rowNumber%2)?lightColor:darkColor;
 }
 
 - (void)openBook:(BlioBook *)selectedBook  {
@@ -853,11 +920,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
                   
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	
-	NSArray *sections = [self.fetchedResultsController sections];
-    NSUInteger bookCount = 0;
-    if ([sections count]) {
-        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+    if (showArchiveCell) {
+        NSArray *sections = [self.fetchedResultsController sections];
+        NSUInteger bookCount = 0;        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
         bookCount = [sectionInfo numberOfObjects];
 		if ([indexPath row] == bookCount) {
 			[tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -866,7 +931,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 	}
 
-    BlioBook *selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    BlioBook *selectedBook = nil;
+    if (librarySortType != kBlioLibrarySortTypePersonalized) {
+        selectedBook = [[self.tableData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    }
+    else selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
         if ([selectedBook isEncrypted]) {
 			if ([selectedBook decryptionIsAvailable])
@@ -885,6 +954,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 #pragma mark UITableViewDataSource methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+	if (librarySortType != kBlioLibrarySortTypePersonalized) {
+        return [[[UILocalizedIndexedCollation currentCollation] sectionTitles] count];
+    }
     NSUInteger count = [[self.fetchedResultsController sections] count];
     if (count == 0) {
         count = 1;
@@ -894,7 +966,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
+    if (librarySortType != kBlioLibrarySortTypePersonalized) {
+        return [[self.tableData objectAtIndex:section] count];
+    }
     NSArray *sections = [self.fetchedResultsController sections];
     NSUInteger bookCount = 0;
     if ([sections count]) {
@@ -906,6 +980,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	return bookCount;
 }
 
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {    
+    if (librarySortType != kBlioLibrarySortTypePersonalized) {
+        return [[UILocalizedIndexedCollation currentCollation] sectionIndexTitles];
+    }
+    return nil;
+}
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+{
+    return [[UILocalizedIndexedCollation currentCollation] sectionForSectionIndexTitleAtIndex:index];
+}
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -915,9 +999,18 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 	NSArray *sections = [self.fetchedResultsController sections];
     NSUInteger bookCount = 0;
-    if ([sections count]) {
-        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
-        bookCount = [sectionInfo numberOfObjects];
+    NSUInteger sectionCount = [sections count];
+    if (librarySortType != kBlioLibrarySortTypePersonalized) {
+        sectionCount = [self.tableData count];
+    }
+    if (indexPath.section == (sectionCount - 1)) {
+        if (librarySortType != kBlioLibrarySortTypePersonalized) {
+            bookCount = [[self.tableData objectAtIndex:indexPath.section] count];
+        }
+        else {
+            id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
+            bookCount = [sectionInfo numberOfObjects];
+        }
 		if ([indexPath row] == bookCount && showArchiveCell) {
 			UITableViewCell * genericCell = nil;
 			genericCell = [tableView dequeueReusableCellWithIdentifier:GenericTableCellIdentifier];
@@ -945,9 +1038,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray *sections = [self.fetchedResultsController sections];
-    NSUInteger bookCount = 0;
-    if ([sections count]) {
+
+    if (showArchiveCell) {
+        NSArray *sections = [self.fetchedResultsController sections];
+        NSUInteger bookCount = 0;
         id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:[indexPath section]];
         bookCount = [sectionInfo numberOfObjects];
 		if ([indexPath row] >= bookCount) return NO;
@@ -1021,7 +1115,28 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
  - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	 if (editingStyle == UITableViewCellEditingStyleDelete) {
 		 // Delete the row from the data source.
-		 BlioBook * bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];		 
+		 BlioBook * bookToBeDeleted = nil;
+         if (librarySortType != kBlioLibrarySortTypePersonalized) {
+             bookToBeDeleted = [[self.tableData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+             [[self.tableData objectAtIndex:indexPath.section] removeObjectAtIndex:indexPath.row];
+             // if we're not using core data fetched results controller as the direct data source, then manipulation of table appearance should happen at this point instead of controller:didChangeObject:
+             
+             NSArray * indexPaths = [self.tableView indexPathsForVisibleRows];
+             [UIView beginAnimations:@"changeRowBackgroundColor" context:nil];
+             NSLog(@"selected IndexPath section: %i row: %i",indexPath.section,indexPath.row);
+             for (NSIndexPath * visiblePath in indexPaths) {
+                 NSLog(@"visiblePath section: %i row: %i",visiblePath.section,visiblePath.row);
+                 if ((visiblePath.section == indexPath.section && visiblePath.row > indexPath.row) || visiblePath.section > indexPath.section) {
+                     [self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:visiblePath.row-1 inSection:visiblePath.section]];
+                 }
+             }				
+             [UIView commitAnimations];
+
+             [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+             
+             
+         }
+         else bookToBeDeleted = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];		 
 		 NSUInteger bookLayoutPageEquivalentCount = [bookToBeDeleted.layoutPageEquivalentCount unsignedIntValue];
 		 [self.processingDelegate deleteBook:bookToBeDeleted shouldSave:YES];
 		 if (bookLayoutPageEquivalentCount == maxLayoutPageEquivalentCount) [self calculateMaxLayoutPageEquivalentCount];
@@ -1073,6 +1188,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
 	   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
 	  newIndexPath:(NSIndexPath *)newIndexPath {
+    NSLog(@"%@ type: %i",NSStringFromSelector(_cmd),type);
 //	BlioBook * book = (BlioBook*)anObject;
 //	NSLog(@"controller didChangeObject. type: %i, _didEdit: %i title: %@, libraryPosition: %i",type,_didEdit,book.title,[book.libraryPosition intValue]);
 	
@@ -1086,7 +1202,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 					[self.gridView reloadData];
 					break;
 				case kBlioLibraryLayoutList:
-					[self.tableView reloadData];
+                    if (librarySortType != kBlioLibrarySortTypePersonalized) [self fetchResults];
+					else [self.tableView reloadData];
 					break;
                 default:
                     break;
@@ -1099,15 +1216,18 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 					[self.gridView deleteIndices:[NSArray arrayWithObject:[NSNumber numberWithInt:indexPath.row]] withCellAnimation:MRGridViewCellAnimationFade];
 					break;
 				case kBlioLibraryLayoutList: {
-					NSArray * indexPaths = [self.tableView indexPathsForVisibleRows];
-					[UIView beginAnimations:@"changeRowBackgroundColor" context:nil];
-					for (NSIndexPath * visiblePath in indexPaths) {
-						if (visiblePath.row > indexPath.row) {
-							[self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:visiblePath.row-1 inSection:visiblePath.section]];
-						}
-					}				
-					[UIView commitAnimations];
-					[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    if (librarySortType == kBlioLibrarySortTypePersonalized) {
+                        NSArray * indexPaths = [self.tableView indexPathsForVisibleRows];
+                        NSIndexPath * adjustedIndexPath = indexPath;
+                        [UIView beginAnimations:@"changeRowBackgroundColor" context:nil];
+                        for (NSIndexPath * visiblePath in indexPaths) {
+                            if (visiblePath.row > adjustedIndexPath.row || visiblePath.section > adjustedIndexPath.section) {
+                                [self tableView:self.tableView willDisplayCell:[self.tableView cellForRowAtIndexPath:visiblePath] forRowAtIndexPath:[NSIndexPath indexPathForRow:visiblePath.row-1 inSection:visiblePath.section]];
+                            }
+                        }				
+                        [UIView commitAnimations];
+                        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:adjustedIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    }
 				}
 					break;
                 default:
@@ -1116,26 +1236,24 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			break;
 			
 		case NSFetchedResultsChangeUpdate:
-//			if (!_didEdit) {
 				switch (self.libraryLayout) {
 					case kBlioLibraryLayoutGrid:
 						[self configureGridCell:(BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:indexPath.row]
 										atIndex:indexPath.row];
 						break;
 					case kBlioLibraryLayoutList:
-//						if (self.tableView.isEditing) {
-						[self configureTableCell:(BlioLibraryListCell*)[self.tableView cellForRowAtIndexPath:indexPath]
-									 atIndexPath:indexPath];
-//						}
-//						else {
-//							[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-//						}
+                        1;
+                        NSIndexPath * adjustedIndexPath = indexPath;
+                        if (librarySortType != kBlioLibrarySortTypePersonalized) {
+                            adjustedIndexPath = [self adjustedIndexPathForRealIndexPath:indexPath];
+                        }
+						[self configureTableCell:(BlioLibraryListCell*)[self.tableView cellForRowAtIndexPath:adjustedIndexPath]
+									 atIndexPath:adjustedIndexPath];
 						break;
                     default:
                         break;
 				}
 				
-//			}
 			break;
 	}
 }

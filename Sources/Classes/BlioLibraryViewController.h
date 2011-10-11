@@ -111,6 +111,8 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	NSMutableArray * sortLibraryItems;
 	UIColor * tintColor;
 	UIPopoverController * settingsPopoverController;
+	NSArray * tableData;
+    SEL collationStringSelector;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
