@@ -32,7 +32,7 @@
     contentController.contentSizeForViewInPopover = CGSizeMake(320, [aContentsView contentsHeight]);
     contentController.view = aContentsView;
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
-    contentController.navigationItem.title = NSLocalizedString(@"Visual Settings", "Title for Visual Settings Popover");
+    contentController.navigationItem.title = NSLocalizedString(@"Reading Settings", "Title for Reading Settings Popover");
     
     if ((self = [super initWithContentViewController:navController])) {
         // Custom initialization
@@ -49,10 +49,11 @@
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-    [self.viewSettingsDelegate dismissViewSettings:self];
+    [self.viewSettingsDelegate viewSettingsDidDismiss:self];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [((BlioViewSettingsContentsView *)self.contentsView) refreshSettings];
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     // Need to hide and show nav bar to workaround bug when rotating which hides the nav bar
     [(UINavigationController *)self.contentViewController setNavigationBarHidden:YES];

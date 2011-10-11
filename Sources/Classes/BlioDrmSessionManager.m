@@ -420,7 +420,7 @@ ErrorExit:
 #else
 	[self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionJoinDomain];
 #endif
-	NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
+//	NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
 	@synchronized (self) {
 		ChkDR( Drm_JoinDomain_ProcessResponse( drmIVars->drmAppContext,
 											  pbResponse,

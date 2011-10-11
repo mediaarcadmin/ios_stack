@@ -111,7 +111,7 @@
 															 initWithFetchRequest:request
 															 managedObjectContext:moc
 															 sectionNameKeyPath:nil
-															 cacheName:@"BlioArchivedBooks"];
+															 cacheName:nil];
     [request release];
     
     [aFetchedResultsController setDelegate:self];
@@ -226,6 +226,9 @@
 		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
 	
 	cell.showsReorderControl = YES;	
+}
+-(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook {
+	[self.processingDelegate reprocessCoverThumbnailsForBook:aBook];
 }
 -(void) pauseProcessingForBook:(BlioBook*)book {
 	[self.processingDelegate pauseProcessingForBook:book];
@@ -359,7 +362,7 @@
 	if (cell == nil) {
 		cell = [[[BlioLibraryListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
 	} 
-	
+    cell.delegate = self;
 	[self configureTableCell:cell atIndexPath:indexPath];
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;

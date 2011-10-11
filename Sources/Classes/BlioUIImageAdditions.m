@@ -12,23 +12,65 @@
 
 @implementation UIImage (BlioAdditions)
 
-+ (UIImage *)imageWithString:(NSString *)string font:(UIFont *)font color:(UIColor *)color{
-    CGSize size = [string sizeWithFont:font];
-    
++ (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size baseline:(CGFloat)baseline color:(UIColor *)color{    
+    CGSize stringSize = [string sizeWithFont:font];
+
     if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     } else {
         UIGraphicsBeginImageContext(size);
     }
     [color set];
-    [string drawInRect:CGRectIntegral(CGRectMake(0,0,size.width, size.height)) withFont:font];
+    [string drawAtPoint:CGPointMake((size.width - stringSize.width) * 0.5, baseline - font.ascender) withFont:font];
     UIImage *retImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return retImage;
 }
 
++ (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size color:(UIColor *)color{    
+    return [self blioImageWithString:string font:font size:size baseline:font.ascender color:color];
+}
+
++ (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font color:(UIColor *)color{
+    CGSize size = [string sizeWithFont:font];
+    return [self blioImageWithString:string font:font size:size color:color];
+}
+
+
+- (UIImage *)blioImageByRotatingTo:(UIImageOrientation)orientation
+{        
+    CGSize size = self.size;
+    CGSize rotatedSize;
+    CGFloat rotation;
+    if (orientation == UIImageOrientationRight) {
+        rotatedSize = CGSizeMake(size.height, size.width);
+        rotation = -M_PI_2;
+    } else if (orientation == UIImageOrientationLeft) {
+        rotatedSize = CGSizeMake(size.height, size.width);
+        rotation = M_PI_2;
+    } else if (orientation == UIImageOrientationDown) {
+        rotatedSize = size;
+        rotation = M_PI;
+    } else {
+        rotatedSize = size;
+        rotation = 0;
+    }
+    
+    UIGraphicsBeginImageContextWithOptions(rotatedSize, NO, self.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    CGContextTranslateCTM(context, rotatedSize.width/2, rotatedSize.height/2);
+    CGContextRotateCTM(context, rotation);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextDrawImage(context, CGRectMake(-self.size.width / 2, -self.size.height / 2, self.size.width, self.size.height), [self CGImage]);
+    
+    UIImage *ret = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return ret;
+}
+
 + (UIImage *)imageWithIcon:(UIImage *)image string:(NSString *)string font:(UIFont *)font color:(UIColor *)color textInset:(UIEdgeInsets)inset {
-    UIImage *textImage = [UIImage imageWithString:string font:font color:color];
+    UIImage *textImage = [UIImage blioImageWithString:string font:font color:color];
     CGRect textRect = CGRectIntegral(CGRectMake(image.size.width + inset.left, 0, textImage.size.width + inset.right, textImage.size.height + (inset.top - inset.bottom)));
     CGRect imageRect = CGRectIntegral(CGRectMake(0, 0, image.size.width, image.size.height));
     CGRect combinedRect = CGRectIntegral(CGRectUnion(imageRect, textRect));

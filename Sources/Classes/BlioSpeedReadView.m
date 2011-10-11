@@ -129,8 +129,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         
         [self addSubview:fingerImageHolder];
         
-        NSInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastFontSize"];        
-        currentFontSize = kBlioSpeedReadFontPointSizeArray[fontSizeIndex];
+        currentFontSize = kBlioSpeedReadFontPointSizeArray[kBlioFontSizeMedium];
         font = [UIFont fontWithName:@"Helvetica" size:currentFontSize];
         
         speed = 0;
@@ -160,15 +159,23 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     }
 }
 
-
-
-- (CGFloat)fontPointSize {
-    return (currentFontSize-20.0)*8.0/100.0+14;
+- (BlioFontSize)fontSize {
+    CGFloat actualFontSize = currentFontSize;
+    CGFloat bestDifference = CGFLOAT_MAX;
+    BlioFontSize bestFontSize = kBlioFontSizeMedium;
+    for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
+        CGFloat thisDifference = fabsf(kBlioSpeedReadFontPointSizeArray[i] - actualFontSize);
+        if(thisDifference < bestDifference) {
+            bestDifference = thisDifference;
+            bestFontSize = i;
+        }
+    }
+    return bestFontSize;
 }
 
-- (void)setFontPointSize:(CGFloat)fontPointSize
+- (void)setFontSize:(BlioFontSize)newSize
 {
-    fontPointSize = (fontPointSize - 14)*100/8+20;
+    CGFloat fontPointSize = kBlioSpeedReadFontPointSizeArray[newSize];
     
     currentFontSize = fontPointSize;
     bigTextLabel.font = [font fontWithSize:currentFontSize];
@@ -321,8 +328,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         
         float loc = [[[touches allObjects] objectAtIndex:0] locationInView:self].y;
         float fingerImageYValue = loc-46;        
-        UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
-        if (UIDeviceOrientationIsLandscape(i)){
+        UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsPortrait(i)){
             xOffset = 147;
             yOffset = -80;
         }
@@ -361,13 +368,13 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         CGFloat deltaY = second.y - first.y;
         float newDifference = sqrt(deltaX*deltaX + deltaY*deltaY);
         
-        float oldFontSize = currentFontSize;
-        currentFontSize = (int)(initialFontSize + (newDifference - initialTouchDifference)/2.5);
-        if (currentFontSize < 20) currentFontSize = 20.0;
-        if (currentFontSize > 120) currentFontSize = 120.0;
-        currentFontSize = currentFontSize - (int)currentFontSize%5;
-        if (oldFontSize != currentFontSize) {
-            sampleTextLabel.font = [font fontWithSize:currentFontSize];
+        CGFloat oldFontSize = sampleTextLabel.font.pointSize;
+        CGFloat newFontSize = (int)(initialFontSize + (newDifference - initialTouchDifference)/2.5);
+        if (newFontSize < 20) newFontSize = 20.0;
+        if (newFontSize > 120) newFontSize = 120.0;
+        newFontSize = newFontSize - (int)newFontSize%5;
+        if (oldFontSize != newFontSize) {
+            sampleTextLabel.font = [font fontWithSize:newFontSize];
         }
         
     } else {
@@ -377,8 +384,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         int oldSpeed = speed;
         float loc = [[[touches allObjects] objectAtIndex:0] locationInView:self].y;
         float fingerImageYValue = loc-46;        
-        UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
-        if (UIDeviceOrientationIsLandscape(i)){
+        UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsLandscape(i)){
             xOffset = 147;
             yOffset = -80;
         }
@@ -405,6 +412,10 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     zooming = NO;
 	
     if ([[[event allTouches] allObjects] count] == 2) {
+        [self willChangeValueForKey:@"fontSize"];
+        currentFontSize = sampleTextLabel.font.pointSize;
+        [self didChangeValueForKey:@"fontSize"];
+
         bigTextLabel.font = [font fontWithSize:currentFontSize];
         
         UITouch *firstTouch = [[[event allTouches] allObjects] objectAtIndex:0];
@@ -461,8 +472,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 - (float)speedForYValue:(float)y {
     
     
-    UIDeviceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
-    if (UIDeviceOrientationIsPortrait(i)) {
+    UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UIInterfaceOrientationIsPortrait(i)) {
         if (y > 400) {
             return ((480-y)/80)*-1;
         }

@@ -75,7 +75,7 @@
 									   initWithFetchRequest:request
 									   managedObjectContext:moc
 									   sectionNameKeyPath:nil
-									   cacheName:@"BlioTTSBooks"] autorelease];
+									   cacheName:nil] autorelease];
 	 [request release];
 	 
 	 [ttsFetchedResultsController setDelegate:self];
@@ -99,7 +99,7 @@
 										initWithFetchRequest:request
 										managedObjectContext:moc
 										sectionNameKeyPath:nil
-										cacheName:@"BlioTotalBooks"] autorelease];
+										cacheName:nil] autorelease];
 	  [request release];
 	  
 	  [totalFetchedResultsController setDelegate:self];

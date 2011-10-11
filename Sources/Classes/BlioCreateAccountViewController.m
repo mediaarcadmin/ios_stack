@@ -214,7 +214,7 @@
 	NSInteger row = [indexPath row];
 		cell = [tableView dequeueReusableCellWithIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]];
 		if (cell == nil) {
-			cell = [[[CellTextField alloc] initWithFrame:CGRectZero reuseIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]] autorelease];
+			cell = [[[CellTextField alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]] autorelease];
 			if (row == 0) 
 				((CellTextField *)cell).view = [self createFirstNameTextField];
 			else if (row == 1) 

@@ -19,7 +19,6 @@
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
-@property (nonatomic, retain) NSOperationQueue *postAvailabilityQueue;
 
 - (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
 - (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
@@ -28,28 +27,22 @@
 
 @implementation BlioProcessingManager
 
-@synthesize preAvailabilityQueue, postAvailabilityQueue;
+@synthesize preAvailabilityQueue;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.preAvailabilityQueue cancelAllOperations];
-    [self.postAvailabilityQueue cancelAllOperations];
     self.preAvailabilityQueue = nil;
-    self.postAvailabilityQueue = nil;
     [super dealloc];
 }
 
-- (id)init{
+- (id)init {
     if ((self = [super init])) {
         NSOperationQueue *aPreAvailabilityQueue = [[NSOperationQueue alloc] init];
 		[aPreAvailabilityQueue setMaxConcurrentOperationCount:3];
         self.preAvailabilityQueue = aPreAvailabilityQueue;
         [aPreAvailabilityQueue release];
         
-        NSOperationQueue *aPostAvailabilityQueue = [[NSOperationQueue alloc] init];
-        self.postAvailabilityQueue = aPostAvailabilityQueue;
-        [aPostAvailabilityQueue release];
-		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onReprocessCoverThumbnailNotification:) name:BlioProcessingReprocessCoverThumbnailNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingTokenRequiredNotification:) name:BlioProcessingLicenseAcquisitionTokenRequiredNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingTokenRequiredNotification:) name:BlioProcessingDownloadPaidBookTokenRequiredNotification object:nil];
@@ -1235,7 +1228,7 @@
 		if ([results count] > 0) {
 			NSLog(@"Found %i book results with userNum:%i siteNum:%i, will delete...",[results count],user,site); 
 			for (BlioBook * book in results) {
-				[self deleteBook:book shouldSave:YES];
+				[self deleteBook:book attemptArchive:NO shouldSave:YES];
 			}
 			
 		}
@@ -1249,6 +1242,10 @@
 	
 }
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave {
+    [self deleteBook:aBook attemptArchive:YES shouldSave:shouldSave];
+}
+-(void) deleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave {
+
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:aBook.objectID forKey:@"bookID"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingWillDeleteBookNotification object:self userInfo:userInfo];
@@ -1266,7 +1263,7 @@
 		}
 	}
 	
-	if ([[aBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+	if ([[aBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore && attemptArchive) {
 		// delete all files except the thumbnail so that we can put the book back in the vault.
 		NSString * coverFilename = BlioManifestCoverKey;
 		NSString * thumbnailsDirectory = BlioBookThumbnailsDir;
@@ -1280,6 +1277,13 @@
 							NSLog(@"WARNING: deletion of asset for paid book failed. %@, %@", error, [error userInfo]);
 						}
 					}
+                    else if ([fileName isEqualToString:coverFilename]) {
+                        // restore entry to point to CoverImage on disk, since placeholders do not have XPS available.
+                        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+                        [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+                        [manifestEntry setValue:BlioManifestCoverKey forKey:BlioManifestEntryPathKey];
+                        [aBook setManifestValue:manifestEntry forKey:BlioManifestCoverKey];
+                    }
 				}
 				// reset asset values in BlioBook.
 				[aBook setManifestValue:nil forKey:BlioManifestAudiobookKey];

@@ -16,6 +16,7 @@
 #import <libEucalyptus/THPositionedCGContext.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THUIDeviceAdditions.h>
+#import <libEucalyptus/THGeometryUtils.h>
 #import "UIDevice+BlioAdditions.h"
 #import "BlioTextFlowBlockCombiner.h"
 #import "BlioLayoutPDFDataSource.h"
@@ -41,8 +42,6 @@
 @property (nonatomic, assign) NSInteger pageNumber;
 @property (nonatomic, assign) CGSize pageSize;
 @property (nonatomic, retain) id<BlioLayoutDataSource> dataSource;
-@property (nonatomic, retain) UIImage *pageTexture;
-@property (nonatomic, assign) BOOL pageTextureIsDark;
 @property (nonatomic, retain) BlioTextFlowBlock *lastBlock;
 @property (nonatomic, retain) BlioBookmarkRange *temporaryHighlightRange;
 @property (nonatomic, retain) NSArray *accessibilityElements;
@@ -50,6 +49,7 @@
 @property (nonatomic, retain) UIAccessibilityElement *nextZone;
 @property (nonatomic, retain) UIAccessibilityElement *pageZone;
 @property (nonatomic, assign) BOOL performingAccessibilityZoom;
+@property (nonatomic, retain) NSMutableArray *accessibiltyLinesCache;
 @property (nonatomic, retain) NSMutableArray *mediaViews;
 @property (nonatomic, retain) NSMutableArray *webViews;
 @property (nonatomic, readonly, retain) UIImage *pageAlphaMask;
@@ -105,6 +105,8 @@
 - (NSArray *)overlayPositionedContextsForPageAtIndex:(NSUInteger)index;
 - (void)updatePositionedOverlayContexts;
 
+- (void)accessibilityEnsureZoomedOut;
+
 @end
 
 @implementation BlioLayoutView
@@ -114,17 +116,19 @@
 @synthesize bookID, textFlow, pageNumber, pageCount, currentBookmarkPoint, selector, pageSize;
 @synthesize pageCropsCache, viewTransformsCache, hyperlinksCache;
 @synthesize dataSource;
-@synthesize pageTurningView, pageTexture, pageTextureIsDark;
+@synthesize pageTurningView;
 @synthesize lastBlock;
 @synthesize accessibilityElements, prevZone, nextZone, pageZone;
 @synthesize temporaryHighlightRange;
 @synthesize performingAccessibilityZoom;
+@synthesize accessibiltyLinesCache;
 @synthesize overlay;
 @synthesize mediaViews;
 @synthesize webViews;
 @synthesize pageAlphaMask;
 @synthesize pageMultiplyColor;
 @synthesize twoUpLandscape;
+@synthesize shouldTapZoom;
 
 - (void)dealloc {
 	
@@ -147,7 +151,6 @@
 	self.temporaryHighlightRange = nil;
     
     self.pageTurningView = nil;
-    self.pageTexture = nil;
         
     [self.dataSource closeDocumentIfRequired];
     self.dataSource = nil;
@@ -224,10 +227,10 @@
 		if (animated) {
 			self.pageNumber = 1;
 		} else {
+            self.currentBookmarkPoint = aBook.implicitBookmarkPoint;
 			NSInteger page = MAX(MIN(aBook.implicitBookmarkPoint.layoutPage, self.pageCount), 1);
 			self.pageNumber = page;
 		}
-        
     }
 
     return self;
@@ -477,14 +480,10 @@
 }
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
-    if(self.pageTexture != aPageTexture || self.pageTextureIsDark != isDarkIn) {
-        [self.pageTurningView setPageTexture:aPageTexture isDark:isDarkIn];
-        [self.pageTurningView setNeedsDraw];
-        self.pageTexture = aPageTexture;
-        self.pageTextureIsDark = isDarkIn;
-		[self clearOverlayCaches];
-		[self updateOverlay];
-    }
+    [self.pageTurningView setPageTexture:aPageTexture isDark:isDarkIn];
+    [self.pageTurningView setNeedsDraw];
+    [self clearOverlayCaches];
+    [self updateOverlay];
 }
 
 - (BOOL)wantsTouchesSniffed {
@@ -786,7 +785,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (void)pageTurningViewDidEndPageTurn:(EucPageTurningView *)aPageTurningView
 {
-	NSUInteger pageIndex = ((EucIndexBasedPageTurningView *)aPageTurningView).focusedPageIndex;
+	[self showOverlay];
+}
+
+- (void)pageTurningView:(EucPageTurningView *)aPageTurningViewIn didTurnToPageWithIdentifier:(id)identifier
+{
+    EucIndexBasedPageTurningView *aPageTurningView = (EucIndexBasedPageTurningView *)aPageTurningViewIn;
+
+    NSUInteger pageIndex = [identifier unsignedIntegerValue];
     if(self.pageNumber != pageIndex + 1) {
 		if (!suppressHistoryAfterTurn) {
 			[self pushCurrentBookmarkPoint];
@@ -794,7 +800,28 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         self.pageNumber = pageIndex + 1;
     }
     
-	[self showOverlay];
+    NSUInteger leftPageIndex = aPageTurningView.leftPageIndex;
+    NSUInteger rightPageIndex = aPageTurningView.rightPageIndex;
+    NSInteger currentPageNumber = self.currentBookmarkPoint.layoutPage;
+    
+    if(!currentPageNumber ||
+       (currentPageNumber - 1 != leftPageIndex && currentPageNumber - 1 != rightPageIndex)) {
+        NSInteger newPageNumber = 0;
+        if(leftPageIndex != NSUIntegerMax) {
+            newPageNumber = leftPageIndex + 1;
+        } else if(rightPageIndex != NSUIntegerMax) {
+            newPageNumber = rightPageIndex + 1;
+        }
+        if(newPageNumber != 0) {
+            
+            BlioBookmarkPoint *newBookmarkPoint = [[BlioBookmarkPoint alloc] init];
+            newBookmarkPoint.layoutPage = newPageNumber;
+            
+            self.currentBookmarkPoint = newBookmarkPoint;
+            
+            [newBookmarkPoint release];
+        }
+    }
 }
 
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
@@ -832,30 +859,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 		self.temporaryHighlightRange = nil;
     }
     
-    self.performingAccessibilityZoom = NO;
-    
-    NSUInteger leftPageIndex = aPageTurningView.leftPageIndex;
-    NSUInteger rightPageIndex = aPageTurningView.rightPageIndex;
-    NSInteger currentPageNumber = self.currentBookmarkPoint.layoutPage;
-    
-    if(!currentPageNumber ||
-       (currentPageNumber - 1 != leftPageIndex && currentPageNumber - 1 != rightPageIndex)) {
-        NSInteger newPageNumber = 0;
-        if(leftPageIndex != NSUIntegerMax) {
-            newPageNumber = leftPageIndex + 1;
-        } else if(rightPageIndex != NSUIntegerMax) {
-            newPageNumber = rightPageIndex + 1;
-        }
-        if(newPageNumber != 0) {
-
-            BlioBookmarkPoint *newBookmarkPoint = [[BlioBookmarkPoint alloc] init];
-            newBookmarkPoint.layoutPage = newPageNumber;
-
-            self.currentBookmarkPoint = newBookmarkPoint;
-
-            [newBookmarkPoint release];
-        }
-    }
+    self.performingAccessibilityZoom = NO;    
 }
 
 - (void)pageTurningViewWillBeginZooming:(EucPageTurningView *)scrollView 
@@ -1328,18 +1332,20 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
 	if (self.pageTurningView && !CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
 		if (!self.overlay) {
-			self.overlay = [[BlioGestureSuppressingView alloc] init];
-			self.overlay.frame = self.pageTurningView.bounds;
-			self.overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-			self.overlay.backgroundColor = [UIColor clearColor];
-            
+            BlioGestureSuppressingView *gestureSuppressingView = [[BlioGestureSuppressingView alloc] init];
+			gestureSuppressingView.frame = self.pageTurningView.bounds;
+			gestureSuppressingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+			gestureSuppressingView.backgroundColor = [UIColor clearColor];
             for (UIGestureRecognizer *recognizer in self.pageTurningView.gestureRecognizers) {
                 if (![recognizer isEqual:self.pageTurningView.tapGestureRecognizer]) {
-                    [self.overlay.suppressingGestureRecognizer requireGestureRecognizerToFail:recognizer];
+                    [gestureSuppressingView.suppressingGestureRecognizer requireGestureRecognizerToFail:recognizer];
                 }
             }
-                        
-			[self.pageTurningView addSubview:self.overlay];
+            
+            self.overlay = gestureSuppressingView;
+			[self.pageTurningView addSubview:gestureSuppressingView];
+            
+            [gestureSuppressingView release];
 		}
 
         [self.webViews makeObjectsPerformSelector:@selector(stopLoading)];
@@ -1972,28 +1978,36 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Accessibility
 
-- (void)thAccessibilityElementDidBecomeFocused:(THAccessibilityElement *)element
+- (BOOL)useTextFlowBlockBasedAccessibility
 {
-    if([self indexOfAccessibilityElement:element] == 0) {
-        [self.pageTurningView accessibilityAnnouncePageSummaryIfAfterTurn];
+#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
+    if(&UIAccessibilityTraitCausesPageTurn != NULL &&
+       [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
+        return self.shouldTapZoom;
+    } else {
+        return NO;
     }
+#else
+    return YES;
+#endif
 }
+
+#pragma mark TextFlow Block Based Accessibilty
 
 - (NSArray *)textBlockAccessibilityElements {
     NSMutableArray *elements = [NSMutableArray array];
 	
     NSInteger pageIndex = self.pageTurningView.leftPageIndex;
     if(self.pageTurningView.isTwoUp && pageIndex != NSUIntegerMax) {
-        CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
+        CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
         NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
     
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-            THAccessibilityElement *element = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
             blockRect = [self.window.layer convertRect:blockRect fromLayer:self.pageTurningView.layer];
             [element setAccessibilityFrame:blockRect];
             [element setAccessibilityLabel:[block string]];
-            element.delegate = self;
             [elements addObject:element];
             [element release];
         }
@@ -2001,16 +2015,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	
     pageIndex = self.pageTurningView.rightPageIndex;
     if(pageIndex != NSUIntegerMax) {
-        CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
+        CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
         NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
         
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
-            THAccessibilityElement *element = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
             blockRect = [self.window.layer convertRect:blockRect fromLayer:self.pageTurningView.layer];
             [element setAccessibilityFrame:blockRect];
             [element setAccessibilityLabel:[block string]];
-            element.delegate = self;
             [elements addObject:element];
             [element release];
         }
@@ -2019,10 +2032,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	return elements;
 }
 
-- (NSArray *)accessibilityElements
-{
+- (NSArray *)accessibilityElements {
     if(!accessibilityElements) {
-        accessibilityElements = [[NSMutableArray alloc] init];
+        NSMutableArray *newAccessibilityElements = [[NSMutableArray alloc] init];
 		
         CGFloat tapZoneWidth = 0.0f;      
 
@@ -2041,11 +2053,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 frame = [self convertRect:frame toView:self.window];
 
                 nextPageTapZone.accessibilityFrame = frame;
-                nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for previous page tap zone");            
+                nextPageTapZone.accessibilityLabel = NSLocalizedString(@"Next Page", @"Accessibility title for Next Page tap zone");            
 
                 self.nextZone = nextPageTapZone;
                 
-                [accessibilityElements addObject:nextPageTapZone];            
+                [newAccessibilityElements addObject:nextPageTapZone];            
                 [nextPageTapZone release];
             }      
             
@@ -2066,11 +2078,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 frame = [self convertRect:frame toView:self.window];
 
                 previousPageTapZone.accessibilityFrame = frame;
-                previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for next page tap zone");
+                previousPageTapZone.accessibilityLabel = NSLocalizedString(@"Previous Page", @"Accessibility title for Previous Page tap zone");
                 
                 self.prevZone = previousPageTapZone;
                 
-                [accessibilityElements addObject:previousPageTapZone];
+                [newAccessibilityElements addObject:previousPageTapZone];
                 [previousPageTapZone release];
             }
 			
@@ -2079,7 +2091,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         
         NSArray *pageAccessibilityElements = [self textBlockAccessibilityElements];
         if(pageAccessibilityElements.count == 0) {
-            THAccessibilityElement *bookPageTapZone = [[THAccessibilityElement alloc] initWithAccessibilityContainer:self];
+            UIAccessibilityElement *bookPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
             CGRect frame = self.bounds;
             frame.origin.x += tapZoneWidth;
@@ -2087,51 +2099,75 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             
             bookPageTapZone.accessibilityFrame = frame;
             bookPageTapZone.accessibilityLabel = NSLocalizedString(@"No text on this page", @"Accessibility description for otherwise empty page");
-            
-            bookPageTapZone.delegate = self;
-            
-            [accessibilityElements addObject:bookPageTapZone];
+                        
+            [newAccessibilityElements addObject:bookPageTapZone];
             [bookPageTapZone release];
         } else {            
             for(UIAccessibilityElement *element in pageAccessibilityElements) {
-                [accessibilityElements addObject:element];
+                [newAccessibilityElements addObject:element];
             }           
         }
+        
+        accessibilityElements = newAccessibilityElements;
     }        
 	
+    return accessibilityElements;
+}
+
+
+#pragma mark All Accessibilty
+
+- (NSInteger)accessibilityElementCount
+{
+    [self accessibilityEnsureZoomedOut];
+    
+    if(self.useTextFlowBlockBasedAccessibility) {
+        return [[self accessibilityElements] count];
+    } else {
+        return 1;
+    }
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    [self accessibilityEnsureZoomedOut];
+    
+    if(self.useTextFlowBlockBasedAccessibility) {
+        return [[self accessibilityElements] objectAtIndex:index];
+    } else {
+        if(index == 0) {
+            return self.pageTurningView;
+        } else {
+            return nil;
+        }
+    }
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    if(self.useTextFlowBlockBasedAccessibility) {
+        return [[self accessibilityElements] indexOfObject:element];
+    } else {
+        if(element == self.pageTurningView) {  
+            return 0;
+        } else {
+            return NSNotFound;
+        }
+    }
+}
+
+- (void)accessibilityEnsureZoomedOut
+{
     if (self.pageTurningView.zoomFactor > 1.0f) {
         self.performingAccessibilityZoom = YES;
         self.pageTurningView.minZoomFactor = 1.0f;
 		[self.pageTurningView setTranslation:CGPointZero zoomFactor:1.0f animated:YES];
 	}
-	
-    return accessibilityElements;
-}
-
-- (NSInteger)accessibilityElementCount
-{
-    return [[self accessibilityElements] count];
-}
-
-- (id)accessibilityElementAtIndex:(NSInteger)index
-{
-    return [[self accessibilityElements] objectAtIndex:index];
-}
-
-- (NSInteger)indexOfAccessibilityElement:(id)element
-{
-    return [[self accessibilityElements] indexOfObject:element];
 }
 
 - (CGRect)accessibilityFrame
 {
-    CGRect bounds;
-    if([self.delegate respondsToSelector:@selector(nonToolbarRect)]) {
-        bounds = [self.delegate nonToolbarRect];
-    } else {
-        bounds = self.bounds;
-    }
-    return [self convertRect:bounds toView:nil];
+    return [self convertRect:[self.delegate nonToolbarRect] toView:nil];
 }
 
 - (NSString *)accessibilityLabel
@@ -2146,16 +2182,138 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (BOOL)isAccessibilityElement
 {
-    if([self.delegate respondsToSelector:@selector(toolbarsVisible)]) {
-        return [self.delegate toolbarsVisible];
-    } else {
-        return NO;
-    }
+    return [self.delegate toolbarsVisible];
 }
 
 - (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
 {
     return [self.pageTurningView accessibilityScroll:direction];
+}
+
+#pragma mark [iOS 5 and up] line-by-line, continuous reading accessibility
+
+- (NSArray *)accessibiltyLinesForPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
+    NSMutableArray *ret = nil;
+
+    if(!self.accessibiltyLinesCache) {
+        self.accessibiltyLinesCache = [NSMutableArray array]; 
+    }
+    for(THPair *indexAndLines in self.accessibiltyLinesCache) {
+        if([indexAndLines.first unsignedIntegerValue] == pageIndex) {
+            ret = indexAndLines.second;
+        }
+    }
+    
+    if(!ret) {
+        if(self.accessibiltyLinesCache.count == 2) {
+            [self.accessibiltyLinesCache removeObjectAtIndex:0];
+        }
+        
+        ret = [NSMutableArray array];
+        
+        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        for(BlioTextFlowBlock *block in nonFolioPageBlocks) {
+            CGFloat lineStartX = 0;
+            CGFloat lineMinY = 0;
+            CGFloat lineMaxY = 0;
+            
+            // Setting to CGFLOAT_MAX will cause us to start a new line
+            // in the first iteration of the loop, below.
+            CGFloat previousWordEndX = CGFLOAT_MAX;
+            
+            NSMutableArray *wordsBuild = [NSMutableArray array];
+            for(BlioTextFlowPositionedWord *word in block.words) {
+                CGRect wordRect = word.rect;
+                if(CGRectGetMinX(wordRect) > previousWordEndX) {
+                    [wordsBuild addObject:word];
+                    
+                    if(lineMaxY < CGRectGetMaxY(wordRect)) {
+                        lineMaxY = CGRectGetMaxY(wordRect);
+                    }
+                    if(lineMinY > CGRectGetMinY(wordRect)) {
+                        lineMinY = CGRectGetMinY(wordRect);
+                    }
+                } else {
+                    if(wordsBuild.count) {
+                        CGRect lineRect = CGRectMake(lineStartX, lineMinY,
+                                                     previousWordEndX - lineStartX, lineMaxY - lineMinY);
+                        
+                        [ret addPairWithFirst:[NSValue valueWithCGRect:lineRect] second:wordsBuild];
+                    }
+                    wordsBuild = [NSMutableArray arrayWithObject:word];
+                    lineStartX = CGRectGetMinX(wordRect);
+                    lineMaxY = CGRectGetMaxY(wordRect);
+                    lineMinY = CGRectGetMinY(wordRect);
+                }
+                previousWordEndX = CGRectGetMaxX(wordRect);
+            }
+            if(wordsBuild.count) {
+                CGRect lineRect = CGRectMake(lineStartX, lineMinY,
+                                             previousWordEndX - lineStartX, lineMaxY - lineMinY);
+                [ret addPairWithFirst:[NSValue valueWithCGRect:lineRect] second:wordsBuild];
+            }
+        }        
+        [self.accessibiltyLinesCache addPairWithFirst:[NSNumber numberWithUnsignedInteger:pageIndex] second:ret];
+    }
+    return ret;
+}
+
+- (NSInteger)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView accessibilityLineNumberForInternalPoint:(CGPoint)point forPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
+    NSArray *lines = [self accessibiltyLinesForPageAtIndex:pageIndex];
+
+    NSInteger bestLineIndex = NSNotFound;
+    CGFloat bestWordDistance = CGFLOAT_MAX;
+    
+    // To cope with lines that overlap (for example, a line with a descending 
+    // dropcap on the left will overlap lines after it that are flowed around 
+    // the dropcap), we find the line containing the point that contains the
+    // nearest word to the point.
+    if(lines) {
+        CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
+        CGPoint pagePoint = CGPointApplyAffineTransform(point, CGAffineTransformInvert(pageTransform));
+        NSInteger i = 0;
+        for(THPair *rectAndLine in lines) {
+            CGRect lineRect = [rectAndLine.first CGRectValue];
+            if(CGRectContainsPoint(lineRect, pagePoint)) {
+                for(BlioTextFlowPositionedWord *word in rectAndLine.second) {
+                    CGRect wordRect = word.rect;
+                    CGFloat distance = CGPointDistanceFromRect(pagePoint, wordRect);
+                    if(distance < bestWordDistance) {
+                        bestLineIndex = i;
+                        bestWordDistance = distance;
+                    }
+                }
+            }
+            ++i;
+        }
+    }
+    
+    return bestLineIndex;
+}
+
+- (NSString *)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView accessibilityContentForLineNumber:(NSInteger)lineNumber forPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
+    THPair *pageLine = [[self accessibiltyLinesForPageAtIndex:pageIndex] objectAtIndex:lineNumber];
+    return [[pageLine.second valueForKey:@"string"] componentsJoinedByString:@" "];
+}
+
+- (CGRect)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView accessibilityInternalFrameForLineNumber:(NSInteger)lineNumber forPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
+    THPair *pageLine = [[self accessibiltyLinesForPageAtIndex:pageIndex] objectAtIndex:lineNumber];
+    CGAffineTransform pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
+    return CGRectApplyAffineTransform([pageLine.first CGRectValue], pageTransform);
+}
+
+- (NSInteger)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView accessibilityLineCountForPageAtIndex:(NSUInteger)pageIndex {
+    [self accessibilityEnsureZoomedOut];
+
+    return [self accessibiltyLinesForPageAtIndex:pageIndex].count;
 }
 
 
@@ -2211,7 +2369,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)zoomToPreviousBlock {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+	if (self.shouldTapZoom) {
 		blockRecursionDepth = 0;
 		[self zoomToNextBlockReversed:YES];
 	} else {
@@ -2229,7 +2387,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (void)zoomToNextBlock {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+	if (self.shouldTapZoom) {
 		blockRecursionDepth = 0;
 		[self zoomToNextBlockReversed:NO];
 	} else {
@@ -2487,7 +2645,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (CGRect)visibleRectForPageAtIndex:(NSInteger)pageIndex {
 	CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
 	return CGRectApplyAffineTransform(self.pageTurningView.bounds, CGAffineTransformInvert(viewTransform));
-
 }
 
 - (void)zoomAtPoint:(CGPoint)point {
@@ -2511,7 +2668,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     BlioTextFlowBlock *targetBlock = nil;
 	CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
 	
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey]) {
+    if (!self.shouldTapZoom) {
 		
 		// Page Zoom
 		

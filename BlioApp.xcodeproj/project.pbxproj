@@ -95,6 +95,9 @@
 		7D381B9510D92F14008D34E2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
 		7D381B9710D92F14008D34E2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
 		7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
+		7D39D40613EABDF50029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
+		7D39D40713EABDFF0029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
+		7D39D40813EABE030029EDCB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
 		7D4A012811DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */; };
 		7D4A012911DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */; };
 		7D4A012A11DBA36900DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C011DBA36800DDA5B7 /* iPodLikeSliderKnob-Small.png */; };
@@ -148,10 +151,29 @@
 		7D4A015A11DBA36900DDA5B7 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F011DBA36800DDA5B7 /* SelectionEnd.png */; };
 		7D4A015B11DBA36900DDA5B7 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F111DBA36800DDA5B7 /* SelectionKnob.png */; };
 		7D4A015C11DBA36900DDA5B7 /* SelectionKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */; };
+		7D4CA2341417814100117F3A /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
+		7D4CA2351417826200117F3A /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
+		7D4CA236141783B400117F3A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
 		7D4CE4751100C64C0061BDF2 /* BlioBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */; };
 		7D662008132E7E9B00242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
 		7D662009132E7F1600242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
 		7D66200A132E7F2100242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
+		7D69C35414293D6500136CFB /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		7D69C35514293D6500136CFB /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		7D69C35614293D6500136CFB /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		7D69C35714293D6500136CFB /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		7D69C35814293D6500136CFB /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		7D69C35914293D6500136CFB /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		7D69C35A14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		7D69C35B14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		7D69C35C14293D6500136CFB /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		7D69C35D14293D6500136CFB /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		7D69C35E14293D6500136CFB /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		7D69C35F14293D6500136CFB /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		7D69C36014293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
+		7D69C36114293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
+		7D69C36214293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
+		7D69C36314293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
 		7D6D9FF1124E9DC5005FD8CE /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
 		7D6D9FF2124E9DC5005FD8CE /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		7D6D9FF3124E9DC5005FD8CE /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
@@ -165,6 +187,9 @@
 		7D6D9FFB124E9DEE005FD8CE /* BlioBookSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCCFF123BCED600859B92 /* BlioBookSearchResultsTableViewController.m */; };
 		7D6D9FFC124E9DEE005FD8CE /* BlioBookSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCD0D123BDB1300859B92 /* BlioBookSearchResult.m */; };
 		7D6D9FFE124E9E1A005FD8CE /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
+		7D71550B13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
+		7D71550C13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
+		7D71550D13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
 		7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		7D79183610F2257C00C4D839 /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
 		7D79CF7D117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79CF7C117F1E070081F554 /* BlioBookViewControllerProgressPieButton.m */; };
@@ -221,33 +246,21 @@
 		7DCA224912F8905E0016C0B9 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA224612F890460016C0B9 /* MobileCoreServices.framework */; };
 		7DCD8E5511E32EFF00BA3255 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
 		7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
-		7DD09563140542D500A7131B /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8C1405223100958F1A /* libEucalyptusEPubIOSUI.a */; };
-		7DD09564140542D500A7131B /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8A1405223100958F1A /* libEucalyptusModel.a */; };
 		7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */; };
 		7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC010132E88F200FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
-		7DDE9E8F1405223A00958F1A /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8C1405223100958F1A /* libEucalyptusEPubIOSUI.a */; };
-		7DDE9E901405223A00958F1A /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8A1405223100958F1A /* libEucalyptusModel.a */; };
-		7DDE9E911405224000958F1A /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8C1405223100958F1A /* libEucalyptusEPubIOSUI.a */; };
-		7DDE9E921405224000958F1A /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8A1405223100958F1A /* libEucalyptusModel.a */; };
-		7DDE9E931405224500958F1A /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8C1405223100958F1A /* libEucalyptusEPubIOSUI.a */; };
-		7DDE9E941405224500958F1A /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE9E8A1405223100958F1A /* libEucalyptusModel.a */; };
+		7DE15F6E141E76E100D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		7DE15F6F141E76E100D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
+		7DE15F70141E76F200D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		7DE15F71141E76F200D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
+		7DE15F72141E770500D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		7DE15F73141E770500D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
+		7DE15F74141E770E00D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		7DE15F75141E770E00D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
 		7DE2749A1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE2749B1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE2749C1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
-		7DE310381281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
-		7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
-		7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
-		7DE3103B1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
-		7DE3103C1281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
-		7DE3103D1281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
-		7DE3103E1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
-		7DE3103F1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
-		7DE310401281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
-		7DE310411281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
-		7DE310421281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
-		7DE310431281B55600BC6EB9 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
 		7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */; };
@@ -492,7 +505,6 @@
 		A30E1012123EA5B400D31157 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
 		A30E1013123EA5B400D31157 /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
 		A30E1014123EA5B400D31157 /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
-		A30E1015123EA5B400D31157 /* BlioPaidBooksSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */; };
 		A30E1016123EA5B400D31157 /* BlioTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */; };
 		A30E1017123EA5B400D31157 /* BlioTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */; };
 		A30E1019123EA5B400D31157 /* NSData+MBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB190EA120315A80001017D /* NSData+MBBase64.m */; };
@@ -715,10 +727,6 @@
 		A31CC7BB13FEA07E0010BFC5 /* icon-add.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A4E7126F7F8E00A131B7 /* icon-add.png */; };
 		A31CC7BC13FEA07E0010BFC5 /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
 		A31CC7BD13FEA07E0010BFC5 /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
-		A31CC7BE13FEA07E0010BFC5 /* LinuxLibertine-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */; };
-		A31CC7BF13FEA07E0010BFC5 /* LinuxLibertine-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */; };
-		A31CC7C013FEA07E0010BFC5 /* LinuxLibertine-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */; };
-		A31CC7C113FEA07E0010BFC5 /* LinuxLibertine.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */; };
 		A31CC7C213FEA07E0010BFC5 /* icon-title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D191295628300BCA583 /* icon-title@2x.png */; };
 		A31CC7C313FEA07E0010BFC5 /* icon-title.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1A1295628300BCA583 /* icon-title.png */; };
 		A31CC7C413FEA07E0010BFC5 /* icon-list@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1B1295628300BCA583 /* icon-list@2x.png */; };
@@ -835,7 +843,6 @@
 		A31CC83513FEA07E0010BFC5 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
 		A31CC83613FEA07E0010BFC5 /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
 		A31CC83713FEA07E0010BFC5 /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
-		A31CC83813FEA07E0010BFC5 /* BlioPaidBooksSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */; };
 		A31CC83913FEA07E0010BFC5 /* BlioTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */; };
 		A31CC83A13FEA07E0010BFC5 /* BlioTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */; };
 		A31CC83B13FEA07E0010BFC5 /* NSData+MBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB190EA120315A80001017D /* NSData+MBBase64.m */; };
@@ -859,7 +866,6 @@
 		A31CC84D13FEA07E0010BFC5 /* BlioLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */; };
 		A31CC84E13FEA07E0010BFC5 /* BlioLayoutPDFDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */; };
 		A31CC84F13FEA07E0010BFC5 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
-		A31CC85013FEA07E0010BFC5 /* BlioArchiveSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */; };
 		A31CC85113FEA07E0010BFC5 /* BlioTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C976B33512A6486000D2CC05 /* BlioTOCEntry.m */; };
 		A31CC85213FEA07E0010BFC5 /* SKProduct+LocalizedPrice.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C27312B1362900275449 /* SKProduct+LocalizedPrice.m */; };
 		A31CC85313FEA07E0010BFC5 /* BlioDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */; };
@@ -942,6 +948,14 @@
 		A31CC8A113FEA07E0010BFC5 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EFAF4C134DF4B800ADF905 /* libXpsSDKipad.a */; };
 		A31E82EE120B3FD800CB6657 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
+		A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E75E1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A323E7601427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7611427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7621427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A323E7631427A6D10043E78E /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
 		A32D885A11FE04DA00D2AE17 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
 		A32EEDA513B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A32EEDA413B37CFA001D6170 /* BlioStoreTabViewController.m */; };
@@ -1169,7 +1183,6 @@
 		A36D35CB120B136700E1A035 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
 		A36D35CC120B136700E1A035 /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
 		A36D35CD120B136700E1A035 /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
-		A36D35CE120B136700E1A035 /* BlioPaidBooksSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */; };
 		A36D35CF120B136700E1A035 /* BlioTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */; };
 		A36D35D0120B136700E1A035 /* BlioTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */; };
 		A36D35D2120B136700E1A035 /* NSData+MBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB190EA120315A80001017D /* NSData+MBBase64.m */; };
@@ -1222,7 +1235,6 @@
 		A382D3DB11C9159000CFEB88 /* Icon-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D811C9159000CFEB88 /* Icon-iPad.png */; };
 		A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
 		A3849B7F12E7E1FD0040B0EA /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
-		A38CDD7111E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */; };
 		A39305FF12BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
 		A393060012BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
 		A393060112BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
@@ -1278,6 +1290,14 @@
 		A3E5AF1D12B2FD44008F48C6 /* forward-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */; };
 		A3E6419912397C0400D2B85A /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
 		A3E6419A12397C0400D2B85A /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
+		A3F24EB1143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
+		A3F24EB2143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
+		A3F24EB3143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
+		A3F24EB4143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
+		A3F24EB7143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */; };
+		A3F24EB8143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */; };
+		A3F24EB9143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */; };
+		A3F24EBA143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */; };
 		A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
 		A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
 		A3FE55B112074EBD0038DA0C /* BlioEULATextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */; };
@@ -1494,7 +1514,6 @@
 		C9F4812D1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
 		C9F4812E1252465900083923 /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
 		C9F484BC1254913500083923 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
-		C9F484BD1254913600083923 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
 		C9F748591140100100680E93 /* shadow-bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F748581140100100680E93 /* shadow-bottom.png */; };
 		C9F749431140261700680E93 /* shadow-right.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749401140261700680E93 /* shadow-right.png */; };
 		C9F749441140261700680E93 /* shadow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749411140261700680E93 /* shadow-left.png */; };
@@ -1544,12 +1563,18 @@
 		DC63DB1B12DF8F2E00D8C750 /* badge-preview.png in Resources */ = {isa = PBXBuildFile; fileRef = DC63DB1512DF8F2E00D8C750 /* badge-preview.png */; };
 		DC63DB1C12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC63DB1612DF8F2E00D8C750 /* badge-preview@2x.png */; };
 		DC795B2F11E7E21B000DA04D /* button-buybooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DC795B2D11E7E21B000DA04D /* button-buybooks.png */; };
+		DC824D96143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */; };
+		DC824D97143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */; };
+		DC824D98143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */; };
 		DC84EDF81261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
 		DC84EDF91261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
 		DC84EDFA1261267400BC6514 /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
-		DC8BB2471277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */; };
-		DC8BB2481277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */; };
-		DC8BB2491277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */; };
+		DC8A54471412E25D0009341B /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
+		DC8A54481412E25D0009341B /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
+		DC8A54491412E25D0009341B /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
+		DC8A544A1412E25D0009341B /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
+		DC8A544B1412E25D0009341B /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
+		DC8A544C1412E25D0009341B /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
 		DC8CADA5124877DA00C1EED9 /* table-headerbar-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8CADA3124877DA00C1EED9 /* table-headerbar-background.png */; };
 		DC8CADA6124877DA00C1EED9 /* table-headerbar-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8CADA4124877DA00C1EED9 /* table-headerbar-background@2x.png */; };
 		DC8CADA7124877DA00C1EED9 /* table-headerbar-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8CADA3124877DA00C1EED9 /* table-headerbar-background.png */; };
@@ -1580,6 +1605,8 @@
 		DCAC9612126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
 		DCAC9613126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
 		DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
+		DCBF27E4141E6FE000FF050A /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
+		DCBF27E5141E6FE600FF050A /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
 		DCC447E211ADBAB700CBD491 /* BlioVoiceData.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */; };
 		DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
 		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
@@ -1749,28 +1776,28 @@
 			remoteGlobalIDString = 7D19025211494BE800375803;
 			remoteInfo = libcss;
 		};
-		7DDE9E891405223100958F1A /* PBXContainerItemProxy */ = {
+		7DE15F65141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 7D5FC0431403D61B009D2229;
 			remoteInfo = libEucalyptusModel;
 		};
-		7DDE9E8B1405223100958F1A /* PBXContainerItemProxy */ = {
+		7DE15F67141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 7D8D910F1403D2E800632892;
 			remoteInfo = libEucalyptusEPubIOSUI;
 		};
-		7DDE9E8D1405223100958F1A /* PBXContainerItemProxy */ = {
+		7DE15F69141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 7D46E1C813FD52130021763E;
 			remoteInfo = CSSTest;
 		};
-		7DF30E0414069525005EE550 /* PBXContainerItemProxy */ = {
+		7DE15F6B141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
@@ -1856,6 +1883,7 @@
 		7D381B9410D92F14008D34E2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		7D381B9610D92F14008D34E2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BookEdge.pvrtc; sourceTree = "<group>"; };
+		7D39D40413EABD2E0029EDCB /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPodLikeSliderBlueLeftCap.png; sourceTree = "<group>"; };
 		7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderBlueLeftCap@2x.png"; sourceTree = "<group>"; };
 		7D4A00C011DBA36800DDA5B7 /* iPodLikeSliderKnob-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPodLikeSliderKnob-Small.png"; sourceTree = "<group>"; };
@@ -1912,6 +1940,11 @@
 		7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmark.h; sourceTree = "<group>"; };
 		7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmark.m; sourceTree = "<group>"; };
 		7D662007132E7E9B00242F63 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
+		7D69C35014293D6500136CFB /* brightness-sun-bright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-bright.png"; sourceTree = "<group>"; };
+		7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-bright@2x.png"; sourceTree = "<group>"; };
+		7D69C35214293D6500136CFB /* brightness-sun-dim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-dim.png"; sourceTree = "<group>"; };
+		7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-dim@2x.png"; sourceTree = "<group>"; };
+		7D71550A13E99F2700A593A9 /* THFonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = THFonts; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
 		7D79183410F2257C00C4D839 /* BlioFlowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowView.h; sourceTree = "<group>"; };
@@ -1971,10 +2004,6 @@
 		7DDCC00D132E88C800FE8201 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		7DE274981382DD6000641A54 /* KNFBPageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBPageMarker.h; sourceTree = "<group>"; };
 		7DE274991382DD6A00641A54 /* KNFBPageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBPageMarker.m; sourceTree = "<group>"; };
-		7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Bold.otf"; sourceTree = "<group>"; };
-		7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-BoldItalic.otf"; sourceTree = "<group>"; };
-		7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LinuxLibertine-Italic.otf"; sourceTree = "<group>"; };
-		7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = LinuxLibertine.otf; sourceTree = "<group>"; };
 		7DE7B5E21104B4FD0021F382 /* Lighting.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Lighting.xib; sourceTree = "<group>"; };
 		7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLightSettingsViewController.h; sourceTree = "<group>"; };
 		7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLightSettingsViewController.m; sourceTree = "<group>"; };
@@ -1992,6 +2021,9 @@
 		A3169288111488C9005AAE5E /* BlioAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioManager.m; sourceTree = "<group>"; };
 		A31CC8A713FEA07E0010BFC5 /* SamsClubApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamsClubApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SamsClubApp-Info.plist"; sourceTree = "<group>"; };
+		A323E7591427A64F0043E78E /* BlioVOTipsSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVOTipsSettingsController.h; sourceTree = "<group>"; };
+		A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioVOTipsSettingsController.m; sourceTree = "<group>"; };
+		A323E75F1427A6D10043E78E /* voiceover-tips.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-tips.html"; sourceTree = "<group>"; };
 		A32D885911FE04DA00D2AE17 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		A32D88DD11FE240300D2AE17 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPlayReadyPK.a; path = Libraries/DRM/libPlayReadyPK.a; sourceTree = "<group>"; };
@@ -2172,8 +2204,6 @@
 		A382D3D711C9159000CFEB88 /* Default-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait.png"; sourceTree = "<group>"; };
 		A382D3D811C9159000CFEB88 /* Icon-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad.png"; sourceTree = "<group>"; };
 		A383F2431174FA7A0049ED3A /* icon-cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-cart.png"; sourceTree = "<group>"; };
-		A38CDD6F11E60F9500C5C3D2 /* BlioPaidBooksSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioPaidBooksSettingsController.h; sourceTree = "<group>"; };
-		A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioPaidBooksSettingsController.m; sourceTree = "<group>"; };
 		A39305FE12BAC01A00949150 /* apache2-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "apache2-license.html"; sourceTree = "<group>"; };
 		A393060212BAC03400949150 /* gnulesser-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "gnulesser-license.html"; sourceTree = "<group>"; };
 		A393060312BAC03400949150 /* mit-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "mit-license.html"; sourceTree = "<group>"; };
@@ -2227,6 +2257,9 @@
 		A3E6419712397C0400D2B85A /* icon-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back.png"; sourceTree = "<group>"; };
 		A3E6419812397C0400D2B85A /* icon-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back@2x.png"; sourceTree = "<group>"; };
 		A3EC8A21122857E100D27D8C /* bigdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigdefs.h; path = DRM/bigdefs.h; sourceTree = "<group>"; };
+		A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-quickstart.html"; sourceTree = "<group>"; };
+		A3F24EB5143F7733007565C2 /* BlioVoiceOverHelpSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVoiceOverHelpSettingsController.h; sourceTree = "<group>"; };
+		A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioVoiceOverHelpSettingsController.m; sourceTree = "<group>"; };
 		A3F93859116BC37B00E53BD3 /* BlioLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLoginViewController.h; sourceTree = "<group>"; };
 		A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLoginViewController.m; sourceTree = "<group>"; };
 		A3F9387D116BD63500E53BD3 /* CellTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CellTextField.h; sourceTree = "<group>"; };
@@ -2463,10 +2496,12 @@
 		DC63DB1512DF8F2E00D8C750 /* badge-preview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-preview.png"; sourceTree = "<group>"; };
 		DC63DB1612DF8F2E00D8C750 /* badge-preview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-preview@2x.png"; sourceTree = "<group>"; };
 		DC795B2D11E7E21B000DA04D /* button-buybooks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-buybooks.png"; sourceTree = "<group>"; };
+		DC824D94143E0A7D006AC7F3 /* BlioVoiceOverTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVoiceOverTextController.h; sourceTree = "<group>"; };
+		DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioVoiceOverTextController.m; sourceTree = "<group>"; };
 		DC84EDF61261267400BC6514 /* BlioImportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioImportManager.h; sourceTree = "<group>"; };
 		DC84EDF71261267400BC6514 /* BlioImportManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioImportManager.m; sourceTree = "<group>"; };
-		DC8BB2451277316A0044580E /* BlioArchiveSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioArchiveSettingsViewController.h; sourceTree = "<group>"; };
-		DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioArchiveSettingsViewController.m; sourceTree = "<group>"; };
+		DC8A54451412E25D0009341B /* book-overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "book-overlay@2x.png"; sourceTree = "<group>"; };
+		DC8A54461412E25D0009341B /* book-overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "book-overlay.png"; sourceTree = "<group>"; };
 		DC8CADA3124877DA00C1EED9 /* table-headerbar-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table-headerbar-background.png"; sourceTree = "<group>"; };
 		DC8CADA4124877DA00C1EED9 /* table-headerbar-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table-headerbar-background@2x.png"; sourceTree = "<group>"; };
 		DC8CB3231249298400C1EED9 /* BlioRoundedRectActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioRoundedRectActivityView.h; sourceTree = "<group>"; };
@@ -2540,9 +2575,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D381B5C10D92E86008D34E2 /* libEucalyptusIOSUI.a in Frameworks */,
-				7DDE9E901405223A00958F1A /* libEucalyptusModel.a in Frameworks */,
-				7DDE9E8F1405223A00958F1A /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				7DAA2FF011512A8D006634CC /* libEucalyptusEPub.a in Frameworks */,
+				7DE15F6E141E76E100D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				7DE15F6F141E76E100D37CA2 /* libEucalyptusModel.a in Frameworks */,
 				7DAA2FF111512A8D006634CC /* libEucalyptusCSS.a in Frameworks */,
 				7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */,
 				7DAA2FF411512A8D006634CC /* libcss.a in Frameworks */,
@@ -2574,6 +2609,7 @@
 				7D2711AE124931D40087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224712F890460016C0B9 /* MobileCoreServices.framework in Frameworks */,
 				C9A9B9AE130EC9CA009B950F /* MediaPlayer.framework in Frameworks */,
+				7D39D40813EABE030029EDCB /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2582,8 +2618,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A30E1024123EA5B400D31157 /* libEucalyptusIOSUI.a in Frameworks */,
-				7DDE9E941405224500958F1A /* libEucalyptusModel.a in Frameworks */,
-				7DDE9E931405224500958F1A /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				7DE15F73141E770500D37CA2 /* libEucalyptusModel.a in Frameworks */,
+				7DE15F72141E770500D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				A30E1027123EA5B400D31157 /* libEucalyptusEPub.a in Frameworks */,
 				A30E1028123EA5B400D31157 /* libEucalyptusCSS.a in Frameworks */,
 				A30E1025123EA5B400D31157 /* libEucalyptusBase.a in Frameworks */,
@@ -2616,6 +2652,7 @@
 				7D2711B0124931E40087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224912F8905E0016C0B9 /* MobileCoreServices.framework in Frameworks */,
 				C9A9B9B3130ECA28009B950F /* MediaPlayer.framework in Frameworks */,
+				7D39D40613EABDF50029EDCB /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2624,8 +2661,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A31CC88413FEA07E0010BFC5 /* libEucalyptusIOSUI.a in Frameworks */,
-				7DD09564140542D500A7131B /* libEucalyptusModel.a in Frameworks */,
-				7DD09563140542D500A7131B /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				7DE15F75141E770E00D37CA2 /* libEucalyptusModel.a in Frameworks */,
+				7DE15F74141E770E00D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				A31CC88713FEA07E0010BFC5 /* libEucalyptusEPub.a in Frameworks */,
 				A31CC88813FEA07E0010BFC5 /* libEucalyptusCSS.a in Frameworks */,
 				A31CC88513FEA07E0010BFC5 /* libEucalyptusBase.a in Frameworks */,
@@ -2635,8 +2672,12 @@
 				A31CC88613FEA07E0010BFC5 /* libhyphenate.a in Frameworks */,
 				A31CC88913FEA07E0010BFC5 /* libexpat.a in Frameworks */,
 				A31CC88D13FEA07E0010BFC5 /* libminiunzip.a in Frameworks */,
+				A31CC89B13FEA07E0010BFC5 /* libBabTTSFat.a in Frameworks */,
+				A31CC89A13FEA07E0010BFC5 /* libMobilityStaticFat.a in Frameworks */,
 				A31CC88213FEA07E0010BFC5 /* libxml2.dylib in Frameworks */,
+				A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */,
 				A31CC88313FEA07E0010BFC5 /* libstdc++.dylib in Frameworks */,
+				A31CC89D13FEA07E0010BFC5 /* libPlayReadyPK.a in Frameworks */,
 				A31CC88E13FEA07E0010BFC5 /* Foundation.framework in Frameworks */,
 				A31CC88F13FEA07E0010BFC5 /* UIKit.framework in Frameworks */,
 				A31CC89013FEA07E0010BFC5 /* CoreGraphics.framework in Frameworks */,
@@ -2649,15 +2690,12 @@
 				A31CC89713FEA07E0010BFC5 /* libiconv.dylib in Frameworks */,
 				A31CC89813FEA07E0010BFC5 /* AVFoundation.framework in Frameworks */,
 				A31CC89913FEA07E0010BFC5 /* AudioToolbox.framework in Frameworks */,
-				A31CC89A13FEA07E0010BFC5 /* libMobilityStaticFat.a in Frameworks */,
-				A31CC89B13FEA07E0010BFC5 /* libBabTTSFat.a in Frameworks */,
 				A31CC89C13FEA07E0010BFC5 /* Security.framework in Frameworks */,
-				A31CC89D13FEA07E0010BFC5 /* libPlayReadyPK.a in Frameworks */,
 				A31CC89E13FEA07E0010BFC5 /* StoreKit.framework in Frameworks */,
 				A31CC89F13FEA07E0010BFC5 /* Accelerate.framework in Frameworks */,
 				A31CC8A013FEA07E0010BFC5 /* MobileCoreServices.framework in Frameworks */,
 				A31CC8A113FEA07E0010BFC5 /* MediaPlayer.framework in Frameworks */,
-				A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */,
+				7D4CA236141783B400117F3A /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2666,8 +2704,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A36D35D9120B136700E1A035 /* libEucalyptusIOSUI.a in Frameworks */,
-				7DDE9E921405224000958F1A /* libEucalyptusModel.a in Frameworks */,
-				7DDE9E911405224000958F1A /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				7DE15F71141E76F200D37CA2 /* libEucalyptusModel.a in Frameworks */,
+				7DE15F70141E76F200D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				A36D35DC120B136700E1A035 /* libEucalyptusEPub.a in Frameworks */,
 				A36D35DD120B136700E1A035 /* libEucalyptusCSS.a in Frameworks */,
 				A36D35DA120B136700E1A035 /* libEucalyptusBase.a in Frameworks */,
@@ -2700,6 +2738,7 @@
 				7D2711AF124931DA0087C4E3 /* Accelerate.framework in Frameworks */,
 				7DCA224812F890530016C0B9 /* MobileCoreServices.framework in Frameworks */,
 				C9A9B9B1130EC9FC009B950F /* MediaPlayer.framework in Frameworks */,
+				7D39D40713EABDFF0029EDCB /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2790,6 +2829,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */,
+				A323E75F1427A6D10043E78E /* voiceover-tips.html */,
 				8D1107310486CEB800E47090 /* BlioApp-Info.plist */,
 				A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */,
 				A3CF83A612E4B85E0069FA16 /* XPS-Demo */,
@@ -2893,11 +2934,17 @@
 				C985466610E22BCC002305A2 /* icon-speedread.png */,
 				C985466710E22BCD002305A2 /* icon-page.png */,
 				C985466810E22BCD002305A2 /* icon-layout.png */,
+				7D69C35014293D6500136CFB /* brightness-sun-bright.png */,
+				7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */,
+				7D69C35214293D6500136CFB /* brightness-sun-dim.png */,
+				7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */,
 				C977649910E0E413005E0E2B /* row-dark.png */,
 				C977649A10E0E413005E0E2B /* row-light.png */,
 				C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */,
 				C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */,
 				DCA65A3911503A4D006534F4 /* SearchCellDivider.png */,
+				DC8A54451412E25D0009341B /* book-overlay@2x.png */,
+				DC8A54461412E25D0009341B /* book-overlay.png */,
 				555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */,
 				C977636C10E056E2005E0E2B /* booktextureandshadow.png */,
 				55822F1910F2891B008614FD /* icon-contents.png */,
@@ -2976,6 +3023,7 @@
 				A32D885911FE04DA00D2AE17 /* Security.framework */,
 				7DCA224612F890460016C0B9 /* MobileCoreServices.framework */,
 				C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */,
+				7D39D40413EABD2E0029EDCB /* CoreText.framework */,
 				7D662007132E7E9B00242F63 /* libstdc++.dylib */,
 				C9B61FF41137AF840012CE7E /* libz.dylib */,
 				7DAA30C311512B1C006634CC /* libiconv.dylib */,
@@ -2988,8 +3036,8 @@
 			isa = PBXGroup;
 			children = (
 				7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */,
-				7DDE9E8A1405223100958F1A /* libEucalyptusModel.a */,
-				7DDE9E8C1405223100958F1A /* libEucalyptusEPubIOSUI.a */,
+				7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */,
+				7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */,
 				7D68AF481150F39A00430710 /* libEucalyptusEPub.a */,
 				7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */,
 				7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */,
@@ -3000,8 +3048,8 @@
 				7D68AF501150F39A00430710 /* libcss.a */,
 				7D229E8512F98D0D0037D93D /* libminiunzip.a */,
 				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
-				7DDE9E8E1405223100958F1A /* CSSTest */,
-				7DF30E0514069525005EE550 /* PageLayoutTest */,
+				7DE15F6A141E76CD00D37CA2 /* CSSTest */,
+				7DE15F6C141E76CD00D37CA2 /* PageLayoutTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3010,12 +3058,9 @@
 			isa = PBXGroup;
 			children = (
 				7DF8B6BD11B41BE7003B7A97 /* EucConfiguration.plist */,
+				7D71550A13E99F2700A593A9 /* THFonts */,
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
-				7DE310341281B55600BC6EB9 /* LinuxLibertine-Bold.otf */,
-				7DE310351281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf */,
-				7DE310361281B55600BC6EB9 /* LinuxLibertine-Italic.otf */,
-				7DE310371281B55600BC6EB9 /* LinuxLibertine.otf */,
 			);
 			name = "libEucalyptus Resources";
 			path = libEucalyptus/Resources;
@@ -3696,16 +3741,18 @@
 				DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */,
 				A3FE55AA12074EBD0038DA0C /* BlioEULATextController.h */,
 				A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */,
+				DC824D94143E0A7D006AC7F3 /* BlioVoiceOverTextController.h */,
+				DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */,
 				A3FE55AC12074EBD0038DA0C /* BlioHelpSettingsController.h */,
 				A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */,
 				A3FE55AE12074EBD0038DA0C /* BlioVersionController.h */,
 				A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */,
-				A38CDD6F11E60F9500C5C3D2 /* BlioPaidBooksSettingsController.h */,
-				A38CDD7011E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m */,
-				DC8BB2451277316A0044580E /* BlioArchiveSettingsViewController.h */,
-				DC8BB2461277316A0044580E /* BlioArchiveSettingsViewController.m */,
 				A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */,
 				A371FDCC113AF77200E1A51C /* BlioWebToolSettingsController.h */,
+				A323E7591427A64F0043E78E /* BlioVOTipsSettingsController.h */,
+				A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */,
+				A3F24EB5143F7733007565C2 /* BlioVoiceOverHelpSettingsController.h */,
+				A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */,
 			);
 			name = "App Settings Screens";
 			sourceTree = "<group>";
@@ -4018,32 +4065,32 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7DDE9E8A1405223100958F1A /* libEucalyptusModel.a */ = {
+		7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libEucalyptusModel.a;
-			remoteRef = 7DDE9E891405223100958F1A /* PBXContainerItemProxy */;
+			remoteRef = 7DE15F65141E76CD00D37CA2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7DDE9E8C1405223100958F1A /* libEucalyptusEPubIOSUI.a */ = {
+		7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libEucalyptusEPubIOSUI.a;
-			remoteRef = 7DDE9E8B1405223100958F1A /* PBXContainerItemProxy */;
+			remoteRef = 7DE15F67141E76CD00D37CA2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7DDE9E8E1405223100958F1A /* CSSTest */ = {
+		7DE15F6A141E76CD00D37CA2 /* CSSTest */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.executable";
 			path = CSSTest;
-			remoteRef = 7DDE9E8D1405223100958F1A /* PBXContainerItemProxy */;
+			remoteRef = 7DE15F69141E76CD00D37CA2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7DF30E0514069525005EE550 /* PageLayoutTest */ = {
+		7DE15F6C141E76CD00D37CA2 /* PageLayoutTest */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.executable";
 			path = PageLayoutTest;
-			remoteRef = 7DF30E0414069525005EE550 /* PBXContainerItemProxy */;
+			remoteRef = 7DE15F6B141E76CD00D37CA2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -4053,6 +4100,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
+				A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */,
+				A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */,
+				553D5B17126F6B6B00A1CE83 /* speedreaderBackgroundImages in Resources */,
+				A3FE55B712074EFA0038DA0C /* credits.html in Resources */,
 				28AD73600D9D9599002E5188 /* MainNavControllerAndLibraryView.xib in Resources */,
 				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
 				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
@@ -4112,7 +4164,6 @@
 				DCC45AD311B458A400CBD491 /* voiceSamples in Resources */,
 				C9D280B311AD0FCE00857CFB /* icon-noTTS.png in Resources */,
 				C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */,
-				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				7DED9CFA11B6A906007848FD /* EucConfiguration.plist in Resources */,
 				DCCE466A11B9AE22002D7E01 /* icon-freebooks.png in Resources */,
 				DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
@@ -4204,7 +4255,6 @@
 				DC18E086120517010077DF01 /* library-pausebutton@2x.png in Resources */,
 				DC18E08A120517170077DF01 /* library-resumebutton@2x.png in Resources */,
 				DC18E092120517C20077DF01 /* library-progress-background@2x.png in Resources */,
-				A3FE55B712074EFA0038DA0C /* credits.html in Resources */,
 				A3FE55B812074EFA0038DA0C /* eula.html in Resources */,
 				A3FE55B912074EFA0038DA0C /* userdoc.html in Resources */,
 				C9CEBD761211959B0040CEFF /* booktexture-nocover.png in Resources */,
@@ -4232,16 +4282,11 @@
 				DCD4A294126F470F00A131B7 /* greyButton@2x.png in Resources */,
 				DCD4A295126F470F00A131B7 /* greyButtonPressed.png in Resources */,
 				DCD4A296126F470F00A131B7 /* greyButtonPressed@2x.png in Resources */,
-				553D5B17126F6B6B00A1CE83 /* speedreaderBackgroundImages in Resources */,
 				DCD4A4EC126F7F8E00A131B7 /* icon-add@2x.png in Resources */,
 				DCD4A4ED126F7F8E00A131B7 /* icon-bookmarked@2x.png in Resources */,
 				DCD4A4EE126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4EF126F7F8E00A131B7 /* icon-add.png in Resources */,
 				A3CA7B221275F92900775EF4 /* icon-back.png in Resources */,
-				7DE3103C1281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
-				7DE3103D1281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
-				7DE3103E1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
-				7DE3103F1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 				7D131D2D1295628300BCA583 /* icon-title@2x.png in Resources */,
 				7D131D2E1295628300BCA583 /* icon-title.png in Resources */,
 				7D131D2F1295628300BCA583 /* icon-list@2x.png in Resources */,
@@ -4270,8 +4315,6 @@
 				A393060712BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1912DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1A12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
-				A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */,
-				A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */,
 				A3951A2812E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620312EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8713097EB900814B75 /* minizip-license.html in Resources */,
@@ -4285,6 +4328,15 @@
 				C93ECB23134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB26134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
 				7DFA426D13A925BB0059C9B0 /* icon-back@2x.png in Resources */,
+				DC8A54471412E25D0009341B /* book-overlay@2x.png in Resources */,
+				DC8A544A1412E25D0009341B /* book-overlay.png in Resources */,
+				7D71550B13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7601427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D69C35414293D6500136CFB /* brightness-sun-bright.png in Resources */,
+				7D69C35814293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D69C35C14293D6500136CFB /* brightness-sun-dim.png in Resources */,
+				7D69C36014293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
+				A3F24EB1143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4292,6 +4344,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */,
 				A30E0EFB123EA5B400D31157 /* credits.html in Resources */,
 				A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */,
@@ -4477,10 +4530,6 @@
 				DCD4A4EB126F7F8E00A131B7 /* icon-add.png in Resources */,
 				C9E04BA61271946600A307C4 /* icon-import.png in Resources */,
 				A3849B7F12E7E1FD0040B0EA /* icon-import@2x.png in Resources */,
-				7DE310401281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
-				7DE310411281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
-				7DE310421281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
-				7DE310431281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 				7D131D371295628300BCA583 /* icon-title@2x.png in Resources */,
 				7D131D381295628300BCA583 /* icon-title.png in Resources */,
 				7D131D391295628300BCA583 /* icon-list@2x.png in Resources */,
@@ -4509,7 +4558,6 @@
 				A393060D12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1B12DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1C12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
-				A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3951A2912E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620412EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8613097EB900814B75 /* minizip-license.html in Resources */,
@@ -4522,6 +4570,15 @@
 				C93ECB22134B6215003B99FD /* TextFlowFlow.css in Resources */,
 				C93ECB25134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB28134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
+				DC8A54491412E25D0009341B /* book-overlay@2x.png in Resources */,
+				DC8A544C1412E25D0009341B /* book-overlay.png in Resources */,
+				7D71550D13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7621427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D69C35614293D6500136CFB /* brightness-sun-bright.png in Resources */,
+				7D69C35A14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D69C35E14293D6500136CFB /* brightness-sun-dim.png in Resources */,
+				7D69C36214293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
+				A3F24EB3143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4714,10 +4771,6 @@
 				A31CC7BB13FEA07E0010BFC5 /* icon-add.png in Resources */,
 				A31CC7BC13FEA07E0010BFC5 /* icon-import.png in Resources */,
 				A31CC7BD13FEA07E0010BFC5 /* icon-import@2x.png in Resources */,
-				A31CC7BE13FEA07E0010BFC5 /* LinuxLibertine-Bold.otf in Resources */,
-				A31CC7BF13FEA07E0010BFC5 /* LinuxLibertine-BoldItalic.otf in Resources */,
-				A31CC7C013FEA07E0010BFC5 /* LinuxLibertine-Italic.otf in Resources */,
-				A31CC7C113FEA07E0010BFC5 /* LinuxLibertine.otf in Resources */,
 				A31CC7C213FEA07E0010BFC5 /* icon-title@2x.png in Resources */,
 				A31CC7C313FEA07E0010BFC5 /* icon-title.png in Resources */,
 				A31CC7C413FEA07E0010BFC5 /* icon-list@2x.png in Resources */,
@@ -4759,6 +4812,15 @@
 				A31CC7E913FEA07E0010BFC5 /* TextFlowFlow.css in Resources */,
 				A31CC7EA13FEA07E0010BFC5 /* TextFlowXAML.css in Resources */,
 				A31CC7EB13FEA07E0010BFC5 /* TextFlowXAMLOverrides.css in Resources */,
+				7D4CA2341417814100117F3A /* THFonts in Resources */,
+				DCBF27E4141E6FE000FF050A /* book-overlay@2x.png in Resources */,
+				DCBF27E5141E6FE600FF050A /* book-overlay.png in Resources */,
+				A323E7631427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D69C35714293D6500136CFB /* brightness-sun-bright.png in Resources */,
+				7D69C35B14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D69C35F14293D6500136CFB /* brightness-sun-dim.png in Resources */,
+				7D69C36314293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
+				A3F24EB4143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4767,6 +4829,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3CF83B012E4B96B0069FA16 /* Acapela For iPhone LF USEnglish Heather in Resources */,
+				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */,
 				A31E82EE120B3FD800CB6657 /* credits.html in Resources */,
 				A36D34C3120B136700E1A035 /* MainNavControllerAndLibraryView.xib in Resources */,
@@ -4841,6 +4904,7 @@
 				A36D351B120B136700E1A035 /* icon-cart@2x.png in Resources */,
 				A36D351C120B136700E1A035 /* icon-contents@2x.png in Resources */,
 				A36D351D120B136700E1A035 /* icon-eye@2x.png in Resources */,
+				7D4CA2351417826200117F3A /* icon-import@2x.png in Resources */,
 				A36D351E120B136700E1A035 /* icon-layout@2x.png in Resources */,
 				A36D351F120B136700E1A035 /* icon-lock@2x.png in Resources */,
 				A36D3520120B136700E1A035 /* icon-page@2x.png in Resources */,
@@ -4951,10 +5015,6 @@
 				DCD4A4F2126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4F3126F7F8E00A131B7 /* icon-add.png in Resources */,
 				C9E04BA51271946400A307C4 /* icon-import.png in Resources */,
-				7DE310381281B55600BC6EB9 /* LinuxLibertine-Bold.otf in Resources */,
-				7DE310391281B55600BC6EB9 /* LinuxLibertine-BoldItalic.otf in Resources */,
-				7DE3103A1281B55600BC6EB9 /* LinuxLibertine-Italic.otf in Resources */,
-				7DE3103B1281B55600BC6EB9 /* LinuxLibertine.otf in Resources */,
 				7D131D231295628300BCA583 /* icon-title@2x.png in Resources */,
 				7D131D241295628300BCA583 /* icon-title.png in Resources */,
 				7D131D251295628300BCA583 /* icon-list@2x.png in Resources */,
@@ -4983,7 +5043,6 @@
 				A393060A12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1712DF8F2E00D8C750 /* badge-preview.png in Resources */,
 				DC63DB1812DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
-				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3951A2A12E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620212EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8513097EB900814B75 /* minizip-license.html in Resources */,
@@ -4996,6 +5055,15 @@
 				C93ECB21134B6215003B99FD /* TextFlowFlow.css in Resources */,
 				C93ECB24134B6215003B99FD /* TextFlowXAML.css in Resources */,
 				C93ECB27134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
+				DC8A54481412E25D0009341B /* book-overlay@2x.png in Resources */,
+				DC8A544B1412E25D0009341B /* book-overlay.png in Resources */,
+				7D71550C13E99F2700A593A9 /* THFonts in Resources */,
+				A323E7611427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D69C35514293D6500136CFB /* brightness-sun-bright.png in Resources */,
+				7D69C35914293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D69C35D14293D6500136CFB /* brightness-sun-dim.png in Resources */,
+				7D69C36114293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
+				A3F24EB2143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5081,7 +5149,6 @@
 				7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */,
 				7DF429D311E4EC5B00B8227E /* NSObject+BlioAdditions.m in Sources */,
 				C9DA72B911E60C9400F584A1 /* BlioXPSProvider.m in Sources */,
-				A38CDD7111E60F9500C5C3D2 /* BlioPaidBooksSettingsController.m in Sources */,
 				7DBD0EEB120191F8009CD9DA /* BlioTextFlowXAMLTree.m in Sources */,
 				7DBD0F751201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m in Sources */,
 				7DB190EB120315A80001017D /* NSData+MBBase64.m in Sources */,
@@ -5099,14 +5166,12 @@
 				DCC9B4ED1254E84600B17FBB /* BlioInAppPurchaseManager.m in Sources */,
 				DCC9B5B2125535A800B17FBB /* CCInAppPurchaseService.m in Sources */,
 				DCC9B64D1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m in Sources */,
-				C9F484BD1254913600083923 /* NSArray+BlioAdditions.m in Sources */,
 				DCF6E1FD125E6F8C00CAC22B /* BlioGetBooksImportViewController.m in Sources */,
 				DC84EDF81261267400BC6514 /* BlioImportManager.m in Sources */,
 				7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */,
 				C90DAE8D125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
 				C90DAEBD125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
 				DCAC9612126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */,
-				DC8BB2481277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33712A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				DCF0C27512B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 				7DB195B212B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
@@ -5155,6 +5220,9 @@
 				A32EEDA513B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969113F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969613F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
+				DC824D96143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
+				A3F24EB7143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5237,7 +5305,6 @@
 				A30E1012123EA5B400D31157 /* BlioEPubBook.m in Sources */,
 				A30E1013123EA5B400D31157 /* NSObject+BlioAdditions.m in Sources */,
 				A30E1014123EA5B400D31157 /* BlioXPSProvider.m in Sources */,
-				A30E1015123EA5B400D31157 /* BlioPaidBooksSettingsController.m in Sources */,
 				A30E1016123EA5B400D31157 /* BlioTextFlowXAMLTree.m in Sources */,
 				A30E1017123EA5B400D31157 /* BlioTextFlowXAMLTreeNode.m in Sources */,
 				A30E1019123EA5B400D31157 /* NSData+MBBase64.m in Sources */,
@@ -5261,7 +5328,6 @@
 				C90DAE8E125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
 				C90DAEBE125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
 				DCAC9611126918C200C24BF7 /* BlioMyAccountViewController.m in Sources */,
-				DC8BB2491277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33812A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				DCF0C27612B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 				7DB195B312B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
@@ -5310,6 +5376,9 @@
 				A32EEDA713B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969313F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969813F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
+				DC824D98143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
+				A3F24EB9143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5392,7 +5461,6 @@
 				A31CC83513FEA07E0010BFC5 /* BlioEPubBook.m in Sources */,
 				A31CC83613FEA07E0010BFC5 /* NSObject+BlioAdditions.m in Sources */,
 				A31CC83713FEA07E0010BFC5 /* BlioXPSProvider.m in Sources */,
-				A31CC83813FEA07E0010BFC5 /* BlioPaidBooksSettingsController.m in Sources */,
 				A31CC83913FEA07E0010BFC5 /* BlioTextFlowXAMLTree.m in Sources */,
 				A31CC83A13FEA07E0010BFC5 /* BlioTextFlowXAMLTreeNode.m in Sources */,
 				A31CC83B13FEA07E0010BFC5 /* NSData+MBBase64.m in Sources */,
@@ -5416,7 +5484,6 @@
 				A31CC84D13FEA07E0010BFC5 /* BlioLayoutHyperlink.m in Sources */,
 				A31CC84E13FEA07E0010BFC5 /* BlioLayoutPDFDataSource.m in Sources */,
 				A31CC84F13FEA07E0010BFC5 /* BlioMyAccountViewController.m in Sources */,
-				A31CC85013FEA07E0010BFC5 /* BlioArchiveSettingsViewController.m in Sources */,
 				A31CC85113FEA07E0010BFC5 /* BlioTOCEntry.m in Sources */,
 				A31CC85213FEA07E0010BFC5 /* SKProduct+LocalizedPrice.m in Sources */,
 				A31CC85313FEA07E0010BFC5 /* BlioDefaultViewController.m in Sources */,
@@ -5465,6 +5532,8 @@
 				A31CC87E13FEA07E0010BFC5 /* BlioStoreTabViewController.m in Sources */,
 				A31CC87F13FEA07E0010BFC5 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				A31CC88013FEA07E0010BFC5 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75E1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
+				A3F24EBA143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5540,7 +5609,6 @@
 				A36D35CB120B136700E1A035 /* BlioEPubBook.m in Sources */,
 				A36D35CC120B136700E1A035 /* NSObject+BlioAdditions.m in Sources */,
 				A36D35CD120B136700E1A035 /* BlioXPSProvider.m in Sources */,
-				A36D35CE120B136700E1A035 /* BlioPaidBooksSettingsController.m in Sources */,
 				A36D35CF120B136700E1A035 /* BlioTextFlowXAMLTree.m in Sources */,
 				A36D35D0120B136700E1A035 /* BlioTextFlowXAMLTreeNode.m in Sources */,
 				A36D35D2120B136700E1A035 /* NSData+MBBase64.m in Sources */,
@@ -5571,7 +5639,6 @@
 				C90DAE8F125CB03000D8E663 /* BlioLayoutHyperlink.m in Sources */,
 				C90DAEBF125CB46E00D8E663 /* BlioLayoutPDFDataSource.m in Sources */,
 				DCAC9613126918C300C24BF7 /* BlioMyAccountViewController.m in Sources */,
-				DC8BB2471277316A0044580E /* BlioArchiveSettingsViewController.m in Sources */,
 				C976B33612A6486000D2CC05 /* BlioTOCEntry.m in Sources */,
 				DCF0C27412B1362900275449 /* SKProduct+LocalizedPrice.m in Sources */,
 				7DB195B112B14CA20087E61F /* BlioDefaultViewController.m in Sources */,
@@ -5620,6 +5687,9 @@
 				A32EEDA613B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */,
 				7D1C969213F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
 				7D1C969713F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
+				DC824D97143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
+				A3F24EB8143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5759,7 +5829,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5780,7 +5850,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "2EB4883C-CAB1-4956-9964-74E1B4C92B05";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -5930,7 +6000,7 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -5939,10 +6009,10 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "906AF447-5F1C-4A13-9A64-ABA631581901";
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
@@ -6082,7 +6152,7 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -6091,11 +6161,11 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
@@ -6110,7 +6180,7 @@
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -6119,10 +6189,10 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";

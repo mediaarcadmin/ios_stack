@@ -14,6 +14,7 @@
 #import "BlioParagraphSource.h"
 #import "BlioEPubBook.h"
 #import "levenshtein_distance.h"
+#import <libEucalyptus/EucConfiguration.h>
 #import <libEucalyptus/EucBook.h>
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
@@ -46,6 +47,16 @@
 
 @synthesize currentBookmarkPoint = _currentBookmarkPoint;
 @synthesize lastSavedPoint = _lastSavedPoint;
+
++ (NSSet *)keyPathsForValuesAffectingFontSize 
+{
+    return [NSSet setWithObject:@"eucBookView.fontPointSize"];
+}
+
++ (BOOL)automaticallyNotifiesObserversOfFontSize
+{
+    return NO;
+}
 
 - (id)initWithFrame:(CGRect)frame
              bookID:(NSManagedObjectID *)bookID 
@@ -80,7 +91,8 @@
                     [self goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
                 }
                 
-                [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:NSKeyValueObservingOptionInitial context:NULL];
+                [_eucBookView addObserver:self forKeyPath:@"currentPageIndexPoint" options:0 context:NULL];
+                [_eucBookView addObserver:self forKeyPath:@"currentPageIndex" options:0 context:NULL];
                 [_eucBookView addObserver:self forKeyPath:@"selector.trackingStage" options:0 context:NULL];
 
                 [self addSubview:_eucBookView];
@@ -100,6 +112,7 @@
 - (void)dealloc
 {
     [_eucBookView removeObserver:self forKeyPath:@"selector.trackingStage"];
+    [_eucBookView removeObserver:self forKeyPath:@"currentPageIndex"];
     [_eucBookView removeObserver:self forKeyPath:@"currentPageIndexPoint"];
     [_eucBookView release];
      
@@ -122,7 +135,8 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                         change:(NSDictionary *)change context:(void *)context
 {
-    if([keyPath isEqualToString:@"currentPageIndexPoint"]) {
+    if([keyPath isEqualToString:@"currentPageIndex"] || 
+       [keyPath isEqualToString:@"currentPageIndexPoint"]) {
         self.currentBookmarkPoint = [self bookmarkPointFromBookPageIndexPoint:_eucBookView.currentPageIndexPoint];
     } else if([keyPath isEqualToString:@"selector.trackingStage"]) {
         if(_eucBookView.selector.trackingStage == EucSelectorTrackingStageFirstSelection) {
@@ -594,25 +608,26 @@
 #pragma mark -
 #pragma mark Visual Properties
 
-- (CGFloat)fontPointSize
+- (BlioFontSize)fontSize
 {
-    return _eucBookView.fontPointSize;
+    CGFloat actualFontSize = _eucBookView.fontPointSize;
+    CGFloat bestDifference = CGFLOAT_MAX;
+    BlioFontSize bestFontSize = kBlioFontSizeMedium;
+    NSArray *eucFontSizeNumbers = [EucConfiguration objectForKey:EucConfigurationFontSizesKey];
+    for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
+        CGFloat thisDifference = fabsf(((NSNumber *)[eucFontSizeNumbers objectAtIndex:i]).floatValue - actualFontSize);
+        if(thisDifference < bestDifference) {
+            bestDifference = thisDifference;
+            bestFontSize = i;
+        }
+    }
+   return bestFontSize;
 }
 
-- (void)setFontPointSize:(CGFloat)fontPointSize
+- (void)setFontSize:(BlioFontSize)newSize
 {
 	[_eucBookView highlightWordAtIndexPoint:nil animated:YES];
-    _eucBookView.fontPointSize = fontPointSize;
-}
-
-- (UIImage *)pageTexture
-{
-    return _eucBookView.pageTexture;
-}
-
-- (BOOL)pageTextureIsDark
-{
-    return _eucBookView.pageTextureIsDark;
+    _eucBookView.fontPointSize = ((NSNumber *)[[EucConfiguration objectForKey:EucConfigurationFontSizesKey] objectAtIndex:newSize]).integerValue;
 }
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark
@@ -685,6 +700,37 @@
     [_eucBookView turnToNextPage];
 }
 
+- (BlioJustification)justification
+{
+    switch(_eucBookView.justification) {
+        default:
+        case EucJustificationOriginal:
+            return kBlioJustificationOriginal;
+        case EucJustificationOverrideToLeft:
+            return kBlioJustificationLeft;
+        case EucJustificationOverrideToFull:
+            return kBlioJustificationFull;
+    }
+}
+
+- (void)setJustification:(BlioJustification)justification;
+{
+    EucJustification eucJustification;
+    switch(justification) {
+        default:
+        case kBlioJustificationOriginal:
+            eucJustification = EucJustificationOriginal;
+            break;
+        case kBlioJustificationLeft:
+            eucJustification = EucJustificationOverrideToLeft;
+            break;
+        case kBlioJustificationFull:
+            eucJustification = EucJustificationOverrideToFull;
+            break;
+    }
+    _eucBookView.justification = eucJustification;
+}
+
 - (BOOL)twoUpLandscape
 {
     return _eucBookView.twoUpLandscape;
@@ -695,5 +741,14 @@
     _eucBookView.twoUpLandscape = twoUpLandscape;
 }
 
+- (BOOL)shouldTapZoom
+{
+    return !_eucBookView.useContinuousReadingAccessibility;
+}
+
+- (void)setShouldTapZoom:(BOOL)shouldTapZoom
+{
+    _eucBookView.useContinuousReadingAccessibility = !shouldTapZoom;
+}
 
 @end

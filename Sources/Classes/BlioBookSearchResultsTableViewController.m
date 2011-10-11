@@ -302,7 +302,7 @@
 }
 
 - (id)initWithFrame:(CGRect)frame {
-    if ((self == [super initWithFrame:frame])) {        
+    if ((self = [super initWithFrame:frame])) {        
         UIActivityIndicatorView *aActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         aActivityView.hidesWhenStopped = YES;
         [aActivityView setIsAccessibilityElement:NO];

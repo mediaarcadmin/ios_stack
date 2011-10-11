@@ -139,7 +139,11 @@
 @interface BlioProcessingDownloadAudiobookOperation : BlioProcessingDownloadAndUnzipOperation
 @end
 
-@interface BlioProcessingGenerateCoverThumbsOperation : BlioProcessingOperation
+@interface BlioProcessingGenerateCoverThumbsOperation : BlioProcessingOperation {
+    BOOL maintainAspectRatio;
+}
+@property (nonatomic, assign) BOOL maintainAspectRatio;
+
 @end
 
 

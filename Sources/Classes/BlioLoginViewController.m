@@ -423,7 +423,8 @@
 	if (section == 0) {
 		cell = [tableView dequeueReusableCellWithIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]];
 		if (cell == nil) {
-			cell = [[[CellTextField alloc] initWithFrame:CGRectZero reuseIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]] autorelease];
+			cell = [[[CellTextField alloc] initWithStyle:UITableViewCellStyleDefault
+                                         reuseIdentifier:[NSString stringWithFormat:@"%@_%i",kCellTextField_ID,row]] autorelease];
 			//((CellTextField *)cell).delegate = self;
 			//cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellTextField_ID] autorelease];
 		}

@@ -10,6 +10,14 @@
 
 @interface BlioAccessibilitySegmentedControl : UISegmentedControl {
     NSMutableArray *accessibleSegments;
+    NSMutableDictionary *segmentAccessibilityHints;
+    NSMutableDictionary *segmentAccessibilityTraits;
 }
-    
+
+- (void)setAccessibilityHint:(NSString *)accessibilityHint forSegmentIndex:(NSUInteger)segmentIndex;
+- (NSString *)accessibilityHintForSegmentIndex:(NSUInteger)segmentIndex;
+
+- (void)setAccessibilityTraits:(UIAccessibilityTraits)accessibilityTraits forSegmentIndex:(NSUInteger)segmentIndex;
+- (UIAccessibilityTraits)accessibilityTraitsForSegmentIndex:(NSUInteger)segmentIndex;
+
 @end

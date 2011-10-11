@@ -87,7 +87,9 @@
 	[[UIApplication sharedApplication] openURL:url];	
 }
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
-	currentUsername = [user retain];
+	if (currentUsername) [currentUsername release];
+	if (currentPassword) [currentPassword release];
+    currentUsername = [user retain];
 	currentPassword = [password retain];
 //	NSLog(@"self.userNum: %i",self.userNum);
 	if (!self.userNum > 0) {
@@ -142,12 +144,12 @@
 				[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
 				return;
 			}
-			NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
+//			NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
 			if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
 				self.token = [bodyPart LoginResult].Token;
-				NSLog(@"set token: %@",self.token);
+//				NSLog(@"set token: %@",self.token);
 				self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
-				NSLog(@"timeout: %@",self.timeout);
+//				NSLog(@"timeout: %@",self.timeout);
 //				if ([self deviceRegistered]) {
 //					NSLog(@"rejoining domain...");
 //					BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
@@ -500,7 +502,7 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioStoreRetrieveBooksStarted object:self userInfo:userInfo];
 
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = YES;
+	vaultBinding.logXMLInOut = NO;
 //	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
 	BookVault_VaultContentsWithTokenEx* vaultContentsRequest = [[BookVault_VaultContentsWithTokenEx new] autorelease];
 	vaultContentsRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
@@ -512,7 +514,7 @@
 //	NSLog(@"%@", NSStringFromSelector(_cmd));
 	BlioBook * book = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:sourceSpecificID];
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = YES;
+	vaultBinding.logXMLInOut = NO;
 //	BookVault_RequestDownloadWithToken* downloadRequest = [[BookVault_RequestDownloadWithToken new] autorelease];
 //	BookVault_RequestDownloadWithTokenEx* downloadRequest = [[BookVault_RequestDownloadWithTokenEx new] autorelease];
 	BookVault_RequestClientDownloadWithTokenEx* downloadRequest = [[BookVault_RequestClientDownloadWithTokenEx new] autorelease];

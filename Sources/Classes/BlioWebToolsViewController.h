@@ -15,7 +15,7 @@ typedef enum  {
     //thesaurusTool = 1,
     encyclopediaTool = 1,
     searchTool = 2,
-} BlioWebToolsType;
+} BlioWordToolsType;
 
 typedef enum  {
     googleOption = 0,

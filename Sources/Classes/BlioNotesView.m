@@ -133,7 +133,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     
     UIFont *buttonFont = [UIFont boldSystemFontOfSize:12.0f];
 	NSString *buttonText = NSLocalizedString(@"Cancel",@"\"Cancel\" button label for Notes View"); 
-    UIImage *buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
+    UIImage *buttonImage = [UIImage blioImageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
     
     UISegmentedControl *aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
     aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
@@ -147,7 +147,7 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     [aButtonSegment release];
     
 	buttonText = NSLocalizedString(@"Save",@"\"Save\" button label for Notes View");
-    buttonImage = [UIImage imageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
+    buttonImage = [UIImage blioImageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
     
     aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
     aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;

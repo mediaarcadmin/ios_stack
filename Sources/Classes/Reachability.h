@@ -49,6 +49,8 @@
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
+struct sockaddr_in;
+
 typedef enum {
 	NotReachable = 0,
 	ReachableViaWiFi,

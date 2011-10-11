@@ -20,28 +20,24 @@
 
 @synthesize alreadyCompletedOperations;
 
-- (id) init {
-	if((self = [super init])) {
-	}
-	return self;
-}
-
 - (void)addDependency:(NSOperation *)operation {
 	[super addDependency:operation];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingProgressNotification:) name:BlioProcessingOperationProgressNotification object:operation];
 }
+
 - (void)removeDependency:(NSOperation *)operation {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProcessingOperationProgressNotification object:operation];
 	[super removeDependency:operation];
 }
+
 - (void)onProcessingProgressNotification:(NSNotification*)note {
-//	NSLog(@"%@ called for %@", NSStringFromSelector(_cmd),self.sourceSpecificID);
+    //NSLog(@"%@ called for %@", NSStringFromSelector(_cmd),self.sourceSpecificID);
 	[self calculateProgress];
 }
 - (void)calculateProgress {
-	//	NSLog(@"alreadyCompletedOperations: %u",alreadyCompletedOperations);
+	//NSLog(@"alreadyCompletedOperations: %u",alreadyCompletedOperations);
 	float collectiveProgress = 0.0f;
-//	NSLog(@"self.dependencies: %@",self.dependencies);
+    //NSLog(@"self.dependencies: %@",self.dependencies);
 	for (NSOperation* op in self.dependencies) {
 		if ([op isKindOfClass:[BlioProcessingOperation class]]) {
 			collectiveProgress = collectiveProgress + ((BlioProcessingOperation*)op).percentageComplete;
@@ -53,7 +49,8 @@
 		}
 	}
 	float newPercentageComplete = ((collectiveProgress+alreadyCompletedOperations*100)/([self.dependencies count]+alreadyCompletedOperations));
-//	NSLog(@"%@ progress for %@: %f",[[self class] description],self.sourceSpecificID,newPercentageComplete);
+    
+    //NSLog(@"%@ progress for %@: %f",[[self class] description],self.sourceSpecificID,newPercentageComplete);
 	self.percentageComplete = newPercentageComplete;
 }
 
@@ -352,14 +349,19 @@
 - (void)finish {
     self.connection = nil;
     
-    [self willChangeValueForKey:@"isExecuting"];
-    [self willChangeValueForKey:@"isFinished"];
-    
-    executing = NO;
-    finished = YES;
-    
-    [self didChangeValueForKey:@"isExecuting"];
-    [self didChangeValueForKey:@"isFinished"];
+    BOOL wasUnfinished = !finished;
+    if(wasUnfinished) {
+        [self willChangeValueForKey:@"isFinished"];
+        finished = YES;
+    }
+    if(executing) {
+        [self willChangeValueForKey:@"isExecuting"];
+        executing = NO;
+        [self didChangeValueForKey:@"isExecuting"];
+    }
+    if(wasUnfinished) {
+        [self didChangeValueForKey:@"isFinished"];
+    }
 }
 
 - (void)start {
@@ -379,10 +381,12 @@
 	}
 	
     if ([self isCancelled]) {
-        [self willChangeValueForKey:@"isFinished"];
-		NSLog(@"BlioProcessingDownloadOperation cancelled, will prematurely abort start");
-        finished = YES;
-        [self didChangeValueForKey:@"isFinished"];
+        NSLog(@"BlioProcessingDownloadOperation cancelled, will prematurely abort start");
+        if(!finished) {
+            [self willChangeValueForKey:@"isFinished"];
+            finished = YES;
+            [self didChangeValueForKey:@"isFinished"];
+        }
         return;
     }
 
@@ -437,15 +441,6 @@
 	
     NSString *temporaryPath = [self temporaryPath];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	/*
-    NSString *cachedPath = [[self.cacheDirectory stringByAppendingPathComponent:self.localFilename] stringByStandardizingPath];
-	// see if there is no need to downlaod (asset is already present at cachedPath
-	if ([fileManager fileExistsAtPath:cachedPath]) {
-		[self downloadDidFinishSuccessfully:NO];
-		[self finish];
-		return;
-	}
-	*/
 	
 	if (resume == NO || forceReprocess == YES) {
 		// if not resuming, delete whatever is in place
@@ -1381,6 +1376,15 @@
 #pragma mark -
 @implementation BlioProcessingGenerateCoverThumbsOperation
 
+@synthesize maintainAspectRatio;
+
+- (id)init {
+    if ((self = [super init])) {
+        maintainAspectRatio = YES;
+    }
+    return self;
+}
+
 - (CGAffineTransform)transformForOrientation:(CGSize)newSize orientation:(UIImageOrientation)orientation {
     CGAffineTransform transform = CGAffineTransformIdentity;
     
@@ -1495,7 +1499,7 @@
         return;
     }
     UIImage *cover = [UIImage imageWithData:imageData];
-    
+
     if (nil == cover) {
         NSLog(@"Failed to create generate cover thumbs because cover image was not an image.");
         [pool drain];
@@ -1516,33 +1520,54 @@
 		self.backgroundTaskIdentifier = [application beginBackgroundTaskWithExpirationHandler:nil];
 	}	
 #endif
-	
+	    
 	NSString * pixelSpecificKey = nil;
 	NSString * pixelSpecificFilename = nil;
+	CGFloat maxThumbWidth = 0;
+	CGFloat maxThumbHeight = 0;
+	NSInteger scaledMaxThumbWidth = 0;
+	NSInteger scaledMaxThumbHeight = 0;
 	CGFloat targetThumbWidth = 0;
 	CGFloat targetThumbHeight = 0;
 	NSInteger scaledTargetThumbWidth = 0;
 	NSInteger scaledTargetThumbHeight = 0;
 
-	targetThumbWidth = kBlioCoverGridThumbWidthPhone;
-	targetThumbHeight = kBlioCoverGridThumbHeightPhone;
+	maxThumbWidth = kBlioCoverGridThumbWidthPhone;
+	maxThumbHeight = kBlioCoverGridThumbHeightPhone;
 
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-		targetThumbWidth = kBlioCoverGridThumbWidthPad;
-		targetThumbHeight = kBlioCoverGridThumbHeightPad;
+		maxThumbWidth = kBlioCoverGridThumbWidthPad;
+		maxThumbHeight = kBlioCoverGridThumbHeightPad;
 	}
     
     CGFloat scaleFactor = 1;
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
         scaleFactor = [[UIScreen mainScreen] scale];
     }	
-	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
-	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
 	
+    scaledMaxThumbWidth = round(maxThumbWidth * scaleFactor);
+	scaledMaxThumbHeight = round(maxThumbHeight * scaleFactor);
 	
-	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
+	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledMaxThumbWidth,scaledMaxThumbHeight];
 	pixelSpecificFilename = [NSString stringWithFormat:@"%@.png",pixelSpecificKey];
-	
+
+	targetThumbWidth = maxThumbWidth;
+	targetThumbHeight = maxThumbHeight;
+    
+    if (maintainAspectRatio) {
+        CGFloat maxToCoverWidthRatio = maxThumbWidth/cover.size.width;
+        if ((cover.size.height * maxToCoverWidthRatio) < maxThumbHeight) {
+            targetThumbHeight = cover.size.height * maxToCoverWidthRatio;
+        }
+        else {
+            CGFloat maxToCoverHeightRatio = maxThumbHeight/cover.size.height;
+            targetThumbWidth = cover.size.width * maxToCoverHeightRatio;
+        }
+    }
+    
+    scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+    
     UIImage *gridThumb = [self newThumbFromImage:cover forSize:CGSizeMake(scaledTargetThumbWidth, scaledTargetThumbHeight)];
     NSData *gridData = UIImagePNGRepresentation(gridThumb);
     NSString *gridThumbDir = [self.cacheDirectory stringByAppendingPathComponent:BlioBookThumbnailsDir];
@@ -1566,15 +1591,32 @@
     }
     
 
-	targetThumbWidth = kBlioCoverListThumbWidth;
-	targetThumbHeight = kBlioCoverListThumbHeight;
+	maxThumbWidth = kBlioCoverListThumbWidth;
+	maxThumbHeight = kBlioCoverListThumbHeight;
 
-	scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
-	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+	scaledMaxThumbWidth = round(maxThumbWidth * scaleFactor);
+	scaledMaxThumbHeight = round(maxThumbHeight * scaleFactor);
 	
-	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledTargetThumbWidth,scaledTargetThumbHeight];
+	pixelSpecificKey = [NSString stringWithFormat:@"%@%ix%i",BlioBookThumbnailPrefix,scaledMaxThumbWidth,scaledMaxThumbHeight];
 	pixelSpecificFilename = [NSString stringWithFormat:@"%@.png",pixelSpecificKey];
 	
+    targetThumbWidth = maxThumbWidth;
+	targetThumbHeight = maxThumbHeight;
+    
+    if (maintainAspectRatio) {
+        CGFloat maxToCoverWidthRatio = maxThumbWidth/cover.size.width;
+        if ((cover.size.height * maxToCoverWidthRatio) < maxThumbHeight) {
+            targetThumbHeight = cover.size.height * maxToCoverWidthRatio;
+        }
+        else {
+            CGFloat maxToCoverHeightRatio = maxThumbHeight/cover.size.height;
+            targetThumbWidth = cover.size.width * maxToCoverHeightRatio;
+        }
+    }
+    
+    scaledTargetThumbWidth = round(targetThumbWidth * scaleFactor);
+	scaledTargetThumbHeight = round(targetThumbHeight * scaleFactor);
+
     UIImage *listThumb = [self newThumbFromImage:cover forSize:CGSizeMake(scaledTargetThumbWidth, scaledTargetThumbHeight)];
     NSData *listData = UIImagePNGRepresentation(listThumb);
 	NSString *listThumbDir = [self.cacheDirectory stringByAppendingPathComponent:BlioBookThumbnailsDir];

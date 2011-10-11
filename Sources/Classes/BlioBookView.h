@@ -10,6 +10,39 @@
 #import "BlioBookmark.h"
 #import "BlioWebToolsViewController.h"
 
+@protocol BlioBookView, BlioBookViewDelegate;
+
+typedef enum BlioPageColor {
+    kBlioPageColorWhite = 0,
+    kBlioPageColorBlack = 1,
+    kBlioPageColorNeutral = 2,
+} BlioPageColor;
+
+typedef enum BlioJustification {
+    kBlioJustificationFull = 0,
+    kBlioJustificationLeft = 1,
+    kBlioJustificationOriginal = 2,
+} BlioJustification;
+
+typedef enum BlioPageLayout {
+    kBlioPageLayoutPlainText = 0,
+    kBlioPageLayoutPageLayout = 1,
+    kBlioPageLayoutSpeedRead = 2,
+} BlioPageLayout;
+
+typedef enum BlioTapTurn {
+    kBlioTapTurnOff = 0,
+    kBlioTapTurnOn = 1,
+} BlioTapTurn;
+
+typedef enum BlioFontSize {
+    kBlioFontSizeVerySmall = 0,
+    kBlioFontSizeSmall = 1,
+    kBlioFontSizeMedium = 2,
+    kBlioFontSizeLarge = 3,
+    kBlioFontSizeVeryLarge = 4,
+} BlioFontSize;
+
 #pragma mark -
 @protocol BlioBookViewDelegate <NSObject>
 
@@ -26,7 +59,7 @@
 
 - (void)copyWithRange:(BlioBookmarkRange *)range;
 
-- (void)openWebToolWithRange:(BlioBookmarkRange *)range toolType:(BlioWebToolsType)type;
+- (void)openWordToolWithRange:(BlioBookmarkRange *)range atRect:(CGRect)rect toolType:(BlioWordToolsType)type;
 
 - (void)showToolbars;
 - (void)hideToolbars;
@@ -87,18 +120,14 @@
 @property (nonatomic, readonly) CGRect firstPageRect;
 
 @optional
-@property (nonatomic, assign) CGFloat fontPointSize;
+@property (nonatomic, assign) BlioJustification justification;
+@property (nonatomic, assign) BlioFontSize fontSize;
 @property (nonatomic, readonly) UIImage *dimPageImage;
 
-
-// Page texture-related properties are readony because
-// - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
-// should be used to set them atomically.
-@property (nonatomic, retain, readonly) UIImage *pageTexture;
-@property (nonatomic, assign, readonly) BOOL pageTextureIsDark;
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
 @property (nonatomic, assign) BOOL twoUpLandscape;
+@property (nonatomic, assign) BOOL shouldTapZoom;
 
 - (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;
 // Implement if pageLabelForBookmarkPoint: is expensive for smooth slider operation.

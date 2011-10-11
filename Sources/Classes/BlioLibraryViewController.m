@@ -18,6 +18,7 @@
 #import "BlioStoreArchiveViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 static NSString * const kBlioLastLibraryLayoutDefaultsKey = @"BlioLastLibraryLayout";
 
@@ -678,7 +679,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									  initWithFetchRequest:request
 									  managedObjectContext:moc
 									  sectionNameKeyPath:nil
-									  cacheName:@"BlioFetchedBooks"] autorelease];
+									  cacheName:nil] autorelease];
     [request release];
     
     [self.fetchedResultsController setDelegate:self];
@@ -1349,7 +1350,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     BlioAppSettingsController *appSettingsController = [[BlioAppSettingsController alloc] init];
 	[appSettingsController.tableView reloadData];
 	UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:appSettingsController];
-    settingsController.delegate = self;
+
 	[appSettingsController release];
     
 
@@ -1360,7 +1361,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 		else {
 			self.settingsPopoverController = [[[NSClassFromString(@"UIPopoverController") alloc] initWithContentViewController:settingsController] autorelease];
-//			self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 600);
+			self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 440);
 			self.settingsPopoverController.delegate = self;
 			[self.settingsPopoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 		}
@@ -1368,6 +1369,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	else {
 		[self presentModalViewController:settingsController animated:YES];
 	}		
+    settingsController.delegate = self;
     [settingsController release];    
 }
 #pragma mark - UINavigationControllerDelegate
@@ -1377,10 +1379,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	CGSize viewSize = viewController.contentSizeForViewInPopover;
 	if ([viewController.view isKindOfClass:[UIScrollView class]]) {
 		[((UITableViewController*)viewController).tableView reloadData];
-//		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
+		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
 		viewSize.height = [(UIScrollView*)viewController.view contentSize].height;
 		if (viewSize.height > 600) viewSize.height = 600;
 	}
+    // small hack - in order to get consistent behavior between iOS4 & 5 popover sizes for the initial display of the BlioAppSettingsController
+    if ([viewController isKindOfClass:[BlioAppSettingsController class]] && !hasShownAppSettings) {
+        hasShownAppSettings = YES;
+        if (viewSize.height < 440) viewSize.height = 440;
+    }
+    NSLog(@"setting popover to size: %f, %f",viewSize.width,viewSize.height);
 	self.settingsPopoverController.popoverContentSize = viewSize;
 }
 
@@ -1389,6 +1397,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	// N.B. - from Apple's documentation: The popover controller does not call this method in response to programmatic calls to the dismissPopoverAnimated: method.
 	self.settingsPopoverController = nil;
+    hasShownAppSettings = NO;
 }
 
 
@@ -1493,11 +1502,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (CGRect)coverViewRectForOpening {
-    CGRect frame = [self.selectedLibraryBookView frame];
-    CGFloat xInset = frame.size.width * kBlioLibraryShadowXInset;
-    CGFloat yInset = frame.size.height * kBlioLibraryShadowYInset;
-    CGRect insetFrame = CGRectInset(frame, xInset, yInset);
-    return [[self.selectedLibraryBookView superview] convertRect:insetFrame toView:self.navigationController.view];
+    CGRect frame = [self.selectedLibraryBookView.imageView frame];
+//    CGFloat xInset = frame.size.width * kBlioLibraryShadowXInset;
+//    CGFloat yInset = frame.size.height * kBlioLibraryShadowYInset;
+//    CGRect insetFrame = CGRectInset(frame, xInset, yInset);
+    return [self.selectedLibraryBookView convertRect:frame toView:self.navigationController.view];
 }
 
 - (UIViewController *)coverViewViewControllerForOpening {
@@ -1532,25 +1541,28 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     if ((self = [super initWithFrame:frame])) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        self.clipsToBounds = YES;
+        self.clipsToBounds = NO;
         self.userInteractionEnabled = NO;
         
-        UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:self.bounds];
-        aTextureView.contentMode = UIViewContentModeScaleToFill;
-        aTextureView.image = [UIImage imageNamed:@"booktextureandshadowsubtle.png"];
+        UIImageView *aTextureView = [[UIImageView alloc] initWithFrame:CGRectInset(self.bounds,-9,-12)];
+//        aTextureView.contentMode = UIViewContentModeScaleToFill;
+//        aTextureView.image = [[UIImage imageNamed:@"book-overlay.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:11];
+        aTextureView.image = [UIImage imageNamed:@"book-overlay.png"];
         aTextureView.backgroundColor = [UIColor clearColor];
         aTextureView.userInteractionEnabled = NO;
         [self addSubview:aTextureView];
         self.textureView = aTextureView;
         [aTextureView release];
         
-        xInset = self.bounds.size.width * kBlioLibraryShadowXInset;
-        yInset = self.bounds.size.height * kBlioLibraryShadowYInset;
-        CGRect insetFrame = CGRectInset(self.bounds, xInset, yInset);
-        UIImageView *aImageView = [[UIImageView alloc] initWithFrame:insetFrame];
-        aImageView.contentMode = UIViewContentModeScaleToFill;
+//        xInset = self.bounds.size.width * kBlioLibraryShadowXInset;
+//        yInset = self.bounds.size.height * kBlioLibraryShadowYInset;
+//        CGRect insetFrame = CGRectInset(self.bounds, xInset, yInset);
+//        UIImageView *aImageView = [[UIImageView alloc] initWithFrame:insetFrame];
+        UIImageView *aImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        aImageView.contentMode = UIViewContentModeScaleAspectFit;
         aImageView.backgroundColor = [UIColor clearColor];
         aImageView.userInteractionEnabled = NO;
+        aImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         [self insertSubview:aImageView belowSubview:self.textureView];
         self.imageView = aImageView;
         [aImageView release];
@@ -1569,13 +1581,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)setFrame:(CGRect)newFrame {
     [super setFrame:newFrame];
-    [self.textureView setFrame:CGRectMake(0, 0, newFrame.size.width, newFrame.size.height)];
-    xInset = self.textureView.bounds.size.width * kBlioLibraryShadowXInset;
-    yInset = self.textureView.bounds.size.height * kBlioLibraryShadowYInset;
-    CGRect insetFrame = CGRectInset(self.textureView.bounds, xInset, yInset);
-    [self.imageView setFrame:insetFrame];
+    [self.textureView setFrame:CGRectInset(newFrame, -9, -12)];
+//    xInset = self.textureView.bounds.size.width * kBlioLibraryShadowXInset;
+//    yInset = self.textureView.bounds.size.height * kBlioLibraryShadowYInset;
+//    CGRect insetFrame = CGRectInset(self.textureView.bounds, xInset, yInset);
+    [self.imageView setFrame:newFrame];
     if (errorView) {
-        [errorView setFrame:insetFrame];
+        [errorView setFrame:newFrame];
     }
 }
 
@@ -1605,7 +1617,18 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         newImage = [newBook coverThumbForGrid];
     }    
     [self.imageView setImage:newImage];
-	if (newBook.hasCoverImage && !hasAppropriateCoverThumb && [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+    
+    if (layout == kBlioLibraryLayoutList) {
+        self.imageView.frame = CGRectMake(round((self.bounds.size.width - newImage.size.width)/2), round((self.bounds.size.height - newImage.size.height)/2), newImage.size.width, newImage.size.height);        
+    } else {
+        self.imageView.frame = CGRectMake(round((self.bounds.size.width - newImage.size.width)/2), self.bounds.size.height - newImage.size.height, newImage.size.width, newImage.size.height);
+    }
+//    CGFloat maxToCoverWidthRatio = self.bounds.size.width/newImage.size.width;
+//    CGFloat maxToCoverHeightRatio = self.bounds.size.height/newImage.size.height;
+
+    self.textureView.frame = CGRectInset(self.imageView.frame, -9.0f * (self.imageView.bounds.size.width/130.0f), -12.0f * (self.imageView.bounds.size.height/183.0f));
+    self.textureView.center = self.imageView.center;
+	if (newBook.hasCoverImage && !hasAppropriateCoverThumb && ([[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete || [[newBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly)) {
 		NSLog(@"Does not have appropriate cover thumb for book: %@, reprocessing cover thumbnails...",[newBook title]);
 		[self.delegate reprocessCoverThumbnailsForBook:newBook];
 	}
@@ -1614,7 +1637,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (BlioCoverView *)coverView {
     UIImage *coverImage = [[self book] coverImage];
 
-    BlioCoverView *coverView = [[BlioCoverView alloc] initWithFrame:self.frame coverImage:coverImage];
+    BlioCoverView *coverView = [[BlioCoverView alloc] initWithFrame:[self convertRect:self.imageView.frame fromView:self.imageView] coverImage:coverImage];
     return [coverView autorelease];
 }
 
@@ -1686,7 +1709,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.bookView = aBookView;
 		
 		progressBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"library-progress-background.png"]];
-		progressBackgroundView.center = CGPointMake(floor(self.frame.size.width/2), floor(bookHeight-(bookHeight*0.2f)));
+		progressBackgroundView.center = CGPointMake(ceilf(self.frame.size.width/2), floor(bookHeight*0.85f));
 		progressBackgroundView.hidden = YES;
 		[self.contentView addSubview:progressBackgroundView];
 		
@@ -1698,16 +1721,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		stateLabel.font = [UIFont boldSystemFontOfSize:12.0];
 		[progressBackgroundView addSubview:stateLabel];
 		
+        CGPoint progressBackgroundCenter = progressBackgroundView.center;
 		progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
 		progressView.frame = CGRectMake(0, 0, kBlioLibraryGridProgressViewWidth, 10);
-        progressView.center = progressBackgroundView.center;
+        if([[UIDevice currentDevice] compareSystemVersion:@"5.0"] == NSOrderedAscending) {
+            // Metrics changed in iOS5!?
+            progressView.center = progressBackgroundCenter;
+        } else {
+            progressView.center = CGPointMake(progressBackgroundCenter.x, progressBackgroundCenter.y - 0.5f);
+        }
 		progressView.hidden = YES;
 		[self.contentView addSubview:progressView];
 		
 		pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
 		[pauseButton setImage:[UIImage imageNamed:@"library-pausebutton.png"] forState:UIControlStateNormal];
 		pauseButton.showsTouchWhenHighlighted = YES;
-		[pauseButton addTarget:delegate action:@selector(onPauseButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+		[pauseButton addTarget:self action:@selector(onPauseButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		pauseButton.frame = CGRectMake(floor(self.frame.size.width/2 - pauseButton.frame.size.width/2), floor(self.frame.size.height/2 - pauseButton.frame.size.height/2), pauseButton.frame.size.width, pauseButton.frame.size.height);
 		[pauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Library View cell book pause button.")];
 		[pauseButton setAccessibilityHint:NSLocalizedString(@"Pauses downloading and processing of book.", @"Accessibility hint for Library View cell book pause button.")];
@@ -1717,14 +1746,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		resumeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 33, 33)];
 		[resumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
 		resumeButton.showsTouchWhenHighlighted = YES;
-		[resumeButton addTarget:delegate action:@selector(onResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+		[resumeButton addTarget:self action:@selector(onResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		resumeButton.frame = CGRectMake(floor(self.frame.size.width/2 - resumeButton.frame.size.width/2), floor(self.frame.size.height/2 - resumeButton.frame.size.height/2), resumeButton.frame.size.width, resumeButton.frame.size.height);
 		[resumeButton setAccessibilityLabel:NSLocalizedString(@"Resume", @"Accessibility label for Library View cell book resume button.")];
 		[resumeButton setAccessibilityHint:NSLocalizedString(@"Resumes downloading and processing of book.", @"Accessibility hint for Library View cell book resume button.")];
 		resumeButton.hidden = YES;
 		[self.contentView addSubview:resumeButton];
 		
-		statusBadge = [[UIImageView alloc] initWithFrame:CGRectMake(bookWidth - 25, bookHeight - 30, 20, 20)];
+		statusBadge = [[UIImageView alloc] initWithFrame:CGRectMake(self.bounds.size.width - 25, self.bounds.size.height - 25, 20, 20)];
 		statusBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:statusBadge];		
 
@@ -1734,6 +1763,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		previewBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:previewBadge];		
 		
+
         [aBookView release];
 		[self listenToProcessingNotifications];
 	}
@@ -1863,6 +1893,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //    }
     self.progressSlider.value = [[newBook progress] floatValue];
 	
+    // reposition book overlay widgets based upon size of book thumbnail
+    CGPoint imageViewCenter = [self convertPoint:self.bookView.imageView.center fromView:self.bookView];
+    imageViewCenter.x = ceilf(imageViewCenter.x) - 0.5;
+    imageViewCenter.y = floorf(imageViewCenter.y) + 0.5;
+    self.pauseButton.center = imageViewCenter;
+    self.resumeButton.center = imageViewCenter;
+    CGRect imageViewFrame = [self convertRect:self.bookView.imageView.frame fromView:self.bookView];
+    self.deleteButton.center = CGPointMake(floorf(2 + imageViewFrame.origin.x) - 0.5f, floorf(2 + imageViewFrame.origin.y) + 0.5f);
+    self.previewBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 48, 48);
+
     [self setNeedsLayout];
 	
 	if ([[self.book valueForKey:@"productType"] intValue] == BlioProductTypePreview) {
@@ -2077,7 +2117,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		pauseResumeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, kBlioLibraryListButtonWidth, kBlioLibraryListButtonHeight)];
 		[pauseResumeButton setImage:[UIImage imageNamed:@"library-resumebutton.png"] forState:UIControlStateNormal];
 		pauseResumeButton.showsTouchWhenHighlighted = YES;
-		[pauseResumeButton addTarget:delegate action:@selector(onPauseResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+		[pauseResumeButton addTarget:self action:@selector(onPauseResumeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		pauseResumeButton.center = CGPointMake(self.frame.size.width/2, kBlioLibraryGridBookHeightPhone/2);
 		[pauseResumeButton setAccessibilityLabel:NSLocalizedString(@"Resume", @"Accessibility label for Library View cell book resume button.")];
 		[pauseResumeButton setAccessibilityHint:NSLocalizedString(@"Resumes downloading and processing of book.", @"Accessibility hint for Library View cell book resume button.")];
@@ -2201,6 +2241,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 	//[self resetProgressSlider];
 	[self resetPauseResumeButton];
+    
+    CGRect imageViewFrame = [self convertRect:self.bookView.imageView.frame fromView:self.bookView];
+    self.previewBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 36, 36);
+
 
 	if ([[self.book valueForKey:@"productType"] intValue] == BlioProductTypePreview) {
 		self.previewBadge.hidden = NO;
@@ -2420,7 +2464,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 @synthesize numberOfBooksInLibrary, imageView;
 
 - (id)initWithFrame:(CGRect)frame {
-    if ((self == [super initWithFrame:frame])) {
+    if ((self = [super initWithFrame:frame])) {
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
         
         UIImageView *aImageView = [[UIImageView alloc] initWithFrame:self.frame];

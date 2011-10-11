@@ -13,10 +13,10 @@
 #import "BlioXPSProvider.h"
 #import "KNFBXPSConstants.h"
 
-static const CGFloat kBlioCoverListThumbHeight = 76;
-static const CGFloat kBlioCoverListThumbWidth = 53;
-static const CGFloat kBlioCoverGridThumbWidthPhone = 106;
-static const CGFloat kBlioCoverGridThumbHeightPhone = 140;
+static const CGFloat kBlioCoverListThumbWidth = 42;
+static const CGFloat kBlioCoverListThumbHeight = 64;
+static const CGFloat kBlioCoverGridThumbWidthPhone = 84;
+static const CGFloat kBlioCoverGridThumbHeightPhone = 118;
 static const CGFloat kBlioCoverGridThumbWidthPad = 140;
 static const CGFloat kBlioCoverGridThumbHeightPad = 210;
 

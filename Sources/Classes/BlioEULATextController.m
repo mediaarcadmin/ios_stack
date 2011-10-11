@@ -28,7 +28,7 @@
 		self.view = textView;
 		//textView.delegate = self;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-			self.contentSizeForViewInPopover = CGSizeMake(320, 550);
+			self.contentSizeForViewInPopover = CGSizeMake(600, 700);
 		}				
 	}
 	return self;

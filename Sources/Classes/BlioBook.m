@@ -171,7 +171,11 @@
     return [[self valueForKey:@"ttsCapable"] boolValue];
 }
 - (BOOL)reflowEnabled {
-    return ([[self valueForKey:@"reflowRight"] boolValue] && ([self hasEPub] || [self hasTextFlow]));
+    return ([[self valueForKey:@"reflowRight"] boolValue] && 
+            ([self hasEPub] || 
+             ([self hasTextFlow] && 
+              ([[self textFlow] flowTreeKind] == KNFBTextFlowFlowTreeKindXaml ||
+               [[self textFlow] conversionQuality] == KNFBTextFlowConversionQualityHigh))));
 }
 -(BOOL)fixedViewEnabled {
 	return ([self hasPdf] || ([self hasXps] && ![self hasEmbeddedEPub]));
@@ -246,7 +250,7 @@
         titleString = [NSString stringWithFormat:@"%@\u2026", [titleString substringToIndex:maxTitleLength]];
     }
     
-    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"LinuxLibertine"];
+    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"LinLibertineO"];
 
     CGSize fullSize = [[UIScreen mainScreen] bounds].size;
     CGFloat pointSize = roundf(fullSize.height / 8.0f);
@@ -355,6 +359,11 @@
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
+        if(scaleFactor != 1.0f) {
+            aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage scale:scaleFactor orientation:UIImageOrientationUp];
+        } else {
+            aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage];
+        }
         return aCoverImage;
     } else {
         return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
@@ -407,6 +416,11 @@
     NSData *imageData = [self manifestDataForKey:pixelSpecificKey];
     UIImage *aCoverImage = [UIImage imageWithData:imageData];
     if (aCoverImage) {
+        if(scaleFactor != 1.0f) {
+            aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage scale:scaleFactor orientation:UIImageOrientationUp];
+        } else {
+            aCoverImage = [UIImage imageWithCGImage:aCoverImage.CGImage];
+        }
         return aCoverImage;
     } else {
         return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
