@@ -129,7 +129,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)animateCoverShrink;
 - (void)animateCoverFade;
 - (void)initialiseControls;
+- (void)initialisePageJumpPanel;
+- (void)uninitialisePageJumpPanel;
+- (void)updatePageJumpPanelVisibility;
 - (void)initialiseBookView;
+- (void)uninitialiseBookView;
 @end
 
 @implementation BlioBookViewController
@@ -169,6 +173,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
                                      [NSNumber numberWithInteger:kBlioPageLayoutPageLayout], kBlioLastLayoutDefaultsKey,
                                      [NSNumber numberWithInteger:2], kBlioLastFontSizeIndexDefaultsKey,
+                                     [NSNumber numberWithBool:UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad], kBlioLandscapeTwoPagesDefaultsKey,
                                      nil];
         [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
     }
@@ -226,6 +231,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.wantsFullScreenLayout = YES;
         self.historyStack = [NSMutableArray array];
         
+        _firstAppearance = YES;
+        [self initialiseControls];
+        
         self.coverView = [self.delegate coverViewViewForOpening];
         
         if (self.coverView) {
@@ -233,10 +241,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self setToolbarsVisibleAfterAppearance:NO];
         } else {
             coverOpened = YES;
-            [self initialiseBookView];
             [self setToolbarsVisibleAfterAppearance:YES];
-            BlioBookmarkPoint *implicitPoint = [newBook implicitBookmarkPoint];
-            [self.bookView goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
         }
         
         if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
@@ -272,7 +277,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		self.navigationItem.titleView = titleView;
 		[titleView release];
 //    }
-    _firstAppearance = YES;
     
     self.audioPlaying = NO;
     
@@ -307,21 +311,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     } else {
         self.toolbarItems = [self _toolbarItemsWithTTSInstalled:NO enabled:NO];
     }
-    	
-	thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:self.rootView.bounds];
-	thumbPreview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	thumbPreview.userInteractionEnabled = NO;
-	thumbPreview.alpha = 0.01f;
-	thumbPreview.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7f];
-	[self.rootView addSubview:thumbPreview];
 }
 
 - (void)initialiseBookView {
-   
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && ![[NSUserDefaults standardUserDefaults] objectForKey:kBlioLandscapeTwoPagesDefaultsKey]) {
-		NSLog(@"Landscape page setting undefined, changing setting to 2 pages on iPad...");
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioLandscapeTwoPagesDefaultsKey];
-	}
     BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
     if (!([self.book hasEPub] || [self.book hasTextFlow]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
@@ -388,15 +380,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     bookReady = YES;
-    
-    //if (![self.bookView isKindOfClass:[BlioLayoutView class]]) {
-        firstPageReady = YES;
-    //}
-    
 }
 
-- (void)firstPageDidRender {
-    firstPageReady = YES;
+- (void)uninitialiseBookView {
+    self.bookView = nil;
+    self.rootView = nil;
+    bookReady = NO;
 }
 
 - (void)animateCoverPop {
@@ -589,11 +578,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)animateCoverFade {   
-    if (!firstPageReady) {
-        [self performSelector:@selector(animateCoverFade) withObject:nil afterDelay:0.2f];
-        return;
-    }
-    
     CABasicAnimation *fadeAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     [fadeAnimation setToValue:[NSNumber numberWithFloat:0]];
     [fadeAnimation setDuration:0.5f];
@@ -879,9 +863,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     [root release];
     
-    if(_bookView) {
-        [self.rootView addSubview:_bookView];
-        [self.rootView sendSubviewToBack:_bookView];
+    if(coverOpened) {
+        [self initialiseBookView];
+        BlioBookmarkPoint *implicitPoint = [self.book implicitBookmarkPoint];
+        [self.bookView goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
     }    
     
     UIView *aPauseMask = [[UIView alloc] initWithFrame:self.rootView.bounds];
@@ -905,8 +890,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.pauseButton = aPauseButton;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+}
 
-    [self initialiseControls];
+- (void)viewDidUnload
+{   
+    [self uninitialiseBookView];
+    [self uninitialisePageJumpPanel];
+    
+    self.pauseMask = nil;
+    self.pauseButton = nil;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 - (void)layoutNavigationToolbar {
@@ -918,7 +912,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)didBecomeActive:(NSNotification *)notification {	
 	// Layout the navigation toolbars once we have comleted this run loop.
-	// This is teh equivalent of calling in viewDidAppear (which doesn't get called when returning from background
+	// This is the equivalent of calling in viewDidAppear (which doesn't get called when returning from background
 	// If we did layout now, the navigation bar would get adjusted before appearing and fit under the status bar
 	[self performSelector:@selector(layoutNavigationToolbar) withObject:nil afterDelay:0.1f];
 }
@@ -956,7 +950,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
     self.pieButton = aPieButton;
 	
-	BOOL hidden = [_pageJumpView isHidden];
+	BOOL hidden = !_pageJumpView || [_pageJumpView isHidden];
     [self.pieButton setToggled:!hidden];
 	
     [aPieButton release];
@@ -972,7 +966,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 		[self becomeFirstResponder];
 	}
-    if(!self.modalViewController) {        
+    if(_firstAppearance) {        
         UIApplication *application = [UIApplication sharedApplication];
         
         // Store the hidden/visible state and style of the status and navigation
@@ -1073,6 +1067,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [animation setValue:_bookView forKey:@"THView"];                
             [[toolbar layer] addAnimation:animation forKey:@"PageViewTransitionIn"];
         } 
+    }
+    if(!_firstAppearance) {
+        [self updatePageJumpPanelVisibility]; 
+        _pageJumpView.hidden = !self.pieButton.toggled || !self.toolbarsVisible;
     }
 }
 
@@ -1210,26 +1208,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     _viewIsDisappearing = NO;
 }
 
-
-- (void)viewDidUnload
-{
-    self.bookView = nil;
-    self.rootView = nil;
-    
-    [_pageJumpSlider release];
-    _pageJumpSlider = nil;
-    [_pageJumpLabel release];
-    _pageJumpLabel = nil;
-    [_pageJumpView release];
-    _pageJumpView = nil;
-}
-
 - (void)didReceiveMemoryWarning 
 {
     [self.book flushCaches];
-	// Disabled this super call because was removing our BookView before it was added to a superview
-	// TODO: Investigate why this was happening
-	//[super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
+	[super didReceiveMemoryWarning];
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
@@ -1300,9 +1282,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         self.navigationController.navigationBarHidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
+        _pageJumpView.hidden = YES;
     } else {
         if (![self audioPlaying])
             [UIApplication sharedApplication].idleTimerDisabled = NO;
+        _pageJumpView.hidden = !self.pieButton.toggled;
     }
     _fadeState = BookViewControlleUIFadeStateNone;
 }
@@ -1569,7 +1553,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     UINavigationBar *currentNavBar = [controller navigationBar];
     CGPoint navBarBottomLeft = CGPointMake(0.0, 20 + currentNavBar.frame.size.height);
 
-    [_pageJumpView setFrame:CGRectMake(navBarBottomLeft.x, navBarBottomLeft.y, currentNavBar.frame.size.width, currentNavBar.frame.size.height)];
+    [_pageJumpView setFrame:CGRectMake(navBarBottomLeft.x, navBarBottomLeft.y, self.rootView.frame.size.width, currentNavBar.frame.size.height)];
     if (![_pageJumpView isHidden]) {
         [_pageJumpView setTransform:CGAffineTransformIdentity];
     } else {
@@ -1632,10 +1616,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [_pageJumpLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
 }
 
-- (void) togglePageJumpPanel { 
-    
+- (void)initialisePageJumpPanel {
     if(!_pageJumpView) {
-        _pageJumpView = [[BlioBeveledView alloc] init];
+        _pageJumpView = [[BlioBeveledView alloc] initWithFrame:CGRectZero];
         
         _pageJumpView.hidden = YES;
         [self layoutPageJumpView];
@@ -1667,7 +1650,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [slider setAccessibilityTraits:UIAccessibilityTraitAdjustable];
             [slider setAccessibilityHint:NSLocalizedString(@"Double-tap and hold, then drag left or right to change the page", @"Accessibility hint for Book View Controller Progress slider")];
         }
-        //[
         _pageJumpSlider = slider;
         
         UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
@@ -1698,37 +1680,67 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[self setPageJumpSliderPreview];
         
         _pageJumpView.layer.zPosition = 5;
-        [self.rootView addSubview:_pageJumpView];
+
+        [self.rootView addSubview:_pageJumpView];  
+        
+        thumbPreview = [[BlioBookSliderPreview alloc] initWithFrame:self.rootView.bounds];
+        thumbPreview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        thumbPreview.userInteractionEnabled = NO;
+        thumbPreview.alpha = 0.01f;
+        thumbPreview.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7f];
+        thumbPreview.layer.zPosition = 5;
+        [self.rootView addSubview:thumbPreview];
     }
-    
+}
+
+- (void)uninitialisePageJumpPanel {
+    [_pageJumpSlider release];
+    _pageJumpSlider = nil;
+    [_pageJumpLabel release];
+    _pageJumpLabel = nil;
+    [_pageJumpView release];
+    _pageJumpView = nil;
+    [thumbPreview release];
+    thumbPreview = nil;
+}
+
+- (void)updatePageJumpPanelVisibility
+{
+    [self initialisePageJumpPanel];
+
     CGSize sz = _pageJumpView.bounds.size;
-    BOOL hiding = ![_pageJumpView isHidden];
-    [self.pieButton setToggled:!hiding];
+    BOOL hiding = !self.pieButton.toggled;
     
-    if (!hiding) {
-        _pageJumpView.alpha = 0.0;
-        _pageJumpView.hidden = NO;
-        [self _updatePageJumpLabelForBookmarkPoint:self.bookView.currentBookmarkPoint];
-    }
-    
-    [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
-    [UIView setAnimationDidStopSelector:@selector(_pageJumpPanelDidAnimate)];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDuration:0.3f];
+    [self layoutPageJumpView];
     
     if (hiding) {
         _pageJumpView.alpha = 0.0;
         [_pageJumpView setTransform:CGAffineTransformMakeTranslation(0, -sz.height)];
     } else {
         [self _updatePageJumpLabelForBookmarkPoint:self.bookView.currentBookmarkPoint];
+        _pageJumpView.hidden = NO;
         _pageJumpView.alpha = 1.0;
         [_pageJumpView setTransform:CGAffineTransformIdentity];
     }
     
-    [UIView commitAnimations];
-	
-	UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+    [_pageJumpView.superview bringSubviewToFront:_pageJumpView];
+}
 
+- (void) togglePageJumpPanel { 
+    [self initialisePageJumpPanel];
+    
+    [self.pieButton setToggled:!self.pieButton.toggled];
+
+    [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
+    [UIView setAnimationDidStopSelector:@selector(_pageJumpPanelDidAnimate)];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDuration:0.3f];
+
+    [self updatePageJumpPanelVisibility];
+    
+    [UIView commitAnimations];
+    
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
 }
 
 - (void) _pageJumpPanelDidAnimate

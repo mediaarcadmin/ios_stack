@@ -73,7 +73,6 @@ typedef enum {
     
     BookViewControllerUIFadeState _fadeState;
     
-    UIToolbar *_toolbar;
     UIView *_pauseMask;
     UIButton *_pauseButton;
     
@@ -125,7 +124,6 @@ typedef enum {
     
     BOOL bookReady;
     BOOL coverReady;
-    BOOL firstPageReady;
     BOOL coverOpened;
     
     BlioViewSettingsSheet *viewSettingsSheet;

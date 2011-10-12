@@ -66,7 +66,6 @@ typedef enum BlioTapTurn {
 @property (nonatomic, readonly) BOOL audioPlaying;
 
 - (CGRect)nonToolbarRect;
-- (void)firstPageDidRender;
 
 - (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
