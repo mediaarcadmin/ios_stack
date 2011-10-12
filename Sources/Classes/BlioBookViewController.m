@@ -98,6 +98,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) updatePageJumpPanelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated;
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
 - (void) togglePageJumpPanel;
+- (void)layoutPageJumpView;
 
 @end
 
@@ -887,9 +888,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [aPauseButton setAccessibilityLabel:NSLocalizedString(@"Pause", @"Accessibility label for Book View Controller Pause button")];
     [aPauseButton setAccessibilityHint:NSLocalizedString(@"Pauses audio playback.", @"Accessibility label for Book View Controller Pause hint")];
     [aPauseMask addSubview:aPauseButton];
-    self.pauseButton = aPauseButton;
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    self.pauseButton = aPauseButton;	
 }
 
 - (void)viewDidUnload
@@ -898,23 +897,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self uninitialisePageJumpPanel];
     
     self.pauseMask = nil;
-    self.pauseButton = nil;
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-}
-
-- (void)layoutNavigationToolbar {
-    UINavigationBar *currentNavBar = [self.navigationController navigationBar];
-    CGRect navFrame = currentNavBar.frame;
-    navFrame.origin.y = 20;
-    [self.navigationController.navigationBar setFrame:navFrame];
-}
-
-- (void)didBecomeActive:(NSNotification *)notification {	
-	// Layout the navigation toolbars once we have comleted this run loop.
-	// This is the equivalent of calling in viewDidAppear (which doesn't get called when returning from background
-	// If we did layout now, the navigation bar would get adjusted before appearing and fit under the status bar
-	[self performSelector:@selector(layoutNavigationToolbar) withObject:nil afterDelay:0.1f];
+    self.pauseButton = nil;    
 }
 
 - (void)setNavigationBarButtons {
@@ -966,6 +949,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 		[self becomeFirstResponder];
 	}
+    
+    [self.navigationController.navigationBar addObserver:self 
+                                              forKeyPath:@"bounds" 
+                                                 options:NSKeyValueObservingOptionNew
+                                                 context:nil]; 
+    
+    [self.navigationController.navigationBar addObserver:self 
+                                              forKeyPath:@"center" 
+                                                 options:NSKeyValueObservingOptionNew
+                                                 context:nil]; 
+    
     if(_firstAppearance) {        
         UIApplication *application = [UIApplication sharedApplication];
         
@@ -1129,6 +1123,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 		[self resignFirstResponder];
 	}	
+    
+    [self.navigationController.navigationBar removeObserver:self 
+                                              forKeyPath:@"bounds"]; 
+    
+    [self.navigationController.navigationBar removeObserver:self 
+                                                 forKeyPath:@"center"]; 
+    
     if(_viewIsDisappearing) {
         [self.book reportReadingIfRequired];
         
@@ -1287,6 +1288,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if (![self audioPlaying])
             [UIApplication sharedApplication].idleTimerDisabled = NO;
         _pageJumpView.hidden = !self.pieButton.toggled;
+        [self layoutPageJumpView];
     }
     _fadeState = BookViewControlleUIFadeStateNone;
 }
@@ -1549,11 +1551,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)layoutPageJumpView {
     [_pageJumpView setTransform:CGAffineTransformIdentity];
     
-    UINavigationController *controller = [self navigationController];
-    UINavigationBar *currentNavBar = [controller navigationBar];
-    CGPoint navBarBottomLeft = CGPointMake(0.0, 20 + currentNavBar.frame.size.height);
-
-    [_pageJumpView setFrame:CGRectMake(navBarBottomLeft.x, navBarBottomLeft.y, self.rootView.frame.size.width, currentNavBar.frame.size.height)];
+    CGRect navBarFrame = self.navigationController.navigationBar.frame;    
+    [_pageJumpView setFrame:CGRectMake(CGRectGetMinX(navBarFrame), CGRectGetMaxY(navBarFrame), CGRectGetWidth(navBarFrame),CGRectGetHeight(navBarFrame))];
+    
     if (![_pageJumpView isHidden]) {
         [_pageJumpView setTransform:CGAffineTransformIdentity];
     } else {
@@ -1619,6 +1619,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)initialisePageJumpPanel {
     if(!_pageJumpView) {
         _pageJumpView = [[BlioBeveledView alloc] initWithFrame:CGRectZero];
+        _pageJumpView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         
         _pageJumpView.hidden = YES;
         [self layoutPageJumpView];
@@ -2097,6 +2098,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     } else if ([keyPath isEqualToString:@"fontSizeIndex"] &&
                object == self.bookView) {
         [[NSUserDefaults standardUserDefaults] setInteger:self.bookView.fontSizeIndex forKey:kBlioLastFontSizeIndexDefaultsKey];
+    } else if (object == self.navigationController.navigationBar) {
+        if ([keyPath isEqualToString:@"bounds"] || 
+            [keyPath isEqualToString:@"center"]) {            
+            [self layoutPageJumpView];
+            [self layoutPageJumpLabelText];
+            [self layoutPageJumpSlider];
+        }
     }
 }
 
@@ -2788,13 +2796,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
     // Doing this here instead of in the 'didRotate' callback results in smoother
     // animation that happens simultaneously with the rotate.
-    [self layoutNavigationToolbar];
     [self setNavigationBarButtons];
-    if (_pageJumpView) {
-        [self layoutPageJumpView];
-        [self layoutPageJumpLabelText];
-        [self layoutPageJumpSlider];
-    }
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
