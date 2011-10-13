@@ -99,6 +99,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
 - (void) togglePageJumpPanel;
 - (void)layoutPageJumpView;
+- (void)setNavigationBarButtonsForInterfaceOrientation:(UIInterfaceOrientation)orientation;
 
 @end
 
@@ -900,19 +901,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.pauseButton = nil;    
 }
 
-- (void)setNavigationBarButtons {
+- (void)setNavigationBarButtonsForInterfaceOrientation:(UIInterfaceOrientation)orientation {
     
     CGFloat buttonHeight = 30;
 
     // Toolbar buttons are 30 pixels high in portrait and 24 pixels high landscape
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(orientation)) {
         buttonHeight = 24;
     }
     
     CGRect buttonFrame = CGRectMake(0,0, 41, buttonHeight);
     
     UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent frame:buttonFrame];
-    //UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent];
 
     [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [backArrow setAccessibilityLabel:NSLocalizedString(@"Library Back", @"Accessibility label for Book View Controller Library Back button")];
@@ -930,13 +930,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
     if (_pageJumpButton) [_pageJumpButton release];
     _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
-
-    self.pieButton = aPieButton;
 	
 	BOOL hidden = !_pageJumpView || [_pageJumpView isHidden];
-    [self.pieButton setToggled:!hidden];
-	
+    BOOL toggled = !hidden;
+    
+    // If we already have a pieButton, read the toggled state from that rather than inferring it from hidden states
+    if (self.pieButton) {
+        toggled = self.pieButton.toggled;
+    }
+    
+    self.pieButton = aPieButton;
     [aPieButton release];
+    
+    [self.pieButton setToggled:toggled];
     
     [self.navigationItem setRightBarButtonItem:_pageJumpButton];
     [self updatePieButtonAnimated:NO];
@@ -1047,7 +1053,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			[titleView setTitle:[self.book title]];
 			[titleView setAuthor:[self.book authorsWithStandardFormat]];
 		}        
-        [self setNavigationBarButtons];
+        [self setNavigationBarButtonsForInterfaceOrientation:self.interfaceOrientation];
 		
 		[self updatePageJumpPanelForBookmarkPoint:_bookView.currentBookmarkPoint animated:NO];
         
@@ -2792,13 +2798,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return YES;
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration 
-{
-    // Doing this here instead of in the 'didRotate' callback results in smoother
-    // animation that happens simultaneously with the rotate.
-    [self setNavigationBarButtons];
-}
-
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
         [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
@@ -2817,6 +2816,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if(self.viewSettingsSheet) {
         [self.viewSettingsSheet dismissAnimated:NO];
     }
+    
+    [self setNavigationBarButtonsForInterfaceOrientation:toInterfaceOrientation];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
