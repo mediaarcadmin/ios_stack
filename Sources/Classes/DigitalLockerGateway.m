@@ -9,6 +9,7 @@
 #import "DigitalLockerGateway.h"
 #import "NSString+BlioAdditions.h"
 #import "UIDevice+BlioAdditions.h"
+#import "BlioXMLParserLock.h"
 
 @implementation DigitalLockerXMLObject
 
@@ -519,10 +520,13 @@ static NSString * SessionId = nil;
 #ifdef SERVICE_DEBUG
 	NSLog(@"Digital Locker Connection response: %@",[[[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding] autorelease]);
 #endif
-	NSXMLParser * parser = [[NSXMLParser alloc] initWithData:_responseData];
-	parser.delegate = self;
-	[parser parse];
-	[parser release];
+	NSXMLParser * parser = nil;
+    @synchronized([BlioXMLParserLock sharedLock]) {
+        parser = [[NSXMLParser alloc] initWithData:_responseData];
+        parser.delegate = self;
+        [parser parse];
+        [parser release];
+    }
 	if (self.delegate) [self.delegate connectionDidFinishLoading:self];
 }
 - (void)connection:(NSURLConnection *)aConnection didFailWithError:(NSError *)error {
