@@ -233,8 +233,11 @@ ErrorExit:
 		return YES;
 	}
 	else if (result==DRM_E_XMLNOTFOUND) {
+        NSString* msg = [self getTagValue:self.serverResponse xmlTag:@"Message"];
+        if ( !msg )
+            msg = [self getTagValue:self.serverResponse xmlTag:@"faultstring"];
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-                                     message:[self getTagValue:self.serverResponse xmlTag:@"Message"]
+                                    message:msg
                                     delegate:nil 
                            cancelButtonTitle:nil
                            otherButtonTitles:@"OK", nil];
@@ -413,6 +416,7 @@ ErrorExit:
         ChkDR( dr );
     }
 	
+    pbChallenge[cbChallenge] = '\0';
 	//NSLog(@"DRM join domain challenge: %s",(unsigned char*)pbChallenge);
 	
 #ifdef TEST_MODE
@@ -420,7 +424,7 @@ ErrorExit:
 #else
 	[self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionJoinDomain];
 #endif
-//	NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
+	//NSLog(@"DRM join domain response: %s",(unsigned char*)pbResponse);
 	@synchronized (self) {
 		ChkDR( Drm_JoinDomain_ProcessResponse( drmIVars->drmAppContext,
 											  pbResponse,
@@ -454,8 +458,9 @@ ErrorExit:
 	if ([self checkPriorityError:dr2])
 		return NO;
 	else if (([self checkPriorityError:dr]))
-		// I don't expect to ever get here, if there's a priority 
-		// condition it should be returned by the server.
+		// I didn't expect to ever get here, but turns out it's
+        // possible.  A priority condition is not always 
+		// reported in the server error code.
 		return NO;
 	
 	//NSLog(@"DRM error joining domain: %08X", dr);
