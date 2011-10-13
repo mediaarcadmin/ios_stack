@@ -13,6 +13,7 @@
 #import "BlioAlertManager.h"
 #import "BlioBookManager.h"
 #import "BlioProcessingStandardOperations.h"
+#import "BlioXMLParserLock.h"
 
 #import <minizip/unzip.h>
 
@@ -436,14 +437,15 @@
                 if(!containerXML) {
                     NSLog(@"WARNING: %@ for file, %@ could not unzip!",containerPath,importableBook.fileName);
                 } else {                        
-                    NSXMLParser *containerParser = [[NSXMLParser alloc] initWithData:containerXML];
                     BlioEPubContainerParserDelegate *containerParserDelegate = [[BlioEPubContainerParserDelegate alloc] init];
-                    [containerParser setDelegate:containerParserDelegate];
-                    [containerParser parse];
+                    @synchronized([BlioXMLParserLock sharedLock]) {
+                        NSXMLParser * containerParser = [[NSXMLParser alloc] initWithData:containerXML];
+                        [containerParser setDelegate:containerParserDelegate];
+                        [containerParser parse];
+                        [containerParser release];
+                    }
                     NSString * opfPath = [containerParserDelegate.opfPath retain];
                     [containerParserDelegate release];
-                    [containerParser release];
-                    
                     [containerXML release];
                             
                     if(!opfPath) {
@@ -453,16 +455,17 @@
                         if(!opfXML) {
                             NSLog(@"WARNING: opfPath: %@ for file, %@ could not unzip!",opfPath,importableBook.fileName);
                         } else {
-                            NSXMLParser *opfParser = [[NSXMLParser alloc] initWithData:opfXML];
                             BlioEPubOPFParserDelegate *opfParserDelegate = [[BlioEPubOPFParserDelegate alloc] init];
-                            [opfParser setDelegate:opfParserDelegate];
-                            [opfParser parse];
+                            @synchronized([BlioXMLParserLock sharedLock]) {
+                                NSXMLParser * opfParser = [[NSXMLParser alloc] initWithData:opfXML];
+                                [opfParser setDelegate:opfParserDelegate];
+                                [opfParser parse];
+                                [opfParser release];
+                            }
                             // grab title and author
                             if (opfParserDelegate.title) importableBook.title = opfParserDelegate.title;
                             if (opfParserDelegate.authors) importableBook.authors = opfParserDelegate.authors;
                             [opfParserDelegate release];
-                            [opfParser release];
-                            
                             [opfXML release];
                             
                             toReturn = importableBook;
@@ -499,14 +502,16 @@
 #endif							
                 NSData *KNFBMetadataXML = [self copyDataForFile:BlioXPSKNFBMetadataFile inUnzFile:xpsUnzipHandle];
                 if(KNFBMetadataXML) {
-                    NSXMLParser *KNFBMetaDataParser = [[NSXMLParser alloc] initWithData:KNFBMetadataXML];
                     BlioXPSKNFBMetadataParserDelegate * KNFBMetadataParserDelegate = [[BlioXPSKNFBMetadataParserDelegate alloc] init];
-                    [KNFBMetaDataParser setDelegate:KNFBMetadataParserDelegate];
-                    [KNFBMetaDataParser parse];
+                    @synchronized([BlioXMLParserLock sharedLock]) {
+                        NSXMLParser * KNFBMetaDataParser = [[NSXMLParser alloc] initWithData:KNFBMetadataXML];
+                        [KNFBMetaDataParser setDelegate:KNFBMetadataParserDelegate];
+                        [KNFBMetaDataParser parse];
+                        [KNFBMetaDataParser release];
+                    }
                     if (KNFBMetadataParserDelegate.title) importableBook.title = KNFBMetadataParserDelegate.title;
                     if (KNFBMetadataParserDelegate.authors) importableBook.authors = KNFBMetadataParserDelegate.authors;
                     [KNFBMetadataParserDelegate release];
-                    [KNFBMetaDataParser release];
                     [KNFBMetadataXML release];
                     
                     toReturn = importableBook;
@@ -523,14 +528,15 @@
                     if(!contentTypesPathXML) {
                         NSLog(@"ERROR: Could not find %@ for XPS file, %@!",contentTypesPath,importableBook.fileName);						
                     } else {
-                        NSXMLParser *contentTypesParser = [[NSXMLParser alloc] initWithData:contentTypesPathXML];
                         BlioXPSContentTypesParserDelegate * contentTypesParserDelegate = [[BlioXPSContentTypesParserDelegate alloc] init];
-                        [contentTypesParser setDelegate:contentTypesParserDelegate];
-                        [contentTypesParser parse];
+                        @synchronized([BlioXMLParserLock sharedLock]) {
+                            NSXMLParser * contentTypesParser = [[NSXMLParser alloc] initWithData:contentTypesPathXML];
+                            [contentTypesParser setDelegate:contentTypesParserDelegate];
+                            [contentTypesParser parse];
+                            [contentTypesParser release];
+                        }
                         NSString *documentPropertiesPath = [contentTypesParserDelegate.documentPropertiesPath retain];
                         [contentTypesParserDelegate release];
-                        [contentTypesParser release];
-                        
                         [contentTypesPathXML release];
                         
                         if(!documentPropertiesPath) {
@@ -540,15 +546,17 @@
                             if(!documentPropertiesXML) {
                                 NSLog(@"ERROR: Could not find document properties file '%@' for XPS file, %@!",documentPropertiesPath,importableBook.fileName);						
                             } else {
-                                NSXMLParser * documentPropertiesParser = [[NSXMLParser alloc] initWithData:documentPropertiesXML];
                                 BlioXPSDocumentPropertiesParserDelegate * documentPropertiesParserDelegate = [[BlioXPSDocumentPropertiesParserDelegate alloc] init];
-                                [documentPropertiesParser setDelegate:documentPropertiesParserDelegate];
-                                [documentPropertiesParser parse];
+                                @synchronized([BlioXMLParserLock sharedLock]) {
+                                    NSXMLParser * documentPropertiesParser = [[NSXMLParser alloc] initWithData:documentPropertiesXML];
+                                    [documentPropertiesParser setDelegate:documentPropertiesParserDelegate];
+                                    [documentPropertiesParser parse];
+                                    [documentPropertiesParser release];
+                                }
                                 // grab title and author
                                 if (documentPropertiesParserDelegate.title) importableBook.title = documentPropertiesParserDelegate.title;
                                 if (documentPropertiesParserDelegate.authors) importableBook.authors = documentPropertiesParserDelegate.authors;
                                 [documentPropertiesParserDelegate release];
-                                [documentPropertiesParser release];
                                 [documentPropertiesXML release];
                                 
                                 toReturn = importableBook;
@@ -719,6 +727,10 @@
 }
 
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+	}
 	NSLog(@"%@", NSStringFromSelector(_cmd));
 	// delete file from public documents directory.
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [[[note userInfo] objectForKey:@"sourceID"] intValue] == BlioBookSourceFileSharing) {

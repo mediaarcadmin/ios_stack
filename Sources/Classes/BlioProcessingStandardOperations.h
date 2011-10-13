@@ -10,6 +10,7 @@
 #import "BlioProcessing.h"
 #import "BlioBook.h"
 
+
 @interface BlioProcessingAggregateOperation : BlioProcessingOperation {
 	NSUInteger alreadyCompletedOperations;
 }

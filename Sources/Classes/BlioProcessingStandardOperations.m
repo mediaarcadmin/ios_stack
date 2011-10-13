@@ -15,6 +15,7 @@
 #import "BlioStoreManager.h"
 #import "Reachability.h"
 #import "BlioImportManager.h"
+#import "BlioXMLParserLock.h"
 
 @implementation BlioProcessingAggregateOperation
 
@@ -828,12 +829,6 @@
     return self;
 }
 - (void)dealloc {
-    @synchronized(self) {
-        [audiobookReferencesParser release];
-        [rightsParser release];
-        [metadataParser release];
-        [textflowParser release];
-    }
 	self.audioFiles = nil;
 	self.timingFiles = nil;
 	self.featureCompatibilityDictionary = nil;
@@ -872,10 +867,12 @@
 		NSLog(@"Textflow sections file is present. parsing XML...");
 		NSData * data = [self getBookManifestDataForKey:BlioManifestTextFlowKey];
 		if (data) {
-            @synchronized(self) {
-			textflowParser = [[NSXMLParser alloc] initWithData:data];
-			[textflowParser setDelegate:self];
-			[textflowParser parse];
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                textflowParser = [[NSXMLParser alloc] initWithData:data];
+                [textflowParser setDelegate:self];
+                [textflowParser parse];
+                [textflowParser release];
+                textflowParser = nil;
             }
 		}
 	}
@@ -913,10 +910,12 @@
 //				NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //				NSLog(@"stringData: %@",stringData);
 //				[stringData release];
-                @synchronized(self) {
-				rightsParser = [[NSXMLParser alloc] initWithData:data];
-				[rightsParser setDelegate:self];
-				[rightsParser parse];
+                @synchronized([BlioXMLParserLock sharedLock]) {
+                    rightsParser = [[NSXMLParser alloc] initWithData:data];
+                    [rightsParser setDelegate:self];
+                    [rightsParser parse];
+                    [rightsParser release];
+                    rightsParser = nil;
                 }
 			}
 		}
@@ -952,10 +951,12 @@
 //			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //			NSLog(@"stringData: %@",stringData);
 //			[stringData release];
-            @synchronized(self) {
-			audiobookReferencesParser = [[NSXMLParser alloc] initWithData:data];
-			[audiobookReferencesParser setDelegate:self];
-			[audiobookReferencesParser parse];
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                audiobookReferencesParser = [[NSXMLParser alloc] initWithData:data];
+                [audiobookReferencesParser setDelegate:self];
+                [audiobookReferencesParser parse];
+                [audiobookReferencesParser release];
+                audiobookReferencesParser = nil;
             }
 		}
 		else {
@@ -981,10 +982,12 @@
 			//			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 			//			NSLog(@"stringData: %@",stringData);
 			//			[stringData release];
-            @synchronized(self) {
-			metadataParser = [[NSXMLParser alloc] initWithData:data];
-			[metadataParser setDelegate:self];
-			[metadataParser parse];
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                metadataParser = [[NSXMLParser alloc] initWithData:data];
+                [metadataParser setDelegate:self];
+                [metadataParser parse];
+                [metadataParser release];
+                metadataParser = nil;
             }
 		}
 	}
