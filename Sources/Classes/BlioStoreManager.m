@@ -308,9 +308,17 @@
 
 		// TODO: "DeviceRegistered" key should be refactored with multiple stores in mind.
 //		NSLog(@"[storeHelper deviceRegistered]: %i",[storeHelper deviceRegistered]);
-		if ([storeHelper deviceRegistered] == BlioDeviceRegisteredStatusUndefined || [storeHelper deviceRegistered] == BlioDeviceRegisteredStatusUnregistered) {
+		if ([storeHelper deviceRegistered] != BlioDeviceRegisteredStatusRegistered) {
 			
-			[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
+			BOOL success = [storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
+            if (!success) {
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Login Error",@"\"Login Error\" alert message title") 
+                                             message:NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"The login process did not complete successfully. Please try again later.",@"Alert message when login was successful but registration failed.")
+                                            delegate:nil 
+                                   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                   otherButtonTitles:nil];
+                [self logoutForSourceID:storeHelper.sourceID];
+            }
 //			BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
 //			if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
 //				TODO: alert
