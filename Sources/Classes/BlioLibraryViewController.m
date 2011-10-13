@@ -1890,6 +1890,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	//            forControlEvents:UIControlEventTouchUpInside];
 }
 - (void)onProcessingProgressNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+	}
 	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			BlioProcessingCompleteOperation * completeOp = [note object];
 			progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
@@ -2279,6 +2283,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	//if (delegate == [note object]) [self resetProgressSlider];
 }
 - (void)onProcessingProgressNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+    }
+
 		if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			BlioProcessingCompleteOperation * completeOp = [note object];
 			//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);

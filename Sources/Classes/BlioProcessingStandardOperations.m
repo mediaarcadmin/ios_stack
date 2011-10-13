@@ -818,7 +818,7 @@
 #pragma mark -
 @implementation BlioProcessingXPSManifestOperation
 
-@synthesize audiobookReferencesParser, rightsParser, textflowParser, metadataParser, featureCompatibilityDictionary, audioFiles, timingFiles;
+@synthesize featureCompatibilityDictionary, audioFiles, timingFiles;
 
 - (id)init {
     if ((self = [super init])) {
@@ -828,10 +828,12 @@
     return self;
 }
 - (void)dealloc {
-	self.audiobookReferencesParser = nil;
-	self.rightsParser = nil;
-	self.metadataParser = nil;
-	self.textflowParser = nil;
+    @synchronized(self) {
+        [audiobookReferencesParser release];
+        [rightsParser release];
+        [metadataParser release];
+        [textflowParser release];
+    }
 	self.audioFiles = nil;
 	self.timingFiles = nil;
 	self.featureCompatibilityDictionary = nil;
@@ -870,9 +872,11 @@
 		NSLog(@"Textflow sections file is present. parsing XML...");
 		NSData * data = [self getBookManifestDataForKey:BlioManifestTextFlowKey];
 		if (data) {
-			self.textflowParser = [[[NSXMLParser alloc] initWithData:data] autorelease];
+            @synchronized(self) {
+			textflowParser = [[NSXMLParser alloc] initWithData:data];
 			[textflowParser setDelegate:self];
 			[textflowParser parse];
+            }
 		}
 	}
 	
@@ -909,9 +913,11 @@
 //				NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //				NSLog(@"stringData: %@",stringData);
 //				[stringData release];
-				self.rightsParser = [[[NSXMLParser alloc] initWithData:data] autorelease];
+                @synchronized(self) {
+				rightsParser = [[NSXMLParser alloc] initWithData:data];
 				[rightsParser setDelegate:self];
 				[rightsParser parse];
+                }
 			}
 		}
 	}
@@ -946,9 +952,11 @@
 //			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //			NSLog(@"stringData: %@",stringData);
 //			[stringData release];
-			self.audiobookReferencesParser = [[[NSXMLParser alloc] initWithData:data] autorelease];
+            @synchronized(self) {
+			audiobookReferencesParser = [[NSXMLParser alloc] initWithData:data];
 			[audiobookReferencesParser setDelegate:self];
 			[audiobookReferencesParser parse];
+            }
 		}
 		else {
 			hasAudiobook = NO;
@@ -973,9 +981,11 @@
 			//			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 			//			NSLog(@"stringData: %@",stringData);
 			//			[stringData release];
-			self.metadataParser = [[[NSXMLParser alloc] initWithData:data] autorelease];
+            @synchronized(self) {
+			metadataParser = [[NSXMLParser alloc] initWithData:data];
 			[metadataParser setDelegate:self];
 			[metadataParser parse];
+            }
 		}
 	}
 	
@@ -1003,7 +1013,7 @@
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
 	//	NSLog(@"didStartElement: %@",elementName);
-	if (parser == self.audiobookReferencesParser) {
+	if (parser == audiobookReferencesParser) {
 		if ( [elementName isEqualToString:@"Audio"] ) {
 			NSString * audioFile = [attributeDict objectForKey:@"src"];
 			
@@ -1021,7 +1031,7 @@
 			}
 		}
 	}	
-	else if (parser == self.textflowParser) {
+	else if (parser == textflowParser) {
 		if ( [elementName isEqualToString:@"BookContents"] ) {
 			NSString * attributeStringValue = [attributeDict objectForKey:@"NoTextFlowView"];
 			if (attributeStringValue && [attributeStringValue isEqualToString:@"True"]) {
@@ -1032,7 +1042,7 @@
 			}
 		}
 	}	
-	else if (parser == self.rightsParser) {
+	else if (parser == rightsParser) {
 		if ( [elementName isEqualToString:@"Audio"] ) {
 			NSString * attributeStringValue = [attributeDict objectForKey:@"TTSRead"];
 			if (attributeStringValue && [attributeStringValue isEqualToString:@"True"]) {
@@ -1063,7 +1073,7 @@
 			}
 		}
 	}
-	else if (parser == self.metadataParser) {
+	else if (parser == metadataParser) {
 		if ( [elementName isEqualToString:@"Feature"] ) {
 			if (!self.featureCompatibilityDictionary) self.featureCompatibilityDictionary = [NSDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"BlioFeatureCompatibility.plist"]];
 			
@@ -1110,7 +1120,7 @@
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {    
 	//	NSLog(@"didEndElement: %@",elementName);
-	if (parser == self.audiobookReferencesParser) {	
+	if (parser == audiobookReferencesParser) {	
 		if ( [elementName isEqualToString:@"AudioReferences"]  ) {
 			if ( [self.timingFiles count] != [self.audioFiles count] ) {
 				NSLog(@"WARNING: Missing audio or timing file.");
@@ -1130,7 +1140,7 @@
 			}
 		}
 	}
-	else if (parser == self.metadataParser) {
+	else if (parser == metadataParser) {
 		if ( [elementName isEqualToString:@"Features"] ) {
 			self.featureCompatibilityDictionary = nil;
 		}		

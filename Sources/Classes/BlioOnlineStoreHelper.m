@@ -487,7 +487,7 @@
 	[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];
 }
 -(void)retrieveBooks {
-//	NSLog(@"%@", NSStringFromSelector(_cmd));
+	NSLog(@"**********************%@", NSStringFromSelector(_cmd));
 	if (![BlioStoreManager sharedInstance].processingDelegate) {
 		NSLog(@"ERROR: no processingManager set for BlioOnlineStoreHelper! Aborting retrieveBooks...");
 		return;

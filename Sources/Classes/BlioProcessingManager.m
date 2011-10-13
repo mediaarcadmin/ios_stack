@@ -16,6 +16,7 @@
 #import "BlioImportManager.h"
 #import "BlioDrmSessionManager.h"
 #import "NSString+BlioAdditions.h"
+#import "BlioAppSettingsConstants.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -1007,6 +1008,10 @@
 	if ((sourceID == BlioBookSourceOnlineStore || sourceID == BlioBookSourceLocalBundleDRM) && [[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		[self resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 		[self resumeProcessingForSourceID:BlioBookSourceLocalBundleDRM];
+        if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
+            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+        }
+
 	}
 	else {
 //		ALERT user that we needed a token from login.

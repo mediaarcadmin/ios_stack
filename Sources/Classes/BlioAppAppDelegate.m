@@ -388,7 +388,10 @@ static void *background_init_thread(void * arg) {
 				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
 			}
 		}
-		else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+		else {
+            [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+//            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+        }
 	}
 	else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
 	[BlioStoreManager sharedInstance].didOpenWebStore = NO;
@@ -405,6 +408,7 @@ static void *background_init_thread(void * arg) {
 	
     if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) { 
         [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
+        [[NSUserDefaults standardUserDefaults] synchronize];
          [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
     }
         
@@ -429,7 +433,7 @@ static void *background_init_thread(void * arg) {
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 //			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+//			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
 		else {
 			//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")

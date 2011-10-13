@@ -423,6 +423,10 @@
 	}
 }
 - (void)onProcessingOperationProgressNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+    }
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [note object];
 		if ([voiceOp.voice isEqualToString:self.product.productId]) {

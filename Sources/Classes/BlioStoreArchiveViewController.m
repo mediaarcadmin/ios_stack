@@ -81,7 +81,6 @@
 				userNum = newUserNum;
 				[self fetchResults];
 			}
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 
 		}
 		else {
