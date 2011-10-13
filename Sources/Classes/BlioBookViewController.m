@@ -2818,6 +2818,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     [self setNavigationBarButtonsForInterfaceOrientation:toInterfaceOrientation];
+    
+    [self.bookView setNeedsLayout];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
