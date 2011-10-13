@@ -109,7 +109,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
                                                     action:@selector(dictionary:)] autorelease]];
     }
 
-    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference\u2026", "\"Reference\" option in popup menu")
                                                 action:@selector(showWordTools:)] autorelease]];
     
     return ret;
@@ -134,7 +134,7 @@ static NSString * const kBlioLastHighlightColorKey = @"BlioLastHighlightColor";
                                                                                 action:@selector(dictionary:)] autorelease]];
     }
     
-    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference", "\"Reference\" option in popup menu")
+    [ret addObject:[[[EucMenuItem alloc] initWithTitle:NSLocalizedString(@"Reference\u2026", "\"Reference\" option in popup menu")
                                                 action:@selector(showWordTools:)] autorelease]];
 
     return ret;

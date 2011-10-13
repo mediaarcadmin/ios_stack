@@ -33,7 +33,7 @@
 - (BOOL)shouldShowDoneButtonInPageSettings;
 
 - (void)changePageLayout:(BlioPageLayout)newLayout;
-- (void)changeFontSize:(BlioFontSize)newSize;
+- (void)changeFontSizeIndex:(NSUInteger)newSize;
 - (void)changeJustification:(BlioJustification)sender;
 - (void)changePageColor:(BlioPageColor)sender;
 - (void)changeTapZooms:(BOOL)newTabZooms;
@@ -45,7 +45,8 @@
 - (BlioJustification)currentJustification;
 - (BlioPageLayout)currentPageLayout;
 - (BlioPageColor)currentPageColor;
-- (BlioFontSize)currentFontSize;
+- (NSUInteger)currentFontSizeIndex;
+- (NSUInteger)fontSizeCount;
 - (BOOL)isRotationLocked;
 
 - (void)dismissViewSettings:(id)sender;
@@ -72,7 +73,6 @@ typedef enum {
     
     BookViewControllerUIFadeState _fadeState;
     
-    UIToolbar *_toolbar;
     UIView *_pauseMask;
     UIButton *_pauseButton;
     
@@ -124,7 +124,6 @@ typedef enum {
     
     BOOL bookReady;
     BOOL coverReady;
-    BOOL firstPageReady;
     BOOL coverOpened;
     
     BlioViewSettingsSheet *viewSettingsSheet;

@@ -106,7 +106,7 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         self.fontSizeSegment.alpha = 1.0f;
         self.fontSizeSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
         
-        [self.fontSizeSegment setSelectedSegmentIndex:[self.delegate currentFontSize]];
+        [self.fontSizeSegment setSelectedSegmentIndex:[self.delegate currentFontSizeIndex]];
     } else {
         self.fontSizeLabel.enabled = NO;
         self.fontSizeLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
@@ -304,24 +304,43 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         // Sizes and offsets for the font size buttons chosen to look 'right' visually
         // rather than being completly accurate to the book view technically.
         CGSize size = CGSizeMake(20, 23);
-        CGFloat baseline = 19;
-        NSArray *fontSizeTitles = [NSArray arrayWithObjects:
-                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:10.5] size:size baseline:baseline color:whiteColor],
-                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:13] size:size baseline:baseline color:whiteColor],
-                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:15] size:size baseline:baseline color:whiteColor],
-                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:19] size:size baseline:baseline color:whiteColor],
-                                   [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:23] size:size baseline:baseline color:whiteColor],
-                                   nil];
+        
+        NSUInteger fontSizeCount = [self.delegate fontSizeCount];
+        NSArray *fontSizeTitles;
+        if(fontSizeCount == 5) {
+            CGFloat baseline = 19;
+            fontSizeTitles = [NSMutableArray arrayWithObjects:
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:10.5] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:13] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:15] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:19] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:23] size:size baseline:baseline color:whiteColor],
+                              nil];
+        } else {
+            CGFloat baseline = 22;
+            NSParameterAssert(fontSizeCount == 6);
+            fontSizeTitles = [NSMutableArray arrayWithObjects:
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:10.5] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:13] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:15] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:19] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:23] size:size baseline:baseline color:whiteColor],
+                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:29] size:size baseline:baseline color:whiteColor],
+                              nil];
+        }  
         
         BlioAccessibilitySegmentedControl *aFontSizeSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:fontSizeTitles];    
         aFontSizeSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aFontSizeSegmentedControl.tintColor = tintColor;
         
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Smallest font size", @"Accessibility label for View Settings Smallest Font Size button")];
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Smaller font size", @"Accessibility label for View Settings Smaller Font Size button")];
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Normal font size", @"Accessibility label for View Settings Normal Font Size button")];
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:3] setAccessibilityLabel:NSLocalizedString(@"Larger font size", @"Accessibility label for View Settings Larger Font Size button")];
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:4] setAccessibilityLabel:NSLocalizedString(@"Largest font size", @"Accessibility label for View Settings Largest Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Smaller font size", @"Accessibility label for View Settings Smaller Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Small font size", @"Accessibility label for View Settings Smaller Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Medium font size", @"Accessibility label for View Settings Normal Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:3] setAccessibilityLabel:NSLocalizedString(@"Large font size", @"Accessibility label for View Settings Larger Font Size button")];
+        [[aFontSizeSegmentedControl imageForSegmentAtIndex:4] setAccessibilityLabel:NSLocalizedString(@"Larger font size", @"Accessibility label for View Settings Largest Font Size button")];
+        if(fontSizeCount == 6) {
+            [[aFontSizeSegmentedControl imageForSegmentAtIndex:5] setAccessibilityLabel:NSLocalizedString(@"Extra-large font size", @"Accessibility label for View Settings Largest Font Size button")];
+        }
         
         [self addSubview:aFontSizeSegmentedControl];
         self.fontSizeSegment = aFontSizeSegmentedControl;
@@ -680,7 +699,7 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 
 - (void)changeFontSize:(id)sender {
     if(!self.refreshingSettings) {
-        [self.delegate changeFontSize:((UISegmentedControl*)sender).selectedSegmentIndex];
+        [self.delegate changeFontSizeIndex:((UISegmentedControl*)sender).selectedSegmentIndex];
     }
 }
 
