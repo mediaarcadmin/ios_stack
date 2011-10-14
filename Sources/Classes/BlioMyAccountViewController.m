@@ -108,7 +108,7 @@
                 [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
                 [self.navigationController popViewControllerAnimated:YES];	
                 if ([delegate respondsToSelector:@selector(setDidDeregister:)]) [delegate setDidDeregister:YES];
-                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Registration Error",@"\"Registration Error\" alert message title") 
                                              message:NSLocalizedStringWithDefaultValue(@"LOGGED_IN_BUT_REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"You have been logged out due to a registration error. Please try again later.",@"Alert  informing a logged in end-user that registration failed, resulting in logout.")
                                             delegate:nil
                                    cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")

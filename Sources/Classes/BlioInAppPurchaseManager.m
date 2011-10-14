@@ -108,7 +108,7 @@
 	[request release];
 }
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Voice Purchase Error",@"\"Voice Purchase Error\" alert message title")
 								 message:NSLocalizedStringWithDefaultValue(@"IN_APP_PRODUCT_FETCH_FAILED",nil,[NSBundle mainBundle],@"Blio cannot retrieve available in-app products due to a server error. Please try again later.",@"Alert message when Blio cannot fetch products from the iTunes server.")
 								delegate:nil 
 					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
@@ -182,7 +182,7 @@
 	NSLog(@"Transaction Failed");
 	if (transaction.error.code != SKErrorPaymentCancelled)
 	{
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Voice Purchase Error",@"\"Voice Purchase Error\" alert message title")
 									 message:[NSString stringWithFormat:NSLocalizedString(@"An error was encountered: %@",@"Error message preface."),[transaction.error localizedDescription]]
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
