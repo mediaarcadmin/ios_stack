@@ -1782,7 +1782,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.pauseButton.center = imageViewCenter;
     self.resumeButton.center = imageViewCenter;
     CGRect imageViewFrame = [self convertRect:self.bookView.imageView.frame fromView:self.bookView];
-    self.deleteButton.center = CGPointMake(floorf(2 + imageViewFrame.origin.x) - 0.5f, floorf(2 + imageViewFrame.origin.y) + 0.5f);
+    self.deleteButton.center = CGPointMake(floorf(6 + imageViewFrame.origin.x) - 0.5f, floorf(6 + imageViewFrame.origin.y) + 0.5f);
     self.previewBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 48, 48);
 
     [self setNeedsLayout];
