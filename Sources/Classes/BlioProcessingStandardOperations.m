@@ -285,7 +285,9 @@
 
 @interface BlioProcessingDownloadOperation (PRIVATE)
 
--(void)finish;
+- (void)prepareForStartOnBackgroundThread;
+- (void)cancelActiveConnections;
+- (void)finish;
 
 @end
 
@@ -301,23 +303,20 @@
     self.tempFilename = nil;
 	if (self.connection) {
 		[self.connection cancel];
+        self.connection = nil;
 	}
-	if (self.headConnection) [self.headConnection cancel];
-    self.connection = nil;
-    self.headConnection = nil;
+	if (self.headConnection) {
+        [self.headConnection cancel];
+        self.headConnection = nil;
+    }
     self.downloadFile = nil;
 	self.requestHTTPBody = nil;
     [super dealloc];
 }
 
 - (id)initWithUrl:(NSURL *)aURL {
-    
-//    if (nil == aURL) return nil; // starting with paid books, URLs may be dynamically generated from server.
-    
     if((self = [super init])) {
         self.url = aURL;
-		self.connection = nil;
-		self.headConnection = nil;
 		expectedContentLength = NSURLResponseUnknownLength;
         executing = NO;
         finished = NO;
@@ -338,78 +337,103 @@
 - (BOOL)isFinished {
     return finished;
 }
--(void)cancel {
+
+- (void)cancel {
 	[super cancel];
 	NSLog(@"Cancelling download...");
-	if (self.connection) {
-		[self.connection cancel];
-	}	
-	[self finish];
+    if([NSThread isMainThread]) {
+        [self performSelector:@selector(cancelActiveConnections) withObject:nil afterDelay:0.0];
+    } else {
+        [self performSelectorOnMainThread:@selector(cancelActiveConnections) withObject:nil waitUntilDone:NO];
+    }
+}
+
+- (void)cancelActiveConnections
+{
+    if (self.headConnection || self.connection) {
+        [self.headConnection cancel];
+        self.headConnection = nil;
+        
+        [self.connection cancel];
+        self.connection = nil;
+
+        // We'd usually be relying on the callbacks from these connections
+        // to finish the operation, so we need to do it manually because there
+        // will be no further callbacks.
+        [self finish];
+    }
 }
 
 - (void)finish {
-    self.connection = nil;
-    
-    BOOL wasUnfinished = !finished;
-    if(wasUnfinished) {
+    if(!finished) {
         [self willChangeValueForKey:@"isFinished"];
         finished = YES;
+        [self didChangeValueForKey:@"isFinished"];
     }
     if(executing) {
         [self willChangeValueForKey:@"isExecuting"];
         executing = NO;
         [self didChangeValueForKey:@"isExecuting"];
     }
-    if(wasUnfinished) {
-        [self didChangeValueForKey:@"isFinished"];
-    }
 }
 
-- (void)start {
+- (void)start
+{
+    [self willChangeValueForKey:@"isExecuting"];
+    executing = YES;
+    [self didChangeValueForKey:@"isExecuting"];
     
-    // Must be performed on main thread
-    // See http://www.dribin.org/dave/blog/archives/2009/05/05/concurrent_operations/
-    if (![NSThread isMainThread]) {
-        [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
-        return;
-    }
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"failed dependency found: %@",blioOp);
 			[self cancel];
 			break;
 		}
-	}
-	
+	}    
+    
     if ([self isCancelled]) {
         NSLog(@"BlioProcessingDownloadOperation cancelled, will prematurely abort start");
-        if(!finished) {
-            [self willChangeValueForKey:@"isFinished"];
-            finished = YES;
-            [self didChangeValueForKey:@"isFinished"];
-        }
+        [self finish];
         return;
     }
 
-	if (self.url == nil) {
-        [self willChangeValueForKey:@"isFinished"];
+    [self prepareForStartOnBackgroundThread];
+    
+    if ([self isCancelled]) {
+        NSLog(@"BlioProcessingDownloadOperation cancelled, will prematurely abort start");
+        [self finish];
+        return;
+    }
+    
+    [self performSelectorOnMainThread:@selector(startOnMainThread) withObject:nil waitUntilDone:NO];
+}
+
+- (void)prepareForStartOnBackgroundThread {
+    // Do nothing - subclasses can implement to do anything they need to do in the background
+    // before we start our download on the main thread. (e.g. prepare the URL).
+}
+
+- (void)startOnMainThread {
+    NSParameterAssert([NSThread isMainThread]);
+
+    if ([self isCancelled]) {
+        NSLog(@"BlioProcessingDownloadOperation cancelled, will prematurely abort start");
+        [self finish];
+        return;
+    }
+
+    NSURL *myURL = self.url;
+	if (myURL == nil) {
 		NSLog(@"URL is nil, will prematurely abort start");
-        finished = YES;
-        [self didChangeValueForKey:@"isFinished"];
+        [self finish];
         return;
     }
-
-	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable && ![self.url isFileURL]) {
-        [self willChangeValueForKey:@"isFinished"];
+    
+	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable && ![myURL isFileURL]) {
 		NSLog(@"Internet connection is dead, will prematurely abort start");
-        finished = YES;
-        [self didChangeValueForKey:@"isFinished"];
+        [self finish];
         return;
     }
-	
-    [self willChangeValueForKey:@"isExecuting"];
-    executing = YES;
-    [self didChangeValueForKey:@"isExecuting"];
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIApplication *application = [UIApplication sharedApplication];
@@ -427,7 +451,7 @@
 		}
 	}
     
-    if (resume && ![self.url isFileURL]) {
+    if (resume && ![myURL isFileURL]) {
         // downloadHead first
         [self headDownload];			
     }
@@ -628,10 +652,8 @@
 			[self.connection cancel];
 			self.connection = nil;
 		}
-		[self willChangeValueForKey:@"isFinished"];
-        finished = YES;
 		NSLog(@"DownloadOperation cancelled, will prematurely abort NSURLConnection");
-        [self didChangeValueForKey:@"isFinished"];
+        [self finish];
         return;
     }	
     if (self.connection == aConnection) {
@@ -748,72 +770,46 @@
     }
     return self;
 }
-- (void)start {
-	for (BlioProcessingOperation * blioOp in [self dependencies]) {
-		if (!blioOp.operationSuccess) {
-			NSLog(@"failed dependency found: %@",blioOp);
-			[self cancel];
-			break;
-		}
-	}	
-	if ([self isCancelled]) {
-        [self willChangeValueForKey:@"isFinished"];
-		NSLog(@"BlioProcessingDownloadPaidBookOperation cancelled, will prematurely abort start");
-        finished = YES;
-        [self didChangeValueForKey:@"isFinished"];
-        return;
+
+- (void)prepareForStartOnBackgroundThread {
+    if(!self.url)  {
+        if ([[BlioStoreManager sharedInstance] tokenForSourceID:self.sourceID]) {
+            if ([[self getBookValueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
+                // app will contact Store for a new limited-lifetime URL.
+                NSURL * newXPSURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:sourceID sourceSpecificID:sourceSpecificID];
+                if (newXPSURL) {
+                    NSLog(@"new XPS URL: %@",[newXPSURL absoluteString]);
+                    self.url = newXPSURL;
+                    
+                    //				// set manifest location for record-keeping purposes (though the app will likely request a new URL at a later time should this one fail now.)
+                    //				NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+                    //				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:BlioManifestEntryLocationKey];
+                    //				[manifestEntry setValue:[newXPSURL absoluteString] forKey:BlioManifestEntryPathKey];
+                    //				[self setBookManifestValue:manifestEntry forKey:BlioManifestXPSKey];		
+                    
+                }
+                else {
+                    NSLog(@"new XPS URL was not able to be obtained from server! Cancelling BlioProcessingDownloadPaidBookOperation...");
+                }
+            }
+            else {
+                NSLog(@"Book userNum and currentUserNum do not match! Cancelling BlioProcessingDownloadPaidBookOperation...");
+                NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
+                [userInfo setObject:self.bookID forKey:@"bookID"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookNonMatchingUserNotification object:self userInfo:userInfo];
+            }
+        }
+        else {
+            NSLog(@"App does not have valid token! Cancelling BlioProcessingDownloadPaidBookOperation...");
+            NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
+            [userInfo setObject:self.bookID forKey:@"bookID"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookTokenRequiredNotification object:self userInfo:userInfo];
+        }
     }
-	
-	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable && self.url && ![self.url isFileURL]) {
-        [self willChangeValueForKey:@"isFinished"];
-		NSLog(@"Internet connection is dead, will prematurely abort start");
-        finished = YES;
-        [self didChangeValueForKey:@"isFinished"];
-        return;
-    }
-	
-	if (self.url == nil) {
-		if ([[BlioStoreManager sharedInstance] tokenForSourceID:self.sourceID]) {
-			if ([[self getBookValueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
-				// app will contact Store for a new limited-lifetime URL.
-				NSURL * newXPSURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:sourceID sourceSpecificID:sourceSpecificID];
-				if (newXPSURL) {
-					NSLog(@"new XPS URL: %@",[newXPSURL absoluteString]);
-					self.url = newXPSURL;
-					
-					//				// set manifest location for record-keeping purposes (though the app will likely request a new URL at a later time should this one fail now.)
-					//				NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-					//				[manifestEntry setValue:BlioManifestEntryLocationWeb forKey:BlioManifestEntryLocationKey];
-					//				[manifestEntry setValue:[newXPSURL absoluteString] forKey:BlioManifestEntryPathKey];
-					//				[self setBookManifestValue:manifestEntry forKey:BlioManifestXPSKey];		
-					
-				}
-				else {
-					NSLog(@"new XPS URL was not able to be obtained from server! Cancelling BlioProcessingDownloadPaidBookOperation...");
-					[self cancel];
-					return;
-				}
-			}
-			else {
-				NSLog(@"Book userNum and currentUserNum do not match! Cancelling BlioProcessingDownloadPaidBookOperation...");
-				NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
-				[userInfo setObject:self.bookID forKey:@"bookID"];
-				[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookNonMatchingUserNotification object:self userInfo:userInfo];
-				[self cancel];
-				return;				
-			}
-		}
-		else {
-			NSLog(@"App does not have valid token! Cancelling BlioProcessingDownloadPaidBookOperation...");
-			NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
-			[userInfo setObject:self.bookID forKey:@"bookID"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookTokenRequiredNotification object:self userInfo:userInfo];
-			[self cancel];
-			return;
-		}
-	}
-	[super start];
+    
+    [super prepareForStartOnBackgroundThread];
 }
+
 @end
 
 #pragma mark -
