@@ -1145,10 +1145,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [(THEventCapturingWindow *)_bookView.window removeTouchObserver:self forView:_bookView];
             }
             
-            if([_bookView respondsToSelector:@selector(stopAnimation)]) {
-                [_bookView performSelector:@selector(stopAnimation)];
-            }
-
             // Save the current progress, for UI display purposes.
             self.book.progress = [NSNumber numberWithFloat:[_bookView percentageForBookmarkPoint:self.book.implicitBookmarkPoint]];
             
