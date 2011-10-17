@@ -22,6 +22,16 @@
 }
 
 @end
+@interface BlioProcessingDeleteBookOperation : BlioProcessingOperation {
+    id<BlioProcessingDelegate> _processingDelegate;
+    BOOL attemptArchive;
+    BOOL shouldSave;
+}
+@property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
+@property (nonatomic, assign) BOOL attemptArchive;
+@property (nonatomic, assign) BOOL shouldSave;
+@end
+
 
 @interface BlioProcessingPreAvailabilityCompleteOperation : BlioProcessingAggregateOperation {
     NSString *filenameKey;

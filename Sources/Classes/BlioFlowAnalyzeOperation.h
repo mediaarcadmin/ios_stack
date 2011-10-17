@@ -10,6 +10,7 @@
 #import "BlioProcessing.h"
 
 @interface BlioFlowAnalyzeOperation : BlioProcessingOperation {
+    BOOL hasStarted;
 }
 
 @end

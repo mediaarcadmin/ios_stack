@@ -117,6 +117,20 @@
 }
 @end
 
+@implementation BlioProcessingDeleteBookOperation
+@synthesize processingDelegate = _processingDelegate;
+@synthesize attemptArchive,shouldSave;
+
+- (void)main {
+    NSMutableDictionary * settings = [NSMutableDictionary dictionaryWithCapacity:4];
+    [settings setObject:self.bookID forKey:@"bookID"];
+    [settings setObject:[NSNumber numberWithBool:self.attemptArchive] forKey:@"attemptArchive"];
+    [settings setObject:[NSNumber numberWithBool:self.shouldSave] forKey:@"shouldSave"];
+    [self.processingDelegate safeDeleteBookWithSettings:settings];
+}
+
+@end
+
 @implementation BlioProcessingPreAvailabilityCompleteOperation
 
 @synthesize filenameKey;
