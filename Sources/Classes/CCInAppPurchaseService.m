@@ -89,10 +89,17 @@
 
 -(CCInAppPurchaseResponse*)responseFromData:(NSData*)data {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
+    
+    // test to see if valid XML found
+    				NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    				NSLog(@"stringData: %@",stringData);
+    				[stringData release];
+
+    
 	_response = [[CCInAppPurchaseFetchProductsResponse alloc] init];
-	NSXMLParser * responseParser = nil;
+	
     @synchronized([BlioXMLParserLock sharedLock]) {
-    [[NSXMLParser alloc] initWithData:data];
+        NSXMLParser * responseParser = [[NSXMLParser alloc] initWithData:data];
         [responseParser setDelegate:self];
         [responseParser parse];
         [responseParser release];

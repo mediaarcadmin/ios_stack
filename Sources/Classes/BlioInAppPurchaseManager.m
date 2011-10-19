@@ -127,9 +127,12 @@
 		self.inAppProducts = [NSMutableArray array];
 		NSMutableArray * productIDs = [NSMutableArray array];
 		NSArray * voiceNamesForUse = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoiceNamesForUse];
+        NSLog(@"voiceNamesForUse: %@",voiceNamesForUse);
+        NSLog(@"fetchProductsResponse.products: %@",fetchProductsResponse.products);
 		for (CCInAppPurchaseProduct * product in fetchProductsResponse.products) {
+            NSLog(@"product.name: %@",product.name);
 			if (![voiceNamesForUse containsObject:product.name]) {
-				NSLog(@"product: %@, %@",product,product.productId);
+				NSLog(@"adding product: %@, %@",product,product.productId);
 				[inAppProducts addObject:product];
 				[productIDs addObject:product.productId];
 			}
