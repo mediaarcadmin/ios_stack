@@ -415,7 +415,7 @@
 		[self.delegate purchaseProductWithID:self.product.productId];
 	}
 	else {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title")
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Voice Purchase Error",@"\"Voice Purchase Error\" alert message title")
 									 message:NSLocalizedStringWithDefaultValue(@"PURCHASES_NOT_ENABLED",nil,[NSBundle mainBundle],@"In-App Purchases are not currently enabled, possibly due to Parental Controls restrictions.",@"Alert message when SKPaymenQueue canMakePayments returns NO.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
@@ -423,6 +423,10 @@
 	}
 }
 - (void)onProcessingOperationProgressNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+    }
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [note object];
 		if ([voiceOp.voice isEqualToString:self.product.productId]) {

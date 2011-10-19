@@ -17,11 +17,12 @@
 #import "BlioBook.h"
 #import "BlioParagraphSource.h"
 
-static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f, 95.0f, 120.0f };
-
 @interface BlioSpeedReadView ()
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, retain) NSArray *fontSizes;
+@property (nonatomic, assign) id<BlioBookViewDelegate> delegate;
+
 @property (nonatomic, retain) id currentParagraphID;
 @property (nonatomic) int32_t currentWordOffset;
 @property (nonatomic, retain) NSArray *textArray;
@@ -45,7 +46,7 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 
 @implementation BlioSpeedReadView
 
-@synthesize bookID, currentBookmarkPoint, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer, paragraphSource;
+@synthesize bookID, fontSizes, currentBookmarkPoint, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer, paragraphSource;
 @synthesize delegate;
 
 - (void)dealloc {
@@ -58,7 +59,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     [[BlioBookManager sharedBookManager] checkInParagraphSourceForBookWithID:bookID];
     [paragraphSource release]; paragraphSource = nil;
     
-    [bookID release];
+    [fontSizes release]; fontSizes = nil;
+    [bookID release]; bookID = nil;
     
 	// Don't release as was not retained
 	delegate = nil;
@@ -66,10 +68,12 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
 }
 
 - (id)initWithFrame:(CGRect)frame
+           delegate:(id<BlioBookViewDelegate>)delegateIn
              bookID:(NSManagedObjectID *)bookIDIn
            animated:(BOOL)animated {
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
         self.bookID = bookIDIn;
+        self.delegate = delegateIn;
         
         paragraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:bookID] retain];
         
@@ -129,7 +133,8 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
         
         [self addSubview:fingerImageHolder];
         
-        currentFontSize = kBlioSpeedReadFontPointSizeArray[kBlioFontSizeMedium];
+        fontSizes = [[self.delegate fontSizesForBlioBookView:self] retain];
+        currentFontSize = [[fontSizes objectAtIndex:(fontSizes.count - 1) / 2] floatValue];
         font = [UIFont fontWithName:@"Helvetica" size:currentFontSize];
         
         speed = 0;
@@ -159,23 +164,26 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     }
 }
 
-- (BlioFontSize)fontSize {
+- (NSUInteger)fontSizeIndex {
     CGFloat actualFontSize = currentFontSize;
     CGFloat bestDifference = CGFLOAT_MAX;
-    BlioFontSize bestFontSize = kBlioFontSizeMedium;
-    for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
-        CGFloat thisDifference = fabsf(kBlioSpeedReadFontPointSizeArray[i] - actualFontSize);
+    NSUInteger bestFontSizeIndex = 0;
+    
+    NSUInteger i = 0;
+    for(NSNumber *size in fontSizes) {
+        CGFloat thisDifference = fabsf(size.floatValue - actualFontSize);
         if(thisDifference < bestDifference) {
             bestDifference = thisDifference;
-            bestFontSize = i;
+            bestFontSizeIndex = i;
         }
+        ++i;
     }
-    return bestFontSize;
+    return bestFontSizeIndex;
 }
 
-- (void)setFontSize:(BlioFontSize)newSize
+- (void)setFontSizeIndex:(NSUInteger)fontSizeIndex
 {
-    CGFloat fontPointSize = kBlioSpeedReadFontPointSizeArray[newSize];
+    CGFloat fontPointSize = [[fontSizes objectAtIndex:fontSizeIndex] floatValue];
     
     currentFontSize = fontPointSize;
     bigTextLabel.font = [font fontWithSize:currentFontSize];
@@ -412,9 +420,9 @@ static const CGFloat kBlioSpeedReadFontPointSizeArray[] = { 20.0f, 45.0f, 70.0f,
     zooming = NO;
 	
     if ([[[event allTouches] allObjects] count] == 2) {
-        [self willChangeValueForKey:@"fontSize"];
+        [self willChangeValueForKey:@"fontSizeIndex"];
         currentFontSize = sampleTextLabel.font.pointSize;
-        [self didChangeValueForKey:@"fontSize"];
+        [self didChangeValueForKey:@"fontSizeIndex"];
 
         bigTextLabel.font = [font fontWithSize:currentFontSize];
         

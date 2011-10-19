@@ -122,7 +122,7 @@
 
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
     if (![NSThread isMainThread]) {
-        [self performSelectorOnMainThread:@selector(onProcessingCompleteNotification:) withObject:note waitUntilDone:NO];
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
 		return;
 	}
 	if ([[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [[[note userInfo] objectForKey:@"sourceID"] intValue] == BlioBookSourceFileSharing) {

@@ -81,7 +81,6 @@
 				userNum = newUserNum;
 				[self fetchResults];
 			}
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 
 		}
 		else {
@@ -245,7 +244,7 @@
 		return;
 	}
 	if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] != BlioDeviceRegisteredStatusRegistered ) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"This device is not registered...",@"\"This device is not registered...\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Registration Error",@"\"Registration Error\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for reading purchased books. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
 									delegate:self 
 						   cancelButtonTitle:nil

@@ -1,5 +1,6 @@
 #import "BlioContentCafe.h"
 #import <libxml/xmlstring.h>
+#import "BlioXMLParserLock.h"
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
@@ -18546,7 +18547,9 @@ parameters:(ContentCafe_Test1 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -18584,11 +18587,13 @@ parameters:(ContentCafe_Test1 *)aParameters
 					}
 				}
 			}
-			
+            @synchronized([BlioXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
+            }
 		}
-		
+        @synchronized([BlioXMLParserLock sharedLock]) {
 		xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -18639,7 +18644,9 @@ parameters:(ContentCafe_Test2 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -18677,11 +18684,13 @@ parameters:(ContentCafe_Test2 *)aParameters
 					}
 				}
 			}
-			
+            @synchronized([BlioXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
+            }
 		}
-		
+        @synchronized([BlioXMLParserLock sharedLock]) {
 		xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -18732,7 +18741,9 @@ parameters:(ContentCafe_Test3 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -18770,11 +18781,13 @@ parameters:(ContentCafe_Test3 *)aParameters
 					}
 				}
 			}
-			
+            @synchronized([BlioXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
+            }
 		}
-		
+        @synchronized([BlioXMLParserLock sharedLock]) {
 		xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -18825,7 +18838,9 @@ parameters:(ContentCafe_Test4 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -18863,11 +18878,13 @@ parameters:(ContentCafe_Test4 *)aParameters
 					}
 				}
 			}
-			
+            @synchronized([BlioXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
+            }
 		}
-		
+        @synchronized([BlioXMLParserLock sharedLock]) {
 		xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -18918,7 +18935,9 @@ parameters:(ContentCafe_XmlPost *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -18956,11 +18975,13 @@ parameters:(ContentCafe_XmlPost *)aParameters
 					}
 				}
 			}
-			
+            @synchronized([BlioXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
+            }
 		}
-		
+        @synchronized([BlioXMLParserLock sharedLock]) {
 		xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -19011,7 +19032,9 @@ parameters:(ContentCafe_XmlString *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -19049,11 +19072,13 @@ parameters:(ContentCafe_XmlString *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -19104,7 +19129,9 @@ parameters:(ContentCafe_XmlClass *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -19142,11 +19169,13 @@ parameters:(ContentCafe_XmlClass *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -19197,7 +19226,9 @@ parameters:(ContentCafe_Single *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -19235,11 +19266,13 @@ parameters:(ContentCafe_Single *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -19305,9 +19338,10 @@ static ContentCafeSoap_envelope *ContentCafeSoapSharedEnvelopeInstance = nil;
 	xmlDocDumpFormatMemory(doc, &buf, &size, 1);
 	
 	NSString *serializedForm = [NSString stringWithCString:(const char*)buf encoding:NSUTF8StringEncoding];
+    @synchronized([BlioXMLParserLock sharedLock]) {
 	xmlFree(buf);
-	
 	xmlFreeDoc(doc);	
+    }
 	return serializedForm;
 }
 @end
@@ -19665,7 +19699,9 @@ parameters:(ContentCafe_Test1 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -19703,11 +19739,13 @@ parameters:(ContentCafe_Test1 *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -19758,7 +19796,9 @@ parameters:(ContentCafe_Test2 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -19796,11 +19836,13 @@ parameters:(ContentCafe_Test2 *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -19851,7 +19893,9 @@ parameters:(ContentCafe_Test3 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -19889,11 +19933,13 @@ parameters:(ContentCafe_Test3 *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -19944,7 +19990,9 @@ parameters:(ContentCafe_Test4 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -19982,11 +20030,13 @@ parameters:(ContentCafe_Test4 *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -20037,7 +20087,9 @@ parameters:(ContentCafe_XmlPost *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -20075,11 +20127,13 @@ parameters:(ContentCafe_XmlPost *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -20130,7 +20184,9 @@ parameters:(ContentCafe_XmlString *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -20168,11 +20224,13 @@ parameters:(ContentCafe_XmlString *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -20223,7 +20281,9 @@ parameters:(ContentCafe_XmlClass *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -20261,11 +20321,13 @@ parameters:(ContentCafe_XmlClass *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -20316,7 +20378,9 @@ parameters:(ContentCafe_Single *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-		doc = xmlParseMemory([responseData bytes], [responseData length]);
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }		
 		
 		if (doc == NULL) {
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
@@ -20354,11 +20418,13 @@ parameters:(ContentCafe_Single *)aParameters
 					}
 				}
 			}
-			
-			xmlFreeDoc(doc);
+            @synchronized([BlioXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
 		}
-		
-		xmlCleanupParser();
+        @synchronized([BlioXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
 		[delegate operation:self completedWithResponse:response];
 	}
 }
@@ -20422,9 +20488,10 @@ static ContentCafeSoap12_envelope *ContentCafeSoap12SharedEnvelopeInstance = nil
 	xmlDocDumpFormatMemory(doc, &buf, &size, 1);
 	
 	NSString *serializedForm = [NSString stringWithCString:(const char*)buf encoding:NSUTF8StringEncoding];
-	xmlFree(buf);
-	
+    @synchronized([BlioXMLParserLock sharedLock]) {
+	xmlFree(buf);	
 	xmlFreeDoc(doc);	
+    }
 	return serializedForm;
 }
 @end

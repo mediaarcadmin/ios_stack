@@ -102,7 +102,18 @@
 		[activityIndicator stopAnimating];
 		if (!changeSuccess) {
 			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [(UISwitch*)sender setOn:YES];
-			else [(UISwitch*)sender setOn:NO];
+			else {
+                [(UISwitch*)sender setOn:NO];
+                // TICKET 507: automatically logout when de-registering device (or registration fails for legacy logged in users).
+                [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+                [self.navigationController popViewControllerAnimated:YES];	
+                if ([delegate respondsToSelector:@selector(setDidDeregister:)]) [delegate setDidDeregister:YES];
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Registration Error",@"\"Registration Error\" alert message title") 
+                                             message:NSLocalizedStringWithDefaultValue(@"LOGGED_IN_BUT_REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"You have been logged out due to a registration error. Please try again later.",@"Alert  informing a logged in end-user that registration failed, resulting in logout.")
+                                            delegate:nil
+                                   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                   otherButtonTitles:nil];
+            }
 		}
 		sender.enabled = YES;
 	}

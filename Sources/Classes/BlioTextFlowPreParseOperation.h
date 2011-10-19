@@ -8,7 +8,9 @@
 
 #import "BlioProcessing.h"
 
-@interface BlioTextFlowPreParseOperation : BlioProcessingOperation
+@interface BlioTextFlowPreParseOperation : BlioProcessingOperation {
+    BOOL hasStarted;
+}
 
 @end
 

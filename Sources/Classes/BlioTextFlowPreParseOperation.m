@@ -75,7 +75,12 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
     }
     
 }
-
+-(void) cancel {
+    @synchronized(self) {
+        if (hasStarted) return;
+    [super cancel];
+    }
+}
 - (void)main {
     // NSLog(@"BlioTextFlowPreParseOperation main entered");
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
@@ -85,10 +90,13 @@ static void pageFileXMLParsingStartElementHandler(void *ctx, const XML_Char *nam
 			break;
 		}
 	}	
+    @synchronized(self) {
     if ([self isCancelled]) {
 		NSLog(@"BlioTextFlowPreParseOperation cancelled, will prematurely abort start");	
 		return;
 	}
+    else hasStarted = YES;
+    }
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
 	if (![self hasBookManifestValueForKey:BlioManifestTextFlowKey]) {

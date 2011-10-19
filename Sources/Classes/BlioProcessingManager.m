@@ -16,6 +16,7 @@
 #import "BlioImportManager.h"
 #import "BlioDrmSessionManager.h"
 #import "NSString+BlioAdditions.h"
+#import "BlioAppSettingsConstants.h"
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -1007,6 +1008,10 @@
 	if ((sourceID == BlioBookSourceOnlineStore || sourceID == BlioBookSourceLocalBundleDRM) && [[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		[self resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 		[self resumeProcessingForSourceID:BlioBookSourceLocalBundleDRM];
+        if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
+            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+        }
+
 	}
 	else {
 //		ALERT user that we needed a token from login.
@@ -1245,13 +1250,54 @@
     [self deleteBook:aBook attemptArchive:YES shouldSave:shouldSave];
 }
 -(void) deleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave {
-
-	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
+    NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:aBook.objectID forKey:@"bookID"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingWillDeleteBookNotification object:self userInfo:userInfo];
 	// if book is processing, stop all associated operations
-	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) [self stopProcessingForBook:aBook];
-	
+	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+        // create delete operation and add to queue
+        NSLog(@"creating delete book operation for %@...",aBook.title);
+        BlioProcessingDeleteBookOperation *deleteOp = [[BlioProcessingDeleteBookOperation alloc] init];
+        deleteOp.attemptArchive = attemptArchive;
+        deleteOp.shouldSave = shouldSave;
+        deleteOp.processingDelegate = self;
+        deleteOp.bookID = aBook.objectID;
+        deleteOp.sourceID = [aBook.sourceID intValue];
+        deleteOp.sourceSpecificID = aBook.sourceSpecificID;
+        NSArray * processingOps = [self processingOperationsForSourceID:[aBook.sourceID intValue] sourceSpecificID:aBook.sourceSpecificID];
+        if (processingOps && [processingOps count] > 0) { 
+            for (BlioProcessingOperation * op in processingOps) {
+                [deleteOp addDependency:op];
+            }
+        }
+        [deleteOp setQueuePriority:NSOperationQueuePriorityVeryLow];
+        [self stopProcessingForBook:aBook];
+        [self.preAvailabilityQueue addOperation:deleteOp];
+        [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateToBeDeleted] forKey:@"processingState"];
+        if (shouldSave) {
+            NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+            NSError * error = nil;
+            if (![moc save:&error]) {
+                NSLog(@"save processingState to BlioBookProcessingStateToBeDeleted failed in processing manager with error: %@, %@", error, [error userInfo]);
+            }		
+        }
+    }
+    else [self safeDeleteBook:aBook attemptArchive:attemptArchive shouldSave:shouldSave];
+    
+    
+}
+-(void)safeDeleteBookWithSettings:(NSDictionary*)settings {	
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:settings waitUntilDone:NO];
+		return;
+    }
+    BlioBook * aBook = [[BlioBookManager sharedBookManager] bookWithID:[settings objectForKey:@"bookID"]];
+    BOOL attemptArchive = [[settings objectForKey:@"attemptArchive"] boolValue];
+    BOOL shouldSave = [[settings objectForKey:@"shouldSave"] boolValue];
+    if (aBook) [self safeDeleteBook:aBook attemptArchive:attemptArchive shouldSave:shouldSave];
+}
+-(void)safeDeleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave {	
+    NSLog(@"safe deleting book: %@",aBook.title);
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	NSError * error;
 	NSFileManager *fileManager = [NSFileManager defaultManager];

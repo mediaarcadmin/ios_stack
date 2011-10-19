@@ -187,7 +187,7 @@
 #pragma mark -
 #pragma mark BlioBookView
 
-- (id)initWithFrame:(CGRect)frame bookID:(NSManagedObjectID *)aBookID animated:(BOOL)animated {
+- (id)initWithFrame:(CGRect)frame delegate:(id<BlioBookViewDelegate>)aDelegate bookID:(NSManagedObjectID *)aBookID animated:(BOOL)animated {
     
     BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
     
@@ -198,6 +198,7 @@
     }
     
     if((self = [super initWithFrame:frame])) {
+        self.delegate = aDelegate;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;        
         self.opaque = YES;
         self.multipleTouchEnabled = YES;
@@ -311,34 +312,34 @@
 }
 
 - (void)layoutSubviews {
-    CGRect myBounds = self.bounds;
-    if(self.twoUpLandscape && 
-       myBounds.size.width > myBounds.size.height) {
-        self.pageTurningView.twoUp = YES;        
-        // The first page is page 0 as far as the page turning view is concerned,
-        // so it's an even page, so if it's mean to to be on the left, the odd 
-        // pages should be on the right.
-        
-        // Disabled for now because many books seem to have the property set even
-        // though their first page is the cover, and the odd pages are 
-        // clearly meant to be on the left (e.g. they have page numbers on the 
-        // outside).
-        //self.pageTurningView.oddPagesOnRight = [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
-    } else {
-        self.pageTurningView.twoUp = NO;
-    }   
-    [super layoutSubviews];
     CGSize newSize = self.bounds.size;
     if(!CGSizeEqualToSize(newSize, self.pageSize)) {
-        if(self.selector.tracking) {
-            [self.selector setSelectedRange:nil];
-        }
-        
-		BOOL firstLayout = NO;
+        BOOL firstLayout = NO;
 		if (CGSizeEqualToSize(self.pageSize, CGSizeZero)) {
 			firstLayout = YES;
 		}
 		self.pageSize = newSize;
+
+        if(self.twoUpLandscape && 
+           newSize.width > newSize.height) {
+            self.pageTurningView.twoUp = YES;        
+            // The first page is page 0 as far as the page turning view is concerned,
+            // so it's an even page, so if it's mean to to be on the left, the odd 
+            // pages should be on the right.
+            
+            // Disabled for now because many books seem to have the property set even
+            // though their first page is the cover, and the odd pages are 
+            // clearly meant to be on the left (e.g. they have page numbers on the 
+            // outside).
+            //self.pageTurningView.oddPagesOnRight = [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
+        } else {
+            self.pageTurningView.twoUp = NO;
+        }   
+        
+        if(self.selector.tracking) {
+            [self.selector setSelectedRange:nil];
+        }
+        
         // Perform this after a delay in order to give time for layoutSubviews 
         // to be called on the pageTurningView before we start the zoom
         // (Ick!).

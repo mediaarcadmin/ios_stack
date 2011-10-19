@@ -1900,7 +1900,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.pauseButton.center = imageViewCenter;
     self.resumeButton.center = imageViewCenter;
     CGRect imageViewFrame = [self convertRect:self.bookView.imageView.frame fromView:self.bookView];
-    self.deleteButton.center = CGPointMake(floorf(2 + imageViewFrame.origin.x) - 0.5f, floorf(2 + imageViewFrame.origin.y) + 0.5f);
+    self.deleteButton.center = CGPointMake(floorf(6 + imageViewFrame.origin.x) - 0.5f, floorf(6 + imageViewFrame.origin.y) + 0.5f);
     self.previewBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 48, 48);
 
     [self setNeedsLayout];
@@ -2008,6 +2008,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	//            forControlEvents:UIControlEventTouchUpInside];
 }
 - (void)onProcessingProgressNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+	}
 	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			BlioProcessingCompleteOperation * completeOp = [note object];
 			progressView.progress = ((float)(completeOp.percentageComplete)/100.0f);
@@ -2015,6 +2019,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 }
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+	}
 	if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID]) {
 		//	NSLog(@"BlioLibraryGridViewCell onProcessingCompleteNotification entered");
 /*
@@ -2397,6 +2405,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	//if (delegate == [note object]) [self resetProgressSlider];
 }
 - (void)onProcessingProgressNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+    }
+
 		if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingCompleteOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			BlioProcessingCompleteOperation * completeOp = [note object];
 			//	NSLog(@"BlioLibraryListViewCell onProcessingProgressNotification entered. percentage: %u",completeOp.percentageComplete);
@@ -2409,6 +2422,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+	}
 		if ([self.book managedObjectContext] && [[note object] isKindOfClass:[BlioProcessingDownloadOperation class]] && [note userInfo] && [[note userInfo] objectForKey:@"bookID"] == [self.book objectID] && [[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
 			if ([[delegate processingDelegate] incompleteDownloadOperationForSourceID:[[self.book valueForKey:@"sourceID"] intValue] sourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]]) self.authorLabel.text = NSLocalizedString(@"Downloading...","\"Downloading...\" status indicator in BlioLibraryListCell");
 			else self.authorLabel.text = NSLocalizedString(@"Processing...","\"Processing...\" status indicator in BlioLibraryListCell");

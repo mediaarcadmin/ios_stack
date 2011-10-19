@@ -113,6 +113,8 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 -(void) deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site;
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave;
 -(void) deleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave;
+-(void)safeDeleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave;
+-(void)safeDeleteBookWithSettings:(NSDictionary*)settings;
 - (void)stopInternetOperations;
 - (NSArray *)internetOperations;
 - (BlioProcessingOperation*) operationByClass:(Class)targetClass forSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;

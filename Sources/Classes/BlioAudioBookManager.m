@@ -10,6 +10,7 @@
 #import "BlioBook.h"
 #import "BlioBookManager.h"
 #import "BlioAlertManager.h"
+#import "BlioXMLParserLock.h"
 
 @implementation BlioAudioBookManager
 
@@ -150,13 +151,13 @@
 
 - (void)parseData:(NSData*)data  {
 	// Prepare to parse the xml file.
-//	NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
-	NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithData:data];
-	[xmlParser setDelegate:self];
-//	[url release];	
-	// Start the parse.
-	BOOL parsedReferences = [xmlParser parse];
-	[xmlParser release]; 
+    BOOL parsedReferences = NO;
+    @synchronized([BlioXMLParserLock sharedLock]) {
+        NSXMLParser * xmlParser = [[NSXMLParser alloc] initWithData:data];
+        [xmlParser setDelegate:self];
+        parsedReferences = [xmlParser parse];
+        [xmlParser release]; 
+    }
 	if ( !parsedReferences ) {
 //		NSLog(@"Failed to parse audio data file: %s\n",path);
 		NSLog(@"Failed to parse audio data: %@",data);

@@ -18,7 +18,12 @@
 
 
 @implementation BlioFlowAnalyzeOperation
-
+-(void)cancel {
+    @synchronized(self) {
+    if (hasStarted) return;
+    [super cancel];
+    }
+}
 - (void)main
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -30,6 +35,14 @@
 			break;
 		}
 	}
+    @synchronized(self) {
+    if ([self isCancelled]) {
+		NSLog(@"BlioFlowAnalyzeOperation cancelled before starting (perhaps due to pause)");
+		return;
+	}
+    else hasStarted = YES;
+    }
+    
     
 	if (![self hasBookManifestValueForKey:BlioManifestTextFlowKey] && ![self hasBookManifestValueForKey:BlioManifestEPubKey]) {
 		// no value means this is probably a free XPS; no need to continue, but no need to send a fail signal to dependent operations either.

@@ -10,6 +10,7 @@
 #import "BlioProcessing.h"
 #import "BlioBook.h"
 
+
 @interface BlioProcessingAggregateOperation : BlioProcessingOperation {
 	NSUInteger alreadyCompletedOperations;
 }
@@ -21,6 +22,16 @@
 }
 
 @end
+@interface BlioProcessingDeleteBookOperation : BlioProcessingOperation {
+    id<BlioProcessingDelegate> _processingDelegate;
+    BOOL attemptArchive;
+    BOOL shouldSave;
+}
+@property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
+@property (nonatomic, assign) BOOL attemptArchive;
+@property (nonatomic, assign) BOOL shouldSave;
+@end
+
 
 @interface BlioProcessingPreAvailabilityCompleteOperation : BlioProcessingAggregateOperation {
     NSString *filenameKey;
@@ -111,10 +122,6 @@
 	BOOL hasAudiobook;
 	BOOL hasReflowRightOverride;
 }
-@property (nonatomic, retain) NSXMLParser * audiobookReferencesParser;
-@property (nonatomic, retain) NSXMLParser * rightsParser;
-@property (nonatomic, retain) NSXMLParser * textflowParser;
-@property (nonatomic, retain) NSXMLParser * metadataParser;
 @property (nonatomic, retain) NSMutableArray * audioFiles;
 @property (nonatomic, retain) NSMutableArray * timingFiles;
 @property (nonatomic, retain) NSDictionary * featureCompatibilityDictionary;

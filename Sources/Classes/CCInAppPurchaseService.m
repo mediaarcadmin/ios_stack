@@ -7,6 +7,7 @@
 //
 
 #import "CCInAppPurchaseService.h"
+#import "BlioXMLParserLock.h"
 
 @implementation CCInAppPurchaseProduct 
 
@@ -89,12 +90,15 @@
 -(CCInAppPurchaseResponse*)responseFromData:(NSData*)data {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
 	_response = [[CCInAppPurchaseFetchProductsResponse alloc] init];
-	NSXMLParser * responseParser = [[NSXMLParser alloc] initWithData:data];
-	[responseParser setDelegate:self];
-	[responseParser parse];
+	NSXMLParser * responseParser = nil;
+    @synchronized([BlioXMLParserLock sharedLock]) {
+    [[NSXMLParser alloc] initWithData:data];
+        [responseParser setDelegate:self];
+        [responseParser parse];
+        [responseParser release];
+    }
 	CCInAppPurchaseResponse* returnResponse = _response;
 	_response = nil;
-	[responseParser release];
 	return [returnResponse autorelease];
 }
 #pragma mark -

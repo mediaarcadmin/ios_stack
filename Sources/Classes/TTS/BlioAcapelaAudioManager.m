@@ -308,6 +308,10 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 	}
 }
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
+		return;
+	}
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		NSLog(@"BlioAcapelaManager onProcessingCompleteNotification entered");
 		[AcapelaSpeech refreshVoiceList];

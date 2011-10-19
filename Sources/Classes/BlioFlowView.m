@@ -14,7 +14,6 @@
 #import "BlioParagraphSource.h"
 #import "BlioEPubBook.h"
 #import "levenshtein_distance.h"
-#import <libEucalyptus/EucConfiguration.h>
 #import <libEucalyptus/EucBook.h>
 #import <libEucalyptus/EucEPubBook.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
@@ -32,6 +31,8 @@
 @property (nonatomic, retain) BlioBookmarkPoint *lastSavedPoint;
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
+@property (nonatomic, retain) NSArray *fontSizes;
+
 - (EucBookPageIndexPoint *)bookPageIndexPointForPercentage:(float)percentage;
 - (NSString *)blioPageLabelForBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint;
 
@@ -48,46 +49,54 @@
 @synthesize currentBookmarkPoint = _currentBookmarkPoint;
 @synthesize lastSavedPoint = _lastSavedPoint;
 
-+ (NSSet *)keyPathsForValuesAffectingFontSize 
+@synthesize fontSizes = _fontSizes;
+
++ (NSSet *)keyPathsForValuesAffectingFontSizeIndex
 {
     return [NSSet setWithObject:@"eucBookView.fontPointSize"];
 }
 
-+ (BOOL)automaticallyNotifiesObserversOfFontSize
++ (BOOL)automaticallyNotifiesObserversOfFontSizeIndex
 {
     return NO;
 }
 
 - (id)initWithFrame:(CGRect)frame
-             bookID:(NSManagedObjectID *)bookID 
+    delegate:(id<BlioBookViewDelegate>)aDelegate
+             bookID:(NSManagedObjectID *)aBookID 
            animated:(BOOL)animated 
 {
     if((self = [super initWithFrame:frame])) {
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;        
         self.opaque = YES;
-        self.bookID = bookID;
+        self.bookID = aBookID;
         
         BlioBookManager *bookManager = [BlioBookManager sharedBookManager];
-        _eucBook = [[bookManager checkOutEucBookForBookWithID:bookID] retain];
+        _eucBook = [[bookManager checkOutEucBookForBookWithID:aBookID] retain];
         
         if(_eucBook) {            
-            self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:bookID];
+            self.delegate = aDelegate;
+            self.paragraphSource = [bookManager checkOutParagraphSourceForBookWithID:aBookID];
 
             if([_eucBook isKindOfClass:[BlioFlowEucBook class]]) {
-                BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:bookID];
+                BlioTextFlow *textFlow = [bookManager checkOutTextFlowForBookWithID:aBookID];
                 _textFlowFlowTreeKind = (BlioTextFlowFlowTreeKind)(textFlow.flowTreeKind);
-                [bookManager checkInTextFlowForBookWithID:bookID];
+                [bookManager checkInTextFlowForBookWithID:aBookID];
             }            
             
-            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds book:(EucEPubBook *)_eucBook])) {
+            _fontSizes = [[self.delegate fontSizesForBlioBookView:self] retain];
+            
+            if((_eucBookView = [[EucBookView alloc] initWithFrame:self.bounds 
+                                                             book:(EucEPubBook *)_eucBook
+                                                   fontPointSizes:_fontSizes])) {
                 _eucBookView.delegate = self;
                 _eucBookView.allowsSelection = YES;
                 _eucBookView.selectorDelegate = self;
                 _eucBookView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
                 _eucBookView.vibratesOnInvalidTurn = NO;
-                
+                                
                 if (!animated) {
-                    BlioBookmarkPoint *implicitPoint = [bookManager bookWithID:bookID].implicitBookmarkPoint;
+                    BlioBookmarkPoint *implicitPoint = [bookManager bookWithID:aBookID].implicitBookmarkPoint;
                     [self goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
                 }
                 
@@ -125,6 +134,8 @@
         [_eucBook release];
         [bookManager checkInEucBookForBookWithID:_bookID];  
     }
+    
+    [_fontSizes release];
     
     [_bookID release];
 	[_lastSavedPoint release]; _lastSavedPoint = nil;
@@ -608,26 +619,28 @@
 #pragma mark -
 #pragma mark Visual Properties
 
-- (BlioFontSize)fontSize
+- (NSUInteger)fontSizeIndex
 {
     CGFloat actualFontSize = _eucBookView.fontPointSize;
     CGFloat bestDifference = CGFLOAT_MAX;
-    BlioFontSize bestFontSize = kBlioFontSizeMedium;
-    NSArray *eucFontSizeNumbers = [EucConfiguration objectForKey:EucConfigurationFontSizesKey];
-    for(BlioFontSize i = kBlioFontSizeVerySmall; i <= kBlioFontSizeVeryLarge; ++i) {
-        CGFloat thisDifference = fabsf(((NSNumber *)[eucFontSizeNumbers objectAtIndex:i]).floatValue - actualFontSize);
+    NSUInteger bestFontSizeIndex = 0;
+    NSArray *fontSizeNumbers = _fontSizes;
+    
+    NSUInteger fontSizeCount = fontSizeNumbers.count;
+    for(NSUInteger i = 0; i < fontSizeCount; ++i) {
+        CGFloat thisDifference = fabsf(((NSNumber *)[fontSizeNumbers objectAtIndex:i]).floatValue - actualFontSize);
         if(thisDifference < bestDifference) {
             bestDifference = thisDifference;
-            bestFontSize = i;
+            bestFontSizeIndex = i;
         }
     }
-   return bestFontSize;
+   return bestFontSizeIndex;
 }
 
-- (void)setFontSize:(BlioFontSize)newSize
+- (void)setFontSizeIndex:(NSUInteger)newSize
 {
 	[_eucBookView highlightWordAtIndexPoint:nil animated:YES];
-    _eucBookView.fontPointSize = ((NSNumber *)[[EucConfiguration objectForKey:EucConfigurationFontSizesKey] objectAtIndex:newSize]).integerValue;
+    _eucBookView.fontPointSize = ((NSNumber *)[_fontSizes objectAtIndex:newSize]).integerValue;
 }
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark

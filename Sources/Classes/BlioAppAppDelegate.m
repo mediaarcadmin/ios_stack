@@ -131,7 +131,7 @@
 		// First time, so just store the id.
 		[[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey]; 
 	else if ([thisDevice compare:[[UIDevice currentDevice] uniqueIdentifier]] != NSOrderedSame ) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"New Device",@"\"New Device\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be re-downloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end-user that the password must contain at least one digit.")
 									delegate:nil 
 						   cancelButtonTitle:nil
@@ -388,7 +388,10 @@ static void *background_init_thread(void * arg) {
 				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
 			}
 		}
-		else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+		else {
+            [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+//            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+        }
 	}
 	else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
 	[BlioStoreManager sharedInstance].didOpenWebStore = NO;
@@ -405,6 +408,7 @@ static void *background_init_thread(void * arg) {
 	
     if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) { 
         [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
+        [[NSUserDefaults standardUserDefaults] synchronize];
          [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
     }
         
@@ -429,7 +433,7 @@ static void *background_init_thread(void * arg) {
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 //			[self.processingManager resumeProcessingForSourceID:BlioBookSourceOnlineStore];
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+//			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 		}
 		else {
 			//			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
@@ -496,7 +500,7 @@ static void *background_init_thread(void * arg) {
 		if ([[self.processingManager internetOperations] count] > 0)
 		{
 			// ALERT user to what just happened.
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Lost",@"\"Internet Connection Lost\" Alert message title")
+			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Internet Connection Error",@"\"Internet Connection Error\" Alert message title")
 										 message:NSLocalizedStringWithDefaultValue(@"INTERNET_ACCESS_LOST",nil,[NSBundle mainBundle],@"Current downloads have been interrupted. Downloads will resume automatically once internet access is restored.",@"Alert message informing the end-user that downloads in progress have been suspended due to lost internet access.")
 										delegate:nil
 							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")

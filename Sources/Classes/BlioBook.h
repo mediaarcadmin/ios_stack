@@ -20,6 +20,7 @@ static const CGFloat kBlioCoverGridThumbHeightPhone = 118;
 static const CGFloat kBlioCoverGridThumbWidthPad = 140;
 static const CGFloat kBlioCoverGridThumbHeightPad = 210;
 
+static const NSInteger kBlioBookProcessingStateToBeDeleted = -1;
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
 static const NSInteger kBlioBookProcessingStatePlaceholderOnly = 1;
 static const NSInteger kBlioBookProcessingStateIncomplete = 2;
