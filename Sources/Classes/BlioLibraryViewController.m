@@ -596,7 +596,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 -(NSIndexPath*)adjustedIndexPathForRealIndexPath:(NSIndexPath*)indexPath {
     BlioBook * book = [self.fetchedResultsController objectAtIndexPath:indexPath];
+//    NSLog(@"book: %@",book);
+//    NSLog(@"collationStringSelector: %@",NSStringFromSelector(collationStringSelector));
     NSInteger adjustedSectionIndex = [[UILocalizedIndexedCollation currentCollation] sectionForObject:book collationStringSelector:collationStringSelector];
+//    NSLog(@"adjustedSectionIndex: %i",adjustedSectionIndex);
+//    NSLog(@"[self.tableData objectAtIndex:adjustedSectionIndex]: %@",[self.tableData objectAtIndex:adjustedSectionIndex]);
+//    NSLog(@"[[self.tableData objectAtIndex:adjustedSectionIndex] indexOfObject:book]: %u",[[self.tableData objectAtIndex:adjustedSectionIndex] indexOfObject:book]);
+//    NSLog(@"self.tableData: %@",self.tableData);
+    if ([[self.tableData objectAtIndex:adjustedSectionIndex] indexOfObject:book] == NSNotFound) return nil;
     return [NSIndexPath indexPathForRow:[[self.tableData objectAtIndex:adjustedSectionIndex] indexOfObject:book] inSection:adjustedSectionIndex];
 }
 - (void)moveBookInManagedObjectContextFromPosition:(NSInteger)fromPosition toPosition:(NSInteger)toPosition shouldSave:(BOOL)savePreference {
@@ -1244,11 +1251,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 						break;
 					case kBlioLibraryLayoutList:
                         1;
+                        NSLog(@"indexPath: %@",indexPath);
                         NSIndexPath * adjustedIndexPath = indexPath;
                         if (librarySortType != kBlioLibrarySortTypePersonalized) {
                             adjustedIndexPath = [self adjustedIndexPathForRealIndexPath:indexPath];
+                            NSLog(@"adjustedIndexPath: %@",adjustedIndexPath);
                         }
-						[self configureTableCell:(BlioLibraryListCell*)[self.tableView cellForRowAtIndexPath:adjustedIndexPath]
+						if (adjustedIndexPath) [self configureTableCell:(BlioLibraryListCell*)[self.tableView cellForRowAtIndexPath:adjustedIndexPath]
 									 atIndexPath:adjustedIndexPath];
 						break;
                     default:
@@ -2250,7 +2259,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	//[self resetProgressSlider];
 	[self resetPauseResumeButton];
     
-    CGRect imageViewFrame = [self convertRect:self.bookView.imageView.frame fromView:self.bookView];
+    CGRect imageViewFrame = [self.contentView convertRect:self.bookView.imageView.frame fromView:self.bookView];
     self.previewBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 36, 36);
 
 
