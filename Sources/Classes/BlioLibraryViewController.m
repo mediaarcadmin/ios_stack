@@ -1210,8 +1210,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 					[self.gridView reloadData];
 					break;
 				case kBlioLibraryLayoutList:
-                    if (librarySortType != kBlioLibrarySortTypePersonalized) [self fetchResults];
-					else [self.tableView reloadData];
+                    if (librarySortType != kBlioLibrarySortTypePersonalized) self.tableData = [self partitionObjects:[self.fetchedResultsController fetchedObjects] collationStringSelector:collationStringSelector];
+					[self.tableView reloadData];
 					break;
                 default:
                     break;
