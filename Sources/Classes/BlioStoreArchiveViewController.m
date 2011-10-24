@@ -104,7 +104,7 @@
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
 //	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState != %@ && sourceID == %@ && userNum == %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioBookSourceOnlineStore],[NSNumber numberWithInt:userNum]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState != %@ && sourceID == %@ && userNum == %@ && transactionType != %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioBookSourceOnlineStore],[NSNumber numberWithInt:userNum],[NSNumber numberWithInt:BlioTransactionTypePreorder]]];
 
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
 															 initWithFetchRequest:request

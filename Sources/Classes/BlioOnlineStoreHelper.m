@@ -259,13 +259,20 @@
 			
 			// check to see if BlioBook record is already in the persistent store
 			BlioBook * preExistingBook = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID ISBN:bookOwnershipInfo.ISBN];
-			if (preExistingBook == nil) {
+			BlioTransactionType incomingTransactionType = [BlioOnlineStoreHelper transactionTypeForCode:bookOwnershipInfo.TransactionType];
+            BlioTransactionType preExistingTransactionType = [[preExistingBook valueForKey:@"transactionType"] intValue];
+            if (preExistingBook == nil) {
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
 			}
-			else if (([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull)
-                     || ([[preExistingBook valueForKey:@"transactionType"] intValue] == BlioTransactionTypeLend && ([bookOwnershipInfo.ProductTypeId intValue] == BlioTransactionTypeSale || [bookOwnershipInfo.ProductTypeId intValue] == BlioTransactionTypeSaleFromPreorder || [bookOwnershipInfo.ProductTypeId intValue] == BlioTransactionTypePromotion || [bookOwnershipInfo.ProductTypeId intValue] == BlioTransactionTypeFree))) {
-                
+			else if (([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull)) {
+                NSLog(@"replacing preview version of ISBN:%@ with full version...",bookOwnershipInfo.ISBN);
+                [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
+				newISBNs++;
+				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+            }
+            else if ((preExistingTransactionType == BlioTransactionTypeLend || preExistingTransactionType == BlioTransactionTypePreorder) && (incomingTransactionType == BlioTransactionTypeSale || incomingTransactionType == BlioTransactionTypeSaleFromPreorder || incomingTransactionType == BlioTransactionTypePromotion || incomingTransactionType == BlioTransactionTypeFree)) {
+                NSLog(@"replacing TransactionType:%i version of ISBN:%@ with TransactionType:%i version...",preExistingTransactionType,bookOwnershipInfo.ISBN,incomingTransactionType);                
 				[[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
@@ -325,13 +332,7 @@
 						if ([[productItem ISBN] isEqualToString:bookOwnershipInfo.ISBN]) {
 							if (bookOwnershipInfo.ProductTypeId) aProductType = [bookOwnershipInfo.ProductTypeId intValue];
 							if (bookOwnershipInfo.TransactionType) {
-                                if ([bookOwnershipInfo.TransactionType isEqualToString:@"SAL"]) aTransactionType = BlioTransactionTypeSale;
-                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"PRO"]) aTransactionType = BlioTransactionTypePromotion;
-                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"TST"]) aTransactionType = BlioTransactionTypeTest;
-                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"LND"]) aTransactionType = BlioTransactionTypeLend;
-                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"FRE"]) aTransactionType = BlioTransactionTypeFree;
-                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"PRE"]) aTransactionType = BlioTransactionTypePreorder;
-                                else if ([bookOwnershipInfo.TransactionType isEqualToString:@"PSL"]) aTransactionType = BlioTransactionTypeSaleFromPreorder;
+                                aTransactionType = [BlioOnlineStoreHelper transactionTypeForCode:bookOwnershipInfo.TransactionType];
                             }
                             NSLog(@"bookOwnershipInfo.ExpirationDate: %@",bookOwnershipInfo.ExpirationDate);
                             if (bookOwnershipInfo.ExpirationDate) {
@@ -374,6 +375,17 @@
 		}
 	}
 	[self assessRetrieveBooksProgress];
+}
++(BlioTransactionType)transactionTypeForCode:(NSString*)code {
+    BlioTransactionType aTransactionType = BlioTransactionTypeNotSpecified;
+    if ([code isEqualToString:@"SAL"]) aTransactionType = BlioTransactionTypeSale;
+    else if ([code isEqualToString:@"PRO"]) aTransactionType = BlioTransactionTypePromotion;
+    else if ([code isEqualToString:@"TST"]) aTransactionType = BlioTransactionTypeTest;
+    else if ([code isEqualToString:@"LND"]) aTransactionType = BlioTransactionTypeLend;
+    else if ([code isEqualToString:@"FRE"]) aTransactionType = BlioTransactionTypeFree;
+    else if ([code isEqualToString:@"PRE"]) aTransactionType = BlioTransactionTypePreorder;
+    else if ([code isEqualToString:@"PSL"]) aTransactionType = BlioTransactionTypeSaleFromPreorder;
+    return aTransactionType;
 }
 -(void)assessRetrieveBooksProgress {
 	if (responseCount == newISBNs || newISBNs == 0) { 

@@ -249,6 +249,13 @@
 //	NSLog(@"processingState before: %i",[[aBook valueForKey:@"processingState"] intValue]);
 	[moc refreshObject:aBook mergeChanges:YES];
 //	NSLog(@"processingState after: %i",[[aBook valueForKey:@"processingState"] intValue]);
+    
+    if ([[aBook valueForKey:@"transactionType"] intValue] == BlioTransactionTypePreorder) {
+		NSLog(@"WARNING: enqueue method called on pre-ordered book!");
+		NSLog(@"Aborting enqueue by prematurely returning...");
+		return;
+	}
+
 	if ([[aBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
 		NSLog(@"WARNING: enqueue method called on already complete book!");
 		NSLog(@"Aborting enqueue by prematurely returning...");
@@ -907,7 +914,7 @@
 	
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"processingState == %@ || processingState == %@ || processingState == %@", [NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed],[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete], [NSNumber numberWithInt:kBlioBookProcessingStateFailed]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@ || processingState == %@) && transactionType != %@", [NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed],[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete], [NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:BlioTransactionTypePreorder]]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -975,7 +982,7 @@
 	NSInteger userNum = [[BlioStoreManager sharedInstance] currentUserNum];
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@ && (userNum == %@ || userNum == %@)", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource],[NSNumber numberWithInt:userNum],nil]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(processingState == %@ || processingState == %@) && sourceID == %@ && (userNum == %@ || userNum == %@) && transactionType != %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:kBlioBookProcessingStateFailed],[NSNumber numberWithInt:bookSource],[NSNumber numberWithInt:userNum],nil,[NSNumber numberWithInt:BlioTransactionTypePreorder]]];
 	
 	NSError *errorExecute = nil;
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
@@ -1008,7 +1015,16 @@
 	if ((sourceID == BlioBookSourceOnlineStore || sourceID == BlioBookSourceLocalBundleDRM) && [[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		[self resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 		[self resumeProcessingForSourceID:BlioBookSourceLocalBundleDRM];
-        if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
+        if ([[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] == 0) {
+            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kBlioDownloadNewBooksDefaultsKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Books?",@"\"Auto-Download Books?\" Alert message title")
+                                         message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_BOOKS_FIRST_TIME",nil,[NSBundle mainBundle],@"Would you like to download all the books from your account now?",@"Alert message informing the first time iOS end-user of the option to download all the user's books.")
+                                        delegate:self
+                               cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" label for button used to cancel/dismiss alertview")
+                               otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for alertview"),nil];
+        }
+        else if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] > 0) {
             [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
         }
 
@@ -1023,6 +1039,7 @@
 	}
 
 }
+
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
@@ -1468,8 +1485,15 @@
 #pragma mark UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+	if (buttonIndex == 0) {
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Books",@"\"Auto-Download Books\" Alert message title")
+                                     message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_BOOKS_FIRST_TIME",nil,[NSBundle mainBundle],@"OK- Blio will not retrieve your books at this time. FYI, you can permanently disable auto-downloading via the Settings area.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed.")
+                                    delegate:nil
+                           cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
+                           otherButtonTitles:nil];
+    }
 	if (buttonIndex == 1) {
-		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+        [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 	}
 	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
 }

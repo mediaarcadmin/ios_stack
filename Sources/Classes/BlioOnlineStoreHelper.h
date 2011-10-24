@@ -11,6 +11,7 @@
 #import "BlioContentCafe.h"
 #import "BlioBookVault.h"
 #import "DigitalLockerGateway.h"
+#import "BlioProcessing.h"
 
 static NSString * const BlioIOSStoreSiteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
 
@@ -39,5 +40,5 @@ static NSString * const BlioIOSStoreSiteKey = @"B870B960A5B4CB53363BB10855FDC351
 	BlioOnlineStoreHelperBookVaultDelegate * bookVaultDelegate;
 	BlioOnlineStoreHelperContentCafeDelegate * contentCafeDelegate;
 }
-
++(BlioTransactionType)transactionTypeForCode:(NSString*)code;
 @end

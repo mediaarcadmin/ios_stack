@@ -680,7 +680,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
- 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete]]];
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState >= %@ && transactionType != %@", [NSNumber numberWithInt:kBlioBookProcessingStateIncomplete],[NSNumber numberWithInt:BlioTransactionTypePreorder]]];
     
 	self.fetchedResultsController = [[[NSFetchedResultsController alloc]
 									  initWithFetchRequest:request
@@ -1212,6 +1212,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 				case kBlioLibraryLayoutList:
                     if (librarySortType != kBlioLibrarySortTypePersonalized) self.tableData = [self partitionObjects:[self.fetchedResultsController fetchedObjects] collationStringSelector:collationStringSelector];
 					[self.tableView reloadData];
+                    // TODO: optimize performance so that only tableData is rebuilt instead of doing a new fetch in cases of (librarySortType != kBlioLibrarySortTypePersonalized)
 					break;
                 default:
                     break;
