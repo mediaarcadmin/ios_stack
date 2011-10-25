@@ -1487,13 +1487,19 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex == 0) {
         [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Books",@"\"Auto-Download Books\" Alert message title")
-                                     message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_BOOKS_FIRST_TIME",nil,[NSBundle mainBundle],@"OK- Blio will not retrieve your books at this time. FYI, you can permanently disable auto-downloading via the Settings area.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed.")
+                                     message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"OK- Blio will not retrieve your books at this time. FYI, you can permanently disable auto-downloading via the Settings area.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone has chosen not to download books upon first time launch.")
                                     delegate:nil
                            cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
                            otherButtonTitles:nil];
     }
 	if (buttonIndex == 1) {
         [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Books",@"\"Auto-Download Books\" Alert message title")
+                                     message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITH_DOWNLOAD",nil,[NSBundle mainBundle],@"OK- Blio will retrieve your books at this time. FYI, you can permanently disable auto-downloading via the Settings area.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone chosen not to download books upon first time launch.")
+                                    delegate:nil
+                           cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
+                           otherButtonTitles:nil];
+
 	}
 	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
 }
