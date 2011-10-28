@@ -182,7 +182,7 @@
 		loginErrorText = NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_CONNECTION_ERROR",nil,[NSBundle mainBundle],@"There was a problem logging in due to a network connection error. Please check the availability of your Internet connection and try again later.",@"Alert message when the login web service has failed.");
 	}
 	if (loginErrorText != nil) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Login Error",@"\"Login Error\" alert message title") 
 									 message:loginErrorText
 									delegate:self 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
@@ -468,7 +468,7 @@
 
 - (void)connection:(DigitalLockerConnection *)aConnection didFailWithError:(NSError *)error {
 	[activityIndicatorView stopAnimating];
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"We're Sorry...",@"\"We're Sorry...\" alert message title") 
+	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Connection Error",@"\"Connection Error\" alert message title") 
 								 message:[NSString stringWithFormat:@"%@ %@",[error localizedDescription],NSLocalizedString(@"Please try again later.",@"\"Please try again later.\" alert view message supplement.")]
 								delegate:nil 
 					   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
