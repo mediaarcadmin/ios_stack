@@ -111,7 +111,7 @@ typedef enum {
     UIView* _pageJumpView;
     UILabel* _pageJumpLabel;
     BlioBookSlider* _pageJumpSlider;
-    UIBarButtonItem *_bookmarkButton;
+    UIButton *_bookmarkButton;
     NSManagedObjectContext *_managedObjectContext;
     BOOL rotationLocked;
     
@@ -159,7 +159,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL audioPlaying;
 @property (nonatomic, assign) BOOL audioEnabled;
 
-@property (nonatomic, retain) UIBarButtonItem *bookmarkButton;
+@property (nonatomic, retain) UIButton *bookmarkButton;
 @property (nonatomic, retain) UIView *pauseMask;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;

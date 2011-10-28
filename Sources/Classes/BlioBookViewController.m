@@ -30,6 +30,7 @@
 #import "Reachability.h"
 #import "BlioStoreManager.h"
 #import "UIButton+BlioAdditions.h"
+#import "BlioUIImageAdditions.h"
 #import "BlioPurchaseVoicesViewController.h"
 
 static const CGFloat kBlioBookSliderPreviewWidthPad = 180;
@@ -896,15 +897,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)setNavigationBarButtonsForInterfaceOrientation:(UIInterfaceOrientation)orientation {
     
     CGFloat buttonHeight = 30;
+    CGFloat buttonWidth = 41;
 
     // Toolbar buttons are 30 pixels high in portrait and 24 pixels high landscape
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(orientation)) {
         buttonHeight = 24;
+        buttonWidth  = 33;
     }
     
-    CGRect buttonFrame = CGRectMake(0,0, 41, buttonHeight);
+    CGRect arrowFrame    = CGRectMake(0,0, 41, buttonHeight);
+    CGRect bookmarkFrame = CGRectMake(0,0, buttonWidth, buttonHeight);
     
-    UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent frame:buttonFrame];
+    UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent frame:arrowFrame];
 
     [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [backArrow setAccessibilityLabel:NSLocalizedString(@"Library Back", @"Accessibility label for Book View Controller Library Back button")];
@@ -915,13 +919,22 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.navigationItem.leftBarButtonItem = backItem;
     [backItem release];
     
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-add.png"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleBookmark:)];
-    [item setAccessibilityLabel:NSLocalizedString(@"Bookmark", @"Accessibility label for Book View Controller Bookmark button")];
-    [item setAccessibilityHint:NSLocalizedString(@"Adds bookmark for the current page.", @"Accessibility label for Book View Controller Add Bookmark hint")];
-
-    self.bookmarkButton = item;
+    UIButton *bookmark = [[UIButton alloc] initWithFrame:bookmarkFrame];
+	bookmark.autoresizingMask = UIViewAutoresizingNone;
+    
+    UIImage *add = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-add"]];
+    [bookmark setImage:add forState:UIControlStateNormal];
+    [bookmark setImage:add forState:UIControlStateHighlighted];
+    [bookmark setAccessibilityLabel:NSLocalizedString(@"Bookmark", @"Accessibility label for Book View Controller Bookmark button")];
+    [bookmark setAccessibilityHint:NSLocalizedString(@"Adds bookmark for the current page.", @"Accessibility label for Book View Controller Add Bookmark hint")];
+    [bookmark addTarget:self action:@selector(toggleBookmark:) forControlEvents:UIControlEventTouchUpInside];
+    self.bookmarkButton = bookmark;
+    [bookmark release];
+    
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithCustomView:self.bookmarkButton];
+    [self.navigationItem setRightBarButtonItem:item];
     [item release];
-    [self.navigationItem setRightBarButtonItem:self.bookmarkButton];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -3241,10 +3254,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     NSArray *bookmarksForCurrentPage = [self bookmarksForCurrentPage];
 
     if ([bookmarksForCurrentPage count]) {
-        self.bookmarkButton.image = [UIImage imageNamed:@"icon-bookmarked"];
+        UIImage *bookmarked = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-bookmarked"]];
+
+        [self.bookmarkButton setImage:bookmarked forState:UIControlStateNormal];
+        [self.bookmarkButton setImage:bookmarked forState:UIControlStateHighlighted];
         [self.bookmarkButton setAccessibilityHint:NSLocalizedString(@"Removes bookmark for the current page.", @"Accessibility label for Book View Controller Remove Bookmark hint")];
     } else {
-        self.bookmarkButton.image = [UIImage imageNamed:@"icon-add"];
+        UIImage *add = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-add"]];
+
+        [self.bookmarkButton setImage:add forState:UIControlStateNormal];
+        [self.bookmarkButton setImage:add forState:UIControlStateHighlighted];
         [self.bookmarkButton setAccessibilityHint:NSLocalizedString(@"Adds bookmark for the current page.", @"Accessibility label for Book View Controller Add Bookmark hint")];
     }
 }
