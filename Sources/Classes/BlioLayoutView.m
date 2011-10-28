@@ -65,7 +65,7 @@
 
 - (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;
 
-- (NSArray *)bookmarkRangesForCurrentPage;
+- (NSArray *)highlightRangesForCurrentPage;
 - (EucSelectorRange *)selectorRangeFromBookmarkRange:(BlioBookmarkRange *)range;
 - (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range;
 
@@ -638,6 +638,37 @@
     return pageIndex == self.pageTurningView.rightPageIndex || pageIndex == self.pageTurningView.leftPageIndex;
 }
 
+- (BlioBookmarkRange *)bookmarkRangeForCurrentPage
+{
+    NSUInteger startPageIndex = self.pageTurningView.leftPageIndex;
+    NSUInteger endPageIndex = self.pageTurningView.rightPageIndex;
+    if(startPageIndex == NSUIntegerMax) {
+        startPageIndex = endPageIndex;
+    } 
+    if(endPageIndex == NSUIntegerMax) {
+        endPageIndex = startPageIndex;
+    }
+    
+    BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
+	startPoint.layoutPage = startPageIndex + 1;
+    
+    BlioBookmarkPoint *endPoint = [[BlioBookmarkPoint alloc] init];
+    endPoint.layoutPage = endPageIndex + 1;
+    
+    NSArray *endPageBlocks = [self.textFlow blocksForPageAtIndex:endPageIndex includingFolioBlocks:NO];
+    NSUInteger maxOffset = [endPageBlocks count] + 1;
+    endPoint.blockOffset = maxOffset;
+    
+    BlioBookmarkRange *range = [[BlioBookmarkRange alloc] init];
+    range.startPoint = startPoint;
+    range.endPoint = endPoint;
+        
+    [startPoint release];
+    [endPoint release];
+    
+    return [range autorelease];
+}
+
 #pragma mark -
 #pragma mark Back Button History
 
@@ -1008,7 +1039,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     return nil;
 }
 
-- (NSArray *)bookmarkRangesForCurrentPage {
+- (NSArray *)highlightRangesForCurrentPage {
 	NSUInteger startPageIndex = self.pageTurningView.leftPageIndex;
     NSUInteger endPageIndex = self.pageTurningView.rightPageIndex;
     if(startPageIndex == NSUIntegerMax) {
@@ -1059,7 +1090,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (NSArray *)highlightRangesForEucSelector:(EucSelector *)aSelector {
     NSMutableArray *selectorRanges = [NSMutableArray array];
     
-    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
+    for (BlioBookmarkRange *highlightRange in [self highlightRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
         [selectorRanges addObject:range];
     }
@@ -1102,7 +1133,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 - (UIColor *)eucSelector:(EucSelector *)selector willBeginEditingHighlightWithRange:(EucSelectorRange *)selectedRange
 {    
 
-    for (BlioBookmarkRange *highlightRange in [self bookmarkRangesForCurrentPage]) {
+    for (BlioBookmarkRange *highlightRange in [self highlightRangesForCurrentPage]) {
         EucSelectorRange *range = [self selectorRangeFromBookmarkRange:highlightRange];
         if ([selectedRange isEqual:range]) {
             NSInteger startIndex = highlightRange.startPoint.layoutPage - 1;

@@ -594,6 +594,84 @@ static void sortedHighlightRangePredicateInit() {
     return highlightRanges;
 }
 
+// FIXME: Although this predicate is identical to the sortedHighlightRanges predicate (which should probably be removed) they are being left in
+// so near to a release until we have a longer QA cycle to test there aren't any issues with changing it
+static NSPredicate *sSortedBookmarkRangePredicate = nil;
+pthread_once_t sSortedBookmarkRangePredicateOnceControl = PTHREAD_ONCE_INIT;
+static void sortedBookmarkRangePredicateInit() {
+    sSortedBookmarkRangePredicate = [[NSPredicate predicateWithFormat:
+                                       @"book == $BOOK AND "
+                                       @"NOT ( range.startPoint.layoutPage > $MAX_LAYOUT_PAGE ) && "
+                                       @"NOT ( range.endPoint.layoutPage < $MIN_LAYOUT_PAGE ) && "
+                                       @"NOT ( range.startPoint.layoutPage == $MAX_LAYOUT_PAGE && range.startPoint.blockOffset > $MAX_BLOCK_OFFSET ) && "
+                                       @"NOT ( range.endPoint.layoutPage == $MIN_LAYOUT_PAGE && range.endPoint.blockOffset < $MIN_BLOCK_OFFSET) && "
+                                       @"NOT ( range.startPoint.layoutPage == $MAX_LAYOUT_PAGE && range.startPoint.blockOffset == $MAX_BLOCK_OFFSET && range.startPoint.wordOffset > $MAX_WORD_OFFSET ) && "
+                                       @"NOT ( range.endPoint.layoutPage == $MIN_LAYOUT_PAGE && range.endPoint.blockOffset == $MIN_BLOCK_OFFSET && range.endPoint.wordOffset < $MIN_WORD_OFFSET )"
+                                       ] retain];
+}
+
+- (NSPredicate *)sortedBookmarkRangePredicate {
+    pthread_once(&sSortedBookmarkRangePredicateOnceControl, sortedBookmarkRangePredicateInit);
+    return sSortedBookmarkRangePredicate;
+}
+
+- (NSArray *)sortedPersistedBookmarksForRange:(BlioBookmarkRange *)range {
+    NSManagedObjectContext *moc = nil;
+    
+    if ([NSThread isMainThread]) {
+        moc = [self managedObjectContext]; 
+    } else {
+        moc = [[[NSManagedObjectContext alloc] init] autorelease]; 
+        [moc setPersistentStoreCoordinator:[[self managedObjectContext] persistentStoreCoordinator]];
+    }
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+    [request setEntity:[NSEntityDescription entityForName:@"BlioBookmark" inManagedObjectContext:moc]];
+    
+    NSNumber *minLayoutPage = [NSNumber numberWithInteger:range.startPoint.layoutPage];
+    NSNumber *minBlockOffset = [NSNumber numberWithInteger:range.startPoint.blockOffset];
+    NSNumber *minWordOffset = [NSNumber numberWithInteger:range.startPoint.wordOffset];
+    
+    NSNumber *maxLayoutPage = [NSNumber numberWithInteger:range.endPoint.layoutPage];
+    NSNumber *maxBlockOffset = [NSNumber numberWithInteger:range.endPoint.blockOffset];
+    NSNumber *maxWordOffset = [NSNumber numberWithInteger:range.endPoint.wordOffset];
+    
+    NSDictionary *substitutionVariables = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                           self, @"BOOK",
+                                           minLayoutPage, @"MIN_LAYOUT_PAGE",
+                                           minBlockOffset, @"MIN_BLOCK_OFFSET",
+                                           minWordOffset, @"MIN_WORD_OFFSET",
+                                           maxLayoutPage, @"MAX_LAYOUT_PAGE",
+                                           maxBlockOffset, @"MAX_BLOCK_OFFSET",
+                                           maxWordOffset, @"MAX_WORD_OFFSET",
+                                           nil];
+    
+    NSPredicate *predicate = [[self sortedBookmarkRangePredicate] predicateWithSubstitutionVariables:substitutionVariables];
+    
+    [substitutionVariables release];
+    
+    [request setPredicate:predicate];
+    
+    NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
+    NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.blockOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortWordDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.wordOffset" ascending:YES] autorelease];
+    NSSortDescriptor *sortHyphenDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.elementOffset" ascending:YES] autorelease];
+    
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortPageDescriptor, sortParaDescriptor, sortWordDescriptor, sortHyphenDescriptor, nil];
+    [request setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil; 
+    NSArray *results = [moc executeFetchRequest:request error:&error]; 
+    [request release];
+    
+    if (error) {
+        NSLog(@"Error whilst retrieving bookmarks for range. %@, %@", error, [error userInfo]); 
+        return nil;
+    }
+    
+    return results;
+}
+
 - (BOOL)componentExistsInXPSAtPath:(NSString *)path {
     // If the path is the drm header then flush the caches to refresh the xpsProvider
     BOOL exists = [[self xpsProvider] componentExistsAtPath:path];
