@@ -108,6 +108,7 @@ typedef enum BlioTapTurn {
 - (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 - (BOOL)currentPageContainsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (BlioBookmarkRange *)bookmarkRangeForCurrentPage;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
 

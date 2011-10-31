@@ -268,6 +268,20 @@
     return [_eucBookView currentPageContainsIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint]];
 }
 
+- (BlioBookmarkRange *)bookmarkRangeForCurrentPage
+{
+    EucBookPageIndexPointRange *visibleIndexPointRange = [_eucBookView visibleIndexPointRange];
+    
+    BlioBookmarkPoint *startPoint = [self bookmarkPointFromBookPageIndexPoint:visibleIndexPointRange.startPoint];
+    BlioBookmarkPoint *endPoint = [self bookmarkPointFromBookPageIndexPoint:visibleIndexPointRange.endPoint];
+
+    BlioBookmarkRange *bookmarkRange = [[BlioBookmarkRange alloc] init];
+    bookmarkRange.startPoint = startPoint;
+    bookmarkRange.endPoint = endPoint;    
+    
+    return [bookmarkRange autorelease];
+}
+
 - (NSString *)pageLabelForPercentage:(float)percenatage
 {
     return [self blioPageLabelForBookPageIndexPoint:[self bookPageIndexPointForPercentage:percenatage]];

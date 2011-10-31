@@ -12,7 +12,6 @@
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
-#import "BlioBookViewControllerProgressPieButton.h"
 #import "BlioBookView.h"
 #import "BlioFlowView.h"
 #import "BlioLayoutView.h"
@@ -31,6 +30,7 @@
 #import "Reachability.h"
 #import "BlioStoreManager.h"
 #import "UIButton+BlioAdditions.h"
+#import "BlioUIImageAdditions.h"
 #import "BlioPurchaseVoicesViewController.h"
 
 static const CGFloat kBlioBookSliderPreviewWidthPad = 180;
@@ -100,6 +100,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) togglePageJumpPanel;
 - (void)layoutPageJumpView;
 - (void)setNavigationBarButtonsForInterfaceOrientation:(UIInterfaceOrientation)orientation;
+- (NSArray *)bookmarksForCurrentPage;
+- (void)updateBookmarkButton;
 
 @end
 
@@ -144,7 +146,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @synthesize book = _book;
 @synthesize bookView = _bookView;
-@synthesize pieButton = _pieButton;
+@synthesize bookmarkButton = _bookmarkButton;
 @synthesize pauseMask = _pauseMask;
 @synthesize pauseButton = _pauseButton;
 
@@ -808,15 +810,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)updatePieButtonForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
-    [self.pieButton setProgress:[_bookView percentageForBookmarkPoint:bookmarkPoint]];
-}
-
-
-- (void)updatePieButtonAnimated:(BOOL)animated {
-    [self updatePieButtonForBookmarkPoint:self.bookView.currentBookmarkPoint animated:animated];
-}
-
 - (void)updatePageJumpPanelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
 {
     if (_pageJumpSlider) {
@@ -904,15 +897,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)setNavigationBarButtonsForInterfaceOrientation:(UIInterfaceOrientation)orientation {
     
     CGFloat buttonHeight = 30;
+    CGFloat buttonWidth = 41;
 
     // Toolbar buttons are 30 pixels high in portrait and 24 pixels high landscape
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && UIInterfaceOrientationIsLandscape(orientation)) {
         buttonHeight = 24;
+        buttonWidth  = 33;
     }
     
-    CGRect buttonFrame = CGRectMake(0,0, 41, buttonHeight);
+    CGRect arrowFrame    = CGRectMake(0,0, 41, buttonHeight);
+    CGRect bookmarkFrame = CGRectMake(0,0, buttonWidth, buttonHeight);
     
-    UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent frame:buttonFrame];
+    UIButton *backArrow = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlackTranslucent frame:arrowFrame];
 
     [backArrow addTarget:self action:@selector(_backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [backArrow setAccessibilityLabel:NSLocalizedString(@"Library Back", @"Accessibility label for Book View Controller Library Back button")];
@@ -923,29 +919,22 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.navigationItem.leftBarButtonItem = backItem;
     [backItem release];
     
-    BlioBookViewControllerProgressPieButton *aPieButton = [[BlioBookViewControllerProgressPieButton alloc] initWithFrame:buttonFrame];
-    [aPieButton addTarget:self action:@selector(togglePageJumpPanel) forControlEvents:UIControlEventTouchUpInside];
+    UIButton *bookmark = [[UIButton alloc] initWithFrame:bookmarkFrame];
+	bookmark.autoresizingMask = UIViewAutoresizingNone;
     
-	aPieButton.autoresizingMask = UIViewAutoresizingNone;
+    UIImage *add = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-add"]];
+    [bookmark setImage:add forState:UIControlStateNormal];
+    [bookmark setImage:add forState:UIControlStateHighlighted];
+    [bookmark setAccessibilityLabel:NSLocalizedString(@"Bookmark", @"Accessibility label for Book View Controller Bookmark button")];
+    [bookmark setAccessibilityHint:NSLocalizedString(@"Adds bookmark for the current page.", @"Accessibility label for Book View Controller Add Bookmark hint")];
+    [bookmark addTarget:self action:@selector(toggleBookmark:) forControlEvents:UIControlEventTouchUpInside];
+    self.bookmarkButton = bookmark;
+    [bookmark release];
+    
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithCustomView:self.bookmarkButton];
+    [self.navigationItem setRightBarButtonItem:item];
+    [item release];
 
-    if (_pageJumpButton) [_pageJumpButton release];
-    _pageJumpButton = [[UIBarButtonItem alloc] initWithCustomView:aPieButton];
-	
-	BOOL hidden = !_pageJumpView || [_pageJumpView isHidden];
-    BOOL toggled = !hidden;
-    
-    // If we already have a pieButton, read the toggled state from that rather than inferring it from hidden states
-    if (self.pieButton) {
-        toggled = self.pieButton.toggled;
-    }
-    
-    self.pieButton = aPieButton;
-    [aPieButton release];
-    
-    [self.pieButton setToggled:toggled];
-    
-    [self.navigationItem setRightBarButtonItem:_pageJumpButton];
-    [self updatePieButtonAnimated:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -1070,7 +1059,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     if(!_firstAppearance) {
         [self updatePageJumpPanelVisibility]; 
-        _pageJumpView.hidden = !self.pieButton.toggled || !self.toolbarsVisible;
+        _pageJumpView.hidden = !self.toolbarsVisible;
     }
 }
 
@@ -1238,7 +1227,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [[UIAccelerometer sharedAccelerometer] setUpdateInterval:0];
     [[UIAccelerometer sharedAccelerometer] setDelegate:nil];
 	[[AVAudioSession sharedInstance] setDelegate:nil];
-	if (_pageJumpButton) [_pageJumpButton release];
     [thumbPreview release], thumbPreview = nil;
 
     self.searchViewController = nil;
@@ -1253,7 +1241,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.book flushCaches];
     self.book = nil;    
     
-    self.pieButton = nil;
+    self.bookmarkButton = nil;
     self.pauseMask = nil;
     self.pauseButton = nil;
     self.managedObjectContext = nil;
@@ -1289,7 +1277,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     } else {
         if (![self audioPlaying])
             [UIApplication sharedApplication].idleTimerDisabled = NO;
-        _pageJumpView.hidden = !self.pieButton.toggled;
+        _pageJumpView.hidden = !self.toolbarsVisible;
         [self layoutPageJumpView];
     }
     _fadeState = BookViewControlleUIFadeStateNone;
@@ -1712,7 +1700,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self initialisePageJumpPanel];
 
     CGSize sz = _pageJumpView.bounds.size;
-    BOOL hiding = !self.pieButton.toggled;
+    BOOL hiding = !self.toolbarsVisible;
     
     [self layoutPageJumpView];
     
@@ -1732,8 +1720,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) togglePageJumpPanel { 
     [self initialisePageJumpPanel];
     
-    [self.pieButton setToggled:!self.pieButton.toggled];
-
     [UIView beginAnimations:@"pageJumpViewToggle" context:NULL];
     [UIView setAnimationDidStopSelector:@selector(_pageJumpPanelDidAnimate)];
     [UIView setAnimationDelegate:self];
@@ -1764,7 +1750,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.bookView goToBookmarkPoint:[_bookView bookmarkPointForPercentage:percentage] animated:YES];
     }
     
-    [self.pieButton setProgress:percentage];
 	[self setPageJumpSliderPreview];
 }
 
@@ -1884,7 +1869,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.searchPopover = nil;
         
         [self updatePageJumpPanelAnimated:YES];
-        [self updatePieButtonAnimated:YES];
+        [self updateBookmarkButton];
     }
 }
 
@@ -2070,7 +2055,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if ([keyPath isEqualToString:@"currentBookmarkPoint"]) {
         [self updatePageJumpPanelAnimated:YES];
-        [self updatePieButtonAnimated:YES];
+        [self updateBookmarkButton];
         		
 		if ( _acapelaAudioManager != nil )
 			[_acapelaAudioManager setPageChanged:YES];  
@@ -2835,6 +2820,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.searchPopover presentPopoverFromBarButtonItem:self.searchButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
         [self.searchPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     }
+    
+    [self updateBookmarkButton];
 }
 
 #pragma mark -
@@ -2907,7 +2894,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     BlioBookmarkPoint *aBookMarkPoint = bookmarkRange.startPoint;
     
     [self updatePageJumpPanelForBookmarkPoint:aBookMarkPoint animated:animated];
-    [self updatePieButtonForBookmarkPoint:aBookMarkPoint animated:animated];
     [self.bookView goToBookmarkPoint:aBookMarkPoint animated:animated];
 }
 
@@ -3242,6 +3228,80 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 		
 		[thumbPreview setThumbAnchorPoint:CGPointMake(xCoord, yCoord)];
 	}
+}
+
+#pragma mark - Bookmarked Pages
+
+- (NSArray *)bookmarksForCurrentPage
+{
+    BlioBookmarkRange *currentPageRange = [self.bookView bookmarkRangeForCurrentPage];
+    return [self.book sortedBookmarksForRange:currentPageRange];
+}
+
+- (void)deleteBookmark:(NSManagedObject *)bookmark {
+    NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
+    [bookmarks removeObject:bookmark];
+    
+	if (self.book.managedObjectContext != nil) {
+		NSError *error;
+		if (![[self managedObjectContext] save:&error])
+			NSLog(@"[BlioBookViewController deleteBookmark:] Save failed with error: %@, %@", error, [error userInfo]);
+	}
+}
+
+- (void)updateBookmarkButton
+{
+    NSArray *bookmarksForCurrentPage = [self bookmarksForCurrentPage];
+
+    if ([bookmarksForCurrentPage count]) {
+        UIImage *bookmarked = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-bookmarked"]];
+
+        [self.bookmarkButton setImage:bookmarked forState:UIControlStateNormal];
+        [self.bookmarkButton setImage:bookmarked forState:UIControlStateHighlighted];
+        [self.bookmarkButton setAccessibilityHint:NSLocalizedString(@"Removes bookmark for the current page.", @"Accessibility label for Book View Controller Remove Bookmark hint")];
+    } else {
+        UIImage *add = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-add"]];
+
+        [self.bookmarkButton setImage:add forState:UIControlStateNormal];
+        [self.bookmarkButton setImage:add forState:UIControlStateHighlighted];
+        [self.bookmarkButton setAccessibilityHint:NSLocalizedString(@"Adds bookmark for the current page.", @"Accessibility label for Book View Controller Add Bookmark hint")];
+    }
+}
+
+- (void)toggleBookmark:(id)sender 
+{	    
+    NSArray *bookmarksForCurrentPage = [self bookmarksForCurrentPage];
+
+    if ([bookmarksForCurrentPage count]) {
+        for (NSManagedObject *persistedBookmark in bookmarksForCurrentPage) {
+            [[self managedObjectContext] deleteObject:persistedBookmark];
+        }
+    } else {
+        BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
+        BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
+        
+        NSMutableSet *allBookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
+        
+        if (currentBookmarkRange) {
+            NSManagedObject *newBookmarkRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+            
+            if (newBookmarkRange) {
+                NSManagedObject *newBookmark = [NSEntityDescription
+                                                insertNewObjectForEntityForName:@"BlioBookmark"
+                                                inManagedObjectContext:[self managedObjectContext]];
+                [newBookmark setValue:newBookmarkRange forKey:@"range"];
+                [allBookmarks addObject:newBookmark];
+            }
+        }
+    }
+    
+    NSError *error;
+    
+    if (![[self managedObjectContext] save:&error]) {
+        NSLog(@"BlioBookViewController toggleBookmark save failed with error: %@, %@", error, [error userInfo]);
+    }
+    
+    [self updateBookmarkButton];
 }
 
 @end
