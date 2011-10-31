@@ -446,6 +446,8 @@
 	}
 	
 	_suppressHistory = NO;
+    
+    [self.delegate pageTurnDidComplete];
 }
 
 - (BOOL)bookViewToolbarsVisible:(EucBookView *)bookView

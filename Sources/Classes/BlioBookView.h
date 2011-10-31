@@ -68,6 +68,7 @@ typedef enum BlioTapTurn {
 - (CGRect)nonToolbarRect;
 
 - (void)pushBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+- (void)pageTurnDidComplete;
 
 @end
 

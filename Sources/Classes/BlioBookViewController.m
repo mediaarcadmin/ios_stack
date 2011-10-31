@@ -43,6 +43,8 @@ static const CGFloat kBlioBookSliderPreviewPhoneLandscapeOffset = 26;
 static const CGFloat kBlioBookSliderPreviewShadowRadius = 20;
 static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 
+static const NSUInteger kBlioMaxBookmarkTextLength = 50;
+
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontSizeIndexDefaultsKey = @"lastFontSize";
 static NSString * const kBlioLastJustificationDefaultsKey = @"lastJustification";
@@ -100,7 +102,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) togglePageJumpPanel;
 - (void)layoutPageJumpView;
 - (void)setNavigationBarButtonsForInterfaceOrientation:(UIInterfaceOrientation)orientation;
-- (NSArray *)bookmarksForCurrentPage;
 - (void)updateBookmarkButton;
 
 @end
@@ -2055,7 +2056,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if ([keyPath isEqualToString:@"currentBookmarkPoint"]) {
         [self updatePageJumpPanelAnimated:YES];
-        [self updateBookmarkButton];
         		
 		if ( _acapelaAudioManager != nil )
 			[_acapelaAudioManager setPageChanged:YES];  
@@ -2824,6 +2824,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self updateBookmarkButton];
 }
 
+- (void)pageTurnDidComplete
+{
+    [self updateBookmarkButton];
+}
+
 #pragma mark -
 #pragma mark Back button history
 
@@ -3232,26 +3237,22 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 #pragma mark - Bookmarked Pages
 
-- (NSArray *)bookmarksForCurrentPage
-{
-    BlioBookmarkRange *currentPageRange = [self.bookView bookmarkRangeForCurrentPage];
-    return [self.book sortedBookmarksForRange:currentPageRange];
-}
-
 - (void)deleteBookmark:(NSManagedObject *)bookmark {
     NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
     [bookmarks removeObject:bookmark];
     
-	if (self.book.managedObjectContext != nil) {
-		NSError *error;
-		if (![[self managedObjectContext] save:&error])
-			NSLog(@"[BlioBookViewController deleteBookmark:] Save failed with error: %@, %@", error, [error userInfo]);
-	}
+    NSError *error;
+    if (![[self.book managedObjectContext] save:&error]) {
+        NSLog(@"[BlioBookViewController deleteBookmark:] Save failed with error: %@, %@", error, [error userInfo]);
+    }
+    
+    [self updateBookmarkButton];
 }
 
 - (void)updateBookmarkButton
 {
-    NSArray *bookmarksForCurrentPage = [self bookmarksForCurrentPage];
+    BlioBookmarkRange *currentPageRange = [self.bookView bookmarkRangeForCurrentPage];
+    NSArray *bookmarksForCurrentPage = [self.book sortedBookmarksForRange:currentPageRange];
 
     if ([bookmarksForCurrentPage count]) {
         UIImage *bookmarked = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-bookmarked"]];
@@ -3270,11 +3271,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)toggleBookmark:(id)sender 
 {	    
-    NSArray *bookmarksForCurrentPage = [self bookmarksForCurrentPage];
+    BlioBookmarkRange *currentPageRange = [self.bookView bookmarkRangeForCurrentPage];
+    NSArray *bookmarksForCurrentPage = [self.book sortedBookmarksForRange:currentPageRange];
 
     if ([bookmarksForCurrentPage count]) {
         for (NSManagedObject *persistedBookmark in bookmarksForCurrentPage) {
-            [[self managedObjectContext] deleteObject:persistedBookmark];
+            [[self.book managedObjectContext] deleteObject:persistedBookmark];
         }
     } else {
         BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
@@ -3283,13 +3285,26 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         NSMutableSet *allBookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
         
         if (currentBookmarkRange) {
-            NSManagedObject *newBookmarkRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
+            NSManagedObject *newBookmarkRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self.book managedObjectContext]];
             
             if (newBookmarkRange) {
+                
+                NSArray *wordStrings = [self.book wordStringsForBookmarkRange:currentPageRange];
+                NSString *bookmarkText = [wordStrings componentsJoinedByString:@" "];
+                
+                if ([bookmarkText length] > kBlioMaxBookmarkTextLength) {
+                    bookmarkText = [bookmarkText substringToIndex:kBlioMaxBookmarkTextLength];
+                }
+                
                 NSManagedObject *newBookmark = [NSEntityDescription
                                                 insertNewObjectForEntityForName:@"BlioBookmark"
-                                                inManagedObjectContext:[self managedObjectContext]];
+                                                inManagedObjectContext:[self.book managedObjectContext]];
                 [newBookmark setValue:newBookmarkRange forKey:@"range"];
+                
+                if (bookmarkText) {
+                    [newBookmark setValue:bookmarkText forKey:@"bookmarkText"];
+                }
+
                 [allBookmarks addObject:newBookmark];
             }
         }
@@ -3297,7 +3312,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     NSError *error;
     
-    if (![[self managedObjectContext] save:&error]) {
+    if (![[self.book managedObjectContext] save:&error]) {
         NSLog(@"BlioBookViewController toggleBookmark save failed with error: %@, %@", error, [error userInfo]);
     }
     
