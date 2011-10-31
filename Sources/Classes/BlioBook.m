@@ -615,7 +615,7 @@ static void sortedBookmarkRangePredicateInit() {
     return sSortedBookmarkRangePredicate;
 }
 
-- (NSArray *)sortedPersistedBookmarksForRange:(BlioBookmarkRange *)range {
+- (NSArray *)sortedBookmarksForRange:(BlioBookmarkRange *)range {
     NSManagedObjectContext *moc = nil;
     
     if ([NSThread isMainThread]) {

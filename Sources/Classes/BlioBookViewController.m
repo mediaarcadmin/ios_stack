@@ -3235,7 +3235,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (NSArray *)bookmarksForCurrentPage
 {
     BlioBookmarkRange *currentPageRange = [self.bookView bookmarkRangeForCurrentPage];
-    return [self.book sortedPersistedBookmarksForRange:currentPageRange];
+    return [self.book sortedBookmarksForRange:currentPageRange];
 }
 
 - (void)deleteBookmark:(NSManagedObject *)bookmark {

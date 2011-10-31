@@ -162,7 +162,7 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 - (void)reportReadingIfRequired;
 
 - (NSArray *)sortedBookmarks;
-- (NSArray *)sortedPersistedBookmarksForRange:(BlioBookmarkRange *)range;
+- (NSArray *)sortedBookmarksForRange:(BlioBookmarkRange *)range;
 - (NSArray *)sortedNotes;
 - (NSArray *)sortedHighlights;
 - (NSArray *)sortedHighlightRangesForLayoutPage:(NSInteger)layoutPage;

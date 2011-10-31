@@ -17,8 +17,8 @@
 
 typedef enum {
     kBlioContentsTabViewTabContents = 0,
-    //kBlioContentsTabViewTabBookmarks = 1,
-    kBlioContentsTabViewTabNotes = 1 
+    kBlioContentsTabViewTabBookmarks = 1,
+    kBlioContentsTabViewTabNotes = 2 
 } BlioContentsTabViewTab;
 
 @interface BlioContentsTabContentsViewController : EucBookContentsTableViewController <EucBookContentsTableViewControllerDataSource> {
@@ -126,7 +126,7 @@ typedef enum {
         [tabItems addObject:item];
         [item release];
         
-        NSArray *tabTitles = [NSArray arrayWithObjects: NSLocalizedString(@"Contents",@"\"Contents\" segmented control title for BlioContentsTabViewController"), /*NSLocalizedString(@"Bookmarks",@"\"Bookmarks\" segmented control title for BlioContentsTabViewController"),*/ NSLocalizedString(@"Notes",@"\"Notes\" segmented control title for BlioContentsTabViewController"), nil];
+        NSArray *tabTitles = [NSArray arrayWithObjects: NSLocalizedString(@"Contents",@"\"Contents\" segmented control title for BlioContentsTabViewController"), NSLocalizedString(@"Bookmarks",@"\"Bookmarks\" segmented control title for BlioContentsTabViewController"), NSLocalizedString(@"Notes",@"\"Notes\" segmented control title for BlioContentsTabViewController"), nil];
         UISegmentedControl *aTabSegmentedControl = [[UISegmentedControl alloc] initWithItems:tabTitles];
         aTabSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
@@ -184,9 +184,9 @@ typedef enum {
         case kBlioContentsTabViewTabContents:
             [self pushViewController:self.contentsController animated:NO];
             break;
-        //case kBlioContentsTabViewTabBookmarks:
-        //    [self pushViewController:self.bookmarksController animated:NO];
-        //    break;
+        case kBlioContentsTabViewTabBookmarks:
+            [self pushViewController:self.bookmarksController animated:NO];
+            break;
         case kBlioContentsTabViewTabNotes:
             [self pushViewController:self.notesController animated:NO];
             break;
@@ -221,7 +221,6 @@ typedef enum {
                 }
             }
         }  break;
-/*
         case kBlioContentsTabViewTabBookmarks: {
             if (nil != self.bookmarksController.selectedBookmark) {
                 BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[self.bookmarksController.selectedBookmark valueForKey:@"range"]];
@@ -238,7 +237,6 @@ typedef enum {
                 }
             }
         }  break;
-*/
         case kBlioContentsTabViewTabNotes: {
             NSManagedObject *note = self.notesController.selectedNote;
             if (nil != note) {
@@ -555,8 +553,8 @@ presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
     BlioBookmarkRange *aBookmarkRange = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[currentBookmark valueForKey:@"range"]];    
     
     NSString *displayPage = [self.bookView displayPageNumberForBookmarkPoint:aBookmarkRange.startPoint];
-    NSLog(@"[self.bookView contentsDataSource]: %@",[self.bookView contentsDataSource]);
-	NSLog(@"displayPage: %@",displayPage);
+    //NSLog(@"[self.bookView contentsDataSource]: %@",[self.bookView contentsDataSource]);
+	//NSLog(@"displayPage: %@",displayPage);
 	if (displayPage) {
 		mainLabel.text = displayPage;
 	}
