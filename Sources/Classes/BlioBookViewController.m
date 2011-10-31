@@ -2056,7 +2056,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if ([keyPath isEqualToString:@"currentBookmarkPoint"]) {
         [self updatePageJumpPanelAnimated:YES];
-        [self updateBookmarkButton];
         		
 		if ( _acapelaAudioManager != nil )
 			[_acapelaAudioManager setPageChanged:YES];  
@@ -2822,6 +2821,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.searchPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     }
     
+    [self updateBookmarkButton];
+}
+
+- (void)pageTurnDidComplete
+{
     [self updateBookmarkButton];
 }
 

@@ -854,6 +854,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             [newBookmarkPoint release];
         }
     }
+    
+    [self.delegate pageTurnDidComplete];
 }
 
 - (void)pageTurningViewWillBeginAnimating:(EucPageTurningView *)aPageTurningView
