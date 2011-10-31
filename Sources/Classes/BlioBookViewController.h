@@ -53,7 +53,7 @@
 - (void)viewSettingsDidDismiss:(id)sender;
 @end
 
-@class BlioBookViewControllerProgressPieButton, BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview;
+@class BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -111,7 +111,7 @@ typedef enum {
     UIView* _pageJumpView;
     UILabel* _pageJumpLabel;
     BlioBookSlider* _pageJumpSlider;
-    BlioBookViewControllerProgressPieButton *_pieButton;
+    UIButton *_bookmarkButton;
     NSManagedObjectContext *_managedObjectContext;
     BOOL rotationLocked;
     
@@ -159,7 +159,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL audioPlaying;
 @property (nonatomic, assign) BOOL audioEnabled;
 
-@property (nonatomic, retain) BlioBookViewControllerProgressPieButton *pieButton;
+@property (nonatomic, retain) UIButton *bookmarkButton;
 @property (nonatomic, retain) UIView *pauseMask;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;

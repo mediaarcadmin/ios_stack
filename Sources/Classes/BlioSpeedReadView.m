@@ -614,6 +614,11 @@
     return [self.currentBookmarkPoint isEqual:bookmarkPoint];
 }
 
+- (BlioBookmarkRange *)bookmarkRangeForCurrentPage
+{
+    return [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:self.currentBookmarkPoint];
+}
+
 - (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
 {
     return [self.paragraphSource presentationNameAndSubTitleForSectionUuid:[self.paragraphSource sectionUuidForBookmarkPoint:bookmarkPoint]].first;
