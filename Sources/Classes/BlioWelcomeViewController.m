@@ -541,6 +541,9 @@
 -(void)firstTimeUserButtonPressed:(id)sender {
 	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
 	[[BlioStoreManager sharedInstance] dismissLoginView];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioWelcomeScreenHasShownKey];    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
 /*
 	BlioCreateAccountViewController * createAccountViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
 	[self.navigationController pushViewController:createAccountViewController animated:YES];

@@ -1010,14 +1010,13 @@
 	
 }
 - (void)loginDismissed:(NSNotification*)note {
-//	NSLog(@"BlioProcessingManager loginDismissed entered");
+	NSLog(@"BlioProcessingManager loginDismissed entered");
 	BlioBookSourceID sourceID = [[[note userInfo] valueForKey:@"sourceID"] intValue];
 	if ((sourceID == BlioBookSourceOnlineStore || sourceID == BlioBookSourceLocalBundleDRM) && [[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		[self resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 		[self resumeProcessingForSourceID:BlioBookSourceLocalBundleDRM];
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] == 0) {
+        if ([[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] == 0 && ![[NSUserDefaults standardUserDefaults] boolForKey:kBlioWelcomeScreenHasShownKey]) {
             [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kBlioDownloadNewBooksDefaultsKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
             [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Books?",@"\"Auto-Download Books?\" Alert message title")
                                          message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_BOOKS_FIRST_TIME",nil,[NSBundle mainBundle],@"Would you like to download all the books from your account now?",@"Alert message informing the first time iOS end-user of the option to download all the user's books.")
                                         delegate:self
@@ -1037,6 +1036,8 @@
 //						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
 //						   otherButtonTitles:nil];
 	}
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioWelcomeScreenHasShownKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 
 }
 
