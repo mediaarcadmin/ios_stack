@@ -2701,9 +2701,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark -
 #pragma mark NotesView Methods
 
-- (void)notesViewCreateNote:(BlioNotesView *)notesView {
-    NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
-    
+- (void)notesViewCreateNote:(BlioNotesView *)notesView {    
     NSManagedObject *newNote = [NSEntityDescription
                                 insertNewObjectForEntityForName:@"BlioNote"
                                 inManagedObjectContext:[self managedObjectContext]];
@@ -2715,6 +2713,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [newNote setValue:existingHighlight forKey:@"highlight"];
         [newNote setValue:[existingHighlight valueForKey:@"range"] forKey:@"range"];
         [newNote setValue:notesView.textView.text forKey:@"noteText"];
+        
+        // N.B. the mutable set must be fetched just before it is used to avoid a bookManager 
+        // refresh in a side-effect (e.g. checking out a textflow) invalidating it
+        NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
         [notes addObject:newNote];
     } else {
         if ([self.bookView respondsToSelector:@selector(selectedRange)]) {
@@ -2723,6 +2725,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             NSManagedObject *newRange = [noteRange persistentBookmarkRangeInContext:[self managedObjectContext]];
             [newNote setValue:newRange forKey:@"range"];
             [newNote setValue:notesView.textView.text forKey:@"noteText"];
+            
+            // N.B. the mutable set must be fetched just before it is used to avoid a bookManager 
+            // refresh in a side-effect (e.g. checking out a textflow) invalidating it
+            NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
             [notes addObject:newNote];
         }
     }
@@ -2914,8 +2920,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)deleteNote:(NSManagedObject *)note {
 	NSManagedObject *noteRange = [note valueForKey:@"range"];
 	
+    // N.B. the mutable set must be fetched just before it is used to avoid a bookManager 
+    // refresh in a side-effect (e.g. checking out a textflow) invalidating it
     NSMutableSet *notes = [self.book mutableSetValueForKey:@"notes"];
     [notes removeObject:note];
+    
     [[self managedObjectContext] deleteObject:note];
 	[[self managedObjectContext] deleteObject:noteRange];
 
@@ -3148,7 +3157,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if (nil != existingHighlight) {
             [existingHighlight setValue:color forKeyPath:@"range.color"];
         } else {
-            NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
 
             NSManagedObject *newHighlight = [NSEntityDescription
                                              insertNewObjectForEntityForName:@"BlioHighlight"
@@ -3157,6 +3165,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             NSManagedObject *newRange = [selectedRange persistentBookmarkRangeInContext:[self managedObjectContext]];
             [newRange setValue:color forKey:@"color"];
             [newHighlight setValue:newRange forKey:@"range"];
+            
+            // N.B. the mutable set must be fetched just before it is used to avoid a bookManager 
+            // refresh in a side-effect (e.g. checking out a textflow) invalidating it
+            NSMutableSet *highlights = [self.book mutableSetValueForKey:@"highlights"];
             [highlights addObject:newHighlight];
         }
         if (self.book.managedObjectContext != nil) {
@@ -3238,12 +3250,17 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark - Bookmarked Pages
 
 - (void)deleteBookmark:(NSManagedObject *)bookmark {
+    // N.B. the mutable set must be fetched just before it is used to avoid a bookManager 
+    // refresh in a side-effect (e.g. checking out a textflow) invalidating it
     NSMutableSet *bookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
     [bookmarks removeObject:bookmark];
     
     NSError *error;
-    if (![[self.book managedObjectContext] save:&error]) {
-        NSLog(@"[BlioBookViewController deleteBookmark:] Save failed with error: %@, %@", error, [error userInfo]);
+    
+    if (self.book.managedObjectContext != nil) {
+        if (![[self managedObjectContext] save:&error]) {
+            NSLog(@"[BlioBookViewController deleteBookmark:] Save failed with error: %@, %@", error, [error userInfo]);
+        }
     }
     
     [self updateBookmarkButton];
@@ -3270,22 +3287,20 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)toggleBookmark:(id)sender 
-{	    
+{	   
     BlioBookmarkRange *currentPageRange = [self.bookView bookmarkRangeForCurrentPage];
     NSArray *bookmarksForCurrentPage = [self.book sortedBookmarksForRange:currentPageRange];
 
     if ([bookmarksForCurrentPage count]) {
         for (NSManagedObject *persistedBookmark in bookmarksForCurrentPage) {
-            [[self.book managedObjectContext] deleteObject:persistedBookmark];
+            [[self managedObjectContext] deleteObject:persistedBookmark];
         }
     } else {
         BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
         BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
-        
-        NSMutableSet *allBookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
-        
+                
         if (currentBookmarkRange) {
-            NSManagedObject *newBookmarkRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self.book managedObjectContext]];
+            NSManagedObject *newBookmarkRange = [currentBookmarkRange persistentBookmarkRangeInContext:[self managedObjectContext]];
             
             if (newBookmarkRange) {
                 
@@ -3298,13 +3313,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 
                 NSManagedObject *newBookmark = [NSEntityDescription
                                                 insertNewObjectForEntityForName:@"BlioBookmark"
-                                                inManagedObjectContext:[self.book managedObjectContext]];
+                                                inManagedObjectContext:[self managedObjectContext]];
                 [newBookmark setValue:newBookmarkRange forKey:@"range"];
                 
                 if (bookmarkText) {
                     [newBookmark setValue:bookmarkText forKey:@"bookmarkText"];
                 }
 
+                // N.B. the mutable set must be fetched just before it is used to avoid a bookManager 
+                // refresh in a side-effect (e.g. checking out a textflow) invalidating it
+                NSMutableSet *allBookmarks = [self.book mutableSetValueForKey:@"bookmarks"];
                 [allBookmarks addObject:newBookmark];
             }
         }
@@ -3312,8 +3330,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     NSError *error;
     
-    if (![[self.book managedObjectContext] save:&error]) {
-        NSLog(@"BlioBookViewController toggleBookmark save failed with error: %@, %@", error, [error userInfo]);
+    if (self.book.managedObjectContext != nil) {
+        if (![[self managedObjectContext] save:&error]) {
+            NSLog(@"BlioBookViewController toggleBookmark save failed with error: %@, %@", error, [error userInfo]);
+        }
     }
     
     [self updateBookmarkButton];
