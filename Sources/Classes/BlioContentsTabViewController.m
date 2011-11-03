@@ -558,7 +558,7 @@ presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
 	if (displayPage) {
 		mainLabel.text = displayPage;
 	}
-	else mainLabel.text = NSLocalizedString(@"Undefined Bookmark",@"\"Undefined Bookmark\" text label for cell inside contents tab view");
+	else mainLabel.text = @"";
     secondLabel.text = [currentBookmark valueForKey:@"bookmarkText"];
 	
 	[cell setAccessibilityTraits:UIAccessibilityTraitButton];

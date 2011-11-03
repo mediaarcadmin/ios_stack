@@ -3268,10 +3268,27 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)updateBookmarkButton
 {
-    BlioBookmarkRange *currentPageRange = [self.bookView bookmarkRangeForCurrentPage];
+    id<BlioBookView> myBookView = self.bookView;
+    
+    // Might be inclusive /or/ exclusive of the endpoint.
+    BlioBookmarkRange *currentPageRange = [myBookView bookmarkRangeForCurrentPage];
+    
+    // Looks up inclusively of the endpoint.
     NSArray *bookmarksForCurrentPage = [self.book sortedBookmarksForRange:currentPageRange];
 
-    if ([bookmarksForCurrentPage count]) {
+    // Because the range might really be meant to be exclusive, check explicitly
+    // whether any returned bookmark is actually in the current page.
+    BOOL pageContainsAtLeastOneBookmark = NO;
+    for (NSManagedObject *persistedBookmark in bookmarksForCurrentPage) {
+        BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[persistedBookmark valueForKey:@"range"]];
+        BlioBookmarkPoint *startPoint = range.startPoint;
+        if ([myBookView currentPageContainsBookmarkPoint:startPoint]){
+            pageContainsAtLeastOneBookmark = YES;
+            break;
+        }
+    }
+    
+    if (pageContainsAtLeastOneBookmark) {
         UIImage *bookmarked = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"icon-bookmarked"]];
 
         [self.bookmarkButton setImage:bookmarked forState:UIControlStateNormal];
@@ -3288,14 +3305,33 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)toggleBookmark:(id)sender 
 {	   
-    BlioBookmarkRange *currentPageRange = [self.bookView bookmarkRangeForCurrentPage];
+    id<BlioBookView> myBookView = self.bookView;
+    
+    // Might be inclusive /or/ exclusive of the endpoint.
+    BlioBookmarkRange *currentPageRange = [myBookView bookmarkRangeForCurrentPage];
+    
+    // Looks up inclusively of the endpoint.
     NSArray *bookmarksForCurrentPage = [self.book sortedBookmarksForRange:currentPageRange];
 
+    BOOL removedBookmark = NO;
     if ([bookmarksForCurrentPage count]) {
         for (NSManagedObject *persistedBookmark in bookmarksForCurrentPage) {
-            [[self managedObjectContext] deleteObject:persistedBookmark];
+            
+            // Because the range might really be meant to be exclusive, check explicitly
+            // whether any returned bookmark is actually in the current page before
+            // deleting it.
+            BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithPersistentBookmarkRange:[persistedBookmark valueForKey:@"range"]];
+            BlioBookmarkPoint *startPoint = range.startPoint;
+            if ([myBookView currentPageContainsBookmarkPoint:startPoint]){
+                [[self managedObjectContext] deleteObject:persistedBookmark];
+                removedBookmark = YES;
+            }
         }
-    } else {
+    } 
+    
+    if(!removedBookmark) {
+        // If we haven't removed any bookmarks, there were none in the current
+        // page, so make one.
         BlioBookmarkPoint *currentBookmarkPoint = self.bookView.currentBookmarkPoint;
         BlioBookmarkRange *currentBookmarkRange = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:currentBookmarkPoint];
                 

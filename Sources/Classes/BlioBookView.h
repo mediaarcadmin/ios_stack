@@ -109,6 +109,10 @@ typedef enum BlioTapTurn {
 - (NSString *)pageLabelForBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
 
 - (BOOL)currentPageContainsBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint;
+// The returned range, for historical reasons, might be inclusive /or/
+// exclusive of its endpoint.  Whether a specific point within it is actually 
+// on the page may be verified by calling the above 
+// -currentPageContainsBookmarkPoint:
 - (BlioBookmarkRange *)bookmarkRangeForCurrentPage;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
