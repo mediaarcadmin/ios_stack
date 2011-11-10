@@ -736,7 +736,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [readingItems addObject:item];
     [item release];
     
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-eye.png"]
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-wrench.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
                                            action:@selector(showViewSettings:)];
