@@ -191,5 +191,12 @@
 	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array/>
+    <key>UIAppFonts</key>
+    <array>
+        <string>THFonts/LinLibertineO.otf</string>
+        <string>THFonts/LinLibertineO-Bold.otf</string>
+        <string>THFonts/LinLibertineO-Italic.otf</string>
+        <string>THFonts/LinLibertineO-BoldItalic.otf</string>
+    </array>
 </dict>
 </plist>
