@@ -22,6 +22,7 @@
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/EucOTFIndex.h>
+#import <libEucalyptus/EucPageOptions.h>
 #import <libEucalyptus/THPair.h>
 #import "NSArray+BlioAdditions.h"
 
@@ -731,7 +732,7 @@
 
 - (BlioJustification)justification
 {
-    switch(_eucBookView.justification) {
+    switch([[_eucBookView.pageOptions objectForKey:EucPageOptionsJustificationKey] integerValue]) {
         default:
         case EucJustificationOriginal:
             return kBlioJustificationOriginal;
@@ -757,7 +758,16 @@
             eucJustification = EucJustificationOverrideToFull;
             break;
     }
-    _eucBookView.justification = eucJustification;
+    
+    NSDictionary *pageOptions = _eucBookView.pageOptions;
+    if(eucJustification != [[pageOptions objectForKey:EucPageOptionsJustificationKey] integerValue]) {
+        NSMutableDictionary *newPageOptions = pageOptions ? [pageOptions mutableCopy] : [[NSMutableDictionary alloc] init];
+        [newPageOptions setObject:[NSNumber numberWithInteger:eucJustification]
+                           forKey:EucPageOptionsJustificationKey];
+        _eucBookView.pageOptions = newPageOptions;
+        [newPageOptions release];
+    }
+    
 }
 
 - (BOOL)twoUpLandscape
