@@ -100,7 +100,7 @@
         aContentsView.frame = CGRectMake(0, 0, 289, desiredContentsHeight);
         [newMenuView positionAndResizeForAttachingToRect:CGRectMake(279, 15, 1, 1) fromView:toolbar];
     } else {
-        if(aContentsView.screenBrightnessSlider) {
+        if(aContentsView.hasScreenBrightnessSlider) {
             aContentsView.frame = CGRectMake(0, 0, 319, desiredContentsHeight);
         } else {
             aContentsView.frame = CGRectMake(0, 0, 289, desiredContentsHeight);

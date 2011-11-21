@@ -35,6 +35,8 @@ typedef enum BlioTapTurn {
     kBlioTapTurnOn = 1,
 } BlioTapTurn;
 
+extern NSString * const kBlioOriginalFontName;
+
 #pragma mark -
 @protocol BlioBookViewDelegate <NSObject>
 
@@ -120,8 +122,10 @@ typedef enum BlioTapTurn {
 @property (nonatomic, readonly) CGRect firstPageRect;
 
 @optional
-@property (nonatomic, assign) BlioJustification justification;
 @property (nonatomic, assign) NSUInteger fontSizeIndex;
+@property (nonatomic, assign) BlioJustification justification;
+@property (nonatomic, retain) NSString *fontName;
+
 @property (nonatomic, readonly) UIImage *dimPageImage;
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;

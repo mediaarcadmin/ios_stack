@@ -164,6 +164,17 @@
     }
 }
 
+- (NSString *)fontName
+{
+    return [font familyName];
+}
+- (void)setFontName:(NSString *)fontName
+{
+    font = [UIFont fontWithName:fontName size:currentFontSize];
+    [self setFontSizeIndex:currentFontSize];
+}
+
+
 - (NSUInteger)fontSizeIndex {
     CGFloat actualFontSize = currentFontSize;
     CGFloat bestDifference = CGFLOAT_MAX;

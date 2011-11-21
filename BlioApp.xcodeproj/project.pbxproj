@@ -248,6 +248,18 @@
 		7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC010132E88F200FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
+		7DE0D553147A8A82005FD319 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D552147A8A82005FD319 /* BlioFonts.plist */; };
+		7DE0D554147A8A82005FD319 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D552147A8A82005FD319 /* BlioFonts.plist */; };
+		7DE0D555147A8A82005FD319 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D552147A8A82005FD319 /* BlioFonts.plist */; };
+		7DE0D556147A8A82005FD319 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D552147A8A82005FD319 /* BlioFonts.plist */; };
+		7DE0D558147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */; };
+		7DE0D559147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */; };
+		7DE0D55A147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */; };
+		7DE0D55B147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */; };
+		7DE0D55D147AC3E2005FD319 /* BlioBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0D55C147AC3E2005FD319 /* BlioBookView.m */; };
+		7DE0D55E147AC3E2005FD319 /* BlioBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0D55C147AC3E2005FD319 /* BlioBookView.m */; };
+		7DE0D55F147AC3E2005FD319 /* BlioBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0D55C147AC3E2005FD319 /* BlioBookView.m */; };
+		7DE0D560147AC3E2005FD319 /* BlioBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0D55C147AC3E2005FD319 /* BlioBookView.m */; };
 		7DE15F6E141E76E100D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
 		7DE15F6F141E76E100D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
 		7DE15F70141E76F200D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
@@ -1995,6 +2007,9 @@
 		7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSelectableBookView.h; sourceTree = "<group>"; };
 		7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSelectableBookView.m; sourceTree = "<group>"; };
 		7DDCC00D132E88C800FE8201 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		7DE0D552147A8A82005FD319 /* BlioFonts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioFonts.plist; sourceTree = "<group>"; };
+		7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FlowViewEucPageOptions.plist; sourceTree = "<group>"; };
+		7DE0D55C147AC3E2005FD319 /* BlioBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookView.m; sourceTree = "<group>"; };
 		7DE274981382DD6000641A54 /* KNFBPageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBPageMarker.h; sourceTree = "<group>"; };
 		7DE274991382DD6A00641A54 /* KNFBPageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNFBPageMarker.m; sourceTree = "<group>"; };
 		7DE7B5E21104B4FD0021F382 /* Lighting.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Lighting.xib; sourceTree = "<group>"; };
@@ -2998,6 +3013,8 @@
 				DCABAC8013B4CC9700BE0FE3 /* Blio.xcdatamodeld */,
 				DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */,
 				DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */,
+				7DE0D552147A8A82005FD319 /* BlioFonts.plist */,
+				7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3437,6 +3454,7 @@
 			isa = PBXGroup;
 			children = (
 				7DB9F57C10F345450010DF0B /* BlioBookView.h */,
+				7DE0D55C147AC3E2005FD319 /* BlioBookView.m */,
 				7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */,
 				7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */,
 				7D8A801D121A99FB00A54E16 /* BlioBeveledView.h */,
@@ -4330,6 +4348,8 @@
 				A3F24EB1143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 				A365921C146C1C0500B23AAA /* icon-wrench.png in Resources */,
 				A3659220146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
+				7DE0D553147A8A82005FD319 /* BlioFonts.plist in Resources */,
+				7DE0D558147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4571,6 +4591,8 @@
 				A3F24EB3143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 				A365921E146C1C0500B23AAA /* icon-wrench.png in Resources */,
 				A3659222146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
+				7DE0D555147A8A82005FD319 /* BlioFonts.plist in Resources */,
+				7DE0D55A147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4812,6 +4834,8 @@
 				A3F24EB4143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 				A365921F146C1C0500B23AAA /* icon-wrench.png in Resources */,
 				A3659223146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
+				7DE0D556147A8A82005FD319 /* BlioFonts.plist in Resources */,
+				7DE0D55B147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5054,6 +5078,8 @@
 				A3F24EB2143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 				A365921D146C1C0500B23AAA /* icon-wrench.png in Resources */,
 				A3659221146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
+				7DE0D554147A8A82005FD319 /* BlioFonts.plist in Resources */,
+				7DE0D559147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5213,6 +5239,7 @@
 				DC824D96143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 				A3F24EB7143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
 				DC4057701447453B00F748B5 /* BlioXMLParserLock.m in Sources */,
+				7DE0D55D147AC3E2005FD319 /* BlioBookView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5369,6 +5396,7 @@
 				DC824D98143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 				A3F24EB9143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
 				DC4057721447453B00F748B5 /* BlioXMLParserLock.m in Sources */,
+				7DE0D55F147AC3E2005FD319 /* BlioBookView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5524,6 +5552,7 @@
 				A323E75E1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 				A3F24EBA143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
 				DC4057731447453B00F748B5 /* BlioXMLParserLock.m in Sources */,
+				7DE0D560147AC3E2005FD319 /* BlioBookView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5680,6 +5709,7 @@
 				DC824D97143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 				A3F24EB8143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
 				DC4057711447453B00F748B5 /* BlioXMLParserLock.m in Sources */,
+				7DE0D55E147AC3E2005FD319 /* BlioBookView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

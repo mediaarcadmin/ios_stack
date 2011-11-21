@@ -730,6 +730,31 @@
     [_eucBookView turnToNextPage];
 }
 
+- (NSString *)fontName
+{
+    return _fontName;
+}
+- (void)setFontName:(NSString *)fontName
+{
+    if(!_fontName || ![fontName isEqualToString:_fontName]) {
+        NSDictionary *oldPageOptions = _eucBookView.pageOptions;
+        NSDictionary *fontMap = [NSDictionary dictionaryWithContentsOfURL:
+                                 [[NSBundle mainBundle] URLForResource:@"FlowViewEucPageOptions"
+                                                         withExtension:@"plist"]];
+        
+        NSDictionary *fontPageOptions = [fontMap objectForKey:fontName];
+        if(fontPageOptions) {
+            NSMutableDictionary *newPageOptions = oldPageOptions ? [oldPageOptions mutableCopy] : [[NSMutableDictionary alloc] init];
+            [newPageOptions addEntriesFromDictionary:fontPageOptions];
+            _eucBookView.pageOptions = newPageOptions;
+            [newPageOptions release];
+        } else {
+            NSLog(@"Could not find font page options for font \"%@\" - ignoring", fontName);
+        }
+        
+    }
+}
+
 - (BlioJustification)justification
 {
     switch([[_eucBookView.pageOptions objectForKey:EucPageOptionsJustificationKey] integerValue]) {
@@ -759,9 +784,9 @@
             break;
     }
     
-    NSDictionary *pageOptions = _eucBookView.pageOptions;
-    if(eucJustification != [[pageOptions objectForKey:EucPageOptionsJustificationKey] integerValue]) {
-        NSMutableDictionary *newPageOptions = pageOptions ? [pageOptions mutableCopy] : [[NSMutableDictionary alloc] init];
+    NSDictionary *oldPageOptions = _eucBookView.pageOptions;
+    if(eucJustification != [[oldPageOptions objectForKey:EucPageOptionsJustificationKey] integerValue]) {
+        NSMutableDictionary *newPageOptions = oldPageOptions ? [oldPageOptions mutableCopy] : [[NSMutableDictionary alloc] init];
         [newPageOptions setObject:[NSNumber numberWithInteger:eucJustification]
                            forKey:EucPageOptionsJustificationKey];
         _eucBookView.pageOptions = newPageOptions;

@@ -9,7 +9,6 @@
 #import "BlioViewSettingsContentsView.h"
 #import <libEucalyptus/EucPageTurningView.h>
 #import "BlioUIImageAdditions.h"
-#import "BlioAppSettingsConstants.h"
 
 #define kBlioViewSettingsGreenButton [UIColor colorWithRed:0.053 green:0.613 blue:0.000 alpha:1.000]//[UIColor colorWithRed:0.302 green:0.613 blue:0.289 alpha:1.000]
 #define kBlioViewSettingsPopverBlueButton [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000]
@@ -26,6 +25,25 @@ static const CGFloat kBlioViewSettingsSegmentButtonHeight = 36;
 static const CGFloat kBlioViewSettingsLabelWidth = 93;
 
 @interface BlioViewSettingsContentsView()
+
+@property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;
+
+@property (nonatomic, retain) UILabel *fontSizeLabel;
+@property (nonatomic, retain) UILabel *justificationLabel;
+@property (nonatomic, retain) UILabel *pageColorLabel;
+@property (nonatomic, retain) UILabel *tapZoomsLabel;
+@property (nonatomic, retain) UILabel *twoUpLandscapeLabel;
+
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *pageLayoutSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *fontSizeSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *justificationSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *pageColorSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *tapZoomsSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *twoUpLandscapeSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *lockButtonSegment;
+
+@property (nonatomic, retain) UIButton *doneButton;
+@property (nonatomic, retain) UISlider *screenBrightnessSlider;
 
 @property (nonatomic, assign) BOOL refreshingSettings;
 
@@ -47,15 +65,15 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 @synthesize fontSizeLabel;
 @synthesize justificationLabel;
 @synthesize pageColorLabel;
-@synthesize tapZoomsToBlockLabel;
-@synthesize landscapePageLabel;
+@synthesize tapZoomsLabel;
+@synthesize twoUpLandscapeLabel;
 
 @synthesize pageLayoutSegment;
 @synthesize fontSizeSegment;
 @synthesize justificationSegment;
 @synthesize pageColorSegment;
-@synthesize tapZoomsToBlockSegment;
-@synthesize landscapePageSegment;
+@synthesize tapZoomsSegment;
+@synthesize twoUpLandscapeSegment;
 @synthesize lockButtonSegment;
 
 @synthesize screenBrightnessSlider;
@@ -72,15 +90,15 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
     self.fontSizeLabel = nil;
     self.justificationLabel = nil;
     self.pageColorLabel = nil;
-	self.tapZoomsToBlockLabel = nil;
-	self.landscapePageLabel = nil;
+	self.tapZoomsLabel = nil;
+	self.twoUpLandscapeLabel = nil;
     
     self.pageLayoutSegment = nil;
     self.fontSizeSegment = nil;
     self.justificationSegment = nil;
     self.pageColorSegment = nil;
-	self.tapZoomsToBlockSegment = nil;
-	self.landscapePageSegment = nil;
+	self.tapZoomsSegment = nil;
+	self.twoUpLandscapeSegment = nil;
     self.lockButtonSegment = nil;
     
     self.screenBrightnessSlider = nil;
@@ -172,51 +190,51 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         [self.pageColorSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
 	} 
     
-	if ([self.delegate shouldShowTapZoomsToBlockSettings]) {
-		self.tapZoomsToBlockLabel.enabled = YES;
-        self.tapZoomsToBlockLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+	if ([self.delegate shouldShowtapZoomsSettings]) {
+		self.tapZoomsLabel.enabled = YES;
+        self.tapZoomsLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
         
-        self.tapZoomsToBlockSegment.enabled = YES;
-        self.tapZoomsToBlockSegment.alpha = 1.0f;
-        self.tapZoomsToBlockSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+        self.tapZoomsSegment.enabled = YES;
+        self.tapZoomsSegment.alpha = 1.0f;
+        self.tapZoomsSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
         
-        if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey] == YES ) {
-            [self.tapZoomsToBlockSegment setSelectedSegmentIndex:1];
+        if ( self.delegate.currentTapZooms ) {
+            [self.tapZoomsSegment setSelectedSegmentIndex:1];
         } else { 
-            [self.tapZoomsToBlockSegment setSelectedSegmentIndex:0];
+            [self.tapZoomsSegment setSelectedSegmentIndex:0];
         }
 	} else {
-		self.tapZoomsToBlockLabel.enabled = NO;
-        self.tapZoomsToBlockLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+		self.tapZoomsLabel.enabled = NO;
+        self.tapZoomsLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
 
-		self.tapZoomsToBlockSegment.enabled = NO;
-        self.tapZoomsToBlockSegment.alpha = 0.35f;
-        self.tapZoomsToBlockSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+		self.tapZoomsSegment.enabled = NO;
+        self.tapZoomsSegment.alpha = 0.35f;
+        self.tapZoomsSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
         
-        [self.tapZoomsToBlockSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
+        [self.tapZoomsSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
 	}
     
-	if ([self.delegate shouldShowTwoUpLandscapePageSettings]) {
-		self.landscapePageLabel.enabled = YES;
-        self.landscapePageLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+	if ([self.delegate shouldShowTwoUpLandscapeSettings]) {
+		self.twoUpLandscapeLabel.enabled = YES;
+        self.twoUpLandscapeLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
         
-        self.landscapePageSegment.enabled = YES;
-        self.landscapePageSegment.alpha = 1.0f;
-        self.landscapePageSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
-        if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] == YES ) {
-			[self.landscapePageSegment setSelectedSegmentIndex:1];
+        self.twoUpLandscapeSegment.enabled = YES;
+        self.twoUpLandscapeSegment.alpha = 1.0f;
+        self.twoUpLandscapeSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+        if ( self.delegate.currentTwoUpLandscape) {
+			[self.twoUpLandscapeSegment setSelectedSegmentIndex:1];
 		} else {
-            [self.landscapePageSegment setSelectedSegmentIndex:0];
+            [self.twoUpLandscapeSegment setSelectedSegmentIndex:0];
         }
 	} else {
-		self.landscapePageLabel.enabled = NO;
-        self.landscapePageLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+		self.twoUpLandscapeLabel.enabled = NO;
+        self.twoUpLandscapeLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
 
-		self.landscapePageSegment.enabled = NO;
-        self.landscapePageSegment.alpha = 0.35f;
-        self.landscapePageSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+		self.twoUpLandscapeSegment.enabled = NO;
+        self.twoUpLandscapeSegment.alpha = 0.35f;
+        self.twoUpLandscapeSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
         
-        [self.landscapePageSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
+        [self.twoUpLandscapeSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
 	}
     
     self.refreshingSettings = NO;
@@ -434,7 +452,7 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
             aTabZoomsToBlockLabel.text = NSLocalizedString(@"Tap Advance",@"Settings Label for \"Tap Advance\" Segmented Control.");
         }
         [self addSubview:aTabZoomsToBlockLabel];
-        self.tapZoomsToBlockLabel = aTabZoomsToBlockLabel;
+        self.tapZoomsLabel = aTabZoomsToBlockLabel;
         [aTabZoomsToBlockLabel release];
 		
 		NSArray *tapAdvanceTitles;
@@ -449,47 +467,47 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
                                 NSLocalizedString(@"By Block",@"\"By Block\" segment label (for \"Tap Advance\" SegmentedControl)"),
                                 nil];
 		
-		BlioAccessibilitySegmentedControl *aTapZoomsToBlockSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
-        aTapZoomsToBlockSegment.segmentedControlStyle = UISegmentedControlStyleBar;
-        aTapZoomsToBlockSegment.tintColor = tintColor;
+		BlioAccessibilitySegmentedControl *atapZoomsSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
+        atapZoomsSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+        atapZoomsSegment.tintColor = tintColor;
         
         if(voiceOverIsRelevant) {
-            [aTapZoomsToBlockSegment setAccessibilityHint:NSLocalizedString(@"In this mode, two finger swipe down to begin reading from the current position. Pages will turn automatically. Tap the page to stop reading, or to read individual lines.", @"Accessibility hint for View Settings \"By Page\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:0];
-            [aTapZoomsToBlockSegment setAccessibilityHint:NSLocalizedString(@"In this mode, tap the page to read blocks of text.  Two finger swipe down to read the current page.  Pages will not turn automatically.", @"Accessibility hing for View Settings  \"By Block\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:1];
+            [atapZoomsSegment setAccessibilityHint:NSLocalizedString(@"In this mode, two finger swipe down to begin reading from the current position. Pages will turn automatically. Tap the page to stop reading, or to read individual lines.", @"Accessibility hint for View Settings \"By Page\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:0];
+            [atapZoomsSegment setAccessibilityHint:NSLocalizedString(@"In this mode, tap the page to read blocks of text.  Two finger swipe down to read the current page.  Pages will not turn automatically.", @"Accessibility hing for View Settings  \"By Block\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:1];
         }
     
-        [self addSubview:aTapZoomsToBlockSegment];
-        self.tapZoomsToBlockSegment = aTapZoomsToBlockSegment;
-        [aTapZoomsToBlockSegment release];
+        [self addSubview:atapZoomsSegment];
+        self.tapZoomsSegment = atapZoomsSegment;
+        [atapZoomsSegment release];
         
-        [self.tapZoomsToBlockSegment addTarget:self action:@selector(changeTapZooms:) forControlEvents:UIControlEventValueChanged];
+        [self.tapZoomsSegment addTarget:self action:@selector(changeTapZooms:) forControlEvents:UIControlEventValueChanged];
 		
 		
 		//////// LANDSCAPE PAGE NUMBER
 
-		UILabel *aLandscapePageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        aLandscapePageLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        aLandscapePageLabel.textColor = whiteColor;
-        aLandscapePageLabel.backgroundColor = clearColor;
-        aLandscapePageLabel.text = NSLocalizedString(@"Landscape",@"Settings Label for number of pages displayed in landscape.");
-        [self addSubview:aLandscapePageLabel];
-        self.landscapePageLabel = aLandscapePageLabel;
-        [aLandscapePageLabel release];
+		UILabel *atwoUpLandscapeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        atwoUpLandscapeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        atwoUpLandscapeLabel.textColor = whiteColor;
+        atwoUpLandscapeLabel.backgroundColor = clearColor;
+        atwoUpLandscapeLabel.text = NSLocalizedString(@"Landscape",@"Settings Label for number of pages displayed in landscape.");
+        [self addSubview:atwoUpLandscapeLabel];
+        self.twoUpLandscapeLabel = atwoUpLandscapeLabel;
+        [atwoUpLandscapeLabel release];
 		
-		NSArray *landscapePageTitles = [NSArray arrayWithObjects:
+		NSArray *twoUpLandscapeTitles = [NSArray arrayWithObjects:
 									 NSLocalizedString(@"1 Page",@"\"1 Page\" segment label (for Landscape Page SegmentedControl)"),
 									 NSLocalizedString(@"2 Pages",@"\"2 Pages\" segment label (for Landscape Page SegmentedControl)"),
 									 nil];
 		
-		BlioAccessibilitySegmentedControl *aLandscapePageSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:landscapePageTitles];
-        aLandscapePageSegment.segmentedControlStyle = UISegmentedControlStyleBar;
-        aLandscapePageSegment.tintColor = tintColor;
+		BlioAccessibilitySegmentedControl *atwoUpLandscapeSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:twoUpLandscapeTitles];
+        atwoUpLandscapeSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+        atwoUpLandscapeSegment.tintColor = tintColor;
                 
-        [self addSubview:aLandscapePageSegment];
-        self.landscapePageSegment = aLandscapePageSegment;
-        [aLandscapePageSegment release];
+        [self addSubview:atwoUpLandscapeSegment];
+        self.twoUpLandscapeSegment = atwoUpLandscapeSegment;
+        [atwoUpLandscapeSegment release];
                 
-        [self.landscapePageSegment addTarget:self action:@selector(changeTwoUpLandscapePage:) forControlEvents:UIControlEventValueChanged];
+        [self.twoUpLandscapeSegment addTarget:self action:@selector(changeTwoUpLandscape:) forControlEvents:UIControlEventValueChanged];
 		
 		//////// ORIENTATION LOCK
 
@@ -577,6 +595,11 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 }
 
 
+- (BOOL)hasScreenBrightnessSlider
+{
+    return self.screenBrightnessSlider != nil;
+}
+
 
 - (CGFloat)contentsHeight {
     CGFloat height;
@@ -654,15 +677,15 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
     [self.pageColorSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     currentY += rowStride;
 
-    [self.tapZoomsToBlockLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
-    [self.tapZoomsToBlockSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    [self.tapZoomsLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.tapZoomsSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     currentY += rowStride;
 
-    [self.landscapePageLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
-    [self.landscapePageSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    [self.twoUpLandscapeLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.twoUpLandscapeSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     currentY += rowStride;
 
-//		[self.lockButtonSegment setFrame:CGRectMake(xInset, CGRectGetMaxY([self.landscapePageLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * xInset - kBlioViewSettingsRowSpacing)/2.0f, buttonHeight)];
+//		[self.lockButtonSegment setFrame:CGRectMake(xInset, CGRectGetMaxY([self.twoUpLandscapeLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * xInset - kBlioViewSettingsRowSpacing)/2.0f, buttonHeight)];
         
     if(myScreenBrightnessSlider) {
         UIImage *thumbImage;
@@ -734,9 +757,9 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
     }
 }
 
-- (void)changeTwoUpLandscapePage:(id)sender {
+- (void)changeTwoUpLandscape:(id)sender {
     if(!self.refreshingSettings) {
-        [self.delegate changeTwoUpLandscapePage:((UISegmentedControl*)sender).selectedSegmentIndex == 1];
+        [self.delegate changeTwoUpLandscape:((UISegmentedControl*)sender).selectedSegmentIndex == 1];
     }
 }
 

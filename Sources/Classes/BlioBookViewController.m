@@ -46,10 +46,12 @@ static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 static const NSUInteger kBlioMaxBookmarkTextLength = 50;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
+static NSString * const kBlioLastFontNameDefaultsKey = @"lastFontName";
 static NSString * const kBlioLastFontSizeIndexDefaultsKey = @"lastFontSize";
 static NSString * const kBlioLastJustificationDefaultsKey = @"lastJustification";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
 static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
+
 static NSString * const kBlioBookViewControllerCoverPopAnimation = @"BlioBookViewControllerCoverPopAnimation";
 static NSString * const kBlioBookViewControllerCoverFadeAnimation = @"BlioBookViewControllerCoverFadeAnimation";
 static NSString * const kBlioBookViewControllerCoverShrinkAnimation = @"BlioBookViewControllerCoverShrinkAnimation";
@@ -176,6 +178,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 + (void)initialize {
     if(self == [BlioBookViewController class]) {
         NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     kBlioOriginalFontName, kBlioLastFontNameDefaultsKey,
                                      [NSNumber numberWithInteger:kBlioPageLayoutPageLayout], kBlioLastLayoutDefaultsKey,
                                      [NSNumber numberWithInteger:2], kBlioLastFontSizeIndexDefaultsKey,
                                      [NSNumber numberWithBool:UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad], kBlioLandscapeTwoPagesDefaultsKey,
@@ -370,6 +373,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setFontName:)]) {
+        self.bookView.fontName = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey];
+    }
     if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
         NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
         self.bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
@@ -1851,6 +1857,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+        if([self.bookView respondsToSelector:@selector(setFontName:)]) {
+            self.bookView.fontName = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey];
+        }
         if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
             NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
             self.bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
@@ -1874,19 +1883,23 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
-- (BOOL)shouldShowJustificationSettings {
-    return [self.bookView respondsToSelector:@selector(setJustification:)];
+- (BOOL)shouldShowFontSettings {
+    return [self.bookView respondsToSelector:@selector(setFont:)];
 }
 
 - (BOOL)shouldShowFontSizeSettings {
     return [self.bookView respondsToSelector:@selector(setFontSizeIndex:)];
 }
 
+- (BOOL)shouldShowJustificationSettings {
+    return [self.bookView respondsToSelector:@selector(setJustification:)];
+}
+
 - (BOOL)shouldShowPageColorSettings {        
     return YES;
 }
 
-- (BOOL)shouldShowTapZoomsToBlockSettings {
+- (BOOL)shouldShowtapZoomsSettings {
     if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
         return YES;
     }
@@ -1902,7 +1915,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     return NO;
 }
-- (BOOL)shouldShowTwoUpLandscapePageSettings {
+- (BOOL)shouldShowTwoUpLandscapeSettings {
     CGSize size = self.bookView.bounds.size;
     return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUpLandscape:)];
 }
@@ -1923,20 +1936,33 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIAccessibilityIsVoiceOverRunning();
 }
 
-- (NSUInteger)currentFontSizeIndex {
-    return self.bookView.fontSizeIndex;
-}
-
-- (BOOL)reflowEnabled {
+- (BOOL)reflowEnabled 
+{
 	return [self.book reflowEnabled];
 }
--(BOOL)fixedViewEnabled {
+-(BOOL)fixedViewEnabled 
+{
 	return [self.book fixedViewEnabled];
 }
+
+- (void)changeFontName:(NSString *)fontName
+{
+    [[NSUserDefaults standardUserDefaults] setObject:fontName forKey:kBlioLastFontNameDefaultsKey];
+    self.bookView.fontName = fontName;
+}
+- (NSString *)currentFontName
+{
+    return self.bookView.fontName;
+}
+
 - (void)changeFontSizeIndex:(NSUInteger)newSize {
     self.bookView.fontSizeIndex = newSize;
     // Will set the default when we get the KVO callback.
     // [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeIndexDefaultsKey];
+}
+
+- (NSUInteger)currentFontSizeIndex {
+    return self.bookView.fontSizeIndex;
 }
 
 - (NSUInteger)fontSizeCount
@@ -2031,18 +2057,30 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.currentPageColor = newPageColor;
     [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
+
 - (void)changeTapZooms:(BOOL)newTapZooms {
     [[NSUserDefaults standardUserDefaults] setBool:newTapZooms forKey:kBlioTapZoomsDefaultsKey];
     if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
         self.bookView.shouldTapZoom = newTapZooms;
     }
 }
-- (void)changeTwoUpLandscapePage:(BOOL)shouldBeTwoUp {
+- (BOOL)currentTapZooms
+{
+    return self.bookView.shouldTapZoom;
+}
+
+- (void)changeTwoUpLandscape:(BOOL)shouldBeTwoUp {
     [[NSUserDefaults standardUserDefaults] setBool:shouldBeTwoUp forKey:kBlioLandscapeTwoPagesDefaultsKey];
     if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
         self.bookView.twoUpLandscape = shouldBeTwoUp;
     }
 }
+- (BOOL)currentTwoUpLandscape
+{
+    return self.bookView.twoUpLandscape;
+}
+
+
 - (void)toggleRotationLock {
     [self setRotationLocked:![self isRotationLocked]];
     [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];

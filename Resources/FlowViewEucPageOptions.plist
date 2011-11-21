@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BlioOriginalFontName</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<true/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Linux Libertine O</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Linux Libertine O</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Verdana</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Marker Felt</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Zapfino</string>
+	</dict>
+	<key>Linux Libertine O</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Linux Libertine O</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Linux Libertine O</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Linux Libertine O</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Linux Libertine O</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Linux Libertine O</string>
+	</dict>
+	<key>Baskerville</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Baskerville</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Baskerville</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Baskerville</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Baskerville</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Baskerville</string>
+	</dict>
+	<key>Cochin</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Cochin</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Cochin</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Cochin</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Cochin</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Cochin</string>
+	</dict>
+	<key>Courier</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Courier</string>
+	</dict>
+	<key>Futura</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Futura</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Futura</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Futura</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Futura</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Futura</string>
+	</dict>
+	<key>Georgia</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Georgia</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Georgia</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Georgia</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Georgia</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Georgia</string>
+	</dict>
+	<key>Gill Sans</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Gill Sans</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Gill Sans</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Gill Sans</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Gill Sans</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Gill Sans</string>
+	</dict>
+	<key>Helvetica</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Helvetica</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Helvetica</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Helvetica</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Helvetica</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Helvetica</string>
+	</dict>
+	<key>Hoefler Text</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Hoefler Text</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Hoefler Text</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Hoefler Text</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Hoefler Text</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Hoefler Text</string>
+	</dict>
+	<key>Optima</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Optima</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Optima</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Optima</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Optima</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Optima</string>
+	</dict>
+	<key>Palatino</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Palatino</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Palatino</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Palatino</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Palatino</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Palatino</string>
+	</dict>
+	<key>Times New Roman</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Times New Roman</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Times New Roman</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Times New Roman</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Times New Roman</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Times New Roman</string>
+	</dict>
+	<key>Trebuchet MS</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Trebuchet MS</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Trebuchet MS</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Trebuchet MS</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Trebuchet MS</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Trebuchet MS</string>
+	</dict>
+	<key>Verdana</key>
+	<dict>
+		<key>EucCSSPageOptionsAllowCustomFontsKey</key>
+		<false/>
+		<key>EucPageOptionsDefaultFontFamilyKey</key>
+		<string>Verdana</string>
+		<key>EucCSSPageOptionsSystemFontFamilySerifKey</key>
+		<string>Verdana</string>
+		<key>EucCSSPageOptionsSystemFontFamilySansSerifKey</key>
+		<string>Verdana</string>
+		<key>EucCSSPageOptionsSystemFontFamilyMonospaceKey</key>
+		<string>Courier</string>
+		<key>EucCSSPageOptionsSystemFontFamilyCursiveKey</key>
+		<string>Verdana</string>
+		<key>EucCSSPageOptionsSystemFontFamilyFantasyKey</key>
+		<string>Verdana</string>
+	</dict>
+</dict>
+</plist>
