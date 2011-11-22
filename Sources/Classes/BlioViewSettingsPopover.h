@@ -13,7 +13,7 @@
 @protocol BlioViewSettingsDelegate;
 
 @interface BlioViewSettingsPopover : BlioModalPopoverController <UIPopoverControllerDelegate, UINavigationControllerDelegate> {
-    BlioViewSettingsContentsView *contentsView;
+    BlioViewSettingsContentsView *settingsContentsView;
     id<BlioViewSettingsDelegate> viewSettingsDelegate;
 }
 

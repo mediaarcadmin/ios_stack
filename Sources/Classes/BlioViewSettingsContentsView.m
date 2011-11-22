@@ -13,8 +13,6 @@
 
 @interface BlioViewSettingsContentsView()
 
-@property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;
-
 @property (nonatomic, retain) UILabel *fontAndSizeLabel;
 @property (nonatomic, retain) UILabel *pageColorLabel;
 @property (nonatomic, retain) UILabel *tapZoomsLabel;
@@ -92,7 +90,38 @@
 
 - (void)refreshFontLabel
 {
-    [self.fontAndSizeSegment setTitle:self.delegate.currentFontName forSegmentAtIndex:0];
+    NSString *fontName = self.delegate.currentFontName;
+    NSString *displayName = [self.delegate fontNameToFontDisplayName:fontName];
+    
+    CGSize boundsSize = self.fontAndSizeSegment.bounds.size;
+    
+    CGFloat baseline;
+    UIFont *font;
+    if([fontName isEqualToString:kBlioOriginalFontName]) {
+        font = [UIFont boldSystemFontOfSize:12];
+        baseline = roundf(boundsSize.height * 0.65f);
+    } else {
+        font = [UIFont fontWithName:fontName size:18];
+        baseline = roundf(boundsSize.height * 0.65f) + 1.0f;
+    }
+    
+    CGFloat arrowMargin = boundsSize.height * 0.33f;
+    CGFloat arrowRadius = boundsSize.height * 0.5f - arrowMargin;
+    CGRect arrowRect = CGRectMake(boundsSize.width - arrowMargin - arrowRadius, arrowMargin,
+                                  arrowRadius, arrowRadius * 2.0f);
+    
+    [self.fontAndSizeSegment setImage:[UIImage appleLikeBeveledImage:
+                                       [UIImage blioImageWithString:displayName 
+                                                               font:font 
+                                                               size:boundsSize
+                                                           baseline:baseline
+                                                              color:[UIColor whiteColor]
+                                                     rightArrowRect:arrowRect]] 
+                    forSegmentAtIndex:0];
+    
+    [self.fontAndSizeSegment setContentOffset:CGSizeMake(0, 0) forSegmentAtIndex:0];
+
+    [self.fontAndSizeSegment setAccessibilityHint:displayName forSegmentIndex:0];
 }
 
 - (void)refreshSettings {
@@ -115,6 +144,7 @@
         self.fontAndSizeSegment.alpha = 0.35f;
         self.fontAndSizeSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;        
     }
+    
     [self refreshFontLabel];
     
     if ([self.delegate shouldShowPageColorSettings]) {
@@ -183,7 +213,7 @@
         
         [self.twoUpLandscapeSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
 	}
-    
+        
     self.refreshingSettings = NO;
     
     if(self.window) {
@@ -209,24 +239,24 @@
 		
         UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
         UIEdgeInsets inset = UIEdgeInsetsMake(0, 2, 2, 2);
-        UIImage *plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset];
-        UIImage *layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset];
+        UIImage *plainImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset]];
+        UIImage *layoutImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset]];
 		NSMutableArray *segmentImages = [NSMutableArray arrayWithObjects:
                                          plainImage,
                                          layoutImage,
                                          nil];
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            [segmentImages addObject:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset]];
+            [segmentImages addObject:[UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset]]];
 		}         
         
         BlioAccessibilitySegmentedControl *aLayoutSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
         aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aLayoutSegmentedControl.tintColor = tintColor;
         
-        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:0];
-        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:1];
+        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:0];
+        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:1];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:2];
+            [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:2];
         }        
         
         [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Flowed layout", @"Accessibility label for View Settings Flowed Layout button")];
@@ -481,7 +511,6 @@
     return self.screenBrightnessSlider != nil;
 }
 
-
 - (CGFloat)contentsHeight {
     CGFloat height;
     CGFloat yInset, rowSpacing, rowHeight;
@@ -586,6 +615,8 @@
     if(self.doneButton) {
         [self.doneButton setFrame:CGRectMake(xInset, currentY, innerWidth,  rowHeight)];
     }
+    
+    [self refreshFontLabel];
     
     [super layoutSubviews];
 }

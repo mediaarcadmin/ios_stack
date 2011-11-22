@@ -13,9 +13,11 @@
 
 @interface BlioViewSettingsSheet : NSObject {
     id<BlioViewSettingsDelegate> delegate;
-    BlioViewSettingsContentsView *contentsView;
-    EucMenuView *menuView;
     UIControl *screenMask;
+    
+    EucMenuView *menuView;
+    UIView *containerView;
+    BlioViewSettingsContentsView *settingsContentsView;
 }
 
 @property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;
@@ -24,5 +26,7 @@
 - (void)showFromToolbar:(UIToolbar *)toolbar;
 - (void)dismiss;
 - (void)dismissAnimated:(BOOL)animated;
+
+- (void)pushFontSettings;
 
 @end

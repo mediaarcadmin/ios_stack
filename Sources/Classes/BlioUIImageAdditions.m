@@ -8,13 +8,16 @@
 
 #import "BlioUIImageAdditions.h"
 
-#define TEXTPADDING 2
-
 @implementation UIImage (BlioAdditions)
 
-+ (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size baseline:(CGFloat)baseline color:(UIColor *)color{    
++ (UIImage *)blioImageWithString:(NSString *)string 
+                            font:(UIFont *)font 
+                            size:(CGSize)size 
+                        baseline:(CGFloat)baseline color:(UIColor *)color
+                  rightArrowRect:(CGRect)rightArrowRect
+{    
     CGSize stringSize = [string sizeWithFont:font];
-
+    
     if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     } else {
@@ -22,9 +25,27 @@
     }
     [color set];
     [string drawAtPoint:CGPointMake((size.width - stringSize.width) * 0.5, baseline - font.ascender) withFont:font];
+    
+    if(!CGRectEqualToRect(CGRectZero, rightArrowRect)) {
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextTranslateCTM(context, rightArrowRect.origin.x, rightArrowRect.origin.y);
+        CGContextSetLineCap(context, kCGLineCapSquare);
+        CGContextSetLineWidth(context, 3);
+        CGContextBeginPath(context);
+        CGContextMoveToPoint(context, 0, 0);
+        CGContextAddLineToPoint(context, rightArrowRect.size.width, rightArrowRect.size.height * 0.5f);
+        CGContextAddLineToPoint(context, 0, rightArrowRect.size.height);
+        CGContextDrawPath(context, kCGPathStroke);
+    }
+    
     UIImage *retImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return retImage;
+}
+
+
++ (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size baseline:(CGFloat)baseline color:(UIColor *)color{    
+    return [self blioImageWithString:string font:font size:size baseline:baseline color:color rightArrowRect:CGRectZero];
 }
 
 + (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size color:(UIColor *)color{    

@@ -23,16 +23,15 @@
     BlioAccessibilitySegmentedControl *fontSizeSegment;
     BlioAccessibilitySegmentedControl *justificationSegment;
     
+    UIView *fontTableViewShadow;
     UITableView *fontTableView;
-    
-    NSArray *fontDisplayNames;
-    NSDictionary *fontDisplayNameToFontName;
 }
 
 @property (nonatomic, assign, readonly) id<BlioViewSettingsDelegate> delegate;
+@property (nonatomic, assign, readonly) CGFloat rowHeight;
 
 - (id)initWithDelegate:(id<BlioViewSettingsDelegate>)newDelegate;
-
 - (void)refreshSettings;
+- (void)flashScrollIndicators;
 
 @end

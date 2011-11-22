@@ -25,10 +25,10 @@
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *fontSizeSegment;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *justificationSegment;
 
+@property (nonatomic, retain) UIView *fontTableViewContainer;
 @property (nonatomic, retain) UITableView *fontTableView;
 
-@property (nonatomic, retain) NSArray *fontDisplayNames;
-@property (nonatomic, retain) NSDictionary *fontDisplayNameToFontName;
+- (NSInteger)currentSelectedFontRowIndex;
 
 @end
 
@@ -45,10 +45,8 @@
 @synthesize fontSizeSegment;
 @synthesize justificationSegment;
 
+@synthesize fontTableViewContainer;
 @synthesize fontTableView;
-
-@synthesize fontDisplayNames;
-@synthesize fontDisplayNameToFontName;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -61,19 +59,20 @@
     self.fontSizeSegment = nil;
     self.justificationSegment = nil;
     
+    self.fontTableViewContainer = nil;
+    
     self.fontTableView.delegate = nil;
     self.fontTableView.dataSource = nil;
     self.fontTableView = nil;
-    
-    fontDisplayNames = nil;
-    fontDisplayNameToFontName = nil;
 
     [super dealloc];
 }
 
 - (void)refreshSettings {
     self.refreshingSettings = YES;
-        
+    
+    [self.fontTableView reloadData];
+    
     if ([self.delegate shouldShowFontSizeSettings]) {
         self.fontSizeLabel.enabled = YES;
         self.fontSizeLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
@@ -152,13 +151,36 @@
         UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
                 
         //////// FONTS TABLE
-        
-        UITableView *aFontsTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        UIView *aFontTableViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 1)];
+        aFontTableViewContainer.layer.masksToBounds = YES;
+        aFontTableViewContainer.layer.cornerRadius = 5.0f;
+
+        UITableView *aFontsTableView = [[UITableView alloc] initWithFrame:aFontTableViewContainer.bounds style:UITableViewStylePlain];
+        aFontsTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         aFontsTableView.delegate = self;
         aFontsTableView.dataSource = self;
-        [self addSubview:aFontsTableView];
+        [aFontTableViewContainer addSubview:aFontsTableView];
         self.fontTableView = aFontsTableView;
         [aFontsTableView release];
+        
+        UIView *aShadowView = [[UIView alloc] initWithFrame:CGRectInset(aFontTableViewContainer.bounds, -7, -7)];
+        aShadowView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        CALayer *shadowLayer = aShadowView.layer;
+        shadowLayer.masksToBounds = YES;
+        shadowLayer.cornerRadius = 12.0f;        
+        shadowLayer.borderColor = [tintColor CGColor];
+        shadowLayer.borderWidth = 8.0f;
+        shadowLayer.shadowColor = [[UIColor blackColor] CGColor];
+        shadowLayer.shadowOffset = CGSizeMake(0, 1);
+        shadowLayer.shadowOpacity = 2.0f / 3.0f;
+        shadowLayer.shadowRadius = 2.0;
+        aShadowView.userInteractionEnabled = NO;
+        [aFontTableViewContainer addSubview:aShadowView];
+        [aShadowView release];
+        
+        self.fontTableViewContainer = aFontTableViewContainer;
+        [self addSubview:aFontTableViewContainer];
+        [aFontTableViewContainer release];
         
 		//////// FONT SIZE
         
@@ -258,6 +280,12 @@
 	return self;
 }
 
+- (CGFloat)rowHeight
+{
+    [self.justificationSegment sizeToFit];
+    return self.justificationSegment.frame.size.height;
+}
+
 - (void)layoutSubviews 
 {
     CGFloat xInset, yInset, rowHeight, rowSpacing;
@@ -296,7 +324,11 @@
     [self.fontSizeSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     
     currentY -= rowSpacing;
-    [self.fontTableView setFrame:CGRectMake(xInset, yInset, innerWidth, currentY - yInset)];
+    [self.fontTableViewContainer setFrame:CGRectMake(xInset, yInset, innerWidth, currentY - yInset)];
+    
+    [self.fontTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self currentSelectedFontRowIndex] inSection:0]
+                              atScrollPosition:UITableViewScrollPositionMiddle 
+                                      animated:NO];
     
     [super layoutSubviews];
 }
@@ -332,29 +364,13 @@
 }
 
 
+- (void)flashScrollIndicators
+{
+    [self.fontTableView flashScrollIndicators];
+}
+
 #pragma mark -
 #pragma mark Fonts Table 
-
-- (void)prepareFontInformation {
-    NSURL *fontInformationURL = [[NSBundle mainBundle] URLForResource:@"BlioFonts" withExtension:@"plist"];
-    NSDictionary *fontInformation= [NSDictionary dictionaryWithContentsOfURL:fontInformationURL];
-    self.fontDisplayNames = [fontInformation objectForKey:@"FontDisplayNames"];
-    self.fontDisplayNameToFontName = [fontInformation objectForKey:@"FontDisplayNameToFontName"];
-}
-
-- (NSArray *)fontDisplayNames {
-    if(!fontDisplayNames) {
-        [self prepareFontInformation];
-    }
-    return fontDisplayNames;
-}
-
-- (NSDictionary *)fontDisplayNameToFontName {
-    if(!fontDisplayNameToFontName) {
-        [self prepareFontInformation];
-    }
-    return fontDisplayNameToFontName;
-}
 
 - (UIColor *)selectedCellBackgroundColorWithHeight:(CGFloat)height
 {
@@ -380,23 +396,14 @@
 - (NSInteger)currentSelectedFontRowIndex
 {
     NSString *currentFont = [self.delegate currentFontName];
-    
-    NSString *fontDisplayName = [[self.fontDisplayNameToFontName keysOfEntriesPassingTest:
-                                 ^(id key, id obj, BOOL *stop) {
-                                     if([obj isEqual:currentFont]) {
-                                         *stop = YES;
-                                         return YES;
-                                     }
-                                     return NO;
-                                 }] anyObject];
-    
-    return [self.fontDisplayNames indexOfObject:fontDisplayName];
+    NSString *fontDisplayName = [self.delegate fontNameToFontDisplayName:currentFont];    
+    return [self.delegate.fontDisplayNames indexOfObject:fontDisplayName];
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0) {
-        return self.fontDisplayNames.count;
+        return self.delegate.fontDisplayNames.count;
     }
     return 0;
 }
@@ -404,7 +411,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.row == 0) {
-        return self.justificationSegment.frame.size.height + 18;
+        return self.justificationSegment.frame.size.height + 16;
     } else {
         return self.justificationSegment.frame.size.height + 2;
     }
@@ -413,8 +420,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL isOriginal = NO;
     
-    NSString *fontDisplayName = [self.fontDisplayNames objectAtIndex:indexPath.row];
-    NSString *fontUseName = [self.fontDisplayNameToFontName objectForKey:fontDisplayName];
+    NSString *fontDisplayName = [self.delegate.fontDisplayNames objectAtIndex:indexPath.row];
+    NSString *fontUseName = [self.delegate fontDisplayNameToFontName:fontDisplayName];
     if([fontUseName isEqualToString:kBlioOriginalFontName]) {
         fontUseName = [[UIFont systemFontOfSize:0] familyName];
         isOriginal = YES;
@@ -436,28 +443,32 @@
     if(!cell) {
         if(isOriginal) {
             cell = [[[BlioCenterableTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier] autorelease];
-            cell.detailTextLabel.text = NSLocalizedString(@"Use fonts specified by the book's publisher.", @"Explanation for 'original' font selection");
+            cell.detailTextLabel.text = NSLocalizedString(@"Use fonts specified by the book\u2019s publisher.", @"Explanation for 'original' font selection");
             cell.detailTextLabel.textAlignment = UITextAlignmentCenter;
         } else {        
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
+            cell = [[[BlioCenterableTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
         }
         cell.textLabel.textAlignment = UITextAlignmentCenter;
         
         if(isSelected) {
+            UIView *backgroundView = [[UIView alloc] initWithFrame:cell.bounds];
+            backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             CGFloat height = [self tableView:tableView heightForRowAtIndexPath:indexPath];
-            cell.backgroundColor = [self selectedCellBackgroundColorWithHeight:height];
+            backgroundView.backgroundColor = [self selectedCellBackgroundColorWithHeight:height];
+            cell.backgroundView = backgroundView;
+            [backgroundView release];
         }
     }
             
     cell.textLabel.text = fontDisplayName;
-    cell.textLabel.font = [UIFont fontWithName:fontUseName size:24];
+    cell.textLabel.font = [UIFont fontWithName:fontUseName size:isOriginal ? 18 : 24];
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.delegate changeFontName:[self.fontDisplayNameToFontName objectForKey:[self.fontDisplayNames objectAtIndex:indexPath.row]]];
+    [self.delegate changeFontName:[self.delegate fontDisplayNameToFontName:[self.delegate.fontDisplayNames objectAtIndex:indexPath.row]]];
     [tableView reloadData];
 }
 

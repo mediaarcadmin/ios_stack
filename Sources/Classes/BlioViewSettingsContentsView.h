@@ -37,7 +37,7 @@
     UIImage *unlockRotationImage;   
 }
 
-@property (nonatomic, assign, readonly) id<BlioViewSettingsDelegate> delegate;
+@property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;
 @property (nonatomic, assign, readonly) BOOL hasScreenBrightnessSlider;
 
 - (id)initWithDelegate:(id<BlioViewSettingsDelegate>)newDelegate;

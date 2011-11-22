@@ -93,6 +93,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @property (nonatomic, retain) UIPopoverController *wordToolPopoverController;
 
+@property (nonatomic, retain) NSArray *fontDisplayNames;
+@property (nonatomic, retain) NSDictionary *fontDisplayNameToFontName;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void)setPageJumpSliderPreview;
@@ -174,6 +176,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, viewSettingsButton, searchButton, backButton;
 
 @synthesize wordToolPopoverController;
+
+@synthesize fontDisplayNames, fontDisplayNameToFontName;
 
 + (void)initialize {
     if(self == [BlioBookViewController class]) {
@@ -1263,6 +1267,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.searchButton = nil;
 	self.backButton = nil;
     self.historyStack = nil;
+        
+    self.fontDisplayNames = nil;
+    self.fontDisplayNameToFontName = nil;
     
 	[_audioBookManager release];
 	[_acapelaAudioManager release];
@@ -1955,6 +1962,44 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return [[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey];
 }
 
+- (void)_prepareFontInformation {
+    NSURL *fontInformationURL = [[NSBundle mainBundle] URLForResource:@"BlioFonts" withExtension:@"plist"];
+    NSDictionary *fontInformation= [NSDictionary dictionaryWithContentsOfURL:fontInformationURL];
+    fontDisplayNames = [[fontInformation objectForKey:@"FontDisplayNames"] retain];
+    fontDisplayNameToFontName = [[fontInformation objectForKey:@"FontDisplayNameToFontName"] retain];
+}
+
+- (NSArray *)fontDisplayNames {
+    if(!fontDisplayNames) {
+        [self _prepareFontInformation];
+    }
+    return fontDisplayNames;
+}
+
+- (NSDictionary *)fontDisplayNameToFontName {
+    if(!fontDisplayNameToFontName) {
+        [self _prepareFontInformation];
+    }
+    return fontDisplayNameToFontName;
+}
+
+- (NSString *)fontDisplayNameToFontName:(NSString *)fontDisplayName
+{
+    return [self.fontDisplayNameToFontName objectForKey:fontDisplayName];
+}
+
+- (NSString *)fontNameToFontDisplayName:(NSString *)fontName
+{
+    for(NSString *key in self.fontDisplayNameToFontName) {
+        NSString *value = [self.fontDisplayNameToFontName objectForKey:key];
+        if([value isEqualToString:fontName]) {
+            return key;
+        }
+    }
+    return nil;
+}
+
+
 - (void)changeFontSizeIndex:(NSUInteger)newSize {
     self.bookView.fontSizeIndex = newSize;
     // Will set the default when we get the KVO callback.
@@ -2208,6 +2253,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self.viewSettingsPopover pushFontSettings];
     } else {
+        [self.viewSettingsSheet pushFontSettings];
     }
 
 }

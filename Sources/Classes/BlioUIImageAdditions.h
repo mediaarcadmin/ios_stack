@@ -10,6 +10,8 @@
 
 @interface UIImage (BlioAdditions)
 
+
++ (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size baseline:(CGFloat)baseline color:(UIColor *)color                   rightArrowRect:(CGRect)rightArrowRect;
 + (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size baseline:(CGFloat)baseline color:(UIColor *)color;    
 + (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font size:(CGSize)size color:(UIColor *)color;
 + (UIImage *)blioImageWithString:(NSString *)string font:(UIFont *)font color:(UIColor *)color;

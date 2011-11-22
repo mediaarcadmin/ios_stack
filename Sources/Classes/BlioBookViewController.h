@@ -61,6 +61,10 @@
 - (void)viewSettingsShowFontSettings:(id)sender;
 - (void)viewSettingsDismissFontSettings:(id)sender;
 
+- (NSArray *)fontDisplayNames;
+- (NSString *)fontDisplayNameToFontName:(NSString *)fontDisplayName;
+- (NSString *)fontNameToFontDisplayName:(NSString *)fontDisplayName;
+
 @end
 
 @class BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview, BlioViewSettingsPopover;
@@ -150,6 +154,9 @@ typedef enum {
     
     NSMutableArray *historyStack;
 	BlioBookSliderPreview *thumbPreview;
+    
+    NSArray *fontDisplayNames;
+    NSDictionary *fontDisplayNameToFontName;
 }
 
 // Designated initializers.
