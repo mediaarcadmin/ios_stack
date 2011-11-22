@@ -58,13 +58,12 @@
 - (void)dismissViewSettings:(id)sender;
 - (void)viewSettingsDidDismiss:(id)sender;
 
-/*
 - (void)viewSettingsShowFontSettings:(id)sender;
 - (void)viewSettingsDismissFontSettings:(id)sender;
-*/
+
 @end
 
-@class BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview;
+@class BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview, BlioViewSettingsPopover;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -138,7 +137,7 @@ typedef enum {
     BOOL coverOpened;
     
     BlioViewSettingsSheet *viewSettingsSheet;
-    BlioModalPopoverController *viewSettingsPopover;
+    BlioViewSettingsPopover *viewSettingsPopover;
     BlioModalPopoverController *contentsPopover;
     BlioModalPopoverController *searchPopover;
     UIBarButtonItem* contentsButton;

@@ -1,58 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-    <dict>
-        <key>FontNameArray</key>
-        <array>
-            <string>Original</string>
-            <string>Libertine</string>
-            <string>Baskerville</string>
-            <string>Cochin</string>
-            <string>Courier</string>
-            <string>Futura</string>
-            <string>Georgia</string>
-            <string>Gill Sans</string>
-            <string>Helvetica</string>
-            <string>Hoefler Text</string>
-            <string>Optima</string>
-            <string>Palatino</string>
-            <string>Times New Roman</string>
-            <string>Trebuchet</string>
-            <string>Verdana</string>
-        </array>
-        
-        <key>FontNamesMap</key>
-        <dict>
-            <key>Original</key>
-            <string>BlioOriginalFontName</string>
-            <key>Libertine</key>
-            <string>Linux Libertine O</string>
-            <key>Baskerville</key>
-            <string>Baskerville</string>
-            <key>Cochin</key>
-            <string>Cochin</string>
-            <key>Courier</key>
-            <string>Courier</string>
-            <key>Futura</key>
-            <string>Futura</string>
-            <key>Georgia</key>
-            <string>Georgia</string>
-            <key>Gill Sans</key>
-            <string>Gill Sans</string>
-            <key>Helvetica</key>
-            <string>Helvetica</string>
-            <key>Hoefler Text</key>
-            <string>Hoefler Text</string>
-            <key>Optima</key>
-            <string>Optima</string>
-            <key>Palatino</key>
-            <string>Palatino</string>
-            <key>Times New Roman</key>
-            <string>Times New Roman</string>
-            <key>Trebuchet</key>
-            <string>Trebuchet MS</string>
-            <key>Verdana</key>
-            <string>Verdana</string>
-        </dict>
-    </dict>
+<dict>
+	<key>FontDisplayNames</key>
+	<array>
+		<string>Original</string>
+		<string>Libertine</string>
+		<string>Baskerville</string>
+		<string>Cochin</string>
+		<string>Courier</string>
+		<string>Futura</string>
+		<string>Georgia</string>
+		<string>Gill Sans</string>
+		<string>Helvetica</string>
+		<string>Hoefler Text</string>
+		<string>Optima</string>
+		<string>Palatino</string>
+		<string>Times New Roman</string>
+		<string>Trebuchet</string>
+		<string>Verdana</string>
+	</array>
+	<key>FontDisplayNameToFontName</key>
+	<dict>
+		<key>Original</key>
+		<string>BlioOriginalFontName</string>
+		<key>Libertine</key>
+		<string>Linux Libertine O</string>
+		<key>Baskerville</key>
+		<string>Baskerville</string>
+		<key>Cochin</key>
+		<string>Cochin</string>
+		<key>Courier</key>
+		<string>Courier</string>
+		<key>Futura</key>
+		<string>Futura</string>
+		<key>Georgia</key>
+		<string>Georgia</string>
+		<key>Gill Sans</key>
+		<string>Gill Sans</string>
+		<key>Helvetica</key>
+		<string>Helvetica</string>
+		<key>Hoefler Text</key>
+		<string>Hoefler Text</string>
+		<key>Optima</key>
+		<string>Optima</string>
+		<key>Palatino</key>
+		<string>Palatino</string>
+		<key>Times New Roman</key>
+		<string>Times New Roman</string>
+		<key>Trebuchet</key>
+		<string>Trebuchet MS</string>
+		<key>Verdana</key>
+		<string>Verdana</string>
+	</dict>
+</dict>
 </plist>

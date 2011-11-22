@@ -81,7 +81,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
 @property (nonatomic, retain) BlioViewSettingsSheet *viewSettingsSheet;
-@property (nonatomic, retain) BlioModalPopoverController *viewSettingsPopover;
+@property (nonatomic, retain) BlioViewSettingsPopover*viewSettingsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *searchPopover;
 @property (nonatomic, retain) UIBarButtonItem *contentsButton;
@@ -1884,7 +1884,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)shouldShowFontSettings {
-    return [self.bookView respondsToSelector:@selector(setFont:)];
+    return [self.bookView respondsToSelector:@selector(setFontName:)];
 }
 
 - (BOOL)shouldShowFontSizeSettings {
@@ -1952,7 +1952,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 - (NSString *)currentFontName
 {
-    return self.bookView.fontName;
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey];
 }
 
 - (void)changeFontSizeIndex:(NSUInteger)newSize {
@@ -2204,9 +2204,27 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
+- (void)viewSettingsShowFontSettings:(id)sender {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.viewSettingsPopover pushFontSettings];
+    } else {
+    }
+
+}
+
+- (void)viewSettingsDismissFontSettings:(id)sender {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        // Navigation is handled by the popover/nav controller,
+        // no need to do anything here.
+    } else {
+        
+    }
+}
+
 - (void)buyBook:(id)sender {
 	[[BlioStoreManager sharedInstance] buyBookWithSourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 }
+
 #pragma mark -
 #pragma mark TTS Handling 
 

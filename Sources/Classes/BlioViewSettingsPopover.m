@@ -8,6 +8,7 @@
 
 #import "BlioViewSettingsPopover.h"
 #import "BlioViewSettingsContentsView.h"
+#import "BlioViewSettingsFontAndSizeContentsView.h"
 
 @interface BlioViewSettingsPopover()
 
@@ -31,8 +32,10 @@
     UIViewController *contentController = [[UIViewController alloc] init];
     contentController.contentSizeForViewInPopover = CGSizeMake(360, [aContentsView contentsHeight]);
     contentController.view = aContentsView;
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
     contentController.navigationItem.title = NSLocalizedString(@"Reading Settings", "Title for Reading Settings Popover");
+
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
+    navController.delegate = self;
     
     if ((self = [super initWithContentViewController:navController])) {
         // Custom initialization
@@ -58,6 +61,27 @@
     // Need to hide and show nav bar to workaround bug when rotating which hides the nav bar
     [(UINavigationController *)self.contentViewController setNavigationBarHidden:YES];
     [(UINavigationController *)self.contentViewController setNavigationBarHidden:NO];
+}
+
+- (void)pushFontSettings
+{
+    BlioViewSettingsFontAndSizeContentsView *aFontSettingsView = [[BlioViewSettingsFontAndSizeContentsView alloc] initWithDelegate:self.viewSettingsDelegate];
+    
+    UIViewController *fontSettingsController = [[UIViewController alloc] init];
+    fontSettingsController.contentSizeForViewInPopover = ((UINavigationController *)self.contentViewController).topViewController.contentSizeForViewInPopover;
+    fontSettingsController.view = aFontSettingsView;
+    fontSettingsController.navigationItem.title = NSLocalizedString(@"Font & Size", "Title for Font & Size Settings Popover");
+    
+    [((UINavigationController *)self.contentViewController) pushViewController:fontSettingsController animated:YES];
+    
+    [aFontSettingsView release];
+}
+
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if(viewController.view == self.contentsView) {
+        [self.contentsView refreshSettings];
+    }
 }
 
 @end

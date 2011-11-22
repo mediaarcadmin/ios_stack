@@ -17,15 +17,13 @@
     
     BOOL refreshingSettings;
 
-    UILabel *fontSizeLabel;
-    UILabel *justificationLabel;
+    UILabel *fontAndSizeLabel;
     UILabel *pageColorLabel;
 	UILabel *tapZoomsLabel;
 	UILabel *twoUpLandscapeLabel;
     
     BlioAccessibilitySegmentedControl *pageLayoutSegment;
-    BlioAccessibilitySegmentedControl *fontSizeSegment;
-    BlioAccessibilitySegmentedControl *justificationSegment;
+    BlioAccessibilitySegmentedControl *fontAndSizeSegment;
     BlioAccessibilitySegmentedControl *pageColorSegment;
     BlioAccessibilitySegmentedControl *tapZoomsSegment;
     BlioAccessibilitySegmentedControl *twoUpLandscapeSegment;
