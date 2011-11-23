@@ -77,6 +77,7 @@
     
     [((UINavigationController *)self.contentViewController) pushViewController:fontSettingsController animated:YES];
     
+    [fontSettingsController release];
     [aFontSettingsView release];
 }
 

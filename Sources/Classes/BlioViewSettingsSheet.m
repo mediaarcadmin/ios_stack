@@ -223,7 +223,8 @@
     label.textAlignment = UITextAlignmentCenter;
     label.text = NSLocalizedString(@"Font & Size", "Title for Font & Size Settings Popover");
     [self.containerView addSubview:label];    
-
+    [label release];
+    
     CGRect fontSettingsFrame = availableFrame;
     fontSettingsFrame.origin.y += rowHeight + kBlioViewSettingsRowSpacingIPhone;
     fontSettingsFrame.size.height -= rowHeight + kBlioViewSettingsRowSpacingIPhone;

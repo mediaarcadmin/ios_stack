@@ -74,8 +74,7 @@ NSString *kCellTextField_ID = @"CellTextField_ID";
 		[view removeFromSuperview];
 		[view release];
 	}
-	view = inView;
-	[self.view retain];
+	view = [inView retain];
 	
 	//view.delegate = self;
 	

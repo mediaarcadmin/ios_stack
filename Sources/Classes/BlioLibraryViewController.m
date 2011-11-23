@@ -2083,7 +2083,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         
 		self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 				
-		self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
+        UIView *aBakcgroundView = [[UIView alloc] initWithFrame:self.bounds];
+		self.backgroundView = aBakcgroundView;
+        [aBakcgroundView release];
 		self.backgroundView.autoresizesSubviews = YES;
 		UIImageView * dividerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchCellDivider.png"]];
 		dividerView.frame = CGRectMake(0,0,self.bounds.size.width,2);

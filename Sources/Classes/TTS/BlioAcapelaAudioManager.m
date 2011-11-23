@@ -250,7 +250,9 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		sampleFilename = [[self.voiceData objectForKey:aVoice] objectForKey:BlioVoiceDataSampleFilenameKey];
 		if (sampleFilename) {
 			NSError * sampleError = nil;
-			self.sampleAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"voiceSamples"] stringByAppendingPathComponent:sampleFilename]] error:&sampleError];
+            AVAudioPlayer *aAvAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"voiceSamples"] stringByAppendingPathComponent:sampleFilename]] error:&sampleError];
+			self.sampleAudioPlayer = aAvAudioPlayer;
+            [aAvAudioPlayer release];
 			if (sampleError) {
 				NSLog(@"ERROR: AVAudioPlayer sample audio could not be initialized for voice: %@. Error: %@,%@",aVoice,sampleError,[sampleError userInfo]); 
 			}
@@ -274,7 +276,9 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		sampleFilename = [voiceDictionary objectForKey:BlioVoiceDataSampleFilenameKey];
 		if (sampleFilename) {
 			NSError * sampleError = nil;
-			self.sampleAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"voiceSamples"] stringByAppendingPathComponent:sampleFilename]] error:&sampleError];
+            AVAudioPlayer *aAvAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"voiceSamples"] stringByAppendingPathComponent:sampleFilename]] error:&sampleError];
+			self.sampleAudioPlayer = aAvAudioPlayer;
+            [aAvAudioPlayer release];
 			if (sampleError) {
 				NSLog(@"ERROR: AVAudioPlayer sample audio could not be initialized for voiceName: %@. Error: %@,%@",aVoiceName,sampleError,[sampleError userInfo]); 
 			}

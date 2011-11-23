@@ -51,6 +51,7 @@
 	self.view = newView;
 	self.splitView = newView;
 	self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [newView release];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -79,7 +80,7 @@
 
 
 - (void)dealloc {
-	if (self.viewControllers != nil) [self.viewControllers release];
+	self.viewControllers = nil;
 	self.splitView = nil;
     [super dealloc];
 }

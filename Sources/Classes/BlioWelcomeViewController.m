@@ -56,8 +56,10 @@
         
 		self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
-		self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
-		self.backgroundView.autoresizesSubviews = YES;
+        UIView *aBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
+		self.backgroundView = aBackgroundView;
+		aBackgroundView.autoresizesSubviews = YES;
+        [aBackgroundView release];
         
         UILabel *aTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kBlioWelcomeCellMargin, 0, self.contentView.frame.size.width - kBlioWelcomeCellMargin*2,40)];
         aTitleLabel.font = [UIFont systemFontOfSize:24.0f];

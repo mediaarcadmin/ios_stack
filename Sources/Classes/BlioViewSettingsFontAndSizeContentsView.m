@@ -251,7 +251,7 @@
         aJustificationLabel.text = NSLocalizedString(@"Justification",@"Settings Label for Justification segmented control.");
         [self addSubview:aJustificationLabel];
         self.justificationLabel = aJustificationLabel;
-        [justificationLabel release];
+        [aJustificationLabel release];
         
         NSArray *justificationTitles = [NSArray arrayWithObjects:
                                         NSLocalizedString(@"Original",@"\"Original\" segment label (for Reading Settings justification control)"),

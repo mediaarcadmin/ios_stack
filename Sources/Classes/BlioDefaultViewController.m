@@ -155,6 +155,7 @@
             imageView.image = image;
             self.dynamicImageView = imageView;
             [self.view addSubview:imageView];
+            [imageView release];
         }
         
         
@@ -169,6 +170,7 @@
             imageView.image = image;
             self.nonDynamicImageView = imageView;
             [self.view addSubview:imageView];
+            [imageView release];
         }
     }
 }
@@ -187,6 +189,7 @@
     mainView.backgroundColor = [UIColor clearColor];
     mainView.opaque = NO;
     self.view = mainView;
+    [mainView release];
     [self loadDynamicDefaults];
 }
 

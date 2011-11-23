@@ -271,7 +271,9 @@
 		[self.contentView addSubview:progressView];
 		[self.contentView bringSubviewToFront:progressView];
 		
-		self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.progressView.frame.origin.x, self.progressView.frame.origin.y + self.progressView.frame.size.height, self.progressView.frame.size.width, 15.0f)];
+        UILabel *aProgressLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.progressView.frame.origin.x, self.progressView.frame.origin.y + self.progressView.frame.size.height, self.progressView.frame.size.width, 15.0f)];
+		self.progressLabel = aProgressLabel;
+        [aProgressLabel release];
 		self.progressLabel.center = CGPointMake(self.progressView.center.x, self.progressView.center.y + self.progressView.bounds.size.height);
 		self.progressLabel.font = [UIFont boldSystemFontOfSize:11];
 		self.progressLabel.textAlignment = UITextAlignmentCenter;

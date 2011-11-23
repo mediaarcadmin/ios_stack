@@ -3232,12 +3232,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)openWordToolWithRange:(BlioBookmarkRange *)range atRect:(CGRect)rect toolType:(BlioWordToolsType)type { 
-    Class uiReferenceLibraryViewControllerClass; 
-    if(type == dictionaryTool && (uiReferenceLibraryViewControllerClass = NSClassFromString(@"UIReferenceLibraryViewController"))) { 
+    if(type == dictionaryTool && NSClassFromString(@"UIReferenceLibraryViewController")) { 
         NSString *words = [[[self.book wordStringsForBookmarkRange:range] componentsJoinedByString:@" "] stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
         
-        // performSelector so that we'll still compile without the 5.0 SDK.
-        UIViewController *libraryViewController = [[uiReferenceLibraryViewControllerClass alloc] performSelector:@selector(initWithTerm:) withObject:words];
+        UIReferenceLibraryViewController *libraryViewController = [[UIReferenceLibraryViewController alloc] initWithTerm:words];
         
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             // Would be great to size this to an appropriate size for the actual content of
