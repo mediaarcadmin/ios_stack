@@ -104,14 +104,14 @@
         
         NSUInteger segmentToSelect;
         switch([self.delegate currentJustification]) {
-            case kBlioJustificationLeft:
+            case kBlioJustificationOriginal:
                 segmentToSelect = 0;
+                break;
+            case kBlioJustificationLeft:
+                segmentToSelect = 1;
                 break;
             default:
             case kBlioJustificationFull:
-                segmentToSelect = 1;
-                break;
-            case kBlioJustificationOriginal:
                 segmentToSelect = 2;
                 break;
         }
@@ -254,9 +254,9 @@
         [justificationLabel release];
         
         NSArray *justificationTitles = [NSArray arrayWithObjects:
+                                        NSLocalizedString(@"Original",@"\"Original\" segment label (for Reading Settings justification control)"),
                                         NSLocalizedString(@"Left",@"\"Left\" segment label (for Reading Settings justification control)"),
                                         NSLocalizedString(@"Full",@"\"Full\" segment label (for Reading Settings justification control)"),
-                                        NSLocalizedString(@"Original",@"\"Original\" segment label (for Reading Settings justification control)"),
                                         nil];
         
         BlioAccessibilitySegmentedControl *aJustificationSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:justificationTitles];
@@ -345,14 +345,14 @@
         BlioJustification newJustifiction;
         switch(((UISegmentedControl*)sender).selectedSegmentIndex) {
             case 0:
+                newJustifiction = kBlioJustificationOriginal;
+                break;
+            case 1:
                 newJustifiction = kBlioJustificationLeft;
                 break;
             default:
-            case 1:
-                newJustifiction = kBlioJustificationFull;
-                break;
             case 2:
-                newJustifiction = kBlioJustificationOriginal;
+                newJustifiction = kBlioJustificationFull;
                 break;
         }
         [self.delegate changeJustification:newJustifiction];
