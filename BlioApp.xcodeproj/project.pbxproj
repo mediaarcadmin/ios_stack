@@ -256,10 +256,6 @@
 		7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC010132E88F200FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
-		7DE0D553147A8A82005FD319 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D552147A8A82005FD319 /* BlioFonts.plist */; };
-		7DE0D554147A8A82005FD319 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D552147A8A82005FD319 /* BlioFonts.plist */; };
-		7DE0D555147A8A82005FD319 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D552147A8A82005FD319 /* BlioFonts.plist */; };
-		7DE0D556147A8A82005FD319 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D552147A8A82005FD319 /* BlioFonts.plist */; };
 		7DE0D558147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */; };
 		7DE0D559147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */; };
 		7DE0D55A147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */; };
@@ -281,6 +277,10 @@
 		7DE2749C1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE7B5E31104B4FD0021F382 /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
 		7DE7B63A1104BC780021F382 /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
+		7DE96E17147D1556000C39DB /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE96E1C147D1556000C39DB /* BlioFonts.plist */; };
+		7DE96E18147D1556000C39DB /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE96E1C147D1556000C39DB /* BlioFonts.plist */; };
+		7DE96E19147D1556000C39DB /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE96E1C147D1556000C39DB /* BlioFonts.plist */; };
+		7DE96E1A147D1556000C39DB /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE96E1C147D1556000C39DB /* BlioFonts.plist */; };
 		7DF2A38C1152C5F100FC2045 /* BlioTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */; };
 		7DF2A49011536CA100FC2045 /* BlioFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */; };
 		7DF429D311E4EC5B00B8227E /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
@@ -2020,7 +2020,6 @@
 		7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSelectableBookView.h; sourceTree = "<group>"; };
 		7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSelectableBookView.m; sourceTree = "<group>"; };
 		7DDCC00D132E88C800FE8201 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		7DE0D552147A8A82005FD319 /* BlioFonts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioFonts.plist; sourceTree = "<group>"; };
 		7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FlowViewEucPageOptions.plist; sourceTree = "<group>"; };
 		7DE0D55C147AC3E2005FD319 /* BlioBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookView.m; sourceTree = "<group>"; };
 		7DE274981382DD6000641A54 /* KNFBPageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNFBPageMarker.h; sourceTree = "<group>"; };
@@ -2028,6 +2027,7 @@
 		7DE7B5E21104B4FD0021F382 /* Lighting.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Lighting.xib; sourceTree = "<group>"; };
 		7DE7B6381104BC780021F382 /* BlioLightSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioLightSettingsViewController.h; sourceTree = "<group>"; };
 		7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioLightSettingsViewController.m; sourceTree = "<group>"; };
+		7DE96E1B147D1556000C39DB /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = English; path = English.lproj/BlioFonts.plist; sourceTree = "<group>"; };
 		7DF2A2FE1152ABA600FC2045 /* BlioTextFlowParagraphWords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraphWords.h; sourceTree = "<group>"; };
 		7DF2A3891152C5F100FC2045 /* BlioTextFlowFlowTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowFlowTree.h; sourceTree = "<group>"; };
 		7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowFlowTree.m; sourceTree = "<group>"; };
@@ -3026,7 +3026,7 @@
 				DCABAC8013B4CC9700BE0FE3 /* Blio.xcdatamodeld */,
 				DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */,
 				DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */,
-				7DE0D552147A8A82005FD319 /* BlioFonts.plist */,
+				7DE96E1C147D1556000C39DB /* BlioFonts.plist */,
 				7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */,
 			);
 			path = Resources;
@@ -4374,7 +4374,7 @@
 				A3F24EB1143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 				A365921C146C1C0500B23AAA /* icon-wrench.png in Resources */,
 				A3659220146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
-				7DE0D553147A8A82005FD319 /* BlioFonts.plist in Resources */,
+				7DE96E17147D1556000C39DB /* BlioFonts.plist in Resources */,
 				7DE0D558147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4617,7 +4617,7 @@
 				A3F24EB3143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 				A365921E146C1C0500B23AAA /* icon-wrench.png in Resources */,
 				A3659222146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
-				7DE0D555147A8A82005FD319 /* BlioFonts.plist in Resources */,
+				7DE96E19147D1556000C39DB /* BlioFonts.plist in Resources */,
 				7DE0D55A147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4860,7 +4860,7 @@
 				A3F24EB4143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 				A365921F146C1C0500B23AAA /* icon-wrench.png in Resources */,
 				A3659223146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
-				7DE0D556147A8A82005FD319 /* BlioFonts.plist in Resources */,
+				7DE96E1A147D1556000C39DB /* BlioFonts.plist in Resources */,
 				7DE0D55B147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5104,7 +5104,7 @@
 				A3F24EB2143F671A007565C2 /* voiceover-quickstart.html in Resources */,
 				A365921D146C1C0500B23AAA /* icon-wrench.png in Resources */,
 				A3659221146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
-				7DE0D554147A8A82005FD319 /* BlioFonts.plist in Resources */,
+				7DE96E18147D1556000C39DB /* BlioFonts.plist in Resources */,
 				7DE0D559147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5773,6 +5773,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		7DE96E1C147D1556000C39DB /* BlioFonts.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7DE96E1B147D1556000C39DB /* English */,
+			);
+			name = BlioFonts.plist;
+			sourceTree = "<group>";
+		};
 		C9E5DC11117C741600950BA0 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
