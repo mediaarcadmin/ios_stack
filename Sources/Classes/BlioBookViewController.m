@@ -1966,9 +1966,21 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)_prepareFontInformation {
     NSURL *fontInformationURL = [[NSBundle mainBundle] URLForResource:@"BlioFonts" withExtension:@"plist"];
-    NSDictionary *fontInformation= [NSDictionary dictionaryWithContentsOfURL:fontInformationURL];
-    fontDisplayNames = [[fontInformation objectForKey:@"FontDisplayNames"] retain];
+    NSDictionary *fontInformation = [NSDictionary dictionaryWithContentsOfURL:fontInformationURL];
     fontDisplayNameToFontName = [[fontInformation objectForKey:@"FontDisplayNameToFontName"] retain];
+    
+    // Filter the array to make sure all the fonts are available (not all are
+    // on iOS 4).
+    NSArray *unfilteredFontDisplayNames = [fontInformation objectForKey:@"FontDisplayNames"];
+    NSMutableArray *buildFontDisplayNames = [[NSMutableArray alloc] initWithCapacity:unfilteredFontDisplayNames.count];
+    for(NSString *displayName in unfilteredFontDisplayNames) {
+        NSString *fontName = [fontDisplayNameToFontName objectForKey:displayName];
+        if([fontName isEqualToString:kBlioOriginalFontName] || 
+           [UIFont fontWithName:fontName size:12] != nil) {
+            [buildFontDisplayNames addObject:displayName];
+        }
+    }
+    fontDisplayNames = buildFontDisplayNames;
 }
 
 - (NSArray *)fontDisplayNames {
