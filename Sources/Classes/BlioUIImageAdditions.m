@@ -58,6 +58,22 @@
 }
 
 
+- (UIImage *)blioImageByFlippingHorizontally
+{
+    CGSize size = self.size;
+    UIGraphicsBeginImageContextWithOptions(size, NO, self.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextConcatCTM(context, CGAffineTransformMake(-1, 0, 0, 1, size.width, 0));
+
+    [self drawAtPoint:CGPointMake(0, 0)];
+    
+    UIImage *ret = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return ret;
+}
+
+
 - (UIImage *)blioImageByRotatingTo:(UIImageOrientation)orientation
 {        
     CGSize size = self.size;

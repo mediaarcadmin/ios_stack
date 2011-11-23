@@ -1928,10 +1928,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (BOOL)shouldPresentBrightnessSliderVerticallyInPageSettings {
-    if(UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+    // Now that the font settings are in their own panel, no need to do this,
+    // it's better to have a taller popover.
+    /*if(UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
         CGSize size = self.bookView.bounds.size;
         return size.width > size.height;
-    }
+    }*/
     return NO;
 }
 

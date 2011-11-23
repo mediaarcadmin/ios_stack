@@ -10,6 +10,7 @@
 #import "BlioViewSettings.h"
 #import "BlioViewSettingsContentsView.h"
 #import "BlioViewSettingsFontAndSizeContentsView.h"
+#import "BlioUIImageAdditions.h"
 
 #import <libEucalyptus/EucMenuView.h>
 #import <libEucalyptus/THNavigationButton.h>
@@ -109,7 +110,7 @@
         aContainerContainerView.frame = CGRectMake(0, 0, 289, desiredContentsHeight);
         [newMenuView positionAndResizeForAttachingToRect:CGRectMake(279, 15, 1, 1) fromView:toolbar];
     } else {
-        if(aContentsView.hasScreenBrightnessSlider) {
+        if(aContentsView.hasScreenBrightnessSlider && [self.delegate shouldPresentBrightnessSliderVerticallyInPageSettings]) {
             aContainerContainerView.frame = CGRectMake(0, 0, 319, desiredContentsHeight);
         } else {
             aContainerContainerView.frame = CGRectMake(0, 0, 289, desiredContentsHeight);
@@ -186,12 +187,30 @@
     
     CGFloat rowHeight = aFontSettingsView.rowHeight;
     CGRect availableFrame = self.settingsContentsView.frame;
-
-    UIButton *button = [THNavigationButton leftNavigationButtonWithArrowInBarStyle:UIBarStyleBlack];
+    
+    UIImage *arrowImage = [[UIImage imageNamed:@"rightButtonBlackOpaque.png"] blioImageByFlippingHorizontally];
+    CGSize arrowImageSize = arrowImage.size;
+    arrowImage = [arrowImage stretchableImageWithLeftCapWidth:arrowImageSize.width * 0.5f topCapHeight:arrowImageSize.height * 0.5f];
+   
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setBackgroundImage:arrowImage forState:UIControlStateNormal];
+    button.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 8);
+    
+    [button setTitle:NSLocalizedString(@"Settings", "Title for button in Font & Size settings popover to return to the main settings screen (iPhone)")
+            forState:UIControlStateNormal];
+    
+    button.titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]];
+    button.titleLabel.textColor = [UIColor whiteColor];
+    button.titleLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
+    button.titleLabel.shadowOffset = CGSizeMake(0, -1);
+    button.titleLabel.textAlignment = UITextAlignmentCenter;
+    
+    [button sizeToFit];
     button.frame = CGRectMake(kBlioViewSettingsXInsetIPhone, kBlioViewSettingsYInsetIPhone,
-                              40, rowHeight);
+                              button.frame.size.width + 22, rowHeight);
     [button addTarget:self action:@selector(popFontSettings) forControlEvents:UIControlEventTouchUpInside];
     [self.containerView addSubview:button];    
+
     
     CGRect labelFrame = availableFrame;
     labelFrame.origin.y += kBlioViewSettingsXInsetIPhone;

@@ -445,6 +445,7 @@
             cell = [[[BlioCenterableTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier] autorelease];
             cell.detailTextLabel.text = NSLocalizedString(@"Use fonts specified by the book\u2019s publisher.", @"Explanation for 'original' font selection");
             cell.detailTextLabel.textAlignment = UITextAlignmentCenter;
+            cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
         } else {        
             cell = [[[BlioCenterableTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
         }

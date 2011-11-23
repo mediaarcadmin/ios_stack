@@ -595,17 +595,19 @@
         
     if(myScreenBrightnessSlider) {
         UIImage *thumbImage;
+        if(rowHeight < 30) {
+            thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];
+        } else {
+            thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob.png"];
+        }
         if(!brightnessSliderShouldBeVertical) {
             [myScreenBrightnessSlider setFrame:CGRectMake(xInset + 8, currentY, innerWidth - 14,  rowHeight)];
             currentY += rowStride;
-            thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob.png"];
         } else {
             myScreenBrightnessSlider.transform = CGAffineTransformMakeRotation(-(CGFloat)M_PI_2);
             [myScreenBrightnessSlider setFrame:CGRectMake(xInset + innerWidthWithoutSlider + rowSpacing, yInset + 4, myScreenBrightnessSlider.bounds.size.height, currentY - rowSpacing - yInset - 8)];
             
-            // Use the small thumb image, and rotate it so that it'll be upright after the slider is 
-            // vertical.
-            thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];
+            // Rotate it so that it'll be upright after the slider is vertical.
             thumbImage = [thumbImage blioImageByRotatingTo:UIImageOrientationLeft];
         }
         [myScreenBrightnessSlider setThumbImage:thumbImage forState:UIControlStateNormal];

@@ -15,7 +15,7 @@ static const CGFloat kBlioViewSettingsYInsetIPad = 22;
 
 static const CGFloat kBlioViewSettingsRowSpacingIPhone = 8;
 static const CGFloat kBlioViewSettingsXInsetIPhone = 9;
-static const CGFloat kBlioViewSettingsYInsetIPhone= 6;
+static const CGFloat kBlioViewSettingsYInsetIPhone = 6;
 
 static const CGFloat kBlioViewSettingsSegmentButtonHeight = 36;
 static const CGFloat kBlioViewSettingsLabelWidth = 93;
