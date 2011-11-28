@@ -35,17 +35,13 @@
     
     float initialTouchDifference;
     
-    float initialFontSize;
-    float currentFontSize;
     float zooming;
     
     UILabel *bigTextLabel;
 	UILabel *sampleTextLabel;
     
 	float speed;
-	
-	UIFont* font;
-    
+	    
 	NSArray *textArray;
 	
 	NSTimer *nextWordTimer;

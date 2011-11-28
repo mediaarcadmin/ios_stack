@@ -458,6 +458,8 @@
             backgroundView.backgroundColor = [self selectedCellBackgroundColorWithHeight:height];
             cell.backgroundView = backgroundView;
             [backgroundView release];
+            
+            cell.accessibilityTraits |= UIAccessibilityTraitSelected;
         }
     }
             
