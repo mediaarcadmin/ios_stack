@@ -410,6 +410,12 @@
 - (void)pushCurrentBookmarkPoint {
 	BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
 	
+    if(!bookmarkPoint) {
+        // We're at the start of a newly opened book.
+        bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+        bookmarkPoint.layoutPage = 1;
+    }
+    
 	if (self.lastSavedPoint) {
 		if ([self.lastSavedPoint compare:bookmarkPoint] != NSOrderedSame) {
 			[self.delegate pushBookmarkPoint:self.lastSavedPoint];
