@@ -216,8 +216,16 @@ ErrorExit:
 						   otherButtonTitles:@"OK", nil];
 		return YES;
 	}
-	else if (result==DRM_E_LICENSEEXPIRED) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+	else if (result==DRM_E_LICENSEEXPIRED) {   
+        BlioBook* book = [[BlioBookManager sharedBookManager] bookWithID:headerBookID];
+        if ([[book valueForKey:@"transactionType"] intValue] == BlioTransactionTypeLend)   
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Lending Period Expired",@"\"Library Book Expiration\" alert message title") 
+                                         message:NSLocalizedStringWithDefaultValue(@"LIBRARY_BOOK_EXPIRED",nil,[NSBundle mainBundle],@"The lending period for this library book has expired. To continue reading, please reborrow the book from your library or purchase it in the bookstore.",@"Description of library book license expiration.")
+                                        delegate:nil 
+                               cancelButtonTitle:nil
+                               otherButtonTitles:@"OK", nil];
+        else
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
 											message:NSLocalizedStringWithDefaultValue(@"LICENSE_EXPIRED",nil,[NSBundle mainBundle],@"The license for this book has expired.",@"Description of license expiration.")
 										   delegate:nil 
 								  cancelButtonTitle:nil
@@ -225,11 +233,20 @@ ErrorExit:
 		return YES;
 	}
 	else if (result==DRM_E_LICENSENOTFOUND) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-											message:NSLocalizedStringWithDefaultValue(@"LICENSE_NOT_FOUND",nil,[NSBundle mainBundle],@"This book is not licensed.",@"Description of license absence.")
-										   delegate:nil 
-								  cancelButtonTitle:nil
-								  otherButtonTitles:@"OK", nil];
+        BlioBook* book = [[BlioBookManager sharedBookManager] bookWithID:headerBookID];
+        if ([[book valueForKey:@"transactionType"] intValue] == BlioTransactionTypeLend)   
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Lending Period Expired",@"\"Library Book Expiration\" alert message title") 
+                                         message:NSLocalizedStringWithDefaultValue(@"LIBRARY_BOOK_EXPIRED",nil,[NSBundle mainBundle],@"The lending period for this  book has expired. To continue reading, please reborrow the book from your library or purchase it in the bookstore.",@"Description of library book license expiration.")
+                                        delegate:nil 
+                               cancelButtonTitle:nil
+                               otherButtonTitles:@"OK", nil];
+        else
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
+                                         message:NSLocalizedStringWithDefaultValue(@"LICENSE_NOT_FOUND",nil,[NSBundle mainBundle],@"This book is not licensed.",@"Description of license absence.")
+                                        delegate:nil 
+                               cancelButtonTitle:nil
+                               otherButtonTitles:@"OK", nil];
+
 		return YES;
 	}
 	else if (result==DRM_E_XMLNOTFOUND) {
