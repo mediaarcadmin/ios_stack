@@ -396,14 +396,14 @@
 		
 		//////// LANDSCAPE PAGE NUMBER
 
-		UILabel *atwoUpLandscapeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        atwoUpLandscapeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        atwoUpLandscapeLabel.textColor = whiteColor;
-        atwoUpLandscapeLabel.backgroundColor = clearColor;
-        atwoUpLandscapeLabel.text = NSLocalizedString(@"Landscape",@"Settings Label for number of pages displayed in landscape.");
-        [self addSubview:atwoUpLandscapeLabel];
-        self.twoUpLandscapeLabel = atwoUpLandscapeLabel;
-        [atwoUpLandscapeLabel release];
+		UILabel *aTwoUpLandscapeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        aTwoUpLandscapeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        aTwoUpLandscapeLabel.textColor = whiteColor;
+        aTwoUpLandscapeLabel.backgroundColor = clearColor;
+        aTwoUpLandscapeLabel.text = NSLocalizedString(@"Landscape",@"Settings Label for number of pages displayed in landscape.");
+        [self addSubview:aTwoUpLandscapeLabel];
+        self.twoUpLandscapeLabel = aTwoUpLandscapeLabel;
+        [aTwoUpLandscapeLabel release];
 		
 		NSArray *twoUpLandscapeTitles = [NSArray arrayWithObjects:
 									 NSLocalizedString(@"1 Page",@"\"1 Page\" segment label (for Landscape Page SegmentedControl)"),

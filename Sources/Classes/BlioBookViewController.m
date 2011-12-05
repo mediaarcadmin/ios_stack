@@ -870,8 +870,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [root release];
     
     if(coverOpened) {
-        [self initialiseBookView];
         BlioBookmarkPoint *implicitPoint = [self.book implicitBookmarkPoint];
+        [self initialiseBookView];
         [self.bookView goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
     }    
     

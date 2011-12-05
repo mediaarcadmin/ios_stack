@@ -160,6 +160,11 @@
     [self dismissAnimated:YES];
 }
 
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+}
+
 - (void)popFontSettings
 {
     while(self.containerView.subviews.count) {
@@ -173,6 +178,7 @@
     CATransition *transition = [[CATransition alloc] init];
     transition.type = kCATransitionPush;
     transition.subtype = kCATransitionFromLeft;
+    transition.delegate = self;
     [self.containerView.layer addAnimation:transition forKey:@"pushFontsOut"];
     [transition release];
 }
@@ -205,6 +211,8 @@
     button.titleLabel.shadowOffset = CGSizeMake(0, -1);
     button.titleLabel.textAlignment = UITextAlignmentCenter;
     
+    button.accessibilityHint = NSLocalizedString(@"Back to Reading Settings.", "Accessibility hint for button on font and size settings popover (iPhone only)");
+    
     [button sizeToFit];
     button.frame = CGRectMake(kBlioViewSettingsXInsetIPhone, kBlioViewSettingsYInsetIPhone,
                               button.frame.size.width + 22, rowHeight);
@@ -221,7 +229,13 @@
     label.textColor = [UIColor whiteColor];
     label.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
     label.textAlignment = UITextAlignmentCenter;
+    
     label.text = NSLocalizedString(@"Font & Size", "Title for Font & Size Settings Popover");
+    [label sizeToFit];
+    labelFrame.size.width = label.frame.size.width;
+    labelFrame.origin.x = ceilf((availableFrame.size.width - labelFrame.size.width) * 0.5f);
+    label.frame = labelFrame;
+    
     [self.containerView addSubview:label];    
     [label release];
     
@@ -239,6 +253,7 @@
     CATransition *transition = [[CATransition alloc] init];
     transition.type = kCATransitionPush;
     transition.subtype = kCATransitionFromRight;
+    transition.delegate = self;
     [self.containerView.layer addAnimation:transition forKey:@"pushFontsIn"];
     [transition release];
 }
