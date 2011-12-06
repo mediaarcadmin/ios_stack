@@ -15,6 +15,7 @@
 #import "BlioProcessingStandardOperations.h"
 #import "BlioXMLParserLock.h"
 
+#import <libEucalyptus/EucEPubBook.h>
 #import <minizip/unzip.h>
 
 @interface BlioXPSKNFBMetadataParserDelegate : NSObject<NSXMLParserDelegate> {
@@ -134,6 +135,42 @@
 }
 @end
 
+@interface BlioEPubEncryptionParserDelegate : NSObject<NSXMLParserDelegate> {
+	NSString *unknownEncryptionAlgorithm;
+}
+@property(nonatomic,retain) NSString *unknownEncryptionAlgorithm;
+
+@end
+
+
+@implementation BlioEPubEncryptionParserDelegate
+
+@synthesize unknownEncryptionAlgorithm;
+
+- (void)dealloc {
+    self.unknownEncryptionAlgorithm = nil;
+    [super dealloc];
+}
+
+#pragma mark -
+#pragma mark NSXMLParserDelegate methods
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
+	if ( [elementName isEqualToString:@"EncryptionMethod"] ) {
+		NSString * algorithm = [attributeDict objectForKey:@"Algorithm"];
+		if (algorithm) {
+            if(![[EucEPubBook knownEncryptionAlgorithms] containsObject:algorithm]) {
+                self.unknownEncryptionAlgorithm = algorithm;
+                [parser abortParsing];
+            }
+		}
+	}
+}
+
+@end
+
+
+
 @interface BlioEPubContainerParserDelegate : NSObject<NSXMLParserDelegate> {
 	NSString * opfPath;
 }
@@ -154,20 +191,12 @@
 #pragma mark NSXMLParserDelegate methods
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-//	NSLog(@"BlioEPubContainerParserDelegate didStartElement: %@",elementName);
 	if ( [elementName isEqualToString:@"rootfile"] ) {
 		NSString * fullPath = [attributeDict objectForKey:@"full-path"];
 		if (fullPath) {
 			self.opfPath = fullPath;
 		}
 	}
-}
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
-	//	NSLog(@"found characters: %@",string);
-}
-
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {    
-	//	NSLog(@"didEndElement: %@",elementName);
 }
 
 @end
@@ -419,19 +448,54 @@
         if(!ePubUnzipHandle) {
             NSLog(@"ERROR: Could not open ePub file, %@; cannot import!",importableBook.fileName);
         } else {
-#ifdef TEST_MODE
-            if(unzLocateFile(ePubUnzipHandle, "META-INF/rights.xml", 1) != UNZ_END_OF_LIST_OF_FILE || unzLocateFile(ePubUnzipHandle, "META-INF/encryption.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
-                NSLog(@"Rights/encryption file exists for ePub file, %@; will import anyways in test mode...", importableBook.fileName);
+            BOOL continueImporting = YES;
+            
+            if(unzLocateFile(ePubUnzipHandle, "META-INF/rights.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
                 importableBook.isDRM = YES;
+#ifdef TEST_MODE
+                NSLog(@"rights.xml file exists for ePub file \"%@\"; will import anyways in test mode...", importableBook.fileName);
+#else
+                NSLog(@"rights.xml file exists for ePub file \"%@\"; cannot import!", importableBook.fileName);\
                 toReturn = importableBook;
-            }{
-#else			
-				if(unzLocateFile(ePubUnzipHandle, "META-INF/rights.xml", 1) != UNZ_END_OF_LIST_OF_FILE || unzLocateFile(ePubUnzipHandle, "META-INF/encryption.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
-					NSLog(@"Rights/encryption file exists for ePub file, %@; cannot import!", importableBook.fileName);
-					importableBook.isDRM = YES;
-					toReturn = importableBook;
-				} else {
-#endif				
+                continueImporting = NO;
+#endif			
+            } 
+            
+            if(continueImporting &&
+               unzLocateFile(ePubUnzipHandle, "META-INF/encryption.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
+                NSString *unknownEncryptionAlgorithm = nil;
+                
+                NSData *encryptionXML = [self copyDataForFile:@"META-INF/encryption.xml" inUnzFile:ePubUnzipHandle];
+
+                if(encryptionXML) {
+                    BlioEPubEncryptionParserDelegate *encryptionParserDelegate = [[BlioEPubEncryptionParserDelegate alloc] init];
+                    @synchronized([BlioXMLParserLock sharedLock]) {
+                        NSXMLParser * containerParser = [[NSXMLParser alloc] initWithData:encryptionXML];
+                        containerParser.shouldProcessNamespaces = YES;
+                        [containerParser setDelegate:encryptionParserDelegate];
+                        [containerParser parse];
+                        [containerParser release];
+                    }
+                    unknownEncryptionAlgorithm = [[encryptionParserDelegate.unknownEncryptionAlgorithm retain] autorelease];
+                    [encryptionParserDelegate release];
+                }
+                
+                [encryptionXML release];
+                
+                if(unknownEncryptionAlgorithm) {
+                    importableBook.isDRM = YES;
+                    toReturn = importableBook;
+#ifdef TEST_MODE
+                    NSLog(@"encryption.xml file references unknown encryption algorithm \"%@\" for ePub file \"%@\"; will import anyways in test mode...", unknownEncryptionAlgorithm, importableBook.fileName);
+#else
+                    NSLog(@"encryption.xml file references unknown encryption algorithm \"%@\" for ePub file \"%@\"; cannot import!", unknownEncryptionAlgorithm, importableBook.fileName);
+                    continueImporting = NO;
+#endif			
+                }
+            } 
+
+            
+            if(continueImporting) {
                 NSString *containerPath = @"META-INF/container.xml";
                 NSData *containerXML = [self copyDataForFile:containerPath inUnzFile:ePubUnzipHandle];
                 if(!containerXML) {
