@@ -325,6 +325,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
+- (NSString *)sanitizedFontNameForName:(NSString *)fontName
+{
+    // Check the font exists.
+    if([fontName isEqualToString:kBlioOriginalFontName] || 
+       [UIFont fontWithName:fontName size:12] != nil) {
+        return fontName;
+    }
+    return kBlioOriginalFontName;
+}
+
 - (void)initialiseBookView {
     BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
@@ -378,7 +388,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
     if([self.bookView respondsToSelector:@selector(setFontName:)]) {
-        self.bookView.fontName = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey];
+        self.bookView.fontName = [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
     }
     if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
         NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
@@ -1865,7 +1875,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
         if([self.bookView respondsToSelector:@selector(setFontName:)]) {
-            self.bookView.fontName = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey];
+            self.bookView.fontName = [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
         }
         if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
             NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
@@ -1956,12 +1966,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)changeFontName:(NSString *)fontName
 {
+    fontName = [self sanitizedFontNameForName:fontName];
     [[NSUserDefaults standardUserDefaults] setObject:fontName forKey:kBlioLastFontNameDefaultsKey];
     self.bookView.fontName = fontName;
 }
 - (NSString *)currentFontName
 {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey];
+    return [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
 }
 
 - (void)_prepareFontInformation {
