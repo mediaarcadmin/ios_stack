@@ -12,11 +12,13 @@
 @class BlioViewSettingsContentsView;
 @protocol BlioViewSettingsDelegate;
 
-@interface BlioViewSettingsPopover : BlioModalPopoverController <UIPopoverControllerDelegate> {
-    BlioViewSettingsContentsView *contentsView;
+@interface BlioViewSettingsPopover : BlioModalPopoverController <UIPopoverControllerDelegate, UINavigationControllerDelegate> {
+    BlioViewSettingsContentsView *settingsContentsView;
     id<BlioViewSettingsDelegate> viewSettingsDelegate;
 }
 
 - (id)initWithDelegate:(id)newDelegate;
+
+- (void)pushFontSettings;
 
 @end

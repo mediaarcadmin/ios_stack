@@ -23,20 +23,18 @@
     UIViewController *aVC = [[UIViewController alloc] init];
     aVC.view = aWebView;
 	
-	activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
-	
-	CGRect screenBounds = [[UIScreen mainScreen] bounds];
-	activityIndicatorView.center = CGPointMake(screenBounds.size.width/2, screenBounds.size.height/2);
-	[activityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-	activityIndicatorView.tag = ACTIVITY_INDICATOR;
-	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
-	
 	aWebView.delegate = self;
 	
     [aWebView release];
     
 	if ((self = [super initWithRootViewController:aVC])) {
-        // Configure controller
+        activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
+        
+        CGRect screenBounds = [[UIScreen mainScreen] bounds];
+        activityIndicatorView.center = CGPointMake(screenBounds.size.width/2, screenBounds.size.height/2);
+        [activityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+        activityIndicatorView.tag = ACTIVITY_INDICATOR;
+        [[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
     }
 	
 	[aVC release];

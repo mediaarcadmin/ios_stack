@@ -22,6 +22,7 @@
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/EucOTFIndex.h>
+#import <libEucalyptus/EucPageOptions.h>
 #import <libEucalyptus/THPair.h>
 #import "NSArray+BlioAdditions.h"
 
@@ -409,6 +410,12 @@
 - (void)pushCurrentBookmarkPoint {
 	BlioBookmarkPoint *bookmarkPoint = [self currentBookmarkPoint];
 	
+    if(!bookmarkPoint) {
+        // We're at the start of a newly opened book.
+        bookmarkPoint = [[[BlioBookmarkPoint alloc] init] autorelease];
+        bookmarkPoint.layoutPage = 1;
+    }
+    
 	if (self.lastSavedPoint) {
 		if ([self.lastSavedPoint compare:bookmarkPoint] != NSOrderedSame) {
 			[self.delegate pushBookmarkPoint:self.lastSavedPoint];
@@ -729,9 +736,34 @@
     [_eucBookView turnToNextPage];
 }
 
+- (NSString *)fontName
+{
+    return _fontName;
+}
+- (void)setFontName:(NSString *)fontName
+{
+    if(!_fontName || ![fontName isEqualToString:_fontName]) {
+        NSDictionary *oldPageOptions = _eucBookView.pageOptions;
+        NSDictionary *fontMap = [NSDictionary dictionaryWithContentsOfURL:
+                                 [[NSBundle mainBundle] URLForResource:@"FlowViewEucPageOptions"
+                                                         withExtension:@"plist"]];
+        
+        NSDictionary *fontPageOptions = [fontMap objectForKey:fontName];
+        if(fontPageOptions) {
+            NSMutableDictionary *newPageOptions = oldPageOptions ? [oldPageOptions mutableCopy] : [[NSMutableDictionary alloc] init];
+            [newPageOptions addEntriesFromDictionary:fontPageOptions];
+            _eucBookView.pageOptions = newPageOptions;
+            [newPageOptions release];
+        } else {
+            NSLog(@"Could not find font page options for font \"%@\" - ignoring", fontName);
+        }
+        
+    }
+}
+
 - (BlioJustification)justification
 {
-    switch(_eucBookView.justification) {
+    switch([[_eucBookView.pageOptions objectForKey:EucPageOptionsJustificationKey] integerValue]) {
         default:
         case EucJustificationOriginal:
             return kBlioJustificationOriginal;
@@ -757,7 +789,16 @@
             eucJustification = EucJustificationOverrideToFull;
             break;
     }
-    _eucBookView.justification = eucJustification;
+    
+    NSDictionary *oldPageOptions = _eucBookView.pageOptions;
+    if(eucJustification != [[oldPageOptions objectForKey:EucPageOptionsJustificationKey] integerValue]) {
+        NSMutableDictionary *newPageOptions = oldPageOptions ? [oldPageOptions mutableCopy] : [[NSMutableDictionary alloc] init];
+        [newPageOptions setObject:[NSNumber numberWithInteger:eucJustification]
+                           forKey:EucPageOptionsJustificationKey];
+        _eucBookView.pageOptions = newPageOptions;
+        [newPageOptions release];
+    }
+    
 }
 
 - (BOOL)twoUpLandscape

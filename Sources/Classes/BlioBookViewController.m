@@ -46,10 +46,12 @@ static const CGFloat kBlioBookSliderPreviewEdgeInset = 8;
 static const NSUInteger kBlioMaxBookmarkTextLength = 50;
 
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
+static NSString * const kBlioLastFontNameDefaultsKey = @"lastFontName";
 static NSString * const kBlioLastFontSizeIndexDefaultsKey = @"lastFontSize";
 static NSString * const kBlioLastJustificationDefaultsKey = @"lastJustification";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
 static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
+
 static NSString * const kBlioBookViewControllerCoverPopAnimation = @"BlioBookViewControllerCoverPopAnimation";
 static NSString * const kBlioBookViewControllerCoverFadeAnimation = @"BlioBookViewControllerCoverFadeAnimation";
 static NSString * const kBlioBookViewControllerCoverShrinkAnimation = @"BlioBookViewControllerCoverShrinkAnimation";
@@ -79,7 +81,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
 @property (nonatomic, retain) BlioViewSettingsSheet *viewSettingsSheet;
-@property (nonatomic, retain) BlioModalPopoverController *viewSettingsPopover;
+@property (nonatomic, retain) BlioViewSettingsPopover*viewSettingsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *searchPopover;
 @property (nonatomic, retain) UIBarButtonItem *contentsButton;
@@ -91,6 +93,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @property (nonatomic, retain) UIPopoverController *wordToolPopoverController;
 
+@property (nonatomic, retain) NSArray *fontDisplayNames;
+@property (nonatomic, retain) NSDictionary *fontDisplayNameToFontName;
 
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void)setPageJumpSliderPreview;
@@ -173,9 +177,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 @synthesize wordToolPopoverController;
 
+@synthesize fontDisplayNames, fontDisplayNameToFontName;
+
 + (void)initialize {
     if(self == [BlioBookViewController class]) {
         NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     kBlioOriginalFontName, kBlioLastFontNameDefaultsKey,
                                      [NSNumber numberWithInteger:kBlioPageLayoutPageLayout], kBlioLastLayoutDefaultsKey,
                                      [NSNumber numberWithInteger:2], kBlioLastFontSizeIndexDefaultsKey,
                                      [NSNumber numberWithBool:UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad], kBlioLandscapeTwoPagesDefaultsKey,
@@ -318,6 +325,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
+- (NSString *)sanitizedFontNameForName:(NSString *)fontName
+{
+    // Check the font exists.
+    if([fontName isEqualToString:kBlioOriginalFontName] || 
+       [UIFont fontWithName:fontName size:12] != nil) {
+        return fontName;
+    }
+    return kBlioOriginalFontName;
+}
+
 - (void)initialiseBookView {
     BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
@@ -370,6 +387,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setFontName:)]) {
+        self.bookView.fontName = [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
+    }
     if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
         NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
         self.bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
@@ -860,8 +880,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [root release];
     
     if(coverOpened) {
-        [self initialiseBookView];
         BlioBookmarkPoint *implicitPoint = [self.book implicitBookmarkPoint];
+        [self initialiseBookView];
         [self.bookView goToBookmarkPoint:implicitPoint animated:NO saveToHistory:NO];
     }    
     
@@ -1257,6 +1277,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.searchButton = nil;
 	self.backButton = nil;
     self.historyStack = nil;
+        
+    self.fontDisplayNames = nil;
+    self.fontDisplayNameToFontName = nil;
     
 	[_audioBookManager release];
 	[_acapelaAudioManager release];
@@ -1851,6 +1874,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         }
         
         self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
+        if([self.bookView respondsToSelector:@selector(setFontName:)]) {
+            self.bookView.fontName = [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
+        }
         if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
             NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
             self.bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
@@ -1874,19 +1900,23 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
-- (BOOL)shouldShowJustificationSettings {
-    return [self.bookView respondsToSelector:@selector(setJustification:)];
+- (BOOL)shouldShowFontSettings {
+    return [self.bookView respondsToSelector:@selector(setFontName:)];
 }
 
 - (BOOL)shouldShowFontSizeSettings {
     return [self.bookView respondsToSelector:@selector(setFontSizeIndex:)];
 }
 
+- (BOOL)shouldShowJustificationSettings {
+    return [self.bookView respondsToSelector:@selector(setJustification:)];
+}
+
 - (BOOL)shouldShowPageColorSettings {        
     return YES;
 }
 
-- (BOOL)shouldShowTapZoomsToBlockSettings {
+- (BOOL)shouldShowtapZoomsSettings {
     if ([self currentPageLayout] == kBlioPageLayoutPageLayout) {
         return YES;
     }
@@ -1902,16 +1932,18 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     return NO;
 }
-- (BOOL)shouldShowTwoUpLandscapePageSettings {
+- (BOOL)shouldShowTwoUpLandscapeSettings {
     CGSize size = self.bookView.bounds.size;
     return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUpLandscape:)];
 }
 
 - (BOOL)shouldPresentBrightnessSliderVerticallyInPageSettings {
-    if(UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+    // Now that the font settings are in their own panel, no need to do this,
+    // it's better to have a taller popover.
+    /*if(UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
         CGSize size = self.bookView.bounds.size;
         return size.width > size.height;
-    }
+    }*/
     return NO;
 }
 
@@ -1923,20 +1955,84 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         UIAccessibilityIsVoiceOverRunning();
 }
 
-- (NSUInteger)currentFontSizeIndex {
-    return self.bookView.fontSizeIndex;
-}
-
-- (BOOL)reflowEnabled {
+- (BOOL)reflowEnabled 
+{
 	return [self.book reflowEnabled];
 }
--(BOOL)fixedViewEnabled {
+-(BOOL)fixedViewEnabled 
+{
 	return [self.book fixedViewEnabled];
 }
+
+- (void)changeFontName:(NSString *)fontName
+{
+    fontName = [self sanitizedFontNameForName:fontName];
+    [[NSUserDefaults standardUserDefaults] setObject:fontName forKey:kBlioLastFontNameDefaultsKey];
+    self.bookView.fontName = fontName;
+}
+- (NSString *)currentFontName
+{
+    return [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
+}
+
+- (void)_prepareFontInformation {
+    NSURL *fontInformationURL = [[NSBundle mainBundle] URLForResource:@"BlioFonts" withExtension:@"plist"];
+    NSDictionary *fontInformation = [NSDictionary dictionaryWithContentsOfURL:fontInformationURL];
+    fontDisplayNameToFontName = [[fontInformation objectForKey:@"FontDisplayNameToFontName"] retain];
+    
+    // Filter the array to make sure all the fonts are available (not all are
+    // on iOS 4).
+    NSArray *unfilteredFontDisplayNames = [fontInformation objectForKey:@"FontDisplayNames"];
+    NSMutableArray *buildFontDisplayNames = [[NSMutableArray alloc] initWithCapacity:unfilteredFontDisplayNames.count];
+    for(NSString *displayName in unfilteredFontDisplayNames) {
+        NSString *fontName = [fontDisplayNameToFontName objectForKey:displayName];
+        if([fontName isEqualToString:kBlioOriginalFontName] || 
+           [UIFont fontWithName:fontName size:12] != nil) {
+            [buildFontDisplayNames addObject:displayName];
+        }
+    }
+    fontDisplayNames = buildFontDisplayNames;
+}
+
+- (NSArray *)fontDisplayNames {
+    if(!fontDisplayNames) {
+        [self _prepareFontInformation];
+    }
+    return fontDisplayNames;
+}
+
+- (NSDictionary *)fontDisplayNameToFontName {
+    if(!fontDisplayNameToFontName) {
+        [self _prepareFontInformation];
+    }
+    return fontDisplayNameToFontName;
+}
+
+- (NSString *)fontDisplayNameToFontName:(NSString *)fontDisplayName
+{
+    return [self.fontDisplayNameToFontName objectForKey:fontDisplayName];
+}
+
+- (NSString *)fontNameToFontDisplayName:(NSString *)fontName
+{
+    for(NSString *key in self.fontDisplayNameToFontName) {
+        NSString *value = [self.fontDisplayNameToFontName objectForKey:key];
+        if([value isEqualToString:fontName]) {
+            return key;
+        }
+    }
+    return nil;
+}
+
+
 - (void)changeFontSizeIndex:(NSUInteger)newSize {
     self.bookView.fontSizeIndex = newSize;
     // Will set the default when we get the KVO callback.
     // [[NSUserDefaults standardUserDefaults] setInteger:newSize forKey:kBlioLastFontSizeIndexDefaultsKey];
+}
+
+- (NSUInteger)currentFontSizeIndex {
+    return self.bookView.fontSizeIndex;
 }
 
 - (NSUInteger)fontSizeCount
@@ -2031,18 +2127,30 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.currentPageColor = newPageColor;
     [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
 }
+
 - (void)changeTapZooms:(BOOL)newTapZooms {
     [[NSUserDefaults standardUserDefaults] setBool:newTapZooms forKey:kBlioTapZoomsDefaultsKey];
     if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
         self.bookView.shouldTapZoom = newTapZooms;
     }
 }
-- (void)changeTwoUpLandscapePage:(BOOL)shouldBeTwoUp {
+- (BOOL)currentTapZooms
+{
+    return self.bookView.shouldTapZoom;
+}
+
+- (void)changeTwoUpLandscape:(BOOL)shouldBeTwoUp {
     [[NSUserDefaults standardUserDefaults] setBool:shouldBeTwoUp forKey:kBlioLandscapeTwoPagesDefaultsKey];
     if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
         self.bookView.twoUpLandscape = shouldBeTwoUp;
     }
 }
+- (BOOL)currentTwoUpLandscape
+{
+    return self.bookView.twoUpLandscape;
+}
+
+
 - (void)toggleRotationLock {
     [self setRotationLocked:![self isRotationLocked]];
     [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];
@@ -2166,9 +2274,28 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
+- (void)viewSettingsShowFontSettings:(id)sender {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.viewSettingsPopover pushFontSettings];
+    } else {
+        [self.viewSettingsSheet pushFontSettings];
+    }
+
+}
+
+- (void)viewSettingsDismissFontSettings:(id)sender {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        // Navigation is handled by the popover/nav controller,
+        // no need to do anything here.
+    } else {
+        
+    }
+}
+
 - (void)buyBook:(id)sender {
 	[[BlioStoreManager sharedInstance] buyBookWithSourceSpecificID:[self.book valueForKey:@"sourceSpecificID"]];
 }
+
 #pragma mark -
 #pragma mark TTS Handling 
 
@@ -3116,12 +3243,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)openWordToolWithRange:(BlioBookmarkRange *)range atRect:(CGRect)rect toolType:(BlioWordToolsType)type { 
-    Class uiReferenceLibraryViewControllerClass; 
-    if(type == dictionaryTool && (uiReferenceLibraryViewControllerClass = NSClassFromString(@"UIReferenceLibraryViewController"))) { 
+    if(type == dictionaryTool && NSClassFromString(@"UIReferenceLibraryViewController")) { 
         NSString *words = [[[self.book wordStringsForBookmarkRange:range] componentsJoinedByString:@" "] stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
         
-        // performSelector so that we'll still compile without the 5.0 SDK.
-        UIViewController *libraryViewController = [[uiReferenceLibraryViewControllerClass alloc] performSelector:@selector(initWithTerm:) withObject:words];
+        UIReferenceLibraryViewController *libraryViewController = [[UIReferenceLibraryViewController alloc] initWithTerm:words];
         
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             // Would be great to size this to an appropriate size for the actual content of

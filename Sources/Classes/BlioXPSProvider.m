@@ -218,9 +218,9 @@ static void overlayContentXMLParsingStartElementHandler(void *ctx, const XML_Cha
                     [attributeString release];
                 }
 			} else if (strcmp("NavigateUri", atts[i]) == 0) {
-                navigateUri = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                navigateUri = [[[NSString alloc] initWithUTF8String:atts[i+1]] autorelease];
 			} else if (strcmp("ControlType", atts[i]) == 0) {
-                controlType = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                controlType = [[[NSString alloc] initWithUTF8String:atts[i+1]] autorelease];
 			} else if (strcmp("EnhancedOverlayinfoID", atts[i]) == 0) {
 				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != attributeString) {
@@ -228,7 +228,7 @@ static void overlayContentXMLParsingStartElementHandler(void *ctx, const XML_Cha
                     [attributeString release];
                 }
 			} else if (strcmp("VisualState", atts[i]) == 0) {
-				visualState = [[NSString alloc] initWithUTF8String:atts[i+1]];
+				visualState = [[[NSString alloc] initWithUTF8String:atts[i+1]] autorelease];
 			}
         }
 		NSDictionary *overlayInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:pageNumber], @"pageNumber", 
@@ -239,10 +239,6 @@ static void overlayContentXMLParsingStartElementHandler(void *ctx, const XML_Cha
 									 [NSValue valueWithCGAffineTransform:contentOffset], @"contentOffset",
 									 [NSNumber numberWithInt:enhancedOverlayinfoID], @"enhancedOverlayinfoID",
 									 nil];
-		
-		[navigateUri release];
-		[controlType release];
-		[visualState release];
 		
 		[items addObject:overlayInfo];				 
     }
@@ -311,7 +307,7 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
                     [attributeString release];
                 }
 			} else if (strcmp("NavigateUri", atts[i]) == 0) {
-                navigateUri = [[NSString alloc] initWithUTF8String:atts[i+1]];
+                navigateUri = [[[NSString alloc] initWithUTF8String:atts[i+1]] autorelease];
 			} else if (strcmp("VideoinfoID", atts[i]) == 0) {
 				NSString *attributeString = [[NSString alloc] initWithUTF8String:atts[i+1]];
                 if (nil != attributeString) {
@@ -326,8 +322,6 @@ static void videoContentXMLParsingStartElementHandler(void *ctx, const XML_Char 
 									 [NSValue valueWithCGRect:displayRegion], @"displayRegion",
 									 [NSNumber numberWithInt:videoInfoID], @"videoInfoID",
 									 nil];
-		
-		[navigateUri release];
 		
 		[items addObject:overlayInfo];				 
     }

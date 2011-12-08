@@ -19,6 +19,7 @@
 @interface BlioFlowView : BlioSelectableBookView <BlioBookView, EucSelectorDelegate, EucBookViewDelegate, BlioProcessingManagerOperationProvider> {
     NSManagedObjectID *_bookID;
     
+    NSString *_fontName;
     NSArray *_fontSizes;
     
     EucBookView *_eucBookView;

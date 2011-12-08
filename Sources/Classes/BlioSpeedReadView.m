@@ -29,7 +29,6 @@
 @property (nonatomic, retain) BlioBookmarkPoint *currentBookmarkPoint;
 
 @property (nonatomic) float speed;
-@property (nonatomic, retain) UIFont *font;
 @property (nonatomic, retain) NSTimer *nextWordTimer;
 @property (nonatomic, retain) UILabel *bigTextLabel;
 @property (nonatomic, retain) UILabel *sampleTextLabel;
@@ -46,7 +45,7 @@
 
 @implementation BlioSpeedReadView
 
-@synthesize bookID, fontSizes, currentBookmarkPoint, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, font, textArray, nextWordTimer, paragraphSource;
+@synthesize bookID, fontSizes, currentBookmarkPoint, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, textArray, nextWordTimer, paragraphSource;
 @synthesize delegate;
 
 - (void)dealloc {
@@ -134,13 +133,13 @@
         [self addSubview:fingerImageHolder];
         
         fontSizes = [[self.delegate fontSizesForBlioBookView:self] retain];
-        currentFontSize = [[fontSizes objectAtIndex:(fontSizes.count - 1) / 2] floatValue];
-        font = [UIFont fontWithName:@"Helvetica" size:currentFontSize];
         
         speed = 0;
         currentWordOffset = 0;
-        [bigTextLabel setFont:font];
-        [sampleTextLabel setFont:font];        
+        
+        UIFont *font = [UIFont fontWithName:@"Helvetica" size:[[fontSizes objectAtIndex:(fontSizes.count - 1) / 2] floatValue]];
+        sampleTextLabel.font = font;        
+        bigTextLabel.font = font;        
         
         [self goToBookmarkPoint:[[BlioBookManager sharedBookManager] bookWithID:bookID].implicitBookmarkPoint animated:NO];	
         [bigTextLabel setText:[textArray objectAtIndex:currentWordOffset]];
@@ -164,8 +163,23 @@
     }
 }
 
+- (NSString *)fontName
+{
+    return [bigTextLabel.font familyName];
+}
+- (void)setFontName:(NSString *)fontName
+{
+    if([fontName isEqualToString:kBlioOriginalFontName]) {
+        fontName = @"Helvetica";
+    }
+    UIFont *newFont = [UIFont fontWithName:fontName size:bigTextLabel.font.pointSize];
+    bigTextLabel.font = newFont;
+    sampleTextLabel.font = newFont;
+}
+
+
 - (NSUInteger)fontSizeIndex {
-    CGFloat actualFontSize = currentFontSize;
+    CGFloat actualFontSize = bigTextLabel.font.pointSize;
     CGFloat bestDifference = CGFLOAT_MAX;
     NSUInteger bestFontSizeIndex = 0;
     
@@ -183,11 +197,10 @@
 
 - (void)setFontSizeIndex:(NSUInteger)fontSizeIndex
 {
-    CGFloat fontPointSize = [[fontSizes objectAtIndex:fontSizeIndex] floatValue];
-    
-    currentFontSize = fontPointSize;
-    bigTextLabel.font = [font fontWithSize:currentFontSize];
-    sampleTextLabel.font = [font fontWithSize:currentFontSize];
+    CGFloat newFontSize = [[fontSizes objectAtIndex:fontSizeIndex] floatValue];
+    UIFont *newFont = [bigTextLabel.font fontWithSize:newFontSize];
+    bigTextLabel.font = newFont;
+    sampleTextLabel.font = newFont;
 }
 
 - (void)setColor:(BlioPageColor)newColor {
@@ -313,7 +326,6 @@
         CGFloat deltaY = second.y - first.y;
         initialTouchDifference = sqrt(deltaX*deltaX + deltaY*deltaY);
         
-        initialFontSize = currentFontSize;
         zooming = YES;
         
         [UIView beginAnimations:nil context:nil];
@@ -377,12 +389,12 @@
         float newDifference = sqrt(deltaX*deltaX + deltaY*deltaY);
         
         CGFloat oldFontSize = sampleTextLabel.font.pointSize;
-        CGFloat newFontSize = (int)(initialFontSize + (newDifference - initialTouchDifference)/2.5);
+        CGFloat newFontSize = (int)(bigTextLabel.font.pointSize + (newDifference - initialTouchDifference)/2.5);
         if (newFontSize < 20) newFontSize = 20.0;
         if (newFontSize > 120) newFontSize = 120.0;
         newFontSize = newFontSize - (int)newFontSize%5;
         if (oldFontSize != newFontSize) {
-            sampleTextLabel.font = [font fontWithSize:newFontSize];
+            sampleTextLabel.font = [sampleTextLabel.font fontWithSize:newFontSize];
         }
         
     } else {
@@ -421,14 +433,12 @@
 	
     if ([[[event allTouches] allObjects] count] == 2) {
         [self willChangeValueForKey:@"fontSizeIndex"];
-        currentFontSize = sampleTextLabel.font.pointSize;
         [self didChangeValueForKey:@"fontSizeIndex"];
 
-        bigTextLabel.font = [font fontWithSize:currentFontSize];
+        bigTextLabel.font = sampleTextLabel.font;
         
         UITouch *firstTouch = [[[event allTouches] allObjects] objectAtIndex:0];
         UITouch *secondTouch = [[[event allTouches] allObjects] objectAtIndex:1];        
-        
         
         if (firstTouch.phase == 3 && secondTouch.phase == 3) {
             if (nextWordTimer) {

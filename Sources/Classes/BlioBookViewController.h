@@ -23,37 +23,51 @@
 
 @protocol BlioViewSettingsDelegate <NSObject>
 @required
+- (BOOL)shouldShowFontSettings;
 - (BOOL)shouldShowFontSizeSettings;
 - (BOOL)shouldShowJustificationSettings;
 - (BOOL)shouldShowPageColorSettings;
-- (BOOL)shouldShowTapZoomsToBlockSettings;
-- (BOOL)shouldShowTwoUpLandscapePageSettings;
+- (BOOL)shouldShowtapZoomsSettings;
+- (BOOL)shouldShowTwoUpLandscapeSettings;
 
 - (BOOL)shouldPresentBrightnessSliderVerticallyInPageSettings;
 - (BOOL)shouldShowDoneButtonInPageSettings;
 
 - (void)changePageLayout:(BlioPageLayout)newLayout;
+- (void)changeFontName:(NSString *)fontName;
 - (void)changeFontSizeIndex:(NSUInteger)newSize;
 - (void)changeJustification:(BlioJustification)sender;
 - (void)changePageColor:(BlioPageColor)sender;
 - (void)changeTapZooms:(BOOL)newTabZooms;
-- (void)changeTwoUpLandscapePage:(BOOL)shouldBeTwoUp;
+- (void)changeTwoUpLandscape:(BOOL)shouldBeTwoUp;
 - (void)toggleRotationLock;
 
 - (BOOL)reflowEnabled;
 - (BOOL)fixedViewEnabled;
-- (BlioJustification)currentJustification;
+
 - (BlioPageLayout)currentPageLayout;
-- (BlioPageColor)currentPageColor;
-- (NSUInteger)currentFontSizeIndex;
+- (NSString *)currentFontName;
 - (NSUInteger)fontSizeCount;
+- (NSUInteger)currentFontSizeIndex;
+- (BlioJustification)currentJustification;
+- (BlioPageColor)currentPageColor;
+- (BOOL)currentTapZooms;
+- (BOOL)currentTwoUpLandscape;
 - (BOOL)isRotationLocked;
 
 - (void)dismissViewSettings:(id)sender;
 - (void)viewSettingsDidDismiss:(id)sender;
+
+- (void)viewSettingsShowFontSettings:(id)sender;
+- (void)viewSettingsDismissFontSettings:(id)sender;
+
+- (NSArray *)fontDisplayNames;
+- (NSString *)fontDisplayNameToFontName:(NSString *)fontDisplayName;
+- (NSString *)fontNameToFontDisplayName:(NSString *)fontDisplayName;
+
 @end
 
-@class BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview;
+@class BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview, BlioViewSettingsPopover;
 @protocol EucBook, BlioBookView;
 
 typedef enum {
@@ -127,7 +141,7 @@ typedef enum {
     BOOL coverOpened;
     
     BlioViewSettingsSheet *viewSettingsSheet;
-    BlioModalPopoverController *viewSettingsPopover;
+    BlioViewSettingsPopover *viewSettingsPopover;
     BlioModalPopoverController *contentsPopover;
     BlioModalPopoverController *searchPopover;
     UIBarButtonItem* contentsButton;
@@ -140,6 +154,9 @@ typedef enum {
     
     NSMutableArray *historyStack;
 	BlioBookSliderPreview *thumbPreview;
+    
+    NSArray *fontDisplayNames;
+    NSDictionary *fontDisplayNameToFontName;
 }
 
 // Designated initializers.

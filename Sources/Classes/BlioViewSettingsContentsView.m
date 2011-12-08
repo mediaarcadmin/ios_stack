@@ -6,26 +6,27 @@
 //  Copyright 2010 BitWink. All rights reserved.
 //
 
+#import "BlioViewSettings.h"
 #import "BlioViewSettingsContentsView.h"
 #import <libEucalyptus/EucPageTurningView.h>
 #import "BlioUIImageAdditions.h"
-#import "BlioAppSettingsConstants.h"
-
-#define kBlioViewSettingsGreenButton [UIColor colorWithRed:0.053 green:0.613 blue:0.000 alpha:1.000]//[UIColor colorWithRed:0.302 green:0.613 blue:0.289 alpha:1.000]
-#define kBlioViewSettingsPopverBlueButton [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000]
-
-static const CGFloat kBlioViewSettingsRowSpacingIPad = 14;
-static const CGFloat kBlioViewSettingsXInsetIPad = 20;
-static const CGFloat kBlioViewSettingsYInsetIPad = 22;
-
-static const CGFloat kBlioViewSettingsRowSpacingIPhone = 8;
-static const CGFloat kBlioViewSettingsXInsetIPhone = 9;
-static const CGFloat kBlioViewSettingsYInsetIPhone= 6;
-
-static const CGFloat kBlioViewSettingsSegmentButtonHeight = 36;
-static const CGFloat kBlioViewSettingsLabelWidth = 93;
 
 @interface BlioViewSettingsContentsView()
+
+@property (nonatomic, retain) UILabel *fontAndSizeLabel;
+@property (nonatomic, retain) UILabel *pageColorLabel;
+@property (nonatomic, retain) UILabel *tapZoomsLabel;
+@property (nonatomic, retain) UILabel *twoUpLandscapeLabel;
+
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *pageLayoutSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *fontAndSizeSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *pageColorSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *tapZoomsSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *twoUpLandscapeSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *lockButtonSegment;
+
+@property (nonatomic, retain) UIButton *doneButton;
+@property (nonatomic, retain) UISlider *screenBrightnessSlider;
 
 @property (nonatomic, assign) BOOL refreshingSettings;
 
@@ -44,18 +45,16 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 
 @synthesize refreshingSettings;
 
-@synthesize fontSizeLabel;
-@synthesize justificationLabel;
+@synthesize fontAndSizeLabel;
 @synthesize pageColorLabel;
-@synthesize tapZoomsToBlockLabel;
-@synthesize landscapePageLabel;
+@synthesize tapZoomsLabel;
+@synthesize twoUpLandscapeLabel;
 
 @synthesize pageLayoutSegment;
-@synthesize fontSizeSegment;
-@synthesize justificationSegment;
+@synthesize fontAndSizeSegment;
 @synthesize pageColorSegment;
-@synthesize tapZoomsToBlockSegment;
-@synthesize landscapePageSegment;
+@synthesize tapZoomsSegment;
+@synthesize twoUpLandscapeSegment;
 @synthesize lockButtonSegment;
 
 @synthesize screenBrightnessSlider;
@@ -69,18 +68,14 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 
     self.delegate = nil;
 
-    self.fontSizeLabel = nil;
-    self.justificationLabel = nil;
     self.pageColorLabel = nil;
-	self.tapZoomsToBlockLabel = nil;
-	self.landscapePageLabel = nil;
+	self.tapZoomsLabel = nil;
+	self.twoUpLandscapeLabel = nil;
     
     self.pageLayoutSegment = nil;
-    self.fontSizeSegment = nil;
-    self.justificationSegment = nil;
     self.pageColorSegment = nil;
-	self.tapZoomsToBlockSegment = nil;
-	self.landscapePageSegment = nil;
+	self.tapZoomsSegment = nil;
+	self.twoUpLandscapeSegment = nil;
     self.lockButtonSegment = nil;
     
     self.screenBrightnessSlider = nil;
@@ -93,64 +88,64 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
     [super dealloc];
 }
 
+- (void)refreshFontLabel
+{
+    NSString *fontName = self.delegate.currentFontName;
+    NSString *displayName = [self.delegate fontNameToFontDisplayName:fontName];
+    
+    CGSize boundsSize = self.fontAndSizeSegment.bounds.size;
+    
+    CGFloat baseline;
+    UIFont *font;
+    if([fontName isEqualToString:kBlioOriginalFontName]) {
+        font = [UIFont boldSystemFontOfSize:12];
+        baseline = roundf(boundsSize.height * 0.65f);
+    } else {
+        font = [UIFont fontWithName:fontName size:18];
+        baseline = roundf(boundsSize.height * 0.65f) + 1.0f;
+    }
+    
+    CGFloat arrowMargin = boundsSize.height * 0.33f;
+    CGFloat arrowRadius = boundsSize.height * 0.5f - arrowMargin;
+    CGRect arrowRect = CGRectMake(boundsSize.width - arrowMargin - arrowRadius, arrowMargin,
+                                  arrowRadius, arrowRadius * 2.0f);
+    
+    [self.fontAndSizeSegment setImage:[UIImage appleLikeBeveledImage:
+                                       [UIImage blioImageWithString:displayName 
+                                                               font:font 
+                                                               size:boundsSize
+                                                           baseline:baseline
+                                                              color:[UIColor whiteColor]
+                                                     rightArrowRect:arrowRect]] 
+                    forSegmentAtIndex:0];
+    
+    [self.fontAndSizeSegment setContentOffset:CGSizeMake(0, 0) forSegmentAtIndex:0];
+
+    [self.fontAndSizeSegment setAccessibilityHint:displayName forSegmentIndex:0];
+}
+
 - (void)refreshSettings {
     self.refreshingSettings = YES;
     
     [self.pageLayoutSegment setSelectedSegmentIndex:[self.delegate currentPageLayout]];
 
-    if ([self.delegate shouldShowFontSizeSettings]) {
-        self.fontSizeLabel.enabled = YES;
-        self.fontSizeLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
-
-        self.fontSizeSegment.enabled = YES;
-        self.fontSizeSegment.alpha = 1.0f;
-        self.fontSizeSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+    if ([self.delegate shouldShowFontSettings]) {
+        self.fontAndSizeLabel.enabled = YES;
+        self.fontAndSizeLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
         
-        [self.fontSizeSegment setSelectedSegmentIndex:[self.delegate currentFontSizeIndex]];
+        self.fontAndSizeSegment.enabled = YES;
+        self.fontAndSizeSegment.alpha = 1.0f;
+        self.fontAndSizeSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
     } else {
-        self.fontSizeLabel.enabled = NO;
-        self.fontSizeLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-
-        self.fontSizeSegment.enabled = NO;
-        self.fontSizeSegment.alpha = 0.35f;
-        self.fontSizeSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+        self.fontAndSizeLabel.enabled = NO;
+        self.fontAndSizeLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
         
-        [self.fontSizeSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
-	}
+        self.fontAndSizeSegment.enabled = NO;
+        self.fontAndSizeSegment.alpha = 0.35f;
+        self.fontAndSizeSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;        
+    }
     
-    if ([self.delegate shouldShowJustificationSettings]) {
-        self.justificationLabel.enabled = YES;
-        self.justificationLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
-        
-        self.justificationSegment.enabled = YES;
-        self.justificationSegment.alpha = 1.0f;
-        self.justificationSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
-        
-        
-        NSUInteger segmentToSelect;
-        switch([self.delegate currentJustification]) {
-            case kBlioJustificationLeft:
-                segmentToSelect = 0;
-                break;
-            default:
-            case kBlioJustificationFull:
-                segmentToSelect = 1;
-                break;
-            case kBlioJustificationOriginal:
-                segmentToSelect = 2;
-                break;
-        }
-        [self.justificationSegment setSelectedSegmentIndex:segmentToSelect];
-    } else {
-        self.justificationLabel.enabled = NO;
-        self.justificationLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-        
-        self.justificationSegment.enabled = NO;
-        self.justificationSegment.alpha = 0.35f;
-        self.justificationSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-        
-        [self.justificationSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
-	} 
+    [self refreshFontLabel];
     
     if ([self.delegate shouldShowPageColorSettings]) {
         self.pageColorLabel.enabled = YES;
@@ -172,53 +167,53 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         [self.pageColorSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
 	} 
     
-	if ([self.delegate shouldShowTapZoomsToBlockSettings]) {
-		self.tapZoomsToBlockLabel.enabled = YES;
-        self.tapZoomsToBlockLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+	if ([self.delegate shouldShowtapZoomsSettings]) {
+		self.tapZoomsLabel.enabled = YES;
+        self.tapZoomsLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
         
-        self.tapZoomsToBlockSegment.enabled = YES;
-        self.tapZoomsToBlockSegment.alpha = 1.0f;
-        self.tapZoomsToBlockSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+        self.tapZoomsSegment.enabled = YES;
+        self.tapZoomsSegment.alpha = 1.0f;
+        self.tapZoomsSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
         
-        if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey] == YES ) {
-            [self.tapZoomsToBlockSegment setSelectedSegmentIndex:1];
+        if ( self.delegate.currentTapZooms ) {
+            [self.tapZoomsSegment setSelectedSegmentIndex:1];
         } else { 
-            [self.tapZoomsToBlockSegment setSelectedSegmentIndex:0];
+            [self.tapZoomsSegment setSelectedSegmentIndex:0];
         }
 	} else {
-		self.tapZoomsToBlockLabel.enabled = NO;
-        self.tapZoomsToBlockLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+		self.tapZoomsLabel.enabled = NO;
+        self.tapZoomsLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
 
-		self.tapZoomsToBlockSegment.enabled = NO;
-        self.tapZoomsToBlockSegment.alpha = 0.35f;
-        self.tapZoomsToBlockSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+		self.tapZoomsSegment.enabled = NO;
+        self.tapZoomsSegment.alpha = 0.35f;
+        self.tapZoomsSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
         
-        [self.tapZoomsToBlockSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
+        [self.tapZoomsSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
 	}
     
-	if ([self.delegate shouldShowTwoUpLandscapePageSettings]) {
-		self.landscapePageLabel.enabled = YES;
-        self.landscapePageLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+	if ([self.delegate shouldShowTwoUpLandscapeSettings]) {
+		self.twoUpLandscapeLabel.enabled = YES;
+        self.twoUpLandscapeLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
         
-        self.landscapePageSegment.enabled = YES;
-        self.landscapePageSegment.alpha = 1.0f;
-        self.landscapePageSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
-        if ( [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] == YES ) {
-			[self.landscapePageSegment setSelectedSegmentIndex:1];
+        self.twoUpLandscapeSegment.enabled = YES;
+        self.twoUpLandscapeSegment.alpha = 1.0f;
+        self.twoUpLandscapeSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+        if ( self.delegate.currentTwoUpLandscape) {
+			[self.twoUpLandscapeSegment setSelectedSegmentIndex:1];
 		} else {
-            [self.landscapePageSegment setSelectedSegmentIndex:0];
+            [self.twoUpLandscapeSegment setSelectedSegmentIndex:0];
         }
 	} else {
-		self.landscapePageLabel.enabled = NO;
-        self.landscapePageLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+		self.twoUpLandscapeLabel.enabled = NO;
+        self.twoUpLandscapeLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
 
-		self.landscapePageSegment.enabled = NO;
-        self.landscapePageSegment.alpha = 0.35f;
-        self.landscapePageSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+		self.twoUpLandscapeSegment.enabled = NO;
+        self.twoUpLandscapeSegment.alpha = 0.35f;
+        self.twoUpLandscapeSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
         
-        [self.landscapePageSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
+        [self.twoUpLandscapeSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
 	}
-    
+        
     self.refreshingSettings = NO;
     
     if(self.window) {
@@ -244,24 +239,24 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 		
         UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
         UIEdgeInsets inset = UIEdgeInsetsMake(0, 2, 2, 2);
-        UIImage *plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset];
-        UIImage *layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset];
+        UIImage *plainImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset]];
+        UIImage *layoutImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset]];
 		NSMutableArray *segmentImages = [NSMutableArray arrayWithObjects:
                                          plainImage,
                                          layoutImage,
                                          nil];
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            [segmentImages addObject:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset]];
+            [segmentImages addObject:[UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset]]];
 		}         
         
         BlioAccessibilitySegmentedControl *aLayoutSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
         aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         aLayoutSegmentedControl.tintColor = tintColor;
         
-        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:0];
-        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:1];
+        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:0];
+        [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:1];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:2];
+            [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:2];
         }        
         
         [[aLayoutSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Flowed layout", @"Accessibility label for View Settings Flowed Layout button")];
@@ -287,99 +282,7 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         [aLayoutSegmentedControl release];
                 
         [self.pageLayoutSegment addTarget:self action:@selector(changePageLayout:) forControlEvents:UIControlEventValueChanged];
-        
-		//////// FONT SIZE
-
-        UILabel *aFontSizeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        aFontSizeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        aFontSizeLabel.textColor = whiteColor;
-        aFontSizeLabel.backgroundColor = clearColor;
-        aFontSizeLabel.text = NSLocalizedString(@"Font Size",@"Settings Label for Font Size segmented control.");
-        [self addSubview:aFontSizeLabel];
-        self.fontSizeLabel = aFontSizeLabel;
-        [aFontSizeLabel release];
-        
-        NSString *letter = NSLocalizedString(@"A",@"Sample letter used for showing font sizes");
-        
-        // Sizes and offsets for the font size buttons chosen to look 'right' visually
-        // rather than being completly accurate to the book view technically.
-        CGSize size = CGSizeMake(20, 23);
-        
-        NSUInteger fontSizeCount = [self.delegate fontSizeCount];
-        NSArray *fontSizeTitles;
-        if(fontSizeCount == 5) {
-            CGFloat baseline = 19;
-            fontSizeTitles = [NSMutableArray arrayWithObjects:
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:10.5] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:13] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:15] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:19] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:23] size:size baseline:baseline color:whiteColor],
-                              nil];
-        } else {
-            CGFloat baseline = 22;
-            NSParameterAssert(fontSizeCount == 6);
-            fontSizeTitles = [NSMutableArray arrayWithObjects:
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:10.5] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:13] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:15] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:19] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:23] size:size baseline:baseline color:whiteColor],
-                              [UIImage blioImageWithString:letter font:[defaultFont fontWithSize:29] size:size baseline:baseline color:whiteColor],
-                              nil];
-        }  
-        
-        BlioAccessibilitySegmentedControl *aFontSizeSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:fontSizeTitles];    
-        aFontSizeSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aFontSizeSegmentedControl.tintColor = tintColor;
-        
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Smaller font size", @"Accessibility label for View Settings Smaller Font Size button")];
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Small font size", @"Accessibility label for View Settings Smaller Font Size button")];
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Medium font size", @"Accessibility label for View Settings Normal Font Size button")];
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:3] setAccessibilityLabel:NSLocalizedString(@"Large font size", @"Accessibility label for View Settings Larger Font Size button")];
-        [[aFontSizeSegmentedControl imageForSegmentAtIndex:4] setAccessibilityLabel:NSLocalizedString(@"Larger font size", @"Accessibility label for View Settings Largest Font Size button")];
-        if(fontSizeCount == 6) {
-            [[aFontSizeSegmentedControl imageForSegmentAtIndex:5] setAccessibilityLabel:NSLocalizedString(@"Extra-large font size", @"Accessibility label for View Settings Largest Font Size button")];
-        }
-        
-        [self addSubview:aFontSizeSegmentedControl];
-        self.fontSizeSegment = aFontSizeSegmentedControl;
-        [aFontSizeSegmentedControl release];
                 
-        [self.fontSizeSegment addTarget:self action:@selector(changeFontSize:) forControlEvents:UIControlEventValueChanged];
-        
-        //////// JUSTIFICATION
-		
-        UILabel *aJustificationLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        aJustificationLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        aJustificationLabel.textColor = whiteColor;
-        aJustificationLabel.backgroundColor = clearColor;
-        aJustificationLabel.text = NSLocalizedString(@"Justification",@"Settings Label for Justification segmented control.");
-        [self addSubview:aJustificationLabel];
-        self.justificationLabel = aJustificationLabel;
-        [justificationLabel release];
-        
-        NSArray *justificationTitles = [NSArray arrayWithObjects:
-                                    NSLocalizedString(@"Left",@"\"Left\" segment label (for Reading Settings justification control)"),
-                                    NSLocalizedString(@"Full",@"\"Full\" segment label (for Reading Settings justification control)"),
-                                    NSLocalizedString(@"Original",@"\"Original\" segment label (for Reading Settings justification control)"),
-                                    nil];
-        
-        BlioAccessibilitySegmentedControl *aJustificationSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:justificationTitles];
-        aJustificationSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aJustificationSegmentedControl.tintColor = tintColor;
-        
-		// these lines don't seem to have effect because segmented control is not image-driven...
-        [[aJustificationSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Left justified", @"Accessibility label for Reading Settings justification control")];
-        [[aJustificationSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Fully justified", @"Accessibility label for Reading Settings justification control")];
-        [[aJustificationSegmentedControl imageForSegmentAtIndex:2] setAccessibilityLabel:NSLocalizedString(@"Original justification from book", @"Accessibility label for Reading Settings justification control")];
-        
-        [self addSubview:aJustificationSegmentedControl];
-        self.justificationSegment = aJustificationSegmentedControl;
-        [aJustificationSegmentedControl release];
-                
-        [self.justificationSegment addTarget:self action:@selector(changeJustification:) forControlEvents:UIControlEventValueChanged];
-        
 		//////// PAGE COLOR
 		
         UILabel *aPageColorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -412,6 +315,32 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         
         [self.pageColorSegment addTarget:self action:@selector(changePageColor:) forControlEvents:UIControlEventValueChanged];
         
+        
+		//////// FONT AND SIZE BUTTON
+		
+        UILabel *aFontAndSizeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        aFontAndSizeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        aFontAndSizeLabel.textColor = whiteColor;
+        aFontAndSizeLabel.backgroundColor = clearColor;
+        aFontAndSizeLabel.text = NSLocalizedString(@"Font & Size",@"Settings Label for Font and Size button.");
+        [self addSubview:aFontAndSizeLabel];
+        self.fontAndSizeLabel = aFontAndSizeLabel;
+        [aFontAndSizeLabel release];
+                
+        BlioAccessibilitySegmentedControl *aFontAndSizeSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:[NSArray arrayWithObject:aFontAndSizeLabel.text]];
+        aFontAndSizeSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        aFontAndSizeSegmentedControl.tintColor = tintColor;
+        aFontAndSizeSegmentedControl.momentary = YES;
+        
+        [[aFontAndSizeSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"White page color", @"Accessibility label for View Settings White Page Color button")];
+        
+        [self addSubview:aFontAndSizeSegmentedControl];
+        self.fontAndSizeSegment = aFontAndSizeSegmentedControl;
+        [aFontAndSizeSegmentedControl release];
+        
+        [self.fontAndSizeSegment addTarget:self action:@selector(displayFontSettings:) forControlEvents:UIControlEventValueChanged];
+
+        
 		//////// TAP ZOOMS TO BLOCK
 		
         BOOL voiceOverIsRelevant = NO;
@@ -434,7 +363,7 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
             aTabZoomsToBlockLabel.text = NSLocalizedString(@"Tap Advance",@"Settings Label for \"Tap Advance\" Segmented Control.");
         }
         [self addSubview:aTabZoomsToBlockLabel];
-        self.tapZoomsToBlockLabel = aTabZoomsToBlockLabel;
+        self.tapZoomsLabel = aTabZoomsToBlockLabel;
         [aTabZoomsToBlockLabel release];
 		
 		NSArray *tapAdvanceTitles;
@@ -449,47 +378,47 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
                                 NSLocalizedString(@"By Block",@"\"By Block\" segment label (for \"Tap Advance\" SegmentedControl)"),
                                 nil];
 		
-		BlioAccessibilitySegmentedControl *aTapZoomsToBlockSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
-        aTapZoomsToBlockSegment.segmentedControlStyle = UISegmentedControlStyleBar;
-        aTapZoomsToBlockSegment.tintColor = tintColor;
+		BlioAccessibilitySegmentedControl *atapZoomsSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
+        atapZoomsSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+        atapZoomsSegment.tintColor = tintColor;
         
         if(voiceOverIsRelevant) {
-            [aTapZoomsToBlockSegment setAccessibilityHint:NSLocalizedString(@"In this mode, two finger swipe down to begin reading from the current position. Pages will turn automatically. Tap the page to stop reading, or to read individual lines.", @"Accessibility hint for View Settings \"By Page\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:0];
-            [aTapZoomsToBlockSegment setAccessibilityHint:NSLocalizedString(@"In this mode, tap the page to read blocks of text.  Two finger swipe down to read the current page.  Pages will not turn automatically.", @"Accessibility hing for View Settings  \"By Block\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:1];
+            [atapZoomsSegment setAccessibilityHint:NSLocalizedString(@"In this mode, two finger swipe down to begin reading from the current position. Pages will turn automatically. Tap the page to stop reading, or to read individual lines.", @"Accessibility hint for View Settings \"By Page\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:0];
+            [atapZoomsSegment setAccessibilityHint:NSLocalizedString(@"In this mode, tap the page to read blocks of text.  Two finger swipe down to read the current page.  Pages will not turn automatically.", @"Accessibility hing for View Settings  \"By Block\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:1];
         }
     
-        [self addSubview:aTapZoomsToBlockSegment];
-        self.tapZoomsToBlockSegment = aTapZoomsToBlockSegment;
-        [aTapZoomsToBlockSegment release];
+        [self addSubview:atapZoomsSegment];
+        self.tapZoomsSegment = atapZoomsSegment;
+        [atapZoomsSegment release];
         
-        [self.tapZoomsToBlockSegment addTarget:self action:@selector(changeTapZooms:) forControlEvents:UIControlEventValueChanged];
+        [self.tapZoomsSegment addTarget:self action:@selector(changeTapZooms:) forControlEvents:UIControlEventValueChanged];
 		
 		
 		//////// LANDSCAPE PAGE NUMBER
 
-		UILabel *aLandscapePageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        aLandscapePageLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        aLandscapePageLabel.textColor = whiteColor;
-        aLandscapePageLabel.backgroundColor = clearColor;
-        aLandscapePageLabel.text = NSLocalizedString(@"Landscape",@"Settings Label for number of pages displayed in landscape.");
-        [self addSubview:aLandscapePageLabel];
-        self.landscapePageLabel = aLandscapePageLabel;
-        [aLandscapePageLabel release];
+		UILabel *aTwoUpLandscapeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        aTwoUpLandscapeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        aTwoUpLandscapeLabel.textColor = whiteColor;
+        aTwoUpLandscapeLabel.backgroundColor = clearColor;
+        aTwoUpLandscapeLabel.text = NSLocalizedString(@"Landscape",@"Settings Label for number of pages displayed in landscape.");
+        [self addSubview:aTwoUpLandscapeLabel];
+        self.twoUpLandscapeLabel = aTwoUpLandscapeLabel;
+        [aTwoUpLandscapeLabel release];
 		
-		NSArray *landscapePageTitles = [NSArray arrayWithObjects:
+		NSArray *twoUpLandscapeTitles = [NSArray arrayWithObjects:
 									 NSLocalizedString(@"1 Page",@"\"1 Page\" segment label (for Landscape Page SegmentedControl)"),
 									 NSLocalizedString(@"2 Pages",@"\"2 Pages\" segment label (for Landscape Page SegmentedControl)"),
 									 nil];
 		
-		BlioAccessibilitySegmentedControl *aLandscapePageSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:landscapePageTitles];
-        aLandscapePageSegment.segmentedControlStyle = UISegmentedControlStyleBar;
-        aLandscapePageSegment.tintColor = tintColor;
+		BlioAccessibilitySegmentedControl *atwoUpLandscapeSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:twoUpLandscapeTitles];
+        atwoUpLandscapeSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+        atwoUpLandscapeSegment.tintColor = tintColor;
                 
-        [self addSubview:aLandscapePageSegment];
-        self.landscapePageSegment = aLandscapePageSegment;
-        [aLandscapePageSegment release];
+        [self addSubview:atwoUpLandscapeSegment];
+        self.twoUpLandscapeSegment = atwoUpLandscapeSegment;
+        [atwoUpLandscapeSegment release];
                 
-        [self.landscapePageSegment addTarget:self action:@selector(changeTwoUpLandscapePage:) forControlEvents:UIControlEventValueChanged];
+        [self.twoUpLandscapeSegment addTarget:self action:@selector(changeTwoUpLandscape:) forControlEvents:UIControlEventValueChanged];
 		
 		//////// ORIENTATION LOCK
 
@@ -577,6 +506,10 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
 }
 
 
+- (BOOL)hasScreenBrightnessSlider
+{
+    return self.screenBrightnessSlider != nil;
+}
 
 - (CGFloat)contentsHeight {
     CGFloat height;
@@ -592,7 +525,7 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
         rowSpacing = kBlioViewSettingsRowSpacingIPad;
         rowHeight = kBlioViewSettingsSegmentButtonHeight;
     }
-    height =  yInset * 2 + rowSpacing * 5 + rowHeight * 6;
+    height =  yInset * 2 + rowSpacing * 4 + rowHeight * 5;
     
     if(self.screenBrightnessSlider && !self.delegate.shouldPresentBrightnessSliderVerticallyInPageSettings) {
         height += rowSpacing + rowHeight;
@@ -642,41 +575,39 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
     [self.pageLayoutSegment setFrame:CGRectMake(xInset, currentY, innerWidthWithoutSlider, rowHeight)];
     currentY += rowStride;
     
-    [self.fontSizeLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
-    [self.fontSizeSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    [self.fontAndSizeLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.fontAndSizeSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     currentY += rowStride;
-    
-    [self.justificationLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
-    [self.justificationSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
-    currentY += rowStride;
-    
+
     [self.pageColorLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
     [self.pageColorSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     currentY += rowStride;
 
-    [self.tapZoomsToBlockLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
-    [self.tapZoomsToBlockSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    [self.tapZoomsLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.tapZoomsSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     currentY += rowStride;
 
-    [self.landscapePageLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
-    [self.landscapePageSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    [self.twoUpLandscapeLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.twoUpLandscapeSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     currentY += rowStride;
 
-//		[self.lockButtonSegment setFrame:CGRectMake(xInset, CGRectGetMaxY([self.landscapePageLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * xInset - kBlioViewSettingsRowSpacing)/2.0f, buttonHeight)];
+//		[self.lockButtonSegment setFrame:CGRectMake(xInset, CGRectGetMaxY([self.twoUpLandscapeLabel frame]) + kBlioViewSettingsRowSpacing, (CGRectGetWidth(self.bounds) - 2 * xInset - kBlioViewSettingsRowSpacing)/2.0f, buttonHeight)];
         
     if(myScreenBrightnessSlider) {
         UIImage *thumbImage;
+        if(rowHeight < 30) {
+            thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];
+        } else {
+            thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob.png"];
+        }
         if(!brightnessSliderShouldBeVertical) {
             [myScreenBrightnessSlider setFrame:CGRectMake(xInset + 8, currentY, innerWidth - 14,  rowHeight)];
             currentY += rowStride;
-            thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob.png"];
         } else {
             myScreenBrightnessSlider.transform = CGAffineTransformMakeRotation(-(CGFloat)M_PI_2);
             [myScreenBrightnessSlider setFrame:CGRectMake(xInset + innerWidthWithoutSlider + rowSpacing, yInset + 4, myScreenBrightnessSlider.bounds.size.height, currentY - rowSpacing - yInset - 8)];
             
-            // Use the small thumb image, and rotate it so that it'll be upright after the slider is 
-            // vertical.
-            thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];
+            // Rotate it so that it'll be upright after the slider is vertical.
             thumbImage = [thumbImage blioImageByRotatingTo:UIImageOrientationLeft];
         }
         [myScreenBrightnessSlider setThumbImage:thumbImage forState:UIControlStateNormal];
@@ -686,6 +617,8 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
     if(self.doneButton) {
         [self.doneButton setFrame:CGRectMake(xInset, currentY, innerWidth,  rowHeight)];
     }
+    
+    [self refreshFontLabel];
     
     [super layoutSubviews];
 }
@@ -697,29 +630,8 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
     }
 }
 
-- (void)changeFontSize:(id)sender {
-    if(!self.refreshingSettings) {
-        [self.delegate changeFontSizeIndex:((UISegmentedControl*)sender).selectedSegmentIndex];
-    }
-}
-
-- (void)changeJustification:(id)sender {
-    if(!self.refreshingSettings) {
-        BlioJustification newJustifiction;
-        switch(((UISegmentedControl*)sender).selectedSegmentIndex) {
-            case 0:
-                newJustifiction = kBlioJustificationLeft;
-                break;
-            default:
-            case 1:
-                newJustifiction = kBlioJustificationFull;
-                break;
-            case 2:
-                newJustifiction = kBlioJustificationOriginal;
-                break;
-        }
-        [self.delegate changeJustification:newJustifiction];
-    }
+- (void)displayFontSettings:(id)sender {
+    [self.delegate viewSettingsShowFontSettings:self];
 }
 
 - (void)changePageColor:(id)sender {
@@ -734,9 +646,9 @@ static const CGFloat kBlioViewSettingsLabelWidth = 93;
     }
 }
 
-- (void)changeTwoUpLandscapePage:(id)sender {
+- (void)changeTwoUpLandscape:(id)sender {
     if(!self.refreshingSettings) {
-        [self.delegate changeTwoUpLandscapePage:((UISegmentedControl*)sender).selectedSegmentIndex == 1];
+        [self.delegate changeTwoUpLandscape:((UISegmentedControl*)sender).selectedSegmentIndex == 1];
     }
 }
 
