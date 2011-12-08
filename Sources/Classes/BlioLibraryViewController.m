@@ -1680,7 +1680,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryGridViewCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel,statusBadge,previewBadge;
+@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel,statusBadge,previewBadge,bookTypeBadge;
 @synthesize accessibilityElements;
 
 - (void)dealloc {
@@ -1698,6 +1698,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.accessibilityElements = nil;
 	self.statusBadge = nil;
 	self.previewBadge = nil;
+    self.bookTypeBadge = nil;
     [super dealloc];
 }
 
@@ -1768,11 +1769,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.contentView addSubview:statusBadge];		
 
 		previewBadge = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"badge-preview.png"]];
-						
+        
 		previewBadge.frame = CGRectMake(roundf(self.bookView.xInset) - 1, roundf(self.bookView.yInset) - 1, 48, 48);
 		previewBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:previewBadge];		
-		
+
+        bookTypeBadge = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"badge-preview.png"]];
+        
+		bookTypeBadge.frame = CGRectMake(roundf(self.bookView.xInset) - 1, roundf(self.bookView.yInset) - 1, 48, 48);
+		bookTypeBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+		[self.contentView addSubview:bookTypeBadge];		
+
 
         [aBookView release];
 		[self listenToProcessingNotifications];
@@ -2060,7 +2067,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryListCell
 
-@synthesize bookView, titleLabel, authorLabel, /*progressSlider,proportionalProgressView,*/ delegate,progressView,pauseResumeButton,statusBadge,previewBadge;
+@synthesize bookView, titleLabel, authorLabel, /*progressSlider,proportionalProgressView,*/ delegate,progressView,pauseResumeButton,statusBadge,previewBadge,bookTypeBadge;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -2072,6 +2079,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.pauseResumeButton = nil;
 	self.statusBadge = nil;
 	self.previewBadge = nil;
+    self.bookTypeBadge = nil;
     [super dealloc];
 }
 

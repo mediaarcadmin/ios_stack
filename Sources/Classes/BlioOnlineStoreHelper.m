@@ -271,7 +271,7 @@
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
             }
-            else if ((preExistingTransactionType == BlioTransactionTypeLend || preExistingTransactionType == BlioTransactionTypePreorder) && (incomingTransactionType == BlioTransactionTypeSale || incomingTransactionType == BlioTransactionTypeSaleFromPreorder || incomingTransactionType == BlioTransactionTypePromotion || incomingTransactionType == BlioTransactionTypeFree)) {
+            else if ((preExistingTransactionType == BlioTransactionTypeLend && incomingTransactionType == BlioTransactionTypePreorder) || ((preExistingTransactionType == BlioTransactionTypeLend || preExistingTransactionType == BlioTransactionTypePreorder) && (incomingTransactionType == BlioTransactionTypeSale || incomingTransactionType == BlioTransactionTypeSaleFromPreorder || incomingTransactionType == BlioTransactionTypePromotion || incomingTransactionType == BlioTransactionTypeFree))) {
                 NSLog(@"replacing TransactionType:%i version of ISBN:%@ with TransactionType:%i version...",preExistingTransactionType,bookOwnershipInfo.ISBN,incomingTransactionType);                
 				[[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
 				newISBNs++;
