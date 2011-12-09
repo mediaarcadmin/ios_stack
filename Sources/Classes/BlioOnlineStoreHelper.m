@@ -339,6 +339,7 @@
                                 NSString *dateFormat = @"yyyy-MM-dd'T'HH:mm:ss";
                                 NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
                                 [formatter setDateFormat: dateFormat];
+                                [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]];
                                 anExpirationDate = [formatter dateFromString:bookOwnershipInfo.ExpirationDate];
                             }                
 
