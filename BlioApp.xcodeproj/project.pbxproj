@@ -1623,6 +1623,12 @@
 		DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
 		DCBF27E4141E6FE000FF050A /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
 		DCBF27E5141E6FE600FF050A /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
+		DCC2F7F014917EDD006B2F45 /* badge-daysleft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC2F7EE14917EDD006B2F45 /* badge-daysleft@2x.png */; };
+		DCC2F7F114917EDD006B2F45 /* badge-daysleft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC2F7EE14917EDD006B2F45 /* badge-daysleft@2x.png */; };
+		DCC2F7F214917EDD006B2F45 /* badge-daysleft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC2F7EE14917EDD006B2F45 /* badge-daysleft@2x.png */; };
+		DCC2F7F314917EDD006B2F45 /* badge-daysleft.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC2F7EF14917EDD006B2F45 /* badge-daysleft.png */; };
+		DCC2F7F414917EDD006B2F45 /* badge-daysleft.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC2F7EF14917EDD006B2F45 /* badge-daysleft.png */; };
+		DCC2F7F514917EDD006B2F45 /* badge-daysleft.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC2F7EF14917EDD006B2F45 /* badge-daysleft.png */; };
 		DCC447E211ADBAB700CBD491 /* BlioVoiceData.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */; };
 		DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
 		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
@@ -2544,6 +2550,8 @@
 		DCAC960F126918C200C24BF7 /* BlioMyAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMyAccountViewController.h; sourceTree = "<group>"; };
 		DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMyAccountViewController.m; sourceTree = "<group>"; };
 		DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "MainNavControllerAndLibraryView-iPad.xib"; sourceTree = "<group>"; };
+		DCC2F7EE14917EDD006B2F45 /* badge-daysleft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-daysleft@2x.png"; sourceTree = "<group>"; };
+		DCC2F7EF14917EDD006B2F45 /* badge-daysleft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "badge-daysleft.png"; sourceTree = "<group>"; };
 		DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioVoiceData.plist; sourceTree = "<group>"; };
 		DCC451E711B042FC00CBD491 /* BlioDownloadVoicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioDownloadVoicesViewController.h; sourceTree = "<group>"; };
 		DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDownloadVoicesViewController.m; sourceTree = "<group>"; };
@@ -2929,6 +2937,8 @@
 				DC8CADA4124877DA00C1EED9 /* table-headerbar-background@2x.png */,
 				DC63DB1512DF8F2E00D8C750 /* badge-preview.png */,
 				DC63DB1612DF8F2E00D8C750 /* badge-preview@2x.png */,
+				DCC2F7EF14917EDD006B2F45 /* badge-daysleft.png */,
+				DCC2F7EE14917EDD006B2F45 /* badge-daysleft@2x.png */,
 				C93ECB14134B6215003B99FD /* libKNFBReader Resources */,
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				C9E1FAA7110F26DB00999587 /* TextFlows */,
@@ -4376,6 +4386,8 @@
 				A3659220146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
 				7DE96E17147D1556000C39DB /* BlioFonts.plist in Resources */,
 				7DE0D558147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
+				DCC2F7F014917EDD006B2F45 /* badge-daysleft@2x.png in Resources */,
+				DCC2F7F314917EDD006B2F45 /* badge-daysleft.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4619,6 +4631,8 @@
 				A3659222146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
 				7DE96E19147D1556000C39DB /* BlioFonts.plist in Resources */,
 				7DE0D55A147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
+				DCC2F7F214917EDD006B2F45 /* badge-daysleft@2x.png in Resources */,
+				DCC2F7F514917EDD006B2F45 /* badge-daysleft.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5106,6 +5120,8 @@
 				A3659221146C1C0500B23AAA /* icon-wrench@2x.png in Resources */,
 				7DE96E18147D1556000C39DB /* BlioFonts.plist in Resources */,
 				7DE0D559147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
+				DCC2F7F114917EDD006B2F45 /* badge-daysleft@2x.png in Resources */,
+				DCC2F7F414917EDD006B2F45 /* badge-daysleft.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

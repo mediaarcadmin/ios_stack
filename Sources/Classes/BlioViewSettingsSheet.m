@@ -202,7 +202,7 @@
     [button setBackgroundImage:arrowImage forState:UIControlStateNormal];
     button.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 8);
     
-    [button setTitle:NSLocalizedString(@"Settings", "Title for button in Font & Size settings popover to return to the main settings screen (iPhone)")
+    [button setTitle:NSLocalizedString(@"Settings", "Title for button in Typography settings popover to return to the main settings screen (iPhone)")
             forState:UIControlStateNormal];
     
     button.titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]];
@@ -230,7 +230,7 @@
     label.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
     label.textAlignment = UITextAlignmentCenter;
     
-    label.text = NSLocalizedString(@"Font & Size", "Title for Font & Size Settings Popover");
+    label.text = NSLocalizedString(@"Typography", "Title for Typography Settings Popover");
     [label sizeToFit];
     labelFrame.size.width = label.frame.size.width;
     labelFrame.origin.x = ceilf((availableFrame.size.width - labelFrame.size.width) * 0.5f);
