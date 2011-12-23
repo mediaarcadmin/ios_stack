@@ -1,6 +1,6 @@
 #import "BlioBookVault.h"
 #import <libxml/xmlstring.h>
-#import "BlioXMLParserLock.h"
+#import "KNFBXMLParserLock.h"
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
@@ -4884,7 +4884,7 @@ parameters:(BookVault_RegisterSale *)aParameters
 		if (binding.logXMLInOut) {
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		if (doc == NULL) {
@@ -4923,11 +4923,11 @@ parameters:(BookVault_RegisterSale *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -4983,7 +4983,7 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }				
 		if (doc == NULL) {
@@ -5022,11 +5022,11 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -5082,7 +5082,7 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -5122,11 +5122,11 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -5181,7 +5181,7 @@ parameters:(BookVault_VaultContents *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -5221,11 +5221,11 @@ parameters:(BookVault_VaultContents *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -5279,7 +5279,7 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -5319,11 +5319,11 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -5379,7 +5379,7 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -5419,11 +5419,11 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -5479,7 +5479,7 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 			NSLog(@"RequestClientDownloadWithTokenEx ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -5519,11 +5519,11 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -5578,7 +5578,7 @@ parameters:(BookVault_RequestDownload *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -5618,11 +5618,11 @@ parameters:(BookVault_RequestDownload *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -5676,7 +5676,7 @@ parameters:(BookVault_Login *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -5716,11 +5716,11 @@ parameters:(BookVault_Login *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -5786,7 +5786,7 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	xmlDocDumpFormatMemory(doc, &buf, &size, 1);
 	
 	NSString *serializedForm = [NSString stringWithCString:(const char*)buf encoding:NSUTF8StringEncoding];
-    @synchronized([BlioXMLParserLock sharedLock]) {
+    @synchronized([KNFBXMLParserLock sharedLock]) {
 	xmlFree(buf);
 	xmlFreeDoc(doc);
     }
@@ -6129,7 +6129,7 @@ parameters:(BookVault_RegisterSale *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -6169,11 +6169,11 @@ parameters:(BookVault_RegisterSale *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -6226,7 +6226,7 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -6266,11 +6266,11 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -6323,7 +6323,7 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -6363,11 +6363,11 @@ parameters:(BookVault_VaultContentsWithToken *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -6421,7 +6421,7 @@ parameters:(BookVault_VaultContents *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -6461,11 +6461,11 @@ parameters:(BookVault_VaultContents *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -6518,7 +6518,7 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -6558,11 +6558,11 @@ parameters:(BookVault_RequestDownloadWithToken *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -6615,7 +6615,7 @@ parameters:(BookVault_RequestDownload *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -6655,11 +6655,11 @@ parameters:(BookVault_RequestDownload *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -6712,7 +6712,7 @@ parameters:(BookVault_Login *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -6752,11 +6752,11 @@ parameters:(BookVault_Login *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -6823,7 +6823,7 @@ static BookVaultSoap12_envelope *BookVaultSoap12SharedEnvelopeInstance = nil;
 	xmlDocDumpFormatMemory(doc, &buf, &size, 1);
 	
 	NSString *serializedForm = [NSString stringWithCString:(const char*)buf encoding:NSUTF8StringEncoding];
-    @synchronized([BlioXMLParserLock sharedLock]) {
+    @synchronized([KNFBXMLParserLock sharedLock]) {
 	xmlFree(buf);
 	xmlFreeDoc(doc);	
     }

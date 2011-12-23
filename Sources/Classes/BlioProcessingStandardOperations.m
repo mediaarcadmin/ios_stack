@@ -15,7 +15,7 @@
 #import "BlioStoreManager.h"
 #import "Reachability.h"
 #import "BlioImportManager.h"
-#import "BlioXMLParserLock.h"
+#import "KNFBXMLParserLock.h"
 
 @implementation BlioProcessingAggregateOperation
 
@@ -877,7 +877,7 @@
 		NSLog(@"Textflow sections file is present. parsing XML...");
 		NSData * data = [self getBookManifestDataForKey:BlioManifestTextFlowKey];
 		if (data) {
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 textflowParser = [[NSXMLParser alloc] initWithData:data];
                 [textflowParser setDelegate:self];
                 [textflowParser parse];
@@ -920,7 +920,7 @@
 //				NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //				NSLog(@"stringData: %@",stringData);
 //				[stringData release];
-                @synchronized([BlioXMLParserLock sharedLock]) {
+                @synchronized([KNFBXMLParserLock sharedLock]) {
                     rightsParser = [[NSXMLParser alloc] initWithData:data];
                     [rightsParser setDelegate:self];
                     [rightsParser parse];
@@ -961,7 +961,7 @@
 //			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //			NSLog(@"stringData: %@",stringData);
 //			[stringData release];
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 audiobookReferencesParser = [[NSXMLParser alloc] initWithData:data];
                 [audiobookReferencesParser setDelegate:self];
                 [audiobookReferencesParser parse];
@@ -992,7 +992,7 @@
 			//			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 			//			NSLog(@"stringData: %@",stringData);
 			//			[stringData release];
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 metadataParser = [[NSXMLParser alloc] initWithData:data];
                 [metadataParser setDelegate:self];
                 [metadataParser parse];

@@ -7,7 +7,7 @@
 //
 
 #import "CCInAppPurchaseService.h"
-#import "BlioXMLParserLock.h"
+#import "KNFBXMLParserLock.h"
 
 @implementation CCInAppPurchaseProduct 
 
@@ -98,7 +98,7 @@
     
 	_response = [[CCInAppPurchaseFetchProductsResponse alloc] init];
 	
-    @synchronized([BlioXMLParserLock sharedLock]) {
+    @synchronized([KNFBXMLParserLock sharedLock]) {
         NSXMLParser * responseParser = [[NSXMLParser alloc] initWithData:data];
         [responseParser setDelegate:self];
         [responseParser parse];

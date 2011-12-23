@@ -205,6 +205,10 @@
 		7D81ED2810E90C220016D44A /* paper-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2510E90C220016D44A /* paper-white.png */; };
 		7D8A801F121A99FB00A54E16 /* BlioBeveledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */; };
 		7D8A8020121A99FB00A54E16 /* BlioBeveledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */; };
+		7D8AD3FB14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8AD3FA14A4B6CD002F5393 /* KNFBXMLParserLock.m */; };
+		7D8AD3FC14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8AD3FA14A4B6CD002F5393 /* KNFBXMLParserLock.m */; };
+		7D8AD3FD14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8AD3FA14A4B6CD002F5393 /* KNFBXMLParserLock.m */; };
+		7D8AD3FE14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8AD3FA14A4B6CD002F5393 /* KNFBXMLParserLock.m */; };
 		7D9147CA1151497900BCBB23 /* BlioFlowAnalyzeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowAnalyzeOperation.m */; };
 		7D94C63A117630050067B732 /* BlioTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */; };
 		7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
@@ -1549,10 +1553,6 @@
 		DC2ABE421213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */; };
 		DC32BF8D12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */; };
 		DC32BF8E12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */; };
-		DC4057701447453B00F748B5 /* BlioXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC40576F1447453B00F748B5 /* BlioXMLParserLock.m */; };
-		DC4057711447453B00F748B5 /* BlioXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC40576F1447453B00F748B5 /* BlioXMLParserLock.m */; };
-		DC4057721447453B00F748B5 /* BlioXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC40576F1447453B00F748B5 /* BlioXMLParserLock.m */; };
-		DC4057731447453B00F748B5 /* BlioXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC40576F1447453B00F748B5 /* BlioXMLParserLock.m */; };
 		DC41ACEF11F0DA4800D13308 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		DC48C4E911D3199C00C5D186 /* librarybackground-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */; };
@@ -1982,6 +1982,8 @@
 		7D81ED2510E90C220016D44A /* paper-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paper-white.png"; sourceTree = "<group>"; };
 		7D8A801D121A99FB00A54E16 /* BlioBeveledView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBeveledView.h; sourceTree = "<group>"; };
 		7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBeveledView.m; sourceTree = "<group>"; };
+		7D8AD3F914A4B6CD002F5393 /* KNFBXMLParserLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KNFBXMLParserLock.h; path = XPS/KNFBXMLParserLock.h; sourceTree = "<group>"; };
+		7D8AD3FA14A4B6CD002F5393 /* KNFBXMLParserLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KNFBXMLParserLock.m; path = XPS/KNFBXMLParserLock.m; sourceTree = "<group>"; };
 		7D9147C71151497900BCBB23 /* BlioFlowAnalyzeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowAnalyzeOperation.h; sourceTree = "<group>"; };
 		7D9147C81151497900BCBB23 /* BlioFlowAnalyzeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioFlowAnalyzeOperation.m; sourceTree = "<group>"; };
 		7D94C63311762C4F0067B732 /* BlioParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioParagraphSource.h; sourceTree = "<group>"; };
@@ -2506,8 +2508,6 @@
 		DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BlioFeatureCompatibility.plist; sourceTree = "<group>"; };
 		DC2EB05411C96E28006AC1B6 /* DRM */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DRM; sourceTree = "<group>"; };
 		DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "voice-sample-play-button@2x.png"; sourceTree = "<group>"; };
-		DC40576E1447453B00F748B5 /* BlioXMLParserLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioXMLParserLock.h; sourceTree = "<group>"; };
-		DC40576F1447453B00F748B5 /* BlioXMLParserLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioXMLParserLock.m; sourceTree = "<group>"; };
 		DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "librarybackground-iPad.png"; sourceTree = "<group>"; };
 		DC48C98C11D54A0100C5D186 /* BlioSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSplitViewController.h; sourceTree = "<group>"; };
 		DC48C98D11D54A0100C5D186 /* BlioSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSplitViewController.m; sourceTree = "<group>"; };
@@ -2807,8 +2807,6 @@
 				DC84EDF71261267400BC6514 /* BlioImportManager.m */,
 				DCA4D09A11925AB30046CE51 /* BlioAlertManager.h */,
 				DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */,
-				DC40576E1447453B00F748B5 /* BlioXMLParserLock.h */,
-				DC40576F1447453B00F748B5 /* BlioXMLParserLock.m */,
 				DC8BB5881278E7060044580E /* Additions */,
 				7DB195AF12B14CA20087E61F /* BlioDefaultViewController.h */,
 				7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */,
@@ -3702,6 +3700,8 @@
 				C9EFAF61134E089C00ADF905 /* KNFBLayoutDataSource.h */,
 				C9EFAF73134E2BE700ADF905 /* KNFBLayoutHyperlink.h */,
 				C9EFAF74134E2BEA00ADF905 /* KNFBLayoutHyperlink.m */,
+				7D8AD3F914A4B6CD002F5393 /* KNFBXMLParserLock.h */,
+				7D8AD3FA14A4B6CD002F5393 /* KNFBXMLParserLock.m */,
 				7D1C968F13F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.h */,
 				7D1C969013F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m */,
 				7D1C969413F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.h */,
@@ -5280,10 +5280,10 @@
 				A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 				DC824D96143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 				A3F24EB7143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
-				DC4057701447453B00F748B5 /* BlioXMLParserLock.m in Sources */,
 				7DE0D55D147AC3E2005FD319 /* BlioBookView.m in Sources */,
 				7D5B0C48147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
 				7D00FBAB147BC7C600008261 /* BlioCenterableTableViewCell.m in Sources */,
+				7D8AD3FB14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5439,10 +5439,10 @@
 				A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 				DC824D98143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 				A3F24EB9143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
-				DC4057721447453B00F748B5 /* BlioXMLParserLock.m in Sources */,
 				7DE0D55F147AC3E2005FD319 /* BlioBookView.m in Sources */,
 				7D5B0C4A147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
 				7D00FBAD147BC7C600008261 /* BlioCenterableTableViewCell.m in Sources */,
+				7D8AD3FD14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5597,10 +5597,10 @@
 				A31CC88013FEA07E0010BFC5 /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
 				A323E75E1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 				A3F24EBA143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
-				DC4057731447453B00F748B5 /* BlioXMLParserLock.m in Sources */,
 				7DE0D560147AC3E2005FD319 /* BlioBookView.m in Sources */,
 				7D5B0C4B147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
 				7D00FBAE147BC7C600008261 /* BlioCenterableTableViewCell.m in Sources */,
+				7D8AD3FE14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5756,10 +5756,10 @@
 				A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */,
 				DC824D97143E0A7D006AC7F3 /* BlioVoiceOverTextController.m in Sources */,
 				A3F24EB8143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */,
-				DC4057711447453B00F748B5 /* BlioXMLParserLock.m in Sources */,
 				7DE0D55E147AC3E2005FD319 /* BlioBookView.m in Sources */,
 				7D5B0C49147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
 				7D00FBAC147BC7C600008261 /* BlioCenterableTableViewCell.m in Sources */,
+				7D8AD3FC14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

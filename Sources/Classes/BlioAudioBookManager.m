@@ -10,7 +10,7 @@
 #import "BlioBook.h"
 #import "BlioBookManager.h"
 #import "BlioAlertManager.h"
-#import "BlioXMLParserLock.h"
+#import "KNFBXMLParserLock.h"
 
 @implementation BlioAudioBookManager
 
@@ -152,7 +152,7 @@
 - (void)parseData:(NSData*)data  {
 	// Prepare to parse the xml file.
     BOOL parsedReferences = NO;
-    @synchronized([BlioXMLParserLock sharedLock]) {
+    @synchronized([KNFBXMLParserLock sharedLock]) {
         NSXMLParser * xmlParser = [[NSXMLParser alloc] initWithData:data];
         [xmlParser setDelegate:self];
         parsedReferences = [xmlParser parse];
