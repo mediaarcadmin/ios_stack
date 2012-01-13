@@ -42,6 +42,7 @@
 @dynamic transactionType;
 @dynamic ttsRight;
 @dynamic ttsCapable;
+@dynamic twoPageSpread;
 
 - (void)dealloc {    
     [self flushCaches];

@@ -1962,6 +1962,7 @@
 		7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectionKnob@2x.png"; sourceTree = "<group>"; };
 		7D4CE4731100C64C0061BDF2 /* BlioBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookmark.h; sourceTree = "<group>"; };
 		7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookmark.m; sourceTree = "<group>"; };
+		7D55C4CE14C061DD009C5F1E /* Blio 2-5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Blio 2-5.xcdatamodel"; sourceTree = "<group>"; };
 		7D5B0C46147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsFontAndSizeContentsView.h; sourceTree = "<group>"; };
 		7D5B0C47147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsFontAndSizeContentsView.m; sourceTree = "<group>"; };
 		7D5B0C4C147AD743007E3865 /* BlioViewSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettings.h; sourceTree = "<group>"; };
@@ -6341,9 +6342,10 @@
 			isa = XCVersionGroup;
 			children = (
 				DCABAC8113B4CC9700BE0FE3 /* Blio 2-4.xcdatamodel */,
+				7D55C4CE14C061DD009C5F1E /* Blio 2-5.xcdatamodel */,
 				DCABAC8213B4CC9700BE0FE3 /* Blio.xcdatamodel */,
 			);
-			currentVersion = DCABAC8113B4CC9700BE0FE3 /* Blio 2-4.xcdatamodel */;
+			currentVersion = 7D55C4CE14C061DD009C5F1E /* Blio 2-5.xcdatamodel */;
 			path = Blio.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

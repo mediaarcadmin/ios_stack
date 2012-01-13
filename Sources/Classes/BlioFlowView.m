@@ -801,14 +801,14 @@
     
 }
 
-- (BOOL)twoUpLandscape
+- (BlioTwoUp)twoUp
 {
-    return _eucBookView.twoUpLandscape;
+    return _eucBookView.twoUpLandscape ? kBlioTwoUpLandscape : kBlioTwoUpNever;
 }
 
-- (void)setTwoUpLandscape:(BOOL)twoUpLandscape;
+- (void)setTwoUp:(BlioTwoUp)twoUp;
 {
-    _eucBookView.twoUpLandscape = twoUpLandscape;
+    _eucBookView.twoUpLandscape = twoUp != kBlioTwoUpNever;
 }
 
 - (BOOL)shouldTapZoom

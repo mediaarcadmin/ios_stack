@@ -123,6 +123,7 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @property (nonatomic, assign, readonly) BOOL hasTTSRights;
 @property (nonatomic, assign, readonly) BOOL reflowEnabled;
 @property (nonatomic, assign, readonly) BOOL fixedViewEnabled;
+@property (nonatomic, assign, readonly) BOOL twoPageSpread;
 
 // Lazily convenience accessors
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;

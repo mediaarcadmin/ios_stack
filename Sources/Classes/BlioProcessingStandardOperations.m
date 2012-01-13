@@ -1094,7 +1094,10 @@
 			NSString * featureVersion = [attributeDict objectForKey:@"Version"];
 			NSString * isRequired = [attributeDict objectForKey:@"IsRequired"];
 			if (featureName && featureVersion && isRequired) {
-				if ([[isRequired lowercaseString] isEqualToString:@"true"]) {
+                if ([featureName isEqualToString:@"TwoPageSpread"] && [[isRequired lowercaseString] isEqualToString:@"true"]) {
+                    // The feature tag here is being used to state that this book requires a two-up view, not that the app requires a 2-up feature...
+					[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"twoPageSpread"]; 
+                } else if ([[isRequired lowercaseString] isEqualToString:@"true"]) {
 					NSNumber * featureCompatibilityVersion = [self.featureCompatibilityDictionary objectForKey:featureName];
 //					if (featureCompatibilityVersion) NSLog(@"Required feature: %@ found. App compatibility version: %f, book version required: %f",featureName,[featureCompatibilityVersion floatValue],[featureVersion floatValue]);
 //					else NSLog(@"Required feature: %@ found. App is not compatible with this feature, book version required: %f",featureName,[featureVersion floatValue]);

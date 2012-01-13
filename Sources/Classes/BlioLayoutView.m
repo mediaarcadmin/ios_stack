@@ -127,8 +127,8 @@
 @synthesize webViews;
 @synthesize pageAlphaMask;
 @synthesize pageMultiplyColor;
-@synthesize twoUpLandscape;
 @synthesize shouldTapZoom;
+@synthesize twoUp;
 
 - (void)dealloc {
 	
@@ -263,12 +263,12 @@
         }
         
         // Must do this here so that teh page aspect ration takes account of the twoUp property
-        CGRect myBounds = self.bounds;
-        if(myBounds.size.width > myBounds.size.height && self.twoUpLandscape) {
-            aPageTurningView.twoUp = YES;
-        } else {
-            aPageTurningView.twoUp = NO;
-        } 
+        CGSize mySize = self.bounds.size;
+        BlioTwoUp myTwoUp = self.twoUp;
+        self.pageTurningView.twoUp =
+        (myTwoUp == kBlioTwoUpAlways ||
+         (myTwoUp == kBlioTwoUpLandscape && 
+          mySize.width > mySize.height));
         
         if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
             [aPageTurningView setPageAspectRatio:0];
@@ -320,21 +320,11 @@
 		}
 		self.pageSize = newSize;
 
-        if(self.twoUpLandscape && 
-           newSize.width > newSize.height) {
-            self.pageTurningView.twoUp = YES;        
-            // The first page is page 0 as far as the page turning view is concerned,
-            // so it's an even page, so if it's mean to to be on the left, the odd 
-            // pages should be on the right.
-            
-            // Disabled for now because many books seem to have the property set even
-            // though their first page is the cover, and the odd pages are 
-            // clearly meant to be on the left (e.g. they have page numbers on the 
-            // outside).
-            //self.pageTurningView.oddPagesOnRight = [[[BlioBookManager sharedBookManager] bookWithID:self.bookID] firstLayoutPageOnLeft];
-        } else {
-            self.pageTurningView.twoUp = NO;
-        }   
+        BlioTwoUp myTwoUp = self.twoUp;
+        self.pageTurningView.twoUp =
+        (myTwoUp == kBlioTwoUpAlways ||
+         (myTwoUp == kBlioTwoUpLandscape && 
+          newSize.width > newSize.height));
         
         if(self.selector.tracking) {
             [self.selector setSelectedRange:nil];
@@ -1111,16 +1101,18 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
 }
 
-- (void)setTwoUpLandscape:(BOOL)newTwoUpLandscape {
-    twoUpLandscape = newTwoUpLandscape;
+- (void)setTwoUp:(BlioTwoUp)newTwoUp {
+    twoUp = newTwoUp;
     
     BOOL wasTwoUp = self.pageTurningView.twoUp;
     BOOL shouldBeTwoUp = NO;
     CGRect myBounds = self.bounds;
-    if(newTwoUpLandscape && 
-       myBounds.size.width > myBounds.size.height) {
+    if(newTwoUp == kBlioTwoUpAlways ||
+       (newTwoUp == kBlioTwoUpLandscape && 
+        myBounds.size.width > myBounds.size.height)) {
         shouldBeTwoUp = YES;        
     }
+    
     if(shouldBeTwoUp != wasTwoUp) {
         self.pageTurningView.twoUp = shouldBeTwoUp;
         [self.pageTurningView layoutSubviews];
